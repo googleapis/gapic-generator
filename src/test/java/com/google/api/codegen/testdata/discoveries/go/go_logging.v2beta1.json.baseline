@@ -9,11 +9,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -22,25 +26,40 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := logging.New(hc)
+
+  // Construct the logging service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := logging.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
 
-
-  resp, err := c.Entries.List(&logging.ListLogEntriesRequest{
-                                // TODO: Fill required fields.
-                              }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  listLogEntriesRequestBody := logging.ListLogEntriesRequest{
+    // TODO: Add desired fields of the `listLogEntriesRequestBody` variable.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  res, err := service.Entries.List(listLogEntriesRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -52,11 +71,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -65,25 +88,40 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := logging.New(hc)
+
+  // Construct the logging service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := logging.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
 
-
-  resp, err := c.Entries.Write(&logging.WriteLogEntriesRequest{
-                                 // TODO: Fill required fields.
-                               }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  writeLogEntriesRequestBody := logging.WriteLogEntriesRequest{
+    // TODO: Add desired fields of the `writeLogEntriesRequestBody` variable.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  res, err := service.Entries.Write(writeLogEntriesRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -95,11 +133,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -108,27 +150,38 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := logging.New(hc)
+
+  // Construct the logging service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := logging.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
 
-
-
-  call := c.MonitoredResourceDescriptors.List()
-  if err := call.Pages(ctx, func(page *logging.ListMonitoredResourceDescriptorsResponse) error {
-    for _, v := range page.ResourceDescriptors {
-      // TODO: Use v.
-      _ = v
+  req := service.MonitoredResourceDescriptors.List()
+  if err := req.Pages(ctx, func(page *logging.ListMonitoredResourceDescriptorsResponse) error {
+    for _, monitoredResourceDescriptor := range page.ResourceDescriptors {
+      // TODO: Change code below to process each `monitoredResourceDescriptor` resource:
+      out, err := json.MarshalIndent(monitoredResourceDescriptor, "", "  ")
+      if err != nil {
+        return err
+      }
+      fmt.Println(out)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -141,11 +194,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -154,24 +211,40 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := logging.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
-  logName := "projects/{MY-PROJECT}/logs/{MY-LOG}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Logs.Delete(logName).Context(ctx).Do()
+  // Construct the logging service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := logging.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+  // * Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
+  logName := "projects/{MY-PROJECT}/logs/{MY-LOG}"
+
+  res, err := service.Projects.Logs.Delete(logName).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -183,11 +256,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -196,27 +273,45 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := logging.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The resource name of the project in which to create the metric. Example: `"projects/my-project-id"`.
-  // The new metric must be provided in the request.
-  projectName := "projects/{MY-PROJECT}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Metrics.Create(projectName, &logging.LogMetric{
-                                           // TODO: Fill required fields.
-                                         }).Context(ctx).Do()
+  // Construct the logging service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := logging.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Create` method:
+
+  // * The resource name of the project in which to create the metric. Example:
+  //   `"projects/my-project-id"`. The new metric must be provided in the request.
+  projectName := "projects/{MY-PROJECT}"
+
+  logMetricBody := logging.LogMetric{
+    // TODO: Add desired fields of the `logMetricBody` variable.
+  }
+
+  res, err := service.Projects.Metrics.Create(projectName, &logMetricBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -228,11 +323,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -241,24 +340,41 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := logging.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The resource name of the metric to delete. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-  metricName := "projects/{MY-PROJECT}/metrics/{MY-METRIC}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Metrics.Delete(metricName).Context(ctx).Do()
+  // Construct the logging service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := logging.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+  // * The resource name of the metric to delete. Example:
+  //   `"projects/my-project-id/metrics/my-metric-id"`.
+  metricName := "projects/{MY-PROJECT}/metrics/{MY-METRIC}"
+
+  res, err := service.Projects.Metrics.Delete(metricName).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -270,11 +386,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -283,24 +403,40 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := logging.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-  metricName := "projects/{MY-PROJECT}/metrics/{MY-METRIC}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Metrics.Get(metricName).Context(ctx).Do()
+  // Construct the logging service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := logging.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+  // * The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
+  metricName := "projects/{MY-PROJECT}/metrics/{MY-METRIC}"
+
+  res, err := service.Projects.Metrics.Get(metricName).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -312,11 +448,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -325,29 +465,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := logging.New(hc)
+
+  // Construct the logging service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := logging.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Required. The resource name of the project containing the metrics. Example:
-  // `"projects/my-project-id"`.
-  projectName := "projects/{MY-PROJECT}" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
 
+  // * Required. The resource name of the project containing the metrics. Example:
+  //   `"projects/my-project-id"`.
+  projectName := "projects/{MY-PROJECT}"
 
-  call := c.Projects.Metrics.List(projectName)
-  if err := call.Pages(ctx, func(page *logging.ListLogMetricsResponse) error {
-    for _, v := range page.Metrics {
-      // TODO: Use v.
-      _ = v
+  req := service.Projects.Metrics.List(projectName)
+  if err := req.Pages(ctx, func(page *logging.ListLogMetricsResponse) error {
+    for _, logMetric := range page.Metrics {
+      // TODO: Change code below to process each `logMetric` resource:
+      out, err := json.MarshalIndent(logMetric, "", "  ")
+      if err != nil {
+        return err
+      }
+      fmt.Println(out)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -360,11 +514,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -373,28 +531,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := logging.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The resource name of the metric to update. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-  // The updated metric must be provided in the request and have the same identifier that is specified in
-  // `metricName`. If the metric does not exist, it is created.
-  metricName := "projects/{MY-PROJECT}/metrics/{MY-METRIC}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Metrics.Update(metricName, &logging.LogMetric{
-                                           // TODO: Fill required fields.
-                                         }).Context(ctx).Do()
+  // Construct the logging service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := logging.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
+  // * The resource name of the metric to update. Example:
+  //   `"projects/my-project-id/metrics/my-metric-id"`. The updated metric must be provided in the
+  //   request and have the same identifier that is specified in `metricName`. If the metric does not
+  //   exist, it is created.
+  metricName := "projects/{MY-PROJECT}/metrics/{MY-METRIC}"
+
+  logMetricBody := logging.LogMetric{
+    // TODO: Add desired fields of the `logMetricBody` variable.
+  }
+
+  res, err := service.Projects.Metrics.Update(metricName, &logMetricBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -406,11 +583,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -419,27 +600,45 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := logging.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`.
-  // The new sink must be provided in the request.
-  projectName := "projects/{MY-PROJECT}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Sinks.Create(projectName, &logging.LogSink{
-                                         // TODO: Fill required fields.
-                                       }).Context(ctx).Do()
+  // Construct the logging service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := logging.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Create` method:
+
+  // * The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`.
+  //   The new sink must be provided in the request.
+  projectName := "projects/{MY-PROJECT}"
+
+  logSinkBody := logging.LogSink{
+    // TODO: Add desired fields of the `logSinkBody` variable.
+  }
+
+  res, err := service.Projects.Sinks.Create(projectName, &logSinkBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -451,11 +650,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -464,24 +667,40 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := logging.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
-  sinkName := "projects/{MY-PROJECT}/sinks/{MY-SINK}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Sinks.Delete(sinkName).Context(ctx).Do()
+  // Construct the logging service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := logging.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+  // * The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
+  sinkName := "projects/{MY-PROJECT}/sinks/{MY-SINK}"
+
+  res, err := service.Projects.Sinks.Delete(sinkName).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -493,11 +712,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -506,24 +729,40 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := logging.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
-  sinkName := "projects/{MY-PROJECT}/sinks/{MY-SINK}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Sinks.Get(sinkName).Context(ctx).Do()
+  // Construct the logging service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := logging.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+  // * The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
+  sinkName := "projects/{MY-PROJECT}/sinks/{MY-SINK}"
+
+  res, err := service.Projects.Sinks.Get(sinkName).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -535,11 +774,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -548,29 +791,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := logging.New(hc)
+
+  // Construct the logging service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := logging.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Required. The resource name of the project containing the sinks. Example:
-  // `"projects/my-logging-project"`, `"projects/01234567890"`.
-  projectName := "projects/{MY-PROJECT}" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
 
+  // * Required. The resource name of the project containing the sinks. Example:
+  //   `"projects/my-logging-project"`, `"projects/01234567890"`.
+  projectName := "projects/{MY-PROJECT}"
 
-  call := c.Projects.Sinks.List(projectName)
-  if err := call.Pages(ctx, func(page *logging.ListSinksResponse) error {
-    for _, v := range page.Sinks {
-      // TODO: Use v.
-      _ = v
+  req := service.Projects.Sinks.List(projectName)
+  if err := req.Pages(ctx, func(page *logging.ListSinksResponse) error {
+    for _, logSink := range page.Sinks {
+      // TODO: Change code below to process each `logSink` resource:
+      out, err := json.MarshalIndent(logSink, "", "  ")
+      if err != nil {
+        return err
+      }
+      fmt.Println(out)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -583,11 +840,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -596,26 +857,44 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := logging.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The
-  // updated sink must be provided in the request and have the same name that is specified in `sinkName`.
-  // If the sink does not exist, it is created.
-  sinkName := "projects/{MY-PROJECT}/sinks/{MY-SINK}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Sinks.Update(sinkName, &logging.LogSink{
-                                         // TODO: Fill required fields.
-                                       }).Context(ctx).Do()
+  // Construct the logging service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := logging.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
+  // * The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The
+  //   updated sink must be provided in the request and have the same name that is specified in
+  //   `sinkName`. If the sink does not exist, it is created.
+  sinkName := "projects/{MY-PROJECT}/sinks/{MY-SINK}"
+
+  logSinkBody := logging.LogSink{
+    // TODO: Add desired fields of the `logSinkBody` variable.
+  }
+
+  res, err := service.Projects.Sinks.Update(sinkName, &logSinkBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }

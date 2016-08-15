@@ -12,21 +12,26 @@
     // ---------------
     // 1. If not already done, enable the {@context.getService.getTitle}
     //    and check the quota for your project at
-    //    https://console.developers.google.com/apis/api/{@context.getApi.getName}
+    //    https://console.developers.google.com/apis/api/{@apiName}
     // 2. This sample uses Application Default Credentials for authentication.
     //    If not already done, install the gcloud CLI from
     //    https://cloud.google.com/sdk/ and run
-    //    'gcloud beta auth application-default login'
+    //    `gcloud beta auth application-default login`
     // 3. Install the Node.js client library and Application Default Credentials
-    //    library by running 'npm install googleapis --save'
+    //    library by running `npm install googleapis --save`
     var google = require('googleapis');
+
+    // Construct the {@apiName} service object (version {@apiVersion}) for interacting
+    // with the API. You can browse other available API services and versions at
+    // https://github.com/google/google-api-nodejs-client/tree/master/apis
     var {@apiName} = google.{@apiName}('{@apiVersion}');
 
-    google.auth.getApplicationDefault(function(err, authClient) {
-      if (err) {
-        console.log('Authentication failed because of ', err);
-        return;
-      }
+    // Authentication is provided by the `gcloud` tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+    // For more information, see
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    google.auth.getApplicationDefault(function({@errorName()}, authClient) {
+      {@handleError(errorName())}
       if (authClient.createScopedRequired && authClient.createScopedRequired()) {
         var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
         authClient = authClient.createScoped(scopes);
@@ -34,7 +39,6 @@
 
       var {@requestName()} = {
         {@initialize(method)}
-        // Auth client
         auth: authClient
       };
 
@@ -49,79 +53,157 @@
 
 @private initialize(method)
   @let methodName = context.getMethodName(method), \
-        apiaryConfig = context.getApiaryConfig, \
-        signatureType = apiaryConfig.getType(method.getRequestTypeUrl), \
+        signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
         params = context.getFlatMethodParams(method)
-    // {@TODO()} Change placeholders below to appropriate parameter values for the '{@methodName}' method:
+    @if params
+      // {@TODO()} Change placeholders below to desired parameter values for the `{@methodName}` method:
 
-    @join param : params
-      @let paramField = context.getField(signatureType, param), \
-           paramValue = context.typeDefaultValue(signatureType, paramField, method), \
-           paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
-        {@description(paramDescription)}
-        {@context.mapParamName(param)}: {@paramValue}
+      @join param : params
+        @let paramField = context.getField(signatureType, param), \
+             paramValue = context.typeDefaultValue(signatureType, paramField, method), \
+             paramDescription = context.getDescription(signatureType.getName, param)
+          {@description(paramDescription)}
+          {@context.mapParamName(param)}: {@paramValue}
 
+        @end
       @end
+
     @end
     @if context.hasRequestField(method)
-      resource: {},
+
+      resource: {
+        @if context.isPatch(method)
+          // {@TODO()} Add desired properties of the `resource` request body object to be changed.
+        @else
+          // {@TODO()} Add desired properties of the `resource` request body object.
+        @end
+      },
 
     @end
     @if context.hasMediaUpload(method)
-      media: {
-        // See https://github.com/google/google-api-nodejs-client#media-uploads
-        mimeType: 'text/plain',
-        body: 'Hello World!'
-      },
-    @end
-  @end
-@end
 
-@private elementPath(resourcePath)
-  @join r : resourcePath on "."
-    {@r}
+      media: {
+        // {@TODO()} Add desired media content for upload. See:
+        // https://github.com/google/google-api-nodejs-client#media-uploads
+        mimeType: 'text/plain',
+        body: ''
+      },
+
+    @end
   @end
 @end
 
 @private compactCall(method)
-  @let methodName = context.getMethodName(method), \
-       resourcesPath = context.getApiaryConfig.getResources(method.getName)
-    {@context.getApi.getName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, function(err, result) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(result);
-      }
+  @if context.isResponseEmpty(method)
+    {@request(method)}({@requestName()}, function({@errorName()}) {
+      {@handleError(errorName())}
+    });
+  @else
+    {@request(method)}({@requestName()}, function({@errorName()}, {@responseName()}) {
+      {@handleError(errorName())}
+
+      // {@TODO()} Change code below to process the `{@responseName()}` object:
+      {@print(responseName())}
     });
   @end
 @end
 
 @private iterableCall(method)
-  @let methodName = context.getMethodName(method), \
-       resourcesPath = context.getApiaryConfig.getResources(method.getName)
+  @let apiName = context.getApi.getName, \
+       methodName = context.getMethodName(method), \
+       resourcesPath = context.getApiaryConfig.getResources(method.getName), \
+       responseType = method.getResponseTypeUrl, \
+       responseTypeRef = context.getApiaryConfig.getType(responseType), \
+       resourceField = context.getFirstRepeatedField(responseTypeRef), \
+       resources = resourceField.getName, \
+       resourcesPage = pageName(resources)
+    var {@recurName()} = function({@errorName()}, {@responseName()}) {
+      {@handleError(errorName())}
 
-    var recur = function(err, result) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(result);
-        if (result.nextPageToken) {
-          {@requestName()}.pageToken = result.nextPageToken;
-          {@context.getApi.getName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, recur);
+      var {@resourcesPage} = {@responseName()}['{@resources}'];
+      @if context.isMapField(responseTypeRef, resourceField.getName)
+        @let keyName = context.keyTypeName(resourceField)
+          Object.keys({@resourcesPage}).forEach(function ({@keyName}) {
+            // {@TODO()} Change code below to process each `{@keyName}` property:
+            {@printEntry(resourcesPage, keyName)}
+          }
+        @end
+      @else
+        for (var {@indexName()} = 0; {@indexName()} < {@resourcesPage}.length; {@indexName()}++) {
+          // {@TODO()} Change code below to process each resource in `{@resourcesPage}`:
+          {@print(index(resourcesPage, indexName()))}
         }
+      @end
+
+      if ({@responseName()}.nextPageToken) {
+        {@requestName()}.pageToken = {@responseName()}.nextPageToken;
+        {@apiName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, {@recurName()});
       }
     };
 
-    {@context.getApi.getName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, recur);
+    {@apiName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, {@recurName()});
   @end
+@end
+
+@private request(method)
+  @let apiName = context.getApi.getName, \
+       methodName = context.getMethodName(method), \
+       resourcesPath = context.getApiaryConfig.getResources(method.getName)
+    {@apiName}.{@elementPath(resourcesPath)}.{@methodName}
+  @end
+@end
+
+@private handleError(err)
+  if ({@err}) {
+    console.log({@err});
+    return;
+  }
+@end
+
+@private errorName()
+  err
+@end
+
+@private recurName()
+  recur
+@end
+
+@private indexName()
+  i
 @end
 
 @private requestName()
   request
 @end
 
+@private responseName()
+  response
+@end
+
+@private pageName(resources)
+  {@resources}Page
+@end
+
+@private elementPath(elements)
+  @join element : elements on "."
+    {@element}
+  @end
+@end
+
 @private description(description)
-  @join line : context.lineWrapDoc(description, 100)
+  @join line : context.lineWrapDoc(description)
     // {@line}
   @end
+@end
+
+@private print(element)
+  console.log(JSON.stringify({@element}, null, 2));
+@end
+
+@private printEntry(page, key)
+  console.log({@key} + ': ' + JSON.stringify({@page}[{@key}], null, 2));
+@end
+
+@private index(page, i)
+  {@page}[{@i}]
 @end

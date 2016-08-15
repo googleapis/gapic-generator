@@ -7,7 +7,7 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -16,46 +16,58 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Acknowledge() method:
 
-            // The subscription whose message is being acknowledged.
+            // TODO: Change placeholders below to desired parameter values for the `Acknowledge` method:
+
+            // * The subscription whose message is being acknowledged.
             string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.AcknowledgeRequest content = new Data.AcknowledgeRequest();
 
-            ProjectsResource.SubscriptionsResource.AcknowledgeRequest request = pubsubService.Projects.Subscriptions.Acknowledge(content, subscription);
+            Data.AcknowledgeRequest requestBody = new Data.AcknowledgeRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.SubscriptionsResource.AcknowledgeRequest request = pubsubService.Projects.Subscriptions.Acknowledge(requestBody, subscription);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Empty response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Empty response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -67,7 +79,7 @@ namespace PubsubSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -76,50 +88,62 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Create() method:
 
-            // The name of the subscription. It must have the format
-            // `"projects/{project}/subscriptions/{subscription}"`. `{subscription}` must start with a letter, and
-            // contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`), underscores (`_`), periods
-            // (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be between 3 and 255 characters in
-            // length, and it must not start with `"goog"`.
+            // TODO: Change placeholders below to desired parameter values for the `Create` method:
+
+            // * The name of the subscription. It must have the format
+            //   `"projects/{project}/subscriptions/{subscription}"`. `{subscription}` must start with a letter,
+            //   and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`), underscores (`_`), periods
+            //   (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be between 3 and 255 characters in
+            //   length, and it must not start with `"goog"`.
             string name = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Subscription content = new Data.Subscription();
 
-            ProjectsResource.SubscriptionsResource.CreateRequest request = pubsubService.Projects.Subscriptions.Create(content, name);
+            Data.Subscription requestBody = new Data.Subscription();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.SubscriptionsResource.CreateRequest request = pubsubService.Projects.Subscriptions.Create(requestBody, name);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Subscription response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Subscription response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -131,7 +155,7 @@ namespace PubsubSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -140,43 +164,54 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Delete() method:
 
-            // The subscription to delete.
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+            // * The subscription to delete.
             string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
+
 
             ProjectsResource.SubscriptionsResource.DeleteRequest request = pubsubService.Projects.Subscriptions.Delete(subscription);
-            Data.Empty response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Empty response = request.Execute();
             // Data.Empty response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -188,7 +223,7 @@ namespace PubsubSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -197,43 +232,54 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
 
-            // The name of the subscription to get.
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // * The name of the subscription to get.
             string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
-            ProjectsResource.SubscriptionsResource.GetRequest request = pubsubService.Projects.Subscriptions.Get(subscription);
-            Data.Subscription response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            ProjectsResource.SubscriptionsResource.GetRequest request = pubsubService.Projects.Subscriptions.Get(subscription);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Subscription response = request.Execute();
             // Data.Subscription response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -245,7 +291,7 @@ namespace PubsubSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -254,46 +300,57 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the GetIamPolicy() method:
 
-            // REQUIRED: The resource for which policy is being requested. `resource` is usually specified as a
-            // path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in
-            // this value is resource specific and is specified in the documentation for the respective
-            // GetIamPolicy rpc.
+            // TODO: Change placeholders below to desired parameter values for the `GetIamPolicy` method:
+
+            // * REQUIRED: The resource for which policy is being requested. `resource` is usually specified as a
+            //   path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified
+            //   in this value is resource specific and is specified in the documentation for the respective
+            //   GetIamPolicy rpc.
             string resource = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
-            ProjectsResource.SubscriptionsResource.GetIamPolicyRequest request = pubsubService.Projects.Subscriptions.GetIamPolicy(resource);
-            Data.Policy response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            ProjectsResource.SubscriptionsResource.GetIamPolicyRequest request = pubsubService.Projects.Subscriptions.GetIamPolicy(resource);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Policy response = request.Execute();
             // Data.Policy response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -305,7 +362,7 @@ namespace PubsubSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -314,56 +371,66 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
-            // The name of the cloud project that subscriptions belong to.
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * The name of the cloud project that subscriptions belong to.
             string project = "projects/{MY-PROJECT}";
 
+
             ProjectsResource.SubscriptionsResource.ListRequest request = pubsubService.Projects.Subscriptions.List(project);
+
             Data.ListSubscriptionsResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Subscriptions == null)
                 {
                     continue;
                 }
-                foreach (Data.Subscription item in response.Subscriptions)
+                foreach (Data.Subscription subscription in response.Subscriptions)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `subscription` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(subscription));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.ListSubscriptionsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -375,7 +442,7 @@ namespace PubsubSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -384,46 +451,58 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the ModifyAckDeadline() method:
 
-            // The name of the subscription.
+            // TODO: Change placeholders below to desired parameter values for the `ModifyAckDeadline` method:
+
+            // * The name of the subscription.
             string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.ModifyAckDeadlineRequest content = new Data.ModifyAckDeadlineRequest();
 
-            ProjectsResource.SubscriptionsResource.ModifyAckDeadlineRequest request = pubsubService.Projects.Subscriptions.ModifyAckDeadline(content, subscription);
+            Data.ModifyAckDeadlineRequest requestBody = new Data.ModifyAckDeadlineRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.SubscriptionsResource.ModifyAckDeadlineRequest request = pubsubService.Projects.Subscriptions.ModifyAckDeadline(requestBody, subscription);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Empty response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Empty response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -435,7 +514,7 @@ namespace PubsubSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -444,46 +523,58 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the ModifyPushConfig() method:
 
-            // The name of the subscription.
+            // TODO: Change placeholders below to desired parameter values for the `ModifyPushConfig` method:
+
+            // * The name of the subscription.
             string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.ModifyPushConfigRequest content = new Data.ModifyPushConfigRequest();
 
-            ProjectsResource.SubscriptionsResource.ModifyPushConfigRequest request = pubsubService.Projects.Subscriptions.ModifyPushConfig(content, subscription);
+            Data.ModifyPushConfigRequest requestBody = new Data.ModifyPushConfigRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.SubscriptionsResource.ModifyPushConfigRequest request = pubsubService.Projects.Subscriptions.ModifyPushConfig(requestBody, subscription);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Empty response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Empty response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -495,7 +586,7 @@ namespace PubsubSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -504,46 +595,58 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Pull() method:
 
-            // The subscription from which messages should be pulled.
+            // TODO: Change placeholders below to desired parameter values for the `Pull` method:
+
+            // * The subscription from which messages should be pulled.
             string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.PullRequest content = new Data.PullRequest();
 
-            ProjectsResource.SubscriptionsResource.PullRequest request = pubsubService.Projects.Subscriptions.Pull(content, subscription);
+            Data.PullRequest requestBody = new Data.PullRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.SubscriptionsResource.PullRequest request = pubsubService.Projects.Subscriptions.Pull(requestBody, subscription);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.PullResponse response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.PullResponse response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -555,7 +658,7 @@ namespace PubsubSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -564,49 +667,61 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the SetIamPolicy() method:
 
-            // REQUIRED: The resource for which policy is being specified. `resource` is usually specified as a
-            // path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in
-            // this value is resource specific and is specified in the documentation for the respective
-            // SetIamPolicy rpc.
+            // TODO: Change placeholders below to desired parameter values for the `SetIamPolicy` method:
+
+            // * REQUIRED: The resource for which policy is being specified. `resource` is usually specified as a
+            //   path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified
+            //   in this value is resource specific and is specified in the documentation for the respective
+            //   SetIamPolicy rpc.
             string resource = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.SetIamPolicyRequest content = new Data.SetIamPolicyRequest();
 
-            ProjectsResource.SubscriptionsResource.SetIamPolicyRequest request = pubsubService.Projects.Subscriptions.SetIamPolicy(content, resource);
+            Data.SetIamPolicyRequest requestBody = new Data.SetIamPolicyRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.SubscriptionsResource.SetIamPolicyRequest request = pubsubService.Projects.Subscriptions.SetIamPolicy(requestBody, resource);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Policy response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Policy response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -618,7 +733,7 @@ namespace PubsubSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -627,49 +742,61 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the TestIamPermissions() method:
 
-            // REQUIRED: The resource for which policy detail is being requested. `resource` is usually specified
-            // as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path
-            // specified in this value is resource specific and is specified in the documentation for the
-            // respective TestIamPermissions rpc.
+            // TODO: Change placeholders below to desired parameter values for the `TestIamPermissions` method:
+
+            // * REQUIRED: The resource for which policy detail is being requested. `resource` is usually specified
+            //   as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path
+            //   specified in this value is resource specific and is specified in the documentation for the
+            //   respective TestIamPermissions rpc.
             string resource = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.TestIamPermissionsRequest content = new Data.TestIamPermissionsRequest();
 
-            ProjectsResource.SubscriptionsResource.TestIamPermissionsRequest request = pubsubService.Projects.Subscriptions.TestIamPermissions(content, resource);
+            Data.TestIamPermissionsRequest requestBody = new Data.TestIamPermissionsRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.SubscriptionsResource.TestIamPermissionsRequest request = pubsubService.Projects.Subscriptions.TestIamPermissions(requestBody, resource);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.TestIamPermissionsResponse response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.TestIamPermissionsResponse response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -681,7 +808,7 @@ namespace PubsubSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -690,49 +817,61 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Create() method:
 
-            // The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}` must
-            // start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`),
-            // underscores (`_`), periods (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be
-            // between 3 and 255 characters in length, and it must not start with `"goog"`.
+            // TODO: Change placeholders below to desired parameter values for the `Create` method:
+
+            // * The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}`
+            //   must start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`),
+            //   underscores (`_`), periods (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be
+            //   between 3 and 255 characters in length, and it must not start with `"goog"`.
             string name = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Topic content = new Data.Topic();
 
-            ProjectsResource.TopicsResource.CreateRequest request = pubsubService.Projects.Topics.Create(content, name);
+            Data.Topic requestBody = new Data.Topic();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.TopicsResource.CreateRequest request = pubsubService.Projects.Topics.Create(requestBody, name);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Topic response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Topic response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -744,7 +883,7 @@ namespace PubsubSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -753,43 +892,54 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Delete() method:
 
-            // Name of the topic to delete.
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+            // * Name of the topic to delete.
             string topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
+
 
             ProjectsResource.TopicsResource.DeleteRequest request = pubsubService.Projects.Topics.Delete(topic);
-            Data.Empty response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Empty response = request.Execute();
             // Data.Empty response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -801,7 +951,7 @@ namespace PubsubSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -810,43 +960,54 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
 
-            // The name of the topic to get.
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // * The name of the topic to get.
             string topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
 
-            ProjectsResource.TopicsResource.GetRequest request = pubsubService.Projects.Topics.Get(topic);
-            Data.Topic response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            ProjectsResource.TopicsResource.GetRequest request = pubsubService.Projects.Topics.Get(topic);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Topic response = request.Execute();
             // Data.Topic response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -858,7 +1019,7 @@ namespace PubsubSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -867,46 +1028,57 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the GetIamPolicy() method:
 
-            // REQUIRED: The resource for which policy is being requested. `resource` is usually specified as a
-            // path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in
-            // this value is resource specific and is specified in the documentation for the respective
-            // GetIamPolicy rpc.
+            // TODO: Change placeholders below to desired parameter values for the `GetIamPolicy` method:
+
+            // * REQUIRED: The resource for which policy is being requested. `resource` is usually specified as a
+            //   path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified
+            //   in this value is resource specific and is specified in the documentation for the respective
+            //   GetIamPolicy rpc.
             string resource = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
 
-            ProjectsResource.TopicsResource.GetIamPolicyRequest request = pubsubService.Projects.Topics.GetIamPolicy(resource);
-            Data.Policy response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            ProjectsResource.TopicsResource.GetIamPolicyRequest request = pubsubService.Projects.Topics.GetIamPolicy(resource);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Policy response = request.Execute();
             // Data.Policy response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -918,7 +1090,7 @@ namespace PubsubSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -927,56 +1099,66 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
-            // The name of the cloud project that topics belong to.
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * The name of the cloud project that topics belong to.
             string project = "projects/{MY-PROJECT}";
 
+
             ProjectsResource.TopicsResource.ListRequest request = pubsubService.Projects.Topics.List(project);
+
             Data.ListTopicsResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Topics == null)
                 {
                     continue;
                 }
-                foreach (Data.Topic item in response.Topics)
+                foreach (Data.Topic topic in response.Topics)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `topic` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(topic));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.ListTopicsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -988,7 +1170,7 @@ namespace PubsubSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -997,46 +1179,58 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Publish() method:
 
-            // The messages in the request will be published on this topic.
+            // TODO: Change placeholders below to desired parameter values for the `Publish` method:
+
+            // * The messages in the request will be published on this topic.
             string topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.PublishRequest content = new Data.PublishRequest();
 
-            ProjectsResource.TopicsResource.PublishRequest request = pubsubService.Projects.Topics.Publish(content, topic);
+            Data.PublishRequest requestBody = new Data.PublishRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.TopicsResource.PublishRequest request = pubsubService.Projects.Topics.Publish(requestBody, topic);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.PublishResponse response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.PublishResponse response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -1048,7 +1242,7 @@ namespace PubsubSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -1057,49 +1251,61 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the SetIamPolicy() method:
 
-            // REQUIRED: The resource for which policy is being specified. `resource` is usually specified as a
-            // path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in
-            // this value is resource specific and is specified in the documentation for the respective
-            // SetIamPolicy rpc.
+            // TODO: Change placeholders below to desired parameter values for the `SetIamPolicy` method:
+
+            // * REQUIRED: The resource for which policy is being specified. `resource` is usually specified as a
+            //   path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified
+            //   in this value is resource specific and is specified in the documentation for the respective
+            //   SetIamPolicy rpc.
             string resource = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.SetIamPolicyRequest content = new Data.SetIamPolicyRequest();
 
-            ProjectsResource.TopicsResource.SetIamPolicyRequest request = pubsubService.Projects.Topics.SetIamPolicy(content, resource);
+            Data.SetIamPolicyRequest requestBody = new Data.SetIamPolicyRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.TopicsResource.SetIamPolicyRequest request = pubsubService.Projects.Topics.SetIamPolicy(requestBody, resource);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Policy response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Policy response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -1111,7 +1317,7 @@ namespace PubsubSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -1120,56 +1326,66 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
-            // The name of the topic that subscriptions are attached to.
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * The name of the topic that subscriptions are attached to.
             string topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
 
+
             ProjectsResource.TopicsResource.SubscriptionsResource.ListRequest request = pubsubService.Projects.Topics.Subscriptions.List(topic);
+
             Data.ListTopicSubscriptionsResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Subscriptions == null)
                 {
                     continue;
                 }
-                foreach (string item in response.Subscriptions)
+                foreach (string string_ in response.Subscriptions)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `string_` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(string_));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.ListTopicSubscriptionsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -1181,7 +1397,7 @@ namespace PubsubSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -1190,49 +1406,61 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Pubsub.v1.Data;
 
+
 namespace PubsubSample
 {
-    public class Program
+    public class PubsubServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the pubsub service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the TestIamPermissions() method:
 
-            // REQUIRED: The resource for which policy detail is being requested. `resource` is usually specified
-            // as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path
-            // specified in this value is resource specific and is specified in the documentation for the
-            // respective TestIamPermissions rpc.
+            // TODO: Change placeholders below to desired parameter values for the `TestIamPermissions` method:
+
+            // * REQUIRED: The resource for which policy detail is being requested. `resource` is usually specified
+            //   as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path
+            //   specified in this value is resource specific and is specified in the documentation for the
+            //   respective TestIamPermissions rpc.
             string resource = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.TestIamPermissionsRequest content = new Data.TestIamPermissionsRequest();
 
-            ProjectsResource.TopicsResource.TestIamPermissionsRequest request = pubsubService.Projects.Topics.TestIamPermissions(content, resource);
+            Data.TestIamPermissionsRequest requestBody = new Data.TestIamPermissionsRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.TopicsResource.TestIamPermissionsRequest request = pubsubService.Projects.Topics.TestIamPermissions(requestBody, resource);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.TestIamPermissionsResponse response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.TestIamPermissionsResponse response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }

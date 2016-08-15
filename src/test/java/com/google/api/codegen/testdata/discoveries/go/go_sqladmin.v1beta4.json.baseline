@@ -9,11 +9,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -22,30 +26,46 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := sqladmin.New(hc)
+
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Delete` method:
 
-  // Cloud SQL instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
+  // * Project ID of the project that contains the instance.
+  project := ""
 
-  // The ID of the Backup Run to delete. To find a Backup Run ID, use the list method.
-  id := int64(0) // TODO: Update placeholder value.
+  // * Cloud SQL instance ID. This does not include the project ID.
+  instance := ""
 
-  resp, err := c.BackupRuns.Delete(project, instance, id).Context(ctx).Do()
+  // * The ID of the Backup Run to delete. To find a Backup Run ID, use the list method.
+  id := int64(0)
+
+  res, err := service.BackupRuns.Delete(project, instance, id).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -57,11 +77,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -70,30 +94,46 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := sqladmin.New(hc)
+
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
 
-  // Cloud SQL instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
+  // * Project ID of the project that contains the instance.
+  project := ""
 
-  // The ID of this Backup Run.
-  id := int64(0) // TODO: Update placeholder value.
+  // * Cloud SQL instance ID. This does not include the project ID.
+  instance := ""
 
-  resp, err := c.BackupRuns.Get(project, instance, id).Context(ctx).Do()
+  // * The ID of this Backup Run.
+  id := int64(0)
+
+  res, err := service.BackupRuns.Get(project, instance, id).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -105,11 +145,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -118,31 +162,45 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := sqladmin.New(hc)
+
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
 
-  // Cloud SQL instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
+  // * Project ID of the project that contains the instance.
+  project := ""
 
+  // * Cloud SQL instance ID. This does not include the project ID.
+  instance := ""
 
-  call := c.BackupRuns.List(project, instance)
-  if err := call.Pages(ctx, func(page *sqladmin.BackupRunsListResponse) error {
-    for _, v := range page.Items {
-      // TODO: Use v.
-      _ = v
+  req := service.BackupRuns.List(project, instance)
+  if err := req.Pages(ctx, func(page *sqladmin.BackupRunsListResponse) error {
+    for _, backupRun := range page.Items {
+      // TODO: Change code below to process each `backupRun` resource:
+      out, err := json.MarshalIndent(backupRun, "", "  ")
+      if err != nil {
+        return err
+      }
+      fmt.Println(out)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -155,11 +213,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -168,30 +230,46 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := sqladmin.New(hc)
+
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Delete` method:
 
-  // Database instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
+  // * Project ID of the project that contains the instance.
+  project := ""
 
-  // Name of the database to be deleted in the instance.
-  database := "" // TODO: Update placeholder value.
+  // * Database instance ID. This does not include the project ID.
+  instance := ""
 
-  resp, err := c.Databases.Delete(project, instance, database).Context(ctx).Do()
+  // * Name of the database to be deleted in the instance.
+  database := ""
+
+  res, err := service.Databases.Delete(project, instance, database).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -203,11 +281,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -216,30 +298,46 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := sqladmin.New(hc)
+
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
 
-  // Database instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
+  // * Project ID of the project that contains the instance.
+  project := ""
 
-  // Name of the database in the instance.
-  database := "" // TODO: Update placeholder value.
+  // * Database instance ID. This does not include the project ID.
+  instance := ""
 
-  resp, err := c.Databases.Get(project, instance, database).Context(ctx).Do()
+  // * Name of the database in the instance.
+  database := ""
+
+  res, err := service.Databases.Get(project, instance, database).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -251,11 +349,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -264,29 +366,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
-
-  // Database instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.Databases.Insert(project, instance, &sqladmin.Database{
-                                    // TODO: Fill required fields.
-                                  }).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+  // * Project ID of the project that contains the instance.
+  project := ""
+
+  // * Database instance ID. This does not include the project ID.
+  instance := ""
+
+  databaseBody := sqladmin.Database{
+    // TODO: Add desired fields of the `databaseBody` variable.
+  }
+
+  res, err := service.Databases.Insert(project, instance, &databaseBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -298,11 +418,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -311,27 +435,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project for which to list Cloud SQL instances.
-  project := "" // TODO: Update placeholder value.
-
-  // Cloud SQL instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.Databases.List(project, instance).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+  // * Project ID of the project for which to list Cloud SQL instances.
+  project := ""
+
+  // * Cloud SQL instance ID. This does not include the project ID.
+  instance := ""
+
+  res, err := service.Databases.List(project, instance).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -343,11 +483,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -356,32 +500,50 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := sqladmin.New(hc)
+
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Patch` method:
 
-  // Database instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
+  // * Project ID of the project that contains the instance.
+  project := ""
 
-  // Name of the database to be updated in the instance.
-  database := "" // TODO: Update placeholder value.
+  // * Database instance ID. This does not include the project ID.
+  instance := ""
 
-  resp, err := c.Databases.Patch(project, instance, database, &sqladmin.Database{
-                                   // TODO: Fill required fields.
-                                 }).Context(ctx).Do()
+  // * Name of the database to be updated in the instance.
+  database := ""
+
+  databaseBody := sqladmin.Database{
+    // TODO: Add desired fields of the `databaseBody` variable to be changed.
+  }
+
+  res, err := service.Databases.Patch(project, instance, database, &databaseBody).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -393,11 +555,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -406,32 +572,50 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := sqladmin.New(hc)
+
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Update` method:
 
-  // Database instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
+  // * Project ID of the project that contains the instance.
+  project := ""
 
-  // Name of the database to be updated in the instance.
-  database := "" // TODO: Update placeholder value.
+  // * Database instance ID. This does not include the project ID.
+  instance := ""
 
-  resp, err := c.Databases.Update(project, instance, database, &sqladmin.Database{
-                                    // TODO: Fill required fields.
-                                  }).Context(ctx).Do()
+  // * Name of the database to be updated in the instance.
+  database := ""
+
+  databaseBody := sqladmin.Database{
+    // TODO: Add desired fields of the `databaseBody` variable.
+  }
+
+  res, err := service.Databases.Update(project, instance, database, &databaseBody).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -443,11 +627,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -456,23 +644,36 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := sqladmin.New(hc)
+
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
 
-
-  resp, err := c.Flags.List().Context(ctx).Do()
+  res, err := service.Flags.List().Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -484,11 +685,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -497,29 +702,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the source as well as the clone Cloud SQL instance.
-  project := "" // TODO: Update placeholder value.
-
-  // The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.Instances.Clone(project, instance, &sqladmin.InstancesCloneRequest{
-                                   // TODO: Fill required fields.
-                                 }).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Clone` method:
+
+  // * Project ID of the source as well as the clone Cloud SQL instance.
+  project := ""
+
+  // * The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
+  instance := ""
+
+  instancesCloneRequestBody := sqladmin.InstancesCloneRequest{
+    // TODO: Add desired fields of the `instancesCloneRequestBody` variable.
+  }
+
+  res, err := service.Instances.Clone(project, instance, &instancesCloneRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -531,11 +754,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -544,27 +771,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance to be deleted.
-  project := "" // TODO: Update placeholder value.
-
-  // Cloud SQL instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.Instances.Delete(project, instance).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+  // * Project ID of the project that contains the instance to be deleted.
+  project := ""
+
+  // * Cloud SQL instance ID. This does not include the project ID.
+  instance := ""
+
+  res, err := service.Instances.Delete(project, instance).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -576,11 +819,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -589,29 +836,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance to be exported.
-  project := "" // TODO: Update placeholder value.
-
-  // Cloud SQL instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.Instances.Export(project, instance, &sqladmin.InstancesExportRequest{
-                                    // TODO: Fill required fields.
-                                  }).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Export` method:
+
+  // * Project ID of the project that contains the instance to be exported.
+  project := ""
+
+  // * Cloud SQL instance ID. This does not include the project ID.
+  instance := ""
+
+  instancesExportRequestBody := sqladmin.InstancesExportRequest{
+    // TODO: Add desired fields of the `instancesExportRequestBody` variable.
+  }
+
+  res, err := service.Instances.Export(project, instance, &instancesExportRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -623,11 +888,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -636,29 +905,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // ID of the project that contains the read replica.
-  project := "" // TODO: Update placeholder value.
-
-  // Cloud SQL instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.Instances.Failover(project, instance, &sqladmin.InstancesFailoverRequest{
-                                      // TODO: Fill required fields.
-                                    }).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Failover` method:
+
+  // * ID of the project that contains the read replica.
+  project := ""
+
+  // * Cloud SQL instance ID. This does not include the project ID.
+  instance := ""
+
+  instancesFailoverRequestBody := sqladmin.InstancesFailoverRequest{
+    // TODO: Add desired fields of the `instancesFailoverRequestBody` variable.
+  }
+
+  res, err := service.Instances.Failover(project, instance, &instancesFailoverRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -670,11 +957,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -683,27 +974,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
-
-  // Database instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.Instances.Get(project, instance).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+  // * Project ID of the project that contains the instance.
+  project := ""
+
+  // * Database instance ID. This does not include the project ID.
+  instance := ""
+
+  res, err := service.Instances.Get(project, instance).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -715,11 +1022,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -728,29 +1039,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
-
-  // Cloud SQL instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.Instances.Import(project, instance, &sqladmin.InstancesImportRequest{
-                                    // TODO: Fill required fields.
-                                  }).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Import` method:
+
+  // * Project ID of the project that contains the instance.
+  project := ""
+
+  // * Cloud SQL instance ID. This does not include the project ID.
+  instance := ""
+
+  instancesImportRequestBody := sqladmin.InstancesImportRequest{
+    // TODO: Add desired fields of the `instancesImportRequestBody` variable.
+  }
+
+  res, err := service.Instances.Import(project, instance, &instancesImportRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -762,11 +1091,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -775,26 +1108,44 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project to which the newly created Cloud SQL instances should belong.
-  project := "" // TODO: Update placeholder value.
-
-  resp, err := c.Instances.Insert(project, &sqladmin.DatabaseInstance{
-                                    // TODO: Fill required fields.
-                                  }).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+  // * Project ID of the project to which the newly created Cloud SQL instances should belong.
+  project := ""
+
+  databaseInstanceBody := sqladmin.DatabaseInstance{
+    // TODO: Add desired fields of the `databaseInstanceBody` variable.
+  }
+
+  res, err := service.Instances.Insert(project, &databaseInstanceBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -806,11 +1157,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -819,28 +1174,42 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := sqladmin.New(hc)
+
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project for which to list Cloud SQL instances.
-  project := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
 
+  // * Project ID of the project for which to list Cloud SQL instances.
+  project := ""
 
-  call := c.Instances.List(project)
-  if err := call.Pages(ctx, func(page *sqladmin.InstancesListResponse) error {
-    for _, v := range page.Items {
-      // TODO: Use v.
-      _ = v
+  req := service.Instances.List(project)
+  if err := req.Pages(ctx, func(page *sqladmin.InstancesListResponse) error {
+    for _, databaseInstance := range page.Items {
+      // TODO: Change code below to process each `databaseInstance` resource:
+      out, err := json.MarshalIndent(databaseInstance, "", "  ")
+      if err != nil {
+        return err
+      }
+      fmt.Println(out)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -853,11 +1222,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -866,29 +1239,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
-
-  // Cloud SQL instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.Instances.Patch(project, instance, &sqladmin.DatabaseInstance{
-                                   // TODO: Fill required fields.
-                                 }).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
+  // * Project ID of the project that contains the instance.
+  project := ""
+
+  // * Cloud SQL instance ID. This does not include the project ID.
+  instance := ""
+
+  databaseInstanceBody := sqladmin.DatabaseInstance{
+    // TODO: Add desired fields of the `databaseInstanceBody` variable to be changed.
+  }
+
+  res, err := service.Instances.Patch(project, instance, &databaseInstanceBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -900,11 +1291,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -913,27 +1308,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // ID of the project that contains the read replica.
-  project := "" // TODO: Update placeholder value.
-
-  // Cloud SQL read replica instance name.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.Instances.PromoteReplica(project, instance).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `PromoteReplica` method:
+
+  // * ID of the project that contains the read replica.
+  project := ""
+
+  // * Cloud SQL read replica instance name.
+  instance := ""
+
+  res, err := service.Instances.PromoteReplica(project, instance).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -945,11 +1356,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -958,27 +1373,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
-
-  // Cloud SQL instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.Instances.ResetSslConfig(project, instance).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `ResetSslConfig` method:
+
+  // * Project ID of the project that contains the instance.
+  project := ""
+
+  // * Cloud SQL instance ID. This does not include the project ID.
+  instance := ""
+
+  res, err := service.Instances.ResetSslConfig(project, instance).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -990,11 +1421,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1003,27 +1438,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance to be restarted.
-  project := "" // TODO: Update placeholder value.
-
-  // Cloud SQL instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.Instances.Restart(project, instance).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Restart` method:
+
+  // * Project ID of the project that contains the instance to be restarted.
+  project := ""
+
+  // * Cloud SQL instance ID. This does not include the project ID.
+  instance := ""
+
+  res, err := service.Instances.Restart(project, instance).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -1035,11 +1486,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1048,29 +1503,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
-
-  // Cloud SQL instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.Instances.RestoreBackup(project, instance, &sqladmin.InstancesRestoreBackupRequest{
-                                           // TODO: Fill required fields.
-                                         }).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `RestoreBackup` method:
+
+  // * Project ID of the project that contains the instance.
+  project := ""
+
+  // * Cloud SQL instance ID. This does not include the project ID.
+  instance := ""
+
+  instancesRestoreBackupRequestBody := sqladmin.InstancesRestoreBackupRequest{
+    // TODO: Add desired fields of the `instancesRestoreBackupRequestBody` variable.
+  }
+
+  res, err := service.Instances.RestoreBackup(project, instance, &instancesRestoreBackupRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -1082,11 +1555,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1095,27 +1572,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // ID of the project that contains the read replica.
-  project := "" // TODO: Update placeholder value.
-
-  // Cloud SQL read replica instance name.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.Instances.StartReplica(project, instance).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `StartReplica` method:
+
+  // * ID of the project that contains the read replica.
+  project := ""
+
+  // * Cloud SQL read replica instance name.
+  instance := ""
+
+  res, err := service.Instances.StartReplica(project, instance).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -1127,11 +1620,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1140,27 +1637,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // ID of the project that contains the read replica.
-  project := "" // TODO: Update placeholder value.
-
-  // Cloud SQL read replica instance name.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.Instances.StopReplica(project, instance).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `StopReplica` method:
+
+  // * ID of the project that contains the read replica.
+  project := ""
+
+  // * Cloud SQL read replica instance name.
+  instance := ""
+
+  res, err := service.Instances.StopReplica(project, instance).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -1172,11 +1685,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1185,29 +1702,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
-
-  // Cloud SQL instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.Instances.Update(project, instance, &sqladmin.DatabaseInstance{
-                                    // TODO: Fill required fields.
-                                  }).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
+  // * Project ID of the project that contains the instance.
+  project := ""
+
+  // * Cloud SQL instance ID. This does not include the project ID.
+  instance := ""
+
+  databaseInstanceBody := sqladmin.DatabaseInstance{
+    // TODO: Add desired fields of the `databaseInstanceBody` variable.
+  }
+
+  res, err := service.Instances.Update(project, instance, &databaseInstanceBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -1219,11 +1754,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1232,27 +1771,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
-
-  // Instance operation ID.
-  operation := "" // TODO: Update placeholder value.
-
-  resp, err := c.Operations.Get(project, operation).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+  // * Project ID of the project that contains the instance.
+  project := ""
+
+  // * Instance operation ID.
+  operation := ""
+
+  res, err := service.Operations.Get(project, operation).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -1264,11 +1819,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1277,31 +1836,45 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := sqladmin.New(hc)
+
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
 
-  // Cloud SQL instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
+  // * Project ID of the project that contains the instance.
+  project := ""
 
+  // * Cloud SQL instance ID. This does not include the project ID.
+  instance := ""
 
-  call := c.Operations.List(project, instance)
-  if err := call.Pages(ctx, func(page *sqladmin.OperationsListResponse) error {
-    for _, v := range page.Items {
-      // TODO: Use v.
-      _ = v
+  req := service.Operations.List(project, instance)
+  if err := req.Pages(ctx, func(page *sqladmin.OperationsListResponse) error {
+    for _, operation := range page.Items {
+      // TODO: Change code below to process each `operation` resource:
+      out, err := json.MarshalIndent(operation, "", "  ")
+      if err != nil {
+        return err
+      }
+      fmt.Println(out)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -1314,11 +1887,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1327,29 +1904,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the Cloud SQL project.
-  project := "" // TODO: Update placeholder value.
-
-  // Cloud SQL instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.SslCerts.CreateEphemeral(project, instance, &sqladmin.SslCertsCreateEphemeralRequest{
-                                            // TODO: Fill required fields.
-                                          }).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `CreateEphemeral` method:
+
+  // * Project ID of the Cloud SQL project.
+  project := ""
+
+  // * Cloud SQL instance ID. This does not include the project ID.
+  instance := ""
+
+  sslCertsCreateEphemeralRequestBody := sqladmin.SslCertsCreateEphemeralRequest{
+    // TODO: Add desired fields of the `sslCertsCreateEphemeralRequestBody` variable.
+  }
+
+  res, err := service.SslCerts.CreateEphemeral(project, instance, &sslCertsCreateEphemeralRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -1361,11 +1956,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1374,30 +1973,46 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := sqladmin.New(hc)
+
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance to be deleted.
-  project := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Delete` method:
 
-  // Cloud SQL instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
+  // * Project ID of the project that contains the instance to be deleted.
+  project := ""
 
-  // Sha1 FingerPrint.
-  sha1Fingerprint := "" // TODO: Update placeholder value.
+  // * Cloud SQL instance ID. This does not include the project ID.
+  instance := ""
 
-  resp, err := c.SslCerts.Delete(project, instance, sha1Fingerprint).Context(ctx).Do()
+  // * Sha1 FingerPrint.
+  sha1Fingerprint := ""
+
+  res, err := service.SslCerts.Delete(project, instance, sha1Fingerprint).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -1409,11 +2024,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1422,30 +2041,46 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := sqladmin.New(hc)
+
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
 
-  // Cloud SQL instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
+  // * Project ID of the project that contains the instance.
+  project := ""
 
-  // Sha1 FingerPrint.
-  sha1Fingerprint := "" // TODO: Update placeholder value.
+  // * Cloud SQL instance ID. This does not include the project ID.
+  instance := ""
 
-  resp, err := c.SslCerts.Get(project, instance, sha1Fingerprint).Context(ctx).Do()
+  // * Sha1 FingerPrint.
+  sha1Fingerprint := ""
+
+  res, err := service.SslCerts.Get(project, instance, sha1Fingerprint).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -1457,11 +2092,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1470,29 +2109,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project to which the newly created Cloud SQL instances should belong.
-  project := "" // TODO: Update placeholder value.
-
-  // Cloud SQL instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.SslCerts.Insert(project, instance, &sqladmin.SslCertsInsertRequest{
-                                   // TODO: Fill required fields.
-                                 }).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+  // * Project ID of the project to which the newly created Cloud SQL instances should belong.
+  project := ""
+
+  // * Cloud SQL instance ID. This does not include the project ID.
+  instance := ""
+
+  sslCertsInsertRequestBody := sqladmin.SslCertsInsertRequest{
+    // TODO: Add desired fields of the `sslCertsInsertRequestBody` variable.
+  }
+
+  res, err := service.SslCerts.Insert(project, instance, &sslCertsInsertRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -1504,11 +2161,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1517,27 +2178,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project for which to list Cloud SQL instances.
-  project := "" // TODO: Update placeholder value.
-
-  // Cloud SQL instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.SslCerts.List(project, instance).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+  // * Project ID of the project for which to list Cloud SQL instances.
+  project := ""
+
+  // * Cloud SQL instance ID. This does not include the project ID.
+  instance := ""
+
+  res, err := service.SslCerts.List(project, instance).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -1549,11 +2226,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1562,24 +2243,40 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project for which to list tiers.
-  project := "" // TODO: Update placeholder value.
-
-  resp, err := c.Tiers.List(project).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+  // * Project ID of the project for which to list tiers.
+  project := ""
+
+  res, err := service.Tiers.List(project).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -1591,11 +2288,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1604,33 +2305,49 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := sqladmin.New(hc)
+
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Delete` method:
 
-  // Database instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
+  // * Project ID of the project that contains the instance.
+  project := ""
 
-  // Host of the user in the instance.
-  host := "" // TODO: Update placeholder value.
+  // * Database instance ID. This does not include the project ID.
+  instance := ""
 
-  // Name of the user in the instance.
-  name := "" // TODO: Update placeholder value.
+  // * Host of the user in the instance.
+  host := ""
 
-  resp, err := c.Users.Delete(project, instance, host, name).Context(ctx).Do()
+  // * Name of the user in the instance.
+  name := ""
+
+  res, err := service.Users.Delete(project, instance, host, name).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -1642,11 +2359,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1655,29 +2376,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
-
-  // Database instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.Users.Insert(project, instance, &sqladmin.User{
-                                // TODO: Fill required fields.
-                              }).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+  // * Project ID of the project that contains the instance.
+  project := ""
+
+  // * Database instance ID. This does not include the project ID.
+  instance := ""
+
+  userBody := sqladmin.User{
+    // TODO: Add desired fields of the `userBody` variable.
+  }
+
+  res, err := service.Users.Insert(project, instance, &userBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -1689,11 +2428,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1702,27 +2445,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := sqladmin.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
-
-  // Database instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
-
-  resp, err := c.Users.List(project, instance).Context(ctx).Do()
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+  // * Project ID of the project that contains the instance.
+  project := ""
+
+  // * Database instance ID. This does not include the project ID.
+  instance := ""
+
+  res, err := service.Users.List(project, instance).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -1734,11 +2493,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1747,33 +2510,51 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := sqladmin.New(hc)
+
+  // Construct the sqladmin service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := sqladmin.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Update` method:
 
-  // Database instance ID. This does not include the project ID.
-  instance := "" // TODO: Update placeholder value.
+  // * Project ID of the project that contains the instance.
+  project := ""
 
-  // Host of the user in the instance.
-  host := "" // TODO: Update placeholder value.
+  // * Database instance ID. This does not include the project ID.
+  instance := ""
 
-  // Name of the user in the instance.
-  name := "" // TODO: Update placeholder value.
+  // * Host of the user in the instance.
+  host := ""
 
-  resp, err := c.Users.Update(project, instance, host, name, &sqladmin.User{
-                                // TODO: Fill required fields.
-                              }).Context(ctx).Do()
+  // * Name of the user in the instance.
+  name := ""
+
+  userBody := sqladmin.User{
+    // TODO: Add desired fields of the `userBody` variable.
+  }
+
+  res, err := service.Users.Update(project, instance, host, name, &userBody).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }

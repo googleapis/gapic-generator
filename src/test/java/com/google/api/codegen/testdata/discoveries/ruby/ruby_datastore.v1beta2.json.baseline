@@ -7,27 +7,42 @@
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/datastore_v1beta2'
+require 'json'
 
+# Construct the datastore service object (version v1beta2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DatastoreV1beta2::DatastoreService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'allocate_dataset_ids' method:
+
+# TODO: Change placeholders below to desired parameter values for the `allocate_dataset_ids` method:
 
 # * Identifies the dataset.
 dataset_id = ''
 
-allocate_ids_request_object = Google::Apis::DatastoreV1beta2::AllocateIdsRequest.new
+
+allocate_ids_request_body = Google::Apis::DatastoreV1beta2::AllocateIdsRequest.new
+# TODO: Assign values to desired members of the `allocate_ids_request_body` object.
 
 
 # Perform the call
-response = service.allocate_dataset_ids(dataset_id, allocate_ids_request_object)
+response = service.allocate_dataset_ids(dataset_id, allocate_ids_request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Datastore API
@@ -36,27 +51,42 @@ response = service.allocate_dataset_ids(dataset_id, allocate_ids_request_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/datastore_v1beta2'
+require 'json'
 
+# Construct the datastore service object (version v1beta2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DatastoreV1beta2::DatastoreService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'begin_dataset_transaction' method:
+
+# TODO: Change placeholders below to desired parameter values for the `begin_dataset_transaction` method:
 
 # * Identifies the dataset.
 dataset_id = ''
 
-begin_transaction_request_object = Google::Apis::DatastoreV1beta2::BeginTransactionRequest.new
+
+begin_transaction_request_body = Google::Apis::DatastoreV1beta2::BeginTransactionRequest.new
+# TODO: Assign values to desired members of the `begin_transaction_request_body` object.
 
 
 # Perform the call
-response = service.begin_dataset_transaction(dataset_id, begin_transaction_request_object)
+response = service.begin_dataset_transaction(dataset_id, begin_transaction_request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Datastore API
@@ -65,27 +95,42 @@ response = service.begin_dataset_transaction(dataset_id, begin_transaction_reque
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/datastore_v1beta2'
+require 'json'
 
+# Construct the datastore service object (version v1beta2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DatastoreV1beta2::DatastoreService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'commit_dataset' method:
+
+# TODO: Change placeholders below to desired parameter values for the `commit_dataset` method:
 
 # * Identifies the dataset.
 dataset_id = ''
 
-commit_request_object = Google::Apis::DatastoreV1beta2::CommitRequest.new
+
+commit_request_body = Google::Apis::DatastoreV1beta2::CommitRequest.new
+# TODO: Assign values to desired members of the `commit_request_body` object.
 
 
 # Perform the call
-response = service.commit_dataset(dataset_id, commit_request_object)
+response = service.commit_dataset(dataset_id, commit_request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Datastore API
@@ -94,27 +139,42 @@ response = service.commit_dataset(dataset_id, commit_request_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/datastore_v1beta2'
+require 'json'
 
+# Construct the datastore service object (version v1beta2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DatastoreV1beta2::DatastoreService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'lookup_dataset' method:
+
+# TODO: Change placeholders below to desired parameter values for the `lookup_dataset` method:
 
 # * Identifies the dataset.
 dataset_id = ''
 
-lookup_request_object = Google::Apis::DatastoreV1beta2::LookupRequest.new
+
+lookup_request_body = Google::Apis::DatastoreV1beta2::LookupRequest.new
+# TODO: Assign values to desired members of the `lookup_request_body` object.
 
 
 # Perform the call
-response = service.lookup_dataset(dataset_id, lookup_request_object)
+response = service.lookup_dataset(dataset_id, lookup_request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Datastore API
@@ -123,27 +183,42 @@ response = service.lookup_dataset(dataset_id, lookup_request_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/datastore_v1beta2'
+require 'json'
 
+# Construct the datastore service object (version v1beta2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DatastoreV1beta2::DatastoreService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'rollback_dataset' method:
+
+# TODO: Change placeholders below to desired parameter values for the `rollback_dataset` method:
 
 # * Identifies the dataset.
 dataset_id = ''
 
-rollback_request_object = Google::Apis::DatastoreV1beta2::RollbackRequest.new
+
+rollback_request_body = Google::Apis::DatastoreV1beta2::RollbackRequest.new
+# TODO: Assign values to desired members of the `rollback_request_body` object.
 
 
 # Perform the call
-response = service.rollback_dataset(dataset_id, rollback_request_object)
+response = service.rollback_dataset(dataset_id, rollback_request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Datastore API
@@ -152,24 +227,39 @@ response = service.rollback_dataset(dataset_id, rollback_request_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/datastore_v1beta2'
+require 'json'
 
+# Construct the datastore service object (version v1beta2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DatastoreV1beta2::DatastoreService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'run_dataset_query' method:
+
+# TODO: Change placeholders below to desired parameter values for the `run_dataset_query` method:
 
 # * Identifies the dataset.
 dataset_id = ''
 
-run_query_request_object = Google::Apis::DatastoreV1beta2::RunQueryRequest.new
+
+run_query_request_body = Google::Apis::DatastoreV1beta2::RunQueryRequest.new
+# TODO: Assign values to desired members of the `run_query_request_body` object.
 
 
 # Perform the call
-response = service.run_dataset_query(dataset_id, run_query_request_object)
+response = service.run_dataset_query(dataset_id, run_query_request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)

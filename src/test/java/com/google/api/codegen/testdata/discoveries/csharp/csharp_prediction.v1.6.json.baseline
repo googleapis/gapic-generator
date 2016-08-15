@@ -7,7 +7,7 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -16,49 +16,61 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Prediction.v1_6;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Prediction.v1_6.Data;
 
+
 namespace PredictionSample
 {
-    public class Program
+    public class PredictionServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the prediction service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PredictionService predictionService = new PredictionService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Predict() method:
 
-            // The project associated with the model.
+            // TODO: Change placeholders below to desired parameter values for the `Predict` method:
+
+            // * The project associated with the model.
             string project = "";
 
-            // The name of a hosted model.
+            // * The name of a hosted model.
             string hostedModelName = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Input content = new Data.Input();
 
-            HostedmodelsResource.PredictRequest request = predictionService.Hostedmodels.Predict(content, project, hostedModelName);
+            Data.Input requestBody = new Data.Input();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            HostedmodelsResource.PredictRequest request = predictionService.Hostedmodels.Predict(requestBody, project, hostedModelName);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Output response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Output response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -70,7 +82,7 @@ namespace PredictionSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -79,46 +91,57 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Prediction.v1_6;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Prediction.v1_6.Data;
 
+
 namespace PredictionSample
 {
-    public class Program
+    public class PredictionServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the prediction service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PredictionService predictionService = new PredictionService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Analyze() method:
 
-            // The project associated with the model.
+            // TODO: Change placeholders below to desired parameter values for the `Analyze` method:
+
+            // * The project associated with the model.
             string project = "";
 
-            // The unique name for the predictive model.
+            // * The unique name for the predictive model.
             string id = "";
 
-            TrainedmodelsResource.AnalyzeRequest request = predictionService.Trainedmodels.Analyze(project, id);
-            Data.Analyze response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            TrainedmodelsResource.AnalyzeRequest request = predictionService.Trainedmodels.Analyze(project, id);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Analyze response = request.Execute();
             // Data.Analyze response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -130,7 +153,7 @@ namespace PredictionSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -140,42 +163,49 @@ using Google.Apis.Prediction.v1_6;
 using Google.Apis.Services;
 using System.Threading.Tasks;
 
+
 namespace PredictionSample
 {
-    public class Program
+    public class PredictionServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the prediction service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PredictionService predictionService = new PredictionService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Delete() method:
 
-            // The project associated with the model.
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+            // * The project associated with the model.
             string project = "";
 
-            // The unique name for the predictive model.
+            // * The unique name for the predictive model.
             string id = "";
 
-            TrainedmodelsResource.DeleteRequest request = predictionService.Trainedmodels.Delete(project, id);
-            request.Execute();
 
-            // To execute asynchronously in an async method, use
+            TrainedmodelsResource.DeleteRequest request = predictionService.Trainedmodels.Delete(project, id);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            request.Execute();
             // await request.ExecuteAsync();
         }
     }
@@ -188,7 +218,7 @@ namespace PredictionSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -197,46 +227,57 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Prediction.v1_6;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Prediction.v1_6.Data;
 
+
 namespace PredictionSample
 {
-    public class Program
+    public class PredictionServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the prediction service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PredictionService predictionService = new PredictionService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
 
-            // The project associated with the model.
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // * The project associated with the model.
             string project = "";
 
-            // The unique name for the predictive model.
+            // * The unique name for the predictive model.
             string id = "";
 
+
             TrainedmodelsResource.GetRequest request = predictionService.Trainedmodels.Get(project, id);
-            Data.Insert2 response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Insert2 response = request.Execute();
             // Data.Insert2 response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -248,7 +289,7 @@ namespace PredictionSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -257,46 +298,58 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Prediction.v1_6;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Prediction.v1_6.Data;
 
+
 namespace PredictionSample
 {
-    public class Program
+    public class PredictionServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the prediction service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PredictionService predictionService = new PredictionService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Insert() method:
 
-            // The project associated with the model.
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+            // * The project associated with the model.
             string project = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Insert content = new Data.Insert();
 
-            TrainedmodelsResource.InsertRequest request = predictionService.Trainedmodels.Insert(content, project);
+            Data.Insert requestBody = new Data.Insert();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            TrainedmodelsResource.InsertRequest request = predictionService.Trainedmodels.Insert(requestBody, project);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Insert2 response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Insert2 response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -308,7 +361,7 @@ namespace PredictionSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -317,56 +370,66 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Prediction.v1_6;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Prediction.v1_6.Data;
 
+
 namespace PredictionSample
 {
-    public class Program
+    public class PredictionServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the prediction service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PredictionService predictionService = new PredictionService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
-            // The project associated with the model.
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * The project associated with the model.
             string project = "";
+
 
             TrainedmodelsResource.ListRequest request = predictionService.Trainedmodels.List(project);
+
             Data.List response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Items == null)
                 {
                     continue;
                 }
-                foreach (Data.Insert2 item in response.Items)
+                foreach (Data.Insert2 insert2 in response.Items)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `insert2` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(insert2));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.List response = await request.ExecuteAsync();
         }
     }
 }
@@ -378,7 +441,7 @@ namespace PredictionSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -387,49 +450,61 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Prediction.v1_6;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Prediction.v1_6.Data;
 
+
 namespace PredictionSample
 {
-    public class Program
+    public class PredictionServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the prediction service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PredictionService predictionService = new PredictionService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Predict() method:
 
-            // The project associated with the model.
+            // TODO: Change placeholders below to desired parameter values for the `Predict` method:
+
+            // * The project associated with the model.
             string project = "";
 
-            // The unique name for the predictive model.
+            // * The unique name for the predictive model.
             string id = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Input content = new Data.Input();
 
-            TrainedmodelsResource.PredictRequest request = predictionService.Trainedmodels.Predict(content, project, id);
+            Data.Input requestBody = new Data.Input();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            TrainedmodelsResource.PredictRequest request = predictionService.Trainedmodels.Predict(requestBody, project, id);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Output response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Output response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -441,7 +516,7 @@ namespace PredictionSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -450,49 +525,61 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Prediction.v1_6;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Prediction.v1_6.Data;
 
+
 namespace PredictionSample
 {
-    public class Program
+    public class PredictionServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the prediction service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             PredictionService predictionService = new PredictionService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Update() method:
 
-            // The project associated with the model.
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
+            // * The project associated with the model.
             string project = "";
 
-            // The unique name for the predictive model.
+            // * The unique name for the predictive model.
             string id = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Update content = new Data.Update();
 
-            TrainedmodelsResource.UpdateRequest request = predictionService.Trainedmodels.Update(content, project, id);
+            Data.Update requestBody = new Data.Update();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            TrainedmodelsResource.UpdateRequest request = predictionService.Trainedmodels.Update(requestBody, project, id);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Insert2 response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Insert2 response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }

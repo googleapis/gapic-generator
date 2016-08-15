@@ -9,7 +9,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -17,14 +17,20 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -35,8 +41,11 @@ $instance = '';
 // * The ID of the Backup Run to delete. To find a Backup Run ID, use the list method.
 $id = '0';
 
+
 $response = $service->backupRuns->delete($project, $instance, $id);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -47,7 +56,7 @@ $response = $service->backupRuns->delete($project, $instance, $id);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -55,14 +64,20 @@ $response = $service->backupRuns->delete($project, $instance, $id);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -73,8 +88,11 @@ $instance = '';
 // * The ID of this Backup Run.
 $id = '0';
 
+
 $response = $service->backupRuns->get($project, $instance, $id);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -85,7 +103,7 @@ $response = $service->backupRuns->get($project, $instance, $id);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -93,14 +111,20 @@ $response = $service->backupRuns->get($project, $instance, $id);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listBackupRuns` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -108,12 +132,18 @@ $project = '';
 // * Cloud SQL instance ID. This does not include the project ID.
 $instance = '';
 
-$response = $service->backupRuns->listBackupRuns($project, $instance);
 
-foreach ($response['items'] as $element) {
-  // TODO: Add code here to process the element.
-}
+$optParams = array();
+do {
+  $response = $service->backupRuns->listBackupRuns($project, $instance, $optParams);
 
+  foreach ($response['items'] as $backup_run) {
+    // TODO: Change code below to process each `backup_run` resource:
+    echo '<pre>', var_export($backup_run, true), '</pre>', "\n";
+  }
+
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -124,7 +154,7 @@ foreach ($response['items'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -132,14 +162,20 @@ foreach ($response['items'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -150,8 +186,11 @@ $instance = '';
 // * Name of the database to be deleted in the instance.
 $database = '';
 
+
 $response = $service->databases->delete($project, $instance, $database);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -162,7 +201,7 @@ $response = $service->databases->delete($project, $instance, $database);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -170,14 +209,20 @@ $response = $service->databases->delete($project, $instance, $database);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -188,8 +233,11 @@ $instance = '';
 // * Name of the database in the instance.
 $database = '';
 
+
 $response = $service->databases->get($project, $instance, $database);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -200,7 +248,7 @@ $response = $service->databases->get($project, $instance, $database);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -208,14 +256,20 @@ $response = $service->databases->get($project, $instance, $database);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -223,10 +277,15 @@ $project = '';
 // * Database instance ID. This does not include the project ID.
 $instance = '';
 
-$postBody = new Google_Service_SQLAdmin_Database($client);
 
-$response = $service->databases->insert($project, $instance, $postBody);
+$Google_Service_SQLAdmin_DatabaseBody = new Google_Service_SQLAdmin_Database($client);
+// TODO: Assign values to desired properties of the `$Google_Service_SQLAdmin_DatabaseBody` object.
 
+
+$response = $service->databases->insert($project, $instance, $Google_Service_SQLAdmin_DatabaseBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -237,7 +296,7 @@ $response = $service->databases->insert($project, $instance, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -245,14 +304,20 @@ $response = $service->databases->insert($project, $instance, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listDatabases` method:
 
 // * Project ID of the project for which to list Cloud SQL instances.
 $project = '';
@@ -260,8 +325,11 @@ $project = '';
 // * Cloud SQL instance ID. This does not include the project ID.
 $instance = '';
 
+
 $response = $service->databases->listDatabases($project, $instance);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -272,7 +340,7 @@ $response = $service->databases->listDatabases($project, $instance);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -280,14 +348,20 @@ $response = $service->databases->listDatabases($project, $instance);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -298,10 +372,15 @@ $instance = '';
 // * Name of the database to be updated in the instance.
 $database = '';
 
-$postBody = new Google_Service_SQLAdmin_Database($client);
 
-$response = $service->databases->patch($project, $instance, $database, $postBody);
+$Google_Service_SQLAdmin_DatabaseBody = new Google_Service_SQLAdmin_Database($client);
+// TODO: Assign values to desired properties of the `$Google_Service_SQLAdmin_DatabaseBody` object to be changed.
 
+
+$response = $service->databases->patch($project, $instance, $database, $Google_Service_SQLAdmin_DatabaseBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -312,7 +391,7 @@ $response = $service->databases->patch($project, $instance, $database, $postBody
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -320,14 +399,20 @@ $response = $service->databases->patch($project, $instance, $database, $postBody
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -338,10 +423,15 @@ $instance = '';
 // * Name of the database to be updated in the instance.
 $database = '';
 
-$postBody = new Google_Service_SQLAdmin_Database($client);
 
-$response = $service->databases->update($project, $instance, $database, $postBody);
+$Google_Service_SQLAdmin_DatabaseBody = new Google_Service_SQLAdmin_Database($client);
+// TODO: Assign values to desired properties of the `$Google_Service_SQLAdmin_DatabaseBody` object.
 
+
+$response = $service->databases->update($project, $instance, $database, $Google_Service_SQLAdmin_DatabaseBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -352,7 +442,7 @@ $response = $service->databases->update($project, $instance, $database, $postBod
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -360,18 +450,23 @@ $response = $service->databases->update($project, $instance, $database, $postBod
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
 
 
 $response = $service->flags->listFlags();
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -382,7 +477,7 @@ $response = $service->flags->listFlags();
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -390,14 +485,20 @@ $response = $service->flags->listFlags();
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `cloneInstances` method:
 
 // * Project ID of the source as well as the clone Cloud SQL instance.
 $project = '';
@@ -405,10 +506,15 @@ $project = '';
 // * The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
 $instance = '';
 
-$postBody = new Google_Service_SQLAdmin_InstancesCloneRequest($client);
 
-$response = $service->instances->cloneInstances($project, $instance, $postBody);
+$Google_Service_SQLAdmin_InstancesCloneRequestBody = new Google_Service_SQLAdmin_InstancesCloneRequest($client);
+// TODO: Assign values to desired properties of the `$Google_Service_SQLAdmin_InstancesCloneRequestBody` object.
 
+
+$response = $service->instances->cloneInstances($project, $instance, $Google_Service_SQLAdmin_InstancesCloneRequestBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -419,7 +525,7 @@ $response = $service->instances->cloneInstances($project, $instance, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -427,14 +533,20 @@ $response = $service->instances->cloneInstances($project, $instance, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 // * Project ID of the project that contains the instance to be deleted.
 $project = '';
@@ -442,8 +554,11 @@ $project = '';
 // * Cloud SQL instance ID. This does not include the project ID.
 $instance = '';
 
+
 $response = $service->instances->delete($project, $instance);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -454,7 +569,7 @@ $response = $service->instances->delete($project, $instance);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -462,14 +577,20 @@ $response = $service->instances->delete($project, $instance);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `export` method:
 
 // * Project ID of the project that contains the instance to be exported.
 $project = '';
@@ -477,10 +598,15 @@ $project = '';
 // * Cloud SQL instance ID. This does not include the project ID.
 $instance = '';
 
-$postBody = new Google_Service_SQLAdmin_InstancesExportRequest($client);
 
-$response = $service->instances->export($project, $instance, $postBody);
+$Google_Service_SQLAdmin_InstancesExportRequestBody = new Google_Service_SQLAdmin_InstancesExportRequest($client);
+// TODO: Assign values to desired properties of the `$Google_Service_SQLAdmin_InstancesExportRequestBody` object.
 
+
+$response = $service->instances->export($project, $instance, $Google_Service_SQLAdmin_InstancesExportRequestBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -491,7 +617,7 @@ $response = $service->instances->export($project, $instance, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -499,14 +625,20 @@ $response = $service->instances->export($project, $instance, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `failover` method:
 
 // * ID of the project that contains the read replica.
 $project = '';
@@ -514,10 +646,15 @@ $project = '';
 // * Cloud SQL instance ID. This does not include the project ID.
 $instance = '';
 
-$postBody = new Google_Service_SQLAdmin_InstancesFailoverRequest($client);
 
-$response = $service->instances->failover($project, $instance, $postBody);
+$Google_Service_SQLAdmin_InstancesFailoverRequestBody = new Google_Service_SQLAdmin_InstancesFailoverRequest($client);
+// TODO: Assign values to desired properties of the `$Google_Service_SQLAdmin_InstancesFailoverRequestBody` object.
 
+
+$response = $service->instances->failover($project, $instance, $Google_Service_SQLAdmin_InstancesFailoverRequestBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -528,7 +665,7 @@ $response = $service->instances->failover($project, $instance, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -536,14 +673,20 @@ $response = $service->instances->failover($project, $instance, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -551,8 +694,11 @@ $project = '';
 // * Database instance ID. This does not include the project ID.
 $instance = '';
 
+
 $response = $service->instances->get($project, $instance);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -563,7 +709,7 @@ $response = $service->instances->get($project, $instance);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -571,14 +717,20 @@ $response = $service->instances->get($project, $instance);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `import` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -586,10 +738,15 @@ $project = '';
 // * Cloud SQL instance ID. This does not include the project ID.
 $instance = '';
 
-$postBody = new Google_Service_SQLAdmin_InstancesImportRequest($client);
 
-$response = $service->instances->import($project, $instance, $postBody);
+$Google_Service_SQLAdmin_InstancesImportRequestBody = new Google_Service_SQLAdmin_InstancesImportRequest($client);
+// TODO: Assign values to desired properties of the `$Google_Service_SQLAdmin_InstancesImportRequestBody` object.
 
+
+$response = $service->instances->import($project, $instance, $Google_Service_SQLAdmin_InstancesImportRequestBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -600,7 +757,7 @@ $response = $service->instances->import($project, $instance, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -608,22 +765,33 @@ $response = $service->instances->import($project, $instance, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 // * Project ID of the project to which the newly created Cloud SQL instances should belong.
 $project = '';
 
-$postBody = new Google_Service_SQLAdmin_DatabaseInstance($client);
 
-$response = $service->instances->insert($project, $postBody);
+$Google_Service_SQLAdmin_DatabaseInstanceBody = new Google_Service_SQLAdmin_DatabaseInstance($client);
+// TODO: Assign values to desired properties of the `$Google_Service_SQLAdmin_DatabaseInstanceBody` object.
 
+
+$response = $service->instances->insert($project, $Google_Service_SQLAdmin_DatabaseInstanceBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -634,7 +802,7 @@ $response = $service->instances->insert($project, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -642,24 +810,36 @@ $response = $service->instances->insert($project, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listInstances` method:
 
 // * Project ID of the project for which to list Cloud SQL instances.
 $project = '';
 
-$response = $service->instances->listInstances($project);
 
-foreach ($response['items'] as $element) {
-  // TODO: Add code here to process the element.
-}
+$optParams = array();
+do {
+  $response = $service->instances->listInstances($project, $optParams);
 
+  foreach ($response['items'] as $database_instance) {
+    // TODO: Change code below to process each `database_instance` resource:
+    echo '<pre>', var_export($database_instance, true), '</pre>', "\n";
+  }
+
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -670,7 +850,7 @@ foreach ($response['items'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -678,14 +858,20 @@ foreach ($response['items'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -693,10 +879,15 @@ $project = '';
 // * Cloud SQL instance ID. This does not include the project ID.
 $instance = '';
 
-$postBody = new Google_Service_SQLAdmin_DatabaseInstance($client);
 
-$response = $service->instances->patch($project, $instance, $postBody);
+$Google_Service_SQLAdmin_DatabaseInstanceBody = new Google_Service_SQLAdmin_DatabaseInstance($client);
+// TODO: Assign values to desired properties of the `$Google_Service_SQLAdmin_DatabaseInstanceBody` object to be changed.
 
+
+$response = $service->instances->patch($project, $instance, $Google_Service_SQLAdmin_DatabaseInstanceBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -707,7 +898,7 @@ $response = $service->instances->patch($project, $instance, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -715,14 +906,20 @@ $response = $service->instances->patch($project, $instance, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `promoteReplica` method:
 
 // * ID of the project that contains the read replica.
 $project = '';
@@ -730,8 +927,11 @@ $project = '';
 // * Cloud SQL read replica instance name.
 $instance = '';
 
+
 $response = $service->instances->promoteReplica($project, $instance);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -742,7 +942,7 @@ $response = $service->instances->promoteReplica($project, $instance);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -750,14 +950,20 @@ $response = $service->instances->promoteReplica($project, $instance);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `resetSslConfig` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -765,8 +971,11 @@ $project = '';
 // * Cloud SQL instance ID. This does not include the project ID.
 $instance = '';
 
+
 $response = $service->instances->resetSslConfig($project, $instance);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -777,7 +986,7 @@ $response = $service->instances->resetSslConfig($project, $instance);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -785,14 +994,20 @@ $response = $service->instances->resetSslConfig($project, $instance);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `restart` method:
 
 // * Project ID of the project that contains the instance to be restarted.
 $project = '';
@@ -800,8 +1015,11 @@ $project = '';
 // * Cloud SQL instance ID. This does not include the project ID.
 $instance = '';
 
+
 $response = $service->instances->restart($project, $instance);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -812,7 +1030,7 @@ $response = $service->instances->restart($project, $instance);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -820,14 +1038,20 @@ $response = $service->instances->restart($project, $instance);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `restoreBackup` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -835,10 +1059,15 @@ $project = '';
 // * Cloud SQL instance ID. This does not include the project ID.
 $instance = '';
 
-$postBody = new Google_Service_SQLAdmin_InstancesRestoreBackupRequest($client);
 
-$response = $service->instances->restoreBackup($project, $instance, $postBody);
+$Google_Service_SQLAdmin_InstancesRestoreBackupRequestBody = new Google_Service_SQLAdmin_InstancesRestoreBackupRequest($client);
+// TODO: Assign values to desired properties of the `$Google_Service_SQLAdmin_InstancesRestoreBackupRequestBody` object.
 
+
+$response = $service->instances->restoreBackup($project, $instance, $Google_Service_SQLAdmin_InstancesRestoreBackupRequestBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -849,7 +1078,7 @@ $response = $service->instances->restoreBackup($project, $instance, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -857,23 +1086,32 @@ $response = $service->instances->restoreBackup($project, $instance, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `startReplica` method:
 
 // * ID of the project that contains the read replica.
 $project = '';
 
 // * Cloud SQL read replica instance name.
 $instance = '';
+
 
 $response = $service->instances->startReplica($project, $instance);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -884,7 +1122,7 @@ $response = $service->instances->startReplica($project, $instance);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -892,14 +1130,20 @@ $response = $service->instances->startReplica($project, $instance);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `stopReplica` method:
 
 // * ID of the project that contains the read replica.
 $project = '';
@@ -907,8 +1151,11 @@ $project = '';
 // * Cloud SQL read replica instance name.
 $instance = '';
 
+
 $response = $service->instances->stopReplica($project, $instance);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -919,7 +1166,7 @@ $response = $service->instances->stopReplica($project, $instance);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -927,14 +1174,20 @@ $response = $service->instances->stopReplica($project, $instance);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -942,10 +1195,15 @@ $project = '';
 // * Cloud SQL instance ID. This does not include the project ID.
 $instance = '';
 
-$postBody = new Google_Service_SQLAdmin_DatabaseInstance($client);
 
-$response = $service->instances->update($project, $instance, $postBody);
+$Google_Service_SQLAdmin_DatabaseInstanceBody = new Google_Service_SQLAdmin_DatabaseInstance($client);
+// TODO: Assign values to desired properties of the `$Google_Service_SQLAdmin_DatabaseInstanceBody` object.
 
+
+$response = $service->instances->update($project, $instance, $Google_Service_SQLAdmin_DatabaseInstanceBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -956,7 +1214,7 @@ $response = $service->instances->update($project, $instance, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -964,14 +1222,20 @@ $response = $service->instances->update($project, $instance, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -979,8 +1243,11 @@ $project = '';
 // * Instance operation ID.
 $operation = '';
 
+
 $response = $service->operations->get($project, $operation);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -991,7 +1258,7 @@ $response = $service->operations->get($project, $operation);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -999,14 +1266,20 @@ $response = $service->operations->get($project, $operation);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listOperations` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -1014,12 +1287,18 @@ $project = '';
 // * Cloud SQL instance ID. This does not include the project ID.
 $instance = '';
 
-$response = $service->operations->listOperations($project, $instance);
 
-foreach ($response['items'] as $element) {
-  // TODO: Add code here to process the element.
-}
+$optParams = array();
+do {
+  $response = $service->operations->listOperations($project, $instance, $optParams);
 
+  foreach ($response['items'] as $operation) {
+    // TODO: Change code below to process each `operation` resource:
+    echo '<pre>', var_export($operation, true), '</pre>', "\n";
+  }
+
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -1030,7 +1309,7 @@ foreach ($response['items'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1038,14 +1317,20 @@ foreach ($response['items'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `createEphemeral` method:
 
 // * Project ID of the Cloud SQL project.
 $project = '';
@@ -1053,10 +1338,15 @@ $project = '';
 // * Cloud SQL instance ID. This does not include the project ID.
 $instance = '';
 
-$postBody = new Google_Service_SQLAdmin_SslCertsCreateEphemeralRequest($client);
 
-$response = $service->sslCerts->createEphemeral($project, $instance, $postBody);
+$Google_Service_SQLAdmin_SslCertsCreateEphemeralRequestBody = new Google_Service_SQLAdmin_SslCertsCreateEphemeralRequest($client);
+// TODO: Assign values to desired properties of the `$Google_Service_SQLAdmin_SslCertsCreateEphemeralRequestBody` object.
 
+
+$response = $service->sslCerts->createEphemeral($project, $instance, $Google_Service_SQLAdmin_SslCertsCreateEphemeralRequestBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1067,7 +1357,7 @@ $response = $service->sslCerts->createEphemeral($project, $instance, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1075,14 +1365,20 @@ $response = $service->sslCerts->createEphemeral($project, $instance, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 // * Project ID of the project that contains the instance to be deleted.
 $project = '';
@@ -1093,8 +1389,11 @@ $instance = '';
 // * Sha1 FingerPrint.
 $sha1Fingerprint = '';
 
+
 $response = $service->sslCerts->delete($project, $instance, $sha1Fingerprint);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1105,7 +1404,7 @@ $response = $service->sslCerts->delete($project, $instance, $sha1Fingerprint);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1113,14 +1412,20 @@ $response = $service->sslCerts->delete($project, $instance, $sha1Fingerprint);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -1131,8 +1436,11 @@ $instance = '';
 // * Sha1 FingerPrint.
 $sha1Fingerprint = '';
 
+
 $response = $service->sslCerts->get($project, $instance, $sha1Fingerprint);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1143,7 +1451,7 @@ $response = $service->sslCerts->get($project, $instance, $sha1Fingerprint);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1151,14 +1459,20 @@ $response = $service->sslCerts->get($project, $instance, $sha1Fingerprint);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 // * Project ID of the project to which the newly created Cloud SQL instances should belong.
 $project = '';
@@ -1166,10 +1480,15 @@ $project = '';
 // * Cloud SQL instance ID. This does not include the project ID.
 $instance = '';
 
-$postBody = new Google_Service_SQLAdmin_SslCertsInsertRequest($client);
 
-$response = $service->sslCerts->insert($project, $instance, $postBody);
+$Google_Service_SQLAdmin_SslCertsInsertRequestBody = new Google_Service_SQLAdmin_SslCertsInsertRequest($client);
+// TODO: Assign values to desired properties of the `$Google_Service_SQLAdmin_SslCertsInsertRequestBody` object.
 
+
+$response = $service->sslCerts->insert($project, $instance, $Google_Service_SQLAdmin_SslCertsInsertRequestBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1180,7 +1499,7 @@ $response = $service->sslCerts->insert($project, $instance, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1188,14 +1507,20 @@ $response = $service->sslCerts->insert($project, $instance, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listSslCerts` method:
 
 // * Project ID of the project for which to list Cloud SQL instances.
 $project = '';
@@ -1203,8 +1528,11 @@ $project = '';
 // * Cloud SQL instance ID. This does not include the project ID.
 $instance = '';
 
+
 $response = $service->sslCerts->listSslCerts($project, $instance);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1215,7 +1543,7 @@ $response = $service->sslCerts->listSslCerts($project, $instance);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1223,20 +1551,29 @@ $response = $service->sslCerts->listSslCerts($project, $instance);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listTiers` method:
 
 // * Project ID of the project for which to list tiers.
 $project = '';
 
+
 $response = $service->tiers->listTiers($project);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1247,7 +1584,7 @@ $response = $service->tiers->listTiers($project);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1255,14 +1592,20 @@ $response = $service->tiers->listTiers($project);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -1275,9 +1618,12 @@ $host = '';
 
 // * Name of the user in the instance.
 $name = '';
+
 
 $response = $service->users->delete($project, $instance, $host, $name);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1288,7 +1634,7 @@ $response = $service->users->delete($project, $instance, $host, $name);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1296,14 +1642,20 @@ $response = $service->users->delete($project, $instance, $host, $name);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -1311,10 +1663,15 @@ $project = '';
 // * Database instance ID. This does not include the project ID.
 $instance = '';
 
-$postBody = new Google_Service_SQLAdmin_User($client);
 
-$response = $service->users->insert($project, $instance, $postBody);
+$Google_Service_SQLAdmin_UserBody = new Google_Service_SQLAdmin_User($client);
+// TODO: Assign values to desired properties of the `$Google_Service_SQLAdmin_UserBody` object.
 
+
+$response = $service->users->insert($project, $instance, $Google_Service_SQLAdmin_UserBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1325,7 +1682,7 @@ $response = $service->users->insert($project, $instance, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1333,23 +1690,32 @@ $response = $service->users->insert($project, $instance, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listUsers` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
 
 // * Database instance ID. This does not include the project ID.
 $instance = '';
+
 
 $response = $service->users->listUsers($project, $instance);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1360,7 +1726,7 @@ $response = $service->users->listUsers($project, $instance);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1368,14 +1734,20 @@ $response = $service->users->listUsers($project, $instance);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new SQLAdmin service.
+// Construct the SQLAdmin service object for interacting with the API.
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
 
 // * Project ID of the project that contains the instance.
 $project = '';
@@ -1389,7 +1761,12 @@ $host = '';
 // * Name of the user in the instance.
 $name = '';
 
-$postBody = new Google_Service_SQLAdmin_User($client);
 
-$response = $service->users->update($project, $instance, $host, $name, $postBody);
+$Google_Service_SQLAdmin_UserBody = new Google_Service_SQLAdmin_User($client);
+// TODO: Assign values to desired properties of the `$Google_Service_SQLAdmin_UserBody` object.
 
+
+$response = $service->users->update($project, $instance, $host, $name, $Google_Service_SQLAdmin_UserBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";

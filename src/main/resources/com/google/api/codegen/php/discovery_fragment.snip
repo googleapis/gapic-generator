@@ -1,3 +1,5 @@
+@extends "common.snip"
+
 @snippet generateFilename(method)
   {@method.getName}.frag.php
 @end
@@ -16,7 +18,7 @@
      * 2. This sample uses Application Default Credentials for authentication.
      *    If not already done, install the gcloud CLI from
      *    https://cloud.google.com/sdk/ and run
-     *    'gcloud beta auth application-default login'
+     *    `gcloud beta auth application-default login`
      * 3. Install the PHP client library with Composer. Check installation
      *    instructions at https://github.com/google/google-api-php-client.
      */
@@ -31,89 +33,152 @@
     @end
 
     {@body}
-
   @end
 @end
 
 @snippet generateBody(method)
   @let apiName = context.getSimpleApiName, \
-       serviceName = context.getServiceClassName, \
-       params = context.getFlatMethodParams(method)
-    // Create a new client.
+       serviceName = context.getServiceClassName
+    // Authentication is provided by the `gcloud` tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+    // For more information, see
+    // https://developers.google.com/identity/protocols/application-default-credentials
     $client = new Google_Client();
-    $client->setApplicationName('Client Sample Application');
+    $client->setApplicationName('Google Cloud Platform Sample');
     $client->useApplicationDefaultCredentials();
     $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-    // Create a new {@apiName} service.
+    // Construct the {@apiName} service object for interacting with the API.
     $service = new {@serviceName}($client);
-    {@initialization(method, params)}
 
+    {@initialize(method)}
     @if context.isPageStreaming(method)
-      {@iterableCall(method, params)}
+      {@iterableCall(method)}
     @else
-      {@compactCall(method, params)}
+      {@compactCall(method)}
     @end
   @end
 @end
 
-@private initialization(method, params)
+@private initialize(method)
   @let methodName = context.getMethodName(method), \
-       apiaryConfig = context.getApiaryConfig, \
-       signatureType = apiaryConfig.getType(method.getRequestTypeUrl)
-    @join param : params
-      @let paramField = context.getField(signatureType, param), \
-           paramValue = context.typeDefaultValue(signatureType, paramField), \
-           paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
+       signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
+       params = context.getFlatMethodParams(method)
+    @if params
 
-        {@description(paramDescription)}
-        ${@param} = {@paramValue};
+      // {@TODO()} Change placeholders below to desired parameter values for the `{@methodName}` method:
+
+      @join param : params
+        @let paramField = context.getField(signatureType, param), \
+             paramValue = context.typeDefaultValue(signatureType, paramField), \
+             paramDescription = context.getDescription(signatureType.getName, param)
+          {@description(paramDescription)}
+          ${@param} = {@paramValue};
+
+        @end
       @end
+
+    @end
+  @end
+  @if context.hasRequestField(method)
+
+    ${@requestBodyName(method)} = new {@context.getRequestClassName(method)}($client);
+    @if context.isPatch(method)
+      // {@TODO()} Assign values to desired properties of the `${@requestBodyName(method)}` object to be changed.
+    @else
+      // {@TODO()} Assign values to desired properties of the `${@requestBodyName(method)}` object.
     @end
 
-    @if context.hasRequestField(method)
 
-      $postBody = new {@context.getRequestClassName(method)}($client);
-    @end
   @end
 @end
 
-@private iterableCall(method, params)
-  @let methodName = context.getMethodName(method), \
-       resourcesPath = context.getApiaryConfig.getResources(method.getName)
-    $response = $service->{@methodPath(resourcesPath)}->{@methodName}({@arguments(method)});
+@private iterableCall(method)
+  @let responseTypeRef = context.getApiaryConfig.getType(method.getResponseTypeUrl), \
+       resourceField = context.getFirstRepeatedField(responseTypeRef), \
+       resources = resourceField.getName
+    ${@optParamsName()} = array();
+    do {
+      ${@responseName()} = {@request(method)};
 
-    @let responseTypeRef = context.getApiaryConfig.getType(method.getResponseTypeUrl), \
-         resourceField = context.getFirstRepeatedField(responseTypeRef), \
-         resourceName = resourceField.getName
       @if context.isMapField(responseTypeRef, resourceField.getName)
-        @let entrySet = context.getApiaryConfig.getType(resourceField.getTypeUrl), \
-             keyName = context.getField(entrySet, "key").getName, \
-             valueName = context.getField(entrySet, "value").getName
-          foreach ($response['{@resourceName}']  as ${@keyName} => ${@valueName}) {
-            // TODO: Add code here to process ${@keyName} => ${@valueName}
+        @let keyName = context.keyTypeName(resourceField), \
+             valueName = context.valueTypeName(resourceField)
+          foreach (${@responseName()}['{@resources}'] as ${@keyName} => ${@valueName}) {
+            // {@TODO()} Change code below to process each (${@keyName} => ${@valueName}) element:
+            {@printEntry(keyName, valueName)}
           }
         @end
       @else
-        foreach ($response['{@resourceName}'] as $element) {
-          // TODO: Add code here to process the element.
-        }
+        @let resourceName = context.elementTypeName(resourceField)
+          foreach (${@responseName()}['{@resources}'] as ${@resourceName}) {
+            // {@TODO()} Change code below to process each `{@resourceName}` resource:
+            {@print(resourceName)}
+          }
+        @end
       @end
-    @end
+
+      ${@optParamsName()}['pageToken'] = ${@responseName()}->getNextPageToken();
+    } while (${@optParamsName()}['pageToken']);
   @end
 @end
 
-@private compactCall(method, params)
+@private compactCall(method)
+  @if context.isResponseEmpty(method)
+    {@request(method)};
+  @else
+    ${@responseName()} = {@request(method)};
+
+    // {@TODO()} Change code below to process the `${@responseName()}` object:
+    {@print(responseName())}
+  @end
+@end
+
+@private request(method)
   @let methodName = context.getMethodName(method), \
        resourcesPath = context.getApiaryConfig.getResources(method.getName)
-    $response = $service->{@methodPath(resourcesPath)}->{@methodName}({@arguments(method)});
+    $service->{@methodPath(resourcesPath)}->{@methodName}({@arguments(method)})
   @end
 @end
 
 @private arguments(method)
-  @join argument : context.getFlatMethodParamsWithRequest(method) on ", "
-    ${@argument}
+  @let pathArgs = pathArguments(method)
+    @if context.isPageStreaming(method)
+      @if pathArgs
+        {@pathArgs}, ${@optParamsName()}
+      @else
+        ${@optParamsName()}
+      @end
+    @else
+      {@pathArgs}
+    @end
   @end
+@end
+
+@private pathArguments(method)
+  @let params = context.getFlatMethodParams(method)
+    @if context.hasRequestField(method)
+      @if params
+        {@argumentList(params)}, ${@requestBodyName(method)}
+      @else
+        ${@requestBodyName(method)}
+      @end
+    @else
+      {@argumentList(params)}
+    @end
+  @end
+@end
+
+@private optParamsName()
+  optParams
+@end
+
+@private requestBodyName(method)
+  {@context.getRequestClassName(method)}Body
+@end
+
+@private responseName()
+  response
 @end
 
 @private methodPath(resourcePath)
@@ -122,8 +187,22 @@
   @end
 @end
 
+@private argumentList(arguments)
+  @join argument : arguments on ", "
+    ${@argument}
+  @end
+@end
+
 @private description(description)
-  @join line : context.lineWrapDoc(description, 100)
+  @join line : context.lineWrapDoc(description)
     // {@line}
   @end
+@end
+
+@private print(element)
+  echo '<pre>', var_export(${@element}, true), '</pre>', "\n";
+@end
+
+@private printEntry(key, value)
+  echo '<pre>', ${@key}, ' => ', var_export(${@value}, true), '</pre>', "\n";
 @end

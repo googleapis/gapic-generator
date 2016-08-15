@@ -9,11 +9,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -22,23 +26,34 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := bigquery.New(hc)
+
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the dataset being deleted
-  projectId := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Delete` method:
 
-  // Dataset ID of dataset being deleted
-  datasetId := "" // TODO: Update placeholder value.
+  // * Project ID of the dataset being deleted
+  projectId := ""
 
-  if err := c.Datasets.Delete(projectId, datasetId).Context(ctx).Do(); err != nil {
-    // TODO: Handle error.
+  // * Dataset ID of dataset being deleted
+  datasetId := ""
+
+  if err := service.Datasets.Delete(projectId, datasetId).Context(ctx).Do(); err != nil {
+    log.Fatal(err)
   }
 }
 package main
@@ -51,11 +66,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -64,27 +83,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := bigquery.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the requested dataset
-  projectId := "" // TODO: Update placeholder value.
-
-  // Dataset ID of the requested dataset
-  datasetId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Datasets.Get(projectId, datasetId).Context(ctx).Do()
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+  // * Project ID of the requested dataset
+  projectId := ""
+
+  // * Dataset ID of the requested dataset
+  datasetId := ""
+
+  res, err := service.Datasets.Get(projectId, datasetId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -96,11 +131,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -109,26 +148,44 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := bigquery.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the new dataset
-  projectId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Datasets.Insert(projectId, &bigquery.Dataset{
-                                   // TODO: Fill required fields.
-                                 }).Context(ctx).Do()
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+  // * Project ID of the new dataset
+  projectId := ""
+
+  datasetBody := bigquery.Dataset{
+    // TODO: Add desired fields of the `datasetBody` variable.
+  }
+
+  res, err := service.Datasets.Insert(projectId, &datasetBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -140,11 +197,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -153,28 +214,42 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := bigquery.New(hc)
+
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the datasets to be listed
-  projectId := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
 
+  // * Project ID of the datasets to be listed
+  projectId := ""
 
-  call := c.Datasets.List(projectId)
-  if err := call.Pages(ctx, func(page *bigquery.DatasetList) error {
-    for _, v := range page.Datasets {
-      // TODO: Use v.
-      _ = v
+  req := service.Datasets.List(projectId)
+  if err := req.Pages(ctx, func(page *bigquery.DatasetList) error {
+    for _, datasetList.Datasets := range page.Datasets {
+      // TODO: Change code below to process each `datasetList.Datasets` resource:
+      out, err := json.MarshalIndent(datasetList.Datasets, "", "  ")
+      if err != nil {
+        return err
+      }
+      fmt.Println(out)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -187,11 +262,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -200,29 +279,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := bigquery.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the dataset being updated
-  projectId := "" // TODO: Update placeholder value.
-
-  // Dataset ID of the dataset being updated
-  datasetId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Datasets.Patch(projectId, datasetId, &bigquery.Dataset{
-                                  // TODO: Fill required fields.
-                                }).Context(ctx).Do()
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
+  // * Project ID of the dataset being updated
+  projectId := ""
+
+  // * Dataset ID of the dataset being updated
+  datasetId := ""
+
+  datasetBody := bigquery.Dataset{
+    // TODO: Add desired fields of the `datasetBody` variable to be changed.
+  }
+
+  res, err := service.Datasets.Patch(projectId, datasetId, &datasetBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -234,11 +331,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -247,29 +348,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := bigquery.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the dataset being updated
-  projectId := "" // TODO: Update placeholder value.
-
-  // Dataset ID of the dataset being updated
-  datasetId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Datasets.Update(projectId, datasetId, &bigquery.Dataset{
-                                   // TODO: Fill required fields.
-                                 }).Context(ctx).Do()
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
+  // * Project ID of the dataset being updated
+  projectId := ""
+
+  // * Dataset ID of the dataset being updated
+  datasetId := ""
+
+  datasetBody := bigquery.Dataset{
+    // TODO: Add desired fields of the `datasetBody` variable.
+  }
+
+  res, err := service.Datasets.Update(projectId, datasetId, &datasetBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -281,11 +400,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -294,27 +417,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := bigquery.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // [Required] Project ID of the job to cancel
-  projectId := "" // TODO: Update placeholder value.
-
-  // [Required] Job ID of the job to cancel
-  jobId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Jobs.Cancel(projectId, jobId).Context(ctx).Do()
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Cancel` method:
+
+  // * [Required] Project ID of the job to cancel
+  projectId := ""
+
+  // * [Required] Job ID of the job to cancel
+  jobId := ""
+
+  res, err := service.Jobs.Cancel(projectId, jobId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -326,11 +465,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -339,27 +482,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := bigquery.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // [Required] Project ID of the requested job
-  projectId := "" // TODO: Update placeholder value.
-
-  // [Required] Job ID of the requested job
-  jobId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Jobs.Get(projectId, jobId).Context(ctx).Do()
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+  // * [Required] Project ID of the requested job
+  projectId := ""
+
+  // * [Required] Job ID of the requested job
+  jobId := ""
+
+  res, err := service.Jobs.Get(projectId, jobId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -371,11 +530,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -384,27 +547,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := bigquery.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // [Required] Project ID of the query job
-  projectId := "" // TODO: Update placeholder value.
-
-  // [Required] Job ID of the query job
-  jobId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Jobs.GetQueryResults(projectId, jobId).Context(ctx).Do()
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `GetQueryResults` method:
+
+  // * [Required] Project ID of the query job
+  projectId := ""
+
+  // * [Required] Job ID of the query job
+  jobId := ""
+
+  res, err := service.Jobs.GetQueryResults(projectId, jobId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -416,11 +595,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -429,26 +612,44 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := bigquery.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project that will be billed for the job
-  projectId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Jobs.Insert(projectId, &bigquery.Job{
-                               // TODO: Fill required fields.
-                             }).Context(ctx).Do()
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+  // * Project ID of the project that will be billed for the job
+  projectId := ""
+
+  jobBody := bigquery.Job{
+    // TODO: Add desired fields of the `jobBody` variable.
+  }
+
+  res, err := service.Jobs.Insert(projectId, &jobBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -460,11 +661,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -473,28 +678,42 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := bigquery.New(hc)
+
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the jobs to list
-  projectId := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
 
+  // * Project ID of the jobs to list
+  projectId := ""
 
-  call := c.Jobs.List(projectId)
-  if err := call.Pages(ctx, func(page *bigquery.JobList) error {
-    for _, v := range page.Jobs {
-      // TODO: Use v.
-      _ = v
+  req := service.Jobs.List(projectId)
+  if err := req.Pages(ctx, func(page *bigquery.JobList) error {
+    for _, jobList.Jobs := range page.Jobs {
+      // TODO: Change code below to process each `jobList.Jobs` resource:
+      out, err := json.MarshalIndent(jobList.Jobs, "", "  ")
+      if err != nil {
+        return err
+      }
+      fmt.Println(out)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -507,11 +726,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -520,26 +743,44 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := bigquery.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the project billed for the query
-  projectId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Jobs.Query(projectId, &bigquery.QueryRequest{
-                              // TODO: Fill required fields.
-                            }).Context(ctx).Do()
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Query` method:
+
+  // * Project ID of the project billed for the query
+  projectId := ""
+
+  queryRequestBody := bigquery.QueryRequest{
+    // TODO: Add desired fields of the `queryRequestBody` variable.
+  }
+
+  res, err := service.Jobs.Query(projectId, &queryRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -551,11 +792,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -564,27 +809,38 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := bigquery.New(hc)
+
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
 
-
-
-  call := c.Projects.List()
-  if err := call.Pages(ctx, func(page *bigquery.ProjectList) error {
-    for _, v := range page.Projects {
-      // TODO: Use v.
-      _ = v
+  req := service.Projects.List()
+  if err := req.Pages(ctx, func(page *bigquery.ProjectList) error {
+    for _, projectList.Projects := range page.Projects {
+      // TODO: Change code below to process each `projectList.Projects` resource:
+      out, err := json.MarshalIndent(projectList.Projects, "", "  ")
+      if err != nil {
+        return err
+      }
+      fmt.Println(out)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -597,11 +853,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -610,32 +870,50 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := bigquery.New(hc)
+
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the destination table.
-  projectId := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `InsertAll` method:
 
-  // Dataset ID of the destination table.
-  datasetId := "" // TODO: Update placeholder value.
+  // * Project ID of the destination table.
+  projectId := ""
 
-  // Table ID of the destination table.
-  tableId := "" // TODO: Update placeholder value.
+  // * Dataset ID of the destination table.
+  datasetId := ""
 
-  resp, err := c.Tabledata.InsertAll(projectId, datasetId, tableId, &bigquery.TableDataInsertAllRequest{
-                                       // TODO: Fill required fields.
-                                     }).Context(ctx).Do()
+  // * Table ID of the destination table.
+  tableId := ""
+
+  tableDataInsertAllRequestBody := bigquery.TableDataInsertAllRequest{
+    // TODO: Add desired fields of the `tableDataInsertAllRequestBody` variable.
+  }
+
+  res, err := service.Tabledata.InsertAll(projectId, datasetId, tableId, &tableDataInsertAllRequestBody).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -647,11 +925,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -660,30 +942,46 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := bigquery.New(hc)
+
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the table to read
-  projectId := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
 
-  // Dataset ID of the table to read
-  datasetId := "" // TODO: Update placeholder value.
+  // * Project ID of the table to read
+  projectId := ""
 
-  // Table ID of the table to read
-  tableId := "" // TODO: Update placeholder value.
+  // * Dataset ID of the table to read
+  datasetId := ""
 
-  resp, err := c.Tabledata.List(projectId, datasetId, tableId).Context(ctx).Do()
+  // * Table ID of the table to read
+  tableId := ""
+
+  res, err := service.Tabledata.List(projectId, datasetId, tableId).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -695,11 +993,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -708,26 +1010,37 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := bigquery.New(hc)
+
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the table to delete
-  projectId := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Delete` method:
 
-  // Dataset ID of the table to delete
-  datasetId := "" // TODO: Update placeholder value.
+  // * Project ID of the table to delete
+  projectId := ""
 
-  // Table ID of the table to delete
-  tableId := "" // TODO: Update placeholder value.
+  // * Dataset ID of the table to delete
+  datasetId := ""
 
-  if err := c.Tables.Delete(projectId, datasetId, tableId).Context(ctx).Do(); err != nil {
-    // TODO: Handle error.
+  // * Table ID of the table to delete
+  tableId := ""
+
+  if err := service.Tables.Delete(projectId, datasetId, tableId).Context(ctx).Do(); err != nil {
+    log.Fatal(err)
   }
 }
 package main
@@ -740,11 +1053,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -753,30 +1070,46 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := bigquery.New(hc)
+
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the requested table
-  projectId := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
 
-  // Dataset ID of the requested table
-  datasetId := "" // TODO: Update placeholder value.
+  // * Project ID of the requested table
+  projectId := ""
 
-  // Table ID of the requested table
-  tableId := "" // TODO: Update placeholder value.
+  // * Dataset ID of the requested table
+  datasetId := ""
 
-  resp, err := c.Tables.Get(projectId, datasetId, tableId).Context(ctx).Do()
+  // * Table ID of the requested table
+  tableId := ""
+
+  res, err := service.Tables.Get(projectId, datasetId, tableId).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -788,11 +1121,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -801,29 +1138,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := bigquery.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the new table
-  projectId := "" // TODO: Update placeholder value.
-
-  // Dataset ID of the new table
-  datasetId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Tables.Insert(projectId, datasetId, &bigquery.Table{
-                                 // TODO: Fill required fields.
-                               }).Context(ctx).Do()
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+  // * Project ID of the new table
+  projectId := ""
+
+  // * Dataset ID of the new table
+  datasetId := ""
+
+  tableBody := bigquery.Table{
+    // TODO: Add desired fields of the `tableBody` variable.
+  }
+
+  res, err := service.Tables.Insert(projectId, datasetId, &tableBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -835,11 +1190,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -848,31 +1207,45 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := bigquery.New(hc)
+
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the tables to list
-  projectId := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
 
-  // Dataset ID of the tables to list
-  datasetId := "" // TODO: Update placeholder value.
+  // * Project ID of the tables to list
+  projectId := ""
 
+  // * Dataset ID of the tables to list
+  datasetId := ""
 
-  call := c.Tables.List(projectId, datasetId)
-  if err := call.Pages(ctx, func(page *bigquery.TableList) error {
-    for _, v := range page.Tables {
-      // TODO: Use v.
-      _ = v
+  req := service.Tables.List(projectId, datasetId)
+  if err := req.Pages(ctx, func(page *bigquery.TableList) error {
+    for _, tableList.Tables := range page.Tables {
+      // TODO: Change code below to process each `tableList.Tables` resource:
+      out, err := json.MarshalIndent(tableList.Tables, "", "  ")
+      if err != nil {
+        return err
+      }
+      fmt.Println(out)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -885,11 +1258,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -898,32 +1275,50 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := bigquery.New(hc)
+
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the table to update
-  projectId := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Patch` method:
 
-  // Dataset ID of the table to update
-  datasetId := "" // TODO: Update placeholder value.
+  // * Project ID of the table to update
+  projectId := ""
 
-  // Table ID of the table to update
-  tableId := "" // TODO: Update placeholder value.
+  // * Dataset ID of the table to update
+  datasetId := ""
 
-  resp, err := c.Tables.Patch(projectId, datasetId, tableId, &bigquery.Table{
-                                // TODO: Fill required fields.
-                              }).Context(ctx).Do()
+  // * Table ID of the table to update
+  tableId := ""
+
+  tableBody := bigquery.Table{
+    // TODO: Add desired fields of the `tableBody` variable to be changed.
+  }
+
+  res, err := service.Tables.Patch(projectId, datasetId, tableId, &tableBody).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -935,11 +1330,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -948,30 +1347,48 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := bigquery.New(hc)
+
+  // Construct the bigquery service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := bigquery.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Project ID of the table to update
-  projectId := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Update` method:
 
-  // Dataset ID of the table to update
-  datasetId := "" // TODO: Update placeholder value.
+  // * Project ID of the table to update
+  projectId := ""
 
-  // Table ID of the table to update
-  tableId := "" // TODO: Update placeholder value.
+  // * Dataset ID of the table to update
+  datasetId := ""
 
-  resp, err := c.Tables.Update(projectId, datasetId, tableId, &bigquery.Table{
-                                 // TODO: Fill required fields.
-                               }).Context(ctx).Do()
+  // * Table ID of the table to update
+  tableId := ""
+
+  tableBody := bigquery.Table{
+    // TODO: Add desired fields of the `tableBody` variable.
+  }
+
+  res, err := service.Tables.Update(projectId, datasetId, tableId, &tableBody).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }

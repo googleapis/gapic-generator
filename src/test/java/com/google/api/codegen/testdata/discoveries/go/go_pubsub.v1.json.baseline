@@ -9,11 +9,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -22,26 +26,44 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := pubsub.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The subscription whose message is being acknowledged.
-  subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Subscriptions.Acknowledge(subscription, &pubsub.AcknowledgeRequest{
-                                                      // TODO: Fill required fields.
-                                                    }).Context(ctx).Do()
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Acknowledge` method:
+
+  // * The subscription whose message is being acknowledged.
+  subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
+
+  acknowledgeRequestBody := pubsub.AcknowledgeRequest{
+    // TODO: Add desired fields of the `acknowledgeRequestBody` variable.
+  }
+
+  res, err := service.Projects.Subscriptions.Acknowledge(subscription, &acknowledgeRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -53,11 +75,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -66,30 +92,48 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := pubsub.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The name of the subscription. It must have the format
-  // `"projects/{project}/subscriptions/{subscription}"`. `{subscription}` must start with a letter, and
-  // contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`), underscores (`_`), periods
-  // (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be between 3 and 255 characters in
-  // length, and it must not start with `"goog"`.
-  name := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Subscriptions.Create(name, &pubsub.Subscription{
-                                                 // TODO: Fill required fields.
-                                               }).Context(ctx).Do()
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Create` method:
+
+  // * The name of the subscription. It must have the format
+  //   `"projects/{project}/subscriptions/{subscription}"`. `{subscription}` must start with a letter,
+  //   and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`), underscores (`_`), periods
+  //   (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be between 3 and 255 characters in
+  //   length, and it must not start with `"goog"`.
+  name := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
+
+  subscriptionBody := pubsub.Subscription{
+    // TODO: Add desired fields of the `subscriptionBody` variable.
+  }
+
+  res, err := service.Projects.Subscriptions.Create(name, &subscriptionBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -101,11 +145,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -114,24 +162,40 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := pubsub.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The subscription to delete.
-  subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Subscriptions.Delete(subscription).Context(ctx).Do()
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+  // * The subscription to delete.
+  subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
+
+  res, err := service.Projects.Subscriptions.Delete(subscription).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -143,11 +207,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -156,24 +224,40 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := pubsub.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The name of the subscription to get.
-  subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Subscriptions.Get(subscription).Context(ctx).Do()
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+  // * The name of the subscription to get.
+  subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
+
+  res, err := service.Projects.Subscriptions.Get(subscription).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -185,11 +269,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -198,27 +286,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := pubsub.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which policy is being requested. `resource` is usually specified as a
-  // path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in
-  // this value is resource specific and is specified in the documentation for the respective
-  // GetIamPolicy rpc.
-  resource := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Subscriptions.GetIamPolicy(resource).Context(ctx).Do()
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `GetIamPolicy` method:
+
+  // * REQUIRED: The resource for which policy is being requested. `resource` is usually specified as a
+  //   path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified
+  //   in this value is resource specific and is specified in the documentation for the respective
+  //   GetIamPolicy rpc.
+  resource := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
+
+  res, err := service.Projects.Subscriptions.GetIamPolicy(resource).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -230,11 +334,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -243,28 +351,42 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := pubsub.New(hc)
+
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The name of the cloud project that subscriptions belong to.
-  project := "projects/{MY-PROJECT}" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
 
+  // * The name of the cloud project that subscriptions belong to.
+  project := "projects/{MY-PROJECT}"
 
-  call := c.Projects.Subscriptions.List(project)
-  if err := call.Pages(ctx, func(page *pubsub.ListSubscriptionsResponse) error {
-    for _, v := range page.Subscriptions {
-      // TODO: Use v.
-      _ = v
+  req := service.Projects.Subscriptions.List(project)
+  if err := req.Pages(ctx, func(page *pubsub.ListSubscriptionsResponse) error {
+    for _, subscription := range page.Subscriptions {
+      // TODO: Change code below to process each `subscription` resource:
+      out, err := json.MarshalIndent(subscription, "", "  ")
+      if err != nil {
+        return err
+      }
+      fmt.Println(out)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -277,11 +399,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -290,26 +416,44 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := pubsub.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The name of the subscription.
-  subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Subscriptions.ModifyAckDeadline(subscription, &pubsub.ModifyAckDeadlineRequest{
-                                                            // TODO: Fill required fields.
-                                                          }).Context(ctx).Do()
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `ModifyAckDeadline` method:
+
+  // * The name of the subscription.
+  subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
+
+  modifyAckDeadlineRequestBody := pubsub.ModifyAckDeadlineRequest{
+    // TODO: Add desired fields of the `modifyAckDeadlineRequestBody` variable.
+  }
+
+  res, err := service.Projects.Subscriptions.ModifyAckDeadline(subscription, &modifyAckDeadlineRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -321,11 +465,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -334,26 +482,44 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := pubsub.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The name of the subscription.
-  subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Subscriptions.ModifyPushConfig(subscription, &pubsub.ModifyPushConfigRequest{
-                                                           // TODO: Fill required fields.
-                                                         }).Context(ctx).Do()
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `ModifyPushConfig` method:
+
+  // * The name of the subscription.
+  subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
+
+  modifyPushConfigRequestBody := pubsub.ModifyPushConfigRequest{
+    // TODO: Add desired fields of the `modifyPushConfigRequestBody` variable.
+  }
+
+  res, err := service.Projects.Subscriptions.ModifyPushConfig(subscription, &modifyPushConfigRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -365,11 +531,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -378,26 +548,44 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := pubsub.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The subscription from which messages should be pulled.
-  subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Subscriptions.Pull(subscription, &pubsub.PullRequest{
-                                               // TODO: Fill required fields.
-                                             }).Context(ctx).Do()
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Pull` method:
+
+  // * The subscription from which messages should be pulled.
+  subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
+
+  pullRequestBody := pubsub.PullRequest{
+    // TODO: Add desired fields of the `pullRequestBody` variable.
+  }
+
+  res, err := service.Projects.Subscriptions.Pull(subscription, &pullRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -409,11 +597,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -422,29 +614,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := pubsub.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which policy is being specified. `resource` is usually specified as a
-  // path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in
-  // this value is resource specific and is specified in the documentation for the respective
-  // SetIamPolicy rpc.
-  resource := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Subscriptions.SetIamPolicy(resource, &pubsub.SetIamPolicyRequest{
-                                                       // TODO: Fill required fields.
-                                                     }).Context(ctx).Do()
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `SetIamPolicy` method:
+
+  // * REQUIRED: The resource for which policy is being specified. `resource` is usually specified as a
+  //   path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified
+  //   in this value is resource specific and is specified in the documentation for the respective
+  //   SetIamPolicy rpc.
+  resource := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
+
+  setIamPolicyRequestBody := pubsub.SetIamPolicyRequest{
+    // TODO: Add desired fields of the `setIamPolicyRequestBody` variable.
+  }
+
+  res, err := service.Projects.Subscriptions.SetIamPolicy(resource, &setIamPolicyRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -456,11 +666,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -469,29 +683,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := pubsub.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which policy detail is being requested. `resource` is usually specified
-  // as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path
-  // specified in this value is resource specific and is specified in the documentation for the
-  // respective TestIamPermissions rpc.
-  resource := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Subscriptions.TestIamPermissions(resource, &pubsub.TestIamPermissionsRequest{
-                                                             // TODO: Fill required fields.
-                                                           }).Context(ctx).Do()
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `TestIamPermissions` method:
+
+  // * REQUIRED: The resource for which policy detail is being requested. `resource` is usually specified
+  //   as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path
+  //   specified in this value is resource specific and is specified in the documentation for the
+  //   respective TestIamPermissions rpc.
+  resource := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
+
+  testIamPermissionsRequestBody := pubsub.TestIamPermissionsRequest{
+    // TODO: Add desired fields of the `testIamPermissionsRequestBody` variable.
+  }
+
+  res, err := service.Projects.Subscriptions.TestIamPermissions(resource, &testIamPermissionsRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -503,11 +735,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -516,29 +752,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := pubsub.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}` must
-  // start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`),
-  // underscores (`_`), periods (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be
-  // between 3 and 255 characters in length, and it must not start with `"goog"`.
-  name := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Topics.Create(name, &pubsub.Topic{
-                                          // TODO: Fill required fields.
-                                        }).Context(ctx).Do()
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Create` method:
+
+  // * The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}`
+  //   must start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`),
+  //   underscores (`_`), periods (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be
+  //   between 3 and 255 characters in length, and it must not start with `"goog"`.
+  name := "projects/{MY-PROJECT}/topics/{MY-TOPIC}"
+
+  topicBody := pubsub.Topic{
+    // TODO: Add desired fields of the `topicBody` variable.
+  }
+
+  res, err := service.Projects.Topics.Create(name, &topicBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -550,11 +804,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -563,24 +821,40 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := pubsub.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Name of the topic to delete.
-  topic := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Topics.Delete(topic).Context(ctx).Do()
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+  // * Name of the topic to delete.
+  topic := "projects/{MY-PROJECT}/topics/{MY-TOPIC}"
+
+  res, err := service.Projects.Topics.Delete(topic).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -592,11 +866,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -605,24 +883,40 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := pubsub.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The name of the topic to get.
-  topic := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Topics.Get(topic).Context(ctx).Do()
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+  // * The name of the topic to get.
+  topic := "projects/{MY-PROJECT}/topics/{MY-TOPIC}"
+
+  res, err := service.Projects.Topics.Get(topic).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -634,11 +928,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -647,27 +945,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := pubsub.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which policy is being requested. `resource` is usually specified as a
-  // path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in
-  // this value is resource specific and is specified in the documentation for the respective
-  // GetIamPolicy rpc.
-  resource := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Topics.GetIamPolicy(resource).Context(ctx).Do()
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `GetIamPolicy` method:
+
+  // * REQUIRED: The resource for which policy is being requested. `resource` is usually specified as a
+  //   path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified
+  //   in this value is resource specific and is specified in the documentation for the respective
+  //   GetIamPolicy rpc.
+  resource := "projects/{MY-PROJECT}/topics/{MY-TOPIC}"
+
+  res, err := service.Projects.Topics.GetIamPolicy(resource).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -679,11 +993,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -692,28 +1010,42 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := pubsub.New(hc)
+
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The name of the cloud project that topics belong to.
-  project := "projects/{MY-PROJECT}" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
 
+  // * The name of the cloud project that topics belong to.
+  project := "projects/{MY-PROJECT}"
 
-  call := c.Projects.Topics.List(project)
-  if err := call.Pages(ctx, func(page *pubsub.ListTopicsResponse) error {
-    for _, v := range page.Topics {
-      // TODO: Use v.
-      _ = v
+  req := service.Projects.Topics.List(project)
+  if err := req.Pages(ctx, func(page *pubsub.ListTopicsResponse) error {
+    for _, topic := range page.Topics {
+      // TODO: Change code below to process each `topic` resource:
+      out, err := json.MarshalIndent(topic, "", "  ")
+      if err != nil {
+        return err
+      }
+      fmt.Println(out)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -726,11 +1058,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -739,26 +1075,44 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := pubsub.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The messages in the request will be published on this topic.
-  topic := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Topics.Publish(topic, &pubsub.PublishRequest{
-                                           // TODO: Fill required fields.
-                                         }).Context(ctx).Do()
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Publish` method:
+
+  // * The messages in the request will be published on this topic.
+  topic := "projects/{MY-PROJECT}/topics/{MY-TOPIC}"
+
+  publishRequestBody := pubsub.PublishRequest{
+    // TODO: Add desired fields of the `publishRequestBody` variable.
+  }
+
+  res, err := service.Projects.Topics.Publish(topic, &publishRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -770,11 +1124,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -783,29 +1141,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := pubsub.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which policy is being specified. `resource` is usually specified as a
-  // path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in
-  // this value is resource specific and is specified in the documentation for the respective
-  // SetIamPolicy rpc.
-  resource := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Topics.SetIamPolicy(resource, &pubsub.SetIamPolicyRequest{
-                                                // TODO: Fill required fields.
-                                              }).Context(ctx).Do()
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `SetIamPolicy` method:
+
+  // * REQUIRED: The resource for which policy is being specified. `resource` is usually specified as a
+  //   path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified
+  //   in this value is resource specific and is specified in the documentation for the respective
+  //   SetIamPolicy rpc.
+  resource := "projects/{MY-PROJECT}/topics/{MY-TOPIC}"
+
+  setIamPolicyRequestBody := pubsub.SetIamPolicyRequest{
+    // TODO: Add desired fields of the `setIamPolicyRequestBody` variable.
+  }
+
+  res, err := service.Projects.Topics.SetIamPolicy(resource, &setIamPolicyRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -817,11 +1193,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -830,28 +1210,42 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := pubsub.New(hc)
+
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The name of the topic that subscriptions are attached to.
-  topic := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
 
+  // * The name of the topic that subscriptions are attached to.
+  topic := "projects/{MY-PROJECT}/topics/{MY-TOPIC}"
 
-  call := c.Projects.Topics.Subscriptions.List(topic)
-  if err := call.Pages(ctx, func(page *pubsub.ListTopicSubscriptionsResponse) error {
-    for _, v := range page.Subscriptions {
-      // TODO: Use v.
-      _ = v
+  req := service.Projects.Topics.Subscriptions.List(topic)
+  if err := req.Pages(ctx, func(page *pubsub.ListTopicSubscriptionsResponse) error {
+    for _, item := range page.Subscriptions {
+      // TODO: Change code below to process each `item` resource:
+      out, err := json.MarshalIndent(item, "", "  ")
+      if err != nil {
+        return err
+      }
+      fmt.Println(out)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -864,11 +1258,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -877,27 +1275,45 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := pubsub.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which policy detail is being requested. `resource` is usually specified
-  // as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path
-  // specified in this value is resource specific and is specified in the documentation for the
-  // respective TestIamPermissions rpc.
-  resource := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Topics.TestIamPermissions(resource, &pubsub.TestIamPermissionsRequest{
-                                                      // TODO: Fill required fields.
-                                                    }).Context(ctx).Do()
+  // Construct the pubsub service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := pubsub.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `TestIamPermissions` method:
+
+  // * REQUIRED: The resource for which policy detail is being requested. `resource` is usually specified
+  //   as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path
+  //   specified in this value is resource specific and is specified in the documentation for the
+  //   respective TestIamPermissions rpc.
+  resource := "projects/{MY-PROJECT}/topics/{MY-TOPIC}"
+
+  testIamPermissionsRequestBody := pubsub.TestIamPermissionsRequest{
+    // TODO: Add desired fields of the `testIamPermissionsRequestBody` variable.
+  }
+
+  res, err := service.Projects.Topics.TestIamPermissions(resource, &testIamPermissionsRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }

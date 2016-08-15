@@ -86,73 +86,24 @@ public class PythonDiscoveryContext extends DiscoveryContext {
     return "";
   }
 
-  public String getSampleVarName(String typeName) {
-    return pythonCommon.wrapIfKeywordOrBuiltIn(upperCamelToLowerUnderscore(typeName));
-  }
-
   @Override
   public String getMethodName(Method method) {
     return getSimpleName(getRename(method.getName(), RENAMED_METHOD_MAP));
   }
 
-  /**
-   * Returns a name for a type's field's type, substituting the given name when a native type is
-   * encountered.
-   */
-  public String typeName(Type type, Field field, String name) {
-    String fieldName = field.getName();
-    String fieldTypeName = field.getTypeUrl();
-    if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
-      Type items = this.getApiaryConfig().getType(fieldTypeName);
-      if (isMapField(type, fieldName)) {
-        return String.format(
-            "%s_to_%s_dict",
-            typeName(items, this.getField(items, "key"), "name"),
-            typeName(items, this.getField(items, "value"), "value"));
-      } else {
-        return String.format("%s_list", elementTypeName(field));
-      }
-    } else {
-      if (field.getKind() == Field.Kind.TYPE_MESSAGE) {
-        return getSampleVarName(fieldTypeName);
-      } else {
-        return name;
-      }
-    }
+  @Override
+  protected String arrayTypeName(String elementName) {
+    return String.format("%s_list", elementName);
   }
 
-  /**
-   * Returns a name for a type's repeated field's element's type.
-   */
-  public String elementTypeName(Type type, Field field) {
-    String fieldName = field.getName();
-    String fieldTypeName = field.getTypeUrl();
-    Type items = this.getApiaryConfig().getType(fieldTypeName);
-    if (isMapField(type, fieldName)) {
-      return String.format(
-          "%s, %s",
-          typeName(items, this.getField(items, "key"), "name"),
-          typeName(items, this.getField(items, "value"), "value"));
-    } else {
-      return elementTypeName(field);
-    }
+  @Override
+  protected String mapTypeName(String keyName, String valueName) {
+    return String.format("%s_to_%s_dict", keyName, valueName);
   }
 
-  /**
-   * Returns a name for an array field's element's type.
-   */
-  private String elementTypeName(Field field) {
-    String fieldTypeName = field.getTypeUrl();
-    Type items = this.getApiaryConfig().getType(fieldTypeName);
-    if (field.getKind() == Field.Kind.TYPE_MESSAGE) {
-      Field elements = this.getField(items, DiscoveryImporter.ELEMENTS_FIELD_NAME);
-      if (elements != null) {
-        return typeName(items, elements, "item");
-      } else {
-        return getSampleVarName(fieldTypeName);
-      }
-    }
-    return "item";
+  @Override
+  protected String objectTypeName(String typeName) {
+    return pythonCommon.wrapIfKeywordOrBuiltIn(upperCamelToLowerUnderscore(typeName));
   }
 
   /**
@@ -169,12 +120,12 @@ public class PythonDiscoveryContext extends DiscoveryContext {
 
     if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
       String fieldTypeName = field.getTypeUrl();
-      Type items = this.getApiaryConfig().getType(fieldTypeName);
+      Type items = getApiaryConfig().getType(fieldTypeName);
       if (isMapField(type, field.getName())) {
         return String.format(
             "{ %s: %s }",
-            typeDefaultValue(items, this.getField(items, "key")),
-            typeDefaultValue(items, this.getField(items, "value")));
+            typeDefaultValue(items, getField(items, "key")),
+            typeDefaultValue(items, getField(items, "value")));
       } else {
         return String.format("[ %s ]", elementDefaultValue(type, field));
       }
@@ -188,9 +139,9 @@ public class PythonDiscoveryContext extends DiscoveryContext {
 
   private String elementDefaultValue(Type type, Field field) {
     String fieldTypeName = field.getTypeUrl();
-    Type items = this.getApiaryConfig().getType(fieldTypeName);
+    Type items = getApiaryConfig().getType(fieldTypeName);
     if (field.getKind() == Field.Kind.TYPE_MESSAGE) {
-      Field elements = this.getField(items, DiscoveryImporter.ELEMENTS_FIELD_NAME);
+      Field elements = getField(items, DiscoveryImporter.ELEMENTS_FIELD_NAME);
       if (elements != null) {
         return typeDefaultValue(items, elements);
       } else {

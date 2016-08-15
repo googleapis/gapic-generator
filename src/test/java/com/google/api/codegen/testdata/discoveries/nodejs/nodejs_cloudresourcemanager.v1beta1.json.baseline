@@ -7,15 +7,23 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
+// Construct the cloudresourcemanager service object (version v1beta1) for interacting
+// with the API. You can browse other available API services and versions at
+// https://github.com/google/google-api-nodejs-client/tree/master/apis
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -24,21 +32,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
 
     // * The id of the Organization resource to fetch.
     organizationId: "",
 
-    // Auth client
+
     auth: authClient
   };
 
-  cloudresourcemanager.organizations.get(request, function(err, result) {
+  cloudresourcemanager.organizations.get(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -49,15 +59,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
+// Construct the cloudresourcemanager service object (version v1beta1) for interacting
+// with the API. You can browse other available API services and versions at
+// https://github.com/google/google-api-nodejs-client/tree/master/apis
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -66,25 +84,29 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'getIamPolicy' method:
+    // TODO: Change placeholders below to desired parameter values for the `getIamPolicy` method:
 
     // * REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
     //   a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
     //   in this value is resource specific and is specified in the `getIamPolicy` documentation.
     resource_: "",
 
-    resource: {},
 
-    // Auth client
+    resource: {
+      // TODO: Add desired properties of the `resource` request body object.
+    },
+
     auth: authClient
   };
 
-  cloudresourcemanager.organizations.getIamPolicy(request, function(err, result) {
+  cloudresourcemanager.organizations.getIamPolicy(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -95,15 +117,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
+// Construct the cloudresourcemanager service object (version v1beta1) for interacting
+// with the API. You can browse other available API services and versions at
+// https://github.com/google/google-api-nodejs-client/tree/master/apis
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -112,22 +142,25 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // Auth client
     auth: authClient
   };
 
-
-  var recur = function(err, result) {
+  var recur = function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        cloudresourcemanager.organizations.list(request, recur);
-      }
+      return;
+    }
+
+    var organizationsPage = response['organizations'];
+    for (var i = 0; i < organizationsPage.length; i++) {
+      // TODO: Change code below to process each resource in `organizationsPage`:
+      console.log(JSON.stringify(organizationsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      cloudresourcemanager.organizations.list(request, recur);
     }
   };
 
@@ -141,15 +174,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
+// Construct the cloudresourcemanager service object (version v1beta1) for interacting
+// with the API. You can browse other available API services and versions at
+// https://github.com/google/google-api-nodejs-client/tree/master/apis
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -158,25 +199,29 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'setIamPolicy' method:
+    // TODO: Change placeholders below to desired parameter values for the `setIamPolicy` method:
 
     // * REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
     //   a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
     //   in this value is resource specific and is specified in the `setIamPolicy` documentation.
     resource_: "",
 
-    resource: {},
 
-    // Auth client
+    resource: {
+      // TODO: Add desired properties of the `resource` request body object.
+    },
+
     auth: authClient
   };
 
-  cloudresourcemanager.organizations.setIamPolicy(request, function(err, result) {
+  cloudresourcemanager.organizations.setIamPolicy(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -187,15 +232,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
+// Construct the cloudresourcemanager service object (version v1beta1) for interacting
+// with the API. You can browse other available API services and versions at
+// https://github.com/google/google-api-nodejs-client/tree/master/apis
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -204,7 +257,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'testIamPermissions' method:
+    // TODO: Change placeholders below to desired parameter values for the `testIamPermissions` method:
 
     // * REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
     //   specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the
@@ -212,18 +265,22 @@ google.auth.getApplicationDefault(function(err, authClient) {
     //   documentation.
     resource_: "",
 
-    resource: {},
 
-    // Auth client
+    resource: {
+      // TODO: Add desired properties of the `resource` request body object.
+    },
+
     auth: authClient
   };
 
-  cloudresourcemanager.organizations.testIamPermissions(request, function(err, result) {
+  cloudresourcemanager.organizations.testIamPermissions(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -234,15 +291,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
+// Construct the cloudresourcemanager service object (version v1beta1) for interacting
+// with the API. You can browse other available API services and versions at
+// https://github.com/google/google-api-nodejs-client/tree/master/apis
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -251,24 +316,28 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
 
     // * An immutable id for the Organization that is assigned on creation. This should be omitted when
     //   creating a new Organization. This field is read-only.
     organizationId: "",
 
-    resource: {},
 
-    // Auth client
+    resource: {
+      // TODO: Add desired properties of the `resource` request body object.
+    },
+
     auth: authClient
   };
 
-  cloudresourcemanager.organizations.update(request, function(err, result) {
+  cloudresourcemanager.organizations.update(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -279,15 +348,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
+// Construct the cloudresourcemanager service object (version v1beta1) for interacting
+// with the API. You can browse other available API services and versions at
+// https://github.com/google/google-api-nodejs-client/tree/master/apis
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -296,20 +373,22 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
 
-    resource: {},
+    resource: {
+      // TODO: Add desired properties of the `resource` request body object.
+    },
 
-    // Auth client
     auth: authClient
   };
 
-  cloudresourcemanager.projects.create(request, function(err, result) {
+  cloudresourcemanager.projects.create(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -320,15 +399,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
+// Construct the cloudresourcemanager service object (version v1beta1) for interacting
+// with the API. You can browse other available API services and versions at
+// https://github.com/google/google-api-nodejs-client/tree/master/apis
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -337,20 +424,19 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
 
     // * The Project ID (for example, `foo-bar-123`). Required.
     projectId: "",
 
-    // Auth client
+
     auth: authClient
   };
 
-  cloudresourcemanager.projects.delete(request, function(err, result) {
+  cloudresourcemanager.projects.delete(request, function(err) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
   });
 });
@@ -362,15 +448,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
+// Construct the cloudresourcemanager service object (version v1beta1) for interacting
+// with the API. You can browse other available API services and versions at
+// https://github.com/google/google-api-nodejs-client/tree/master/apis
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -379,21 +473,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
 
     // * The Project ID (for example, `my-project-123`). Required.
     projectId: "",
 
-    // Auth client
+
     auth: authClient
   };
 
-  cloudresourcemanager.projects.get(request, function(err, result) {
+  cloudresourcemanager.projects.get(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -404,15 +500,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
+// Construct the cloudresourcemanager service object (version v1beta1) for interacting
+// with the API. You can browse other available API services and versions at
+// https://github.com/google/google-api-nodejs-client/tree/master/apis
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -421,25 +525,29 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'getIamPolicy' method:
+    // TODO: Change placeholders below to desired parameter values for the `getIamPolicy` method:
 
     // * REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
     //   a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
     //   in this value is resource specific and is specified in the `getIamPolicy` documentation.
     resource_: "",
 
-    resource: {},
 
-    // Auth client
+    resource: {
+      // TODO: Add desired properties of the `resource` request body object.
+    },
+
     auth: authClient
   };
 
-  cloudresourcemanager.projects.getIamPolicy(request, function(err, result) {
+  cloudresourcemanager.projects.getIamPolicy(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -450,15 +558,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
+// Construct the cloudresourcemanager service object (version v1beta1) for interacting
+// with the API. You can browse other available API services and versions at
+// https://github.com/google/google-api-nodejs-client/tree/master/apis
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -467,22 +583,25 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // Auth client
     auth: authClient
   };
 
-
-  var recur = function(err, result) {
+  var recur = function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        cloudresourcemanager.projects.list(request, recur);
-      }
+      return;
+    }
+
+    var projectsPage = response['projects'];
+    for (var i = 0; i < projectsPage.length; i++) {
+      // TODO: Change code below to process each resource in `projectsPage`:
+      console.log(JSON.stringify(projectsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      cloudresourcemanager.projects.list(request, recur);
     }
   };
 
@@ -496,15 +615,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
+// Construct the cloudresourcemanager service object (version v1beta1) for interacting
+// with the API. You can browse other available API services and versions at
+// https://github.com/google/google-api-nodejs-client/tree/master/apis
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -513,25 +640,29 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'setIamPolicy' method:
+    // TODO: Change placeholders below to desired parameter values for the `setIamPolicy` method:
 
     // * REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
     //   a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
     //   in this value is resource specific and is specified in the `setIamPolicy` documentation.
     resource_: "",
 
-    resource: {},
 
-    // Auth client
+    resource: {
+      // TODO: Add desired properties of the `resource` request body object.
+    },
+
     auth: authClient
   };
 
-  cloudresourcemanager.projects.setIamPolicy(request, function(err, result) {
+  cloudresourcemanager.projects.setIamPolicy(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -542,15 +673,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
+// Construct the cloudresourcemanager service object (version v1beta1) for interacting
+// with the API. You can browse other available API services and versions at
+// https://github.com/google/google-api-nodejs-client/tree/master/apis
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -559,7 +698,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'testIamPermissions' method:
+    // TODO: Change placeholders below to desired parameter values for the `testIamPermissions` method:
 
     // * REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
     //   specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the
@@ -567,18 +706,22 @@ google.auth.getApplicationDefault(function(err, authClient) {
     //   documentation.
     resource_: "",
 
-    resource: {},
 
-    // Auth client
+    resource: {
+      // TODO: Add desired properties of the `resource` request body object.
+    },
+
     auth: authClient
   };
 
-  cloudresourcemanager.projects.testIamPermissions(request, function(err, result) {
+  cloudresourcemanager.projects.testIamPermissions(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -589,15 +732,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
+// Construct the cloudresourcemanager service object (version v1beta1) for interacting
+// with the API. You can browse other available API services and versions at
+// https://github.com/google/google-api-nodejs-client/tree/master/apis
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -606,22 +757,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'undelete' method:
+    // TODO: Change placeholders below to desired parameter values for the `undelete` method:
 
     // * The project ID (for example, `foo-bar-123`). Required.
     projectId: "",
 
-    resource: {},
 
-    // Auth client
+    resource: {
+      // TODO: Add desired properties of the `resource` request body object.
+    },
+
     auth: authClient
   };
 
-  cloudresourcemanager.projects.undelete(request, function(err, result) {
+  cloudresourcemanager.projects.undelete(request, function(err) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
   });
 });
@@ -633,15 +785,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
+// Construct the cloudresourcemanager service object (version v1beta1) for interacting
+// with the API. You can browse other available API services and versions at
+// https://github.com/google/google-api-nodejs-client/tree/master/apis
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -650,22 +810,26 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
 
     // * The project ID (for example, `my-project-123`). Required.
     projectId: "",
 
-    resource: {},
 
-    // Auth client
+    resource: {
+      // TODO: Add desired properties of the `resource` request body object.
+    },
+
     auth: authClient
   };
 
-  cloudresourcemanager.projects.update(request, function(err, result) {
+  cloudresourcemanager.projects.update(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
   });
 });

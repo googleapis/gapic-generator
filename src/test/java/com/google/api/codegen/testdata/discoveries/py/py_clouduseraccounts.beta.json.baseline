@@ -8,17 +8,18 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the clouduseraccounts service object (version beta) for interacting
@@ -27,13 +28,14 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+# TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 # * Project ID for this request.
 project = ''
 
 # * Name of the Operations resource to delete.
 operation = ''
+
 
 request = service.globalAccountsOperations().delete(project=project, operation=operation)
 request.execute()
@@ -46,9 +48,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -56,9 +58,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the clouduseraccounts service object (version beta) for interacting
@@ -67,7 +70,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+# TODO: Change placeholders below to desired parameter values for the `get` method:
 
 # * Project ID for this request.
 project = ''
@@ -75,10 +78,11 @@ project = ''
 # * Name of the Operations resource to return.
 operation = ''
 
+
 request = service.globalAccountsOperations().get(project=project, operation=operation)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -89,17 +93,20 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
+
+from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the clouduseraccounts service object (version beta) for interacting
@@ -108,10 +115,11 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * Project ID for this request.
 project = ''
+
 
 globalAccountsOperations = service.globalAccountsOperations()
 request = globalAccountsOperations.list(project=project)
@@ -119,7 +127,8 @@ while request is not None:
     response = request.execute()
 
     for operation in response['items']:
-        # TODO: Add code here to process each 'operation' resource
+        # TODO: Change code below to process each `operation` resource:
+        pprint(operation)
 
     request = globalAccountsOperations.list_next(previous_request=request, previous_response=response)
 """
@@ -131,9 +140,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -141,9 +150,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the clouduseraccounts service object (version beta) for interacting
@@ -152,7 +162,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'addMember' method:
+# TODO: Change placeholders below to desired parameter values for the `addMember` method:
 
 # * Project ID for this request.
 project = ''
@@ -160,14 +170,16 @@ project = ''
 # * Name of the group for this request.
 groupName = ''
 
+
 groups_add_member_request_body = {
-# TODO: Add desired entries of the 'groups_add_member_request_body' dict
+    # TODO: Add desired entries of the `groups_add_member_request_body` dict.
 }
+
 
 request = service.groups().addMember(project=project, groupName=groupName, body=groups_add_member_request_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -178,9 +190,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -188,9 +200,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the clouduseraccounts service object (version beta) for interacting
@@ -199,7 +212,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+# TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 # * Project ID for this request.
 project = ''
@@ -207,10 +220,11 @@ project = ''
 # * Name of the Group resource to delete.
 groupName = ''
 
+
 request = service.groups().delete(project=project, groupName=groupName)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -221,9 +235,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -231,9 +245,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the clouduseraccounts service object (version beta) for interacting
@@ -242,7 +257,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+# TODO: Change placeholders below to desired parameter values for the `get` method:
 
 # * Project ID for this request.
 project = ''
@@ -250,10 +265,11 @@ project = ''
 # * Name of the Group resource to return.
 groupName = ''
 
+
 request = service.groups().get(project=project, groupName=groupName)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -264,9 +280,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -274,9 +290,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the clouduseraccounts service object (version beta) for interacting
@@ -285,19 +302,21 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+# TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 # * Project ID for this request.
 project = ''
 
+
 group_body = {
-# TODO: Add desired entries of the 'group_body' dict
+    # TODO: Add desired entries of the `group_body` dict.
 }
+
 
 request = service.groups().insert(project=project, body=group_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -308,17 +327,20 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
+
+from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the clouduseraccounts service object (version beta) for interacting
@@ -327,10 +349,11 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * Project ID for this request.
 project = ''
+
 
 groups = service.groups()
 request = groups.list(project=project)
@@ -338,7 +361,8 @@ while request is not None:
     response = request.execute()
 
     for group in response['items']:
-        # TODO: Add code here to process each 'group' resource
+        # TODO: Change code below to process each `group` resource:
+        pprint(group)
 
     request = groups.list_next(previous_request=request, previous_response=response)
 """
@@ -350,9 +374,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -360,9 +384,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the clouduseraccounts service object (version beta) for interacting
@@ -371,7 +396,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'removeMember' method:
+# TODO: Change placeholders below to desired parameter values for the `removeMember` method:
 
 # * Project ID for this request.
 project = ''
@@ -379,14 +404,16 @@ project = ''
 # * Name of the group for this request.
 groupName = ''
 
+
 groups_remove_member_request_body = {
-# TODO: Add desired entries of the 'groups_remove_member_request_body' dict
+    # TODO: Add desired entries of the `groups_remove_member_request_body` dict.
 }
+
 
 request = service.groups().removeMember(project=project, groupName=groupName, body=groups_remove_member_request_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -397,9 +424,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -407,9 +434,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the clouduseraccounts service object (version beta) for interacting
@@ -418,7 +446,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'getAuthorizedKeysView' method:
+# TODO: Change placeholders below to desired parameter values for the `getAuthorizedKeysView` method:
 
 # * Project ID for this request.
 project = ''
@@ -432,10 +460,11 @@ user = ''
 # * The fully-qualified URL of the virtual machine requesting the view.
 instance = ''
 
+
 request = service.linux().getAuthorizedKeysView(project=project, zone=zone, user=user, instance=instance)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -446,9 +475,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -456,9 +485,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the clouduseraccounts service object (version beta) for interacting
@@ -467,7 +497,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'getLinuxAccountViews' method:
+# TODO: Change placeholders below to desired parameter values for the `getLinuxAccountViews` method:
 
 # * Project ID for this request.
 project = ''
@@ -478,10 +508,11 @@ zone = ''
 # * The fully-qualified URL of the virtual machine requesting the views.
 instance = ''
 
+
 request = service.linux().getLinuxAccountViews(project=project, zone=zone, instance=instance)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -492,9 +523,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -502,9 +533,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the clouduseraccounts service object (version beta) for interacting
@@ -513,7 +545,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'addPublicKey' method:
+# TODO: Change placeholders below to desired parameter values for the `addPublicKey` method:
 
 # * Project ID for this request.
 project = ''
@@ -521,14 +553,16 @@ project = ''
 # * Name of the user for this request.
 user = ''
 
+
 public_key_body = {
-# TODO: Add desired entries of the 'public_key_body' dict
+    # TODO: Add desired entries of the `public_key_body` dict.
 }
+
 
 request = service.users().addPublicKey(project=project, user=user, body=public_key_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -539,9 +573,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -549,9 +583,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the clouduseraccounts service object (version beta) for interacting
@@ -560,7 +595,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+# TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 # * Project ID for this request.
 project = ''
@@ -568,10 +603,11 @@ project = ''
 # * Name of the user resource to delete.
 user = ''
 
+
 request = service.users().delete(project=project, user=user)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -582,9 +618,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -592,9 +628,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the clouduseraccounts service object (version beta) for interacting
@@ -603,7 +640,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+# TODO: Change placeholders below to desired parameter values for the `get` method:
 
 # * Project ID for this request.
 project = ''
@@ -611,10 +648,11 @@ project = ''
 # * Name of the user resource to return.
 user = ''
 
+
 request = service.users().get(project=project, user=user)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -625,9 +663,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -635,9 +673,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the clouduseraccounts service object (version beta) for interacting
@@ -646,19 +685,21 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+# TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 # * Project ID for this request.
 project = ''
 
+
 user_body = {
-# TODO: Add desired entries of the 'user_body' dict
+    # TODO: Add desired entries of the `user_body` dict.
 }
+
 
 request = service.users().insert(project=project, body=user_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -669,17 +710,20 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
+
+from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the clouduseraccounts service object (version beta) for interacting
@@ -688,10 +732,11 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * Project ID for this request.
 project = ''
+
 
 users = service.users()
 request = users.list(project=project)
@@ -699,7 +744,8 @@ while request is not None:
     response = request.execute()
 
     for user in response['items']:
-        # TODO: Add code here to process each 'user' resource
+        # TODO: Change code below to process each `user` resource:
+        pprint(user)
 
     request = users.list_next(previous_request=request, previous_response=response)
 """
@@ -711,9 +757,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -721,9 +767,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the clouduseraccounts service object (version beta) for interacting
@@ -732,7 +779,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'removePublicKey' method:
+# TODO: Change placeholders below to desired parameter values for the `removePublicKey` method:
 
 # * Project ID for this request.
 project = ''
@@ -744,8 +791,9 @@ user = ''
 #   which is defined by RFC4716 to be the MD5 digest of the public key.
 fingerprint = ''
 
+
 request = service.users().removePublicKey(project=project, user=user, fingerprint=fingerprint)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)

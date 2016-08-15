@@ -8,17 +8,20 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
+
+from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the logging service object (version v2beta1) for interacting
@@ -27,10 +30,10 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 
-
 list_log_entries_request_body = {
-# TODO: Add desired entries of the 'list_log_entries_request_body' dict
+    # TODO: Add desired entries of the `list_log_entries_request_body` dict.
 }
+
 
 entries = service.entries()
 request = entries.list(body=list_log_entries_request_body)
@@ -38,7 +41,8 @@ while request is not None:
     response = request.execute()
 
     for log_entry in response['entries']:
-        # TODO: Add code here to process each 'log_entry' resource
+        # TODO: Change code below to process each `log_entry` resource:
+        pprint(log_entry)
 
     list_log_entries_request_body.pageToken = response.nextPageToken
 """
@@ -50,9 +54,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -60,9 +64,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the logging service object (version v2beta1) for interacting
@@ -71,15 +76,15 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 
-
 write_log_entries_request_body = {
-# TODO: Add desired entries of the 'write_log_entries_request_body' dict
+    # TODO: Add desired entries of the `write_log_entries_request_body` dict.
 }
+
 
 request = service.entries().write(body=write_log_entries_request_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -90,17 +95,20 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
+
+from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the logging service object (version v2beta1) for interacting
@@ -109,14 +117,14 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 
-
 monitoredResourceDescriptors = service.monitoredResourceDescriptors()
 request = monitoredResourceDescriptors.list()
 while request is not None:
     response = request.execute()
 
     for monitored_resource_descriptor in response['resourceDescriptors']:
-        # TODO: Add code here to process each 'monitored_resource_descriptor' resource
+        # TODO: Change code below to process each `monitored_resource_descriptor` resource:
+        pprint(monitored_resource_descriptor)
 
     request = monitoredResourceDescriptors.list_next(previous_request=request, previous_response=response)
 """
@@ -128,17 +136,18 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the logging service object (version v2beta1) for interacting
@@ -147,10 +156,11 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+# TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 # * Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
 logName = 'projects/{MY-PROJECT}/logs/{MY-LOG}'
+
 
 request = service.projects().logs().delete(logName=logName)
 request.execute()
@@ -163,9 +173,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -173,9 +183,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the logging service object (version v2beta1) for interacting
@@ -184,20 +195,22 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+# TODO: Change placeholders below to desired parameter values for the `create` method:
 
 # * The resource name of the project in which to create the metric. Example:
 #   `"projects/my-project-id"`. The new metric must be provided in the request.
 projectName = 'projects/{MY-PROJECT}'
 
+
 log_metric_body = {
-# TODO: Add desired entries of the 'log_metric_body' dict
+    # TODO: Add desired entries of the `log_metric_body` dict.
 }
+
 
 request = service.projects().metrics().create(projectName=projectName, body=log_metric_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -208,17 +221,18 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the logging service object (version v2beta1) for interacting
@@ -227,11 +241,12 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+# TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 # * The resource name of the metric to delete. Example:
 #   `"projects/my-project-id/metrics/my-metric-id"`.
 metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'
+
 
 request = service.projects().metrics().delete(metricName=metricName)
 request.execute()
@@ -244,9 +259,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -254,9 +269,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the logging service object (version v2beta1) for interacting
@@ -265,15 +281,16 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+# TODO: Change placeholders below to desired parameter values for the `get` method:
 
 # * The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
 metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'
 
+
 request = service.projects().metrics().get(metricName=metricName)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -284,17 +301,20 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
+
+from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the logging service object (version v2beta1) for interacting
@@ -303,11 +323,12 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * Required. The resource name of the project containing the metrics. Example:
 #   `"projects/my-project-id"`.
 projectName = 'projects/{MY-PROJECT}'
+
 
 metrics = service.projects().metrics()
 request = metrics.list(projectName=projectName)
@@ -315,7 +336,8 @@ while request is not None:
     response = request.execute()
 
     for log_metric in response['metrics']:
-        # TODO: Add code here to process each 'log_metric' resource
+        # TODO: Change code below to process each `log_metric` resource:
+        pprint(log_metric)
 
     request = metrics.list_next(previous_request=request, previous_response=response)
 """
@@ -327,9 +349,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -337,9 +359,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the logging service object (version v2beta1) for interacting
@@ -348,7 +371,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+# TODO: Change placeholders below to desired parameter values for the `update` method:
 
 # * The resource name of the metric to update. Example:
 #   `"projects/my-project-id/metrics/my-metric-id"`. The updated metric must be provided in the
@@ -356,14 +379,16 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 #   exist, it is created.
 metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'
 
+
 log_metric_body = {
-# TODO: Add desired entries of the 'log_metric_body' dict
+    # TODO: Add desired entries of the `log_metric_body` dict.
 }
+
 
 request = service.projects().metrics().update(metricName=metricName, body=log_metric_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -374,9 +399,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -384,9 +409,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the logging service object (version v2beta1) for interacting
@@ -395,20 +421,22 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+# TODO: Change placeholders below to desired parameter values for the `create` method:
 
 # * The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`.
 #   The new sink must be provided in the request.
 projectName = 'projects/{MY-PROJECT}'
 
+
 log_sink_body = {
-# TODO: Add desired entries of the 'log_sink_body' dict
+    # TODO: Add desired entries of the `log_sink_body` dict.
 }
+
 
 request = service.projects().sinks().create(projectName=projectName, body=log_sink_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -419,17 +447,18 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the logging service object (version v2beta1) for interacting
@@ -438,10 +467,11 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+# TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 # * The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
 sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'
+
 
 request = service.projects().sinks().delete(sinkName=sinkName)
 request.execute()
@@ -454,9 +484,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -464,9 +494,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the logging service object (version v2beta1) for interacting
@@ -475,15 +506,16 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+# TODO: Change placeholders below to desired parameter values for the `get` method:
 
 # * The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
 sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'
 
+
 request = service.projects().sinks().get(sinkName=sinkName)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -494,17 +526,20 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
+
+from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the logging service object (version v2beta1) for interacting
@@ -513,11 +548,12 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * Required. The resource name of the project containing the sinks. Example:
 #   `"projects/my-logging-project"`, `"projects/01234567890"`.
 projectName = 'projects/{MY-PROJECT}'
+
 
 sinks = service.projects().sinks()
 request = sinks.list(projectName=projectName)
@@ -525,7 +561,8 @@ while request is not None:
     response = request.execute()
 
     for log_sink in response['sinks']:
-        # TODO: Add code here to process each 'log_sink' resource
+        # TODO: Change code below to process each `log_sink` resource:
+        pprint(log_sink)
 
     request = sinks.list_next(previous_request=request, previous_response=response)
 """
@@ -537,9 +574,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -547,9 +584,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the logging service object (version v2beta1) for interacting
@@ -558,19 +596,21 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+# TODO: Change placeholders below to desired parameter values for the `update` method:
 
 # * The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The
 #   updated sink must be provided in the request and have the same name that is specified in
 #   `sinkName`. If the sink does not exist, it is created.
 sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'
 
+
 log_sink_body = {
-# TODO: Add desired entries of the 'log_sink_body' dict
+    # TODO: Add desired entries of the `log_sink_body` dict.
 }
+
 
 request = service.projects().sinks().update(sinkName=sinkName, body=log_sink_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)

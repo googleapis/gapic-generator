@@ -7,7 +7,7 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -16,49 +16,60 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
+
 namespace ReplicapoolupdaterSample
 {
-    public class Program
+    public class ReplicapoolupdaterServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the replicapoolupdater service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             ReplicapoolupdaterService replicapoolupdaterService = new ReplicapoolupdaterService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Cancel() method:
 
-            // The Google Developers Console project name.
+            // TODO: Change placeholders below to desired parameter values for the `Cancel` method:
+
+            // * The Google Developers Console project name.
             string project = "";
 
-            // The name of the zone in which the update's target resides.
+            // * The name of the zone in which the update's target resides.
             string zone = "";
 
-            // The name of the update.
+            // * The name of the update.
             string rollingUpdate = "";
+
 
             RollingUpdatesResource.CancelRequest request = replicapoolupdaterService.RollingUpdates.Cancel(project, zone, rollingUpdate);
-            Data.Operation response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -70,7 +81,7 @@ namespace ReplicapoolupdaterSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -79,49 +90,60 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
+
 namespace ReplicapoolupdaterSample
 {
-    public class Program
+    public class ReplicapoolupdaterServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the replicapoolupdater service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             ReplicapoolupdaterService replicapoolupdaterService = new ReplicapoolupdaterService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
 
-            // The Google Developers Console project name.
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // * The Google Developers Console project name.
             string project = "";
 
-            // The name of the zone in which the update's target resides.
+            // * The name of the zone in which the update's target resides.
             string zone = "";
 
-            // The name of the update.
+            // * The name of the update.
             string rollingUpdate = "";
 
+
             RollingUpdatesResource.GetRequest request = replicapoolupdaterService.RollingUpdates.Get(project, zone, rollingUpdate);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.RollingUpdate response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.RollingUpdate response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -133,7 +155,7 @@ namespace ReplicapoolupdaterSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -142,49 +164,61 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
+
 namespace ReplicapoolupdaterSample
 {
-    public class Program
+    public class ReplicapoolupdaterServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the replicapoolupdater service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             ReplicapoolupdaterService replicapoolupdaterService = new ReplicapoolupdaterService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Insert() method:
 
-            // The Google Developers Console project name.
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+            // * The Google Developers Console project name.
             string project = "";
 
-            // The name of the zone in which the update's target resides.
+            // * The name of the zone in which the update's target resides.
             string zone = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.RollingUpdate content = new Data.RollingUpdate();
 
-            RollingUpdatesResource.InsertRequest request = replicapoolupdaterService.RollingUpdates.Insert(content, project, zone);
+            Data.RollingUpdate requestBody = new Data.RollingUpdate();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            RollingUpdatesResource.InsertRequest request = replicapoolupdaterService.RollingUpdates.Insert(requestBody, project, zone);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -196,7 +230,7 @@ namespace ReplicapoolupdaterSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -205,59 +239,69 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
+
 namespace ReplicapoolupdaterSample
 {
-    public class Program
+    public class ReplicapoolupdaterServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the replicapoolupdater service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             ReplicapoolupdaterService replicapoolupdaterService = new ReplicapoolupdaterService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
-            // The Google Developers Console project name.
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * The Google Developers Console project name.
             string project = "";
 
-            // The name of the zone in which the update's target resides.
+            // * The name of the zone in which the update's target resides.
             string zone = "";
+
 
             RollingUpdatesResource.ListRequest request = replicapoolupdaterService.RollingUpdates.List(project, zone);
+
             Data.RollingUpdateList response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Items == null)
                 {
                     continue;
                 }
-                foreach (Data.RollingUpdate item in response.Items)
+                foreach (Data.RollingUpdate rollingUpdate in response.Items)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `rollingUpdate` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(rollingUpdate));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.RollingUpdateList response = await request.ExecuteAsync();
         }
     }
 }
@@ -269,7 +313,7 @@ namespace ReplicapoolupdaterSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -278,62 +322,72 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
+
 namespace ReplicapoolupdaterSample
 {
-    public class Program
+    public class ReplicapoolupdaterServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the replicapoolupdater service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             ReplicapoolupdaterService replicapoolupdaterService = new ReplicapoolupdaterService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the ListInstanceUpdates() method:
 
-            // The Google Developers Console project name.
+            // TODO: Change placeholders below to desired parameter values for the `ListInstanceUpdates` method:
+
+            // * The Google Developers Console project name.
             string project = "";
 
-            // The name of the zone in which the update's target resides.
+            // * The name of the zone in which the update's target resides.
             string zone = "";
 
-            // The name of the update.
+            // * The name of the update.
             string rollingUpdate = "";
 
+
             RollingUpdatesResource.ListInstanceUpdatesRequest request = replicapoolupdaterService.RollingUpdates.ListInstanceUpdates(project, zone, rollingUpdate);
+
             Data.InstanceUpdateList response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Items == null)
                 {
                     continue;
                 }
-                foreach (Data.InstanceUpdate item in response.Items)
+                foreach (Data.InstanceUpdate instanceUpdate in response.Items)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `instanceUpdate` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(instanceUpdate));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.InstanceUpdateList response = await request.ExecuteAsync();
         }
     }
 }
@@ -345,7 +399,7 @@ namespace ReplicapoolupdaterSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -354,49 +408,60 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
+
 namespace ReplicapoolupdaterSample
 {
-    public class Program
+    public class ReplicapoolupdaterServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the replicapoolupdater service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             ReplicapoolupdaterService replicapoolupdaterService = new ReplicapoolupdaterService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Pause() method:
 
-            // The Google Developers Console project name.
+            // TODO: Change placeholders below to desired parameter values for the `Pause` method:
+
+            // * The Google Developers Console project name.
             string project = "";
 
-            // The name of the zone in which the update's target resides.
+            // * The name of the zone in which the update's target resides.
             string zone = "";
 
-            // The name of the update.
+            // * The name of the update.
             string rollingUpdate = "";
+
 
             RollingUpdatesResource.PauseRequest request = replicapoolupdaterService.RollingUpdates.Pause(project, zone, rollingUpdate);
-            Data.Operation response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -408,7 +473,7 @@ namespace ReplicapoolupdaterSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -417,49 +482,60 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
+
 namespace ReplicapoolupdaterSample
 {
-    public class Program
+    public class ReplicapoolupdaterServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the replicapoolupdater service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             ReplicapoolupdaterService replicapoolupdaterService = new ReplicapoolupdaterService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Resume() method:
 
-            // The Google Developers Console project name.
+            // TODO: Change placeholders below to desired parameter values for the `Resume` method:
+
+            // * The Google Developers Console project name.
             string project = "";
 
-            // The name of the zone in which the update's target resides.
+            // * The name of the zone in which the update's target resides.
             string zone = "";
 
-            // The name of the update.
+            // * The name of the update.
             string rollingUpdate = "";
+
 
             RollingUpdatesResource.ResumeRequest request = replicapoolupdaterService.RollingUpdates.Resume(project, zone, rollingUpdate);
-            Data.Operation response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -471,7 +547,7 @@ namespace ReplicapoolupdaterSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -480,49 +556,60 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
+
 namespace ReplicapoolupdaterSample
 {
-    public class Program
+    public class ReplicapoolupdaterServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the replicapoolupdater service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             ReplicapoolupdaterService replicapoolupdaterService = new ReplicapoolupdaterService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Rollback() method:
 
-            // The Google Developers Console project name.
+            // TODO: Change placeholders below to desired parameter values for the `Rollback` method:
+
+            // * The Google Developers Console project name.
             string project = "";
 
-            // The name of the zone in which the update's target resides.
+            // * The name of the zone in which the update's target resides.
             string zone = "";
 
-            // The name of the update.
+            // * The name of the update.
             string rollingUpdate = "";
 
-            RollingUpdatesResource.RollbackRequest request = replicapoolupdaterService.RollingUpdates.Rollback(project, zone, rollingUpdate);
-            Data.Operation response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            RollingUpdatesResource.RollbackRequest request = replicapoolupdaterService.RollingUpdates.Rollback(project, zone, rollingUpdate);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -534,7 +621,7 @@ namespace ReplicapoolupdaterSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -543,49 +630,60 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
+
 namespace ReplicapoolupdaterSample
 {
-    public class Program
+    public class ReplicapoolupdaterServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the replicapoolupdater service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             ReplicapoolupdaterService replicapoolupdaterService = new ReplicapoolupdaterService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
 
-            // Name of the project scoping this request.
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // * Name of the project scoping this request.
             string project = "";
 
-            // Name of the zone scoping this request.
+            // * Name of the zone scoping this request.
             string zone = "";
 
-            // Name of the operation resource to return.
+            // * Name of the operation resource to return.
             string operation = "";
 
-            ZoneOperationsResource.GetRequest request = replicapoolupdaterService.ZoneOperations.Get(project, zone, operation);
-            Data.Operation response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            ZoneOperationsResource.GetRequest request = replicapoolupdaterService.ZoneOperations.Get(project, zone, operation);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -597,7 +695,7 @@ namespace ReplicapoolupdaterSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -606,59 +704,69 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
+
 namespace ReplicapoolupdaterSample
 {
-    public class Program
+    public class ReplicapoolupdaterServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the replicapoolupdater service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             ReplicapoolupdaterService replicapoolupdaterService = new ReplicapoolupdaterService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
-            // Name of the project scoping this request.
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * Name of the project scoping this request.
             string project = "";
 
-            // Name of the zone scoping this request.
+            // * Name of the zone scoping this request.
             string zone = "";
 
+
             ZoneOperationsResource.ListRequest request = replicapoolupdaterService.ZoneOperations.List(project, zone);
+
             Data.OperationList response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Items == null)
                 {
                     continue;
                 }
-                foreach (Data.Operation item in response.Items)
+                foreach (Data.Operation operation in response.Items)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `operation` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(operation));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.OperationList response = await request.ExecuteAsync();
         }
     }
 }

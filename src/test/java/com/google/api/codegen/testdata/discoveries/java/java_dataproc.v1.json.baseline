@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
@@ -8,7 +8,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -23,15 +23,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dataproc.Dataproc;
 import com.google.api.services.dataproc.model.Cluster;
 import com.google.api.services.dataproc.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DataprocExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -46,11 +47,16 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the dataproc service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `create` method:
 
     // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
     String projectId = "";
@@ -58,16 +64,20 @@ public class DataprocExample {
     // * [Required] The Cloud Dataproc region in which to handle the request.
     String region = "";
 
-    Cluster content = new Cluster();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Dataproc.Projects.Regions.Clusters.Create request = dataprocService.projects().regions().clusters().create(projectId, region, content);
+    Cluster requestBody = new Cluster();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Dataproc.Projects.Regions.Clusters.Create request = dataprocService.projects().regions().clusters().create(projectId, region, requestBody);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
@@ -76,7 +86,7 @@ public class DataprocExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -90,15 +100,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dataproc.Dataproc;
 import com.google.api.services.dataproc.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DataprocExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -113,11 +124,16 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the dataproc service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
 
     // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
     String projectId = "";
@@ -128,13 +144,16 @@ public class DataprocExample {
     // * [Required] The cluster name.
     String clusterName = "";
 
+
     Dataproc.Projects.Regions.Clusters.Delete request = dataprocService.projects().regions().clusters().delete(projectId, region, clusterName);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
@@ -143,7 +162,7 @@ public class DataprocExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -158,15 +177,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dataproc.Dataproc;
 import com.google.api.services.dataproc.model.DiagnoseClusterRequest;
 import com.google.api.services.dataproc.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DataprocExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -181,11 +201,16 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the dataproc service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'diagnose' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `diagnose` method:
 
     // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
     String projectId = "";
@@ -196,16 +221,20 @@ public class DataprocExample {
     // * [Required] The cluster name.
     String clusterName = "";
 
-    DiagnoseClusterRequest content = new DiagnoseClusterRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Dataproc.Projects.Regions.Clusters.Diagnose request = dataprocService.projects().regions().clusters().diagnose(projectId, region, clusterName, content);
+    DiagnoseClusterRequest requestBody = new DiagnoseClusterRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Dataproc.Projects.Regions.Clusters.Diagnose request = dataprocService.projects().regions().clusters().diagnose(projectId, region, clusterName, requestBody);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
@@ -214,7 +243,7 @@ public class DataprocExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -228,15 +257,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dataproc.Dataproc;
 import com.google.api.services.dataproc.model.Cluster;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DataprocExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -251,11 +281,16 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the dataproc service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
 
     // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
     String projectId = "";
@@ -266,13 +301,16 @@ public class DataprocExample {
     // * [Required] The cluster name.
     String clusterName = "";
 
+
     Dataproc.Projects.Regions.Clusters.Get request = dataprocService.projects().regions().clusters().get(projectId, region, clusterName);
     Cluster response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
@@ -281,7 +319,7 @@ public class DataprocExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -296,15 +334,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dataproc.Dataproc;
 import com.google.api.services.dataproc.model.Cluster;
 import com.google.api.services.dataproc.model.ListClustersResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DataprocExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -319,11 +358,16 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the dataproc service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
 
     // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
     String projectId = "";
@@ -331,7 +375,11 @@ public class DataprocExample {
     // * [Required] The Cloud Dataproc region in which to handle the request.
     String region = "";
 
+
     Dataproc.Projects.Regions.Clusters.List request = dataprocService.projects().regions().clusters().list(projectId, region);
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     ListClustersResponse response;
     do {
       response = request.execute();
@@ -339,14 +387,15 @@ public class DataprocExample {
         continue;
 
       for (Cluster cluster : response.getClusters()) {
-        // TODO: Add code here to process each 'cluster' resource
+        // TODO: Change code below to process each `cluster` resource:
+        System.out.println(gson.toJson(new JsonParser().parse(cluster.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
@@ -355,7 +404,7 @@ public class DataprocExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -370,15 +419,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dataproc.Dataproc;
 import com.google.api.services.dataproc.model.Cluster;
 import com.google.api.services.dataproc.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DataprocExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -393,11 +443,16 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the dataproc service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
 
     // * [Required] The ID of the Google Cloud Platform project the cluster belongs to.
     String projectId = "";
@@ -408,16 +463,20 @@ public class DataprocExample {
     // * [Required] The cluster name.
     String clusterName = "";
 
-    Cluster content = new Cluster();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Dataproc.Projects.Regions.Clusters.Patch request = dataprocService.projects().regions().clusters().patch(projectId, region, clusterName, content);
+    Cluster requestBody = new Cluster();
+    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
+
+
+    Dataproc.Projects.Regions.Clusters.Patch request = dataprocService.projects().regions().clusters().patch(projectId, region, clusterName, requestBody);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
@@ -426,7 +485,7 @@ public class DataprocExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -441,15 +500,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dataproc.Dataproc;
 import com.google.api.services.dataproc.model.CancelJobRequest;
 import com.google.api.services.dataproc.model.Job;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DataprocExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -464,11 +524,16 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the dataproc service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'cancel' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `cancel` method:
 
     // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
     String projectId = "";
@@ -479,16 +544,20 @@ public class DataprocExample {
     // * [Required] The job ID.
     String jobId = "";
 
-    CancelJobRequest content = new CancelJobRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Dataproc.Projects.Regions.Jobs.Cancel request = dataprocService.projects().regions().jobs().cancel(projectId, region, jobId, content);
+    CancelJobRequest requestBody = new CancelJobRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Dataproc.Projects.Regions.Jobs.Cancel request = dataprocService.projects().regions().jobs().cancel(projectId, region, jobId, requestBody);
     Job response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
@@ -497,7 +566,7 @@ public class DataprocExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -515,10 +584,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DataprocExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -533,11 +601,16 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the dataproc service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
 
     // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
     String projectId = "";
@@ -548,11 +621,12 @@ public class DataprocExample {
     // * [Required] The job ID.
     String jobId = "";
 
+
     Dataproc.Projects.Regions.Jobs.Delete request = dataprocService.projects().regions().jobs().delete(projectId, region, jobId);
     request.execute();
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
@@ -561,7 +635,7 @@ public class DataprocExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -575,15 +649,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dataproc.Dataproc;
 import com.google.api.services.dataproc.model.Job;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DataprocExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -598,11 +673,16 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the dataproc service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
 
     // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
     String projectId = "";
@@ -613,13 +693,16 @@ public class DataprocExample {
     // * [Required] The job ID.
     String jobId = "";
 
+
     Dataproc.Projects.Regions.Jobs.Get request = dataprocService.projects().regions().jobs().get(projectId, region, jobId);
     Job response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
@@ -628,7 +711,7 @@ public class DataprocExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -643,15 +726,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dataproc.Dataproc;
 import com.google.api.services.dataproc.model.Job;
 import com.google.api.services.dataproc.model.ListJobsResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DataprocExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -666,11 +750,16 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the dataproc service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
 
     // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
     String projectId = "";
@@ -678,7 +767,11 @@ public class DataprocExample {
     // * [Required] The Cloud Dataproc region in which to handle the request.
     String region = "";
 
+
     Dataproc.Projects.Regions.Jobs.List request = dataprocService.projects().regions().jobs().list(projectId, region);
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     ListJobsResponse response;
     do {
       response = request.execute();
@@ -686,14 +779,15 @@ public class DataprocExample {
         continue;
 
       for (Job job : response.getJobs()) {
-        // TODO: Add code here to process each 'job' resource
+        // TODO: Change code below to process each `job` resource:
+        System.out.println(gson.toJson(new JsonParser().parse(job.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
@@ -702,7 +796,7 @@ public class DataprocExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -717,15 +811,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dataproc.Dataproc;
 import com.google.api.services.dataproc.model.Job;
 import com.google.api.services.dataproc.model.SubmitJobRequest;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DataprocExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -740,11 +835,16 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the dataproc service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'submit' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `submit` method:
 
     // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
     String projectId = "";
@@ -752,16 +852,20 @@ public class DataprocExample {
     // * [Required] The Cloud Dataproc region in which to handle the request.
     String region = "";
 
-    SubmitJobRequest content = new SubmitJobRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Dataproc.Projects.Regions.Jobs.Submit request = dataprocService.projects().regions().jobs().submit(projectId, region, content);
+    SubmitJobRequest requestBody = new SubmitJobRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Dataproc.Projects.Regions.Jobs.Submit request = dataprocService.projects().regions().jobs().submit(projectId, region, requestBody);
     Job response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
@@ -770,7 +874,7 @@ public class DataprocExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -788,10 +892,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DataprocExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -806,20 +909,26 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the dataproc service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'cancel' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `cancel` method:
 
     // * The name of the operation resource to be cancelled.
     String name = "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}";
+
 
     Dataproc.Projects.Regions.Operations.Cancel request = dataprocService.projects().regions().operations().cancel(name);
     request.execute();
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
@@ -828,7 +937,7 @@ public class DataprocExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -846,10 +955,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DataprocExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -864,20 +972,26 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the dataproc service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
 
     // * The name of the operation resource to be deleted.
     String name = "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}";
+
 
     Dataproc.Projects.Regions.Operations.Delete request = dataprocService.projects().regions().operations().delete(name);
     request.execute();
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
@@ -886,7 +1000,7 @@ public class DataprocExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -900,15 +1014,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dataproc.Dataproc;
 import com.google.api.services.dataproc.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DataprocExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -923,22 +1038,30 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the dataproc service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
 
     // * The name of the operation resource.
     String name = "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}";
 
+
     Dataproc.Projects.Regions.Operations.Get request = dataprocService.projects().regions().operations().get(name);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
@@ -947,7 +1070,7 @@ public class DataprocExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -962,15 +1085,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dataproc.Dataproc;
 import com.google.api.services.dataproc.model.ListOperationsResponse;
 import com.google.api.services.dataproc.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DataprocExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -985,16 +1109,25 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the dataproc service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
 
     // * The name of the operation collection.
     String name = "";
 
+
     Dataproc.Projects.Regions.Operations.List request = dataprocService.projects().regions().operations().list(name);
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     ListOperationsResponse response;
     do {
       response = request.execute();
@@ -1002,7 +1135,8 @@ public class DataprocExample {
         continue;
 
       for (Operation operation : response.getOperations()) {
-        // TODO: Add code here to process each 'operation' resource
+        // TODO: Change code below to process each `operation` resource:
+        System.out.println(gson.toJson(new JsonParser().parse(operation.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());

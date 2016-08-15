@@ -6,9 +6,9 @@
 
 @snippet generateClass(method)
   @let apiName = context.getApi.getName, \
-      ApiName = context.lowerCamelToUpperCamel(apiName), \
-      apiVersion = context.getApiVersion, \
-      ApiVersion = context.lowerCamelToUpperCamel(apiVersion)
+       ApiName = context.lowerCamelToUpperCamel(apiName), \
+       apiVersion = context.getApiVersion, \
+       ApiVersion = context.lowerCamelToUpperCamel(apiVersion)
     @# BEFORE RUNNING:
     @# ---------------
     @# 1. If not already done, enable the {@context.getService.getTitle}
@@ -17,21 +17,29 @@
     @# 2. This sample uses Application Default Credentials for authentication.
     @#    If not already done, install the gcloud CLI from
     @#    https://cloud.google.com/sdk/ and run
-    @#    'gcloud beta auth application-default login'
+    @#    `gcloud beta auth application-default login`
     @# 3. Install the Ruby client library and Application Default Credentials
-    @#    library by running 'gem install google-api-client' and
-    @#    'gem install googleauth'
+    @#    library by running `gem install google-api-client` and
+    @#    `gem install googleauth`
     require 'googleauth'
     require 'google/apis/{@apiName}_{@apiVersion}'
+    require 'json'
 
+    @# Construct the {@apiName} service object (version {@apiVersion}) for interacting
+    @# with the API. You can browse other available API services and versions at
+    @# https://developers.google.com/api-client-library/ruby/apis/
     service = Google::Apis::{@ApiName}{@ApiVersion}::{@context.getServiceName}.new
+
+    @# Authentication is provided by the `gcloud` tool when running locally
+    @# and by built-in service accounts when running on GAE, GCE, or GKE.
+    @# For more information, see
+    @# https://developers.google.com/identity/protocols/application-default-credentials
     service.authorization = {@"\"}
         Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
   @end
 
 
   {@initialize(method)}
-
   @# Perform the call
   @if context.isPageStreaming(method)
     {@iterableCall(method)}
@@ -42,31 +50,39 @@
 
 @private initialize(method)
   @let methodName = context.getMethodName(method), \
-        apiaryConfig = context.getApiaryConfig, \
-        signatureType = apiaryConfig.getType(method.getRequestTypeUrl), \
-        params = context.getFlatMethodParams(method), \
-        apiName = context.getApi.getName, \
-        ApiName = context.lowerCamelToUpperCamel(apiName), \
-        apiVersion = context.getApiVersion, \
-        ApiVersion = context.lowerCamelToUpperCamel(apiVersion)
+       signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
+       params = context.getFlatMethodParams(method), \
+       apiName = context.getApi.getName, \
+       ApiName = context.lowerCamelToUpperCamel(apiName), \
+       apiVersion = context.getApiVersion, \
+       ApiVersion = context.lowerCamelToUpperCamel(apiVersion)
     @if params
-      @# {@TODO()} Change placeholders below to appropriate parameter values for the '{@methodName}' method:
 
-    @end
-    @join param : params
-      @let paramField = context.getField(signatureType, param), \
-           paramValue = context.typeDefaultValue(signatureType, paramField), \
-           paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
+      @# {@TODO()} Change placeholders below to desired parameter values for the `{@methodName}` method:
 
-        {@description(paramDescription)}
-        {@context.getParamName(method, param)} = {@paramValue}
+      @join param : params
+        @let paramField = context.getField(signatureType, param), \
+             paramValue = context.typeDefaultValue(signatureType, paramField), \
+             paramDescription = context.getDescription(signatureType.getName, param)
+          {@description(paramDescription)}
+          {@context.getParamName(method, param)} = {@paramValue}
+
+        @end
       @end
-    @end
 
+    @end
     @if context.hasRequestField(method)
 
-      {@resourceObject(method)} = \
-          Google::Apis::{@ApiName}{@ApiVersion}::{@context.lowerUnderscoreToUpperCamel(context.getRequestTypeName(method))}.new
+      @let requestBodyType = context.lowerUnderscoreToUpperCamel(context.getRequestTypeName(method))
+        {@requestBodyName(method)} = \
+            Google::Apis::{@ApiName}{@ApiVersion}::{@requestBodyType}.new
+        @if context.isPatch(method)
+          @# {@TODO()} Assign values to desired members of the `{@requestBodyName(method)}` object to be changed.
+        @else
+          @# {@TODO()} Assign values to desired members of the `{@requestBodyName(method)}` object.
+        @end
+      @end
+
 
     @end
   @end
@@ -74,50 +90,86 @@
 
 @private compactCall(method)
   @if context.isResponseEmpty(method)
-    service.{@context.getMethodName(method)}({@callArg(method)})
+    {@request(method)}
   @else
-    response = service.{@context.getMethodName(method)}({@callArg(method)})
+    {@responseName()} = {@request(method)}
+
+    @# {@TODO()} Change code below to process the `{@responseName()}` object:
+    {@print(responseName())}
   @end
 @end
 
 @private iterableCall(method)
-  @let responseType = method.getResponseTypeUrl, \
+  @let methodName = context.getMethodName(method), \
+       responseType = method.getResponseTypeUrl, \
        responseTypeRef = context.getApiaryConfig.getType(responseType), \
        resourceField = context.getFirstRepeatedField(responseTypeRef), \
-       methodName = context.getMethodName(method)
-    result_list = service.fetch_all(items: :{@resourceField.getName}) { |token|
-      service.{@methodName}({@callArg(method)}, page_token: token)
-    }
-    result_list.each { |element|
-      @# doThingsWith(element)
-    }
-  @end
-@end
+       resources = resourceField.getName
+    {@resources} = service.fetch_all(items: :{@resources}) do |token|
+      service.{@methodName}({@arguments(method)}, page_token: token)
+    end
 
-@private callArg(method)
-  @if context.hasRequestField(method)
-    @if context.getFlatMethodParams(method)
-      {@callArgNoBody(method)}, {@resourceObject(method)}
+    @if context.isMapField(responseTypeRef, resourceField.getName)
+      @let keyName = context.keyTypeName(resourceField), \
+           valueName = context.valueTypeName(resourceField)
+        {@resources}.each do |{@keyName}, {@valueName}|
+          @# {@TODO()} Change code below to process each ({@keyName}, {@valueName}) pair:
+          {@printEntry(keyName, valueName)}
+        end
+      @end
     @else
-      {@resourceObject(method)}
+      @let resourceName = context.elementTypeName(resourceField)
+        {@resources}.each do |{@resourceName}|
+          @# {@TODO()} Change code below to process each `{@resourceName}` resource:
+          {@print(resourceName)}
+        end
+      @end
     @end
-  @else
-    {@callArgNoBody(method)}
   @end
 @end
 
-@private callArgNoBody(method)
-  @join param : context.getFlatMethodParams(method) on ", "
+@private request(method)
+  service.{@context.getMethodName(method)}({@arguments(method)})
+@end
+
+@private arguments(method)
+  @let params = context.getFlatMethodParams(method)
+    @if context.hasRequestField(method)
+      @if params
+        {@argumentList(method, params)}, {@requestBodyName(method)}
+      @else
+        {@requestBodyName(method)}
+      @end
+    @else
+      {@argumentList(method, params)}
+    @end
+  @end
+@end
+
+@private argumentList(method, params)
+  @join param : params on ", "
     {@context.getParamName(method, param)}
   @end
 @end
 
-@private resourceObject(method)
-  {@context.getRequestTypeName(method)}_object
+@private requestBodyName(method)
+  {@context.getRequestTypeName(method)}_body
+@end
+
+@private responseName()
+  response
 @end
 
 @private description(description)
-  @join line : context.lineWrapDoc(description, 100)
+  @join line : context.lineWrapDoc(description)
     @# {@line}
   @end
+@end
+
+@private printEntry(key, value)
+  puts String({@key}) << " => " << JSON.pretty_generate({@value})
+@end
+
+@private print(element)
+  puts JSON.pretty_generate({@element})
 @end

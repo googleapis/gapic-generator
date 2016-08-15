@@ -7,24 +7,35 @@
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_dataset' method:
+
+# TODO: Change placeholders below to desired parameter values for the `delete_dataset` method:
 
 # * Project ID of the dataset being deleted
 project_id = ''
 
 # * Dataset ID of dataset being deleted
 dataset_id = ''
+
 
 # Perform the call
 service.delete_dataset(project_id, dataset_id)
@@ -36,18 +47,28 @@ service.delete_dataset(project_id, dataset_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_dataset' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_dataset` method:
 
 # * Project ID of the requested dataset
 project_id = ''
@@ -55,8 +76,12 @@ project_id = ''
 # * Dataset ID of the requested dataset
 dataset_id = ''
 
+
 # Perform the call
 response = service.get_dataset(project_id, dataset_id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the BigQuery API
@@ -65,27 +90,42 @@ response = service.get_dataset(project_id, dataset_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert_dataset' method:
+
+# TODO: Change placeholders below to desired parameter values for the `insert_dataset` method:
 
 # * Project ID of the new dataset
 project_id = ''
 
-dataset_object = Google::Apis::BigqueryV2::Dataset.new
+
+dataset_body = Google::Apis::BigqueryV2::Dataset.new
+# TODO: Assign values to desired members of the `dataset_body` object.
 
 
 # Perform the call
-response = service.insert_dataset(project_id, dataset_object)
+response = service.insert_dataset(project_id, dataset_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the BigQuery API
@@ -94,29 +134,42 @@ response = service.insert_dataset(project_id, dataset_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_datasets' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_datasets` method:
 
 # * Project ID of the datasets to be listed
 project_id = ''
 
+
 # Perform the call
-result_list = service.fetch_all(items: :datasets) { |token|
+datasets = service.fetch_all(items: :datasets) do |token|
   service.list_datasets(project_id, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+datasets.each do |dataset_list._datasets|
+  # TODO: Change code below to process each `dataset_list._datasets` resource:
+  puts JSON.pretty_generate(dataset_list._datasets)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the BigQuery API
@@ -125,18 +178,28 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch_dataset' method:
+
+# TODO: Change placeholders below to desired parameter values for the `patch_dataset` method:
 
 # * Project ID of the dataset being updated
 project_id = ''
@@ -144,11 +207,16 @@ project_id = ''
 # * Dataset ID of the dataset being updated
 dataset_id = ''
 
-dataset_object = Google::Apis::BigqueryV2::Dataset.new
+
+dataset_body = Google::Apis::BigqueryV2::Dataset.new
+# TODO: Assign values to desired members of the `dataset_body` object to be changed.
 
 
 # Perform the call
-response = service.patch_dataset(project_id, dataset_id, dataset_object)
+response = service.patch_dataset(project_id, dataset_id, dataset_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the BigQuery API
@@ -157,18 +225,28 @@ response = service.patch_dataset(project_id, dataset_id, dataset_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_dataset' method:
+
+# TODO: Change placeholders below to desired parameter values for the `update_dataset` method:
 
 # * Project ID of the dataset being updated
 project_id = ''
@@ -176,11 +254,16 @@ project_id = ''
 # * Dataset ID of the dataset being updated
 dataset_id = ''
 
-dataset_object = Google::Apis::BigqueryV2::Dataset.new
+
+dataset_body = Google::Apis::BigqueryV2::Dataset.new
+# TODO: Assign values to desired members of the `dataset_body` object.
 
 
 # Perform the call
-response = service.update_dataset(project_id, dataset_id, dataset_object)
+response = service.update_dataset(project_id, dataset_id, dataset_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the BigQuery API
@@ -189,18 +272,28 @@ response = service.update_dataset(project_id, dataset_id, dataset_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'cancel_job' method:
+
+# TODO: Change placeholders below to desired parameter values for the `cancel_job` method:
 
 # * [Required] Project ID of the job to cancel
 project_id = ''
@@ -208,8 +301,12 @@ project_id = ''
 # * [Required] Job ID of the job to cancel
 job_id = ''
 
+
 # Perform the call
 response = service.cancel_job(project_id, job_id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the BigQuery API
@@ -218,18 +315,28 @@ response = service.cancel_job(project_id, job_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_job' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_job` method:
 
 # * [Required] Project ID of the requested job
 project_id = ''
@@ -237,8 +344,12 @@ project_id = ''
 # * [Required] Job ID of the requested job
 job_id = ''
 
+
 # Perform the call
 response = service.get_job(project_id, job_id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the BigQuery API
@@ -247,18 +358,28 @@ response = service.get_job(project_id, job_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_job_query_results' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_job_query_results` method:
 
 # * [Required] Project ID of the query job
 project_id = ''
@@ -266,8 +387,12 @@ project_id = ''
 # * [Required] Job ID of the query job
 job_id = ''
 
+
 # Perform the call
 response = service.get_job_query_results(project_id, job_id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the BigQuery API
@@ -276,27 +401,42 @@ response = service.get_job_query_results(project_id, job_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert_job' method:
+
+# TODO: Change placeholders below to desired parameter values for the `insert_job` method:
 
 # * Project ID of the project that will be billed for the job
 project_id = ''
 
-job_object = Google::Apis::BigqueryV2::Job.new
+
+job_body = Google::Apis::BigqueryV2::Job.new
+# TODO: Assign values to desired members of the `job_body` object.
 
 
 # Perform the call
-response = service.insert_job(project_id, job_object)
+response = service.insert_job(project_id, job_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the BigQuery API
@@ -305,29 +445,42 @@ response = service.insert_job(project_id, job_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_jobs' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_jobs` method:
 
 # * Project ID of the jobs to list
 project_id = ''
 
+
 # Perform the call
-result_list = service.fetch_all(items: :jobs) { |token|
+jobs = service.fetch_all(items: :jobs) do |token|
   service.list_jobs(project_id, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+jobs.each do |job_list._jobs|
+  # TODO: Change code below to process each `job_list._jobs` resource:
+  puts JSON.pretty_generate(job_list._jobs)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the BigQuery API
@@ -336,27 +489,42 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'query_job' method:
+
+# TODO: Change placeholders below to desired parameter values for the `query_job` method:
 
 # * Project ID of the project billed for the query
 project_id = ''
 
-query_request_object = Google::Apis::BigqueryV2::QueryRequest.new
+
+query_request_body = Google::Apis::BigqueryV2::QueryRequest.new
+# TODO: Assign values to desired members of the `query_request_body` object.
 
 
 # Perform the call
-response = service.query_job(project_id, query_request_object)
+response = service.query_job(project_id, query_request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the BigQuery API
@@ -365,26 +533,36 @@ response = service.query_job(project_id, query_request_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 
-
 # Perform the call
-result_list = service.fetch_all(items: :projects) { |token|
+projects = service.fetch_all(items: :projects) do |token|
   service.list_projects(, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+projects.each do |project_list._projects|
+  # TODO: Change code below to process each `project_list._projects` resource:
+  puts JSON.pretty_generate(project_list._projects)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the BigQuery API
@@ -393,18 +571,28 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert_all_table_data' method:
+
+# TODO: Change placeholders below to desired parameter values for the `insert_all_table_data` method:
 
 # * Project ID of the destination table.
 project_id = ''
@@ -415,11 +603,16 @@ dataset_id = ''
 # * Table ID of the destination table.
 table_id = ''
 
-insert_all_table_data_request_object = Google::Apis::BigqueryV2::InsertAllTableDataRequest.new
+
+insert_all_table_data_request_body = Google::Apis::BigqueryV2::InsertAllTableDataRequest.new
+# TODO: Assign values to desired members of the `insert_all_table_data_request_body` object.
 
 
 # Perform the call
-response = service.insert_all_table_data(project_id, dataset_id, table_id, insert_all_table_data_request_object)
+response = service.insert_all_table_data(project_id, dataset_id, table_id, insert_all_table_data_request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the BigQuery API
@@ -428,18 +621,28 @@ response = service.insert_all_table_data(project_id, dataset_id, table_id, inser
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_table_data' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_table_data` method:
 
 # * Project ID of the table to read
 project_id = ''
@@ -450,8 +653,12 @@ dataset_id = ''
 # * Table ID of the table to read
 table_id = ''
 
+
 # Perform the call
 response = service.list_table_data(project_id, dataset_id, table_id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the BigQuery API
@@ -460,18 +667,28 @@ response = service.list_table_data(project_id, dataset_id, table_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_table' method:
+
+# TODO: Change placeholders below to desired parameter values for the `delete_table` method:
 
 # * Project ID of the table to delete
 project_id = ''
@@ -481,6 +698,7 @@ dataset_id = ''
 
 # * Table ID of the table to delete
 table_id = ''
+
 
 # Perform the call
 service.delete_table(project_id, dataset_id, table_id)
@@ -492,18 +710,28 @@ service.delete_table(project_id, dataset_id, table_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_table' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_table` method:
 
 # * Project ID of the requested table
 project_id = ''
@@ -514,8 +742,12 @@ dataset_id = ''
 # * Table ID of the requested table
 table_id = ''
 
+
 # Perform the call
 response = service.get_table(project_id, dataset_id, table_id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the BigQuery API
@@ -524,18 +756,28 @@ response = service.get_table(project_id, dataset_id, table_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert_table' method:
+
+# TODO: Change placeholders below to desired parameter values for the `insert_table` method:
 
 # * Project ID of the new table
 project_id = ''
@@ -543,11 +785,16 @@ project_id = ''
 # * Dataset ID of the new table
 dataset_id = ''
 
-table_object = Google::Apis::BigqueryV2::Table.new
+
+table_body = Google::Apis::BigqueryV2::Table.new
+# TODO: Assign values to desired members of the `table_body` object.
 
 
 # Perform the call
-response = service.insert_table(project_id, dataset_id, table_object)
+response = service.insert_table(project_id, dataset_id, table_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the BigQuery API
@@ -556,18 +803,28 @@ response = service.insert_table(project_id, dataset_id, table_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_tables' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_tables` method:
 
 # * Project ID of the tables to list
 project_id = ''
@@ -575,13 +832,16 @@ project_id = ''
 # * Dataset ID of the tables to list
 dataset_id = ''
 
+
 # Perform the call
-result_list = service.fetch_all(items: :tables) { |token|
+tables = service.fetch_all(items: :tables) do |token|
   service.list_tables(project_id, dataset_id, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+tables.each do |table_list._tables|
+  # TODO: Change code below to process each `table_list._tables` resource:
+  puts JSON.pretty_generate(table_list._tables)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the BigQuery API
@@ -590,18 +850,28 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch_table' method:
+
+# TODO: Change placeholders below to desired parameter values for the `patch_table` method:
 
 # * Project ID of the table to update
 project_id = ''
@@ -612,11 +882,16 @@ dataset_id = ''
 # * Table ID of the table to update
 table_id = ''
 
-table_object = Google::Apis::BigqueryV2::Table.new
+
+table_body = Google::Apis::BigqueryV2::Table.new
+# TODO: Assign values to desired members of the `table_body` object to be changed.
 
 
 # Perform the call
-response = service.patch_table(project_id, dataset_id, table_id, table_object)
+response = service.patch_table(project_id, dataset_id, table_id, table_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the BigQuery API
@@ -625,18 +900,28 @@ response = service.patch_table(project_id, dataset_id, table_id, table_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/bigquery_v2'
+require 'json'
 
+# Construct the bigquery service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::BigqueryV2::BigqueryService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_table' method:
+
+# TODO: Change placeholders below to desired parameter values for the `update_table` method:
 
 # * Project ID of the table to update
 project_id = ''
@@ -647,8 +932,13 @@ dataset_id = ''
 # * Table ID of the table to update
 table_id = ''
 
-table_object = Google::Apis::BigqueryV2::Table.new
+
+table_body = Google::Apis::BigqueryV2::Table.new
+# TODO: Assign values to desired members of the `table_body` object.
 
 
 # Perform the call
-response = service.update_table(project_id, dataset_id, table_id, table_object)
+response = service.update_table(project_id, dataset_id, table_id, table_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)

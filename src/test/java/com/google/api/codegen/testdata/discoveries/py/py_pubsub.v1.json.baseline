@@ -8,17 +8,18 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -27,14 +28,16 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'acknowledge' method:
+# TODO: Change placeholders below to desired parameter values for the `acknowledge` method:
 
 # * The subscription whose message is being acknowledged.
 subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
 
+
 acknowledge_request_body = {
-# TODO: Add desired entries of the 'acknowledge_request_body' dict
+    # TODO: Add desired entries of the `acknowledge_request_body` dict.
 }
+
 
 request = service.projects().subscriptions().acknowledge(subscription=subscription, body=acknowledge_request_body)
 request.execute()
@@ -47,9 +50,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -57,9 +60,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -68,7 +72,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+# TODO: Change placeholders below to desired parameter values for the `create` method:
 
 # * The name of the subscription. It must have the format
 #   `"projects/{project}/subscriptions/{subscription}"`. `{subscription}` must start with a letter,
@@ -77,14 +81,16 @@ service = discovery.build('pubsub', 'v1', credentials=credentials)
 #   length, and it must not start with `"goog"`.
 name = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
 
+
 subscription_body = {
-# TODO: Add desired entries of the 'subscription_body' dict
+    # TODO: Add desired entries of the `subscription_body` dict.
 }
+
 
 request = service.projects().subscriptions().create(name=name, body=subscription_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -95,17 +101,18 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -114,10 +121,11 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+# TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 # * The subscription to delete.
 subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
+
 
 request = service.projects().subscriptions().delete(subscription=subscription)
 request.execute()
@@ -130,9 +138,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -140,9 +148,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -151,15 +160,16 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+# TODO: Change placeholders below to desired parameter values for the `get` method:
 
 # * The name of the subscription to get.
 subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
 
+
 request = service.projects().subscriptions().get(subscription=subscription)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -170,9 +180,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -180,9 +190,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -191,7 +202,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'getIamPolicy' method:
+# TODO: Change placeholders below to desired parameter values for the `getIamPolicy` method:
 
 # * REQUIRED: The resource for which policy is being requested. `resource` is usually specified as a
 #   path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified
@@ -199,10 +210,11 @@ service = discovery.build('pubsub', 'v1', credentials=credentials)
 #   GetIamPolicy rpc.
 resource = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
 
+
 request = service.projects().subscriptions().getIamPolicy(resource=resource)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -213,17 +225,20 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
+
+from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -232,10 +247,11 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * The name of the cloud project that subscriptions belong to.
 project = 'projects/{MY-PROJECT}'
+
 
 subscriptions = service.projects().subscriptions()
 request = subscriptions.list(project=project)
@@ -243,7 +259,8 @@ while request is not None:
     response = request.execute()
 
     for subscription in response['subscriptions']:
-        # TODO: Add code here to process each 'subscription' resource
+        # TODO: Change code below to process each `subscription` resource:
+        pprint(subscription)
 
     request = subscriptions.list_next(previous_request=request, previous_response=response)
 """
@@ -255,17 +272,18 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -274,14 +292,16 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'modifyAckDeadline' method:
+# TODO: Change placeholders below to desired parameter values for the `modifyAckDeadline` method:
 
 # * The name of the subscription.
 subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
 
+
 modify_ack_deadline_request_body = {
-# TODO: Add desired entries of the 'modify_ack_deadline_request_body' dict
+    # TODO: Add desired entries of the `modify_ack_deadline_request_body` dict.
 }
+
 
 request = service.projects().subscriptions().modifyAckDeadline(subscription=subscription, body=modify_ack_deadline_request_body)
 request.execute()
@@ -294,17 +314,18 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -313,14 +334,16 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'modifyPushConfig' method:
+# TODO: Change placeholders below to desired parameter values for the `modifyPushConfig` method:
 
 # * The name of the subscription.
 subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
 
+
 modify_push_config_request_body = {
-# TODO: Add desired entries of the 'modify_push_config_request_body' dict
+    # TODO: Add desired entries of the `modify_push_config_request_body` dict.
 }
+
 
 request = service.projects().subscriptions().modifyPushConfig(subscription=subscription, body=modify_push_config_request_body)
 request.execute()
@@ -333,9 +356,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -343,9 +366,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -354,19 +378,21 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'pull' method:
+# TODO: Change placeholders below to desired parameter values for the `pull` method:
 
 # * The subscription from which messages should be pulled.
 subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
 
+
 pull_request_body = {
-# TODO: Add desired entries of the 'pull_request_body' dict
+    # TODO: Add desired entries of the `pull_request_body` dict.
 }
+
 
 request = service.projects().subscriptions().pull(subscription=subscription, body=pull_request_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -377,9 +403,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -387,9 +413,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -398,7 +425,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'setIamPolicy' method:
+# TODO: Change placeholders below to desired parameter values for the `setIamPolicy` method:
 
 # * REQUIRED: The resource for which policy is being specified. `resource` is usually specified as a
 #   path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified
@@ -406,14 +433,16 @@ service = discovery.build('pubsub', 'v1', credentials=credentials)
 #   SetIamPolicy rpc.
 resource = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
 
+
 set_iam_policy_request_body = {
-# TODO: Add desired entries of the 'set_iam_policy_request_body' dict
+    # TODO: Add desired entries of the `set_iam_policy_request_body` dict.
 }
+
 
 request = service.projects().subscriptions().setIamPolicy(resource=resource, body=set_iam_policy_request_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -424,9 +453,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -434,9 +463,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -445,7 +475,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'testIamPermissions' method:
+# TODO: Change placeholders below to desired parameter values for the `testIamPermissions` method:
 
 # * REQUIRED: The resource for which policy detail is being requested. `resource` is usually specified
 #   as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path
@@ -453,14 +483,16 @@ service = discovery.build('pubsub', 'v1', credentials=credentials)
 #   respective TestIamPermissions rpc.
 resource = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
 
+
 test_iam_permissions_request_body = {
-# TODO: Add desired entries of the 'test_iam_permissions_request_body' dict
+    # TODO: Add desired entries of the `test_iam_permissions_request_body` dict.
 }
+
 
 request = service.projects().subscriptions().testIamPermissions(resource=resource, body=test_iam_permissions_request_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -471,9 +503,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -481,9 +513,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -492,7 +525,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+# TODO: Change placeholders below to desired parameter values for the `create` method:
 
 # * The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}`
 #   must start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`),
@@ -500,14 +533,16 @@ service = discovery.build('pubsub', 'v1', credentials=credentials)
 #   between 3 and 255 characters in length, and it must not start with `"goog"`.
 name = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
 
+
 topic_body = {
-# TODO: Add desired entries of the 'topic_body' dict
+    # TODO: Add desired entries of the `topic_body` dict.
 }
+
 
 request = service.projects().topics().create(name=name, body=topic_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -518,17 +553,18 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -537,10 +573,11 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+# TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 # * Name of the topic to delete.
 topic = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
+
 
 request = service.projects().topics().delete(topic=topic)
 request.execute()
@@ -553,9 +590,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -563,9 +600,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -574,15 +612,16 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+# TODO: Change placeholders below to desired parameter values for the `get` method:
 
 # * The name of the topic to get.
 topic = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
 
+
 request = service.projects().topics().get(topic=topic)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -593,9 +632,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -603,9 +642,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -614,7 +654,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'getIamPolicy' method:
+# TODO: Change placeholders below to desired parameter values for the `getIamPolicy` method:
 
 # * REQUIRED: The resource for which policy is being requested. `resource` is usually specified as a
 #   path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified
@@ -622,10 +662,11 @@ service = discovery.build('pubsub', 'v1', credentials=credentials)
 #   GetIamPolicy rpc.
 resource = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
 
+
 request = service.projects().topics().getIamPolicy(resource=resource)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -636,17 +677,20 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
+
+from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -655,10 +699,11 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * The name of the cloud project that topics belong to.
 project = 'projects/{MY-PROJECT}'
+
 
 topics = service.projects().topics()
 request = topics.list(project=project)
@@ -666,7 +711,8 @@ while request is not None:
     response = request.execute()
 
     for topic in response['topics']:
-        # TODO: Add code here to process each 'topic' resource
+        # TODO: Change code below to process each `topic` resource:
+        pprint(topic)
 
     request = topics.list_next(previous_request=request, previous_response=response)
 """
@@ -678,9 +724,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -688,9 +734,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -699,19 +746,21 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'publish' method:
+# TODO: Change placeholders below to desired parameter values for the `publish` method:
 
 # * The messages in the request will be published on this topic.
 topic = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
 
+
 publish_request_body = {
-# TODO: Add desired entries of the 'publish_request_body' dict
+    # TODO: Add desired entries of the `publish_request_body` dict.
 }
+
 
 request = service.projects().topics().publish(topic=topic, body=publish_request_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -722,9 +771,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -732,9 +781,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -743,7 +793,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'setIamPolicy' method:
+# TODO: Change placeholders below to desired parameter values for the `setIamPolicy` method:
 
 # * REQUIRED: The resource for which policy is being specified. `resource` is usually specified as a
 #   path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified
@@ -751,14 +801,16 @@ service = discovery.build('pubsub', 'v1', credentials=credentials)
 #   SetIamPolicy rpc.
 resource = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
 
+
 set_iam_policy_request_body = {
-# TODO: Add desired entries of the 'set_iam_policy_request_body' dict
+    # TODO: Add desired entries of the `set_iam_policy_request_body` dict.
 }
+
 
 request = service.projects().topics().setIamPolicy(resource=resource, body=set_iam_policy_request_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -769,17 +821,20 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
+
+from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -788,10 +843,11 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * The name of the topic that subscriptions are attached to.
 topic = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
+
 
 subscriptions = service.projects().topics().subscriptions()
 request = subscriptions.list(topic=topic)
@@ -799,7 +855,8 @@ while request is not None:
     response = request.execute()
 
     for item in response['subscriptions']:
-        # TODO: Add code here to process each 'item' resource
+        # TODO: Change code below to process each `item` resource:
+        pprint(item)
 
     request = subscriptions.list_next(previous_request=request, previous_response=response)
 """
@@ -811,9 +868,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -821,9 +878,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the pubsub service object (version v1) for interacting
@@ -832,7 +890,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'testIamPermissions' method:
+# TODO: Change placeholders below to desired parameter values for the `testIamPermissions` method:
 
 # * REQUIRED: The resource for which policy detail is being requested. `resource` is usually specified
 #   as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path
@@ -840,12 +898,14 @@ service = discovery.build('pubsub', 'v1', credentials=credentials)
 #   respective TestIamPermissions rpc.
 resource = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
 
+
 test_iam_permissions_request_body = {
-# TODO: Add desired entries of the 'test_iam_permissions_request_body' dict
+    # TODO: Add desired entries of the `test_iam_permissions_request_body` dict.
 }
+
 
 request = service.projects().topics().testIamPermissions(resource=resource, body=test_iam_permissions_request_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)

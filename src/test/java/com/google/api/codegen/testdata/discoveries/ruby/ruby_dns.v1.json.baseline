@@ -7,18 +7,28 @@
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dns_v1'
+require 'json'
 
+# Construct the dns service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DnsV1::DnsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'create_change' method:
+
+# TODO: Change placeholders below to desired parameter values for the `create_change` method:
 
 # * Identifies the project addressed by this request.
 project = ''
@@ -26,11 +36,16 @@ project = ''
 # * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
 managed_zone = ''
 
-change_object = Google::Apis::DnsV1::Change.new
+
+change_body = Google::Apis::DnsV1::Change.new
+# TODO: Assign values to desired members of the `change_body` object.
 
 
 # Perform the call
-response = service.create_change(project, managed_zone, change_object)
+response = service.create_change(project, managed_zone, change_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud DNS API
@@ -39,18 +54,28 @@ response = service.create_change(project, managed_zone, change_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dns_v1'
+require 'json'
 
+# Construct the dns service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DnsV1::DnsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_change' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_change` method:
 
 # * Identifies the project addressed by this request.
 project = ''
@@ -61,8 +86,12 @@ managed_zone = ''
 # * The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
 change_id = ''
 
+
 # Perform the call
 response = service.get_change(project, managed_zone, change_id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud DNS API
@@ -71,18 +100,28 @@ response = service.get_change(project, managed_zone, change_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dns_v1'
+require 'json'
 
+# Construct the dns service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DnsV1::DnsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_changes' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_changes` method:
 
 # * Identifies the project addressed by this request.
 project = ''
@@ -90,13 +129,16 @@ project = ''
 # * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
 managed_zone = ''
 
+
 # Perform the call
-result_list = service.fetch_all(items: :changes) { |token|
+changes = service.fetch_all(items: :changes) do |token|
   service.list_changes(project, managed_zone, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+changes.each do |change|
+  # TODO: Change code below to process each `change` resource:
+  puts JSON.pretty_generate(change)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud DNS API
@@ -105,27 +147,42 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dns_v1'
+require 'json'
 
+# Construct the dns service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DnsV1::DnsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'create_managed_zone' method:
+
+# TODO: Change placeholders below to desired parameter values for the `create_managed_zone` method:
 
 # * Identifies the project addressed by this request.
 project = ''
 
-managed_zone_object = Google::Apis::DnsV1::ManagedZone.new
+
+managed_zone_body = Google::Apis::DnsV1::ManagedZone.new
+# TODO: Assign values to desired members of the `managed_zone_body` object.
 
 
 # Perform the call
-response = service.create_managed_zone(project, managed_zone_object)
+response = service.create_managed_zone(project, managed_zone_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud DNS API
@@ -134,24 +191,35 @@ response = service.create_managed_zone(project, managed_zone_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dns_v1'
+require 'json'
 
+# Construct the dns service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DnsV1::DnsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_managed_zone' method:
+
+# TODO: Change placeholders below to desired parameter values for the `delete_managed_zone` method:
 
 # * Identifies the project addressed by this request.
 project = ''
 
 # * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
 managed_zone = ''
+
 
 # Perform the call
 service.delete_managed_zone(project, managed_zone)
@@ -163,27 +231,41 @@ service.delete_managed_zone(project, managed_zone)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dns_v1'
+require 'json'
 
+# Construct the dns service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DnsV1::DnsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_managed_zone' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_managed_zone` method:
 
 # * Identifies the project addressed by this request.
 project = ''
 
 # * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
 managed_zone = ''
+
 
 # Perform the call
 response = service.get_managed_zone(project, managed_zone)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud DNS API
@@ -192,29 +274,42 @@ response = service.get_managed_zone(project, managed_zone)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dns_v1'
+require 'json'
 
+# Construct the dns service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DnsV1::DnsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_managed_zones' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_managed_zones` method:
 
 # * Identifies the project addressed by this request.
 project = ''
+
 
 # Perform the call
-result_list = service.fetch_all(items: :managedZones) { |token|
+managedZones = service.fetch_all(items: :managedZones) do |token|
   service.list_managed_zones(project, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+managedZones.each do |managed_zone|
+  # TODO: Change code below to process each `managed_zone` resource:
+  puts JSON.pretty_generate(managed_zone)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud DNS API
@@ -223,24 +318,38 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dns_v1'
+require 'json'
 
+# Construct the dns service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DnsV1::DnsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_project' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_project` method:
 
 # * Identifies the project addressed by this request.
 project = ''
+
 
 # Perform the call
 response = service.get_project(project)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud DNS API
@@ -249,18 +358,28 @@ response = service.get_project(project)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dns_v1'
+require 'json'
 
+# Construct the dns service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DnsV1::DnsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_resource_record_sets' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_resource_record_sets` method:
 
 # * Identifies the project addressed by this request.
 project = ''
@@ -268,10 +387,13 @@ project = ''
 # * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
 managed_zone = ''
 
+
 # Perform the call
-result_list = service.fetch_all(items: :rrsets) { |token|
+rrsets = service.fetch_all(items: :rrsets) do |token|
   service.list_resource_record_sets(project, managed_zone, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+rrsets.each do |resource_record_set|
+  # TODO: Change code below to process each `resource_record_set` resource:
+  puts JSON.pretty_generate(resource_record_set)
+end

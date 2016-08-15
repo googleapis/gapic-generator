@@ -7,18 +7,28 @@
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/prediction_v1_6'
+require 'json'
 
+# Construct the prediction service object (version v1_6) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::PredictionV1_6::PredictionService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'predict_hosted_model' method:
+
+# TODO: Change placeholders below to desired parameter values for the `predict_hosted_model` method:
 
 # * The project associated with the model.
 project = ''
@@ -26,11 +36,16 @@ project = ''
 # * The name of a hosted model.
 hosted_model_name = ''
 
-input_object = Google::Apis::PredictionV1_6::Input.new
+
+input_body = Google::Apis::PredictionV1_6::Input.new
+# TODO: Assign values to desired members of the `input_body` object.
 
 
 # Perform the call
-response = service.predict_hosted_model(project, hosted_model_name, input_object)
+response = service.predict_hosted_model(project, hosted_model_name, input_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Prediction API
@@ -39,27 +54,41 @@ response = service.predict_hosted_model(project, hosted_model_name, input_object
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/prediction_v1_6'
+require 'json'
 
+# Construct the prediction service object (version v1_6) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::PredictionV1_6::PredictionService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'analyze_trained_model' method:
+
+# TODO: Change placeholders below to desired parameter values for the `analyze_trained_model` method:
 
 # * The project associated with the model.
 project = ''
 
 # * The unique name for the predictive model.
 id = ''
+
 
 # Perform the call
 response = service.analyze_trained_model(project, id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Prediction API
@@ -68,24 +97,35 @@ response = service.analyze_trained_model(project, id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/prediction_v1_6'
+require 'json'
 
+# Construct the prediction service object (version v1_6) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::PredictionV1_6::PredictionService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_trained_model' method:
+
+# TODO: Change placeholders below to desired parameter values for the `delete_trained_model` method:
 
 # * The project associated with the model.
 project = ''
 
 # * The unique name for the predictive model.
 id = ''
+
 
 # Perform the call
 service.delete_trained_model(project, id)
@@ -97,27 +137,41 @@ service.delete_trained_model(project, id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/prediction_v1_6'
+require 'json'
 
+# Construct the prediction service object (version v1_6) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::PredictionV1_6::PredictionService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_trained_model' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_trained_model` method:
 
 # * The project associated with the model.
 project = ''
 
 # * The unique name for the predictive model.
 id = ''
+
 
 # Perform the call
 response = service.get_trained_model(project, id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Prediction API
@@ -126,27 +180,42 @@ response = service.get_trained_model(project, id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/prediction_v1_6'
+require 'json'
 
+# Construct the prediction service object (version v1_6) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::PredictionV1_6::PredictionService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert_trained_model' method:
+
+# TODO: Change placeholders below to desired parameter values for the `insert_trained_model` method:
 
 # * The project associated with the model.
 project = ''
 
-insert_object = Google::Apis::PredictionV1_6::Insert.new
+
+insert_body = Google::Apis::PredictionV1_6::Insert.new
+# TODO: Assign values to desired members of the `insert_body` object.
 
 
 # Perform the call
-response = service.insert_trained_model(project, insert_object)
+response = service.insert_trained_model(project, insert_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Prediction API
@@ -155,29 +224,42 @@ response = service.insert_trained_model(project, insert_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/prediction_v1_6'
+require 'json'
 
+# Construct the prediction service object (version v1_6) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::PredictionV1_6::PredictionService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_trained_models' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_trained_models` method:
 
 # * The project associated with the model.
 project = ''
 
+
 # Perform the call
-result_list = service.fetch_all(items: :items) { |token|
+items = service.fetch_all(items: :items) do |token|
   service.list_trained_models(project, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+items.each do |insert2|
+  # TODO: Change code below to process each `insert2` resource:
+  puts JSON.pretty_generate(insert2)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Prediction API
@@ -186,18 +268,28 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/prediction_v1_6'
+require 'json'
 
+# Construct the prediction service object (version v1_6) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::PredictionV1_6::PredictionService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'predict_trained_model' method:
+
+# TODO: Change placeholders below to desired parameter values for the `predict_trained_model` method:
 
 # * The project associated with the model.
 project = ''
@@ -205,11 +297,16 @@ project = ''
 # * The unique name for the predictive model.
 id = ''
 
-input_object = Google::Apis::PredictionV1_6::Input.new
+
+input_body = Google::Apis::PredictionV1_6::Input.new
+# TODO: Assign values to desired members of the `input_body` object.
 
 
 # Perform the call
-response = service.predict_trained_model(project, id, input_object)
+response = service.predict_trained_model(project, id, input_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Prediction API
@@ -218,18 +315,28 @@ response = service.predict_trained_model(project, id, input_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/prediction_v1_6'
+require 'json'
 
+# Construct the prediction service object (version v1_6) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::PredictionV1_6::PredictionService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_trained_model' method:
+
+# TODO: Change placeholders below to desired parameter values for the `update_trained_model` method:
 
 # * The project associated with the model.
 project = ''
@@ -237,8 +344,13 @@ project = ''
 # * The unique name for the predictive model.
 id = ''
 
-update_object = Google::Apis::PredictionV1_6::Update.new
+
+update_body = Google::Apis::PredictionV1_6::Update.new
+# TODO: Assign values to desired members of the `update_body` object.
 
 
 # Perform the call
-response = service.update_trained_model(project, id, update_object)
+response = service.update_trained_model(project, id, update_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)

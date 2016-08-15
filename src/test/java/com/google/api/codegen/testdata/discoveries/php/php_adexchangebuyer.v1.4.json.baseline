@@ -9,7 +9,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -17,20 +17,29 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
 
 // * The account id
 $id = 0;
 
+
 $response = $service->accounts->get($id);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -41,7 +50,7 @@ $response = $service->accounts->get($id);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -49,18 +58,23 @@ $response = $service->accounts->get($id);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
 
 
 $response = $service->accounts->listAccounts();
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -71,7 +85,7 @@ $response = $service->accounts->listAccounts();
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -79,22 +93,33 @@ $response = $service->accounts->listAccounts();
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
 
 // * The account id
 $id = 0;
 
-$postBody = new Google_Service_Adexchangebuyer_Account($client);
 
-$response = $service->accounts->patch($id, $postBody);
+$Google_Service_Adexchangebuyer_AccountBody = new Google_Service_Adexchangebuyer_Account($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Adexchangebuyer_AccountBody` object to be changed.
 
+
+$response = $service->accounts->patch($id, $Google_Service_Adexchangebuyer_AccountBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -105,7 +130,7 @@ $response = $service->accounts->patch($id, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -113,22 +138,33 @@ $response = $service->accounts->patch($id, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
 
 // * The account id
 $id = 0;
 
-$postBody = new Google_Service_Adexchangebuyer_Account($client);
 
-$response = $service->accounts->update($id, $postBody);
+$Google_Service_Adexchangebuyer_AccountBody = new Google_Service_Adexchangebuyer_Account($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Adexchangebuyer_AccountBody` object.
 
+
+$response = $service->accounts->update($id, $Google_Service_Adexchangebuyer_AccountBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -139,7 +175,7 @@ $response = $service->accounts->update($id, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -147,20 +183,29 @@ $response = $service->accounts->update($id, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
 
 // * The account id.
 $accountId = 0;
 
+
 $response = $service->billingInfo->get($accountId);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -171,7 +216,7 @@ $response = $service->billingInfo->get($accountId);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -179,18 +224,23 @@ $response = $service->billingInfo->get($accountId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
 
 
 $response = $service->billingInfo->listBillingInfo();
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -201,7 +251,7 @@ $response = $service->billingInfo->listBillingInfo();
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -209,14 +259,20 @@ $response = $service->billingInfo->listBillingInfo();
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
 
 // * The account id to get the budget information for.
 $accountId = '0';
@@ -224,8 +280,11 @@ $accountId = '0';
 // * The billing id to get the budget information for.
 $billingId = '0';
 
+
 $response = $service->budget->get($accountId, $billingId);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -236,7 +295,7 @@ $response = $service->budget->get($accountId, $billingId);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -244,14 +303,20 @@ $response = $service->budget->get($accountId, $billingId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
 
 // * The account id associated with the budget being updated.
 $accountId = '0';
@@ -259,10 +324,15 @@ $accountId = '0';
 // * The billing id associated with the budget being updated.
 $billingId = '0';
 
-$postBody = new Google_Service_Adexchangebuyer_Budget($client);
 
-$response = $service->budget->patch($accountId, $billingId, $postBody);
+$Google_Service_Adexchangebuyer_BudgetBody = new Google_Service_Adexchangebuyer_Budget($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Adexchangebuyer_BudgetBody` object to be changed.
 
+
+$response = $service->budget->patch($accountId, $billingId, $Google_Service_Adexchangebuyer_BudgetBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -273,7 +343,7 @@ $response = $service->budget->patch($accountId, $billingId, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -281,14 +351,20 @@ $response = $service->budget->patch($accountId, $billingId, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
 
 // * The account id associated with the budget being updated.
 $accountId = '0';
@@ -296,10 +372,15 @@ $accountId = '0';
 // * The billing id associated with the budget being updated.
 $billingId = '0';
 
-$postBody = new Google_Service_Adexchangebuyer_Budget($client);
 
-$response = $service->budget->update($accountId, $billingId, $postBody);
+$Google_Service_Adexchangebuyer_BudgetBody = new Google_Service_Adexchangebuyer_Budget($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Adexchangebuyer_BudgetBody` object.
 
+
+$response = $service->budget->update($accountId, $billingId, $Google_Service_Adexchangebuyer_BudgetBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -310,7 +391,7 @@ $response = $service->budget->update($accountId, $billingId, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -318,14 +399,20 @@ $response = $service->budget->update($accountId, $billingId, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `addDeal` method:
 
 // * The id for the account that will serve this creative.
 $accountId = 0;
@@ -336,8 +423,8 @@ $buyerCreativeId = '';
 // * The id of the deal id to associate with this creative.
 $dealId = '0';
 
-$response = $service->creatives->addDeal($accountId, $buyerCreativeId, $dealId);
 
+$service->creatives->addDeal($accountId, $buyerCreativeId, $dealId);
 <?php
 /*
  * BEFORE RUNNING:
@@ -348,7 +435,7 @@ $response = $service->creatives->addDeal($accountId, $buyerCreativeId, $dealId);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -356,14 +443,20 @@ $response = $service->creatives->addDeal($accountId, $buyerCreativeId, $dealId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
 
 // * The id for the account that will serve this creative.
 $accountId = 0;
@@ -371,8 +464,11 @@ $accountId = 0;
 // * The buyer-specific id for this creative.
 $buyerCreativeId = '';
 
+
 $response = $service->creatives->get($accountId, $buyerCreativeId);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -383,7 +479,7 @@ $response = $service->creatives->get($accountId, $buyerCreativeId);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -391,20 +487,27 @@ $response = $service->creatives->get($accountId, $buyerCreativeId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
 
 
-$postBody = new Google_Service_Adexchangebuyer_Creative($client);
+$Google_Service_Adexchangebuyer_CreativeBody = new Google_Service_Adexchangebuyer_Creative($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Adexchangebuyer_CreativeBody` object.
 
-$response = $service->creatives->insert($postBody);
 
+$response = $service->creatives->insert($Google_Service_Adexchangebuyer_CreativeBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -415,7 +518,7 @@ $response = $service->creatives->insert($postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -423,22 +526,30 @@ $response = $service->creatives->insert($postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
 
 
-$response = $service->creatives->listCreatives();
+$optParams = array();
+do {
+  $response = $service->creatives->listCreatives($optParams);
 
-foreach ($response['items'] as $element) {
-  // TODO: Add code here to process the element.
-}
+  foreach ($response['items'] as $creative) {
+    // TODO: Change code below to process each `creative` resource:
+    echo '<pre>', var_export($creative, true), '</pre>', "\n";
+  }
 
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -449,7 +560,7 @@ foreach ($response['items'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -457,14 +568,20 @@ foreach ($response['items'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `removeDeal` method:
 
 // * The id for the account that will serve this creative.
 $accountId = 0;
@@ -475,8 +592,8 @@ $buyerCreativeId = '';
 // * The id of the deal id to disassociate with this creative.
 $dealId = '0';
 
-$response = $service->creatives->removeDeal($accountId, $buyerCreativeId, $dealId);
 
+$service->creatives->removeDeal($accountId, $buyerCreativeId, $dealId);
 <?php
 /*
  * BEFORE RUNNING:
@@ -487,7 +604,7 @@ $response = $service->creatives->removeDeal($accountId, $buyerCreativeId, $dealI
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -495,22 +612,33 @@ $response = $service->creatives->removeDeal($accountId, $buyerCreativeId, $dealI
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 // * The proposalId to delete deals from.
 $proposalId = '';
 
-$postBody = new Google_Service_Adexchangebuyer_DeleteOrderDealsRequest($client);
 
-$response = $service->marketplacedeals->delete($proposalId, $postBody);
+$Google_Service_Adexchangebuyer_DeleteOrderDealsRequestBody = new Google_Service_Adexchangebuyer_DeleteOrderDealsRequest($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Adexchangebuyer_DeleteOrderDealsRequestBody` object.
 
+
+$response = $service->marketplacedeals->delete($proposalId, $Google_Service_Adexchangebuyer_DeleteOrderDealsRequestBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -521,7 +649,7 @@ $response = $service->marketplacedeals->delete($proposalId, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -529,22 +657,33 @@ $response = $service->marketplacedeals->delete($proposalId, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 // * proposalId for which deals need to be added.
 $proposalId = '';
 
-$postBody = new Google_Service_Adexchangebuyer_AddOrderDealsRequest($client);
 
-$response = $service->marketplacedeals->insert($proposalId, $postBody);
+$Google_Service_Adexchangebuyer_AddOrderDealsRequestBody = new Google_Service_Adexchangebuyer_AddOrderDealsRequest($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Adexchangebuyer_AddOrderDealsRequestBody` object.
 
+
+$response = $service->marketplacedeals->insert($proposalId, $Google_Service_Adexchangebuyer_AddOrderDealsRequestBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -555,7 +694,7 @@ $response = $service->marketplacedeals->insert($proposalId, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -563,21 +702,30 @@ $response = $service->marketplacedeals->insert($proposalId, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listMarketplacedeals` method:
 
 // * The proposalId to get deals for. To search across proposals specify order_id = '-' as part of the
 //   URL.
 $proposalId = '';
 
+
 $response = $service->marketplacedeals->listMarketplacedeals($proposalId);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -588,7 +736,7 @@ $response = $service->marketplacedeals->listMarketplacedeals($proposalId);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -596,22 +744,33 @@ $response = $service->marketplacedeals->listMarketplacedeals($proposalId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
 
 // * The proposalId to edit deals on.
 $proposalId = '';
 
-$postBody = new Google_Service_Adexchangebuyer_EditAllOrderDealsRequest($client);
 
-$response = $service->marketplacedeals->update($proposalId, $postBody);
+$Google_Service_Adexchangebuyer_EditAllOrderDealsRequestBody = new Google_Service_Adexchangebuyer_EditAllOrderDealsRequest($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Adexchangebuyer_EditAllOrderDealsRequestBody` object.
 
+
+$response = $service->marketplacedeals->update($proposalId, $Google_Service_Adexchangebuyer_EditAllOrderDealsRequestBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -622,7 +781,7 @@ $response = $service->marketplacedeals->update($proposalId, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -630,22 +789,33 @@ $response = $service->marketplacedeals->update($proposalId, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 // * The proposalId to add notes for.
 $proposalId = '';
 
-$postBody = new Google_Service_Adexchangebuyer_AddOrderNotesRequest($client);
 
-$response = $service->marketplacenotes->insert($proposalId, $postBody);
+$Google_Service_Adexchangebuyer_AddOrderNotesRequestBody = new Google_Service_Adexchangebuyer_AddOrderNotesRequest($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Adexchangebuyer_AddOrderNotesRequestBody` object.
 
+
+$response = $service->marketplacenotes->insert($proposalId, $Google_Service_Adexchangebuyer_AddOrderNotesRequestBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -656,7 +826,7 @@ $response = $service->marketplacenotes->insert($proposalId, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -664,20 +834,29 @@ $response = $service->marketplacenotes->insert($proposalId, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listMarketplacenotes` method:
 
 // * The proposalId to get notes for.
 $proposalId = '';
 
+
 $response = $service->marketplacenotes->listMarketplacenotes($proposalId);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -688,7 +867,7 @@ $response = $service->marketplacenotes->listMarketplacenotes($proposalId);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -696,22 +875,30 @@ $response = $service->marketplacenotes->listMarketplacenotes($proposalId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `updateproposal` method:
 
 // * The private auction id to be updated.
 $privateAuctionId = '';
 
-$postBody = new Google_Service_Adexchangebuyer_UpdatePrivateAuctionProposalRequest($client);
 
-$response = $service->marketplaceprivateauction->updateproposal($privateAuctionId, $postBody);
+$Google_Service_Adexchangebuyer_UpdatePrivateAuctionProposalRequestBody = new Google_Service_Adexchangebuyer_UpdatePrivateAuctionProposalRequest($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Adexchangebuyer_UpdatePrivateAuctionProposalRequestBody` object.
 
+
+$service->marketplaceprivateauction->updateproposal($privateAuctionId, $Google_Service_Adexchangebuyer_UpdatePrivateAuctionProposalRequestBody);
 <?php
 /*
  * BEFORE RUNNING:
@@ -722,7 +909,7 @@ $response = $service->marketplaceprivateauction->updateproposal($privateAuctionI
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -730,14 +917,20 @@ $response = $service->marketplaceprivateauction->updateproposal($privateAuctionI
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listPerformanceReport` method:
 
 // * The account id to get the reports.
 $accountId = '0';
@@ -748,8 +941,11 @@ $endDateTime = '';
 // * The start time of the report in ISO 8601 timestamp format using UTC.
 $startDateTime = '';
 
+
 $response = $service->performanceReport->listPerformanceReport($accountId, $endDateTime, $startDateTime);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -760,7 +956,7 @@ $response = $service->performanceReport->listPerformanceReport($accountId, $endD
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -768,14 +964,20 @@ $response = $service->performanceReport->listPerformanceReport($accountId, $endD
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 // * The account id to delete the pretargeting config for.
 $accountId = '0';
@@ -783,8 +985,8 @@ $accountId = '0';
 // * The specific id of the configuration to delete.
 $configId = '0';
 
-$response = $service->pretargetingConfig->delete($accountId, $configId);
 
+$service->pretargetingConfig->delete($accountId, $configId);
 <?php
 /*
  * BEFORE RUNNING:
@@ -795,7 +997,7 @@ $response = $service->pretargetingConfig->delete($accountId, $configId);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -803,14 +1005,20 @@ $response = $service->pretargetingConfig->delete($accountId, $configId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
 
 // * The account id to get the pretargeting config for.
 $accountId = '0';
@@ -818,8 +1026,11 @@ $accountId = '0';
 // * The specific id of the configuration to retrieve.
 $configId = '0';
 
+
 $response = $service->pretargetingConfig->get($accountId, $configId);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -830,7 +1041,7 @@ $response = $service->pretargetingConfig->get($accountId, $configId);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -838,22 +1049,33 @@ $response = $service->pretargetingConfig->get($accountId, $configId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 // * The account id to insert the pretargeting config for.
 $accountId = '0';
 
-$postBody = new Google_Service_Adexchangebuyer_PretargetingConfig($client);
 
-$response = $service->pretargetingConfig->insert($accountId, $postBody);
+$Google_Service_Adexchangebuyer_PretargetingConfigBody = new Google_Service_Adexchangebuyer_PretargetingConfig($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Adexchangebuyer_PretargetingConfigBody` object.
 
+
+$response = $service->pretargetingConfig->insert($accountId, $Google_Service_Adexchangebuyer_PretargetingConfigBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -864,7 +1086,7 @@ $response = $service->pretargetingConfig->insert($accountId, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -872,20 +1094,29 @@ $response = $service->pretargetingConfig->insert($accountId, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listPretargetingConfig` method:
 
 // * The account id to get the pretargeting configs for.
 $accountId = '0';
 
+
 $response = $service->pretargetingConfig->listPretargetingConfig($accountId);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -896,7 +1127,7 @@ $response = $service->pretargetingConfig->listPretargetingConfig($accountId);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -904,14 +1135,20 @@ $response = $service->pretargetingConfig->listPretargetingConfig($accountId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
 
 // * The account id to update the pretargeting config for.
 $accountId = '0';
@@ -919,10 +1156,15 @@ $accountId = '0';
 // * The specific id of the configuration to update.
 $configId = '0';
 
-$postBody = new Google_Service_Adexchangebuyer_PretargetingConfig($client);
 
-$response = $service->pretargetingConfig->patch($accountId, $configId, $postBody);
+$Google_Service_Adexchangebuyer_PretargetingConfigBody = new Google_Service_Adexchangebuyer_PretargetingConfig($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Adexchangebuyer_PretargetingConfigBody` object to be changed.
 
+
+$response = $service->pretargetingConfig->patch($accountId, $configId, $Google_Service_Adexchangebuyer_PretargetingConfigBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -933,7 +1175,7 @@ $response = $service->pretargetingConfig->patch($accountId, $configId, $postBody
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -941,14 +1183,20 @@ $response = $service->pretargetingConfig->patch($accountId, $configId, $postBody
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
 
 // * The account id to update the pretargeting config for.
 $accountId = '0';
@@ -956,10 +1204,15 @@ $accountId = '0';
 // * The specific id of the configuration to update.
 $configId = '0';
 
-$postBody = new Google_Service_Adexchangebuyer_PretargetingConfig($client);
 
-$response = $service->pretargetingConfig->update($accountId, $configId, $postBody);
+$Google_Service_Adexchangebuyer_PretargetingConfigBody = new Google_Service_Adexchangebuyer_PretargetingConfig($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Adexchangebuyer_PretargetingConfigBody` object.
 
+
+$response = $service->pretargetingConfig->update($accountId, $configId, $Google_Service_Adexchangebuyer_PretargetingConfigBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -970,7 +1223,7 @@ $response = $service->pretargetingConfig->update($accountId, $configId, $postBod
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -978,20 +1231,29 @@ $response = $service->pretargetingConfig->update($accountId, $configId, $postBod
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
 
 // * The id for the product to get the head revision for.
 $productId = '';
 
+
 $response = $service->products->get($productId);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1002,7 +1264,7 @@ $response = $service->products->get($productId);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1010,18 +1272,23 @@ $response = $service->products->get($productId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
 
 
 $response = $service->products->search();
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1032,7 +1299,7 @@ $response = $service->products->search();
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1040,20 +1307,29 @@ $response = $service->products->search();
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
 
 // * Id of the proposal to retrieve.
 $proposalId = '';
 
+
 $response = $service->proposals->get($proposalId);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1064,7 +1340,7 @@ $response = $service->proposals->get($proposalId);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1072,20 +1348,27 @@ $response = $service->proposals->get($proposalId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
 
 
-$postBody = new Google_Service_Adexchangebuyer_CreateOrdersRequest($client);
+$Google_Service_Adexchangebuyer_CreateOrdersRequestBody = new Google_Service_Adexchangebuyer_CreateOrdersRequest($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Adexchangebuyer_CreateOrdersRequestBody` object.
 
-$response = $service->proposals->insert($postBody);
 
+$response = $service->proposals->insert($Google_Service_Adexchangebuyer_CreateOrdersRequestBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1096,7 +1379,7 @@ $response = $service->proposals->insert($postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1104,14 +1387,20 @@ $response = $service->proposals->insert($postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
 
 // * The proposal id to update.
 $proposalId = '';
@@ -1124,10 +1413,15 @@ $revisionNumber = '0';
 // * The proposed action to take on the proposal.
 $updateAction = '';
 
-$postBody = new Google_Service_Adexchangebuyer_Proposal($client);
 
-$response = $service->proposals->patch($proposalId, $revisionNumber, $updateAction, $postBody);
+$Google_Service_Adexchangebuyer_ProposalBody = new Google_Service_Adexchangebuyer_Proposal($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Adexchangebuyer_ProposalBody` object to be changed.
 
+
+$response = $service->proposals->patch($proposalId, $revisionNumber, $updateAction, $Google_Service_Adexchangebuyer_ProposalBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1138,7 +1432,7 @@ $response = $service->proposals->patch($proposalId, $revisionNumber, $updateActi
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1146,18 +1440,23 @@ $response = $service->proposals->patch($proposalId, $revisionNumber, $updateActi
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
 
 
 $response = $service->proposals->search();
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1168,7 +1467,7 @@ $response = $service->proposals->search();
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1176,20 +1475,26 @@ $response = $service->proposals->search();
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `setupcomplete` method:
 
 // * The proposal id for which the setup is complete
 $proposalId = '';
 
-$response = $service->proposals->setupcomplete($proposalId);
 
+$service->proposals->setupcomplete($proposalId);
 <?php
 /*
  * BEFORE RUNNING:
@@ -1200,7 +1505,7 @@ $response = $service->proposals->setupcomplete($proposalId);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1208,14 +1513,20 @@ $response = $service->proposals->setupcomplete($proposalId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
 
 // * The proposal id to update.
 $proposalId = '';
@@ -1228,10 +1539,15 @@ $revisionNumber = '0';
 // * The proposed action to take on the proposal.
 $updateAction = '';
 
-$postBody = new Google_Service_Adexchangebuyer_Proposal($client);
 
-$response = $service->proposals->update($proposalId, $revisionNumber, $updateAction, $postBody);
+$Google_Service_Adexchangebuyer_ProposalBody = new Google_Service_Adexchangebuyer_Proposal($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Adexchangebuyer_ProposalBody` object.
 
+
+$response = $service->proposals->update($proposalId, $revisionNumber, $updateAction, $Google_Service_Adexchangebuyer_ProposalBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1242,7 +1558,7 @@ $response = $service->proposals->update($proposalId, $revisionNumber, $updateAct
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1250,17 +1566,26 @@ $response = $service->proposals->update($proposalId, $revisionNumber, $updateAct
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Adexchangebuyer service.
+// Construct the Adexchangebuyer service object for interacting with the API.
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listPubprofiles` method:
 
 // * The accountId of the publisher to get profiles for.
 $accountId = 0;
 
+
 $response = $service->pubprofiles->listPubprofiles($accountId);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";

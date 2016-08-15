@@ -9,7 +9,7 @@
        apiName = api.getName, \
        apiVersion = api.getVersion, \
        serviceTitle = context.getService.getTitle
-    /*
+    /**
      * BEFORE RUNNING:
      * ---------------
      * 1. If not already done, enable the {@serviceTitle}
@@ -18,7 +18,7 @@
      * 2. This sample uses Application Default Credentials for authentication.
      *    If not already done, install the gcloud CLI from
      *    https://cloud.google.com/sdk/ and run
-     *    'gcloud beta auth application-default login'
+     *    `gcloud beta auth application-default login`
      * 3. Install the Java client library on maven or gradle. Check installation
      *    instructions at https://github.com/google/google-api-java-client.
      *    On other build systems, you can add the jar files to your project from
@@ -28,7 +28,6 @@
     @join import : imports
       import {@import};
     @end
-
     {@body}
   @end
 @end
@@ -36,12 +35,11 @@
 @snippet generateBody(method)
   {@alwaysImport()}
 
-  @let ApiName = context.getApiPackage, \
-       apiaryConfig = context.getApiaryConfig, \
-       params = apiaryConfig.getMethodParams(method.getName)
+  @let apiName = context.getApi.getName, \
+       ApiName = context.getApiPackage
     public class {@ApiName}Example {
       public static void main(String[] args) throws IOException, GeneralSecurityException {
-        // Authentication is provided by the 'gcloud' tool when running locally
+        // Authentication is provided by the `gcloud` tool when running locally
         // and by built-in service accounts when running on GAE, GCE, or GKE.
         GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -56,11 +54,15 @@
 
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+        // Construct the {@apiName} service object for interacting with the API.
+        // You can browse other available API services and versions at
+        // https://developers.google.com/api-client-library/java/apis/
         {@ApiName} {@serviceName()} = new {@ApiName}.Builder(httpTransport, jsonFactory, credential)
           .setApplicationName("Google Cloud Platform Sample")
           .build();
-        {@initialize(method, params)}
 
+        {@initialize(method)}
         {@request(method)}
         @if context.isPageStreaming(method)
           {@iterableCall(method)}
@@ -73,27 +75,34 @@
 @end
 
 # TODO(tcoffee): check if resource field is always first repeated field of response type
+# TODO(tcoffee): customize placeholder printing based on element type
 @private iterableCall(method)
-  @let responseType = context.getTypeUrl(method.getResponseTypeUrl), \
+  @let responseType = context.objectTypeName(method.getResponseTypeUrl), \
        responseTypeRef = context.getApiaryConfig.getType(responseType), \
        resourceField = context.getFirstRepeatedField(responseTypeRef), \
-       resources = context.lowerCamelToUpperCamel(resourceField.getName), \
-       resourceType = context.elementTypeName(responseTypeRef, resourceField)
-    {@responseType} response;
+       resources = context.lowerCamelToUpperCamel(resourceField.getName)
+
+    {@printer()}
+
+    {@responseType} {@responseName()};
     do {
-      response = request.execute();
-      if (response.get{@resources}() == null)
+      {@responseName()} = {@requestName()}.execute();
+      if ({@responseName()}.get{@resources}() == null)
         continue;
 
-      # TODO(tcoffee): add sample processing code to show visible results
       @if context.isMapField(responseTypeRef, resourceField.getName)
-        for ({@resourceType} item : response.get{@resources}().entrySet()) {
-          // {@TODO()} Add code here to process each 'item' entry
-        }
+        @let resourceType = context.entryTypeName(resourceField)
+          for ({@resourceType} {@itemName()} : {@responseName()}.get{@resources}().entrySet()) {
+            // {@TODO()} Change code below to process each `{@itemName()}` entry:
+            {@printEntry(itemName())}
+          }
+        @end
       @else
-        @let resourceName = context.getSampleVarName(resourceType)
-          for ({@resourceType} {@resourceName} : response.get{@resources}()) {
-            // {@TODO()} Add code here to process each '{@resourceName}' resource
+        @let resourceType = context.elementTypeName(resourceField), \
+             resourceName = context.getSampleVarName(resourceType)
+          for ({@resourceType} {@resourceName} : {@responseName()}.get{@resources}()) {
+            // {@TODO()} Change code below to process each `{@resourceName}` resource:
+            {@print(resourceName)}
           }
         @end
       @end
@@ -101,91 +110,85 @@
       # used to handle inconsistency in log entries list method for Logging API
       # remove exceptional case if inconsistency is resolved
       @if context.isLogEntriesListMethod(method)
-        {@requestName()}.setPageToken(response.getNextPageToken());
+        {@requestBodyName()}.setPageToken({@responseName()}.getNextPageToken());
       @else
-        request.setPageToken(response.getNextPageToken());
+        {@requestName()}.setPageToken({@responseName()}.getNextPageToken());
       @end
-    } while (response.getNextPageToken() != null);
+    } while ({@responseName()}.getNextPageToken() != null);
   @end
 @end
 
 @private compactCall(method)
   @if context.isResponseEmpty(method)
-    request.execute();
+    {@requestName()}.execute();
   @else
-    @let responseType = context.getTypeUrl(method.getResponseTypeUrl)
-      {@responseType} response = request.execute();
+    @let responseType = context.objectTypeName(method.getResponseTypeUrl)
+      {@responseType} {@responseName()} = {@requestName()}.execute();
 
-      // {@TODO()} Add code here to process the 'response' object
+      // {@TODO()} Change code below to process the `{@responseName()}` object:
+      {@printer()}
+      {@print(responseName())}
     @end
   @end
 @end
 
 @private request(method)
   @let methodName = context.getMethodName(method), \
-       clientRequestType = context.getClientRequestType(method), \
+       requestType = context.getClientRequestType(method), \
        resourcesPath = context.getApiaryConfig.getResources(method.getName)
-    @if context.hasRequestField(method)
-      {@initializeRequest(method)}
-    @end
-    {@clientRequestType} request = \
+    {@requestType} {@requestName()} = \
         {@serviceName()}.{@elementPath(resourcesPath)}.{@methodName}({@arguments(method)});
   @end
 @end
 
 # TODO(tcoffee): configure snippet grouping to handle long argument lists
 @private arguments(method)
-  @if context.hasRequestField(method)
-    @let requestType = context.getTypeUrl(context.getRequestField(method)), \
-         params = context.getFlatMethodParams(method)
+  @let params = context.getFlatMethodParams(method)
+    @if context.hasRequestField(method)
       @if params
-        {@argumentList(params)}, {@requestName()}
+        {@argumentList(params)}, {@requestBodyName()}
       @else
-        {@requestName()}
+        {@requestBodyName()}
       @end
+    @else
+      {@argumentList(params)}
     @end
-  @else
-    {@argumentList(context.getMethodParams(method))}
   @end
 @end
 
-# TODO(tcoffee): generate appropriately typed default values for params
-@private initialize(method, params)
+@private initialize(method)
   @let methodName = context.getMethodName(method), \
-       apiaryConfig = context.getApiaryConfig, \
-       signatureType = apiaryConfig.getType(method.getRequestTypeUrl), \
+       signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
        params = context.getFlatMethodParams(method)
     @if params
 
-      // {@TODO()} Change placeholders below to appropriate parameter values for the '{@methodName}' method:
+      // {@TODO()} Change placeholders below to desired parameter values for the `{@methodName}` method:
 
-    @end
-    @join param : params
-      @let paramField = context.getField(signatureType, param), \
-           paramType = context.typeName(signatureType, paramField), \
-           paramValue = context.typeDefaultValue(signatureType, paramField), \
-           paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
+      @join param : params
+        @let paramField = context.getField(signatureType, param), \
+             paramType = context.typeName(signatureType, paramField), \
+             paramValue = context.typeDefaultValue(signatureType, paramField), \
+             paramDescription = context.getDescription(signatureType.getName, param)
+          {@description(paramDescription)}
+          {@paramType} {@param} = {@paramValue}
 
-        {@description(paramDescription)}
-        {@paramType} {@param} = {@paramValue}
+        @end
       @end
+
     @end
   @end
-@end
+  @if context.hasRequestField(method)
 
-# TODO(tcoffee): add additional commented code for individual fields of request objects?
-@private initializeRequest(method)
-  @let requestType = context.getTypeUrl(context.getRequestField(method))
-    {@requestType} {@requestName()} = new {@requestType}();
-    @if context.isPatch(method)
-      // {@TODO()} Add code here to assign values to desired fields of the '{@requestName()}' object to be changed
-
-
-    @else
-      // {@TODO()} Add code here to assign values to desired fields of the '{@requestName()}' object
-
-
+    @let requestBodyType = context.objectTypeName(context.getRequestField(method))
+      {@requestBodyType} {@requestBodyName()} = new {@requestBodyType}();
+      @if context.isPatch(method)
+        // {@TODO()} Assign values to desired fields of the `{@requestBodyName()}` object to be changed.
+      @else
+        // {@TODO()} Assign values to desired fields of the `{@requestBodyName()}` object.
+      @end
     @end
+
+
   @end
 @end
 
@@ -195,9 +198,24 @@
   @end
 @end
 
-# name "content" used for request body as in API Explorer to avoid collisions
+@private itemName()
+  item
+@end
+
 @private requestName()
-  content
+  request
+@end
+
+@private requestBodyName()
+  requestBody
+@end
+
+@private responseName()
+  response
+@end
+
+@private gsonName()
+  gson
 @end
 
 @private typePath(types)
@@ -221,8 +239,27 @@
 @end
 
 @private description(description)
-  @join line : context.lineWrapDoc(description, 100)
+  @join line : context.lineWrapDoc(description)
     // {@line}
+  @end
+@end
+
+@private printer()
+  @let Gson = context.getTypeName("com.google.gson.Gson")
+    {@Gson} {@gsonName()} = new GsonBuilder().setPrettyPrinting().create();
+  @end
+@end
+
+# Assumes element type string form parses as valid JSON: http://www.rfc-editor.org/rfc/rfc7159.txt
+@private print(element)
+  @let JsonParser = context.getTypeName("com.google.gson.JsonParser")
+    System.out.println({@gsonName()}.toJson(new {@JsonParser}().parse({@element}.toString())));
+  @end
+@end
+
+@private printEntry(entry)
+  @let JsonParser = context.getTypeName("com.google.gson.JsonParser")
+    System.out.println({@entry}.getKey() + ": " + {@gsonName()}.toJson(new {@JsonParser}().parse({@entry}.getValue().toString())));
   @end
 @end
 

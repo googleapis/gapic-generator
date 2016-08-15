@@ -8,9 +8,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -18,9 +18,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the dns service object (version v1) for interacting
@@ -29,7 +30,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('dns', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+# TODO: Change placeholders below to desired parameter values for the `create` method:
 
 # * Identifies the project addressed by this request.
 project = ''
@@ -37,14 +38,16 @@ project = ''
 # * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
 managedZone = ''
 
+
 change_body = {
-# TODO: Add desired entries of the 'change_body' dict
+    # TODO: Add desired entries of the `change_body` dict.
 }
+
 
 request = service.changes().create(project=project, managedZone=managedZone, body=change_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -55,9 +58,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -65,9 +68,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the dns service object (version v1) for interacting
@@ -76,7 +80,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('dns', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+# TODO: Change placeholders below to desired parameter values for the `get` method:
 
 # * Identifies the project addressed by this request.
 project = ''
@@ -87,10 +91,11 @@ managedZone = ''
 # * The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
 changeId = ''
 
+
 request = service.changes().get(project=project, managedZone=managedZone, changeId=changeId)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -101,17 +106,20 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
+
+from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the dns service object (version v1) for interacting
@@ -120,7 +128,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('dns', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * Identifies the project addressed by this request.
 project = ''
@@ -128,13 +136,15 @@ project = ''
 # * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
 managedZone = ''
 
+
 changes = service.changes()
 request = changes.list(project=project, managedZone=managedZone)
 while request is not None:
     response = request.execute()
 
     for change in response['changes']:
-        # TODO: Add code here to process each 'change' resource
+        # TODO: Change code below to process each `change` resource:
+        pprint(change)
 
     request = changes.list_next(previous_request=request, previous_response=response)
 """
@@ -146,9 +156,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -156,9 +166,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the dns service object (version v1) for interacting
@@ -167,19 +178,21 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('dns', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+# TODO: Change placeholders below to desired parameter values for the `create` method:
 
 # * Identifies the project addressed by this request.
 project = ''
 
+
 managed_zone_body = {
-# TODO: Add desired entries of the 'managed_zone_body' dict
+    # TODO: Add desired entries of the `managed_zone_body` dict.
 }
+
 
 request = service.managedZones().create(project=project, body=managed_zone_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -190,17 +203,18 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the dns service object (version v1) for interacting
@@ -209,13 +223,14 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('dns', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+# TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 # * Identifies the project addressed by this request.
 project = ''
 
 # * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
 managedZone = ''
+
 
 request = service.managedZones().delete(project=project, managedZone=managedZone)
 request.execute()
@@ -228,9 +243,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -238,9 +253,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the dns service object (version v1) for interacting
@@ -249,7 +265,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('dns', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+# TODO: Change placeholders below to desired parameter values for the `get` method:
 
 # * Identifies the project addressed by this request.
 project = ''
@@ -257,10 +273,11 @@ project = ''
 # * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
 managedZone = ''
 
+
 request = service.managedZones().get(project=project, managedZone=managedZone)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -271,17 +288,20 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
+
+from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the dns service object (version v1) for interacting
@@ -290,10 +310,11 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('dns', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * Identifies the project addressed by this request.
 project = ''
+
 
 managedZones = service.managedZones()
 request = managedZones.list(project=project)
@@ -301,7 +322,8 @@ while request is not None:
     response = request.execute()
 
     for managed_zone in response['managedZones']:
-        # TODO: Add code here to process each 'managed_zone' resource
+        # TODO: Change code below to process each `managed_zone` resource:
+        pprint(managed_zone)
 
     request = managedZones.list_next(previous_request=request, previous_response=response)
 """
@@ -313,9 +335,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -323,9 +345,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the dns service object (version v1) for interacting
@@ -334,15 +357,16 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('dns', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+# TODO: Change placeholders below to desired parameter values for the `get` method:
 
 # * Identifies the project addressed by this request.
 project = ''
 
+
 request = service.projects().get(project=project)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -353,17 +377,20 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
+
+from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the dns service object (version v1) for interacting
@@ -372,7 +399,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('dns', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * Identifies the project addressed by this request.
 project = ''
@@ -380,12 +407,14 @@ project = ''
 # * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
 managedZone = ''
 
+
 resourceRecordSets = service.resourceRecordSets()
 request = resourceRecordSets.list(project=project, managedZone=managedZone)
 while request is not None:
     response = request.execute()
 
     for resource_record_set in response['rrsets']:
-        # TODO: Add code here to process each 'resource_record_set' resource
+        # TODO: Change code below to process each `resource_record_set` resource:
+        pprint(resource_record_set)
 
     request = resourceRecordSets.list_next(previous_request=request, previous_response=response)

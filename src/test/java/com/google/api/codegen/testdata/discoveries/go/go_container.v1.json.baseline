@@ -9,11 +9,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -22,31 +26,49 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, container.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := container.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The Google Developers Console [project ID or project number]
-  // (https://developers.google.com/console/help/new/#projectnumber).
-  projectId := "" // TODO: Update placeholder value.
-
-  // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
-  // resides.
-  zone := "" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Zones.Clusters.Create(projectId, zone, &container.CreateClusterRequest{
-                                                  // TODO: Fill required fields.
-                                                }).Context(ctx).Do()
+  // Construct the container service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := container.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Create` method:
+
+  // * The Google Developers Console [project ID or project number]
+  //   (https://developers.google.com/console/help/new/#projectnumber).
+  projectId := ""
+
+  // * The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+  //   resides.
+  zone := ""
+
+  createClusterRequestBody := container.CreateClusterRequest{
+    // TODO: Add desired fields of the `createClusterRequestBody` variable.
+  }
+
+  res, err := service.Projects.Zones.Clusters.Create(projectId, zone, &createClusterRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -58,11 +80,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -71,32 +97,48 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, container.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := container.New(hc)
+
+  // Construct the container service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := container.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The Google Developers Console [project ID or project number]
-  // (https://developers.google.com/console/help/new/#projectnumber).
-  projectId := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Delete` method:
 
-  // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
-  // resides.
-  zone := "" // TODO: Update placeholder value.
+  // * The Google Developers Console [project ID or project number]
+  //   (https://developers.google.com/console/help/new/#projectnumber).
+  projectId := ""
 
-  // The name of the cluster to delete.
-  clusterId := "" // TODO: Update placeholder value.
+  // * The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+  //   resides.
+  zone := ""
 
-  resp, err := c.Projects.Zones.Clusters.Delete(projectId, zone, clusterId).Context(ctx).Do()
+  // * The name of the cluster to delete.
+  clusterId := ""
+
+  res, err := service.Projects.Zones.Clusters.Delete(projectId, zone, clusterId).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -108,11 +150,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -121,32 +167,48 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, container.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := container.New(hc)
+
+  // Construct the container service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := container.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The Google Developers Console [project ID or project number]
-  // (https://developers.google.com/console/help/new/#projectnumber).
-  projectId := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
 
-  // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
-  // resides.
-  zone := "" // TODO: Update placeholder value.
+  // * The Google Developers Console [project ID or project number]
+  //   (https://developers.google.com/console/help/new/#projectnumber).
+  projectId := ""
 
-  // The name of the cluster to retrieve.
-  clusterId := "" // TODO: Update placeholder value.
+  // * The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+  //   resides.
+  zone := ""
 
-  resp, err := c.Projects.Zones.Clusters.Get(projectId, zone, clusterId).Context(ctx).Do()
+  // * The name of the cluster to retrieve.
+  clusterId := ""
+
+  res, err := service.Projects.Zones.Clusters.Get(projectId, zone, clusterId).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -158,11 +220,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -171,29 +237,45 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, container.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := container.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The Google Developers Console [project ID or project number]
-  // (https://developers.google.com/console/help/new/#projectnumber).
-  projectId := "" // TODO: Update placeholder value.
-
-  // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
-  // resides, or "-" for all zones.
-  zone := "" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Zones.Clusters.List(projectId, zone).Context(ctx).Do()
+  // Construct the container service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := container.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+  // * The Google Developers Console [project ID or project number]
+  //   (https://developers.google.com/console/help/new/#projectnumber).
+  projectId := ""
+
+  // * The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+  //   resides, or "-" for all zones.
+  zone := ""
+
+  res, err := service.Projects.Zones.Clusters.List(projectId, zone).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -205,11 +287,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -218,34 +304,52 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, container.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := container.New(hc)
+
+  // Construct the container service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := container.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The Google Developers Console [project ID or project number]
-  // (https://developers.google.com/console/help/new/#projectnumber).
-  projectId := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Update` method:
 
-  // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
-  // resides.
-  zone := "" // TODO: Update placeholder value.
+  // * The Google Developers Console [project ID or project number]
+  //   (https://developers.google.com/console/help/new/#projectnumber).
+  projectId := ""
 
-  // The name of the cluster to upgrade.
-  clusterId := "" // TODO: Update placeholder value.
+  // * The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+  //   resides.
+  zone := ""
 
-  resp, err := c.Projects.Zones.Clusters.Update(projectId, zone, clusterId, &container.UpdateClusterRequest{
-                                                  // TODO: Fill required fields.
-                                                }).Context(ctx).Do()
+  // * The name of the cluster to upgrade.
+  clusterId := ""
+
+  updateClusterRequestBody := container.UpdateClusterRequest{
+    // TODO: Add desired fields of the `updateClusterRequestBody` variable.
+  }
+
+  res, err := service.Projects.Zones.Clusters.Update(projectId, zone, clusterId, &updateClusterRequestBody).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -257,11 +361,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -270,29 +378,45 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, container.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := container.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The Google Developers Console [project ID or project number]
-  // (https://developers.google.com/console/help/new/#projectnumber).
-  projectId := "" // TODO: Update placeholder value.
-
-  // The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
-  // for, or "-" for all zones.
-  zone := "" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Zones.GetServerconfig(projectId, zone).Context(ctx).Do()
+  // Construct the container service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := container.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `GetServerconfig` method:
+
+  // * The Google Developers Console [project ID or project number]
+  //   (https://developers.google.com/console/help/new/#projectnumber).
+  projectId := ""
+
+  // * The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
+  //   for, or "-" for all zones.
+  zone := ""
+
+  res, err := service.Projects.Zones.GetServerconfig(projectId, zone).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -304,11 +428,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -317,32 +445,48 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, container.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := container.New(hc)
+
+  // Construct the container service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := container.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The Google Developers Console [project ID or project number]
-  // (https://developers.google.com/console/help/new/#projectnumber).
-  projectId := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
 
-  // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
-  // resides.
-  zone := "" // TODO: Update placeholder value.
+  // * The Google Developers Console [project ID or project number]
+  //   (https://developers.google.com/console/help/new/#projectnumber).
+  projectId := ""
 
-  // The server-assigned `name` of the operation.
-  operationId := "" // TODO: Update placeholder value.
+  // * The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+  //   resides.
+  zone := ""
 
-  resp, err := c.Projects.Zones.Operations.Get(projectId, zone, operationId).Context(ctx).Do()
+  // * The server-assigned `name` of the operation.
+  operationId := ""
+
+  res, err := service.Projects.Zones.Operations.Get(projectId, zone, operationId).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -354,11 +498,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -367,27 +515,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, container.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := container.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The Google Developers Console [project ID or project number]
-  // (https://developers.google.com/console/help/new/#projectnumber).
-  projectId := "" // TODO: Update placeholder value.
-
-  // The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
-  // for, or "-" for all zones.
-  zone := "" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Zones.Operations.List(projectId, zone).Context(ctx).Do()
+  // Construct the container service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := container.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+  // * The Google Developers Console [project ID or project number]
+  //   (https://developers.google.com/console/help/new/#projectnumber).
+  projectId := ""
+
+  // * The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
+  //   for, or "-" for all zones.
+  zone := ""
+
+  res, err := service.Projects.Zones.Operations.List(projectId, zone).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }

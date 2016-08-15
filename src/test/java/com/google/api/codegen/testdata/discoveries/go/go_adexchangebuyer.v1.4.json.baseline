@@ -9,11 +9,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -22,24 +26,40 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The account id
-  id := int64(0) // TODO: Update placeholder value.
-
-  resp, err := c.Accounts.Get(id).Context(ctx).Do()
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+  // * The account id
+  id := int64(0)
+
+  res, err := service.Accounts.Get(id).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -51,11 +71,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -64,23 +88,36 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := adexchangebuyer.New(hc)
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
 
-
-  resp, err := c.Accounts.List().Context(ctx).Do()
+  res, err := service.Accounts.List().Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -92,11 +129,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -105,26 +146,44 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The account id
-  id := int64(0) // TODO: Update placeholder value.
-
-  resp, err := c.Accounts.Patch(id, &adexchangebuyer.Account{
-                                  // TODO: Fill required fields.
-                                }).Context(ctx).Do()
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
+  // * The account id
+  id := int64(0)
+
+  accountBody := adexchangebuyer.Account{
+    // TODO: Add desired fields of the `accountBody` variable to be changed.
+  }
+
+  res, err := service.Accounts.Patch(id, &accountBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -136,11 +195,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -149,26 +212,44 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The account id
-  id := int64(0) // TODO: Update placeholder value.
-
-  resp, err := c.Accounts.Update(id, &adexchangebuyer.Account{
-                                   // TODO: Fill required fields.
-                                 }).Context(ctx).Do()
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
+  // * The account id
+  id := int64(0)
+
+  accountBody := adexchangebuyer.Account{
+    // TODO: Add desired fields of the `accountBody` variable.
+  }
+
+  res, err := service.Accounts.Update(id, &accountBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -180,11 +261,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -193,24 +278,40 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The account id.
-  accountId := int64(0) // TODO: Update placeholder value.
-
-  resp, err := c.BillingInfo.Get(accountId).Context(ctx).Do()
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+  // * The account id.
+  accountId := int64(0)
+
+  res, err := service.BillingInfo.Get(accountId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -222,11 +323,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -235,23 +340,36 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := adexchangebuyer.New(hc)
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
 
-
-  resp, err := c.BillingInfo.List().Context(ctx).Do()
+  res, err := service.BillingInfo.List().Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -263,11 +381,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -276,27 +398,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The account id to get the budget information for.
-  accountId := int64(0) // TODO: Update placeholder value.
-
-  // The billing id to get the budget information for.
-  billingId := int64(0) // TODO: Update placeholder value.
-
-  resp, err := c.Budget.Get(accountId, billingId).Context(ctx).Do()
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+  // * The account id to get the budget information for.
+  accountId := int64(0)
+
+  // * The billing id to get the budget information for.
+  billingId := int64(0)
+
+  res, err := service.Budget.Get(accountId, billingId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -308,11 +446,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -321,29 +463,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The account id associated with the budget being updated.
-  accountId := int64(0) // TODO: Update placeholder value.
-
-  // The billing id associated with the budget being updated.
-  billingId := int64(0) // TODO: Update placeholder value.
-
-  resp, err := c.Budget.Patch(accountId, billingId, &adexchangebuyer.Budget{
-                                // TODO: Fill required fields.
-                              }).Context(ctx).Do()
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
+  // * The account id associated with the budget being updated.
+  accountId := int64(0)
+
+  // * The billing id associated with the budget being updated.
+  billingId := int64(0)
+
+  budgetBody := adexchangebuyer.Budget{
+    // TODO: Add desired fields of the `budgetBody` variable to be changed.
+  }
+
+  res, err := service.Budget.Patch(accountId, billingId, &budgetBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -355,11 +515,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -368,29 +532,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The account id associated with the budget being updated.
-  accountId := int64(0) // TODO: Update placeholder value.
-
-  // The billing id associated with the budget being updated.
-  billingId := int64(0) // TODO: Update placeholder value.
-
-  resp, err := c.Budget.Update(accountId, billingId, &adexchangebuyer.Budget{
-                                 // TODO: Fill required fields.
-                               }).Context(ctx).Do()
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
+  // * The account id associated with the budget being updated.
+  accountId := int64(0)
+
+  // * The billing id associated with the budget being updated.
+  billingId := int64(0)
+
+  budgetBody := adexchangebuyer.Budget{
+    // TODO: Add desired fields of the `budgetBody` variable.
+  }
+
+  res, err := service.Budget.Update(accountId, billingId, &budgetBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -402,11 +584,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -415,26 +601,37 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := adexchangebuyer.New(hc)
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The id for the account that will serve this creative.
-  accountId := int64(0) // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `AddDeal` method:
 
-  // The buyer-specific id for this creative.
-  buyerCreativeId := "" // TODO: Update placeholder value.
+  // * The id for the account that will serve this creative.
+  accountId := int64(0)
 
-  // The id of the deal id to associate with this creative.
-  dealId := int64(0) // TODO: Update placeholder value.
+  // * The buyer-specific id for this creative.
+  buyerCreativeId := ""
 
-  if err := c.Creatives.AddDeal(accountId, buyerCreativeId, dealId).Context(ctx).Do(); err != nil {
-    // TODO: Handle error.
+  // * The id of the deal id to associate with this creative.
+  dealId := int64(0)
+
+  if err := service.Creatives.AddDeal(accountId, buyerCreativeId, dealId).Context(ctx).Do(); err != nil {
+    log.Fatal(err)
   }
 }
 package main
@@ -447,11 +644,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -460,27 +661,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The id for the account that will serve this creative.
-  accountId := int64(0) // TODO: Update placeholder value.
-
-  // The buyer-specific id for this creative.
-  buyerCreativeId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Creatives.Get(accountId, buyerCreativeId).Context(ctx).Do()
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+  // * The id for the account that will serve this creative.
+  accountId := int64(0)
+
+  // * The buyer-specific id for this creative.
+  buyerCreativeId := ""
+
+  res, err := service.Creatives.Get(accountId, buyerCreativeId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -492,11 +709,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -505,25 +726,40 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := adexchangebuyer.New(hc)
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
 
-
-  resp, err := c.Creatives.Insert(&adexchangebuyer.Creative{
-                                    // TODO: Fill required fields.
-                                  }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  creativeBody := adexchangebuyer.Creative{
+    // TODO: Add desired fields of the `creativeBody` variable.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  res, err := service.Creatives.Insert(creativeBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -535,11 +771,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -548,27 +788,38 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := adexchangebuyer.New(hc)
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
 
-
-
-  call := c.Creatives.List()
-  if err := call.Pages(ctx, func(page *adexchangebuyer.CreativesList) error {
-    for _, v := range page.Items {
-      // TODO: Use v.
-      _ = v
+  req := service.Creatives.List()
+  if err := req.Pages(ctx, func(page *adexchangebuyer.CreativesList) error {
+    for _, creative := range page.Items {
+      // TODO: Change code below to process each `creative` resource:
+      out, err := json.MarshalIndent(creative, "", "  ")
+      if err != nil {
+        return err
+      }
+      fmt.Println(out)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -581,11 +832,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -594,26 +849,37 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := adexchangebuyer.New(hc)
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The id for the account that will serve this creative.
-  accountId := int64(0) // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `RemoveDeal` method:
 
-  // The buyer-specific id for this creative.
-  buyerCreativeId := "" // TODO: Update placeholder value.
+  // * The id for the account that will serve this creative.
+  accountId := int64(0)
 
-  // The id of the deal id to disassociate with this creative.
-  dealId := int64(0) // TODO: Update placeholder value.
+  // * The buyer-specific id for this creative.
+  buyerCreativeId := ""
 
-  if err := c.Creatives.RemoveDeal(accountId, buyerCreativeId, dealId).Context(ctx).Do(); err != nil {
-    // TODO: Handle error.
+  // * The id of the deal id to disassociate with this creative.
+  dealId := int64(0)
+
+  if err := service.Creatives.RemoveDeal(accountId, buyerCreativeId, dealId).Context(ctx).Do(); err != nil {
+    log.Fatal(err)
   }
 }
 package main
@@ -626,11 +892,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -639,26 +909,44 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The proposalId to delete deals from.
-  proposalId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Marketplacedeals.Delete(proposalId, &adexchangebuyer.DeleteOrderDealsRequest{
-                                           // TODO: Fill required fields.
-                                         }).Context(ctx).Do()
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+  // * The proposalId to delete deals from.
+  proposalId := ""
+
+  deleteOrderDealsRequestBody := adexchangebuyer.DeleteOrderDealsRequest{
+    // TODO: Add desired fields of the `deleteOrderDealsRequestBody` variable.
+  }
+
+  res, err := service.Marketplacedeals.Delete(proposalId, &deleteOrderDealsRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -670,11 +958,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -683,26 +975,44 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // proposalId for which deals need to be added.
-  proposalId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Marketplacedeals.Insert(proposalId, &adexchangebuyer.AddOrderDealsRequest{
-                                           // TODO: Fill required fields.
-                                         }).Context(ctx).Do()
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+  // * proposalId for which deals need to be added.
+  proposalId := ""
+
+  addOrderDealsRequestBody := adexchangebuyer.AddOrderDealsRequest{
+    // TODO: Add desired fields of the `addOrderDealsRequestBody` variable.
+  }
+
+  res, err := service.Marketplacedeals.Insert(proposalId, &addOrderDealsRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -714,11 +1024,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -727,25 +1041,41 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The proposalId to get deals for. To search across proposals specify order_id = '-' as part of the
-  // URL.
-  proposalId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Marketplacedeals.List(proposalId).Context(ctx).Do()
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+  // * The proposalId to get deals for. To search across proposals specify order_id = '-' as part of the
+  //   URL.
+  proposalId := ""
+
+  res, err := service.Marketplacedeals.List(proposalId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -757,11 +1087,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -770,26 +1104,44 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The proposalId to edit deals on.
-  proposalId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Marketplacedeals.Update(proposalId, &adexchangebuyer.EditAllOrderDealsRequest{
-                                           // TODO: Fill required fields.
-                                         }).Context(ctx).Do()
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
+  // * The proposalId to edit deals on.
+  proposalId := ""
+
+  editAllOrderDealsRequestBody := adexchangebuyer.EditAllOrderDealsRequest{
+    // TODO: Add desired fields of the `editAllOrderDealsRequestBody` variable.
+  }
+
+  res, err := service.Marketplacedeals.Update(proposalId, &editAllOrderDealsRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -801,11 +1153,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -814,26 +1170,44 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The proposalId to add notes for.
-  proposalId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Marketplacenotes.Insert(proposalId, &adexchangebuyer.AddOrderNotesRequest{
-                                           // TODO: Fill required fields.
-                                         }).Context(ctx).Do()
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+  // * The proposalId to add notes for.
+  proposalId := ""
+
+  addOrderNotesRequestBody := adexchangebuyer.AddOrderNotesRequest{
+    // TODO: Add desired fields of the `addOrderNotesRequestBody` variable.
+  }
+
+  res, err := service.Marketplacenotes.Insert(proposalId, &addOrderNotesRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -845,11 +1219,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -858,24 +1236,40 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The proposalId to get notes for.
-  proposalId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Marketplacenotes.List(proposalId).Context(ctx).Do()
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+  // * The proposalId to get notes for.
+  proposalId := ""
+
+  res, err := service.Marketplacenotes.List(proposalId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -887,11 +1281,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -900,638 +1298,35 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := adexchangebuyer.New(hc)
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The private auction id to be updated.
-  privateAuctionId := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `Updateproposal` method:
 
-  call := c.Marketplaceprivateauction.Updateproposal(privateAuctionId, &adexchangebuyer.UpdatePrivateAuctionProposalRequest{
-                                                       // TODO: Fill required fields.
-                                                     }).Context(ctx)
-  if err := call.Do(); err != nil {
-    // TODO: Handle error.
-  }
-}
-package main
+  // * The private auction id to be updated.
+  privateAuctionId := ""
 
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Ad Exchange Buyer API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/adexchangebuyer
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
-//    project directory.
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/adexchangebuyer/v1.4"
-)
-
-func main() {
-  ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
-  if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+  updatePrivateAuctionProposalRequestBody := adexchangebuyer.UpdatePrivateAuctionProposalRequest{
+    // TODO: Add desired fields of the `updatePrivateAuctionProposalRequestBody` variable.
   }
 
-  // The account id to get the reports.
-  accountId := int64(0) // TODO: Update placeholder value.
-
-  // The end time of the report in ISO 8601 timestamp format using UTC.
-  endDateTime := "" // TODO: Update placeholder value.
-
-  // The start time of the report in ISO 8601 timestamp format using UTC.
-  startDateTime := "" // TODO: Update placeholder value.
-
-  resp, err := c.PerformanceReport.List(accountId, endDateTime, startDateTime).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
-  }
-  // TODO: Use resp.
-  _ = resp
-}
-package main
-
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Ad Exchange Buyer API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/adexchangebuyer
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
-//    project directory.
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/adexchangebuyer/v1.4"
-)
-
-func main() {
-  ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
-  if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
-  }
-
-  // The account id to delete the pretargeting config for.
-  accountId := int64(0) // TODO: Update placeholder value.
-
-  // The specific id of the configuration to delete.
-  configId := int64(0) // TODO: Update placeholder value.
-
-  if err := c.PretargetingConfig.Delete(accountId, configId).Context(ctx).Do(); err != nil {
-    // TODO: Handle error.
-  }
-}
-package main
-
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Ad Exchange Buyer API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/adexchangebuyer
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
-//    project directory.
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/adexchangebuyer/v1.4"
-)
-
-func main() {
-  ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
-  if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
-  }
-
-  // The account id to get the pretargeting config for.
-  accountId := int64(0) // TODO: Update placeholder value.
-
-  // The specific id of the configuration to retrieve.
-  configId := int64(0) // TODO: Update placeholder value.
-
-  resp, err := c.PretargetingConfig.Get(accountId, configId).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
-  }
-  // TODO: Use resp.
-  _ = resp
-}
-package main
-
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Ad Exchange Buyer API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/adexchangebuyer
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
-//    project directory.
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/adexchangebuyer/v1.4"
-)
-
-func main() {
-  ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
-  if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
-  }
-
-  // The account id to insert the pretargeting config for.
-  accountId := int64(0) // TODO: Update placeholder value.
-
-  resp, err := c.PretargetingConfig.Insert(accountId, &adexchangebuyer.PretargetingConfig{
-                                             // TODO: Fill required fields.
-                                           }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
-  }
-  // TODO: Use resp.
-  _ = resp
-}
-package main
-
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Ad Exchange Buyer API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/adexchangebuyer
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
-//    project directory.
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/adexchangebuyer/v1.4"
-)
-
-func main() {
-  ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
-  if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
-  }
-
-  // The account id to get the pretargeting configs for.
-  accountId := int64(0) // TODO: Update placeholder value.
-
-  resp, err := c.PretargetingConfig.List(accountId).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
-  }
-  // TODO: Use resp.
-  _ = resp
-}
-package main
-
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Ad Exchange Buyer API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/adexchangebuyer
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
-//    project directory.
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/adexchangebuyer/v1.4"
-)
-
-func main() {
-  ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
-  if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
-  }
-
-  // The account id to update the pretargeting config for.
-  accountId := int64(0) // TODO: Update placeholder value.
-
-  // The specific id of the configuration to update.
-  configId := int64(0) // TODO: Update placeholder value.
-
-  resp, err := c.PretargetingConfig.Patch(accountId, configId, &adexchangebuyer.PretargetingConfig{
-                                            // TODO: Fill required fields.
-                                          }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
-  }
-  // TODO: Use resp.
-  _ = resp
-}
-package main
-
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Ad Exchange Buyer API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/adexchangebuyer
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
-//    project directory.
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/adexchangebuyer/v1.4"
-)
-
-func main() {
-  ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
-  if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
-  }
-
-  // The account id to update the pretargeting config for.
-  accountId := int64(0) // TODO: Update placeholder value.
-
-  // The specific id of the configuration to update.
-  configId := int64(0) // TODO: Update placeholder value.
-
-  resp, err := c.PretargetingConfig.Update(accountId, configId, &adexchangebuyer.PretargetingConfig{
-                                             // TODO: Fill required fields.
-                                           }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
-  }
-  // TODO: Use resp.
-  _ = resp
-}
-package main
-
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Ad Exchange Buyer API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/adexchangebuyer
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
-//    project directory.
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/adexchangebuyer/v1.4"
-)
-
-func main() {
-  ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
-  if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
-  }
-
-  // The id for the product to get the head revision for.
-  productId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Products.Get(productId).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
-  }
-  // TODO: Use resp.
-  _ = resp
-}
-package main
-
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Ad Exchange Buyer API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/adexchangebuyer
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
-//    project directory.
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/adexchangebuyer/v1.4"
-)
-
-func main() {
-  ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
-  if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
-  }
-
-
-
-  resp, err := c.Products.Search().Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
-  }
-  // TODO: Use resp.
-  _ = resp
-}
-package main
-
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Ad Exchange Buyer API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/adexchangebuyer
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
-//    project directory.
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/adexchangebuyer/v1.4"
-)
-
-func main() {
-  ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
-  if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
-  }
-
-  // Id of the proposal to retrieve.
-  proposalId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Proposals.Get(proposalId).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
-  }
-  // TODO: Use resp.
-  _ = resp
-}
-package main
-
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Ad Exchange Buyer API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/adexchangebuyer
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
-//    project directory.
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/adexchangebuyer/v1.4"
-)
-
-func main() {
-  ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
-  if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
-  }
-
-
-
-  resp, err := c.Proposals.Insert(&adexchangebuyer.CreateOrdersRequest{
-                                    // TODO: Fill required fields.
-                                  }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
-  }
-  // TODO: Use resp.
-  _ = resp
-}
-package main
-
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Ad Exchange Buyer API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/adexchangebuyer
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
-//    project directory.
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/adexchangebuyer/v1.4"
-)
-
-func main() {
-  ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
-  if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
-  }
-
-  // The proposal id to update.
-  proposalId := "" // TODO: Update placeholder value.
-
-  // The last known revision number to update. If the head revision in the marketplace database has since
-  // changed, an error will be thrown. The caller should then fetch the latest proposal at head revision
-  // and retry the update at that revision.
-  revisionNumber := int64(0) // TODO: Update placeholder value.
-
-  // The proposed action to take on the proposal.
-  updateAction := "" // TODO: Update placeholder value.
-
-  resp, err := c.Proposals.Patch(proposalId, revisionNumber, updateAction, &adexchangebuyer.Proposal{
-                                   // TODO: Fill required fields.
-                                 }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
-  }
-  // TODO: Use resp.
-  _ = resp
-}
-package main
-
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Ad Exchange Buyer API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/adexchangebuyer
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
-//    project directory.
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/adexchangebuyer/v1.4"
-)
-
-func main() {
-  ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
-  if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
-  }
-
-
-
-  resp, err := c.Proposals.Search().Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
-  }
-  // TODO: Use resp.
-  _ = resp
-}
-package main
-
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Ad Exchange Buyer API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/adexchangebuyer
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
-//    project directory.
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/adexchangebuyer/v1.4"
-)
-
-func main() {
-  ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
-  if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
-  }
-
-  // The proposal id for which the setup is complete
-  proposalId := "" // TODO: Update placeholder value.
-
-  if err := c.Proposals.Setupcomplete(proposalId).Context(ctx).Do(); err != nil {
-    // TODO: Handle error.
+  if err := service.Marketplaceprivateauction.Updateproposal(privateAuctionId, &updatePrivateAuctionProposalRequestBody).Context(ctx).Do(); err != nil {
+    log.Fatal(err)
   }
 }
 package main
@@ -1544,11 +1339,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1557,34 +1356,46 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := adexchangebuyer.New(hc)
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The proposal id to update.
-  proposalId := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
 
-  // The last known revision number to update. If the head revision in the marketplace database has since
-  // changed, an error will be thrown. The caller should then fetch the latest proposal at head revision
-  // and retry the update at that revision.
-  revisionNumber := int64(0) // TODO: Update placeholder value.
+  // * The account id to get the reports.
+  accountId := int64(0)
 
-  // The proposed action to take on the proposal.
-  updateAction := "" // TODO: Update placeholder value.
+  // * The end time of the report in ISO 8601 timestamp format using UTC.
+  endDateTime := ""
 
-  resp, err := c.Proposals.Update(proposalId, revisionNumber, updateAction, &adexchangebuyer.Proposal{
-                                    // TODO: Fill required fields.
-                                  }).Context(ctx).Do()
+  // * The start time of the report in ISO 8601 timestamp format using UTC.
+  startDateTime := ""
+
+  res, err := service.PerformanceReport.List(accountId, endDateTime, startDateTime).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -1596,11 +1407,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1609,22 +1424,930 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := adexchangebuyer.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The accountId of the publisher to get profiles for.
-  accountId := int64(0) // TODO: Update placeholder value.
-
-  resp, err := c.Pubprofiles.List(accountId).Context(ctx).Do()
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+  // * The account id to delete the pretargeting config for.
+  accountId := int64(0)
+
+  // * The specific id of the configuration to delete.
+  configId := int64(0)
+
+  if err := service.PretargetingConfig.Delete(accountId, configId).Context(ctx).Do(); err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "encoding/json"
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/adexchangebuyer/v1.4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+  // * The account id to get the pretargeting config for.
+  accountId := int64(0)
+
+  // * The specific id of the configuration to retrieve.
+  configId := int64(0)
+
+  res, err := service.PretargetingConfig.Get(accountId, configId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "encoding/json"
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/adexchangebuyer/v1.4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+  // * The account id to insert the pretargeting config for.
+  accountId := int64(0)
+
+  pretargetingConfigBody := adexchangebuyer.PretargetingConfig{
+    // TODO: Add desired fields of the `pretargetingConfigBody` variable.
+  }
+
+  res, err := service.PretargetingConfig.Insert(accountId, &pretargetingConfigBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "encoding/json"
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/adexchangebuyer/v1.4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+  // * The account id to get the pretargeting configs for.
+  accountId := int64(0)
+
+  res, err := service.PretargetingConfig.List(accountId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "encoding/json"
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/adexchangebuyer/v1.4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
+  // * The account id to update the pretargeting config for.
+  accountId := int64(0)
+
+  // * The specific id of the configuration to update.
+  configId := int64(0)
+
+  pretargetingConfigBody := adexchangebuyer.PretargetingConfig{
+    // TODO: Add desired fields of the `pretargetingConfigBody` variable to be changed.
+  }
+
+  res, err := service.PretargetingConfig.Patch(accountId, configId, &pretargetingConfigBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "encoding/json"
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/adexchangebuyer/v1.4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
+  // * The account id to update the pretargeting config for.
+  accountId := int64(0)
+
+  // * The specific id of the configuration to update.
+  configId := int64(0)
+
+  pretargetingConfigBody := adexchangebuyer.PretargetingConfig{
+    // TODO: Add desired fields of the `pretargetingConfigBody` variable.
+  }
+
+  res, err := service.PretargetingConfig.Update(accountId, configId, &pretargetingConfigBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "encoding/json"
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/adexchangebuyer/v1.4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+  // * The id for the product to get the head revision for.
+  productId := ""
+
+  res, err := service.Products.Get(productId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "encoding/json"
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/adexchangebuyer/v1.4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+
+  res, err := service.Products.Search().Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "encoding/json"
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/adexchangebuyer/v1.4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+  // * Id of the proposal to retrieve.
+  proposalId := ""
+
+  res, err := service.Proposals.Get(proposalId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "encoding/json"
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/adexchangebuyer/v1.4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+
+  createOrdersRequestBody := adexchangebuyer.CreateOrdersRequest{
+    // TODO: Add desired fields of the `createOrdersRequestBody` variable.
+  }
+
+  res, err := service.Proposals.Insert(createOrdersRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "encoding/json"
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/adexchangebuyer/v1.4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
+  // * The proposal id to update.
+  proposalId := ""
+
+  // * The last known revision number to update. If the head revision in the marketplace database has
+  //   since changed, an error will be thrown. The caller should then fetch the latest proposal at head
+  //   revision and retry the update at that revision.
+  revisionNumber := int64(0)
+
+  // * The proposed action to take on the proposal.
+  updateAction := ""
+
+  proposalBody := adexchangebuyer.Proposal{
+    // TODO: Add desired fields of the `proposalBody` variable to be changed.
+  }
+
+  res, err := service.Proposals.Patch(proposalId, revisionNumber, updateAction, &proposalBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "encoding/json"
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/adexchangebuyer/v1.4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+
+  res, err := service.Proposals.Search().Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "encoding/json"
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/adexchangebuyer/v1.4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to desired parameter values for the `Setupcomplete` method:
+
+  // * The proposal id for which the setup is complete
+  proposalId := ""
+
+  if err := service.Proposals.Setupcomplete(proposalId).Context(ctx).Do(); err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "encoding/json"
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/adexchangebuyer/v1.4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
+  // * The proposal id to update.
+  proposalId := ""
+
+  // * The last known revision number to update. If the head revision in the marketplace database has
+  //   since changed, an error will be thrown. The caller should then fetch the latest proposal at head
+  //   revision and retry the update at that revision.
+  revisionNumber := int64(0)
+
+  // * The proposed action to take on the proposal.
+  updateAction := ""
+
+  proposalBody := adexchangebuyer.Proposal{
+    // TODO: Add desired fields of the `proposalBody` variable.
+  }
+
+  res, err := service.Proposals.Update(proposalId, revisionNumber, updateAction, &proposalBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "encoding/json"
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/adexchangebuyer/v1.4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Construct the adexchangebuyer service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := adexchangebuyer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+  // * The accountId of the publisher to get profiles for.
+  accountId := int64(0)
+
+  res, err := service.Pubprofiles.List(accountId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }

@@ -156,7 +156,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
           .add("TRUE")
           .build();
 
-  private static final String REQUEST_FIELD_NAME = "content";
+  private static final String REQUEST_FIELD_NAME = "requestBody";
 
   private CSharpContextCommon csharpCommon;
   private String serviceNamespace;
@@ -204,7 +204,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     return fluentUsings.filter(Predicates.<String>not(isAlias)).append(aliases);
   }
 
-  private String using(String fullTypeName) {
+  public String using(String fullTypeName) {
     if (fullTypeName.startsWith(serviceNamespace)) {
       // Special handling of nested types within the service class, except .Data classes.
       // Return the full nested name to place in generated source code.
@@ -233,49 +233,10 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
         : using(serviceNamespace + ".Data." + dataRelativeTypeName);
   }
 
-  private List<String> buildDescription(String raw) {
-    final int lineLength = 100;
-    return FluentIterable.from(Splitter.on('\n').split(raw))
-        .transformAndConcat(
-            new Function<String, Iterable<String>>() {
-              @Override
-              public Iterable<String> apply(String line) {
-                List<String> lines = new ArrayList<>();
-                line = line.trim();
-                while (line.length() > lineLength) {
-                  int i = lineLength;
-                  for (; i >= 0; i--) {
-                    if (Character.isWhitespace(line.charAt(i))) {
-                      break;
-                    }
-                  }
-                  if (i <= 0) {
-                    // Just truncate at lineLength if it can't be split
-                    i = lineLength;
-                  }
-                  lines.add(line.substring(0, i).trim());
-                  line = line.substring(i).trim();
-                }
-                if (line.length() > 0) {
-                  lines.add(line);
-                }
-                return lines;
-              }
-            })
-        .transform(
-            new Function<String, String>() {
-              @Override
-              public String apply(String line) {
-                return "// " + line;
-              }
-            })
-        .toList();
-  }
-
   @AutoValue
   public abstract static class ParamInfo {
     public static ParamInfo create(
-        String typeName, String name, String defaultValue, List<String> description) {
+        String typeName, String name, String defaultValue, String description) {
       return new AutoValue_CSharpDiscoveryContext_ParamInfo(
           typeName, name, defaultValue, description);
     }
@@ -286,7 +247,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
 
     public abstract String defaultValue();
 
-    public abstract List<String> description();
+    public abstract String description();
   }
 
   @AutoValue
@@ -374,6 +335,11 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     return s;
   }
 
+  @Override
+  public String getSampleVarName(String typeName) {
+    return fixReservedWordVar(upperCamelToLowerCamel(getSimpleName(typeName)));
+  }
+
   public SampleInfo getSampleInfo(Method method) {
     try {
       return getSampleInfo0(method);
@@ -418,8 +384,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
                     String defaultValue = defaultValue(methodType, field, typeName);
                     String name =
                         fixReservedWordVar(CSharpContextCommon.s_underscoresToCamelCase(paramName));
-                    List<String> description =
-                        buildDescription(apiary.getDescription(methodType.getName(), paramName));
+                    String description = getDescription(methodType.getName(), paramName);
                     return ParamInfo.create(typeName, name, defaultValue, description);
                   }
                 })
@@ -519,7 +484,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     throw new IllegalArgumentException("Not a collection type.");
   }
 
-  private String typeName(Type parentType, Field field, String requestTypeName) {
+  public String typeName(Type parentType, Field field, String requestTypeName) {
     ApiaryConfig apiary = getApiaryConfig();
     String fieldName = field.getName();
     String fieldTypeName = field.getTypeUrl();

@@ -7,7 +7,7 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -16,49 +16,60 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Autoscaler.v1beta2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Autoscaler.v1beta2.Data;
 
+
 namespace AutoscalerSample
 {
-    public class Program
+    public class AutoscalerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the autoscaler service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Delete() method:
 
-            // Project ID of Autoscaler resource.
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+            // * Project ID of Autoscaler resource.
             string project = "";
 
-            // Zone name of Autoscaler resource.
+            // * Zone name of Autoscaler resource.
             string zone = "";
 
-            // Name of the Autoscaler resource.
+            // * Name of the Autoscaler resource.
             string autoscaler = "";
+
 
             AutoscalersResource.DeleteRequest request = autoscalerService.Autoscalers.Delete(project, zone, autoscaler);
-            Data.Operation response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -70,7 +81,7 @@ namespace AutoscalerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -79,49 +90,60 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Autoscaler.v1beta2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Autoscaler.v1beta2.Data;
 
+
 namespace AutoscalerSample
 {
-    public class Program
+    public class AutoscalerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the autoscaler service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
 
-            // Project ID of Autoscaler resource.
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // * Project ID of Autoscaler resource.
             string project = "";
 
-            // Zone name of Autoscaler resource.
+            // * Zone name of Autoscaler resource.
             string zone = "";
 
-            // Name of the Autoscaler resource.
+            // * Name of the Autoscaler resource.
             string autoscaler = "";
 
+
             AutoscalersResource.GetRequest request = autoscalerService.Autoscalers.Get(project, zone, autoscaler);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Autoscaler response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Autoscaler response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -133,7 +155,7 @@ namespace AutoscalerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -142,49 +164,61 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Autoscaler.v1beta2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Autoscaler.v1beta2.Data;
 
+
 namespace AutoscalerSample
 {
-    public class Program
+    public class AutoscalerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the autoscaler service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Insert() method:
 
-            // Project ID of Autoscaler resource.
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+            // * Project ID of Autoscaler resource.
             string project = "";
 
-            // Zone name of Autoscaler resource.
+            // * Zone name of Autoscaler resource.
             string zone = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Autoscaler content = new Data.Autoscaler();
 
-            AutoscalersResource.InsertRequest request = autoscalerService.Autoscalers.Insert(content, project, zone);
+            Data.Autoscaler requestBody = new Data.Autoscaler();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            AutoscalersResource.InsertRequest request = autoscalerService.Autoscalers.Insert(requestBody, project, zone);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -196,7 +230,7 @@ namespace AutoscalerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -205,59 +239,69 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Autoscaler.v1beta2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Autoscaler.v1beta2.Data;
 
+
 namespace AutoscalerSample
 {
-    public class Program
+    public class AutoscalerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the autoscaler service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
-            // Project ID of Autoscaler resource.
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * Project ID of Autoscaler resource.
             string project = "";
 
-            // Zone name of Autoscaler resource.
+            // * Zone name of Autoscaler resource.
             string zone = "";
+
 
             AutoscalersResource.ListRequest request = autoscalerService.Autoscalers.List(project, zone);
+
             Data.AutoscalerListResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Items == null)
                 {
                     continue;
                 }
-                foreach (Data.Autoscaler item in response.Items)
+                foreach (Data.Autoscaler autoscaler in response.Items)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `autoscaler` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(autoscaler));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.AutoscalerListResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -269,7 +313,7 @@ namespace AutoscalerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -278,52 +322,64 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Autoscaler.v1beta2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Autoscaler.v1beta2.Data;
 
+
 namespace AutoscalerSample
 {
-    public class Program
+    public class AutoscalerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the autoscaler service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Patch() method:
 
-            // Project ID of Autoscaler resource.
+            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
+            // * Project ID of Autoscaler resource.
             string project = "";
 
-            // Zone name of Autoscaler resource.
+            // * Zone name of Autoscaler resource.
             string zone = "";
 
-            // Name of the Autoscaler resource.
+            // * Name of the Autoscaler resource.
             string autoscaler = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Autoscaler content = new Data.Autoscaler();
 
-            AutoscalersResource.PatchRequest request = autoscalerService.Autoscalers.Patch(content, project, zone, autoscaler);
+            Data.Autoscaler requestBody = new Data.Autoscaler();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
+
+            AutoscalersResource.PatchRequest request = autoscalerService.Autoscalers.Patch(requestBody, project, zone, autoscaler);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -335,7 +391,7 @@ namespace AutoscalerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -344,52 +400,64 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Autoscaler.v1beta2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Autoscaler.v1beta2.Data;
 
+
 namespace AutoscalerSample
 {
-    public class Program
+    public class AutoscalerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the autoscaler service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Update() method:
 
-            // Project ID of Autoscaler resource.
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
+            // * Project ID of Autoscaler resource.
             string project = "";
 
-            // Zone name of Autoscaler resource.
+            // * Zone name of Autoscaler resource.
             string zone = "";
 
-            // Name of the Autoscaler resource.
+            // * Name of the Autoscaler resource.
             string autoscaler = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Autoscaler content = new Data.Autoscaler();
 
-            AutoscalersResource.UpdateRequest request = autoscalerService.Autoscalers.Update(content, project, zone, autoscaler);
+            Data.Autoscaler requestBody = new Data.Autoscaler();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            AutoscalersResource.UpdateRequest request = autoscalerService.Autoscalers.Update(requestBody, project, zone, autoscaler);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -401,7 +469,7 @@ namespace AutoscalerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -411,42 +479,52 @@ using Google.Apis.Autoscaler.v1beta2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
 
+
 namespace AutoscalerSample
 {
-    public class Program
+    public class AutoscalerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the autoscaler service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Delete() method:
 
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+            // * project
             string project = "";
 
+            // * zone
             string zone = "";
 
+            // * operation
             string operation = "";
 
-            ZoneOperationsResource.DeleteRequest request = autoscalerService.ZoneOperations.Delete(project, zone, operation);
-            request.Execute();
 
-            // To execute asynchronously in an async method, use
+            ZoneOperationsResource.DeleteRequest request = autoscalerService.ZoneOperations.Delete(project, zone, operation);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            request.Execute();
             // await request.ExecuteAsync();
         }
     }
@@ -459,7 +537,7 @@ namespace AutoscalerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -468,46 +546,60 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Autoscaler.v1beta2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Autoscaler.v1beta2.Data;
 
+
 namespace AutoscalerSample
 {
-    public class Program
+    public class AutoscalerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the autoscaler service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
 
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // * project
             string project = "";
 
+            // * zone
             string zone = "";
 
+            // * operation
             string operation = "";
 
-            ZoneOperationsResource.GetRequest request = autoscalerService.ZoneOperations.Get(project, zone, operation);
-            Data.Operation response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            ZoneOperationsResource.GetRequest request = autoscalerService.ZoneOperations.Get(project, zone, operation);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -519,7 +611,7 @@ namespace AutoscalerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -528,57 +620,69 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Autoscaler.v1beta2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Autoscaler.v1beta2.Data;
 
+
 namespace AutoscalerSample
 {
-    public class Program
+    public class AutoscalerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the autoscaler service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * project
             string project = "";
 
+            // * zone
             string zone = "";
 
+
             ZoneOperationsResource.ListRequest request = autoscalerService.ZoneOperations.List(project, zone);
+
             Data.OperationList response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Items == null)
                 {
                     continue;
                 }
-                foreach (Data.Operation item in response.Items)
+                foreach (Data.Operation operation in response.Items)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `operation` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(operation));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.OperationList response = await request.ExecuteAsync();
         }
     }
 }
@@ -590,7 +694,7 @@ namespace AutoscalerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -599,55 +703,66 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Autoscaler.v1beta2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Autoscaler.v1beta2.Data;
 
+
 namespace AutoscalerSample
 {
-    public class Program
+    public class AutoscalerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the autoscaler service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * project
             string project = "";
 
+
             ZonesResource.ListRequest request = autoscalerService.Zones.List(project);
+
             Data.ZoneList response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Items == null)
                 {
                     continue;
                 }
-                foreach (Data.Zone item in response.Items)
+                foreach (Data.Zone zone in response.Items)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `zone` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(zone));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.ZoneList response = await request.ExecuteAsync();
         }
     }
 }
