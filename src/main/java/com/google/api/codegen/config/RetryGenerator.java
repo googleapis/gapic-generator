@@ -15,7 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
-import com.google.api.tools.framework.aspects.http.model.HttpAttribute.MethodKind;
+import com.google.api.tools.framework.aspects.http.model.MethodKind;
 import com.google.api.tools.framework.model.Method;
 
 import io.grpc.Status;
