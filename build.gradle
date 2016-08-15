@@ -27,13 +27,12 @@ apply plugin: "eclipse"
 apply plugin: "com.google.protobuf"
 apply plugin: "com.github.sherter.google-java-format"
 apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: "signing"
 
 sourceCompatibility = 1.7
 
 group = "com.google.api"
-version = "0.0.0-SNAPSHOT"
-// url to the snapshot repository of a private maven repo.
-def toolkitSnapshotRepo = "http://104.197.230.53:8081/nexus/content/repositories/snapshots/"
+version = "0.0.1"
 
 def protoVersion = "3.0.0-beta-3"
 
@@ -79,10 +78,6 @@ ext {
 repositories {
   mavenLocal()
   mavenCentral()
-  maven {
-    // Private maven repo for publishing toolkit snapshots.
-    url toolkitSnapshotRepo
-  }
 }
 
 dependencies {
@@ -121,9 +116,6 @@ task sourcesJar(type: Jar, dependsOn: classes) {
   classifier = 'sources'
   from sourceSets.main.allSource
 }
-artifacts {
-  archives sourcesJar
-}
 
 // Protobuf
 // --------
@@ -145,6 +137,19 @@ protobuf {
   protoc {
     artifact = libraries.protoc
   }
+}
+
+// JavaDoc
+// -------
+
+task javadocJar(type: Jar) {
+  classifier = 'javadoc'
+  from javadoc
+}
+
+javadoc.options {
+  encoding = 'UTF-8'
+  links 'https://docs.oracle.com/javase/7/docs/api/'
 }
 
 // Test data
@@ -246,19 +251,40 @@ tasks.cleanEclipseJdt {
   }
 }
 
-if (project.hasProperty('privateToolkitUsername') && project.hasProperty('privateToolkitPassword')) {
+artifacts {
+  archives javadocJar, sourcesJar
+}
+
+signing {
+  required { gradle.taskGraph.hasTask("uploadArchives") }
+  sign configurations.archives
+}
+
+if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
   uploadArchives {
     repositories {
       mavenDeployer {
-        snapshotRepository(url: toolkitSnapshotRepo) {
-          authentication(userName: privateToolkitUsername, password: privateToolkitPassword)
+        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+          authentication(userName: ossrhUsername, password: ossrhPassword)
+        }
+
+        snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+          authentication(userName: ossrhUsername, password: ossrhPassword)
         }
 
         pom.project {
-          name 'Gapi Tools'
+          name 'Google API Tools'
           packaging 'jar'
-          description 'Google API tools frameworks.'
-          url 'http://www.googleapis.com'
+          artifactId 'toolkit'
+          description 'Google API tools framework.'
+          url 'https://github.com/googleapis/toolkit'
+
+          scm {
+            url 'https://github.com/googleapis/toolkit'
+            connection 'scm:git:https://github.com/googleapis/toolkit.git'
+          }
 
           licenses {
             license {
@@ -266,14 +292,27 @@ if (project.hasProperty('privateToolkitUsername') && project.hasProperty('privat
               url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
             }
           }
+
+          developers {
+            developer {
+              id 'GoogleAPIs'
+              name 'GoogleAPIs'
+              email 'googleapis@googlegroups.com'
+              url 'https://github.com/googleapis'
+              organization 'Google, Inc.'
+              organizationUrl 'https://www.google.com'
+            }
+          }
         }
       }
     }
   }
 } else {
-  logger.warn("The uploadArchives task was skipped. The privateToolkitUsername "
-    + "and privateToolkitPassword properties need to be set correctly in "
-    + "your ~/.gradle/gradle.properties file in order to upload archives.")
+  task failUploadArchives << {
+    throw new GradleException("uploadArchives needs ossrhUsername and ossrhPassword "
+      + "to be set. They can be set inside your ~/.gradle/gradle.properties file.")
+  }
+  tasks.uploadArchives.dependsOn(failUploadArchives)
 }
 
 allprojects {
@@ -289,6 +328,15 @@ allprojects {
 //
 // Command line args can be passed to the tool as a comma-separated list:
 //   ./gradlew runVGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
+task runCodeGen(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  main = 'com.google.api.codegen.CodeGeneratorTool'
+  if (project.hasProperty('clargs')) {
+    args = clargs.split(',').toList()
+  }
+}
+
+// old task being retained for backwards-friendliness
 task runVGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   main = 'com.google.api.codegen.CodeGeneratorTool'

@@ -145,7 +145,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
    * Returns the service name with common suffixes removed.
    *
    * For example:
-   *  LoggingServiceV2 => logging
+   *  LoggingServiceV2 =&gt; logging
    */
   public String getReducedServiceName(Interface service) {
     String name = service.getSimpleName().replaceAll("V[0-9]+$", "");
