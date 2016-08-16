@@ -63,8 +63,6 @@ public class MainGapicProviderFactory
   public static final String RUBY = "ruby";
   public static final String RUBY_DOC = "ruby_doc";
 
-  public static final String JAVA_TEST = "java_test";
-
   /** Create the GapicProviders based on the given id */
   public static List<GapicProvider<? extends Object>> defaultCreate(
       Model model, ApiConfig apiConfig, String id) {
@@ -126,23 +124,20 @@ public class MainGapicProviderFactory
               .setModelToViewTransformer(new JavaGapicSurfaceTransformer(javaPathMapper))
               .build();
 
-      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);
-
-    } else if (id.equals(JAVA_TEST)) {
-      GapicCodePathMapper javaPathMapper =
+      GapicCodePathMapper javaTestPathMapper =
           CommonGapicCodePathMapper.newBuilder()
               .setPrefix("src/test/java")
               .setShouldAppendPackage(true)
               .build();
-      GapicProvider<? extends Object> mainProvider =
+      GapicProvider<? extends Object> testProvider =
           ViewModelGapicProvider.newBuilder()
               .setModel(model)
               .setApiConfig(apiConfig)
               .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-              .setModelToViewTransformer(new JavaGapicSurfaceTestTransformer(javaPathMapper))
+              .setModelToViewTransformer(new JavaGapicSurfaceTestTransformer(javaTestPathMapper))
               .build();
 
-      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);
+      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, testProvider);
 
     } else if (id.equals(NODEJS)) {
       GapicCodePathMapper nodeJSPathMapper =
