@@ -43,13 +43,15 @@
   @@Override
   public void {@method.name}({@method.requestTypeName} request,
       StreamObserver<{@method.responseTypeName}> responseObserver) {
-    {@method.responseTypeName} response = {@method.responseTypeName}.newBuilder().build();
     if (responses != null && !responses.isEmpty()) {
-      response = ({@method.responseTypeName}) responses.get(0);
+      {@method.responseTypeName} response = ({@method.responseTypeName}) responses.get(0);
       responses.remove(0);
+      requests.add(request);
+      responseObserver.onNext(response);
+      responseObserver.onCompleted();
+    } else {
+      responseObserver.onError(
+          new Exception("No response is set for gRPC method {@method.name}."));
     }
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
   }
 @end
