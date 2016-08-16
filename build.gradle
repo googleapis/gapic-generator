@@ -275,10 +275,10 @@ if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')
         }
 
         pom.project {
-          name 'Google API Tools'
+          name 'Google API Codegen Toolkit'
           packaging 'jar'
           artifactId 'toolkit'
-          description 'Google API tools framework.'
+          description 'Google API Codegen Toolkit'
           url 'https://github.com/googleapis/toolkit'
 
           scm {
@@ -327,7 +327,7 @@ allprojects {
 // =============================
 //
 // Command line args can be passed to the tool as a comma-separated list:
-//   ./gradlew runVGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
+//   ./gradlew runCodeGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
 task runCodeGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   main = 'com.google.api.codegen.CodeGeneratorTool'
@@ -337,6 +337,7 @@ task runCodeGen(type: JavaExec) {
 }
 
 // old task being retained for backwards-friendliness
+// TODO delete after 1 Oct 2016 (or before if all artman users are using runCodeGen)
 task runVGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   main = 'com.google.api.codegen.CodeGeneratorTool'
