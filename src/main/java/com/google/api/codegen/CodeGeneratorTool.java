@@ -22,8 +22,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.common.collect.Lists;
 
 // Example usage: (assuming environment variable BASE is the base directory of the project
 // containing the YAMLs, descriptor set, and output)
@@ -88,20 +87,11 @@ public class CodeGeneratorTool {
       String[] apiConfigs,
       String[] generatorConfigs,
       String outputDirectory) {
-
     ToolOptions options = ToolOptions.create();
     options.set(ToolOptions.DESCRIPTOR_SET, descriptorSet);
-    List<String> configs = new ArrayList<String>();
-    for (String config : apiConfigs) {
-      configs.add(config);
-    }
-    options.set(ToolOptions.CONFIG_FILES, configs);
+    options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(apiConfigs));
     options.set(CodeGeneratorApi.OUTPUT_FILE, outputDirectory);
-    List<String> genConfigs = new ArrayList<String>();
-    for (String genConfig : generatorConfigs) {
-      genConfigs.add(genConfig);
-    }
-    options.set(CodeGeneratorApi.GENERATOR_CONFIG_FILES, genConfigs);
+    options.set(CodeGeneratorApi.GENERATOR_CONFIG_FILES, Lists.newArrayList(generatorConfigs));
     CodeGeneratorApi codeGen = new CodeGeneratorApi(options);
     return codeGen.run();
   }

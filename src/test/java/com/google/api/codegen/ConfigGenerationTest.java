@@ -17,10 +17,14 @@ package com.google.api.codegen;
 import com.google.api.codegen.config.ConfigGeneratorApi;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.tools.ToolOptions;
+import com.google.common.collect.Lists;
+
 import java.io.File;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
 import org.junit.Test;
 
 public class ConfigGenerationTest extends ConfigBaselineTestCase {
@@ -38,10 +42,13 @@ public class ConfigGenerationTest extends ConfigBaselineTestCase {
   @Override
   public Object run() throws Exception {
     String outFile = tempDir.getRoot().getPath() + File.separator + baselineFileName();
+    String serviceConfigPath =
+        getTestDataLocator().findTestData(testName.getMethodName() + ".yaml").getPath();
 
     ToolOptions options = ToolOptions.create();
     options.set(ConfigGeneratorApi.OUTPUT_FILE, outFile);
     options.set(ToolOptions.DESCRIPTOR_SET, testConfig.getDescriptorFile().toString());
+    options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(serviceConfigPath));
     new ConfigGeneratorApi(options).run();
 
     String outputContent =
