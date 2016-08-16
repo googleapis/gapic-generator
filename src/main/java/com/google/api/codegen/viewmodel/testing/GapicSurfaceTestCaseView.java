@@ -28,7 +28,11 @@ public abstract class GapicSurfaceTestCaseView {
 
   public abstract String requestTypeName();
 
+  public abstract String responseTypeName();
+
   public abstract String resourceTypeName();
+
+  public abstract MockGrpcResponseView mockResponse();
 
   public abstract ApiMethodType methodType();
 
@@ -48,6 +52,8 @@ public abstract class GapicSurfaceTestCaseView {
 
     public abstract Builder requestTypeName(String val);
 
+    public abstract Builder responseTypeName(String val);
+
     public abstract Builder resourceTypeName(String val);
 
     public abstract Builder methodType(ApiMethodType val);
@@ -55,6 +61,8 @@ public abstract class GapicSurfaceTestCaseView {
     public abstract Builder initCode(InitCodeView val);
 
     public abstract Builder asserts(List<GapicSurfaceTestAssertView> val);
+
+    public abstract Builder mockResponse(MockGrpcResponseView val);
 
     public abstract GapicSurfaceTestCaseView build();
   }

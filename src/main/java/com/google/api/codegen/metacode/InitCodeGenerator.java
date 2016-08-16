@@ -58,6 +58,25 @@ public class InitCodeGenerator {
   }
 
   /**
+   * Generates the simple InitCode for a response object which matches the output type of the given
+   * method.
+   */
+  public InitCode generateMockResponseObjectInitCode(Method method) {
+    InitCodeLine lastLine =
+        generateSampleCodeInit(
+            Name.from("expected_response"), method.getOutputType(), new HashMap<>());
+    initLineSpecs.add(lastLine);
+    FieldSetting responseField =
+        FieldSetting.create(
+            method.getOutputType(),
+            Name.from("response"),
+            lastLine.getIdentifier(),
+            lastLine.getInitValueConfig());
+    List<FieldSetting> outputFields = Arrays.asList(responseField);
+    return InitCode.create(initLineSpecs, outputFields);
+  }
+
+  /**
    * Generates the InitCode for a method, where the input of the function representing the method
    * will take the given set of fields.
    */
@@ -264,9 +283,8 @@ public class InitCodeGenerator {
 
   /**
    * Validates that the provided value matches the provided type, and returns the validated value.
-   * For string and byte types, the returned value has quote characters removed. Returns null if
-   * the value does not match. Throws an IllegalArgumentException is the provided type is not
-   * supported.
+   * For string and byte types, the returned value has quote characters removed. Returns null if the
+   * value does not match. Throws an IllegalArgumentException is the provided type is not supported.
    */
   private static String validateValue(TypeRef type, String value) {
     Type descType = type.getKind();

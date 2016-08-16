@@ -11,24 +11,31 @@
 
   @@javax.annotation.Generated("by GAPIC")
   public class {@mockServiceImpl.name} implements {@mockServiceImpl.grpcClassName}  {
-     private ArrayList<GeneratedMessage> requests;
+    private ArrayList<GeneratedMessage> requests;
+    private ArrayList<GeneratedMessage> responses;
 
-     public {@mockServiceImpl.name}() {
-       requests = new ArrayList<>();
-     }
+    public {@mockServiceImpl.name}() {
+      requests = new ArrayList<>();
+      responses = new ArrayList<>();
+    }
 
-     public List<GeneratedMessage> getRequests() {
-       return requests;
-     }
+    public List<GeneratedMessage> getRequests() {
+      return requests;
+    }
 
-     public void reset() {
-       requests = new ArrayList<>();
-     }
+    public void setResponses(List<GeneratedMessage> responses) {
+      this.responses = Lists.newArrayList(responses);
+    }
 
-     @join method : mockServiceImpl.grpcMethods
-      {@grpcMethod(method)}
+    public void reset() {
+      requests = new ArrayList<>();
+      responses = new ArrayList<>();
+    }
 
-     @end
+    @join method : mockServiceImpl.grpcMethods
+     {@grpcMethod(method)}
+
+    @end
   }
 @end
 
@@ -36,8 +43,15 @@
   @@Override
   public void {@method.name}({@method.requestTypeName} request,
       StreamObserver<{@method.responseTypeName}> responseObserver) {
-    requests.add(request);
-    responseObserver.onNext({@method.responseTypeName}.newBuilder().build());
-    responseObserver.onCompleted();
+    if (responses != null && !responses.isEmpty()) {
+      {@method.responseTypeName} response = ({@method.responseTypeName}) responses.get(0);
+      responses.remove(0);
+      requests.add(request);
+      responseObserver.onNext(response);
+      responseObserver.onCompleted();
+    } else {
+      responseObserver.onError(
+          new Exception("No response is set for gRPC method {@method.name}."));
+    }
   }
 @end

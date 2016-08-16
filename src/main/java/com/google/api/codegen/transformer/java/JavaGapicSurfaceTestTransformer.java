@@ -32,6 +32,7 @@ import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestCaseView;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestClassView;
 import com.google.api.codegen.viewmodel.testing.MockGrpcMethodView;
+import com.google.api.codegen.viewmodel.testing.MockGrpcResponseView;
 import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceView;
 import com.google.api.tools.framework.model.Interface;
@@ -107,6 +108,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("java.util.ArrayList");
+    typeTable.saveNicknameFor("com.google.common.collect.Lists");
     typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessage");
     typeTable.saveNicknameFor("io.grpc.stub.StreamObserver");
   }
@@ -178,16 +180,35 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .getTypeTable()
             .getAndSaveNicknameFor(methodContext.getMethod().getInputType());
 
+    String responseTypeName =
+        methodContext
+            .getTypeTable()
+            .getAndSaveNicknameFor(methodContext.getMethod().getOutputType());
+
     SurfaceNamer namer = methodContext.getNamer();
     return GapicSurfaceTestCaseView.newBuilder()
         .name(namer.getTestCaseName(methodContext.getMethod()))
         .surfaceMethodName(namer.getApiMethodName(methodContext.getMethod()))
         .requestTypeName(requestTypeName)
+        .responseTypeName(responseTypeName)
         .initCode(initCodeView)
         .methodType(type)
         .resourceTypeName(resourceTypeName)
         .asserts(assertViews)
+        .mockResponse(createMockResponseView(methodContext))
         .build();
+  }
+
+  private MockGrpcResponseView createMockResponseView(MethodTransformerContext methodContext) {
+    InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
+    InitCodeView initCodeView =
+        initCodeTransformer.generateMockResponseObjectInitCode(methodContext);
+
+    String typeName =
+        methodContext
+            .getTypeTable()
+            .getAndSaveNicknameFor(methodContext.getMethod().getOutputType());
+    return MockGrpcResponseView.newBuilder().typeName(typeName).initCode(initCodeView).build();
   }
 
   private MockServiceView createMockServiceView(SurfaceTransformerContext context) {
