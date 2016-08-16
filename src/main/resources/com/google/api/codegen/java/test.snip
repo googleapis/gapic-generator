@@ -69,9 +69,9 @@
 
 @private setResponse(response)
   {@initCode(response.initCode)}
-  List<GeneratedMessage> responses = new ArrayList<>();
-  responses.add(response);
-  serviceHelper.getService().setResponses(responses);
+  List<GeneratedMessage> expectedResponses = new ArrayList<>();
+  expectedResponses.add(expectedResponse);
+  serviceHelper.getService().setResponses(expectedResponses);
 @end
 
 @private methodCall(test)
@@ -88,7 +88,7 @@
     {@test.responseTypeName} actualResponse =
         api.{@test.surfaceMethodName}(\
         {@sampleMethodCallArgList(test.initCode.fieldSettings)});
-    Assert.assertEquals(response, actualResponse);
+    Assert.assertEquals(expectedResponse, actualResponse);
   @default
     $unhandledCase: {@test.type}$
   @end

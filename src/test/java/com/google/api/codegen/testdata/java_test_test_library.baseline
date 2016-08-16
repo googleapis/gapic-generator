@@ -89,16 +89,16 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void createShelfTest() {
-    Shelf response = Shelf.newBuilder()
+    Shelf expectedResponse = Shelf.newBuilder()
       .build();
-    List<GeneratedMessage> responses = new ArrayList<>();
-    responses.add(response);
-    serviceHelper.getService().setResponses(responses);
+    List<GeneratedMessage> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    serviceHelper.getService().setResponses(expectedResponses);
 
     Shelf shelf = Shelf.newBuilder().build();
     Shelf actualResponse =
         api.createShelf(shelf);
-    Assert.assertEquals(response, actualResponse);
+    Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
     Assert.assertEquals(1, requests.size());
@@ -110,17 +110,17 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getShelfTest() {
-    Shelf response = Shelf.newBuilder()
+    Shelf expectedResponse = Shelf.newBuilder()
       .build();
-    List<GeneratedMessage> responses = new ArrayList<>();
-    responses.add(response);
-    serviceHelper.getService().setResponses(responses);
+    List<GeneratedMessage> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    serviceHelper.getService().setResponses(expectedResponses);
 
     String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
     String options = "";
     Shelf actualResponse =
         api.getShelf(formattedName, options);
-    Assert.assertEquals(response, actualResponse);
+    Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
     Assert.assertEquals(1, requests.size());
@@ -133,11 +133,11 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void listShelvesTest() {
-    ListShelvesResponse response = ListShelvesResponse.newBuilder()
+    ListShelvesResponse expectedResponse = ListShelvesResponse.newBuilder()
       .build();
-    List<GeneratedMessage> responses = new ArrayList<>();
-    responses.add(response);
-    serviceHelper.getService().setResponses(responses);
+    List<GeneratedMessage> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    serviceHelper.getService().setResponses(expectedResponses);
 
 
     PageAccessor<Shelf> pageAccessor = api.listShelves();
@@ -156,16 +156,16 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void deleteShelfTest() {
-    Empty response = Empty.newBuilder()
+    Empty expectedResponse = Empty.newBuilder()
       .build();
-    List<GeneratedMessage> responses = new ArrayList<>();
-    responses.add(response);
-    serviceHelper.getService().setResponses(responses);
+    List<GeneratedMessage> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    serviceHelper.getService().setResponses(expectedResponses);
 
     String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
     Empty actualResponse =
         api.deleteShelf(formattedName);
-    Assert.assertEquals(response, actualResponse);
+    Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
     Assert.assertEquals(1, requests.size());
@@ -177,17 +177,17 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void mergeShelvesTest() {
-    Shelf response = Shelf.newBuilder()
+    Shelf expectedResponse = Shelf.newBuilder()
       .build();
-    List<GeneratedMessage> responses = new ArrayList<>();
-    responses.add(response);
-    serviceHelper.getService().setResponses(responses);
+    List<GeneratedMessage> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    serviceHelper.getService().setResponses(expectedResponses);
 
     String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
     String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
     Shelf actualResponse =
         api.mergeShelves(formattedName, formattedOtherShelfName);
-    Assert.assertEquals(response, actualResponse);
+    Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
     Assert.assertEquals(1, requests.size());
@@ -200,17 +200,17 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void createBookTest() {
-    Book response = Book.newBuilder()
+    Book expectedResponse = Book.newBuilder()
       .build();
-    List<GeneratedMessage> responses = new ArrayList<>();
-    responses.add(response);
-    serviceHelper.getService().setResponses(responses);
+    List<GeneratedMessage> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    serviceHelper.getService().setResponses(expectedResponses);
 
     String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
     Book book = Book.newBuilder().build();
     Book actualResponse =
         api.createBook(formattedName, book);
-    Assert.assertEquals(response, actualResponse);
+    Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
     Assert.assertEquals(1, requests.size());
@@ -223,17 +223,17 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void publishSeriesTest() {
-    PublishSeriesResponse response = PublishSeriesResponse.newBuilder()
+    PublishSeriesResponse expectedResponse = PublishSeriesResponse.newBuilder()
       .build();
-    List<GeneratedMessage> responses = new ArrayList<>();
-    responses.add(response);
-    serviceHelper.getService().setResponses(responses);
+    List<GeneratedMessage> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    serviceHelper.getService().setResponses(expectedResponses);
 
     Shelf shelf = Shelf.newBuilder().build();
     List<Book> books = new ArrayList<>();
     PublishSeriesResponse actualResponse =
         api.publishSeries(shelf, books);
-    Assert.assertEquals(response, actualResponse);
+    Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
     Assert.assertEquals(1, requests.size());
@@ -246,16 +246,16 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getBookTest() {
-    Book response = Book.newBuilder()
+    Book expectedResponse = Book.newBuilder()
       .build();
-    List<GeneratedMessage> responses = new ArrayList<>();
-    responses.add(response);
-    serviceHelper.getService().setResponses(responses);
+    List<GeneratedMessage> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    serviceHelper.getService().setResponses(expectedResponses);
 
     String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
     Book actualResponse =
         api.getBook(formattedName);
-    Assert.assertEquals(response, actualResponse);
+    Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
     Assert.assertEquals(1, requests.size());
@@ -267,11 +267,11 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void listBooksTest() {
-    ListBooksResponse response = ListBooksResponse.newBuilder()
+    ListBooksResponse expectedResponse = ListBooksResponse.newBuilder()
       .build();
-    List<GeneratedMessage> responses = new ArrayList<>();
-    responses.add(response);
-    serviceHelper.getService().setResponses(responses);
+    List<GeneratedMessage> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    serviceHelper.getService().setResponses(expectedResponses);
 
     String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
     PageAccessor<Book> pageAccessor = api.listBooks(formattedName);
@@ -291,16 +291,16 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void deleteBookTest() {
-    Empty response = Empty.newBuilder()
+    Empty expectedResponse = Empty.newBuilder()
       .build();
-    List<GeneratedMessage> responses = new ArrayList<>();
-    responses.add(response);
-    serviceHelper.getService().setResponses(responses);
+    List<GeneratedMessage> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    serviceHelper.getService().setResponses(expectedResponses);
 
     String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
     Empty actualResponse =
         api.deleteBook(formattedName);
-    Assert.assertEquals(response, actualResponse);
+    Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
     Assert.assertEquals(1, requests.size());
@@ -312,17 +312,17 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void updateBookTest() {
-    Book response = Book.newBuilder()
+    Book expectedResponse = Book.newBuilder()
       .build();
-    List<GeneratedMessage> responses = new ArrayList<>();
-    responses.add(response);
-    serviceHelper.getService().setResponses(responses);
+    List<GeneratedMessage> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    serviceHelper.getService().setResponses(expectedResponses);
 
     String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
     Book book = Book.newBuilder().build();
     Book actualResponse =
         api.updateBook(formattedName, book);
-    Assert.assertEquals(response, actualResponse);
+    Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
     Assert.assertEquals(1, requests.size());
@@ -335,17 +335,17 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void moveBookTest() {
-    Book response = Book.newBuilder()
+    Book expectedResponse = Book.newBuilder()
       .build();
-    List<GeneratedMessage> responses = new ArrayList<>();
-    responses.add(response);
-    serviceHelper.getService().setResponses(responses);
+    List<GeneratedMessage> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    serviceHelper.getService().setResponses(expectedResponses);
 
     String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
     String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
     Book actualResponse =
         api.moveBook(formattedName, formattedOtherShelfName);
-    Assert.assertEquals(response, actualResponse);
+    Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
     Assert.assertEquals(1, requests.size());
@@ -358,11 +358,11 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void listStringsTest() {
-    ListStringsResponse response = ListStringsResponse.newBuilder()
+    ListStringsResponse expectedResponse = ListStringsResponse.newBuilder()
       .build();
-    List<GeneratedMessage> responses = new ArrayList<>();
-    responses.add(response);
-    serviceHelper.getService().setResponses(responses);
+    List<GeneratedMessage> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    serviceHelper.getService().setResponses(expectedResponses);
 
 
     PageAccessor<String> pageAccessor = api.listStrings();
@@ -381,11 +381,11 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void addCommentsTest() {
-    Empty response = Empty.newBuilder()
+    Empty expectedResponse = Empty.newBuilder()
       .build();
-    List<GeneratedMessage> responses = new ArrayList<>();
-    responses.add(response);
-    serviceHelper.getService().setResponses(responses);
+    List<GeneratedMessage> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    serviceHelper.getService().setResponses(expectedResponses);
 
     String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
     ByteString comment = ByteString.copyFromUtf8("");
@@ -395,7 +395,7 @@ public class LibraryServiceTest {
     List<Comment> comments = Arrays.asList(commentsElement);
     Empty actualResponse =
         api.addComments(formattedName, comments);
-    Assert.assertEquals(response, actualResponse);
+    Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
     Assert.assertEquals(1, requests.size());
@@ -408,16 +408,16 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getBookFromArchiveTest() {
-    Book response = Book.newBuilder()
+    Book expectedResponse = Book.newBuilder()
       .build();
-    List<GeneratedMessage> responses = new ArrayList<>();
-    responses.add(response);
-    serviceHelper.getService().setResponses(responses);
+    List<GeneratedMessage> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    serviceHelper.getService().setResponses(expectedResponses);
 
     String formattedName = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
     Book actualResponse =
         api.getBookFromArchive(formattedName);
-    Assert.assertEquals(response, actualResponse);
+    Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
     Assert.assertEquals(1, requests.size());
@@ -429,11 +429,11 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void updateBookIndexTest() {
-    Empty response = Empty.newBuilder()
+    Empty expectedResponse = Empty.newBuilder()
       .build();
-    List<GeneratedMessage> responses = new ArrayList<>();
-    responses.add(response);
-    serviceHelper.getService().setResponses(responses);
+    List<GeneratedMessage> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    serviceHelper.getService().setResponses(expectedResponses);
 
     String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
     String indexName = "default index";
@@ -442,7 +442,7 @@ public class LibraryServiceTest {
     indexMap.put("default_key", indexMapItem);
     Empty actualResponse =
         api.updateBookIndex(formattedName, indexName, indexMap);
-    Assert.assertEquals(response, actualResponse);
+    Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
     Assert.assertEquals(1, requests.size());
