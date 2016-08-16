@@ -38,7 +38,7 @@ public class NamePath {
     return parse("\\\\", pieces);
   }
 
-  public static Namepath doubleColoned(String... pieces) {
+  public static NamePath doubleColoned(String... pieces) {
     return parse("::", pieces);
   }
 
@@ -99,7 +99,7 @@ public class NamePath {
     return Joiner.on("\\").join(pathPieces);
   }
 
-  public String toDoubledColoned() {
-    return Joiner .on("::".join(pathPieces));
+  public String toDoubleColoned() {
+    return Joiner.on("::").join(pathPieces);
   }
 }

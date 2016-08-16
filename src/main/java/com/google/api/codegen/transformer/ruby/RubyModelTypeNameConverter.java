@@ -25,12 +25,15 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
 
   /**
    * A map from primitive types to its default value.
    */
-  private static final ImmutableMap<Type, String> DEFAULT_VALUE_MAP =
+  private static final ImmutableMap<Type, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "false")
           .put(Type.TYPE_DOUBLE, "0.0")
@@ -49,7 +52,7 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
           .put(Type.TYPE_BYTES, "\'\'")
           .build();
 
-  private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_NAMES =
+  private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "true, false")
           .put(Type.TYPE_DOUBLE, "Float")
@@ -111,21 +114,7 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeName(ProtoElement elem) {
-    String fullName = element.getFullName();
-    int lastDot = fullName.lastIndexOf('.');
-    if (lastDot < 0) {
-      return fullName;
-    }
-    List<String> rubyNames = new ArrayList<>();
-    for (String name : fullName.substring(0, lastDot).split("\\.")) {
-      if (Character.isUpperCase(name.charAt(0))) {
-        rubyNames.add(name);
-      } else {
-        rubyNames.add(lowerUnderscoreToUpperCamel(name));
-      }
-    }
-    rubyNames.add(element.getSimpleName());
-    return Joiner.on("::").join(rubyNames);
+    return typeNameConverter.getTypeName(elem.getFullName().replaceAll("\\.", "::"));
   }
 
   /**

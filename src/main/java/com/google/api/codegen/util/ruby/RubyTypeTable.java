@@ -21,18 +21,13 @@ import com.google.api.codegen.util.TypeTable;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableSet;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * The TypeTable for Ruby.
- */
+/** The TypeTable for Ruby. */
 public class RubyTypeTable implements TypeTable {
-  /**
-   * A bi-map from full names to short names indicating the import map.
-   */
+  /** A bi-map from full names to short names indicating the import map. */
   private final BiMap<String, String> imports = HashBiMap.create();
 
   @Override
@@ -102,7 +97,6 @@ public class RubyTypeTable implements TypeTable {
   public boolean hasImports() {
     return !getImports().isEmpty();
   }
-
 
   /**
    * A set of ruby keywords and built-ins. keywords:

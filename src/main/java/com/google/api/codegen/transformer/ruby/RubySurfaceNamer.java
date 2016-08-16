@@ -77,7 +77,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   /** The key to use in a dictionary for the given method. */
   public String getMethodKey(Method method) {
-    return keyName(method.getSimpleName());
+    return keyName(Name.from(method.getSimpleName()));
   }
 
   /** The path to the client config for the given interface. */

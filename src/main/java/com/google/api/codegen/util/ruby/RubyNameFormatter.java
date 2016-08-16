@@ -35,11 +35,11 @@ public class RubyNameFormatter implements NameFormatter {
 
   @Override
   public String varReference(Name name) {
-    return "@" + toLowerUnderscore(name);
+    return "@" + name.toLowerUnderscore();
   }
 
   public String staticClassVarName(Name name) {
-    return "@@" + toLowerUnderscore(name);
+    return "@@" + name.toLowerUnderscore();
   }
 
   public String instanceVarName(Name name) {
