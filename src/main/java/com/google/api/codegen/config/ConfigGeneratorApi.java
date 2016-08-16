@@ -14,13 +14,12 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.client.util.Lists;
+import com.google.api.codegen.CodegenSetup;
 import com.google.api.codegen.ConfigProto;
-import com.google.api.tools.framework.aspects.context.ContextConfigAspect;
-import com.google.api.tools.framework.aspects.documentation.DocumentationConfigAspect;
-import com.google.api.tools.framework.aspects.http.HttpConfigAspect;
+import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.processors.merger.Merger;
 import com.google.api.tools.framework.processors.resolver.Resolver;
@@ -30,11 +29,13 @@ import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
+import com.google.protobuf.Api;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -84,9 +85,7 @@ public class ConfigGeneratorApi extends ToolDriverBase {
 
   @Override
   protected void registerAspects() {
-    model.registerConfigAspect(DocumentationConfigAspect.create(model));
-    model.registerConfigAspect(ContextConfigAspect.create(model));
-    model.registerConfigAspect(HttpConfigAspect.create(model));
+    CodegenSetup.registerCodegenConfigAspects(model);
   }
 
   @Override
@@ -144,7 +143,8 @@ public class ConfigGeneratorApi extends ToolDriverBase {
 
   private List<Object> generateInterfacesConfig() {
     List<Object> services = new LinkedList<Object>();
-    for (Interface service : model.getSymbolTable().getInterfaces()) {
+    for (Api api : model.getServiceConfig().getApisList()) {
+      Interface service = model.getSymbolTable().lookupInterface(api.getName());
       Map<String, Object> serviceConfig = new LinkedHashMap<String, Object>();
       Map<String, String> collectionNameMap = getResourceToEntityNameMap(service.getMethods());
       serviceConfig.put(CONFIG_KEY_SERVICE_NAME, service.getFullName());
@@ -158,8 +158,9 @@ public class ConfigGeneratorApi extends ToolDriverBase {
 
   private Map<String, Object> generateLanguageSettings() {
     String packageName = null;
-    for (Interface interfaze : model.getSymbolTable().getInterfaces()) {
-      // use the package name of the first interface
+    for (Api api : model.getServiceConfig().getApisList()) {
+      // use the package name of the interface of the first api
+      Interface interfaze = model.getSymbolTable().lookupInterface(api.getName());
       packageName = interfaze.getFile().getFullName();
       break;
     }

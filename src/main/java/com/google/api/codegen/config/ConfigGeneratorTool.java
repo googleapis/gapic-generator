@@ -15,6 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.tools.framework.tools.ToolOptions;
+import com.google.common.collect.Lists;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -36,6 +37,14 @@ public class ConfigGeneratorTool {
             .required(true)
             .build());
     options.addOption(
+        Option.builder()
+            .longOpt("service_yaml")
+            .desc("The service YAML configuration file or files.")
+            .hasArg()
+            .argName("SERVICE-YAML")
+            .required(true)
+            .build());
+    options.addOption(
         Option.builder("o")
             .longOpt("output")
             .desc("The directory in which to output the generated config.")
@@ -50,13 +59,17 @@ public class ConfigGeneratorTool {
       formater.printHelp("ConfigGeneratorTool", options);
     }
 
-    generate(cl.getOptionValue("descriptor_set"), cl.getOptionValue("output"));
+    generate(
+        cl.getOptionValue("descriptor_set"),
+        cl.getOptionValues("service_yaml"),
+        cl.getOptionValue("output"));
   }
 
-  private static void generate(String descriptorSet, String outputFile) {
+  private static void generate(String descriptorSet, String[] apiConfigs, String outputFile) {
     ToolOptions options = ToolOptions.create();
     options.set(ConfigGeneratorApi.OUTPUT_FILE, outputFile);
     options.set(ToolOptions.DESCRIPTOR_SET, descriptorSet);
+    options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(apiConfigs));
     ConfigGeneratorApi configGen = new ConfigGeneratorApi(options);
     configGen.run();
   }

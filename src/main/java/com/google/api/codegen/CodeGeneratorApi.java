@@ -82,12 +82,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
 
   @Override
   protected void registerAspects() {
-    model.registerConfigAspect(DocumentationConfigAspect.create(model));
-    model.registerConfigAspect(ContextConfigAspect.create(model));
-    model.registerConfigAspect(HttpConfigAspect.create(model));
-    model.registerConfigAspect(VersionConfigAspect.create(model));
-    model.registerConfigAspect(NamingConfigAspect.create(model));
-    model.registerConfigAspect(SystemConfigAspect.create(model));
+    CodegenSetup.registerCodegenConfigAspects(model);
   }
 
   @Override
