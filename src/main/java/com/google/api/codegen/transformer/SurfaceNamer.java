@@ -449,8 +449,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /**
    * The test case name for the given method.
+   *
    * Use the given count value to produce unique test case names if there are multiple tests
-   * for each method
+   * for one method.
    */
   public String getTestCaseName(Method method, Integer count) {
     if (count > 1) {
