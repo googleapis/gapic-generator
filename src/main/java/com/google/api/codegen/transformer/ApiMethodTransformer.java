@@ -38,13 +38,11 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Sets;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 /** ApiMethodTransformer generates view objects from method definitions. */
 public class ApiMethodTransformer {
@@ -291,8 +289,12 @@ public class ApiMethodTransformer {
   }
 
   private boolean shouldAllowEmpty(MethodTransformerContext context, Field field) {
-    Set<Field> requiredFields = Sets.newHashSet(context.getMethodConfig().getRequiredFields());
-    return !requiredFields.contains(field);
+    for (Field requiredField : context.getMethodConfig().getRequiredFields()) {
+      if (requiredField.equals(field)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public OptionalArrayMethodView generateOptionalArrayMethod(MethodTransformerContext context) {
