@@ -447,9 +447,17 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeName");
   }
 
-  /** The test case name for the given method. */
-  public String getTestCaseName(Method method) {
-    return methodName(Name.upperCamel(method.getSimpleName(), "Test"));
+  /**
+   * The test case name for the given method.
+   * Use the given count value to produce unique test case names if there are multiple tests
+   * for each method
+   */
+  public String getTestCaseName(Method method, Integer count) {
+    if (count > 1) {
+      return methodName(Name.upperCamel(method.getSimpleName(), "Test" + Integer.toString(count)));
+    } else {
+      return methodName(Name.upperCamel(method.getSimpleName(), "Test"));
+    }
   }
 
   /** The test class name for the given API service. */
@@ -468,7 +476,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The method name of getter function call for the given name */
-  public String getGetFunctionCallName(Name name) {
-    return methodName(Name.from("get").join(name));
+  public String getGetFunctionCallName(Name name, TypeRef type) {
+    if (type.isRepeated() && !type.isMap()) {
+      return methodName(Name.from("get").join(name).join("list"));
+    } else {
+      return methodName(Name.from("get").join(name));
+    }
   }
 }
