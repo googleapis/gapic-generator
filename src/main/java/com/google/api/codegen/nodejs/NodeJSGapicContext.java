@@ -74,8 +74,16 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   }
 
   public boolean isGcloud() {
-    String packageName = getApiConfig().getPackageName();
-    return !Strings.isNullOrEmpty(packageName) && packageName.startsWith("@google-cloud/");
+    return NodeJSUtils.isGcloud(getApiConfig());
+  }
+
+  /**
+   * The namespace (full package name) for the service.
+   */
+  public String getNamespace(Interface service) {
+    String fullName = service.getFullName();
+    int slash = fullName.lastIndexOf('.');
+    return fullName.substring(0, slash);
   }
 
   /**
@@ -104,6 +112,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     String fieldName = wrapIfKeywordOrBuiltIn(lowerUnderscoreToLowerCamel(field.getSimpleName()));
     if (isOptional) {
       fieldName = "otherArgs." + fieldName;
+      commentType = commentType + "=";
     }
     return fieldComment(
         String.format("@param {%s} %s", commentType, fieldName), paramComment, field);
@@ -162,9 +171,9 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
               + "  a gax.BundleEventEmitter but the API is immediately invoked, so it behaves same\n"
               + "  as a gax.EventEmitter does.";
     }
-    return "@param {?"
+    return "@param {"
         + callbackType
-        + "} callback\n"
+        + "=} callback\n"
         + "  The function which will be called with the result of the API call.\n"
         + returnMessage;
   }
@@ -184,7 +193,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     }
     Iterable<Field> optionalParams = removePageTokenFromFields(config.getOptionalFields(), config);
     if (optionalParams.iterator().hasNext()) {
-      paramTypesBuilder.append("@param {?Object} otherArgs\n");
+      paramTypesBuilder.append("@param {Object=} otherArgs\n");
       for (Field field : optionalParams) {
         if (config.isPageStreaming()
             && field.equals((config.getPageStreaming().getPageSizeField()))) {
@@ -203,7 +212,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       }
     }
     paramTypesBuilder.append(
-        "@param {?gax.CallOptions} options\n"
+        "@param {gax.CallOptions=} options\n"
             + "  Overrides the default settings for this call, e.g, timeout,\n"
             + "  retries, etc.");
     String paramTypes = paramTypesBuilder.toString();
