@@ -38,15 +38,15 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
-/**
- * ApiMethodTransformer generates view objects from method definitions.
- */
+/** ApiMethodTransformer generates view objects from method definitions. */
 public class ApiMethodTransformer {
   private InitCodeTransformer initCodeTransformer;
 
@@ -282,12 +282,17 @@ public class ApiMethodTransformer {
         PathTemplateCheckView.Builder check = PathTemplateCheckView.newBuilder();
         check.pathTemplateName(context.getNamer().getPathTemplateName(collectionConfig));
         check.paramName(context.getNamer().getVariableName(field));
+        check.allowEmptyString(shouldAllowEmpty(context, field));
         check.validationMessageContext(context.getNamer().getApiMethodName(context.getMethod()));
-
         pathTemplateChecks.add(check.build());
       }
     }
     return pathTemplateChecks;
+  }
+
+  private boolean shouldAllowEmpty(MethodTransformerContext context, Field field) {
+    Set<Field> requiredFields = Sets.newHashSet(context.getMethodConfig().getRequiredFields());
+    return !requiredFields.contains(field);
   }
 
   public OptionalArrayMethodView generateOptionalArrayMethod(MethodTransformerContext context) {
