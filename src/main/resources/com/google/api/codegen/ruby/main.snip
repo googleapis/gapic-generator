@@ -1,4 +1,5 @@
 @extends "ruby/common.snip"
+@extends "ruby/method_sample.snip"
 
 @snippet generateFilename(service)
   {@context.upperCamelToLowerUnderscore(context.getApiWrapperName(service))}.rb
@@ -350,9 +351,12 @@
        documentation = comments(context.methodComments(method)), \
        methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        requiredParams = methodConfig.getRequiredFields(), \
-       optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig)
+       optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig), \
+       sample = comments(decorateSampleCode(context.getMethodView(service, method))) \
+
     @if documentation
       {@documentation}
+      {@sample}
     @end
 
     @if or(requiredParams, optionalParams)

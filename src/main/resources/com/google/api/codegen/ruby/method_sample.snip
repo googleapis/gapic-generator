@@ -1,0 +1,101 @@
+@extends "ruby/common.snip"
+
+@snippet decorateSampleCode(apiMethod)
+    ${@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.new
+    {@initCode(apiMethod.initCode)}
+    {@sampleCode(apiMethod)}
+@end
+
+@snippet sampleCode(apiMethod)
+    @switch apiMethod.type.toString
+    @case "OptionalArrayMethod"
+        {@optionalArrayMethodSampleCode(apiMethod)}
+    @case "PagedOptionalArrayMethod"
+        {@pagedOptionalArrayMethodSampleCode(apiMethod)}
+    @default
+        $unhandledCase: {@apiMethod.type.toString}$
+    @end
+@end
+
+@private optionalArrayMethodSampleCode(apiMethod)
+    @if apiMethod.hasReturnValue
+        response = {@methodCallSampleCode(apiMethod)};
+    @else
+        {@methodCallSampleCode(apiMethod)};
+    @end
+@end
+
+@private pagedOptionalArrayMethodSampleCode(apiMethod)
+    {@methodCallSampleCode(apiMethod)}.each |element|
+        # doThingsWith(element)
+@end
+
+@private methodCallSampleCode(apiMethod)
+    ${@apiMethod.apiVariableName}.{@apiMethod.name}(\
+        {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+@end
+
+@private sampleMethodCallArgList(fieldSettings)
+    @join fieldSetting : fieldSettings on ", "
+        ${@fieldSetting.identifier}
+    @end
+@end
+
+@private initCode(initCodeSpec)
+    @join line : initCodeSpec.lines
+        @switch line.lineType.toString
+        @case "StructureInitLine"
+            {@initLineStructure(line)}
+        @case "ListInitLine"
+            {@initLineList(line)}
+        @case "MapInitLine"
+            {@initLineMap(line)}
+        @case "SimpleInitLine"
+            {@initLineSimple(line)}
+        @default
+            $unhandledCase: {@line.lineType.toString}$
+        @end
+    @end
+@end
+
+@private initLineStructure(line)
+    ${@line.identifier} = new {@line.typeName}();
+    @join fieldSetting : line.fieldSettings
+        ${@line.identifier}.{@fieldSetting.fieldSetFunction}(${@fieldSetting.identifier})
+    @end
+@end
+
+@private initLineList(line)
+    {@line.identifier} = [{@varList(line.elementIdentifiers)}]
+@end
+
+@snippet varList(args)
+  @join arg : args on ", "
+    ${@arg}
+  @end
+@end
+
+@private initLineMap(line)
+    ${@line.identifier} = {@keyVarList(line.initEntries)};
+@end
+
+@private keyVarList(mapEntries)
+  @join mapEntry : mapEntries
+    {@mapEntry.key} => ${@mapEntry.value},
+  @end
+@end
+
+@private initLineSimple(line)
+    ${@line.identifier} = {@renderInitValue(line.initValue)}
+@end
+
+@private renderInitValue(initValue)
+    @switch initValue.type
+    @case "SimpleInitValueView"
+        {@initValue.initialValue}
+    @case "FormattedInitValueView"
+        {@initValue.apiWrapperName}::{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
+    @default
+        $unhandledCase: {@initValue.type}$
+    @end
+@end

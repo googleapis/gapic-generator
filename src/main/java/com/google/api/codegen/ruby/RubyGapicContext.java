@@ -17,6 +17,14 @@ package com.google.api.codegen.ruby;
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.transformer.ruby.RubyModelTypeNameConverter;
+import com.google.api.codegen.transformer.ruby.RubySurfaceNamer;
+import com.google.api.codegen.util.ruby.RubyTypeTable;
+import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.Field;
@@ -332,6 +340,17 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
 
   public Iterable<String> getApiModules() {
     return Splitter.on("::").splitToList(getApiConfig().getPackageName());
+  }
+
+  public OptionalArrayMethodView getMethodView(Interface service, Method method) {
+    ModelTypeTable modelTypeTable =
+        new ModelTypeTable(new RubyTypeTable(), new RubyModelTypeNameConverter());
+    SurfaceTransformerContext context =
+        SurfaceTransformerContext.create(
+            service, getApiConfig(), modelTypeTable, new RubySurfaceNamer());
+    MethodTransformerContext methodContext = context.asMethodContext(method);
+    ApiMethodTransformer methodTransformer = new ApiMethodTransformer();
+    return methodTransformer.generateOptionalArrayMethod(methodContext);
   }
 
   // Constants
