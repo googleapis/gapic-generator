@@ -24,11 +24,15 @@ public abstract class RequestObjectParamView {
 
   public abstract String typeName();
 
+  public abstract String qualifiedTypeName();
+
   public abstract String setCallName();
 
   public abstract boolean isMap();
 
   public abstract boolean isArray();
+
+  public abstract boolean isMessage();
 
   public static Builder newBuilder() {
     return new AutoValue_RequestObjectParamView.Builder();
@@ -42,11 +46,15 @@ public abstract class RequestObjectParamView {
 
     public abstract Builder typeName(String val);
 
+    public abstract Builder qualifiedTypeName(String val);
+
     public abstract Builder setCallName(String val);
 
     public abstract Builder isMap(boolean val);
 
     public abstract Builder isArray(boolean val);
+
+    public abstract Builder isMessage(boolean val);
 
     public abstract RequestObjectParamView build();
   }

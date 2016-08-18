@@ -1,12 +1,24 @@
 @extends "ruby/common.snip"
 
-@snippet decorateSampleCode(apiMethod)
-    ${@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.new
-    {@initCode(apiMethod.initCode)}
-    {@sampleCode(apiMethod)}
+@snippet sampleCode(apiMethod)
+    @@example
+    @let lines = util.getDocLines(sampleCode_(apiMethod))
+        @join line : lines
+            {@""}  {@line}
+        @end
+    @end
 @end
 
-@snippet sampleCode(apiMethod)
+@snippet sampleCode_(apiMethod)
+    @join aliasLine : apiMethod.sampleTypeAliasingLines()
+        {@aliasLine}
+    @end
+
+
+    {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.new
+    @if apiMethod.initCode.lines
+        {@initCode(apiMethod.initCode)}
+    @end
     @switch apiMethod.type.toString
     @case "OptionalArrayMethod"
         {@optionalArrayMethodSampleCode(apiMethod)}
@@ -19,25 +31,42 @@
 
 @private optionalArrayMethodSampleCode(apiMethod)
     @if apiMethod.hasReturnValue
-        response = {@methodCallSampleCode(apiMethod)};
+        response = {@methodCallSampleCode(apiMethod)}
     @else
-        {@methodCallSampleCode(apiMethod)};
+        {@methodCallSampleCode(apiMethod)}
     @end
 @end
 
 @private pagedOptionalArrayMethodSampleCode(apiMethod)
-    {@methodCallSampleCode(apiMethod)}.each |element|
-        # doThingsWith(element)
+
+    @# Iterate over all results.
+    {@methodCallSampleCode(apiMethod)}.each do |element|
+        @# Process element.
+    end
+
+    @# Or iterate over results one page at a time.
+    {@methodCallSampleCode(apiMethod)}.each_page do |page|
+      @# Process each page at a time.
+      page.each do |element|
+        @# Process element.
+      end
+    end
 @end
 
 @private methodCallSampleCode(apiMethod)
-    ${@apiMethod.apiVariableName}.{@apiMethod.name}(\
-        {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+    {@apiMethod.apiVariableName}.{@apiMethod.name}\
+        {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)}
 @end
 
 @private sampleMethodCallArgList(fieldSettings)
+    @if fieldSettings
+        (
+    @end
     @join fieldSetting : fieldSettings on ", "
-        ${@fieldSetting.identifier}
+        {@fieldSetting.identifier}
+    @end
+    @if fieldSettings
+        )
     @end
 @end
 
@@ -59,9 +88,9 @@
 @end
 
 @private initLineStructure(line)
-    ${@line.identifier} = new {@line.typeName}();
+    {@line.identifier} = {@line.typeName}.new
     @join fieldSetting : line.fieldSettings
-        ${@line.identifier}.{@fieldSetting.fieldSetFunction}(${@fieldSetting.identifier})
+        {@line.identifier}.{@fieldSetting.fieldSetFunction} = {@fieldSetting.identifier}
     @end
 @end
 
@@ -71,22 +100,22 @@
 
 @snippet varList(args)
   @join arg : args on ", "
-    ${@arg}
+    {@arg}
   @end
 @end
 
 @private initLineMap(line)
-    ${@line.identifier} = {@keyVarList(line.initEntries)};
+    {@line.identifier} = { {@keyVarList(line.initEntries)} }
 @end
 
 @private keyVarList(mapEntries)
-  @join mapEntry : mapEntries
-    {@mapEntry.key} => ${@mapEntry.value},
+  @join mapEntry : mapEntries on ", "
+    {@mapEntry.key} => {@mapEntry.value}
   @end
 @end
 
 @private initLineSimple(line)
-    ${@line.identifier} = {@renderInitValue(line.initValue)}
+    {@line.identifier} = {@renderInitValue(line.initValue)}
 @end
 
 @private renderInitValue(initValue)
@@ -94,7 +123,7 @@
     @case "SimpleInitValueView"
         {@initValue.initialValue}
     @case "FormattedInitValueView"
-        {@initValue.apiWrapperName}::{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
+        {@initValue.apiWrapperName}.{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
     @default
         $unhandledCase: {@initValue.type}$
     @end

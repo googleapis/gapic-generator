@@ -352,10 +352,14 @@
        methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        requiredParams = methodConfig.getRequiredFields(), \
        optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig), \
-       sample = comments(decorateSampleCode(context.getMethodView(service, method))) \
+       methodView = context.getMethodView(service, method), \
+       sample = comments(util.getDocLines(sampleCode(methodView))) \
 
     @if documentation
       {@documentation}
+    @end
+
+    @if sample
       {@sample}
     @end
 

@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.util;
 
+import com.google.common.base.Ascii;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
@@ -76,6 +77,33 @@ public class NamePath {
   public NamePath append(String head) {
     pathPieces.add(head);
     return this;
+  }
+
+  public NamePath withUpperPieces() {
+    List<String> newPathPieces = new ArrayList<>();
+    for (String piece : pathPieces) {
+      String newPiece =
+          (piece.isEmpty())
+              ? piece
+              : new StringBuilder(piece.length())
+                  .append(Ascii.toUpperCase(piece.charAt(0)))
+                  .append(piece.substring(1))
+                  .toString();
+      newPathPieces.add(newPiece);
+    }
+    return new NamePath(newPathPieces);
+  }
+
+  public NamePath withFlattenedRequest() {
+    if (pathPieces.size() < 2) {
+      return new NamePath(pathPieces);
+    } else {
+      List<String> newPathPieces = new ArrayList<>(pathPieces);
+      if (newPathPieces.get(newPathPieces.size() - 2).matches("(.*)[Rr]equest")) {
+        newPathPieces.remove(newPathPieces.size() - 2);
+      }
+      return new NamePath(newPathPieces);
+    }
   }
 
   /**

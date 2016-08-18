@@ -22,6 +22,8 @@ import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Ascii;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
@@ -114,7 +116,7 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeName(ProtoElement elem) {
-    return typeNameConverter.getTypeName(elem.getFullName().replaceAll("\\.", "::"));
+    return typeNameConverter.getTypeName(lowerDottedToUpperDoubleColoned(elem.getFullName()));
   }
 
   /**
@@ -159,5 +161,21 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
         // here
         return value;
     }
+  }
+
+  private String lowerDottedToUpperDoubleColoned(String dottedName) {
+    String[] names = dottedName.split("\\.");
+    List<String> upperNames = new ArrayList<>();
+    for (String name : names) {
+      String newName =
+          (name.isEmpty())
+              ? name
+              : new StringBuilder(name.length())
+                  .append(Ascii.toUpperCase(name.charAt(0)))
+                  .append(name.substring(1))
+                  .toString();
+      upperNames.add(newName);
+    }
+    return Joiner.on("::").join(upperNames);
   }
 }

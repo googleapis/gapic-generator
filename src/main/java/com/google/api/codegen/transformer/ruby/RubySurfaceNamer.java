@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
+import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -22,6 +23,7 @@ import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 
 /** The SurfaceNamer for Ruby. */
@@ -36,31 +38,31 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   /** The function name to set a field having the given type and name. */
   public String getFieldSetFunctionName(TypeRef type, Name identifier) {
-    if (type.isMap()) {
-      return methodName(Name.from("merge").join(identifier));
-    } else if (type.isRepeated()) {
-      return methodName(Name.from("concat").join(identifier));
-    } else {
-      return methodName(Name.from("set").join(identifier));
-    }
+    return methodName(identifier);
+  }
+
+  @Override
+  /** The function name to format the entity for the given collection. */
+  public String getFormatFunctionName(CollectionConfig collectionConfig) {
+    return staticFunctionName(Name.from(collectionConfig.getEntityName(), "path"));
   }
 
   @Override
   /** The page streaming descriptor name for the given method. */
   public String getPageStreamingDescriptorName(Method method) {
-    return varName(Name.from(method.getSimpleName(), "page", "streaming", "descriptor"));
+    return varName(Name.upperCamel(method.getSimpleName(), "Page", "Streaming", "Descriptor"));
   }
 
   @Override
   /** The name of the constant to hold the page streaming descriptor for the given method. */
   public String getPageStreamingDescriptorConstName(Method method) {
-    return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("PageStrDesc"));
+    return inittedConstantName(Name.upperCamel(method.getSimpleName(), "PageStrDesc"));
   }
 
   @Override
   /** The name of the constant to hold the bundling descriptor for the given method. */
   public String getBundlingDescriptorConstName(Method method) {
-    return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("BundlingDesc"));
+    return inittedConstantName(Name.upperCamel(method.getSimpleName(), "BundlingDesc"));
   }
 
   @Override
@@ -78,7 +80,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   /** The key to use in a dictionary for the given method. */
   public String getMethodKey(Method method) {
-    return keyName(Name.from(method.getSimpleName()));
+    return keyName(Name.upperCamel(method.getSimpleName()));
   }
 
   @Override
@@ -99,48 +101,36 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   /** The name of the surface method which can call the given API method. */
   public String getApiMethodName(Method method) {
-    return methodName(Name.from(method.getSimpleName()));
+    return methodName(Name.upperCamel(method.getSimpleName()));
   }
 
   @Override
   /** The name of the paged callable variant of the given method. */
   public String getPagedCallableMethodName(Method method) {
-    return methodName(Name.from(method.getSimpleName(), "paged", "callable"));
+    return methodName(Name.upperCamel(method.getSimpleName(), "Paged", "Callable"));
   }
 
   @Override
   /** The name of the callable for the paged callable variant of the given method. */
   public String getPagedCallableName(Method method) {
-    return varName(Name.from(method.getSimpleName(), "paged", "callable"));
+    return varName(Name.upperCamel(method.getSimpleName(), "Paged", "Callable"));
   }
 
   @Override
   /** The name of the plain callable variant of the given method. */
   public String getCallableMethodName(Method method) {
-    return methodName(Name.from(method.getSimpleName(), "callable"));
+    return methodName(Name.upperCamel(method.getSimpleName(), "Callable"));
   }
 
   @Override
   /** The name of the plain callable for the given method. */
   public String getCallableName(Method method) {
-    return varName(Name.from(method.getSimpleName(), "callable"));
+    return varName(Name.upperCamel(method.getSimpleName(), "Callable"));
   }
 
   @Override
   /** The name of the settings member name for the given method. */
   public String getSettingsMemberName(Method method) {
-    return methodName(Name.from(method.getSimpleName(), "settings"));
-  }
-
-  @Override
-  /** The test case name for the given method. */
-  public String getTestCaseName(Method method) {
-    return methodName(Name.from(method.getSimpleName(), "test"));
-  }
-
-  @Override
-  /** The method name of getter function call for the given name */
-  public String getGetFunctionCallName(Name name) {
-    return methodName(Name.from("get").join(name));
+    return methodName(Name.upperCamel(method.getSimpleName(), "Settings"));
   }
 }

@@ -484,4 +484,21 @@ public class SurfaceNamer extends NameFormatterDelegator {
       return methodName(Name.from("get").join(name));
     }
   }
+
+  public String getQualifiedClassName(ProtoElement element) {
+    return qualifiedName(typeNameConverter.getNamePath(element.getFullName()));
+  }
+
+  /** The name of the class that implements a particular proto interface. */
+  public String getQualifiedApiWrapperClassName(Interface interfaze) {
+    return qualifiedName(
+        typeNameConverter
+            .getNamePath(interfaze.getFullName())
+            .withHead(getApiWrapperClassName(interfaze)));
+  }
+
+  public String getFlattenedQualiefiedClassName(ProtoElement element) {
+    return qualifiedName(
+        typeNameConverter.getNamePath(element.getFullName()).withFlattenedRequest());
+  }
 }

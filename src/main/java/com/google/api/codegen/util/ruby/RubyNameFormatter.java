@@ -38,14 +38,6 @@ public class RubyNameFormatter implements NameFormatter {
     return "@" + name.toLowerUnderscore();
   }
 
-  public String staticClassVarName(Name name) {
-    return "@@" + name.toLowerUnderscore();
-  }
-
-  public String instanceVarName(Name name) {
-    return varReference(name);
-  }
-
   @Override
   public String methodName(Name name) {
     return name.toLowerUnderscore();
@@ -68,6 +60,6 @@ public class RubyNameFormatter implements NameFormatter {
 
   @Override
   public String qualifiedName(NamePath namePath) {
-    return namePath.toDoubleColoned();
+    return namePath.withUpperPieces().toDoubleColoned();
   }
 }
