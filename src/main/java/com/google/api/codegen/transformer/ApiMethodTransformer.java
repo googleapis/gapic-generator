@@ -44,9 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * ApiMethodTransformer generates view objects from method definitions.
- */
+/** ApiMethodTransformer generates view objects from method definitions. */
 public class ApiMethodTransformer {
   private InitCodeTransformer initCodeTransformer;
 
@@ -282,12 +280,21 @@ public class ApiMethodTransformer {
         PathTemplateCheckView.Builder check = PathTemplateCheckView.newBuilder();
         check.pathTemplateName(context.getNamer().getPathTemplateName(collectionConfig));
         check.paramName(context.getNamer().getVariableName(field));
+        check.allowEmptyString(shouldAllowEmpty(context, field));
         check.validationMessageContext(context.getNamer().getApiMethodName(context.getMethod()));
-
         pathTemplateChecks.add(check.build());
       }
     }
     return pathTemplateChecks;
+  }
+
+  private boolean shouldAllowEmpty(MethodTransformerContext context, Field field) {
+    for (Field requiredField : context.getMethodConfig().getRequiredFields()) {
+      if (requiredField.equals(field)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public OptionalArrayMethodView generateOptionalArrayMethod(MethodTransformerContext context) {
