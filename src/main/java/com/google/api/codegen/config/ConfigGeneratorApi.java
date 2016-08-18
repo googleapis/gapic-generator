@@ -15,9 +15,9 @@
 package com.google.api.codegen.config;
 
 import com.google.api.client.util.Lists;
-import com.google.api.codegen.CodegenSetup;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
+import com.google.api.tools.framework.aspects.mixin.model.MixinAttribute;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.stages.Merged;
@@ -30,6 +30,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import com.google.protobuf.Api;
+import com.google.protobuf.Mixin;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -75,17 +76,6 @@ public class ConfigGeneratorApi extends ToolDriverBase {
   /** Constructs a config generator api based on given options. */
   public ConfigGeneratorApi(ToolOptions options) {
     super(options);
-  }
-
-  @Override
-  protected void registerProcessors() {
-    model.registerProcessor(new Resolver());
-    model.registerProcessor(new Merger());
-  }
-
-  @Override
-  protected void registerAspects() {
-    CodegenSetup.registerCodegenConfigAspects(model);
   }
 
   @Override

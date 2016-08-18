@@ -60,7 +60,7 @@ public class PythonImportHandler {
     // Add method request-type imports.
     for (Method method : service.getMethods()) {
       addImport(
-          method.getFile(),
+          method.getInputMessage().getFile(),
           PythonImport.create(
               ImportType.APP,
               method.getFile().getProto().getPackage(),
@@ -96,7 +96,7 @@ public class PythonImportHandler {
 
   public PythonImportHandler(Method method) {
     addImport(
-        method.getFile(),
+        method.getInputMessage().getFile(),
         PythonImport.create(
             ImportType.APP,
             method.getFile().getProto().getPackage(),

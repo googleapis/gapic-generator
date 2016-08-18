@@ -307,6 +307,10 @@ module Library
           @stub.method(:update_book_index),
           defaults["update_book_index"]
         )
+        @add_tag = Google::Gax.create_api_call(
+          @stub.method(:add_tag),
+          defaults["add_tag"]
+        )
       end
 
       # Service calls
@@ -672,6 +676,30 @@ module Library
           index_map: index_map
         )
         @update_book_index.call(req, options)
+      end
+
+      # Adds a tag to the book.
+      #
+      # @param resource [String]
+      #   REQUIRED: The resource for which policy is being specified.
+      #   Resource is usually specified as a path, such as,
+      #   projects/{project}/zones/{zone}/disks/{disk}.
+      # @param tag [String]
+      #   REQUIRED: The tag to add.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Tagger::V1::AddTagResponse]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      def add_tag \
+          resource,
+          tag,
+          options: nil
+        req = Google::Tagger::V1::AddTagRequest.new(
+          resource: resource,
+          tag: tag
+        )
+        @add_tag.call(req, options)
       end
     end
   end

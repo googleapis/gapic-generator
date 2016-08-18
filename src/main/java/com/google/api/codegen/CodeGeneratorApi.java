@@ -20,6 +20,7 @@ import com.google.api.codegen.util.ClassInstantiator;
 import com.google.api.tools.framework.aspects.context.ContextConfigAspect;
 import com.google.api.tools.framework.aspects.documentation.DocumentationConfigAspect;
 import com.google.api.tools.framework.aspects.http.HttpConfigAspect;
+import com.google.api.tools.framework.aspects.mixin.MixinConfigAspect;
 import com.google.api.tools.framework.aspects.naming.NamingConfigAspect;
 import com.google.api.tools.framework.aspects.system.SystemConfigAspect;
 import com.google.api.tools.framework.aspects.versioning.VersionConfigAspect;
@@ -70,19 +71,6 @@ public class CodeGeneratorApi extends ToolDriverBase {
    */
   public CodeGeneratorApi(ToolOptions options) {
     super(options);
-  }
-
-  @Override
-  protected void registerProcessors() {
-    model.registerProcessor(new Resolver());
-    model.registerProcessor(new Merger());
-    model.registerProcessor(new Normalizer());
-    model.registerProcessor(new Linter());
-  }
-
-  @Override
-  protected void registerAspects() {
-    CodegenSetup.registerCodegenConfigAspects(model);
   }
 
   @Override

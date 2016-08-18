@@ -41,6 +41,8 @@ import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
 import com.google.protobuf.Empty;
 import com.google.protobuf.GeneratedMessage;
+import com.google.tagger.v1.AddTagRequest;
+import com.google.tagger.v1.AddTagResponse;
 import io.grpc.stub.StreamObserver;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -221,6 +223,21 @@ public class MockLibraryServiceImpl implements LibraryService  {
     requests.add(request);
     responseObserver.onNext(response);
     responseObserver.onCompleted();
+  }
+
+  @Override
+  public void addTag(AddTagRequest request,
+      StreamObserver<AddTagResponse> responseObserver) {
+    if (responses != null && !responses.isEmpty()) {
+      AddTagResponse response = (AddTagResponse) responses.get(0);
+      responses.remove(0);
+      requests.add(request);
+      responseObserver.onNext(response);
+      responseObserver.onCompleted();
+    } else {
+      responseObserver.onError(
+          new Exception("No response is set for gRPC method addTag."));
+    }
   }
 
 }

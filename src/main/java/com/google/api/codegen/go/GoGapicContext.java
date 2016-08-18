@@ -19,6 +19,7 @@ import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.InterfaceConfig;
+import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
@@ -128,7 +129,12 @@ public class GoGapicContext extends GapicContext implements GoContext {
     String name = getReducedServiceName(service);
     // If there's only one service, or the service name matches the package name, don't prefix with
     // the service name.
-    if (getModel().getSymbolTable().getInterfaces().size() == 1 || name.equals(getPackageName())) {
+    int interfaceCount = 0;
+    for (@SuppressWarnings("unused")
+    Interface otherService : new InterfaceView().getElementIterable(getModel())) {
+      interfaceCount += 1;
+    }
+    if (interfaceCount == 1 || name.equals(getPackageName())) {
       return "";
     }
     return LanguageUtil.lowerUnderscoreToUpperCamel(name);
@@ -544,7 +550,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
    * Returns true if the API has a page streaming method.
    */
   public boolean hasPageStreamingMethod() {
-    for (Interface service : getModel().getSymbolTable().getInterfaces()) {
+    for (Interface service : new InterfaceView().getElementIterable(getModel())) {
       if (hasPageStreamingMethod(service)) {
         return true;
       }

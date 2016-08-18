@@ -44,6 +44,8 @@ import com.google.example.library.v1.UpdateBookRequest;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
+import com.google.tagger.v1.AddTagRequest;
+import com.google.tagger.v1.AddTagResponse;
 import io.grpc.ManagedChannel;
 import java.io.Closeable;
 import java.io.IOException;
@@ -141,6 +143,7 @@ public class LibraryServiceApi implements AutoCloseable {
   private final ApiCallable<AddCommentsRequest, Empty> addCommentsCallable;
   private final ApiCallable<GetBookFromArchiveRequest, Book> getBookFromArchiveCallable;
   private final ApiCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable;
+  private final ApiCallable<AddTagRequest, AddTagResponse> addTagCallable;
 
   public final LibraryServiceSettings getSettings() {
     return settings;
@@ -275,6 +278,7 @@ public class LibraryServiceApi implements AutoCloseable {
     this.addCommentsCallable = ApiCallable.create(settings.addCommentsSettings(), this.channel, this.executor);
     this.getBookFromArchiveCallable = ApiCallable.create(settings.getBookFromArchiveSettings(), this.channel, this.executor);
     this.updateBookIndexCallable = ApiCallable.create(settings.updateBookIndexSettings(), this.channel, this.executor);
+    this.addTagCallable = ApiCallable.create(settings.addTagSettings(), this.channel, this.executor);
 
     if (settings.getChannelProvider().shouldAutoClose()) {
       closeables.add(
@@ -1639,6 +1643,82 @@ public class LibraryServiceApi implements AutoCloseable {
    */
   public final ApiCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable() {
     return updateBookIndexCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Adds a tag to the book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
+   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String tag = "";
+   *   AddTagResponse response = libraryServiceApi.addTag(formattedResource, tag);
+   * }
+   * </code></pre>
+   *
+   * @param resource REQUIRED: The resource for which policy is being specified.
+   * Resource is usually specified as a path, such as,
+   * projects/{project}/zones/{zone}/disks/{disk}.
+   * @param tag REQUIRED: The tag to add.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final AddTagResponse addTag(String resource, String tag) {
+    BOOK_PATH_TEMPLATE.validate(resource, "addTag");
+    AddTagRequest request =
+        AddTagRequest.newBuilder()
+        .setResource(resource)
+        .setTag(tag)
+        .build();
+    return addTag(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Adds a tag to the book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
+   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String tag = "";
+   *   AddTagRequest request = AddTagRequest.newBuilder()
+   *     .setResource(formattedResource)
+   *     .setTag(tag)
+   *     .build();
+   *   AddTagResponse response = libraryServiceApi.addTag(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final AddTagResponse addTag(AddTagRequest request) {
+    return addTagCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Adds a tag to the book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
+   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String tag = "";
+   *   AddTagRequest request = AddTagRequest.newBuilder()
+   *     .setResource(formattedResource)
+   *     .setTag(tag)
+   *     .build();
+   *   ListenableFuture&lt;AddTagResponse&gt; future = libraryServiceApi.addTagCallable().futureCall(request);
+   *   // Do something
+   *   AddTagResponse response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<AddTagRequest, AddTagResponse> addTagCallable() {
+    return addTagCallable;
   }
 
   /**

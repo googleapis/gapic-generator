@@ -36,6 +36,7 @@ import google.gax
 
 from google.example.library.v1 import field_mask_pb2 as v1_field_mask_pb2
 from google.example.library.v1 import library_pb2
+from google.example.library.v1 import tagger_pb2
 from google.protobuf import field_mask_pb2 as protobuf_field_mask_pb2
 
 
@@ -313,6 +314,9 @@ class LibraryServiceApi(object):
         self._update_book_index = api_callable.create_api_call(
             self.stub.UpdateBookIndex,
             settings=defaults['update_book_index'])
+        self._add_tag = api_callable.create_api_call(
+            self.stub.AddTag,
+            settings=defaults['add_tag'])
 
     # Service calls
     def create_shelf(
@@ -873,4 +877,35 @@ class LibraryServiceApi(object):
             index_name=index_name,
             index_map=index_map)
         self._update_book_index(request, options)
+
+    def add_tag(
+            self,
+            resource,
+            tag,
+            options=None):
+        """
+        Adds a tag to the book.
+
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> api = LibraryServiceApi()
+          >>> resource = api.book_path('[SHELF]', '[BOOK]')
+          >>> tag = ''
+          >>> response = api.add_tag(resource, tag)
+
+        Args:
+          resource (string): REQUIRED: The resource for which policy is being specified.
+            Resource is usually specified as a path, such as,
+            projects/{project}/zones/{zone}/disks/{disk}.
+          tag (string): REQUIRED: The tag to add.
+          options (:class:`google.gax.CallOptions`): Overrides the default
+            settings for this call, e.g, timeout, retries etc.
+
+        Raises:
+          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+        """
+        request = tagger_pb2.AddTagRequest(
+            resource=resource,
+            tag=tag)
+        self._add_tag(request, options)
 

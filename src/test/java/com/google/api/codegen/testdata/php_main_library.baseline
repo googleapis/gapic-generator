@@ -54,6 +54,7 @@ use google\example\library\v1\UpdateBookIndexRequest;
 use google\example\library\v1\UpdateBookIndexRequest\IndexMapEntry;
 use google\example\library\v1\UpdateBookRequest;
 use google\protobuf\FieldMask;
+use google\tagger\v1\AddTagRequest;
 
 /**
  * Service Description: This API represents a simple digital library.  It lets you manage Shelf
@@ -336,6 +337,7 @@ class LibraryServiceApi
             'addComments' => $defaultDescriptors,
             'getBookFromArchive' => $defaultDescriptors,
             'updateBookIndex' => $defaultDescriptors,
+            'addTag' => $defaultDescriptors,
         ];
         $pageStreamingDescriptors = self::getPageStreamingDescriptors();
         foreach ($pageStreamingDescriptors as $method => $pageStreamingDescriptor) {
@@ -1220,6 +1222,58 @@ class LibraryServiceApi
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->stub, 'UpdateBookIndex', $mergedSettings, $this->descriptors['updateBookIndex']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    /**
+     * Adds a tag to the book.
+     *
+     * Sample code:
+     * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $formattedResource = LibraryServiceApi::formatBookName("[SHELF]", "[BOOK]");
+     *     $tag = "";
+     *     $response = $libraryServiceApi->addTag($formattedResource, $tag);
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
+     * ```
+     *
+     * @param string $resource REQUIRED: The resource for which policy is being specified.
+     * Resource is usually specified as a path, such as,
+     * projects/{project}/zones/{zone}/disks/{disk}.
+     * @param string $tag REQUIRED: The tag to add.
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeoutMillis is ignored.
+     *     @type int $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     *
+     * @return google\tagger\v1\AddTagResponse
+     *
+     * @throws Google\GAX\ApiException if the remote call fails
+     */
+    public function addTag($resource, $tag, $optionalArgs = [])
+    {
+        $request = new AddTagRequest();
+        $request->setResource($resource);
+        $request->setTag($tag);
+
+        $mergedSettings = $this->defaultCallSettings['addTag']->merge(
+            new CallSettings($optionalArgs));
+        $callable = ApiCallable::createApiCall(
+            $this->stub, 'AddTag', $mergedSettings, $this->descriptors['addTag']);
 
         return $callable(
             $request,

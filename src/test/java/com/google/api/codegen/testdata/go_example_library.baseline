@@ -21,6 +21,7 @@ import (
     "cloud.google.com/go/library/apiv1"
     "golang.org/x/net/context"
     librarypb "google.golang.org/genproto/googleapis/example/library/v1"
+    taggerpb "google.golang.org/genproto/googleapis/tagger/v1"
 )
 
 func ExampleNewClient() {
@@ -323,4 +324,22 @@ func ExampleClient_UpdateBookIndex() {
     if err != nil {
         // TODO: Handle error.
     }
+}
+
+func ExampleClient_AddTag() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &taggerpb.AddTagRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.AddTag(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
 }
