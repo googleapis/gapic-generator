@@ -541,12 +541,12 @@ public class LibraryServiceTest {
         api.addTag(formattedResource, tag);
     Assert.assertEquals(expectedResponse, actualResponse);
 
-    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
-    Assert.assertEquals(1, requests.size());
-    AddTagRequest request = (AddTagRequest)requests.get(0);
+    List<GeneratedMessage> actualRequests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    AddTagRequest actualRequest = (AddTagRequest)actualRequests.get(0);
 
-    Assert.assertEquals(request.getResource(), formattedResource);
-    Assert.assertEquals(request.getTag(), tag);
+    Assert.assertEquals(actualRequest.getResource(), formattedResource);
+    Assert.assertEquals(actualRequest.getTag(), tag);
   }
 
 }
