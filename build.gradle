@@ -20,6 +20,7 @@ buildscript {
 }
 
 
+apply plugin: 'jacoco'
 apply plugin: "java"
 apply plugin: "maven"
 apply plugin: "idea"
@@ -110,6 +111,15 @@ task discoJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) 
   from sourceSets.main.output
   configurations = [ project.configurations.runtime ]
 }
+
+jacocoTestReport {
+  reports {
+    xml.enabled true
+    html.enabled true
+  }
+}
+
+check.dependsOn jacocoTestReport
 
 // Source jar
 task sourcesJar(type: Jar, dependsOn: classes) {
