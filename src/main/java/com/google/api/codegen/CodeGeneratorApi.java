@@ -20,7 +20,6 @@ import com.google.api.codegen.util.ClassInstantiator;
 import com.google.api.tools.framework.aspects.context.ContextConfigAspect;
 import com.google.api.tools.framework.aspects.documentation.DocumentationConfigAspect;
 import com.google.api.tools.framework.aspects.http.HttpConfigAspect;
-import com.google.api.tools.framework.aspects.mixin.MixinConfigAspect;
 import com.google.api.tools.framework.aspects.naming.NamingConfigAspect;
 import com.google.api.tools.framework.aspects.system.SystemConfigAspect;
 import com.google.api.tools.framework.aspects.versioning.VersionConfigAspect;
