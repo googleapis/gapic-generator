@@ -43,7 +43,6 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -101,7 +100,9 @@ public class InitCodeTransformer {
               .expectedValueIdentifier(
                   namer.getVariableName(
                       fieldSetting.getIdentifier(), fieldSetting.getInitValueConfig()))
-              .actualValueGetter(namer.getGetFunctionCallName(fieldSetting.getIdentifier()))
+              .actualValueGetter(
+                  namer.getGetFunctionCallName(
+                      fieldSetting.getIdentifier(), fieldSetting.getType()))
               .build();
       assertViews.add(assertView);
     }

@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.java;
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
@@ -35,11 +36,13 @@ import com.google.api.codegen.viewmodel.testing.MockGrpcMethodView;
 import com.google.api.codegen.viewmodel.testing.MockGrpcResponseView;
 import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceView;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /** A subclass of ModelToViewTransformer which translates model into API tests in Java. */
@@ -50,6 +53,26 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static String MOCK_SERVICE_IMPL_FILE = "java/mock_service_impl.snip";
 
   private GapicCodePathMapper pathMapper;
+
+  // TODO: Reuse this logic with InitCodeGenerator
+  // Github issue: https://github.com/googleapis/toolkit/issues/395
+  private class TestCaseNameTable {
+    private HashMap<String, Integer> nameCount;
+
+    public TestCaseNameTable() {
+      nameCount = new HashMap<>();
+    }
+
+    public String getTestName(SurfaceNamer namer, Method method) {
+      String testedMethodName = method.getSimpleName();
+      Integer count = 1;
+      if (nameCount.containsKey(testedMethodName)) {
+        count = nameCount.get(testedMethodName) + 1;
+      }
+      nameCount.put(testedMethodName, count);
+      return namer.getTestCaseName(method, count);
+    }
+  }
 
   public JavaGapicSurfaceTestTransformer(GapicCodePathMapper javaPathMapper) {
     this.pathMapper = javaPathMapper;
@@ -106,8 +129,10 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private void addMockServiceImplImports(SurfaceTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
-    typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("java.util.ArrayList");
+    typeTable.saveNicknameFor("java.util.List");
+    typeTable.saveNicknameFor("java.util.LinkedList");
+    typeTable.saveNicknameFor("java.util.Queue");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
     typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessage");
     typeTable.saveNicknameFor("io.grpc.stub.StreamObserver");
@@ -147,21 +172,35 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private List<GapicSurfaceTestCaseView> createTestCaseViews(SurfaceTransformerContext context) {
     ArrayList<GapicSurfaceTestCaseView> testCaseViews = new ArrayList<>();
+    TestCaseNameTable nameTable = new TestCaseNameTable();
     for (Method method : context.getNonStreamingMethods()) {
       MethodTransformerContext methodContext = context.asMethodContext(method);
-      testCaseViews.add(createTestCaseView(methodContext));
+      MethodConfig methodConfig = methodContext.getMethodConfig();
+      if (methodConfig.isFlattening()) {
+        for (List<Field> paramFields : methodConfig.getFlattening().getFlatteningGroups()) {
+          testCaseViews.add(createTestCaseView(methodContext, paramFields, nameTable));
+        }
+      } else {
+        // TODO: Add support of non-flattening method
+        // Github issue: https://github.com/googleapis/toolkit/issues/393
+        System.err.println(
+            "Non-flattening method test is not supported yet for " + method.getSimpleName());
+      }
     }
     return testCaseViews;
   }
 
-  private GapicSurfaceTestCaseView createTestCaseView(MethodTransformerContext methodContext) {
+  private GapicSurfaceTestCaseView createTestCaseView(
+      MethodTransformerContext methodContext,
+      List<Field> paramFields,
+      TestCaseNameTable nameTable) {
     MethodConfig methodConfig = methodContext.getMethodConfig();
+    Method method = methodContext.getMethod();
     InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
-    InitCodeView initCodeView =
-        initCodeTransformer.generateInitCode(methodContext, methodConfig.getRequiredFields());
+
+    InitCodeView initCodeView = initCodeTransformer.generateInitCode(methodContext, paramFields);
     List<GapicSurfaceTestAssertView> assertViews =
-        initCodeTransformer.generateTestAssertViews(
-            methodContext, methodConfig.getRequiredFields());
+        initCodeTransformer.generateTestAssertViews(methodContext, paramFields);
 
     String resourceTypeName = "";
     ApiMethodType type = ApiMethodType.FlattenedMethod;
@@ -176,19 +215,16 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     }
 
     String requestTypeName =
-        methodContext
-            .getTypeTable()
-            .getAndSaveNicknameFor(methodContext.getMethod().getInputType());
+        methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
 
     String responseTypeName =
-        methodContext
-            .getTypeTable()
-            .getAndSaveNicknameFor(methodContext.getMethod().getOutputType());
+        methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
 
     SurfaceNamer namer = methodContext.getNamer();
     return GapicSurfaceTestCaseView.newBuilder()
-        .name(namer.getTestCaseName(methodContext.getMethod()))
-        .surfaceMethodName(namer.getApiMethodName(methodContext.getMethod()))
+        .name(nameTable.getTestName(namer, method))
+        .surfaceMethodName(namer.getApiMethodName(method))
+        .hasReturnValue(!ServiceMessages.s_isEmptyType(method.getOutputType()))
         .requestTypeName(requestTypeName)
         .responseTypeName(responseTypeName)
         .initCode(initCodeView)

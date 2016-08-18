@@ -26,6 +26,8 @@ public abstract class GapicSurfaceTestCaseView {
 
   public abstract String surfaceMethodName();
 
+  public abstract boolean hasReturnValue();
+
   public abstract String requestTypeName();
 
   public abstract String responseTypeName();
@@ -49,6 +51,8 @@ public abstract class GapicSurfaceTestCaseView {
     public abstract Builder surfaceMethodName(String val);
 
     public abstract Builder name(String val);
+
+    public abstract Builder hasReturnValue(boolean val);
 
     public abstract Builder requestTypeName(String val);
 

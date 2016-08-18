@@ -57,12 +57,12 @@
     {@initCode(test.initCode)}
     {@methodCall(test)}
 
-    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
-    Assert.assertEquals(1, requests.size());
-    {@test.requestTypeName} request = ({@test.requestTypeName})requests.get(0);
+    List<GeneratedMessage> actualRequests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    {@test.requestTypeName} actualRequest = ({@test.requestTypeName})actualRequests.get(0);
 
     @join assert : test.asserts
-      Assert.assertEquals(request.{@assert.actualValueGetter}(), {@assert.expectedValueIdentifier});
+      Assert.assertEquals(actualRequest.{@assert.actualValueGetter}(), {@assert.expectedValueIdentifier});
     @end
   }
 @end
@@ -85,10 +85,15 @@
     List<{@test.resourceTypeName}> resources = Lists.newArrayList(pageAccessor.getPageValues());
     Assert.assertEquals(0, resources.size());
   @case "FlattenedMethod"
-    {@test.responseTypeName} actualResponse =
-        api.{@test.surfaceMethodName}(\
-        {@sampleMethodCallArgList(test.initCode.fieldSettings)});
-    Assert.assertEquals(expectedResponse, actualResponse);
+    @if test.hasReturnValue
+      {@test.responseTypeName} actualResponse =
+          api.{@test.surfaceMethodName}(\
+          {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+      Assert.assertEquals(expectedResponse, actualResponse);
+    @else
+      api.{@test.surfaceMethodName}(\
+            {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+    @end
   @default
     $unhandledCase: {@test.type}$
   @end

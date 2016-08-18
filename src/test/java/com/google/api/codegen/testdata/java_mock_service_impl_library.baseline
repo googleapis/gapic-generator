@@ -43,16 +43,18 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.GeneratedMessage;
 import io.grpc.stub.StreamObserver;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 @javax.annotation.Generated("by GAPIC")
 public class MockLibraryServiceImpl implements LibraryService  {
   private ArrayList<GeneratedMessage> requests;
-  private ArrayList<GeneratedMessage> responses;
+  private Queue<GeneratedMessage> responses;
 
   public MockLibraryServiceImpl() {
     requests = new ArrayList<>();
-    responses = new ArrayList<>();
+    responses = new LinkedList<>();
   }
 
   public List<GeneratedMessage> getRequests() {
@@ -60,267 +62,165 @@ public class MockLibraryServiceImpl implements LibraryService  {
   }
 
   public void setResponses(List<GeneratedMessage> responses) {
-    this.responses = Lists.newArrayList(responses);
+    this.responses = Lists.newLinkedList(responses);
   }
 
   public void reset() {
     requests = new ArrayList<>();
-    responses = new ArrayList<>();
+    responses = new LinkedList<>();
   }
 
   @Override
   public void createShelf(CreateShelfRequest request,
-      StreamObserver<Shelf> responseObserver) {
-    if (responses != null && !responses.isEmpty()) {
-      Shelf response = (Shelf) responses.get(0);
-      responses.remove(0);
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    } else {
-      responseObserver.onError(
-          new Exception("No response is set for gRPC method createShelf."));
-    }
+    StreamObserver<Shelf> responseObserver) {
+    Shelf response = (Shelf) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   @Override
   public void getShelf(GetShelfRequest request,
-      StreamObserver<Shelf> responseObserver) {
-    if (responses != null && !responses.isEmpty()) {
-      Shelf response = (Shelf) responses.get(0);
-      responses.remove(0);
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    } else {
-      responseObserver.onError(
-          new Exception("No response is set for gRPC method getShelf."));
-    }
+    StreamObserver<Shelf> responseObserver) {
+    Shelf response = (Shelf) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   @Override
   public void listShelves(ListShelvesRequest request,
-      StreamObserver<ListShelvesResponse> responseObserver) {
-    if (responses != null && !responses.isEmpty()) {
-      ListShelvesResponse response = (ListShelvesResponse) responses.get(0);
-      responses.remove(0);
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    } else {
-      responseObserver.onError(
-          new Exception("No response is set for gRPC method listShelves."));
-    }
+    StreamObserver<ListShelvesResponse> responseObserver) {
+    ListShelvesResponse response = (ListShelvesResponse) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   @Override
   public void deleteShelf(DeleteShelfRequest request,
-      StreamObserver<Empty> responseObserver) {
-    if (responses != null && !responses.isEmpty()) {
-      Empty response = (Empty) responses.get(0);
-      responses.remove(0);
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    } else {
-      responseObserver.onError(
-          new Exception("No response is set for gRPC method deleteShelf."));
-    }
+    StreamObserver<Empty> responseObserver) {
+    Empty response = (Empty) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   @Override
   public void mergeShelves(MergeShelvesRequest request,
-      StreamObserver<Shelf> responseObserver) {
-    if (responses != null && !responses.isEmpty()) {
-      Shelf response = (Shelf) responses.get(0);
-      responses.remove(0);
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    } else {
-      responseObserver.onError(
-          new Exception("No response is set for gRPC method mergeShelves."));
-    }
+    StreamObserver<Shelf> responseObserver) {
+    Shelf response = (Shelf) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   @Override
   public void createBook(CreateBookRequest request,
-      StreamObserver<Book> responseObserver) {
-    if (responses != null && !responses.isEmpty()) {
-      Book response = (Book) responses.get(0);
-      responses.remove(0);
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    } else {
-      responseObserver.onError(
-          new Exception("No response is set for gRPC method createBook."));
-    }
+    StreamObserver<Book> responseObserver) {
+    Book response = (Book) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   @Override
   public void publishSeries(PublishSeriesRequest request,
-      StreamObserver<PublishSeriesResponse> responseObserver) {
-    if (responses != null && !responses.isEmpty()) {
-      PublishSeriesResponse response = (PublishSeriesResponse) responses.get(0);
-      responses.remove(0);
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    } else {
-      responseObserver.onError(
-          new Exception("No response is set for gRPC method publishSeries."));
-    }
+    StreamObserver<PublishSeriesResponse> responseObserver) {
+    PublishSeriesResponse response = (PublishSeriesResponse) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   @Override
   public void getBook(GetBookRequest request,
-      StreamObserver<Book> responseObserver) {
-    if (responses != null && !responses.isEmpty()) {
-      Book response = (Book) responses.get(0);
-      responses.remove(0);
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    } else {
-      responseObserver.onError(
-          new Exception("No response is set for gRPC method getBook."));
-    }
+    StreamObserver<Book> responseObserver) {
+    Book response = (Book) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   @Override
   public void listBooks(ListBooksRequest request,
-      StreamObserver<ListBooksResponse> responseObserver) {
-    if (responses != null && !responses.isEmpty()) {
-      ListBooksResponse response = (ListBooksResponse) responses.get(0);
-      responses.remove(0);
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    } else {
-      responseObserver.onError(
-          new Exception("No response is set for gRPC method listBooks."));
-    }
+    StreamObserver<ListBooksResponse> responseObserver) {
+    ListBooksResponse response = (ListBooksResponse) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   @Override
   public void deleteBook(DeleteBookRequest request,
-      StreamObserver<Empty> responseObserver) {
-    if (responses != null && !responses.isEmpty()) {
-      Empty response = (Empty) responses.get(0);
-      responses.remove(0);
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    } else {
-      responseObserver.onError(
-          new Exception("No response is set for gRPC method deleteBook."));
-    }
+    StreamObserver<Empty> responseObserver) {
+    Empty response = (Empty) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   @Override
   public void updateBook(UpdateBookRequest request,
-      StreamObserver<Book> responseObserver) {
-    if (responses != null && !responses.isEmpty()) {
-      Book response = (Book) responses.get(0);
-      responses.remove(0);
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    } else {
-      responseObserver.onError(
-          new Exception("No response is set for gRPC method updateBook."));
-    }
+    StreamObserver<Book> responseObserver) {
+    Book response = (Book) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   @Override
   public void moveBook(MoveBookRequest request,
-      StreamObserver<Book> responseObserver) {
-    if (responses != null && !responses.isEmpty()) {
-      Book response = (Book) responses.get(0);
-      responses.remove(0);
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    } else {
-      responseObserver.onError(
-          new Exception("No response is set for gRPC method moveBook."));
-    }
+    StreamObserver<Book> responseObserver) {
+    Book response = (Book) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   @Override
   public void listStrings(ListStringsRequest request,
-      StreamObserver<ListStringsResponse> responseObserver) {
-    if (responses != null && !responses.isEmpty()) {
-      ListStringsResponse response = (ListStringsResponse) responses.get(0);
-      responses.remove(0);
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    } else {
-      responseObserver.onError(
-          new Exception("No response is set for gRPC method listStrings."));
-    }
+    StreamObserver<ListStringsResponse> responseObserver) {
+    ListStringsResponse response = (ListStringsResponse) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   @Override
   public void addComments(AddCommentsRequest request,
-      StreamObserver<Empty> responseObserver) {
-    if (responses != null && !responses.isEmpty()) {
-      Empty response = (Empty) responses.get(0);
-      responses.remove(0);
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    } else {
-      responseObserver.onError(
-          new Exception("No response is set for gRPC method addComments."));
-    }
+    StreamObserver<Empty> responseObserver) {
+    Empty response = (Empty) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   @Override
   public void getBookFromArchive(GetBookFromArchiveRequest request,
-      StreamObserver<Book> responseObserver) {
-    if (responses != null && !responses.isEmpty()) {
-      Book response = (Book) responses.get(0);
-      responses.remove(0);
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    } else {
-      responseObserver.onError(
-          new Exception("No response is set for gRPC method getBookFromArchive."));
-    }
+    StreamObserver<Book> responseObserver) {
+    Book response = (Book) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   @Override
   public void updateBookIndex(UpdateBookIndexRequest request,
-      StreamObserver<Empty> responseObserver) {
-    if (responses != null && !responses.isEmpty()) {
-      Empty response = (Empty) responses.get(0);
-      responses.remove(0);
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    } else {
-      responseObserver.onError(
-          new Exception("No response is set for gRPC method updateBookIndex."));
-    }
+    StreamObserver<Empty> responseObserver) {
+    Empty response = (Empty) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   @Override
   public void streamShelves(ListShelvesRequest request,
-      StreamObserver<ListShelvesResponse> responseObserver) {
-    if (responses != null && !responses.isEmpty()) {
-      ListShelvesResponse response = (ListShelvesResponse) responses.get(0);
-      responses.remove(0);
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    } else {
-      responseObserver.onError(
-          new Exception("No response is set for gRPC method streamShelves."));
-    }
+    StreamObserver<ListShelvesResponse> responseObserver) {
+    ListShelvesResponse response = (ListShelvesResponse) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
 }
