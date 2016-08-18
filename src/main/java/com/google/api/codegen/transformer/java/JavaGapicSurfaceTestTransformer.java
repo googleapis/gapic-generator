@@ -54,7 +54,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private GapicCodePathMapper pathMapper;
 
-  // TODO(shinfan): Reuse this logic with InitCodeGenerator
+  // TODO: Reuse this logic with InitCodeGenerator
+  // Github issue: https://github.com/googleapis/toolkit/issues/395
   private class TestCaseNameTable {
     private HashMap<String, Integer> nameCount;
 
@@ -180,9 +181,10 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
           testCaseViews.add(createTestCaseView(methodContext, paramFields, nameTable));
         }
       } else {
-        // TODO(shinfan): Add support of non-flattening method
+        // TODO: Add support of non-flattening method
+        // Github issue: https://github.com/googleapis/toolkit/issues/393
         System.err.println(
-            "Non-flatenning method test is not supported yet for " + method.getSimpleName());
+            "Non-flattening method test is not supported yet for " + method.getSimpleName());
       }
     }
     return testCaseViews;
