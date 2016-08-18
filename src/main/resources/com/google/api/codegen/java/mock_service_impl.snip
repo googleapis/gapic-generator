@@ -42,14 +42,10 @@
 @private grpcMethod(method)
   @@Override
   public void {@method.name}({@method.requestTypeName} request,
-      StreamObserver<{@method.responseTypeName}> responseObserver) {
-    try {
-      {@method.responseTypeName} response = ({@method.responseTypeName}) responses.remove();
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    } catch (Exception e) {
-      responseObserver.onError(e);
-    }
+    StreamObserver<{@method.responseTypeName}> responseObserver) {
+    {@method.responseTypeName} response = ({@method.responseTypeName}) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 @end
