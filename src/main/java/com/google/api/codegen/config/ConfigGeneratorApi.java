@@ -15,7 +15,6 @@
 package com.google.api.codegen.config;
 
 import com.google.api.client.util.Lists;
-import com.google.api.codegen.CodegenSetup;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
 import com.google.api.tools.framework.model.Interface;
@@ -75,17 +74,6 @@ public class ConfigGeneratorApi extends ToolDriverBase {
   /** Constructs a config generator api based on given options. */
   public ConfigGeneratorApi(ToolOptions options) {
     super(options);
-  }
-
-  @Override
-  protected void registerProcessors() {
-    model.registerProcessor(new Resolver());
-    model.registerProcessor(new Merger());
-  }
-
-  @Override
-  protected void registerAspects() {
-    CodegenSetup.registerCodegenConfigAspects(model);
   }
 
   @Override

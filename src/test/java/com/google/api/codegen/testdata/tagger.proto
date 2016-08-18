@@ -1,0 +1,32 @@
+// (-- Tagger API mixin for toolkit testing purposes --)
+
+syntax = "proto3";
+
+package google.tagger.v1;
+
+option java_multiple_files = true;
+option java_outer_classname = "TaggerProto";
+option java_package = "com.google.tagger.v1";
+option go_package = "google.golang.org/genproto/googleapis/tagger/v1";
+
+// Tagger mixin.
+service Tagger {
+
+  // Adds a tag to the entity.
+  rpc AddTag(AddTagRequest) returns (AddTagResponse);
+}
+
+message AddTagRequest {
+  // REQUIRED: The resource for which policy is being specified.
+  // Resource is usually specified as a path, such as,
+  // projects/{project}/zones/{zone}/disks/{disk}.
+  string resource = 1;
+
+  // REQUIRED: The tag to add.
+  string tag = 2;
+}
+
+// Response message for `AddTagRequest` method.
+message AddTagResponse {
+  // empty for now
+}

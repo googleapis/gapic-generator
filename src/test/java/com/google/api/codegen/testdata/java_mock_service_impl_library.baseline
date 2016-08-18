@@ -41,6 +41,8 @@ import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
 import com.google.protobuf.Empty;
 import com.google.protobuf.GeneratedMessage;
+import com.google.tagger.v1.AddTagRequest;
+import com.google.tagger.v1.AddTagResponse;
 import io.grpc.stub.StreamObserver;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -218,6 +220,15 @@ public class MockLibraryServiceImpl implements LibraryService  {
   public void streamShelves(ListShelvesRequest request,
     StreamObserver<ListShelvesResponse> responseObserver) {
     ListShelvesResponse response = (ListShelvesResponse) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
+  }
+
+  @Override
+  public void addTag(AddTagRequest request,
+    StreamObserver<AddTagResponse> responseObserver) {
+    AddTagResponse response = (AddTagResponse) responses.remove();
     requests.add(request);
     responseObserver.onNext(response);
     responseObserver.onCompleted();

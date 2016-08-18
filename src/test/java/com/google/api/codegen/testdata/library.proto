@@ -1,6 +1,4 @@
-// (-- This file defines the Library API for One Platform Service
-// Definition Codelab. You can find more details about the codelab
-// at http://go/api-definition-codelab --)
+// (-- Library API for toolkit testing purposes --)
 
 syntax = "proto3";
 
@@ -15,6 +13,7 @@ import "google/protobuf/wrappers.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/field_mask.proto";
+import "tagger.proto";
 
 option java_multiple_files = true;
 option java_outer_classname = "LibraryProto";
@@ -123,6 +122,11 @@ service LibraryService {
     // gRPC streaming methods don't have HTTP equivalent and need not have google.api.http option.
     // TODO(jmuk): Delete option once https://github.com/googleapis/toolkit/pull/325 lands.
     option (google.api.http) = { get: "/v1/StreamShelves" };
+  }
+  
+  // Adds a tag to the book.
+  rpc AddTag(google.tagger.v1.AddTagRequest) returns (google.tagger.v1.AddTagResponse) {
+    option (google.api.http) = { post: "/v1/{resource=bookShelves/*/books/*}:addTag" body: "*" };
   }
 }
 

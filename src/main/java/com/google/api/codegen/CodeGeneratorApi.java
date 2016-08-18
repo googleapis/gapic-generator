@@ -73,19 +73,6 @@ public class CodeGeneratorApi extends ToolDriverBase {
   }
 
   @Override
-  protected void registerProcessors() {
-    model.registerProcessor(new Resolver());
-    model.registerProcessor(new Merger());
-    model.registerProcessor(new Normalizer());
-    model.registerProcessor(new Linter());
-  }
-
-  @Override
-  protected void registerAspects() {
-    CodegenSetup.registerCodegenConfigAspects(model);
-  }
-
-  @Override
   protected void process() throws Exception {
 
     // Read the YAML config and convert it to proto.

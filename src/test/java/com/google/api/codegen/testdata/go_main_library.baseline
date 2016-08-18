@@ -28,6 +28,7 @@ import (
     "google.golang.org/api/option"
     "google.golang.org/api/transport"
     librarypb "google.golang.org/genproto/googleapis/example/library/v1"
+    taggerpb "google.golang.org/genproto/googleapis/tagger/v1"
     "google.golang.org/grpc"
     "google.golang.org/grpc/codes"
     "google.golang.org/grpc/metadata"
@@ -57,6 +58,7 @@ type CallOptions struct {
     AddComments []gax.CallOption
     GetBookFromArchive []gax.CallOption
     UpdateBookIndex []gax.CallOption
+    AddTag []gax.CallOption
 }
 
 func defaultClientOptions() []option.ClientOption {
@@ -99,6 +101,7 @@ func defaultCallOptions() *CallOptions {
         AddComments: defaultRetryOptions(),
         GetBookFromArchive: append(defaultRetryOptions(), withIdempotentRetryCodes),
         UpdateBookIndex: append(defaultRetryOptions(), withIdempotentRetryCodes),
+        AddTag: defaultRetryOptions(),
     }
 }
 
@@ -472,6 +475,22 @@ func (c *Client) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBookI
         return err
     }, c.CallOptions.UpdateBookIndex...)
     return err
+}
+
+
+// AddTag adds a tag to the book.
+func (c *Client) AddTag(ctx context.Context, req *taggerpb.AddTagRequest) (*taggerpb.AddTagResponse, error) {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    var resp *taggerpb.AddTagResponse
+    err := gax.Invoke(ctx, func (ctx context.Context) error {
+        var err error
+        resp, err = c.client.AddTag(ctx, req)
+        return err
+    }, c.CallOptions.AddTag...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
 }
 
 

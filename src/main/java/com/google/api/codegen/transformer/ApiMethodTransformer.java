@@ -277,6 +277,9 @@ public class ApiMethodTransformer {
       String entityName = fieldNamePatterns.get(field.getSimpleName());
       if (entityName != null) {
         CollectionConfig collectionConfig = context.getCollectionConfig(entityName);
+        if (collectionConfig == null) {
+          throw new IllegalStateException("No collection config with id '" + entityName + "'");
+        }
         PathTemplateCheckView.Builder check = PathTemplateCheckView.newBuilder();
         check.pathTemplateName(context.getNamer().getPathTemplateName(collectionConfig));
         check.paramName(context.getNamer().getVariableName(field));

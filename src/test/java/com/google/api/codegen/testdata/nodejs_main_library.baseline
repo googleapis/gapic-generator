@@ -170,7 +170,8 @@ function LibraryServiceApi(opts) {
     'listStrings',
     'addComments',
     'getBookFromArchive',
-    'updateBookIndex'
+    'updateBookIndex',
+    'addTag'
   ];
   methods.forEach(function(methodName) {
     this['_' + methodName] = gax.createApiCall(
@@ -807,4 +808,36 @@ LibraryServiceApi.prototype.updateBookIndex = function updateBookIndex() {
     'index_map': args.indexMap
   };
   return this._updateBookIndex(req, args.options, args.callback);
+};
+
+/**
+ * Adds a tag to the book.
+ *
+ * @param {String} resource
+ *   REQUIRED: The resource for which policy is being specified.
+ *   Resource is usually specified as a path, such as,
+ *   projects/{project}/zones/{zone}/disks/{disk}.
+ * @param {String} tag
+ *   REQUIRED: The tag to add.
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @param {?APICallback<google.tagger.v1.AddTagResponse>} callback
+ *   The function which will be called with the result of the API call.
+ * @returns {gax.EventEmitter} - the event emitter to handle the call
+ *   status.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.addTag = function addTag() {
+  var args = arguejs({
+    'resource': String,
+    'tag': String,
+    'options': [gax.CallOptions],
+    'callback': [Function]
+  }, arguments);
+  var req = {
+    'resource': args.resource,
+    'tag': args.tag
+  };
+  return this._addTag(req, args.options, args.callback);
 };

@@ -55,6 +55,8 @@ import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
 import com.google.protobuf.Empty;
+import com.google.tagger.v1.AddTagRequest;
+import com.google.tagger.v1.AddTagResponse;
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
 import java.io.IOException;
@@ -137,6 +139,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   private final SimpleCallSettings<AddCommentsRequest, Empty> addCommentsSettings;
   private final SimpleCallSettings<GetBookFromArchiveRequest, Book> getBookFromArchiveSettings;
   private final SimpleCallSettings<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
+  private final SimpleCallSettings<AddTagRequest, AddTagResponse> addTagSettings;
 
   /**
    * Returns the object with the settings used for calls to createShelf.
@@ -251,6 +254,13 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   }
 
   /**
+   * Returns the object with the settings used for calls to addTag.
+   */
+  public SimpleCallSettings<AddTagRequest, AddTagResponse> addTagSettings() {
+    return addTagSettings;
+  }
+
+  /**
    * Returns the default service address.
    */
   public static String getDefaultServiceAddress() {
@@ -316,6 +326,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     addCommentsSettings = settingsBuilder.addCommentsSettings().build();
     getBookFromArchiveSettings = settingsBuilder.getBookFromArchiveSettings().build();
     updateBookIndexSettings = settingsBuilder.updateBookIndexSettings().build();
+    addTagSettings = settingsBuilder.addTagSettings().build();
   }
 
   private static PageStreamingDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_STR_DESC =
@@ -472,6 +483,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     private SimpleCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings;
     private SimpleCallSettings.Builder<GetBookFromArchiveRequest, Book> getBookFromArchiveSettings;
     private SimpleCallSettings.Builder<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
+    private SimpleCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings;
 
     private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -547,6 +559,8 @@ public class LibraryServiceSettings extends ServiceApiSettings {
 
       updateBookIndexSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_UPDATE_BOOK_INDEX);
 
+      addTagSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_ADD_TAG);
+
       methodSettingsBuilders = ImmutableList.<ApiCallSettings.Builder>of(
           createShelfSettings,
           getShelfSettings,
@@ -563,7 +577,8 @@ public class LibraryServiceSettings extends ServiceApiSettings {
           listStringsSettings,
           addCommentsSettings,
           getBookFromArchiveSettings,
-          updateBookIndexSettings
+          updateBookIndexSettings,
+          addTagSettings
       );
     }
 
@@ -641,6 +656,10 @@ public class LibraryServiceSettings extends ServiceApiSettings {
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
+      builder.addTagSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
+          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+
       return builder;
     }
 
@@ -663,6 +682,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       addCommentsSettings = settings.addCommentsSettings.toBuilder();
       getBookFromArchiveSettings = settings.getBookFromArchiveSettings.toBuilder();
       updateBookIndexSettings = settings.updateBookIndexSettings.toBuilder();
+      addTagSettings = settings.addTagSettings.toBuilder();
 
       methodSettingsBuilders = ImmutableList.<ApiCallSettings.Builder>of(
           createShelfSettings,
@@ -680,7 +700,8 @@ public class LibraryServiceSettings extends ServiceApiSettings {
           listStringsSettings,
           addCommentsSettings,
           getBookFromArchiveSettings,
-          updateBookIndexSettings
+          updateBookIndexSettings,
+          addTagSettings
       );
     }
 
@@ -844,6 +865,13 @@ public class LibraryServiceSettings extends ServiceApiSettings {
      */
     public SimpleCallSettings.Builder<UpdateBookIndexRequest, Empty> updateBookIndexSettings() {
       return updateBookIndexSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to addTag.
+     */
+    public SimpleCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings() {
+      return addTagSettings;
     }
 
     @Override
