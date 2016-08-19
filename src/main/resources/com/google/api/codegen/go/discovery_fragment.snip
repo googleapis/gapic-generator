@@ -32,7 +32,6 @@ import (
 
 func main() {
   ctx := context.Background()
-  # TODO(pongad): Every API except autoscaler has the string as API.CloudPlatformScope, find out why
   hc, err := google.DefaultClient(ctx{@scopeArg(method)})
   if err != nil {
     // {@TODO()} Handle error.
@@ -73,7 +72,6 @@ func main() {
       }
     @end
   @else
-    # TODO(pongad): generate a better name for "resp"
     resp, err := {@methodPath(method)}({@callArg(method)}).Context(ctx).Do()
     if err != nil {
       // {@TODO()} Handle error.
@@ -119,7 +117,8 @@ func main() {
         paramValue = context.typeDefaultValue(signatureType, paramField), \
         paramDescription = context.getApiaryConfig.getDescription(signatureType.getName, param)
       {@description(paramDescription)}
-      {@unclashVar(param)} := {@paramValue} // {@TODO()} Update placeholder value.
+      // {@TODO()} Update placeholder value.
+      {@unclashVar(param)} := {@paramValue}
     @end
   @end
 @end
