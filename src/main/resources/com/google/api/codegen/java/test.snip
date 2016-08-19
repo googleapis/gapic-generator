@@ -62,7 +62,7 @@
     {@test.requestTypeName} actualRequest = ({@test.requestTypeName})actualRequests.get(0);
 
     @join assert : test.asserts
-      Assert.assertEquals(actualRequest.{@assert.actualValueGetter}(), {@assert.expectedValueIdentifier});
+      Assert.assertEquals({@assert.expectedValueIdentifier}, {@assert.actualValueIdentifier});
     @end
   }
 @end
@@ -83,7 +83,8 @@
     // PageAccessor will not make actual request until it is being used.
     // Add all the pages here in order to make grpc requests.
     List<{@test.resourceTypeName}> resources = Lists.newArrayList(pageAccessor.getPageValues());
-    Assert.assertEquals(0, resources.size());
+    Assert.assertEquals(1, resources.size());
+    Assert.assertEquals(expectedResponse.{@test.resourcesFieldGetterName}().get(0), resources.get(0));
   @case "FlattenedMethod"
     @if test.hasReturnValue
       {@test.responseTypeName} actualResponse =
