@@ -9,7 +9,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -17,22 +17,33 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Dataflow service.
+// Construct the Dataflow service object for interacting with the API.
 $service = new Google_Service_Dataflow($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `create` method:
 
 // * The project which owns the job.
 $projectId = '';
 
-$postBody = new Google_Service_Dataflow_Job($client);
 
-$response = $service->projects_jobs->create($projectId, $postBody);
+$Google_Service_Dataflow_JobBody = new Google_Service_Dataflow_Job($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Dataflow_JobBody` object.
 
+
+$response = $service->projects_jobs->create($projectId, $Google_Service_Dataflow_JobBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -43,7 +54,7 @@ $response = $service->projects_jobs->create($projectId, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -51,14 +62,20 @@ $response = $service->projects_jobs->create($projectId, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Dataflow service.
+// Construct the Dataflow service object for interacting with the API.
 $service = new Google_Service_Dataflow($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
 
 // * The project which owns the job.
 $projectId = '';
@@ -66,8 +83,11 @@ $projectId = '';
 // * Identifies a single job.
 $jobId = '';
 
+
 $response = $service->projects_jobs->get($projectId, $jobId);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -78,7 +98,7 @@ $response = $service->projects_jobs->get($projectId, $jobId);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -86,14 +106,20 @@ $response = $service->projects_jobs->get($projectId, $jobId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Dataflow service.
+// Construct the Dataflow service object for interacting with the API.
 $service = new Google_Service_Dataflow($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `getMetrics` method:
 
 // * A project id.
 $projectId = '';
@@ -101,8 +127,11 @@ $projectId = '';
 // * The job to get messages for.
 $jobId = '';
 
+
 $response = $service->projects_jobs->getMetrics($projectId, $jobId);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -113,7 +142,7 @@ $response = $service->projects_jobs->getMetrics($projectId, $jobId);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -121,24 +150,36 @@ $response = $service->projects_jobs->getMetrics($projectId, $jobId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Dataflow service.
+// Construct the Dataflow service object for interacting with the API.
 $service = new Google_Service_Dataflow($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listProjectsJobs` method:
 
 // * The project which owns the jobs.
 $projectId = '';
 
-$response = $service->projects_jobs->listProjectsJobs($projectId);
 
-foreach ($response['jobs'] as $element) {
-  // TODO: Add code here to process the element.
-}
+$optParams = array();
+do {
+  $response = $service->projects_jobs->listProjectsJobs($projectId, $optParams);
 
+  foreach ($response['jobs'] as $job) {
+    // TODO: Change code below to process each `job` resource:
+    echo '<pre>', var_export($job, true), '</pre>', "\n";
+  }
+
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -149,7 +190,7 @@ foreach ($response['jobs'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -157,14 +198,20 @@ foreach ($response['jobs'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Dataflow service.
+// Construct the Dataflow service object for interacting with the API.
 $service = new Google_Service_Dataflow($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listProjectsJobsMessages` method:
 
 // * A project id.
 $projectId = '';
@@ -172,12 +219,18 @@ $projectId = '';
 // * The job to get messages about.
 $jobId = '';
 
-$response = $service->projects_jobs_messages->listProjectsJobsMessages($projectId, $jobId);
 
-foreach ($response['jobMessages'] as $element) {
-  // TODO: Add code here to process the element.
-}
+$optParams = array();
+do {
+  $response = $service->projects_jobs_messages->listProjectsJobsMessages($projectId, $jobId, $optParams);
 
+  foreach ($response['jobMessages'] as $job_message) {
+    // TODO: Change code below to process each `job_message` resource:
+    echo '<pre>', var_export($job_message, true), '</pre>', "\n";
+  }
+
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -188,7 +241,7 @@ foreach ($response['jobMessages'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -196,14 +249,20 @@ foreach ($response['jobMessages'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Dataflow service.
+// Construct the Dataflow service object for interacting with the API.
 $service = new Google_Service_Dataflow($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
 
 // * The project which owns the job.
 $projectId = '';
@@ -211,10 +270,15 @@ $projectId = '';
 // * Identifies a single job.
 $jobId = '';
 
-$postBody = new Google_Service_Dataflow_Job($client);
 
-$response = $service->projects_jobs->update($projectId, $jobId, $postBody);
+$Google_Service_Dataflow_JobBody = new Google_Service_Dataflow_Job($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Dataflow_JobBody` object.
 
+
+$response = $service->projects_jobs->update($projectId, $jobId, $Google_Service_Dataflow_JobBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -225,7 +289,7 @@ $response = $service->projects_jobs->update($projectId, $jobId, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -233,14 +297,20 @@ $response = $service->projects_jobs->update($projectId, $jobId, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Dataflow service.
+// Construct the Dataflow service object for interacting with the API.
 $service = new Google_Service_Dataflow($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `lease` method:
 
 // * Identifies the project this worker belongs to.
 $projectId = '';
@@ -248,10 +318,15 @@ $projectId = '';
 // * Identifies the workflow job this worker belongs to.
 $jobId = '';
 
-$postBody = new Google_Service_Dataflow_LeaseWorkItemRequest($client);
 
-$response = $service->projects_jobs_workItems->lease($projectId, $jobId, $postBody);
+$Google_Service_Dataflow_LeaseWorkItemRequestBody = new Google_Service_Dataflow_LeaseWorkItemRequest($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Dataflow_LeaseWorkItemRequestBody` object.
 
+
+$response = $service->projects_jobs_workItems->lease($projectId, $jobId, $Google_Service_Dataflow_LeaseWorkItemRequestBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -262,7 +337,7 @@ $response = $service->projects_jobs_workItems->lease($projectId, $jobId, $postBo
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -270,14 +345,20 @@ $response = $service->projects_jobs_workItems->lease($projectId, $jobId, $postBo
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Dataflow service.
+// Construct the Dataflow service object for interacting with the API.
 $service = new Google_Service_Dataflow($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `reportStatus` method:
 
 // * The project which owns the WorkItem's job.
 $projectId = '';
@@ -285,10 +366,15 @@ $projectId = '';
 // * The job which the WorkItem is part of.
 $jobId = '';
 
-$postBody = new Google_Service_Dataflow_ReportWorkItemStatusRequest($client);
 
-$response = $service->projects_jobs_workItems->reportStatus($projectId, $jobId, $postBody);
+$Google_Service_Dataflow_ReportWorkItemStatusRequestBody = new Google_Service_Dataflow_ReportWorkItemStatusRequest($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Dataflow_ReportWorkItemStatusRequestBody` object.
 
+
+$response = $service->projects_jobs_workItems->reportStatus($projectId, $jobId, $Google_Service_Dataflow_ReportWorkItemStatusRequestBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -299,7 +385,7 @@ $response = $service->projects_jobs_workItems->reportStatus($projectId, $jobId, 
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -307,19 +393,30 @@ $response = $service->projects_jobs_workItems->reportStatus($projectId, $jobId, 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Dataflow service.
+// Construct the Dataflow service object for interacting with the API.
 $service = new Google_Service_Dataflow($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `workerMessages` method:
 
 // * The project to send the WorkerMessages to.
 $projectId = '';
 
-$postBody = new Google_Service_Dataflow_SendWorkerMessagesRequest($client);
 
-$response = $service->projects->workerMessages($projectId, $postBody);
+$Google_Service_Dataflow_SendWorkerMessagesRequestBody = new Google_Service_Dataflow_SendWorkerMessagesRequest($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Dataflow_SendWorkerMessagesRequestBody` object.
 
+
+$response = $service->projects->workerMessages($projectId, $Google_Service_Dataflow_SendWorkerMessagesRequestBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";

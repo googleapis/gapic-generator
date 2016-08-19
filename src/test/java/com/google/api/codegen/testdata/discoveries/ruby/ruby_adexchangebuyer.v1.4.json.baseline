@@ -7,24 +7,38 @@
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_account' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_account` method:
 
 # * The account id
 id = 0
 
+
 # Perform the call
 response = service.get_account(id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -33,21 +47,32 @@ response = service.get_account(id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
-
 
 
 # Perform the call
 response = service.list_accounts()
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -56,27 +81,42 @@ response = service.list_accounts()
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch_account' method:
+
+# TODO: Change placeholders below to desired parameter values for the `patch_account` method:
 
 # * The account id
 id = 0
 
-account_object = Google::Apis::AdexchangebuyerV1_4::Account.new
+
+account_body = Google::Apis::AdexchangebuyerV1_4::Account.new
+# TODO: Assign values to desired members of the `account_body` object to be changed.
 
 
 # Perform the call
-response = service.patch_account(id, account_object)
+response = service.patch_account(id, account_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -85,27 +125,42 @@ response = service.patch_account(id, account_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_account' method:
+
+# TODO: Change placeholders below to desired parameter values for the `update_account` method:
 
 # * The account id
 id = 0
 
-account_object = Google::Apis::AdexchangebuyerV1_4::Account.new
+
+account_body = Google::Apis::AdexchangebuyerV1_4::Account.new
+# TODO: Assign values to desired members of the `account_body` object.
 
 
 # Perform the call
-response = service.update_account(id, account_object)
+response = service.update_account(id, account_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -114,24 +169,38 @@ response = service.update_account(id, account_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_billing_info' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_billing_info` method:
 
 # * The account id.
 account_id = 0
 
+
 # Perform the call
 response = service.get_billing_info(account_id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -140,21 +209,32 @@ response = service.get_billing_info(account_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
-
 
 
 # Perform the call
 response = service.list_billing_infos()
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -163,18 +243,28 @@ response = service.list_billing_infos()
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_budget' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_budget` method:
 
 # * The account id to get the budget information for.
 account_id = ''
@@ -182,8 +272,12 @@ account_id = ''
 # * The billing id to get the budget information for.
 billing_id = ''
 
+
 # Perform the call
 response = service.get_budget(account_id, billing_id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -192,18 +286,28 @@ response = service.get_budget(account_id, billing_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch_budget' method:
+
+# TODO: Change placeholders below to desired parameter values for the `patch_budget` method:
 
 # * The account id associated with the budget being updated.
 account_id = ''
@@ -211,11 +315,16 @@ account_id = ''
 # * The billing id associated with the budget being updated.
 billing_id = ''
 
-budget_object = Google::Apis::AdexchangebuyerV1_4::Budget.new
+
+budget_body = Google::Apis::AdexchangebuyerV1_4::Budget.new
+# TODO: Assign values to desired members of the `budget_body` object to be changed.
 
 
 # Perform the call
-response = service.patch_budget(account_id, billing_id, budget_object)
+response = service.patch_budget(account_id, billing_id, budget_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -224,18 +333,28 @@ response = service.patch_budget(account_id, billing_id, budget_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_budget' method:
+
+# TODO: Change placeholders below to desired parameter values for the `update_budget` method:
 
 # * The account id associated with the budget being updated.
 account_id = ''
@@ -243,11 +362,16 @@ account_id = ''
 # * The billing id associated with the budget being updated.
 billing_id = ''
 
-budget_object = Google::Apis::AdexchangebuyerV1_4::Budget.new
+
+budget_body = Google::Apis::AdexchangebuyerV1_4::Budget.new
+# TODO: Assign values to desired members of the `budget_body` object.
 
 
 # Perform the call
-response = service.update_budget(account_id, billing_id, budget_object)
+response = service.update_budget(account_id, billing_id, budget_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -256,18 +380,28 @@ response = service.update_budget(account_id, billing_id, budget_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'add_creative_deal' method:
+
+# TODO: Change placeholders below to desired parameter values for the `add_creative_deal` method:
 
 # * The id for the account that will serve this creative.
 account_id = 0
@@ -277,6 +411,7 @@ buyer_creative_id = ''
 
 # * The id of the deal id to associate with this creative.
 deal_id = ''
+
 
 # Perform the call
 service.add_creative_deal(account_id, buyer_creative_id, deal_id)
@@ -288,18 +423,28 @@ service.add_creative_deal(account_id, buyer_creative_id, deal_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_creative' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_creative` method:
 
 # * The id for the account that will serve this creative.
 account_id = 0
@@ -307,8 +452,12 @@ account_id = 0
 # * The buyer-specific id for this creative.
 buyer_creative_id = ''
 
+
 # Perform the call
 response = service.get_creative(account_id, buyer_creative_id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -317,24 +466,36 @@ response = service.get_creative(account_id, buyer_creative_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 
-
-creative_object = Google::Apis::AdexchangebuyerV1_4::Creative.new
+creative_body = Google::Apis::AdexchangebuyerV1_4::Creative.new
+# TODO: Assign values to desired members of the `creative_body` object.
 
 
 # Perform the call
-response = service.insert_creative(creative_object)
+response = service.insert_creative(creative_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -343,26 +504,36 @@ response = service.insert_creative(creative_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 
-
 # Perform the call
-result_list = service.fetch_all(items: :items) { |token|
+items = service.fetch_all(items: :items) do |token|
   service.list_creatives(, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+items.each do |creative|
+  # TODO: Change code below to process each `creative` resource:
+  puts JSON.pretty_generate(creative)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -371,18 +542,28 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'remove_creative_deal' method:
+
+# TODO: Change placeholders below to desired parameter values for the `remove_creative_deal` method:
 
 # * The id for the account that will serve this creative.
 account_id = 0
@@ -392,6 +573,7 @@ buyer_creative_id = ''
 
 # * The id of the deal id to disassociate with this creative.
 deal_id = ''
+
 
 # Perform the call
 service.remove_creative_deal(account_id, buyer_creative_id, deal_id)
@@ -403,27 +585,42 @@ service.remove_creative_deal(account_id, buyer_creative_id, deal_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_marketplacedeal_order_deals' method:
+
+# TODO: Change placeholders below to desired parameter values for the `delete_marketplacedeal_order_deals` method:
 
 # * The proposalId to delete deals from.
 proposal_id = ''
 
-delete_order_deals_request_object = Google::Apis::AdexchangebuyerV1_4::DeleteOrderDealsRequest.new
+
+delete_order_deals_request_body = Google::Apis::AdexchangebuyerV1_4::DeleteOrderDealsRequest.new
+# TODO: Assign values to desired members of the `delete_order_deals_request_body` object.
 
 
 # Perform the call
-response = service.delete_marketplacedeal_order_deals(proposal_id, delete_order_deals_request_object)
+response = service.delete_marketplacedeal_order_deals(proposal_id, delete_order_deals_request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -432,27 +629,42 @@ response = service.delete_marketplacedeal_order_deals(proposal_id, delete_order_
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert_marketplacedeal' method:
+
+# TODO: Change placeholders below to desired parameter values for the `insert_marketplacedeal` method:
 
 # * proposalId for which deals need to be added.
 proposal_id = ''
 
-add_order_deals_request_object = Google::Apis::AdexchangebuyerV1_4::AddOrderDealsRequest.new
+
+add_order_deals_request_body = Google::Apis::AdexchangebuyerV1_4::AddOrderDealsRequest.new
+# TODO: Assign values to desired members of the `add_order_deals_request_body` object.
 
 
 # Perform the call
-response = service.insert_marketplacedeal(proposal_id, add_order_deals_request_object)
+response = service.insert_marketplacedeal(proposal_id, add_order_deals_request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -461,25 +673,39 @@ response = service.insert_marketplacedeal(proposal_id, add_order_deals_request_o
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_marketplacedeals' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_marketplacedeals` method:
 
 # * The proposalId to get deals for. To search across proposals specify order_id = '-' as part of the
 #   URL.
 proposal_id = ''
 
+
 # Perform the call
 response = service.list_marketplacedeals(proposal_id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -488,27 +714,42 @@ response = service.list_marketplacedeals(proposal_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_marketplacedeal' method:
+
+# TODO: Change placeholders below to desired parameter values for the `update_marketplacedeal` method:
 
 # * The proposalId to edit deals on.
 proposal_id = ''
 
-edit_all_order_deals_request_object = Google::Apis::AdexchangebuyerV1_4::EditAllOrderDealsRequest.new
+
+edit_all_order_deals_request_body = Google::Apis::AdexchangebuyerV1_4::EditAllOrderDealsRequest.new
+# TODO: Assign values to desired members of the `edit_all_order_deals_request_body` object.
 
 
 # Perform the call
-response = service.update_marketplacedeal(proposal_id, edit_all_order_deals_request_object)
+response = service.update_marketplacedeal(proposal_id, edit_all_order_deals_request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -517,27 +758,42 @@ response = service.update_marketplacedeal(proposal_id, edit_all_order_deals_requ
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert_marketplacenote' method:
+
+# TODO: Change placeholders below to desired parameter values for the `insert_marketplacenote` method:
 
 # * The proposalId to add notes for.
 proposal_id = ''
 
-add_order_notes_request_object = Google::Apis::AdexchangebuyerV1_4::AddOrderNotesRequest.new
+
+add_order_notes_request_body = Google::Apis::AdexchangebuyerV1_4::AddOrderNotesRequest.new
+# TODO: Assign values to desired members of the `add_order_notes_request_body` object.
 
 
 # Perform the call
-response = service.insert_marketplacenote(proposal_id, add_order_notes_request_object)
+response = service.insert_marketplacenote(proposal_id, add_order_notes_request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -546,24 +802,38 @@ response = service.insert_marketplacenote(proposal_id, add_order_notes_request_o
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_marketplacenotes' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_marketplacenotes` method:
 
 # * The proposalId to get notes for.
 proposal_id = ''
 
+
 # Perform the call
 response = service.list_marketplacenotes(proposal_id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -572,27 +842,39 @@ response = service.list_marketplacenotes(proposal_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_marketplace_private_auction_proposal' method:
+
+# TODO: Change placeholders below to desired parameter values for the `update_marketplace_private_auction_proposal` method:
 
 # * The private auction id to be updated.
 private_auction_id = ''
 
-update_private_auction_proposal_request_object = Google::Apis::AdexchangebuyerV1_4::UpdatePrivateAuctionProposalRequest.new
+
+update_private_auction_proposal_request_body = Google::Apis::AdexchangebuyerV1_4::UpdatePrivateAuctionProposalRequest.new
+# TODO: Assign values to desired members of the `update_private_auction_proposal_request_body` object.
 
 
 # Perform the call
-service.update_marketplace_private_auction_proposal(private_auction_id, update_private_auction_proposal_request_object)
+service.update_marketplace_private_auction_proposal(private_auction_id, update_private_auction_proposal_request_body)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -601,18 +883,28 @@ service.update_marketplace_private_auction_proposal(private_auction_id, update_p
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_performance_reports' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_performance_reports` method:
 
 # * The account id to get the reports.
 account_id = ''
@@ -623,8 +915,12 @@ end_date_time = ''
 # * The start time of the report in ISO 8601 timestamp format using UTC.
 start_date_time = ''
 
+
 # Perform the call
 response = service.list_performance_reports(account_id, end_date_time, start_date_time)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -633,24 +929,35 @@ response = service.list_performance_reports(account_id, end_date_time, start_dat
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_pretargeting_config' method:
+
+# TODO: Change placeholders below to desired parameter values for the `delete_pretargeting_config` method:
 
 # * The account id to delete the pretargeting config for.
 account_id = ''
 
 # * The specific id of the configuration to delete.
 config_id = ''
+
 
 # Perform the call
 service.delete_pretargeting_config(account_id, config_id)
@@ -662,18 +969,28 @@ service.delete_pretargeting_config(account_id, config_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_pretargeting_config' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_pretargeting_config` method:
 
 # * The account id to get the pretargeting config for.
 account_id = ''
@@ -681,8 +998,12 @@ account_id = ''
 # * The specific id of the configuration to retrieve.
 config_id = ''
 
+
 # Perform the call
 response = service.get_pretargeting_config(account_id, config_id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -691,27 +1012,42 @@ response = service.get_pretargeting_config(account_id, config_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert_pretargeting_config' method:
+
+# TODO: Change placeholders below to desired parameter values for the `insert_pretargeting_config` method:
 
 # * The account id to insert the pretargeting config for.
 account_id = ''
 
-pretargeting_config_object = Google::Apis::AdexchangebuyerV1_4::PretargetingConfig.new
+
+pretargeting_config_body = Google::Apis::AdexchangebuyerV1_4::PretargetingConfig.new
+# TODO: Assign values to desired members of the `pretargeting_config_body` object.
 
 
 # Perform the call
-response = service.insert_pretargeting_config(account_id, pretargeting_config_object)
+response = service.insert_pretargeting_config(account_id, pretargeting_config_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -720,24 +1056,38 @@ response = service.insert_pretargeting_config(account_id, pretargeting_config_ob
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_pretargeting_configs' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_pretargeting_configs` method:
 
 # * The account id to get the pretargeting configs for.
 account_id = ''
 
+
 # Perform the call
 response = service.list_pretargeting_configs(account_id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -746,18 +1096,28 @@ response = service.list_pretargeting_configs(account_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch_pretargeting_config' method:
+
+# TODO: Change placeholders below to desired parameter values for the `patch_pretargeting_config` method:
 
 # * The account id to update the pretargeting config for.
 account_id = ''
@@ -765,11 +1125,16 @@ account_id = ''
 # * The specific id of the configuration to update.
 config_id = ''
 
-pretargeting_config_object = Google::Apis::AdexchangebuyerV1_4::PretargetingConfig.new
+
+pretargeting_config_body = Google::Apis::AdexchangebuyerV1_4::PretargetingConfig.new
+# TODO: Assign values to desired members of the `pretargeting_config_body` object to be changed.
 
 
 # Perform the call
-response = service.patch_pretargeting_config(account_id, config_id, pretargeting_config_object)
+response = service.patch_pretargeting_config(account_id, config_id, pretargeting_config_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -778,18 +1143,28 @@ response = service.patch_pretargeting_config(account_id, config_id, pretargeting
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_pretargeting_config' method:
+
+# TODO: Change placeholders below to desired parameter values for the `update_pretargeting_config` method:
 
 # * The account id to update the pretargeting config for.
 account_id = ''
@@ -797,11 +1172,16 @@ account_id = ''
 # * The specific id of the configuration to update.
 config_id = ''
 
-pretargeting_config_object = Google::Apis::AdexchangebuyerV1_4::PretargetingConfig.new
+
+pretargeting_config_body = Google::Apis::AdexchangebuyerV1_4::PretargetingConfig.new
+# TODO: Assign values to desired members of the `pretargeting_config_body` object.
 
 
 # Perform the call
-response = service.update_pretargeting_config(account_id, config_id, pretargeting_config_object)
+response = service.update_pretargeting_config(account_id, config_id, pretargeting_config_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -810,24 +1190,38 @@ response = service.update_pretargeting_config(account_id, config_id, pretargetin
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_product' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_product` method:
 
 # * The id for the product to get the head revision for.
 product_id = ''
 
+
 # Perform the call
 response = service.get_product(product_id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -836,21 +1230,32 @@ response = service.get_product(product_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
-
 
 
 # Perform the call
 response = service.search_products()
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -859,24 +1264,38 @@ response = service.search_products()
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_proposal' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_proposal` method:
 
 # * Id of the proposal to retrieve.
 proposal_id = ''
 
+
 # Perform the call
 response = service.get_proposal(proposal_id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -885,24 +1304,36 @@ response = service.get_proposal(proposal_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 
-
-create_orders_request_object = Google::Apis::AdexchangebuyerV1_4::CreateOrdersRequest.new
+create_orders_request_body = Google::Apis::AdexchangebuyerV1_4::CreateOrdersRequest.new
+# TODO: Assign values to desired members of the `create_orders_request_body` object.
 
 
 # Perform the call
-response = service.insert_proposal(create_orders_request_object)
+response = service.insert_proposal(create_orders_request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -911,18 +1342,28 @@ response = service.insert_proposal(create_orders_request_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch_proposal' method:
+
+# TODO: Change placeholders below to desired parameter values for the `patch_proposal` method:
 
 # * The proposal id to update.
 proposal_id = ''
@@ -935,11 +1376,16 @@ revision_number = ''
 # * The proposed action to take on the proposal.
 update_action = ''
 
-proposal_object = Google::Apis::AdexchangebuyerV1_4::Proposal.new
+
+proposal_body = Google::Apis::AdexchangebuyerV1_4::Proposal.new
+# TODO: Assign values to desired members of the `proposal_body` object to be changed.
 
 
 # Perform the call
-response = service.patch_proposal(proposal_id, revision_number, update_action, proposal_object)
+response = service.patch_proposal(proposal_id, revision_number, update_action, proposal_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -948,21 +1394,32 @@ response = service.patch_proposal(proposal_id, revision_number, update_action, p
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
-
 
 
 # Perform the call
 response = service.search_proposals()
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -971,21 +1428,32 @@ response = service.search_proposals()
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'proposal_setup_complete' method:
+
+# TODO: Change placeholders below to desired parameter values for the `proposal_setup_complete` method:
 
 # * The proposal id for which the setup is complete
 proposal_id = ''
+
 
 # Perform the call
 service.proposal_setup_complete(proposal_id)
@@ -997,18 +1465,28 @@ service.proposal_setup_complete(proposal_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_proposal' method:
+
+# TODO: Change placeholders below to desired parameter values for the `update_proposal` method:
 
 # * The proposal id to update.
 proposal_id = ''
@@ -1021,11 +1499,16 @@ revision_number = ''
 # * The proposed action to take on the proposal.
 update_action = ''
 
-proposal_object = Google::Apis::AdexchangebuyerV1_4::Proposal.new
+
+proposal_body = Google::Apis::AdexchangebuyerV1_4::Proposal.new
+# TODO: Assign values to desired members of the `proposal_body` object.
 
 
 # Perform the call
-response = service.update_proposal(proposal_id, revision_number, update_action, proposal_object)
+response = service.update_proposal(proposal_id, revision_number, update_action, proposal_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Ad Exchange Buyer API
@@ -1034,21 +1517,35 @@ response = service.update_proposal(proposal_id, revision_number, update_action, 
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/adexchangebuyer_v1_4'
+require 'json'
 
+# Construct the adexchangebuyer service object (version v1_4) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AdexchangebuyerV1_4::AdexchangebuyerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_pub_profiles' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_pub_profiles` method:
 
 # * The accountId of the publisher to get profiles for.
 account_id = 0
 
+
 # Perform the call
 response = service.list_pub_profiles(account_id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)

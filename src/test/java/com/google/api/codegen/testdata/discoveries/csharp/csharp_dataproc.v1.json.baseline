@@ -7,7 +7,7 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -16,49 +16,61 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataproc.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dataproc.v1.Data;
 
+
 namespace DataprocSample
 {
-    public class Program
+    public class DataprocServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dataproc service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DataprocService dataprocService = new DataprocService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Create() method:
 
-            // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+            // TODO: Change placeholders below to desired parameter values for the `Create` method:
+
+            // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
             string projectId = "";
 
-            // [Required] The Cloud Dataproc region in which to handle the request.
+            // * [Required] The Cloud Dataproc region in which to handle the request.
             string region = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Cluster content = new Data.Cluster();
 
-            ProjectsResource.RegionsResource.ClustersResource.CreateRequest request = dataprocService.Projects.Regions.Clusters.Create(content, projectId, region);
+            Data.Cluster requestBody = new Data.Cluster();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.RegionsResource.ClustersResource.CreateRequest request = dataprocService.Projects.Regions.Clusters.Create(requestBody, projectId, region);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -70,7 +82,7 @@ namespace DataprocSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -79,49 +91,60 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataproc.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dataproc.v1.Data;
 
+
 namespace DataprocSample
 {
-    public class Program
+    public class DataprocServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dataproc service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DataprocService dataprocService = new DataprocService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Delete() method:
 
-            // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+            // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
             string projectId = "";
 
-            // [Required] The Cloud Dataproc region in which to handle the request.
+            // * [Required] The Cloud Dataproc region in which to handle the request.
             string region = "";
 
-            // [Required] The cluster name.
+            // * [Required] The cluster name.
             string clusterName = "";
+
 
             ProjectsResource.RegionsResource.ClustersResource.DeleteRequest request = dataprocService.Projects.Regions.Clusters.Delete(projectId, region, clusterName);
-            Data.Operation response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -133,7 +156,7 @@ namespace DataprocSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -142,52 +165,64 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataproc.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dataproc.v1.Data;
 
+
 namespace DataprocSample
 {
-    public class Program
+    public class DataprocServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dataproc service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DataprocService dataprocService = new DataprocService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Diagnose() method:
 
-            // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+            // TODO: Change placeholders below to desired parameter values for the `Diagnose` method:
+
+            // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
             string projectId = "";
 
-            // [Required] The Cloud Dataproc region in which to handle the request.
+            // * [Required] The Cloud Dataproc region in which to handle the request.
             string region = "";
 
-            // [Required] The cluster name.
+            // * [Required] The cluster name.
             string clusterName = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.DiagnoseClusterRequest content = new Data.DiagnoseClusterRequest();
 
-            ProjectsResource.RegionsResource.ClustersResource.DiagnoseRequest request = dataprocService.Projects.Regions.Clusters.Diagnose(content, projectId, region, clusterName);
+            Data.DiagnoseClusterRequest requestBody = new Data.DiagnoseClusterRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.RegionsResource.ClustersResource.DiagnoseRequest request = dataprocService.Projects.Regions.Clusters.Diagnose(requestBody, projectId, region, clusterName);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -199,7 +234,7 @@ namespace DataprocSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -208,49 +243,60 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataproc.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dataproc.v1.Data;
 
+
 namespace DataprocSample
 {
-    public class Program
+    public class DataprocServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dataproc service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DataprocService dataprocService = new DataprocService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
 
-            // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
             string projectId = "";
 
-            // [Required] The Cloud Dataproc region in which to handle the request.
+            // * [Required] The Cloud Dataproc region in which to handle the request.
             string region = "";
 
-            // [Required] The cluster name.
+            // * [Required] The cluster name.
             string clusterName = "";
+
 
             ProjectsResource.RegionsResource.ClustersResource.GetRequest request = dataprocService.Projects.Regions.Clusters.Get(projectId, region, clusterName);
-            Data.Cluster response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Cluster response = request.Execute();
             // Data.Cluster response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -262,7 +308,7 @@ namespace DataprocSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -271,59 +317,69 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataproc.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dataproc.v1.Data;
 
+
 namespace DataprocSample
 {
-    public class Program
+    public class DataprocServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dataproc service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DataprocService dataprocService = new DataprocService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
-            // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
             string projectId = "";
 
-            // [Required] The Cloud Dataproc region in which to handle the request.
+            // * [Required] The Cloud Dataproc region in which to handle the request.
             string region = "";
 
+
             ProjectsResource.RegionsResource.ClustersResource.ListRequest request = dataprocService.Projects.Regions.Clusters.List(projectId, region);
+
             Data.ListClustersResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Clusters == null)
                 {
                     continue;
                 }
-                foreach (Data.Cluster item in response.Clusters)
+                foreach (Data.Cluster cluster in response.Clusters)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `cluster` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(cluster));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.ListClustersResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -335,7 +391,7 @@ namespace DataprocSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -344,52 +400,64 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataproc.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dataproc.v1.Data;
 
+
 namespace DataprocSample
 {
-    public class Program
+    public class DataprocServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dataproc service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DataprocService dataprocService = new DataprocService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Patch() method:
 
-            // [Required] The ID of the Google Cloud Platform project the cluster belongs to.
+            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
+            // * [Required] The ID of the Google Cloud Platform project the cluster belongs to.
             string projectId = "";
 
-            // [Required] The Cloud Dataproc region in which to handle the request.
+            // * [Required] The Cloud Dataproc region in which to handle the request.
             string region = "";
 
-            // [Required] The cluster name.
+            // * [Required] The cluster name.
             string clusterName = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Cluster content = new Data.Cluster();
 
-            ProjectsResource.RegionsResource.ClustersResource.PatchRequest request = dataprocService.Projects.Regions.Clusters.Patch(content, projectId, region, clusterName);
+            Data.Cluster requestBody = new Data.Cluster();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
+
+            ProjectsResource.RegionsResource.ClustersResource.PatchRequest request = dataprocService.Projects.Regions.Clusters.Patch(requestBody, projectId, region, clusterName);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -401,7 +469,7 @@ namespace DataprocSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -410,52 +478,64 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataproc.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dataproc.v1.Data;
 
+
 namespace DataprocSample
 {
-    public class Program
+    public class DataprocServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dataproc service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DataprocService dataprocService = new DataprocService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Cancel() method:
 
-            // [Required] The ID of the Google Cloud Platform project that the job belongs to.
+            // TODO: Change placeholders below to desired parameter values for the `Cancel` method:
+
+            // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
             string projectId = "";
 
-            // [Required] The Cloud Dataproc region in which to handle the request.
+            // * [Required] The Cloud Dataproc region in which to handle the request.
             string region = "";
 
-            // [Required] The job ID.
+            // * [Required] The job ID.
             string jobId = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.CancelJobRequest content = new Data.CancelJobRequest();
 
-            ProjectsResource.RegionsResource.JobsResource.CancelRequest request = dataprocService.Projects.Regions.Jobs.Cancel(content, projectId, region, jobId);
+            Data.CancelJobRequest requestBody = new Data.CancelJobRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.RegionsResource.JobsResource.CancelRequest request = dataprocService.Projects.Regions.Jobs.Cancel(requestBody, projectId, region, jobId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Job response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Job response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -467,7 +547,7 @@ namespace DataprocSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -476,49 +556,60 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataproc.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dataproc.v1.Data;
 
+
 namespace DataprocSample
 {
-    public class Program
+    public class DataprocServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dataproc service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DataprocService dataprocService = new DataprocService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Delete() method:
 
-            // [Required] The ID of the Google Cloud Platform project that the job belongs to.
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+            // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
             string projectId = "";
 
-            // [Required] The Cloud Dataproc region in which to handle the request.
+            // * [Required] The Cloud Dataproc region in which to handle the request.
             string region = "";
 
-            // [Required] The job ID.
+            // * [Required] The job ID.
             string jobId = "";
+
 
             ProjectsResource.RegionsResource.JobsResource.DeleteRequest request = dataprocService.Projects.Regions.Jobs.Delete(projectId, region, jobId);
-            Data.Empty response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Empty response = request.Execute();
             // Data.Empty response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -530,7 +621,7 @@ namespace DataprocSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -539,49 +630,60 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataproc.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dataproc.v1.Data;
 
+
 namespace DataprocSample
 {
-    public class Program
+    public class DataprocServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dataproc service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DataprocService dataprocService = new DataprocService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
 
-            // [Required] The ID of the Google Cloud Platform project that the job belongs to.
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
             string projectId = "";
 
-            // [Required] The Cloud Dataproc region in which to handle the request.
+            // * [Required] The Cloud Dataproc region in which to handle the request.
             string region = "";
 
-            // [Required] The job ID.
+            // * [Required] The job ID.
             string jobId = "";
 
-            ProjectsResource.RegionsResource.JobsResource.GetRequest request = dataprocService.Projects.Regions.Jobs.Get(projectId, region, jobId);
-            Data.Job response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            ProjectsResource.RegionsResource.JobsResource.GetRequest request = dataprocService.Projects.Regions.Jobs.Get(projectId, region, jobId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Job response = request.Execute();
             // Data.Job response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -593,7 +695,7 @@ namespace DataprocSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -602,59 +704,69 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataproc.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dataproc.v1.Data;
 
+
 namespace DataprocSample
 {
-    public class Program
+    public class DataprocServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dataproc service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DataprocService dataprocService = new DataprocService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
-            // [Required] The ID of the Google Cloud Platform project that the job belongs to.
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
             string projectId = "";
 
-            // [Required] The Cloud Dataproc region in which to handle the request.
+            // * [Required] The Cloud Dataproc region in which to handle the request.
             string region = "";
 
+
             ProjectsResource.RegionsResource.JobsResource.ListRequest request = dataprocService.Projects.Regions.Jobs.List(projectId, region);
+
             Data.ListJobsResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Jobs == null)
                 {
                     continue;
                 }
-                foreach (Data.Job item in response.Jobs)
+                foreach (Data.Job job in response.Jobs)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `job` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(job));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.ListJobsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -666,7 +778,7 @@ namespace DataprocSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -675,49 +787,61 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataproc.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dataproc.v1.Data;
 
+
 namespace DataprocSample
 {
-    public class Program
+    public class DataprocServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dataproc service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DataprocService dataprocService = new DataprocService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Submit() method:
 
-            // [Required] The ID of the Google Cloud Platform project that the job belongs to.
+            // TODO: Change placeholders below to desired parameter values for the `Submit` method:
+
+            // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
             string projectId = "";
 
-            // [Required] The Cloud Dataproc region in which to handle the request.
+            // * [Required] The Cloud Dataproc region in which to handle the request.
             string region = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.SubmitJobRequest content = new Data.SubmitJobRequest();
 
-            ProjectsResource.RegionsResource.JobsResource.SubmitRequest request = dataprocService.Projects.Regions.Jobs.Submit(content, projectId, region);
+            Data.SubmitJobRequest requestBody = new Data.SubmitJobRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.RegionsResource.JobsResource.SubmitRequest request = dataprocService.Projects.Regions.Jobs.Submit(requestBody, projectId, region);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Job response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Job response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -729,7 +853,7 @@ namespace DataprocSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -738,43 +862,54 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataproc.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dataproc.v1.Data;
 
+
 namespace DataprocSample
 {
-    public class Program
+    public class DataprocServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dataproc service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DataprocService dataprocService = new DataprocService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Cancel() method:
 
-            // The name of the operation resource to be cancelled.
+            // TODO: Change placeholders below to desired parameter values for the `Cancel` method:
+
+            // * The name of the operation resource to be cancelled.
             string name = "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}";
+
 
             ProjectsResource.RegionsResource.OperationsResource.CancelRequest request = dataprocService.Projects.Regions.Operations.Cancel(name);
-            Data.Empty response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Empty response = request.Execute();
             // Data.Empty response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -786,7 +921,7 @@ namespace DataprocSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -795,43 +930,54 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataproc.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dataproc.v1.Data;
 
+
 namespace DataprocSample
 {
-    public class Program
+    public class DataprocServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dataproc service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DataprocService dataprocService = new DataprocService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Delete() method:
 
-            // The name of the operation resource to be deleted.
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+            // * The name of the operation resource to be deleted.
             string name = "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}";
+
 
             ProjectsResource.RegionsResource.OperationsResource.DeleteRequest request = dataprocService.Projects.Regions.Operations.Delete(name);
-            Data.Empty response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Empty response = request.Execute();
             // Data.Empty response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -843,7 +989,7 @@ namespace DataprocSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -852,43 +998,54 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataproc.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dataproc.v1.Data;
 
+
 namespace DataprocSample
 {
-    public class Program
+    public class DataprocServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dataproc service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DataprocService dataprocService = new DataprocService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
 
-            // The name of the operation resource.
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // * The name of the operation resource.
             string name = "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}";
 
-            ProjectsResource.RegionsResource.OperationsResource.GetRequest request = dataprocService.Projects.Regions.Operations.Get(name);
-            Data.Operation response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            ProjectsResource.RegionsResource.OperationsResource.GetRequest request = dataprocService.Projects.Regions.Operations.Get(name);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -900,7 +1057,7 @@ namespace DataprocSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -909,56 +1066,66 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataproc.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dataproc.v1.Data;
 
+
 namespace DataprocSample
 {
-    public class Program
+    public class DataprocServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dataproc service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DataprocService dataprocService = new DataprocService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
-            // The name of the operation collection.
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * The name of the operation collection.
             string name = "";
 
+
             ProjectsResource.RegionsResource.OperationsResource.ListRequest request = dataprocService.Projects.Regions.Operations.List(name);
+
             Data.ListOperationsResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Operations == null)
                 {
                     continue;
                 }
-                foreach (Data.Operation item in response.Operations)
+                foreach (Data.Operation operation in response.Operations)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `operation` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(operation));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.ListOperationsResponse response = await request.ExecuteAsync();
         }
     }
 }

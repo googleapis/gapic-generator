@@ -7,18 +7,28 @@
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dataproc_v1'
+require 'json'
 
+# Construct the dataproc service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DataprocV1::DataprocService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'create_cluster' method:
+
+# TODO: Change placeholders below to desired parameter values for the `create_cluster` method:
 
 # * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
 project_id = ''
@@ -26,11 +36,16 @@ project_id = ''
 # * [Required] The Cloud Dataproc region in which to handle the request.
 region = ''
 
-cluster_object = Google::Apis::DataprocV1::Cluster.new
+
+cluster_body = Google::Apis::DataprocV1::Cluster.new
+# TODO: Assign values to desired members of the `cluster_body` object.
 
 
 # Perform the call
-response = service.create_cluster(project_id, region, cluster_object)
+response = service.create_cluster(project_id, region, cluster_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Dataproc API
@@ -39,18 +54,28 @@ response = service.create_cluster(project_id, region, cluster_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dataproc_v1'
+require 'json'
 
+# Construct the dataproc service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DataprocV1::DataprocService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_cluster' method:
+
+# TODO: Change placeholders below to desired parameter values for the `delete_cluster` method:
 
 # * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
 project_id = ''
@@ -60,9 +85,13 @@ region = ''
 
 # * [Required] The cluster name.
 cluster_name = ''
+
 
 # Perform the call
 response = service.delete_cluster(project_id, region, cluster_name)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Dataproc API
@@ -71,18 +100,28 @@ response = service.delete_cluster(project_id, region, cluster_name)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dataproc_v1'
+require 'json'
 
+# Construct the dataproc service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DataprocV1::DataprocService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'diagnose_cluster' method:
+
+# TODO: Change placeholders below to desired parameter values for the `diagnose_cluster` method:
 
 # * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
 project_id = ''
@@ -93,11 +132,16 @@ region = ''
 # * [Required] The cluster name.
 cluster_name = ''
 
-diagnose_cluster_request_object = Google::Apis::DataprocV1::DiagnoseClusterRequest.new
+
+diagnose_cluster_request_body = Google::Apis::DataprocV1::DiagnoseClusterRequest.new
+# TODO: Assign values to desired members of the `diagnose_cluster_request_body` object.
 
 
 # Perform the call
-response = service.diagnose_cluster(project_id, region, cluster_name, diagnose_cluster_request_object)
+response = service.diagnose_cluster(project_id, region, cluster_name, diagnose_cluster_request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Dataproc API
@@ -106,18 +150,28 @@ response = service.diagnose_cluster(project_id, region, cluster_name, diagnose_c
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dataproc_v1'
+require 'json'
 
+# Construct the dataproc service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DataprocV1::DataprocService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_cluster' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_cluster` method:
 
 # * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
 project_id = ''
@@ -127,9 +181,13 @@ region = ''
 
 # * [Required] The cluster name.
 cluster_name = ''
+
 
 # Perform the call
 response = service.get_cluster(project_id, region, cluster_name)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Dataproc API
@@ -138,18 +196,28 @@ response = service.get_cluster(project_id, region, cluster_name)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dataproc_v1'
+require 'json'
 
+# Construct the dataproc service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DataprocV1::DataprocService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_clusters' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_clusters` method:
 
 # * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
 project_id = ''
@@ -157,13 +225,16 @@ project_id = ''
 # * [Required] The Cloud Dataproc region in which to handle the request.
 region = ''
 
+
 # Perform the call
-result_list = service.fetch_all(items: :clusters) { |token|
+clusters = service.fetch_all(items: :clusters) do |token|
   service.list_clusters(project_id, region, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+clusters.each do |cluster|
+  # TODO: Change code below to process each `cluster` resource:
+  puts JSON.pretty_generate(cluster)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Dataproc API
@@ -172,18 +243,28 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dataproc_v1'
+require 'json'
 
+# Construct the dataproc service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DataprocV1::DataprocService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch_cluster' method:
+
+# TODO: Change placeholders below to desired parameter values for the `patch_cluster` method:
 
 # * [Required] The ID of the Google Cloud Platform project the cluster belongs to.
 project_id = ''
@@ -194,11 +275,16 @@ region = ''
 # * [Required] The cluster name.
 cluster_name = ''
 
-cluster_object = Google::Apis::DataprocV1::Cluster.new
+
+cluster_body = Google::Apis::DataprocV1::Cluster.new
+# TODO: Assign values to desired members of the `cluster_body` object to be changed.
 
 
 # Perform the call
-response = service.patch_cluster(project_id, region, cluster_name, cluster_object)
+response = service.patch_cluster(project_id, region, cluster_name, cluster_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Dataproc API
@@ -207,18 +293,28 @@ response = service.patch_cluster(project_id, region, cluster_name, cluster_objec
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dataproc_v1'
+require 'json'
 
+# Construct the dataproc service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DataprocV1::DataprocService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'cancel_job' method:
+
+# TODO: Change placeholders below to desired parameter values for the `cancel_job` method:
 
 # * [Required] The ID of the Google Cloud Platform project that the job belongs to.
 project_id = ''
@@ -229,11 +325,16 @@ region = ''
 # * [Required] The job ID.
 job_id = ''
 
-cancel_job_request_object = Google::Apis::DataprocV1::CancelJobRequest.new
+
+cancel_job_request_body = Google::Apis::DataprocV1::CancelJobRequest.new
+# TODO: Assign values to desired members of the `cancel_job_request_body` object.
 
 
 # Perform the call
-response = service.cancel_job(project_id, region, job_id, cancel_job_request_object)
+response = service.cancel_job(project_id, region, job_id, cancel_job_request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Dataproc API
@@ -242,18 +343,28 @@ response = service.cancel_job(project_id, region, job_id, cancel_job_request_obj
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dataproc_v1'
+require 'json'
 
+# Construct the dataproc service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DataprocV1::DataprocService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_job' method:
+
+# TODO: Change placeholders below to desired parameter values for the `delete_job` method:
 
 # * [Required] The ID of the Google Cloud Platform project that the job belongs to.
 project_id = ''
@@ -263,6 +374,7 @@ region = ''
 
 # * [Required] The job ID.
 job_id = ''
+
 
 # Perform the call
 service.delete_job(project_id, region, job_id)
@@ -274,18 +386,28 @@ service.delete_job(project_id, region, job_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dataproc_v1'
+require 'json'
 
+# Construct the dataproc service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DataprocV1::DataprocService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_job' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_job` method:
 
 # * [Required] The ID of the Google Cloud Platform project that the job belongs to.
 project_id = ''
@@ -296,8 +418,12 @@ region = ''
 # * [Required] The job ID.
 job_id = ''
 
+
 # Perform the call
 response = service.get_job(project_id, region, job_id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Dataproc API
@@ -306,18 +432,28 @@ response = service.get_job(project_id, region, job_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dataproc_v1'
+require 'json'
 
+# Construct the dataproc service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DataprocV1::DataprocService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_jobs' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_jobs` method:
 
 # * [Required] The ID of the Google Cloud Platform project that the job belongs to.
 project_id = ''
@@ -325,13 +461,16 @@ project_id = ''
 # * [Required] The Cloud Dataproc region in which to handle the request.
 region = ''
 
+
 # Perform the call
-result_list = service.fetch_all(items: :jobs) { |token|
+jobs = service.fetch_all(items: :jobs) do |token|
   service.list_jobs(project_id, region, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+jobs.each do |job|
+  # TODO: Change code below to process each `job` resource:
+  puts JSON.pretty_generate(job)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Dataproc API
@@ -340,18 +479,28 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dataproc_v1'
+require 'json'
 
+# Construct the dataproc service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DataprocV1::DataprocService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'submit_job' method:
+
+# TODO: Change placeholders below to desired parameter values for the `submit_job` method:
 
 # * [Required] The ID of the Google Cloud Platform project that the job belongs to.
 project_id = ''
@@ -359,11 +508,16 @@ project_id = ''
 # * [Required] The Cloud Dataproc region in which to handle the request.
 region = ''
 
-submit_job_request_object = Google::Apis::DataprocV1::SubmitJobRequest.new
+
+submit_job_request_body = Google::Apis::DataprocV1::SubmitJobRequest.new
+# TODO: Assign values to desired members of the `submit_job_request_body` object.
 
 
 # Perform the call
-response = service.submit_job(project_id, region, submit_job_request_object)
+response = service.submit_job(project_id, region, submit_job_request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Dataproc API
@@ -372,21 +526,32 @@ response = service.submit_job(project_id, region, submit_job_request_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dataproc_v1'
+require 'json'
 
+# Construct the dataproc service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DataprocV1::DataprocService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'cancel_operation' method:
+
+# TODO: Change placeholders below to desired parameter values for the `cancel_operation` method:
 
 # * The name of the operation resource to be cancelled.
 name = 'projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}'
+
 
 # Perform the call
 service.cancel_operation(name)
@@ -398,21 +563,32 @@ service.cancel_operation(name)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dataproc_v1'
+require 'json'
 
+# Construct the dataproc service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DataprocV1::DataprocService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_operation' method:
+
+# TODO: Change placeholders below to desired parameter values for the `delete_operation` method:
 
 # * The name of the operation resource to be deleted.
 name = 'projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}'
+
 
 # Perform the call
 service.delete_operation(name)
@@ -424,24 +600,38 @@ service.delete_operation(name)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dataproc_v1'
+require 'json'
 
+# Construct the dataproc service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DataprocV1::DataprocService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_operation' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_operation` method:
 
 # * The name of the operation resource.
 name = 'projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}'
 
+
 # Perform the call
 response = service.get_operation(name)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Dataproc API
@@ -450,26 +640,39 @@ response = service.get_operation(name)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/dataproc_v1'
+require 'json'
 
+# Construct the dataproc service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::DataprocV1::DataprocService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_operations' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_operations` method:
 
 # * The name of the operation collection.
 name = ''
 
+
 # Perform the call
-result_list = service.fetch_all(items: :operations) { |token|
+operations = service.fetch_all(items: :operations) do |token|
   service.list_operations(name, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+operations.each do |operation|
+  # TODO: Change code below to process each `operation` resource:
+  puts JSON.pretty_generate(operation)
+end

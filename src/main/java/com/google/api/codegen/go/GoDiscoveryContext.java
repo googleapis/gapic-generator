@@ -41,6 +41,21 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
           .put(Field.Kind.TYPE_DOUBLE, "0.0")
           .build();
 
+  @Override
+  protected String arrayTypeName(String elementName) {
+    return String.format("%sArray", elementName);
+  }
+
+  @Override
+  protected String mapTypeName(String keyName, String valueName) {
+    return String.format("%sTo%sMap", keyName, valueName);
+  }
+
+  @Override
+  protected String objectTypeName(String typeName) {
+    return upperCamelToLowerCamel(typeName);
+  }
+
   public String typeDefaultValue(Type type, Field field) {
     if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
       return typeName(type, field) + "{}";
@@ -82,14 +97,14 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
     String arrayPrefix = "";
 
     if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
-      Type items = this.getApiaryConfig().getType(fieldTypeName);
+      Type items = getApiaryConfig().getType(fieldTypeName);
       if (isMapField(type, fieldName)) {
         return String.format(
             "map[%s]%s",
-            typeName(items, this.getField(items, "key")),
-            typeName(items, this.getField(items, "value")));
+            typeName(items, getField(items, "key")),
+            typeName(items, getField(items, "value")));
       }
-      Field elements = this.getField(items, "elements");
+      Field elements = getField(items, "elements");
       if (elements != null) {
         return "[]" + typeName(items, elements);
       }

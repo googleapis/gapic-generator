@@ -9,7 +9,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -17,14 +17,20 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Prediction service.
+// Construct the Prediction service object for interacting with the API.
 $service = new Google_Service_Prediction($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `predict` method:
 
 // * The project associated with the model.
 $project = '';
@@ -32,10 +38,15 @@ $project = '';
 // * The name of a hosted model.
 $hostedModelName = '';
 
-$postBody = new Google_Service_Prediction_Input($client);
 
-$response = $service->hostedmodels->predict($project, $hostedModelName, $postBody);
+$Google_Service_Prediction_InputBody = new Google_Service_Prediction_Input($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Prediction_InputBody` object.
 
+
+$response = $service->hostedmodels->predict($project, $hostedModelName, $Google_Service_Prediction_InputBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -46,7 +57,7 @@ $response = $service->hostedmodels->predict($project, $hostedModelName, $postBod
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -54,23 +65,32 @@ $response = $service->hostedmodels->predict($project, $hostedModelName, $postBod
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Prediction service.
+// Construct the Prediction service object for interacting with the API.
 $service = new Google_Service_Prediction($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `analyze` method:
 
 // * The project associated with the model.
 $project = '';
 
 // * The unique name for the predictive model.
 $id = '';
+
 
 $response = $service->trainedmodels->analyze($project, $id);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -81,7 +101,7 @@ $response = $service->trainedmodels->analyze($project, $id);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -89,14 +109,20 @@ $response = $service->trainedmodels->analyze($project, $id);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Prediction service.
+// Construct the Prediction service object for interacting with the API.
 $service = new Google_Service_Prediction($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 // * The project associated with the model.
 $project = '';
@@ -104,8 +130,8 @@ $project = '';
 // * The unique name for the predictive model.
 $id = '';
 
-$response = $service->trainedmodels->delete($project, $id);
 
+$service->trainedmodels->delete($project, $id);
 <?php
 /*
  * BEFORE RUNNING:
@@ -116,7 +142,7 @@ $response = $service->trainedmodels->delete($project, $id);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -124,23 +150,32 @@ $response = $service->trainedmodels->delete($project, $id);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Prediction service.
+// Construct the Prediction service object for interacting with the API.
 $service = new Google_Service_Prediction($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
 
 // * The project associated with the model.
 $project = '';
 
 // * The unique name for the predictive model.
 $id = '';
+
 
 $response = $service->trainedmodels->get($project, $id);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -151,7 +186,7 @@ $response = $service->trainedmodels->get($project, $id);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -159,22 +194,33 @@ $response = $service->trainedmodels->get($project, $id);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Prediction service.
+// Construct the Prediction service object for interacting with the API.
 $service = new Google_Service_Prediction($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 // * The project associated with the model.
 $project = '';
 
-$postBody = new Google_Service_Prediction_Insert($client);
 
-$response = $service->trainedmodels->insert($project, $postBody);
+$Google_Service_Prediction_InsertBody = new Google_Service_Prediction_Insert($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Prediction_InsertBody` object.
 
+
+$response = $service->trainedmodels->insert($project, $Google_Service_Prediction_InsertBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -185,7 +231,7 @@ $response = $service->trainedmodels->insert($project, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -193,24 +239,36 @@ $response = $service->trainedmodels->insert($project, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Prediction service.
+// Construct the Prediction service object for interacting with the API.
 $service = new Google_Service_Prediction($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listTrainedmodels` method:
 
 // * The project associated with the model.
 $project = '';
 
-$response = $service->trainedmodels->listTrainedmodels($project);
 
-foreach ($response['items'] as $element) {
-  // TODO: Add code here to process the element.
-}
+$optParams = array();
+do {
+  $response = $service->trainedmodels->listTrainedmodels($project, $optParams);
 
+  foreach ($response['items'] as $insert2) {
+    // TODO: Change code below to process each `insert2` resource:
+    echo '<pre>', var_export($insert2, true), '</pre>', "\n";
+  }
+
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -221,7 +279,7 @@ foreach ($response['items'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -229,51 +287,20 @@ foreach ($response['items'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Prediction service.
+// Construct the Prediction service object for interacting with the API.
 $service = new Google_Service_Prediction($client);
 
-// * The project associated with the model.
-$project = '';
 
-// * The unique name for the predictive model.
-$id = '';
-
-$postBody = new Google_Service_Prediction_Input($client);
-
-$response = $service->trainedmodels->predict($project, $id, $postBody);
-
-<?php
-/*
- * BEFORE RUNNING:
- * ---------------
- * 1. If not already done, enable the Prediction API
- *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/prediction
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
- * 3. Install the PHP client library with Composer. Check installation
- *    instructions at https://github.com/google/google-api-php-client.
- */
-
-// Autoload Composer.
-require_once __DIR__ . '/vendor/autoload.php';
-
-// Create a new client.
-$client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-// Create a new Prediction service.
-$service = new Google_Service_Prediction($client);
+// TODO: Change placeholders below to desired parameter values for the `predict` method:
 
 // * The project associated with the model.
 $project = '';
@@ -281,7 +308,60 @@ $project = '';
 // * The unique name for the predictive model.
 $id = '';
 
-$postBody = new Google_Service_Prediction_Update($client);
 
-$response = $service->trainedmodels->update($project, $id, $postBody);
+$Google_Service_Prediction_InputBody = new Google_Service_Prediction_Input($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Prediction_InputBody` object.
 
+
+$response = $service->trainedmodels->predict($project, $id, $Google_Service_Prediction_InputBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Prediction API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/prediction
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+$client = new Google_Client();
+$client->setApplicationName('Google Cloud Platform Sample');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Construct the Prediction service object for interacting with the API.
+$service = new Google_Service_Prediction($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
+
+// * The project associated with the model.
+$project = '';
+
+// * The unique name for the predictive model.
+$id = '';
+
+
+$Google_Service_Prediction_UpdateBody = new Google_Service_Prediction_Update($client);
+// TODO: Assign values to desired properties of the `$Google_Service_Prediction_UpdateBody` object.
+
+
+$response = $service->trainedmodels->update($project, $id, $Google_Service_Prediction_UpdateBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";

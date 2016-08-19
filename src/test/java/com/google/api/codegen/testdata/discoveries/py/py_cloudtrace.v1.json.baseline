@@ -8,17 +8,18 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the cloudtrace service object (version v1) for interacting
@@ -27,14 +28,16 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('cloudtrace', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patchTraces' method:
+# TODO: Change placeholders below to desired parameter values for the `patchTraces` method:
 
 # * ID of the Cloud project where the trace data is stored.
 projectId = ''
 
+
 traces_body = {
-# TODO: Add desired entries of the 'traces_body' dict to be changed
+    # TODO: Add desired entries of the `traces_body` dict to be changed.
 }
+
 
 request = service.projects().patchTraces(projectId=projectId, body=traces_body)
 request.execute()
@@ -47,9 +50,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -57,9 +60,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the cloudtrace service object (version v1) for interacting
@@ -68,7 +72,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('cloudtrace', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+# TODO: Change placeholders below to desired parameter values for the `get` method:
 
 # * ID of the Cloud project where the trace data is stored.
 projectId = ''
@@ -76,10 +80,11 @@ projectId = ''
 # * ID of the trace to return.
 traceId = ''
 
+
 request = service.projects().traces().get(projectId=projectId, traceId=traceId)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -90,17 +95,20 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
+
+from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the cloudtrace service object (version v1) for interacting
@@ -109,10 +117,11 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('cloudtrace', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * ID of the Cloud project where the trace data is stored.
 projectId = ''
+
 
 traces = service.projects().traces()
 request = traces.list(projectId=projectId)
@@ -120,6 +129,7 @@ while request is not None:
     response = request.execute()
 
     for trace in response['traces']:
-        # TODO: Add code here to process each 'trace' resource
+        # TODO: Change code below to process each `trace` resource:
+        pprint(trace)
 
     request = traces.list_next(previous_request=request, previous_response=response)

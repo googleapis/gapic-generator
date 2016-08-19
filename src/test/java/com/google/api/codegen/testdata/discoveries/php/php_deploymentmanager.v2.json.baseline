@@ -9,7 +9,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -17,14 +17,20 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new DeploymentManager service.
+// Construct the DeploymentManager service object for interacting with the API.
 $service = new Google_Service_DeploymentManager($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `cancelPreview` method:
 
 // * The project ID for this request.
 $project = '';
@@ -32,10 +38,15 @@ $project = '';
 // * The name of the deployment for this request.
 $deployment = '';
 
-$postBody = new Google_Service_DeploymentManager_DeploymentsCancelPreviewRequest($client);
 
-$response = $service->deployments->cancelPreview($project, $deployment, $postBody);
+$Google_Service_DeploymentManager_DeploymentsCancelPreviewRequestBody = new Google_Service_DeploymentManager_DeploymentsCancelPreviewRequest($client);
+// TODO: Assign values to desired properties of the `$Google_Service_DeploymentManager_DeploymentsCancelPreviewRequestBody` object.
 
+
+$response = $service->deployments->cancelPreview($project, $deployment, $Google_Service_DeploymentManager_DeploymentsCancelPreviewRequestBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -46,7 +57,7 @@ $response = $service->deployments->cancelPreview($project, $deployment, $postBod
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -54,23 +65,32 @@ $response = $service->deployments->cancelPreview($project, $deployment, $postBod
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new DeploymentManager service.
+// Construct the DeploymentManager service object for interacting with the API.
 $service = new Google_Service_DeploymentManager($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 // * The project ID for this request.
 $project = '';
 
 // * The name of the deployment for this request.
 $deployment = '';
+
 
 $response = $service->deployments->delete($project, $deployment);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -81,7 +101,7 @@ $response = $service->deployments->delete($project, $deployment);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -89,23 +109,32 @@ $response = $service->deployments->delete($project, $deployment);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new DeploymentManager service.
+// Construct the DeploymentManager service object for interacting with the API.
 $service = new Google_Service_DeploymentManager($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
 
 // * The project ID for this request.
 $project = '';
 
 // * The name of the deployment for this request.
 $deployment = '';
+
 
 $response = $service->deployments->get($project, $deployment);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -116,7 +145,7 @@ $response = $service->deployments->get($project, $deployment);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -124,22 +153,33 @@ $response = $service->deployments->get($project, $deployment);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new DeploymentManager service.
+// Construct the DeploymentManager service object for interacting with the API.
 $service = new Google_Service_DeploymentManager($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 // * The project ID for this request.
 $project = '';
 
-$postBody = new Google_Service_DeploymentManager_Deployment($client);
 
-$response = $service->deployments->insert($project, $postBody);
+$Google_Service_DeploymentManager_DeploymentBody = new Google_Service_DeploymentManager_Deployment($client);
+// TODO: Assign values to desired properties of the `$Google_Service_DeploymentManager_DeploymentBody` object.
 
+
+$response = $service->deployments->insert($project, $Google_Service_DeploymentManager_DeploymentBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -150,7 +190,7 @@ $response = $service->deployments->insert($project, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -158,24 +198,36 @@ $response = $service->deployments->insert($project, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new DeploymentManager service.
+// Construct the DeploymentManager service object for interacting with the API.
 $service = new Google_Service_DeploymentManager($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listDeployments` method:
 
 // * The project ID for this request.
 $project = '';
 
-$response = $service->deployments->listDeployments($project);
 
-foreach ($response['deployments'] as $element) {
-  // TODO: Add code here to process the element.
-}
+$optParams = array();
+do {
+  $response = $service->deployments->listDeployments($project, $optParams);
 
+  foreach ($response['deployments'] as $deployment) {
+    // TODO: Change code below to process each `deployment` resource:
+    echo '<pre>', var_export($deployment, true), '</pre>', "\n";
+  }
+
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -186,7 +238,7 @@ foreach ($response['deployments'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -194,51 +246,20 @@ foreach ($response['deployments'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new DeploymentManager service.
+// Construct the DeploymentManager service object for interacting with the API.
 $service = new Google_Service_DeploymentManager($client);
 
-// * The project ID for this request.
-$project = '';
 
-// * The name of the deployment for this request.
-$deployment = '';
-
-$postBody = new Google_Service_DeploymentManager_Deployment($client);
-
-$response = $service->deployments->patch($project, $deployment, $postBody);
-
-<?php
-/*
- * BEFORE RUNNING:
- * ---------------
- * 1. If not already done, enable the Google Cloud Deployment Manager API
- *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/deploymentmanager
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
- * 3. Install the PHP client library with Composer. Check installation
- *    instructions at https://github.com/google/google-api-php-client.
- */
-
-// Autoload Composer.
-require_once __DIR__ . '/vendor/autoload.php';
-
-// Create a new client.
-$client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-// Create a new DeploymentManager service.
-$service = new Google_Service_DeploymentManager($client);
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
 
 // * The project ID for this request.
 $project = '';
@@ -246,10 +267,15 @@ $project = '';
 // * The name of the deployment for this request.
 $deployment = '';
 
-$postBody = new Google_Service_DeploymentManager_DeploymentsStopRequest($client);
 
-$response = $service->deployments->stop($project, $deployment, $postBody);
+$Google_Service_DeploymentManager_DeploymentBody = new Google_Service_DeploymentManager_Deployment($client);
+// TODO: Assign values to desired properties of the `$Google_Service_DeploymentManager_DeploymentBody` object to be changed.
 
+
+$response = $service->deployments->patch($project, $deployment, $Google_Service_DeploymentManager_DeploymentBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -260,7 +286,7 @@ $response = $service->deployments->stop($project, $deployment, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -268,14 +294,20 @@ $response = $service->deployments->stop($project, $deployment, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new DeploymentManager service.
+// Construct the DeploymentManager service object for interacting with the API.
 $service = new Google_Service_DeploymentManager($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `stop` method:
 
 // * The project ID for this request.
 $project = '';
@@ -283,10 +315,15 @@ $project = '';
 // * The name of the deployment for this request.
 $deployment = '';
 
-$postBody = new Google_Service_DeploymentManager_Deployment($client);
 
-$response = $service->deployments->update($project, $deployment, $postBody);
+$Google_Service_DeploymentManager_DeploymentsStopRequestBody = new Google_Service_DeploymentManager_DeploymentsStopRequest($client);
+// TODO: Assign values to desired properties of the `$Google_Service_DeploymentManager_DeploymentsStopRequestBody` object.
 
+
+$response = $service->deployments->stop($project, $deployment, $Google_Service_DeploymentManager_DeploymentsStopRequestBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -297,7 +334,7 @@ $response = $service->deployments->update($project, $deployment, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -305,14 +342,68 @@ $response = $service->deployments->update($project, $deployment, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new DeploymentManager service.
+// Construct the DeploymentManager service object for interacting with the API.
 $service = new Google_Service_DeploymentManager($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
+
+// * The project ID for this request.
+$project = '';
+
+// * The name of the deployment for this request.
+$deployment = '';
+
+
+$Google_Service_DeploymentManager_DeploymentBody = new Google_Service_DeploymentManager_Deployment($client);
+// TODO: Assign values to desired properties of the `$Google_Service_DeploymentManager_DeploymentBody` object.
+
+
+$response = $service->deployments->update($project, $deployment, $Google_Service_DeploymentManager_DeploymentBody);
+
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud Deployment Manager API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/deploymentmanager
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+$client = new Google_Client();
+$client->setApplicationName('Google Cloud Platform Sample');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Construct the DeploymentManager service object for interacting with the API.
+$service = new Google_Service_DeploymentManager($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
 
 // * The project ID for this request.
 $project = '';
@@ -323,8 +414,11 @@ $deployment = '';
 // * The name of the manifest for this request.
 $manifest = '';
 
+
 $response = $service->manifests->get($project, $deployment, $manifest);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -335,7 +429,7 @@ $response = $service->manifests->get($project, $deployment, $manifest);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -343,14 +437,20 @@ $response = $service->manifests->get($project, $deployment, $manifest);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new DeploymentManager service.
+// Construct the DeploymentManager service object for interacting with the API.
 $service = new Google_Service_DeploymentManager($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listManifests` method:
 
 // * The project ID for this request.
 $project = '';
@@ -358,12 +458,18 @@ $project = '';
 // * The name of the deployment for this request.
 $deployment = '';
 
-$response = $service->manifests->listManifests($project, $deployment);
 
-foreach ($response['manifests'] as $element) {
-  // TODO: Add code here to process the element.
-}
+$optParams = array();
+do {
+  $response = $service->manifests->listManifests($project, $deployment, $optParams);
 
+  foreach ($response['manifests'] as $manifest) {
+    // TODO: Change code below to process each `manifest` resource:
+    echo '<pre>', var_export($manifest, true), '</pre>', "\n";
+  }
+
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -374,7 +480,7 @@ foreach ($response['manifests'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -382,14 +488,20 @@ foreach ($response['manifests'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new DeploymentManager service.
+// Construct the DeploymentManager service object for interacting with the API.
 $service = new Google_Service_DeploymentManager($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
 
 // * The project ID for this request.
 $project = '';
@@ -397,8 +509,11 @@ $project = '';
 // * The name of the operation for this request.
 $operation = '';
 
+
 $response = $service->operations->get($project, $operation);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -409,7 +524,7 @@ $response = $service->operations->get($project, $operation);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -417,24 +532,36 @@ $response = $service->operations->get($project, $operation);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new DeploymentManager service.
+// Construct the DeploymentManager service object for interacting with the API.
 $service = new Google_Service_DeploymentManager($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listOperations` method:
 
 // * The project ID for this request.
 $project = '';
 
-$response = $service->operations->listOperations($project);
 
-foreach ($response['operations'] as $element) {
-  // TODO: Add code here to process the element.
-}
+$optParams = array();
+do {
+  $response = $service->operations->listOperations($project, $optParams);
 
+  foreach ($response['operations'] as $operation) {
+    // TODO: Change code below to process each `operation` resource:
+    echo '<pre>', var_export($operation, true), '</pre>', "\n";
+  }
+
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -445,7 +572,7 @@ foreach ($response['operations'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -453,14 +580,20 @@ foreach ($response['operations'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new DeploymentManager service.
+// Construct the DeploymentManager service object for interacting with the API.
 $service = new Google_Service_DeploymentManager($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
 
 // * The project ID for this request.
 $project = '';
@@ -471,8 +604,11 @@ $deployment = '';
 // * The name of the resource for this request.
 $resource = '';
 
+
 $response = $service->resources->get($project, $deployment, $resource);
 
+// TODO: Change code below to process the `$response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -483,7 +619,7 @@ $response = $service->resources->get($project, $deployment, $resource);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -491,14 +627,20 @@ $response = $service->resources->get($project, $deployment, $resource);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new DeploymentManager service.
+// Construct the DeploymentManager service object for interacting with the API.
 $service = new Google_Service_DeploymentManager($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listResources` method:
 
 // * The project ID for this request.
 $project = '';
@@ -506,12 +648,18 @@ $project = '';
 // * The name of the deployment for this request.
 $deployment = '';
 
-$response = $service->resources->listResources($project, $deployment);
 
-foreach ($response['resources'] as $element) {
-  // TODO: Add code here to process the element.
-}
+$optParams = array();
+do {
+  $response = $service->resources->listResources($project, $deployment, $optParams);
 
+  foreach ($response['resources'] as $resource) {
+    // TODO: Change code below to process each `resource` resource:
+    echo '<pre>', var_export($resource, true), '</pre>', "\n";
+  }
+
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -522,7 +670,7 @@ foreach ($response['resources'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -530,21 +678,33 @@ foreach ($response['resources'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new DeploymentManager service.
+// Construct the DeploymentManager service object for interacting with the API.
 $service = new Google_Service_DeploymentManager($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listTypes` method:
 
 // * The project ID for this request.
 $project = '';
 
-$response = $service->types->listTypes($project);
 
-foreach ($response['types'] as $element) {
-  // TODO: Add code here to process the element.
-}
+$optParams = array();
+do {
+  $response = $service->types->listTypes($project, $optParams);
 
+  foreach ($response['types'] as $type) {
+    // TODO: Change code below to process each `type` resource:
+    echo '<pre>', var_export($type, true), '</pre>', "\n";
+  }
+
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);

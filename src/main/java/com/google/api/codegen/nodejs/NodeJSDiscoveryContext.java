@@ -43,6 +43,21 @@ public class NodeJSDiscoveryContext extends DiscoveryContext implements NodeJSCo
           .put(Field.Kind.TYPE_DOUBLE, "0.0")
           .build();
 
+  @Override
+  protected String arrayTypeName(String elementName) {
+    return String.format("%sArray", elementName);
+  }
+
+  @Override
+  protected String mapTypeName(String keyName, String valueName) {
+    return String.format("%sTo%sObject", keyName, valueName);
+  }
+
+  @Override
+  protected String objectTypeName(String typeName) {
+    return upperCamelToLowerCamel(typeName);
+  }
+
   /**
    * Generates placeholder assignment (to end of line) for field of type based on field kind and,
    * for explicitly-formatted strings, format type in {@link ApiaryConfig#stringFormat}.

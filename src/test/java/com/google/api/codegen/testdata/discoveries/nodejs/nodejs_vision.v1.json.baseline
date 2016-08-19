@@ -7,15 +7,23 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
+// Construct the vision service object (version v1) for interacting
+// with the API. You can browse other available API services and versions at
+// https://github.com/google/google-api-nodejs-client/tree/master/apis
 var vision = google.vision('v1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -24,19 +32,21 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'annotate' method:
 
-    resource: {},
+    resource: {
+      // TODO: Add desired properties of the `resource` request body object.
+    },
 
-    // Auth client
     auth: authClient
   };
 
-  vision.images.annotate(request, function(err, result) {
+  vision.images.annotate(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
   });
 });

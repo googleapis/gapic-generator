@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -8,7 +8,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -22,15 +22,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.Account;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -45,22 +46,30 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
 
     // * The account id
     int id = 0;
 
+
     Adexchangebuyer.Accounts.Get request = adexchangebuyerService.accounts().get(id);
     Account response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -69,7 +78,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -83,15 +92,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.AccountsList;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -106,6 +116,10 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -114,10 +128,12 @@ public class AdexchangebuyerExample {
     Adexchangebuyer.Accounts.List request = adexchangebuyerService.accounts().list();
     AccountsList response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -126,7 +142,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -140,15 +156,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.Account;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -163,25 +180,34 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
 
     // * The account id
     int id = 0;
 
-    Account content = new Account();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Adexchangebuyer.Accounts.Patch request = adexchangebuyerService.accounts().patch(id, content);
+    Account requestBody = new Account();
+    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
+
+
+    Adexchangebuyer.Accounts.Patch request = adexchangebuyerService.accounts().patch(id, requestBody);
     Account response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -190,7 +216,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -204,15 +230,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.Account;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -227,25 +254,34 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
 
     // * The account id
     int id = 0;
 
-    Account content = new Account();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Adexchangebuyer.Accounts.Update request = adexchangebuyerService.accounts().update(id, content);
+    Account requestBody = new Account();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Adexchangebuyer.Accounts.Update request = adexchangebuyerService.accounts().update(id, requestBody);
     Account response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -254,7 +290,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -268,15 +304,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.BillingInfo;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -291,22 +328,30 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
 
     // * The account id.
     int accountId = 0;
 
+
     Adexchangebuyer.BillingInfo.Get request = adexchangebuyerService.billingInfo().get(accountId);
     BillingInfo response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -315,7 +360,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -329,15 +374,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.BillingInfoList;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -352,6 +398,10 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -360,10 +410,12 @@ public class AdexchangebuyerExample {
     Adexchangebuyer.BillingInfo.List request = adexchangebuyerService.billingInfo().list();
     BillingInfoList response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -372,7 +424,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -386,15 +438,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.Budget;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -409,11 +462,16 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
 
     // * The account id to get the budget information for.
     long accountId = 0;
@@ -421,13 +479,16 @@ public class AdexchangebuyerExample {
     // * The billing id to get the budget information for.
     long billingId = 0;
 
+
     Adexchangebuyer.Budget.Get request = adexchangebuyerService.budget().get(accountId, billingId);
     Budget response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -436,7 +497,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -450,15 +511,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.Budget;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -473,11 +535,16 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
 
     // * The account id associated with the budget being updated.
     long accountId = 0;
@@ -485,16 +552,20 @@ public class AdexchangebuyerExample {
     // * The billing id associated with the budget being updated.
     long billingId = 0;
 
-    Budget content = new Budget();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Adexchangebuyer.Budget.Patch request = adexchangebuyerService.budget().patch(accountId, billingId, content);
+    Budget requestBody = new Budget();
+    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
+
+
+    Adexchangebuyer.Budget.Patch request = adexchangebuyerService.budget().patch(accountId, billingId, requestBody);
     Budget response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -503,7 +574,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -517,15 +588,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.Budget;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -540,11 +612,16 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
 
     // * The account id associated with the budget being updated.
     long accountId = 0;
@@ -552,16 +629,20 @@ public class AdexchangebuyerExample {
     // * The billing id associated with the budget being updated.
     long billingId = 0;
 
-    Budget content = new Budget();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Adexchangebuyer.Budget.Update request = adexchangebuyerService.budget().update(accountId, billingId, content);
+    Budget requestBody = new Budget();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Adexchangebuyer.Budget.Update request = adexchangebuyerService.budget().update(accountId, billingId, requestBody);
     Budget response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -570,7 +651,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -588,10 +669,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -606,11 +686,16 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'addDeal' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `addDeal` method:
 
     // * The id for the account that will serve this creative.
     int accountId = 0;
@@ -621,11 +706,12 @@ public class AdexchangebuyerExample {
     // * The id of the deal id to associate with this creative.
     long dealId = 0;
 
+
     Adexchangebuyer.Creatives.AddDeal request = adexchangebuyerService.creatives().addDeal(accountId, buyerCreativeId, dealId);
     request.execute();
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -634,7 +720,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -648,15 +734,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.Creative;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -671,11 +758,16 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
 
     // * The id for the account that will serve this creative.
     int accountId = 0;
@@ -683,13 +775,16 @@ public class AdexchangebuyerExample {
     // * The buyer-specific id for this creative.
     String buyerCreativeId = "";
 
+
     Adexchangebuyer.Creatives.Get request = adexchangebuyerService.creatives().get(accountId, buyerCreativeId);
     Creative response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -698,7 +793,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -712,15 +807,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.Creative;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -735,21 +831,28 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
 
-    Creative content = new Creative();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
+    Creative requestBody = new Creative();
+    // TODO: Assign values to desired fields of the `requestBody` object.
 
-    Adexchangebuyer.Creatives.Insert request = adexchangebuyerService.creatives().insert(content);
+
+    Adexchangebuyer.Creatives.Insert request = adexchangebuyerService.creatives().insert(requestBody);
     Creative response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -758,7 +861,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -773,15 +876,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.Creative;
 import com.google.api.services.adexchangebuyer.model.CreativesList;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -796,12 +900,19 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
 
     Adexchangebuyer.Creatives.List request = adexchangebuyerService.creatives().list();
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     CreativesList response;
     do {
       response = request.execute();
@@ -809,14 +920,15 @@ public class AdexchangebuyerExample {
         continue;
 
       for (Creative creative : response.getItems()) {
-        // TODO: Add code here to process each 'creative' resource
+        // TODO: Change code below to process each `creative` resource:
+        System.out.println(gson.toJson(new JsonParser().parse(creative.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -825,7 +937,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -843,10 +955,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -861,11 +972,16 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'removeDeal' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `removeDeal` method:
 
     // * The id for the account that will serve this creative.
     int accountId = 0;
@@ -876,11 +992,12 @@ public class AdexchangebuyerExample {
     // * The id of the deal id to disassociate with this creative.
     long dealId = 0;
 
+
     Adexchangebuyer.Creatives.RemoveDeal request = adexchangebuyerService.creatives().removeDeal(accountId, buyerCreativeId, dealId);
     request.execute();
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -889,7 +1006,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -904,15 +1021,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.DeleteOrderDealsRequest;
 import com.google.api.services.adexchangebuyer.model.DeleteOrderDealsResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -927,25 +1045,34 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
 
     // * The proposalId to delete deals from.
     String proposalId = "";
 
-    DeleteOrderDealsRequest content = new DeleteOrderDealsRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Adexchangebuyer.Marketplacedeals.Delete request = adexchangebuyerService.marketplacedeals().delete(proposalId, content);
+    DeleteOrderDealsRequest requestBody = new DeleteOrderDealsRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Adexchangebuyer.Marketplacedeals.Delete request = adexchangebuyerService.marketplacedeals().delete(proposalId, requestBody);
     DeleteOrderDealsResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -954,7 +1081,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -969,15 +1096,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.AddOrderDealsRequest;
 import com.google.api.services.adexchangebuyer.model.AddOrderDealsResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -992,25 +1120,34 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
 
     // * proposalId for which deals need to be added.
     String proposalId = "";
 
-    AddOrderDealsRequest content = new AddOrderDealsRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Adexchangebuyer.Marketplacedeals.Insert request = adexchangebuyerService.marketplacedeals().insert(proposalId, content);
+    AddOrderDealsRequest requestBody = new AddOrderDealsRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Adexchangebuyer.Marketplacedeals.Insert request = adexchangebuyerService.marketplacedeals().insert(proposalId, requestBody);
     AddOrderDealsResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1019,7 +1156,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1033,15 +1170,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.GetOrderDealsResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1056,23 +1194,31 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
 
     // * The proposalId to get deals for. To search across proposals specify order_id = '-' as part of the
     //   URL.
     String proposalId = "";
 
+
     Adexchangebuyer.Marketplacedeals.List request = adexchangebuyerService.marketplacedeals().list(proposalId);
     GetOrderDealsResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1081,7 +1227,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1096,15 +1242,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.EditAllOrderDealsRequest;
 import com.google.api.services.adexchangebuyer.model.EditAllOrderDealsResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1119,25 +1266,34 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
 
     // * The proposalId to edit deals on.
     String proposalId = "";
 
-    EditAllOrderDealsRequest content = new EditAllOrderDealsRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Adexchangebuyer.Marketplacedeals.Update request = adexchangebuyerService.marketplacedeals().update(proposalId, content);
+    EditAllOrderDealsRequest requestBody = new EditAllOrderDealsRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Adexchangebuyer.Marketplacedeals.Update request = adexchangebuyerService.marketplacedeals().update(proposalId, requestBody);
     EditAllOrderDealsResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1146,7 +1302,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1161,15 +1317,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.AddOrderNotesRequest;
 import com.google.api.services.adexchangebuyer.model.AddOrderNotesResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1184,25 +1341,34 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
 
     // * The proposalId to add notes for.
     String proposalId = "";
 
-    AddOrderNotesRequest content = new AddOrderNotesRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Adexchangebuyer.Marketplacenotes.Insert request = adexchangebuyerService.marketplacenotes().insert(proposalId, content);
+    AddOrderNotesRequest requestBody = new AddOrderNotesRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Adexchangebuyer.Marketplacenotes.Insert request = adexchangebuyerService.marketplacenotes().insert(proposalId, requestBody);
     AddOrderNotesResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1211,7 +1377,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1225,15 +1391,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.GetOrderNotesResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1248,22 +1415,30 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
 
     // * The proposalId to get notes for.
     String proposalId = "";
 
+
     Adexchangebuyer.Marketplacenotes.List request = adexchangebuyerService.marketplacenotes().list(proposalId);
     GetOrderNotesResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1272,7 +1447,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1291,10 +1466,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1309,23 +1483,30 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'updateproposal' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `updateproposal` method:
 
     // * The private auction id to be updated.
     String privateAuctionId = "";
 
-    UpdatePrivateAuctionProposalRequest content = new UpdatePrivateAuctionProposalRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Adexchangebuyer.Marketplaceprivateauction.Updateproposal request = adexchangebuyerService.marketplaceprivateauction().updateproposal(privateAuctionId, content);
+    UpdatePrivateAuctionProposalRequest requestBody = new UpdatePrivateAuctionProposalRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Adexchangebuyer.Marketplaceprivateauction.Updateproposal request = adexchangebuyerService.marketplaceprivateauction().updateproposal(privateAuctionId, requestBody);
     request.execute();
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1334,7 +1515,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1348,15 +1529,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.PerformanceReportList;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1371,11 +1553,16 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
 
     // * The account id to get the reports.
     long accountId = 0;
@@ -1386,13 +1573,16 @@ public class AdexchangebuyerExample {
     // * The start time of the report in ISO 8601 timestamp format using UTC.
     String startDateTime = "";
 
+
     Adexchangebuyer.PerformanceReport.List request = adexchangebuyerService.performanceReport().list(accountId, endDateTime, startDateTime);
     PerformanceReportList response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1401,7 +1591,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1419,10 +1609,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1437,11 +1626,16 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
 
     // * The account id to delete the pretargeting config for.
     long accountId = 0;
@@ -1449,11 +1643,12 @@ public class AdexchangebuyerExample {
     // * The specific id of the configuration to delete.
     long configId = 0;
 
+
     Adexchangebuyer.PretargetingConfig.Delete request = adexchangebuyerService.pretargetingConfig().delete(accountId, configId);
     request.execute();
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1462,7 +1657,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1476,15 +1671,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.PretargetingConfig;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1499,11 +1695,16 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
 
     // * The account id to get the pretargeting config for.
     long accountId = 0;
@@ -1511,13 +1712,16 @@ public class AdexchangebuyerExample {
     // * The specific id of the configuration to retrieve.
     long configId = 0;
 
+
     Adexchangebuyer.PretargetingConfig.Get request = adexchangebuyerService.pretargetingConfig().get(accountId, configId);
     PretargetingConfig response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1526,7 +1730,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1540,15 +1744,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.PretargetingConfig;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1563,25 +1768,34 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
 
     // * The account id to insert the pretargeting config for.
     long accountId = 0;
 
-    PretargetingConfig content = new PretargetingConfig();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Adexchangebuyer.PretargetingConfig.Insert request = adexchangebuyerService.pretargetingConfig().insert(accountId, content);
+    PretargetingConfig requestBody = new PretargetingConfig();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Adexchangebuyer.PretargetingConfig.Insert request = adexchangebuyerService.pretargetingConfig().insert(accountId, requestBody);
     PretargetingConfig response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1590,7 +1804,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1604,15 +1818,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.PretargetingConfigList;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1627,22 +1842,30 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
 
     // * The account id to get the pretargeting configs for.
     long accountId = 0;
 
+
     Adexchangebuyer.PretargetingConfig.List request = adexchangebuyerService.pretargetingConfig().list(accountId);
     PretargetingConfigList response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1651,7 +1874,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1665,15 +1888,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.PretargetingConfig;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1688,11 +1912,16 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
 
     // * The account id to update the pretargeting config for.
     long accountId = 0;
@@ -1700,16 +1929,20 @@ public class AdexchangebuyerExample {
     // * The specific id of the configuration to update.
     long configId = 0;
 
-    PretargetingConfig content = new PretargetingConfig();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Adexchangebuyer.PretargetingConfig.Patch request = adexchangebuyerService.pretargetingConfig().patch(accountId, configId, content);
+    PretargetingConfig requestBody = new PretargetingConfig();
+    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
+
+
+    Adexchangebuyer.PretargetingConfig.Patch request = adexchangebuyerService.pretargetingConfig().patch(accountId, configId, requestBody);
     PretargetingConfig response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1718,7 +1951,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1732,15 +1965,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.PretargetingConfig;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1755,11 +1989,16 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
 
     // * The account id to update the pretargeting config for.
     long accountId = 0;
@@ -1767,16 +2006,20 @@ public class AdexchangebuyerExample {
     // * The specific id of the configuration to update.
     long configId = 0;
 
-    PretargetingConfig content = new PretargetingConfig();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Adexchangebuyer.PretargetingConfig.Update request = adexchangebuyerService.pretargetingConfig().update(accountId, configId, content);
+    PretargetingConfig requestBody = new PretargetingConfig();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Adexchangebuyer.PretargetingConfig.Update request = adexchangebuyerService.pretargetingConfig().update(accountId, configId, requestBody);
     PretargetingConfig response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1785,7 +2028,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1799,15 +2042,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.Product;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1822,22 +2066,30 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
 
     // * The id for the product to get the head revision for.
     String productId = "";
 
+
     Adexchangebuyer.Products.Get request = adexchangebuyerService.products().get(productId);
     Product response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1846,7 +2098,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1860,15 +2112,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.GetOffersResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1883,6 +2136,10 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -1891,10 +2148,12 @@ public class AdexchangebuyerExample {
     Adexchangebuyer.Products.Search request = adexchangebuyerService.products().search();
     GetOffersResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1903,7 +2162,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1917,15 +2176,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.Proposal;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1940,22 +2200,30 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
 
     // * Id of the proposal to retrieve.
     String proposalId = "";
 
+
     Adexchangebuyer.Proposals.Get request = adexchangebuyerService.proposals().get(proposalId);
     Proposal response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1964,7 +2232,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1979,15 +2247,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.CreateOrdersRequest;
 import com.google.api.services.adexchangebuyer.model.CreateOrdersResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -2002,21 +2271,28 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
 
-    CreateOrdersRequest content = new CreateOrdersRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
+    CreateOrdersRequest requestBody = new CreateOrdersRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
 
-    Adexchangebuyer.Proposals.Insert request = adexchangebuyerService.proposals().insert(content);
+
+    Adexchangebuyer.Proposals.Insert request = adexchangebuyerService.proposals().insert(requestBody);
     CreateOrdersResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -2025,7 +2301,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -2039,15 +2315,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.Proposal;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -2062,11 +2339,16 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
 
     // * The proposal id to update.
     String proposalId = "";
@@ -2079,16 +2361,20 @@ public class AdexchangebuyerExample {
     // * The proposed action to take on the proposal.
     String updateAction = "";
 
-    Proposal content = new Proposal();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Adexchangebuyer.Proposals.Patch request = adexchangebuyerService.proposals().patch(proposalId, revisionNumber, updateAction, content);
+    Proposal requestBody = new Proposal();
+    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
+
+
+    Adexchangebuyer.Proposals.Patch request = adexchangebuyerService.proposals().patch(proposalId, revisionNumber, updateAction, requestBody);
     Proposal response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -2097,7 +2383,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -2111,15 +2397,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.GetOrdersResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -2134,6 +2421,10 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -2142,10 +2433,12 @@ public class AdexchangebuyerExample {
     Adexchangebuyer.Proposals.Search request = adexchangebuyerService.proposals().search();
     GetOrdersResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -2154,7 +2447,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -2172,10 +2465,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -2190,20 +2482,26 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'setupcomplete' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `setupcomplete` method:
 
     // * The proposal id for which the setup is complete
     String proposalId = "";
+
 
     Adexchangebuyer.Proposals.Setupcomplete request = adexchangebuyerService.proposals().setupcomplete(proposalId);
     request.execute();
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -2212,7 +2510,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -2226,15 +2524,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.Proposal;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -2249,11 +2548,16 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
 
     // * The proposal id to update.
     String proposalId = "";
@@ -2266,16 +2570,20 @@ public class AdexchangebuyerExample {
     // * The proposed action to take on the proposal.
     String updateAction = "";
 
-    Proposal content = new Proposal();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Adexchangebuyer.Proposals.Update request = adexchangebuyerService.proposals().update(proposalId, revisionNumber, updateAction, content);
+    Proposal requestBody = new Proposal();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Adexchangebuyer.Proposals.Update request = adexchangebuyerService.proposals().update(proposalId, revisionNumber, updateAction, requestBody);
     Proposal response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -2284,7 +2592,7 @@ public class AdexchangebuyerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -2298,15 +2606,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.Adexchangebuyer;
 import com.google.api.services.adexchangebuyer.model.GetPublisherProfilesByAccountIdResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class AdexchangebuyerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -2321,18 +2630,26 @@ public class AdexchangebuyerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the adexchangebuyer service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
 
     // * The accountId of the publisher to get profiles for.
     int accountId = 0;
 
+
     Adexchangebuyer.Pubprofiles.List request = adexchangebuyerService.pubprofiles().list(accountId);
     GetPublisherProfilesByAccountIdResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }

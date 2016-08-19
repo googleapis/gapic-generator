@@ -9,11 +9,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -22,24 +26,40 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := clouddebugger.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Identifies the debuggee.
-  debuggeeId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Controller.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
+  // Construct the clouddebugger service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := clouddebugger.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+  // * Identifies the debuggee.
+  debuggeeId := ""
+
+  res, err := service.Controller.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -51,11 +71,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -64,29 +88,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := clouddebugger.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Identifies the debuggee being debugged.
-  debuggeeId := "" // TODO: Update placeholder value.
-
-  // Breakpoint identifier, unique in the scope of the debuggee.
-  id := "" // TODO: Update placeholder value.
-
-  resp, err := c.Controller.Debuggees.Breakpoints.Update(debuggeeId, id, &clouddebugger.UpdateActiveBreakpointRequest{
-                                                           // TODO: Fill required fields.
-                                                         }).Context(ctx).Do()
+  // Construct the clouddebugger service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := clouddebugger.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
+  // * Identifies the debuggee being debugged.
+  debuggeeId := ""
+
+  // * Breakpoint identifier, unique in the scope of the debuggee.
+  id := ""
+
+  updateActiveBreakpointRequestBody := clouddebugger.UpdateActiveBreakpointRequest{
+    // TODO: Add desired fields of the `updateActiveBreakpointRequestBody` variable.
+  }
+
+  res, err := service.Controller.Debuggees.Breakpoints.Update(debuggeeId, id, &updateActiveBreakpointRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -98,11 +140,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -111,25 +157,40 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := clouddebugger.New(hc)
+
+  // Construct the clouddebugger service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := clouddebugger.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
 
-
-  resp, err := c.Controller.Debuggees.Register(&clouddebugger.RegisterDebuggeeRequest{
-                                                 // TODO: Fill required fields.
-                                               }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  registerDebuggeeRequestBody := clouddebugger.RegisterDebuggeeRequest{
+    // TODO: Add desired fields of the `registerDebuggeeRequestBody` variable.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  res, err := service.Controller.Debuggees.Register(registerDebuggeeRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -141,11 +202,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -154,27 +219,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := clouddebugger.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // ID of the debuggee whose breakpoint to delete.
-  debuggeeId := "" // TODO: Update placeholder value.
-
-  // ID of the breakpoint to delete.
-  breakpointId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Debugger.Debuggees.Breakpoints.Delete(debuggeeId, breakpointId).Context(ctx).Do()
+  // Construct the clouddebugger service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := clouddebugger.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+  // * ID of the debuggee whose breakpoint to delete.
+  debuggeeId := ""
+
+  // * ID of the breakpoint to delete.
+  breakpointId := ""
+
+  res, err := service.Debugger.Debuggees.Breakpoints.Delete(debuggeeId, breakpointId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -186,11 +267,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -199,27 +284,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := clouddebugger.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // ID of the debuggee whose breakpoint to get.
-  debuggeeId := "" // TODO: Update placeholder value.
-
-  // ID of the breakpoint to get.
-  breakpointId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Debugger.Debuggees.Breakpoints.Get(debuggeeId, breakpointId).Context(ctx).Do()
+  // Construct the clouddebugger service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := clouddebugger.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+  // * ID of the debuggee whose breakpoint to get.
+  debuggeeId := ""
+
+  // * ID of the breakpoint to get.
+  breakpointId := ""
+
+  res, err := service.Debugger.Debuggees.Breakpoints.Get(debuggeeId, breakpointId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -231,11 +332,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -244,24 +349,40 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := clouddebugger.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // ID of the debuggee whose breakpoints to list.
-  debuggeeId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Debugger.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
+  // Construct the clouddebugger service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := clouddebugger.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+  // * ID of the debuggee whose breakpoints to list.
+  debuggeeId := ""
+
+  res, err := service.Debugger.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -273,11 +394,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -286,26 +411,44 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := clouddebugger.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // ID of the debuggee where the breakpoint is to be set.
-  debuggeeId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Debugger.Debuggees.Breakpoints.Set(debuggeeId, &clouddebugger.Breakpoint{
-                                                      // TODO: Fill required fields.
-                                                    }).Context(ctx).Do()
+  // Construct the clouddebugger service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := clouddebugger.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Set` method:
+
+  // * ID of the debuggee where the breakpoint is to be set.
+  debuggeeId := ""
+
+  breakpointBody := clouddebugger.Breakpoint{
+    // TODO: Add desired fields of the `breakpointBody` variable.
+  }
+
+  res, err := service.Debugger.Debuggees.Breakpoints.Set(debuggeeId, &breakpointBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -317,11 +460,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -330,21 +477,34 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := clouddebugger.New(hc)
+
+  // Construct the clouddebugger service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := clouddebugger.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
 
-
-  resp, err := c.Debugger.Debuggees.List().Context(ctx).Do()
+  res, err := service.Debugger.Debuggees.List().Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }

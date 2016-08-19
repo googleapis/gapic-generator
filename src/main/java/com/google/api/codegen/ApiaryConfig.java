@@ -178,7 +178,7 @@ public class ApiaryConfig {
    * @return the textual description corresponding to the given type name and field name
    */
   public String getDescription(String typeName, String fieldName) {
-    return Strings.nullToEmpty(fieldDescription.get(typeName, fieldName));
+    return fieldDescription.get(typeName, fieldName);
   }
 
   /**

@@ -7,7 +7,7 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -16,49 +16,61 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
+
 namespace DeploymentManagerSample
 {
-    public class Program
+    public class DeploymentManagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the deploymentmanager service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DeploymentManagerService deploymentManagerService = new DeploymentManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the CancelPreview() method:
 
-            // The project ID for this request.
+            // TODO: Change placeholders below to desired parameter values for the `CancelPreview` method:
+
+            // * The project ID for this request.
             string project = "";
 
-            // The name of the deployment for this request.
+            // * The name of the deployment for this request.
             string deployment = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.DeploymentsCancelPreviewRequest content = new Data.DeploymentsCancelPreviewRequest();
 
-            DeploymentsResource.CancelPreviewRequest request = deploymentManagerService.Deployments.CancelPreview(content, project, deployment);
+            Data.DeploymentsCancelPreviewRequest requestBody = new Data.DeploymentsCancelPreviewRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            DeploymentsResource.CancelPreviewRequest request = deploymentManagerService.Deployments.CancelPreview(requestBody, project, deployment);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -70,7 +82,7 @@ namespace DeploymentManagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -79,46 +91,57 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
+
 namespace DeploymentManagerSample
 {
-    public class Program
+    public class DeploymentManagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the deploymentmanager service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DeploymentManagerService deploymentManagerService = new DeploymentManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Delete() method:
 
-            // The project ID for this request.
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+            // * The project ID for this request.
             string project = "";
 
-            // The name of the deployment for this request.
+            // * The name of the deployment for this request.
             string deployment = "";
+
 
             DeploymentsResource.DeleteRequest request = deploymentManagerService.Deployments.Delete(project, deployment);
-            Data.Operation response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -130,7 +153,7 @@ namespace DeploymentManagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -139,46 +162,57 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
+
 namespace DeploymentManagerSample
 {
-    public class Program
+    public class DeploymentManagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the deploymentmanager service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DeploymentManagerService deploymentManagerService = new DeploymentManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
 
-            // The project ID for this request.
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // * The project ID for this request.
             string project = "";
 
-            // The name of the deployment for this request.
+            // * The name of the deployment for this request.
             string deployment = "";
 
+
             DeploymentsResource.GetRequest request = deploymentManagerService.Deployments.Get(project, deployment);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Deployment response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Deployment response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -190,7 +224,7 @@ namespace DeploymentManagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -199,46 +233,58 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
+
 namespace DeploymentManagerSample
 {
-    public class Program
+    public class DeploymentManagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the deploymentmanager service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DeploymentManagerService deploymentManagerService = new DeploymentManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Insert() method:
 
-            // The project ID for this request.
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+            // * The project ID for this request.
             string project = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Deployment content = new Data.Deployment();
 
-            DeploymentsResource.InsertRequest request = deploymentManagerService.Deployments.Insert(content, project);
+            Data.Deployment requestBody = new Data.Deployment();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            DeploymentsResource.InsertRequest request = deploymentManagerService.Deployments.Insert(requestBody, project);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -250,7 +296,7 @@ namespace DeploymentManagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -259,56 +305,66 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
+
 namespace DeploymentManagerSample
 {
-    public class Program
+    public class DeploymentManagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the deploymentmanager service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DeploymentManagerService deploymentManagerService = new DeploymentManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
-            // The project ID for this request.
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * The project ID for this request.
             string project = "";
+
 
             DeploymentsResource.ListRequest request = deploymentManagerService.Deployments.List(project);
+
             Data.DeploymentsListResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Deployments == null)
                 {
                     continue;
                 }
-                foreach (Data.Deployment item in response.Deployments)
+                foreach (Data.Deployment deployment in response.Deployments)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `deployment` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(deployment));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.DeploymentsListResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -320,7 +376,7 @@ namespace DeploymentManagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -329,49 +385,61 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
+
 namespace DeploymentManagerSample
 {
-    public class Program
+    public class DeploymentManagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the deploymentmanager service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DeploymentManagerService deploymentManagerService = new DeploymentManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Patch() method:
 
-            // The project ID for this request.
+            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
+            // * The project ID for this request.
             string project = "";
 
-            // The name of the deployment for this request.
+            // * The name of the deployment for this request.
             string deployment = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Deployment content = new Data.Deployment();
 
-            DeploymentsResource.PatchRequest request = deploymentManagerService.Deployments.Patch(content, project, deployment);
+            Data.Deployment requestBody = new Data.Deployment();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
+
+            DeploymentsResource.PatchRequest request = deploymentManagerService.Deployments.Patch(requestBody, project, deployment);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -383,7 +451,7 @@ namespace DeploymentManagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -392,49 +460,61 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
+
 namespace DeploymentManagerSample
 {
-    public class Program
+    public class DeploymentManagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the deploymentmanager service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DeploymentManagerService deploymentManagerService = new DeploymentManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Stop() method:
 
-            // The project ID for this request.
+            // TODO: Change placeholders below to desired parameter values for the `Stop` method:
+
+            // * The project ID for this request.
             string project = "";
 
-            // The name of the deployment for this request.
+            // * The name of the deployment for this request.
             string deployment = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.DeploymentsStopRequest content = new Data.DeploymentsStopRequest();
 
-            DeploymentsResource.StopRequest request = deploymentManagerService.Deployments.Stop(content, project, deployment);
+            Data.DeploymentsStopRequest requestBody = new Data.DeploymentsStopRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            DeploymentsResource.StopRequest request = deploymentManagerService.Deployments.Stop(requestBody, project, deployment);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -446,7 +526,7 @@ namespace DeploymentManagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -455,49 +535,61 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
+
 namespace DeploymentManagerSample
 {
-    public class Program
+    public class DeploymentManagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the deploymentmanager service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DeploymentManagerService deploymentManagerService = new DeploymentManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Update() method:
 
-            // The project ID for this request.
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
+            // * The project ID for this request.
             string project = "";
 
-            // The name of the deployment for this request.
+            // * The name of the deployment for this request.
             string deployment = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Deployment content = new Data.Deployment();
 
-            DeploymentsResource.UpdateRequest request = deploymentManagerService.Deployments.Update(content, project, deployment);
+            Data.Deployment requestBody = new Data.Deployment();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            DeploymentsResource.UpdateRequest request = deploymentManagerService.Deployments.Update(requestBody, project, deployment);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -509,7 +601,7 @@ namespace DeploymentManagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -518,49 +610,60 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
+
 namespace DeploymentManagerSample
 {
-    public class Program
+    public class DeploymentManagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the deploymentmanager service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DeploymentManagerService deploymentManagerService = new DeploymentManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
 
-            // The project ID for this request.
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // * The project ID for this request.
             string project = "";
 
-            // The name of the deployment for this request.
+            // * The name of the deployment for this request.
             string deployment = "";
 
-            // The name of the manifest for this request.
+            // * The name of the manifest for this request.
             string manifest = "";
 
-            ManifestsResource.GetRequest request = deploymentManagerService.Manifests.Get(project, deployment, manifest);
-            Data.Manifest response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            ManifestsResource.GetRequest request = deploymentManagerService.Manifests.Get(project, deployment, manifest);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Manifest response = request.Execute();
             // Data.Manifest response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -572,7 +675,7 @@ namespace DeploymentManagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -581,59 +684,69 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
+
 namespace DeploymentManagerSample
 {
-    public class Program
+    public class DeploymentManagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the deploymentmanager service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DeploymentManagerService deploymentManagerService = new DeploymentManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
-            // The project ID for this request.
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * The project ID for this request.
             string project = "";
 
-            // The name of the deployment for this request.
+            // * The name of the deployment for this request.
             string deployment = "";
 
+
             ManifestsResource.ListRequest request = deploymentManagerService.Manifests.List(project, deployment);
+
             Data.ManifestsListResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Manifests == null)
                 {
                     continue;
                 }
-                foreach (Data.Manifest item in response.Manifests)
+                foreach (Data.Manifest manifest in response.Manifests)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `manifest` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(manifest));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.ManifestsListResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -645,7 +758,7 @@ namespace DeploymentManagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -654,46 +767,57 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
+
 namespace DeploymentManagerSample
 {
-    public class Program
+    public class DeploymentManagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the deploymentmanager service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DeploymentManagerService deploymentManagerService = new DeploymentManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
 
-            // The project ID for this request.
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // * The project ID for this request.
             string project = "";
 
-            // The name of the operation for this request.
+            // * The name of the operation for this request.
             string operation = "";
 
-            OperationsResource.GetRequest request = deploymentManagerService.Operations.Get(project, operation);
-            Data.Operation response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            OperationsResource.GetRequest request = deploymentManagerService.Operations.Get(project, operation);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -705,7 +829,7 @@ namespace DeploymentManagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -714,56 +838,66 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
+
 namespace DeploymentManagerSample
 {
-    public class Program
+    public class DeploymentManagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the deploymentmanager service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DeploymentManagerService deploymentManagerService = new DeploymentManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
-            // The project ID for this request.
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * The project ID for this request.
             string project = "";
 
+
             OperationsResource.ListRequest request = deploymentManagerService.Operations.List(project);
+
             Data.OperationsListResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Operations == null)
                 {
                     continue;
                 }
-                foreach (Data.Operation item in response.Operations)
+                foreach (Data.Operation operation in response.Operations)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `operation` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(operation));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.OperationsListResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -775,7 +909,7 @@ namespace DeploymentManagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -784,49 +918,60 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
+
 namespace DeploymentManagerSample
 {
-    public class Program
+    public class DeploymentManagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the deploymentmanager service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DeploymentManagerService deploymentManagerService = new DeploymentManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
 
-            // The project ID for this request.
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // * The project ID for this request.
             string project = "";
 
-            // The name of the deployment for this request.
+            // * The name of the deployment for this request.
             string deployment = "";
 
-            // The name of the resource for this request.
+            // * The name of the resource for this request.
             string resource = "";
 
-            ResourcesResource.GetRequest request = deploymentManagerService.Resources.Get(project, deployment, resource);
-            Data.Resource response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            ResourcesResource.GetRequest request = deploymentManagerService.Resources.Get(project, deployment, resource);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Resource response = request.Execute();
             // Data.Resource response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -838,7 +983,7 @@ namespace DeploymentManagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -847,59 +992,69 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
+
 namespace DeploymentManagerSample
 {
-    public class Program
+    public class DeploymentManagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the deploymentmanager service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DeploymentManagerService deploymentManagerService = new DeploymentManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
-            // The project ID for this request.
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * The project ID for this request.
             string project = "";
 
-            // The name of the deployment for this request.
+            // * The name of the deployment for this request.
             string deployment = "";
 
+
             ResourcesResource.ListRequest request = deploymentManagerService.Resources.List(project, deployment);
+
             Data.ResourcesListResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Resources == null)
                 {
                     continue;
                 }
-                foreach (Data.Resource item in response.Resources)
+                foreach (Data.Resource resource in response.Resources)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `resource` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(resource));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.ResourcesListResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -911,7 +1066,7 @@ namespace DeploymentManagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -920,56 +1075,66 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
+
 namespace DeploymentManagerSample
 {
-    public class Program
+    public class DeploymentManagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the deploymentmanager service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DeploymentManagerService deploymentManagerService = new DeploymentManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
-            // The project ID for this request.
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * The project ID for this request.
             string project = "";
 
+
             TypesResource.ListRequest request = deploymentManagerService.Types.List(project);
+
             Data.TypesListResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Types == null)
                 {
                     continue;
                 }
-                foreach (Data.Type item in response.Types)
+                foreach (Data.Type type in response.Types)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `type` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(type));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.TypesListResponse response = await request.ExecuteAsync();
         }
     }
 }

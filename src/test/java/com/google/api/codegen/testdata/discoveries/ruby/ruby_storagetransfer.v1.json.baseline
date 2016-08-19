@@ -7,21 +7,32 @@
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storagetransfer_v1'
+require 'json'
 
+# Construct the storagetransfer service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::StoragetransferV1::StoragetransferService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 
-
 # Perform the call
 response = service.get_google_service_account_v1()
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Storage Transfer API
@@ -30,25 +41,39 @@ response = service.get_google_service_account_v1()
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storagetransfer_v1'
+require 'json'
 
+# Construct the storagetransfer service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::StoragetransferV1::StoragetransferService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_google_service_account' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_google_service_account` method:
 
 # * The ID of the Google Developers Console project that the Google service account is associated
 #   with. Required.
 project_id = ''
 
+
 # Perform the call
 response = service.get_google_service_account(project_id)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Storage Transfer API
@@ -57,24 +82,36 @@ response = service.get_google_service_account(project_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storagetransfer_v1'
+require 'json'
 
+# Construct the storagetransfer service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::StoragetransferV1::StoragetransferService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 
-
-transfer_job_object = Google::Apis::StoragetransferV1::TransferJob.new
+transfer_job_body = Google::Apis::StoragetransferV1::TransferJob.new
+# TODO: Assign values to desired members of the `transfer_job_body` object.
 
 
 # Perform the call
-response = service.create_transfer_job(transfer_job_object)
+response = service.create_transfer_job(transfer_job_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Storage Transfer API
@@ -83,24 +120,38 @@ response = service.create_transfer_job(transfer_job_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storagetransfer_v1'
+require 'json'
 
+# Construct the storagetransfer service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::StoragetransferV1::StoragetransferService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_transfer_job' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_transfer_job` method:
 
 # * The job to get. Required.
 job_name = ''
 
+
 # Perform the call
 response = service.get_transfer_job(job_name)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Storage Transfer API
@@ -109,26 +160,36 @@ response = service.get_transfer_job(job_name)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storagetransfer_v1'
+require 'json'
 
+# Construct the storagetransfer service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::StoragetransferV1::StoragetransferService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
-
 
 
 # Perform the call
-result_list = service.fetch_all(items: :transferJobs) { |token|
+transferJobs = service.fetch_all(items: :transferJobs) do |token|
   service.list_transfer_jobs(, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+transferJobs.each do |transfer_job|
+  # TODO: Change code below to process each `transfer_job` resource:
+  puts JSON.pretty_generate(transfer_job)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Storage Transfer API
@@ -137,27 +198,42 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storagetransfer_v1'
+require 'json'
 
+# Construct the storagetransfer service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::StoragetransferV1::StoragetransferService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch_transfer_job' method:
+
+# TODO: Change placeholders below to desired parameter values for the `patch_transfer_job` method:
 
 # * The name of job to update. Required.
 job_name = ''
 
-update_transfer_job_request_object = Google::Apis::StoragetransferV1::UpdateTransferJobRequest.new
+
+update_transfer_job_request_body = Google::Apis::StoragetransferV1::UpdateTransferJobRequest.new
+# TODO: Assign values to desired members of the `update_transfer_job_request_body` object to be changed.
 
 
 # Perform the call
-response = service.patch_transfer_job(job_name, update_transfer_job_request_object)
+response = service.patch_transfer_job(job_name, update_transfer_job_request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Storage Transfer API
@@ -166,21 +242,32 @@ response = service.patch_transfer_job(job_name, update_transfer_job_request_obje
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storagetransfer_v1'
+require 'json'
 
+# Construct the storagetransfer service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::StoragetransferV1::StoragetransferService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'cancel_transfer_operation' method:
+
+# TODO: Change placeholders below to desired parameter values for the `cancel_transfer_operation` method:
 
 # * The name of the operation resource to be cancelled.
 name = ''
+
 
 # Perform the call
 service.cancel_transfer_operation(name)
@@ -192,21 +279,32 @@ service.cancel_transfer_operation(name)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storagetransfer_v1'
+require 'json'
 
+# Construct the storagetransfer service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::StoragetransferV1::StoragetransferService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_transfer_operation' method:
+
+# TODO: Change placeholders below to desired parameter values for the `delete_transfer_operation` method:
 
 # * The name of the operation resource to be deleted.
 name = ''
+
 
 # Perform the call
 service.delete_transfer_operation(name)
@@ -218,24 +316,38 @@ service.delete_transfer_operation(name)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storagetransfer_v1'
+require 'json'
 
+# Construct the storagetransfer service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::StoragetransferV1::StoragetransferService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_transfer_operation' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_transfer_operation` method:
 
 # * The name of the operation resource.
 name = ''
 
+
 # Perform the call
 response = service.get_transfer_operation(name)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Storage Transfer API
@@ -244,29 +356,42 @@ response = service.get_transfer_operation(name)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storagetransfer_v1'
+require 'json'
 
+# Construct the storagetransfer service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::StoragetransferV1::StoragetransferService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_transfer_operations' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_transfer_operations` method:
 
 # * The value `transferOperations`.
 name = ''
 
+
 # Perform the call
-result_list = service.fetch_all(items: :operations) { |token|
+operations = service.fetch_all(items: :operations) do |token|
   service.list_transfer_operations(name, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+operations.each do |operation|
+  # TODO: Change code below to process each `operation` resource:
+  puts JSON.pretty_generate(operation)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Storage Transfer API
@@ -275,27 +400,39 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storagetransfer_v1'
+require 'json'
 
+# Construct the storagetransfer service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::StoragetransferV1::StoragetransferService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'pause_transfer_operation' method:
+
+# TODO: Change placeholders below to desired parameter values for the `pause_transfer_operation` method:
 
 # * The name of the transfer operation. Required.
 name = ''
 
-pause_transfer_operation_request_object = Google::Apis::StoragetransferV1::PauseTransferOperationRequest.new
+
+pause_transfer_operation_request_body = Google::Apis::StoragetransferV1::PauseTransferOperationRequest.new
+# TODO: Assign values to desired members of the `pause_transfer_operation_request_body` object.
 
 
 # Perform the call
-service.pause_transfer_operation(name, pause_transfer_operation_request_object)
+service.pause_transfer_operation(name, pause_transfer_operation_request_body)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Storage Transfer API
@@ -304,24 +441,36 @@ service.pause_transfer_operation(name, pause_transfer_operation_request_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storagetransfer_v1'
+require 'json'
 
+# Construct the storagetransfer service object (version v1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::StoragetransferV1::StoragetransferService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'resume_transfer_operation' method:
+
+# TODO: Change placeholders below to desired parameter values for the `resume_transfer_operation` method:
 
 # * The name of the transfer operation. Required.
 name = ''
 
-resume_transfer_operation_request_object = Google::Apis::StoragetransferV1::ResumeTransferOperationRequest.new
+
+resume_transfer_operation_request_body = Google::Apis::StoragetransferV1::ResumeTransferOperationRequest.new
+# TODO: Assign values to desired members of the `resume_transfer_operation_request_body` object.
 
 
 # Perform the call
-service.resume_transfer_operation(name, resume_transfer_operation_request_object)
+service.resume_transfer_operation(name, resume_transfer_operation_request_body)

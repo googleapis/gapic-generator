@@ -7,29 +7,40 @@
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
+require 'json'
 
+# Construct the logging service object (version v2beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::LoggingV2beta1::LoggingService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 
-
-list_log_entries_request_object = Google::Apis::LoggingV2beta1::ListLogEntriesRequest.new
+list_log_entries_request_body = Google::Apis::LoggingV2beta1::ListLogEntriesRequest.new
+# TODO: Assign values to desired members of the `list_log_entries_request_body` object.
 
 
 # Perform the call
-result_list = service.fetch_all(items: :entries) { |token|
-  service.list_entry_log_entries(list_log_entries_request_object, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+entries = service.fetch_all(items: :entries) do |token|
+  service.list_entry_log_entries(list_log_entries_request_body, page_token: token)
+end
+
+entries.each do |log_entry|
+  # TODO: Change code below to process each `log_entry` resource:
+  puts JSON.pretty_generate(log_entry)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Logging API
@@ -38,24 +49,36 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
+require 'json'
 
+# Construct the logging service object (version v2beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::LoggingV2beta1::LoggingService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 
-
-write_log_entries_request_object = Google::Apis::LoggingV2beta1::WriteLogEntriesRequest.new
+write_log_entries_request_body = Google::Apis::LoggingV2beta1::WriteLogEntriesRequest.new
+# TODO: Assign values to desired members of the `write_log_entries_request_body` object.
 
 
 # Perform the call
-response = service.write_entry_log_entries(write_log_entries_request_object)
+response = service.write_entry_log_entries(write_log_entries_request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Logging API
@@ -64,26 +87,36 @@ response = service.write_entry_log_entries(write_log_entries_request_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
+require 'json'
 
+# Construct the logging service object (version v2beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::LoggingV2beta1::LoggingService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 
-
 # Perform the call
-result_list = service.fetch_all(items: :resourceDescriptors) { |token|
+resourceDescriptors = service.fetch_all(items: :resourceDescriptors) do |token|
   service.list_monitored_resource_descriptors(, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+resourceDescriptors.each do |monitored_resource_descriptor|
+  # TODO: Change code below to process each `monitored_resource_descriptor` resource:
+  puts JSON.pretty_generate(monitored_resource_descriptor)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Logging API
@@ -92,21 +125,32 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
+require 'json'
 
+# Construct the logging service object (version v2beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::LoggingV2beta1::LoggingService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_log' method:
+
+# TODO: Change placeholders below to desired parameter values for the `delete_log` method:
 
 # * Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
 log_name = 'projects/{MY-PROJECT}/logs/{MY-LOG}'
+
 
 # Perform the call
 service.delete_log(log_name)
@@ -118,28 +162,43 @@ service.delete_log(log_name)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
+require 'json'
 
+# Construct the logging service object (version v2beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::LoggingV2beta1::LoggingService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'create_project_metric' method:
+
+# TODO: Change placeholders below to desired parameter values for the `create_project_metric` method:
 
 # * The resource name of the project in which to create the metric. Example:
 #   `"projects/my-project-id"`. The new metric must be provided in the request.
 project_name = 'projects/{MY-PROJECT}'
 
-log_metric_object = Google::Apis::LoggingV2beta1::LogMetric.new
+
+log_metric_body = Google::Apis::LoggingV2beta1::LogMetric.new
+# TODO: Assign values to desired members of the `log_metric_body` object.
 
 
 # Perform the call
-response = service.create_project_metric(project_name, log_metric_object)
+response = service.create_project_metric(project_name, log_metric_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Logging API
@@ -148,22 +207,33 @@ response = service.create_project_metric(project_name, log_metric_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
+require 'json'
 
+# Construct the logging service object (version v2beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::LoggingV2beta1::LoggingService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_project_metric' method:
+
+# TODO: Change placeholders below to desired parameter values for the `delete_project_metric` method:
 
 # * The resource name of the metric to delete. Example:
 #   `"projects/my-project-id/metrics/my-metric-id"`.
 metric_name = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'
+
 
 # Perform the call
 service.delete_project_metric(metric_name)
@@ -175,24 +245,38 @@ service.delete_project_metric(metric_name)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
+require 'json'
 
+# Construct the logging service object (version v2beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::LoggingV2beta1::LoggingService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_project_metric' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_project_metric` method:
 
 # * The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
 metric_name = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'
 
+
 # Perform the call
 response = service.get_project_metric(metric_name)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Logging API
@@ -201,30 +285,43 @@ response = service.get_project_metric(metric_name)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
+require 'json'
 
+# Construct the logging service object (version v2beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::LoggingV2beta1::LoggingService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_project_metrics' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_project_metrics` method:
 
 # * Required. The resource name of the project containing the metrics. Example:
 #   `"projects/my-project-id"`.
 project_name = 'projects/{MY-PROJECT}'
 
+
 # Perform the call
-result_list = service.fetch_all(items: :metrics) { |token|
+metrics = service.fetch_all(items: :metrics) do |token|
   service.list_project_metrics(project_name, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+metrics.each do |log_metric|
+  # TODO: Change code below to process each `log_metric` resource:
+  puts JSON.pretty_generate(log_metric)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Logging API
@@ -233,18 +330,28 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
+require 'json'
 
+# Construct the logging service object (version v2beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::LoggingV2beta1::LoggingService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_project_metric' method:
+
+# TODO: Change placeholders below to desired parameter values for the `update_project_metric` method:
 
 # * The resource name of the metric to update. Example:
 #   `"projects/my-project-id/metrics/my-metric-id"`. The updated metric must be provided in the
@@ -252,11 +359,16 @@ service.authorization = \
 #   exist, it is created.
 metric_name = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'
 
-log_metric_object = Google::Apis::LoggingV2beta1::LogMetric.new
+
+log_metric_body = Google::Apis::LoggingV2beta1::LogMetric.new
+# TODO: Assign values to desired members of the `log_metric_body` object.
 
 
 # Perform the call
-response = service.update_project_metric(metric_name, log_metric_object)
+response = service.update_project_metric(metric_name, log_metric_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Logging API
@@ -265,28 +377,43 @@ response = service.update_project_metric(metric_name, log_metric_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
+require 'json'
 
+# Construct the logging service object (version v2beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::LoggingV2beta1::LoggingService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'create_project_sink' method:
+
+# TODO: Change placeholders below to desired parameter values for the `create_project_sink` method:
 
 # * The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`.
 #   The new sink must be provided in the request.
 project_name = 'projects/{MY-PROJECT}'
 
-log_sink_object = Google::Apis::LoggingV2beta1::LogSink.new
+
+log_sink_body = Google::Apis::LoggingV2beta1::LogSink.new
+# TODO: Assign values to desired members of the `log_sink_body` object.
 
 
 # Perform the call
-response = service.create_project_sink(project_name, log_sink_object)
+response = service.create_project_sink(project_name, log_sink_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Logging API
@@ -295,21 +422,32 @@ response = service.create_project_sink(project_name, log_sink_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
+require 'json'
 
+# Construct the logging service object (version v2beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::LoggingV2beta1::LoggingService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_project_sink' method:
+
+# TODO: Change placeholders below to desired parameter values for the `delete_project_sink` method:
 
 # * The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
 sink_name = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'
+
 
 # Perform the call
 service.delete_project_sink(sink_name)
@@ -321,24 +459,38 @@ service.delete_project_sink(sink_name)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
+require 'json'
 
+# Construct the logging service object (version v2beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::LoggingV2beta1::LoggingService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_project_sink' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_project_sink` method:
 
 # * The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
 sink_name = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'
 
+
 # Perform the call
 response = service.get_project_sink(sink_name)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Logging API
@@ -347,30 +499,43 @@ response = service.get_project_sink(sink_name)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
+require 'json'
 
+# Construct the logging service object (version v2beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::LoggingV2beta1::LoggingService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_project_sinks' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_project_sinks` method:
 
 # * Required. The resource name of the project containing the sinks. Example:
 #   `"projects/my-logging-project"`, `"projects/01234567890"`.
 project_name = 'projects/{MY-PROJECT}'
 
+
 # Perform the call
-result_list = service.fetch_all(items: :sinks) { |token|
+sinks = service.fetch_all(items: :sinks) do |token|
   service.list_project_sinks(project_name, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+sinks.each do |log_sink|
+  # TODO: Change code below to process each `log_sink` resource:
+  puts JSON.pretty_generate(log_sink)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Logging API
@@ -379,26 +544,41 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
+require 'json'
 
+# Construct the logging service object (version v2beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::LoggingV2beta1::LoggingService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_project_sink' method:
+
+# TODO: Change placeholders below to desired parameter values for the `update_project_sink` method:
 
 # * The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The
 #   updated sink must be provided in the request and have the same name that is specified in
 #   `sinkName`. If the sink does not exist, it is created.
 sink_name = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'
 
-log_sink_object = Google::Apis::LoggingV2beta1::LogSink.new
+
+log_sink_body = Google::Apis::LoggingV2beta1::LogSink.new
+# TODO: Assign values to desired members of the `log_sink_body` object.
 
 
 # Perform the call
-response = service.update_project_sink(sink_name, log_sink_object)
+response = service.update_project_sink(sink_name, log_sink_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)

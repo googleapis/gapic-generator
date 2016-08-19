@@ -8,9 +8,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -18,9 +18,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the cloudmonitoring service object (version v2beta2) for interacting
@@ -29,19 +30,21 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+# TODO: Change placeholders below to desired parameter values for the `create` method:
 
 # * The project id. The value can be the numeric project ID or string-based project name.
 project = ''
 
+
 metric_descriptor_body = {
-# TODO: Add desired entries of the 'metric_descriptor_body' dict
+    # TODO: Add desired entries of the `metric_descriptor_body` dict.
 }
+
 
 request = service.metricDescriptors().create(project=project, body=metric_descriptor_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -52,9 +55,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -62,9 +65,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the cloudmonitoring service object (version v2beta2) for interacting
@@ -73,7 +77,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+# TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 # * The project ID to which the metric belongs.
 project = ''
@@ -81,10 +85,11 @@ project = ''
 # * Name of the metric.
 metric = ''
 
+
 request = service.metricDescriptors().delete(project=project, metric=metric)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -95,17 +100,20 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
+
+from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the cloudmonitoring service object (version v2beta2) for interacting
@@ -114,10 +122,11 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * The project id. The value can be the numeric project ID or string-based project name.
 project = ''
+
 
 metricDescriptors = service.metricDescriptors()
 request = metricDescriptors.list(project=project)
@@ -125,7 +134,8 @@ while request is not None:
     response = request.execute()
 
     for metric_descriptor in response['metrics']:
-        # TODO: Add code here to process each 'metric_descriptor' resource
+        # TODO: Change code below to process each `metric_descriptor` resource:
+        pprint(metric_descriptor)
 
     request = metricDescriptors.list_next(previous_request=request, previous_response=response)
 """
@@ -137,17 +147,20 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
+
+from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the cloudmonitoring service object (version v2beta2) for interacting
@@ -156,7 +169,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * The project ID to which this time series belongs. The value can be the numeric project ID or
 #   string-based project name.
@@ -169,13 +182,15 @@ metric = ''
 # * End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
 youngest = ''
 
+
 timeseries = service.timeseries()
 request = timeseries.list(project=project, metric=metric, youngest=youngest)
 while request is not None:
     response = request.execute()
 
     for timeseries in response['timeseries']:
-        # TODO: Add code here to process each 'timeseries' resource
+        # TODO: Change code below to process each `timeseries` resource:
+        pprint(timeseries)
 
     request = timeseries.list_next(previous_request=request, previous_response=response)
 """
@@ -187,9 +202,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -197,9 +212,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the cloudmonitoring service object (version v2beta2) for interacting
@@ -208,19 +224,21 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'write' method:
+# TODO: Change placeholders below to desired parameter values for the `write` method:
 
 # * The project ID. The value can be the numeric project ID or string-based project name.
 project = ''
 
+
 write_timeseries_request_body = {
-# TODO: Add desired entries of the 'write_timeseries_request_body' dict
+    # TODO: Add desired entries of the `write_timeseries_request_body` dict.
 }
+
 
 request = service.timeseries().write(project=project, body=write_timeseries_request_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -231,17 +249,20 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
+
+from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the cloudmonitoring service object (version v2beta2) for interacting
@@ -250,7 +271,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * The project ID to which this time series belongs. The value can be the numeric project ID or
 #   string-based project name.
@@ -263,12 +284,14 @@ metric = ''
 # * End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
 youngest = ''
 
+
 timeseriesDescriptors = service.timeseriesDescriptors()
 request = timeseriesDescriptors.list(project=project, metric=metric, youngest=youngest)
 while request is not None:
     response = request.execute()
 
     for timeseries_descriptor in response['timeseries']:
-        # TODO: Add code here to process each 'timeseries_descriptor' resource
+        # TODO: Change code below to process each `timeseries_descriptor` resource:
+        pprint(timeseries_descriptor)
 
     request = timeseriesDescriptors.list_next(previous_request=request, previous_response=response)

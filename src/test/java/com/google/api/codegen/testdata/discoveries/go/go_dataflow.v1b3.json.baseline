@@ -9,11 +9,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -22,26 +26,44 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := dataflow.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The project which owns the job.
-  projectId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Jobs.Create(projectId, &dataflow.Job{
-                                        // TODO: Fill required fields.
-                                      }).Context(ctx).Do()
+  // Construct the dataflow service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := dataflow.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Create` method:
+
+  // * The project which owns the job.
+  projectId := ""
+
+  jobBody := dataflow.Job{
+    // TODO: Add desired fields of the `jobBody` variable.
+  }
+
+  res, err := service.Projects.Jobs.Create(projectId, &jobBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -53,11 +75,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -66,27 +92,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := dataflow.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The project which owns the job.
-  projectId := "" // TODO: Update placeholder value.
-
-  // Identifies a single job.
-  jobId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Jobs.Get(projectId, jobId).Context(ctx).Do()
+  // Construct the dataflow service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := dataflow.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+  // * The project which owns the job.
+  projectId := ""
+
+  // * Identifies a single job.
+  jobId := ""
+
+  res, err := service.Projects.Jobs.Get(projectId, jobId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -98,11 +140,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -111,27 +157,43 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := dataflow.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // A project id.
-  projectId := "" // TODO: Update placeholder value.
-
-  // The job to get messages for.
-  jobId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Jobs.GetMetrics(projectId, jobId).Context(ctx).Do()
+  // Construct the dataflow service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := dataflow.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `GetMetrics` method:
+
+  // * A project id.
+  projectId := ""
+
+  // * The job to get messages for.
+  jobId := ""
+
+  res, err := service.Projects.Jobs.GetMetrics(projectId, jobId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -143,11 +205,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -156,28 +222,42 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := dataflow.New(hc)
+
+  // Construct the dataflow service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := dataflow.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The project which owns the jobs.
-  projectId := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
 
+  // * The project which owns the jobs.
+  projectId := ""
 
-  call := c.Projects.Jobs.List(projectId)
-  if err := call.Pages(ctx, func(page *dataflow.ListJobsResponse) error {
-    for _, v := range page.Jobs {
-      // TODO: Use v.
-      _ = v
+  req := service.Projects.Jobs.List(projectId)
+  if err := req.Pages(ctx, func(page *dataflow.ListJobsResponse) error {
+    for _, job := range page.Jobs {
+      // TODO: Change code below to process each `job` resource:
+      out, err := json.MarshalIndent(job, "", "  ")
+      if err != nil {
+        return err
+      }
+      fmt.Println(out)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -190,11 +270,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -203,31 +287,45 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := dataflow.New(hc)
+
+  // Construct the dataflow service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := dataflow.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // A project id.
-  projectId := "" // TODO: Update placeholder value.
+  // TODO: Change placeholders below to desired parameter values for the `List` method:
 
-  // The job to get messages about.
-  jobId := "" // TODO: Update placeholder value.
+  // * A project id.
+  projectId := ""
 
+  // * The job to get messages about.
+  jobId := ""
 
-  call := c.Projects.Jobs.Messages.List(projectId, jobId)
-  if err := call.Pages(ctx, func(page *dataflow.ListJobMessagesResponse) error {
-    for _, v := range page.JobMessages {
-      // TODO: Use v.
-      _ = v
+  req := service.Projects.Jobs.Messages.List(projectId, jobId)
+  if err := req.Pages(ctx, func(page *dataflow.ListJobMessagesResponse) error {
+    for _, jobMessage := range page.JobMessages {
+      // TODO: Change code below to process each `jobMessage` resource:
+      out, err := json.MarshalIndent(jobMessage, "", "  ")
+      if err != nil {
+        return err
+      }
+      fmt.Println(out)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -240,11 +338,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -253,29 +355,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := dataflow.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The project which owns the job.
-  projectId := "" // TODO: Update placeholder value.
-
-  // Identifies a single job.
-  jobId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Jobs.Update(projectId, jobId, &dataflow.Job{
-                                        // TODO: Fill required fields.
-                                      }).Context(ctx).Do()
+  // Construct the dataflow service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := dataflow.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
+  // * The project which owns the job.
+  projectId := ""
+
+  // * Identifies a single job.
+  jobId := ""
+
+  jobBody := dataflow.Job{
+    // TODO: Add desired fields of the `jobBody` variable.
+  }
+
+  res, err := service.Projects.Jobs.Update(projectId, jobId, &jobBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -287,11 +407,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -300,29 +424,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := dataflow.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // Identifies the project this worker belongs to.
-  projectId := "" // TODO: Update placeholder value.
-
-  // Identifies the workflow job this worker belongs to.
-  jobId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Jobs.WorkItems.Lease(projectId, jobId, &dataflow.LeaseWorkItemRequest{
-                                                 // TODO: Fill required fields.
-                                               }).Context(ctx).Do()
+  // Construct the dataflow service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := dataflow.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `Lease` method:
+
+  // * Identifies the project this worker belongs to.
+  projectId := ""
+
+  // * Identifies the workflow job this worker belongs to.
+  jobId := ""
+
+  leaseWorkItemRequestBody := dataflow.LeaseWorkItemRequest{
+    // TODO: Add desired fields of the `leaseWorkItemRequestBody` variable.
+  }
+
+  res, err := service.Projects.Jobs.WorkItems.Lease(projectId, jobId, &leaseWorkItemRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -334,11 +476,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -347,29 +493,47 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := dataflow.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The project which owns the WorkItem's job.
-  projectId := "" // TODO: Update placeholder value.
-
-  // The job which the WorkItem is part of.
-  jobId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.Jobs.WorkItems.ReportStatus(projectId, jobId, &dataflow.ReportWorkItemStatusRequest{
-                                                        // TODO: Fill required fields.
-                                                      }).Context(ctx).Do()
+  // Construct the dataflow service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := dataflow.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `ReportStatus` method:
+
+  // * The project which owns the WorkItem's job.
+  projectId := ""
+
+  // * The job which the WorkItem is part of.
+  jobId := ""
+
+  reportWorkItemStatusRequestBody := dataflow.ReportWorkItemStatusRequest{
+    // TODO: Add desired fields of the `reportWorkItemStatusRequestBody` variable.
+  }
+
+  res, err := service.Projects.Jobs.WorkItems.ReportStatus(projectId, jobId, &reportWorkItemStatusRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -381,11 +545,15 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -394,24 +562,42 @@ import (
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  client, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
-  }
-  c, err := dataflow.New(hc)
-  if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-  // The project to send the WorkerMessages to.
-  projectId := "" // TODO: Update placeholder value.
-
-  resp, err := c.Projects.WorkerMessages(projectId, &dataflow.SendWorkerMessagesRequest{
-                                           // TODO: Fill required fields.
-                                         }).Context(ctx).Do()
+  // Construct the dataflow service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := dataflow.New(client)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Change placeholders below to desired parameter values for the `WorkerMessages` method:
+
+  // * The project to send the WorkerMessages to.
+  projectId := ""
+
+  sendWorkerMessagesRequestBody := dataflow.SendWorkerMessagesRequest{
+    // TODO: Add desired fields of the `sendWorkerMessagesRequestBody` variable.
+  }
+
+  res, err := service.Projects.WorkerMessages(projectId, &sendWorkerMessagesRequestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }

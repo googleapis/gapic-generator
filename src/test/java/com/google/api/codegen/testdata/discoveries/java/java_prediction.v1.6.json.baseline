@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Prediction API
@@ -8,7 +8,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -23,15 +23,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.prediction.Prediction;
 import com.google.api.services.prediction.model.Input;
 import com.google.api.services.prediction.model.Output;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class PredictionExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -46,11 +47,16 @@ public class PredictionExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the prediction service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Prediction predictionService = new Prediction.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'predict' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `predict` method:
 
     // * The project associated with the model.
     String project = "";
@@ -58,16 +64,20 @@ public class PredictionExample {
     // * The name of a hosted model.
     String hostedModelName = "";
 
-    Input content = new Input();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Prediction.Hostedmodels.Predict request = predictionService.hostedmodels().predict(project, hostedModelName, content);
+    Input requestBody = new Input();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Prediction.Hostedmodels.Predict request = predictionService.hostedmodels().predict(project, hostedModelName, requestBody);
     Output response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Prediction API
@@ -76,7 +86,7 @@ public class PredictionExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -90,15 +100,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.prediction.Prediction;
 import com.google.api.services.prediction.model.Analyze;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class PredictionExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -113,11 +124,16 @@ public class PredictionExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the prediction service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Prediction predictionService = new Prediction.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'analyze' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `analyze` method:
 
     // * The project associated with the model.
     String project = "";
@@ -125,13 +141,16 @@ public class PredictionExample {
     // * The unique name for the predictive model.
     String id = "";
 
+
     Prediction.Trainedmodels.Analyze request = predictionService.trainedmodels().analyze(project, id);
     Analyze response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Prediction API
@@ -140,7 +159,7 @@ public class PredictionExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -158,10 +177,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class PredictionExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -176,11 +194,16 @@ public class PredictionExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the prediction service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Prediction predictionService = new Prediction.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
 
     // * The project associated with the model.
     String project = "";
@@ -188,11 +211,12 @@ public class PredictionExample {
     // * The unique name for the predictive model.
     String id = "";
 
+
     Prediction.Trainedmodels.Delete request = predictionService.trainedmodels().delete(project, id);
     request.execute();
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Prediction API
@@ -201,7 +225,7 @@ public class PredictionExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -215,15 +239,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.prediction.Prediction;
 import com.google.api.services.prediction.model.Insert2;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class PredictionExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -238,11 +263,16 @@ public class PredictionExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the prediction service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Prediction predictionService = new Prediction.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
 
     // * The project associated with the model.
     String project = "";
@@ -250,13 +280,16 @@ public class PredictionExample {
     // * The unique name for the predictive model.
     String id = "";
 
+
     Prediction.Trainedmodels.Get request = predictionService.trainedmodels().get(project, id);
     Insert2 response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Prediction API
@@ -265,7 +298,7 @@ public class PredictionExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -280,15 +313,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.prediction.Prediction;
 import com.google.api.services.prediction.model.Insert;
 import com.google.api.services.prediction.model.Insert2;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class PredictionExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -303,25 +337,34 @@ public class PredictionExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the prediction service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Prediction predictionService = new Prediction.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
 
     // * The project associated with the model.
     String project = "";
 
-    Insert content = new Insert();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Prediction.Trainedmodels.Insert request = predictionService.trainedmodels().insert(project, content);
+    Insert requestBody = new Insert();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Prediction.Trainedmodels.Insert request = predictionService.trainedmodels().insert(project, requestBody);
     Insert2 response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Prediction API
@@ -330,7 +373,7 @@ public class PredictionExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -345,15 +388,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.prediction.Prediction;
 import com.google.api.services.prediction.model.Insert2;
 import com.google.api.services.prediction.model.List;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class PredictionExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -368,16 +412,25 @@ public class PredictionExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the prediction service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Prediction predictionService = new Prediction.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
 
     // * The project associated with the model.
     String project = "";
 
+
     Prediction.Trainedmodels.List request = predictionService.trainedmodels().list(project);
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     List response;
     do {
       response = request.execute();
@@ -385,14 +438,15 @@ public class PredictionExample {
         continue;
 
       for (Insert2 insert2 : response.getItems()) {
-        // TODO: Add code here to process each 'insert2' resource
+        // TODO: Change code below to process each `insert2` resource:
+        System.out.println(gson.toJson(new JsonParser().parse(insert2.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Prediction API
@@ -401,7 +455,7 @@ public class PredictionExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -416,15 +470,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.prediction.Prediction;
 import com.google.api.services.prediction.model.Input;
 import com.google.api.services.prediction.model.Output;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class PredictionExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -439,11 +494,16 @@ public class PredictionExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the prediction service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Prediction predictionService = new Prediction.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'predict' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `predict` method:
 
     // * The project associated with the model.
     String project = "";
@@ -451,16 +511,20 @@ public class PredictionExample {
     // * The unique name for the predictive model.
     String id = "";
 
-    Input content = new Input();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Prediction.Trainedmodels.Predict request = predictionService.trainedmodels().predict(project, id, content);
+    Input requestBody = new Input();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Prediction.Trainedmodels.Predict request = predictionService.trainedmodels().predict(project, id, requestBody);
     Output response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Prediction API
@@ -469,7 +533,7 @@ public class PredictionExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -484,15 +548,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.prediction.Prediction;
 import com.google.api.services.prediction.model.Insert2;
 import com.google.api.services.prediction.model.Update;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class PredictionExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -507,11 +572,16 @@ public class PredictionExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the prediction service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     Prediction predictionService = new Prediction.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
 
     // * The project associated with the model.
     String project = "";
@@ -519,12 +589,16 @@ public class PredictionExample {
     // * The unique name for the predictive model.
     String id = "";
 
-    Update content = new Update();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Prediction.Trainedmodels.Update request = predictionService.trainedmodels().update(project, id, content);
+    Update requestBody = new Update();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Prediction.Trainedmodels.Update request = predictionService.trainedmodels().update(project, id, requestBody);
     Insert2 response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }

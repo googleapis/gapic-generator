@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -8,7 +8,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -22,15 +22,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -45,11 +46,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -60,13 +66,16 @@ public class SQLAdminExample {
     // * The ID of the Backup Run to delete. To find a Backup Run ID, use the list method.
     long id = 0;
 
+
     SQLAdmin.BackupRuns.Delete request = sqladminService.backupRuns().delete(project, instance, id);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -75,7 +84,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -89,15 +98,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.BackupRun;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -112,11 +122,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -127,13 +142,16 @@ public class SQLAdminExample {
     // * The ID of this Backup Run.
     long id = 0;
 
+
     SQLAdmin.BackupRuns.Get request = sqladminService.backupRuns().get(project, instance, id);
     BackupRun response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -142,7 +160,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -157,15 +175,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.BackupRun;
 import com.google.api.services.sqladmin.model.BackupRunsListResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -180,11 +199,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -192,7 +216,11 @@ public class SQLAdminExample {
     // * Cloud SQL instance ID. This does not include the project ID.
     String instance = "";
 
+
     SQLAdmin.BackupRuns.List request = sqladminService.backupRuns().list(project, instance);
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     BackupRunsListResponse response;
     do {
       response = request.execute();
@@ -200,14 +228,15 @@ public class SQLAdminExample {
         continue;
 
       for (BackupRun backupRun : response.getItems()) {
-        // TODO: Add code here to process each 'backupRun' resource
+        // TODO: Change code below to process each `backupRun` resource:
+        System.out.println(gson.toJson(new JsonParser().parse(backupRun.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -216,7 +245,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -230,15 +259,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -253,11 +283,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -268,13 +303,16 @@ public class SQLAdminExample {
     // * Name of the database to be deleted in the instance.
     String database = "";
 
+
     SQLAdmin.Databases.Delete request = sqladminService.databases().delete(project, instance, database);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -283,7 +321,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -297,15 +335,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.Database;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -320,11 +359,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -335,13 +379,16 @@ public class SQLAdminExample {
     // * Name of the database in the instance.
     String database = "";
 
+
     SQLAdmin.Databases.Get request = sqladminService.databases().get(project, instance, database);
     Database response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -350,7 +397,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -365,15 +412,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.Database;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -388,11 +436,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -400,16 +453,20 @@ public class SQLAdminExample {
     // * Database instance ID. This does not include the project ID.
     String instance = "";
 
-    Database content = new Database();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    SQLAdmin.Databases.Insert request = sqladminService.databases().insert(project, instance, content);
+    Database requestBody = new Database();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    SQLAdmin.Databases.Insert request = sqladminService.databases().insert(project, instance, requestBody);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -418,7 +475,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -432,15 +489,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.DatabasesListResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -455,11 +513,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
 
     // * Project ID of the project for which to list Cloud SQL instances.
     String project = "";
@@ -467,13 +530,16 @@ public class SQLAdminExample {
     // * Cloud SQL instance ID. This does not include the project ID.
     String instance = "";
 
+
     SQLAdmin.Databases.List request = sqladminService.databases().list(project, instance);
     DatabasesListResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -482,7 +548,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -497,15 +563,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.Database;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -520,11 +587,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -535,16 +607,20 @@ public class SQLAdminExample {
     // * Name of the database to be updated in the instance.
     String database = "";
 
-    Database content = new Database();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    SQLAdmin.Databases.Patch request = sqladminService.databases().patch(project, instance, database, content);
+    Database requestBody = new Database();
+    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
+
+
+    SQLAdmin.Databases.Patch request = sqladminService.databases().patch(project, instance, database, requestBody);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -553,7 +629,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -568,15 +644,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.Database;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -591,11 +668,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -606,16 +688,20 @@ public class SQLAdminExample {
     // * Name of the database to be updated in the instance.
     String database = "";
 
-    Database content = new Database();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    SQLAdmin.Databases.Update request = sqladminService.databases().update(project, instance, database, content);
+    Database requestBody = new Database();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    SQLAdmin.Databases.Update request = sqladminService.databases().update(project, instance, database, requestBody);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -624,7 +710,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -638,15 +724,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.FlagsListResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -661,6 +748,10 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -669,10 +760,12 @@ public class SQLAdminExample {
     SQLAdmin.Flags.List request = sqladminService.flags().list();
     FlagsListResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -681,7 +774,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -696,15 +789,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.InstancesCloneRequest;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -719,11 +813,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'clone' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `clone` method:
 
     // * Project ID of the source as well as the clone Cloud SQL instance.
     String project = "";
@@ -731,16 +830,20 @@ public class SQLAdminExample {
     // * The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
     String instance = "";
 
-    InstancesCloneRequest content = new InstancesCloneRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    SQLAdmin.Instances.Clone request = sqladminService.instances().clone(project, instance, content);
+    InstancesCloneRequest requestBody = new InstancesCloneRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    SQLAdmin.Instances.Clone request = sqladminService.instances().clone(project, instance, requestBody);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -749,7 +852,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -763,15 +866,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -786,11 +890,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
 
     // * Project ID of the project that contains the instance to be deleted.
     String project = "";
@@ -798,13 +907,16 @@ public class SQLAdminExample {
     // * Cloud SQL instance ID. This does not include the project ID.
     String instance = "";
 
+
     SQLAdmin.Instances.Delete request = sqladminService.instances().delete(project, instance);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -813,7 +925,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -828,15 +940,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.InstancesExportRequest;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -851,11 +964,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'export' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `export` method:
 
     // * Project ID of the project that contains the instance to be exported.
     String project = "";
@@ -863,16 +981,20 @@ public class SQLAdminExample {
     // * Cloud SQL instance ID. This does not include the project ID.
     String instance = "";
 
-    InstancesExportRequest content = new InstancesExportRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    SQLAdmin.Instances.Export request = sqladminService.instances().export(project, instance, content);
+    InstancesExportRequest requestBody = new InstancesExportRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    SQLAdmin.Instances.Export request = sqladminService.instances().export(project, instance, requestBody);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -881,7 +1003,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -896,15 +1018,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.InstancesFailoverRequest;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -919,11 +1042,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'failover' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `failover` method:
 
     // * ID of the project that contains the read replica.
     String project = "";
@@ -931,16 +1059,20 @@ public class SQLAdminExample {
     // * Cloud SQL instance ID. This does not include the project ID.
     String instance = "";
 
-    InstancesFailoverRequest content = new InstancesFailoverRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    SQLAdmin.Instances.Failover request = sqladminService.instances().failover(project, instance, content);
+    InstancesFailoverRequest requestBody = new InstancesFailoverRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    SQLAdmin.Instances.Failover request = sqladminService.instances().failover(project, instance, requestBody);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -949,7 +1081,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -963,15 +1095,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.DatabaseInstance;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -986,11 +1119,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -998,13 +1136,16 @@ public class SQLAdminExample {
     // * Database instance ID. This does not include the project ID.
     String instance = "";
 
+
     SQLAdmin.Instances.Get request = sqladminService.instances().get(project, instance);
     DatabaseInstance response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -1013,7 +1154,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1028,15 +1169,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.InstancesImportRequest;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1051,11 +1193,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'sqladminImport' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `sqladminImport` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -1063,16 +1210,20 @@ public class SQLAdminExample {
     // * Cloud SQL instance ID. This does not include the project ID.
     String instance = "";
 
-    InstancesImportRequest content = new InstancesImportRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    SQLAdmin.Instances.SQLAdminImport request = sqladminService.instances().sqladminImport(project, instance, content);
+    InstancesImportRequest requestBody = new InstancesImportRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    SQLAdmin.Instances.SQLAdminImport request = sqladminService.instances().sqladminImport(project, instance, requestBody);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -1081,7 +1232,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1096,15 +1247,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.DatabaseInstance;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1119,25 +1271,34 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
 
     // * Project ID of the project to which the newly created Cloud SQL instances should belong.
     String project = "";
 
-    DatabaseInstance content = new DatabaseInstance();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    SQLAdmin.Instances.Insert request = sqladminService.instances().insert(project, content);
+    DatabaseInstance requestBody = new DatabaseInstance();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    SQLAdmin.Instances.Insert request = sqladminService.instances().insert(project, requestBody);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -1146,7 +1307,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1161,15 +1322,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.DatabaseInstance;
 import com.google.api.services.sqladmin.model.InstancesListResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1184,16 +1346,25 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
 
     // * Project ID of the project for which to list Cloud SQL instances.
     String project = "";
 
+
     SQLAdmin.Instances.List request = sqladminService.instances().list(project);
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     InstancesListResponse response;
     do {
       response = request.execute();
@@ -1201,14 +1372,15 @@ public class SQLAdminExample {
         continue;
 
       for (DatabaseInstance databaseInstance : response.getItems()) {
-        // TODO: Add code here to process each 'databaseInstance' resource
+        // TODO: Change code below to process each `databaseInstance` resource:
+        System.out.println(gson.toJson(new JsonParser().parse(databaseInstance.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -1217,7 +1389,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1232,15 +1404,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.DatabaseInstance;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1255,11 +1428,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -1267,16 +1445,20 @@ public class SQLAdminExample {
     // * Cloud SQL instance ID. This does not include the project ID.
     String instance = "";
 
-    DatabaseInstance content = new DatabaseInstance();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    SQLAdmin.Instances.Patch request = sqladminService.instances().patch(project, instance, content);
+    DatabaseInstance requestBody = new DatabaseInstance();
+    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
+
+
+    SQLAdmin.Instances.Patch request = sqladminService.instances().patch(project, instance, requestBody);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -1285,7 +1467,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1299,15 +1481,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1322,11 +1505,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'promoteReplica' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `promoteReplica` method:
 
     // * ID of the project that contains the read replica.
     String project = "";
@@ -1334,13 +1522,16 @@ public class SQLAdminExample {
     // * Cloud SQL read replica instance name.
     String instance = "";
 
+
     SQLAdmin.Instances.PromoteReplica request = sqladminService.instances().promoteReplica(project, instance);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -1349,7 +1540,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1363,15 +1554,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1386,11 +1578,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'resetSslConfig' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `resetSslConfig` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -1398,13 +1595,16 @@ public class SQLAdminExample {
     // * Cloud SQL instance ID. This does not include the project ID.
     String instance = "";
 
+
     SQLAdmin.Instances.ResetSslConfig request = sqladminService.instances().resetSslConfig(project, instance);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -1413,7 +1613,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1427,15 +1627,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1450,11 +1651,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'restart' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `restart` method:
 
     // * Project ID of the project that contains the instance to be restarted.
     String project = "";
@@ -1462,13 +1668,16 @@ public class SQLAdminExample {
     // * Cloud SQL instance ID. This does not include the project ID.
     String instance = "";
 
+
     SQLAdmin.Instances.Restart request = sqladminService.instances().restart(project, instance);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -1477,7 +1686,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1492,15 +1701,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.InstancesRestoreBackupRequest;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1515,11 +1725,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'restoreBackup' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `restoreBackup` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -1527,16 +1742,20 @@ public class SQLAdminExample {
     // * Cloud SQL instance ID. This does not include the project ID.
     String instance = "";
 
-    InstancesRestoreBackupRequest content = new InstancesRestoreBackupRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    SQLAdmin.Instances.RestoreBackup request = sqladminService.instances().restoreBackup(project, instance, content);
+    InstancesRestoreBackupRequest requestBody = new InstancesRestoreBackupRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    SQLAdmin.Instances.RestoreBackup request = sqladminService.instances().restoreBackup(project, instance, requestBody);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -1545,7 +1764,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1559,15 +1778,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1582,25 +1802,33 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'startReplica' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `startReplica` method:
 
     // * ID of the project that contains the read replica.
     String project = "";
 
     // * Cloud SQL read replica instance name.
     String instance = "";
+
 
     SQLAdmin.Instances.StartReplica request = sqladminService.instances().startReplica(project, instance);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -1609,7 +1837,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1623,15 +1851,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1646,11 +1875,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'stopReplica' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `stopReplica` method:
 
     // * ID of the project that contains the read replica.
     String project = "";
@@ -1658,13 +1892,16 @@ public class SQLAdminExample {
     // * Cloud SQL read replica instance name.
     String instance = "";
 
+
     SQLAdmin.Instances.StopReplica request = sqladminService.instances().stopReplica(project, instance);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -1673,7 +1910,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1688,15 +1925,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.DatabaseInstance;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1711,11 +1949,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -1723,16 +1966,20 @@ public class SQLAdminExample {
     // * Cloud SQL instance ID. This does not include the project ID.
     String instance = "";
 
-    DatabaseInstance content = new DatabaseInstance();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    SQLAdmin.Instances.Update request = sqladminService.instances().update(project, instance, content);
+    DatabaseInstance requestBody = new DatabaseInstance();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    SQLAdmin.Instances.Update request = sqladminService.instances().update(project, instance, requestBody);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -1741,7 +1988,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1755,15 +2002,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1778,11 +2026,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -1790,13 +2043,16 @@ public class SQLAdminExample {
     // * Instance operation ID.
     String operation = "";
 
+
     SQLAdmin.Operations.Get request = sqladminService.operations().get(project, operation);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -1805,7 +2061,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1820,15 +2076,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.Operation;
 import com.google.api.services.sqladmin.model.OperationsListResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1843,11 +2100,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -1855,7 +2117,11 @@ public class SQLAdminExample {
     // * Cloud SQL instance ID. This does not include the project ID.
     String instance = "";
 
+
     SQLAdmin.Operations.List request = sqladminService.operations().list(project, instance);
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     OperationsListResponse response;
     do {
       response = request.execute();
@@ -1863,14 +2129,15 @@ public class SQLAdminExample {
         continue;
 
       for (Operation operation : response.getItems()) {
-        // TODO: Add code here to process each 'operation' resource
+        // TODO: Change code below to process each `operation` resource:
+        System.out.println(gson.toJson(new JsonParser().parse(operation.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -1879,7 +2146,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1894,15 +2161,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.SslCert;
 import com.google.api.services.sqladmin.model.SslCertsCreateEphemeralRequest;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1917,11 +2185,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'createEphemeral' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `createEphemeral` method:
 
     // * Project ID of the Cloud SQL project.
     String project = "";
@@ -1929,16 +2202,20 @@ public class SQLAdminExample {
     // * Cloud SQL instance ID. This does not include the project ID.
     String instance = "";
 
-    SslCertsCreateEphemeralRequest content = new SslCertsCreateEphemeralRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    SQLAdmin.SslCerts.CreateEphemeral request = sqladminService.sslCerts().createEphemeral(project, instance, content);
+    SslCertsCreateEphemeralRequest requestBody = new SslCertsCreateEphemeralRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    SQLAdmin.SslCerts.CreateEphemeral request = sqladminService.sslCerts().createEphemeral(project, instance, requestBody);
     SslCert response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -1947,7 +2224,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1961,15 +2238,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1984,11 +2262,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
 
     // * Project ID of the project that contains the instance to be deleted.
     String project = "";
@@ -1999,13 +2282,16 @@ public class SQLAdminExample {
     // * Sha1 FingerPrint.
     String sha1Fingerprint = "";
 
+
     SQLAdmin.SslCerts.Delete request = sqladminService.sslCerts().delete(project, instance, sha1Fingerprint);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -2014,7 +2300,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -2028,15 +2314,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.SslCert;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -2051,11 +2338,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -2066,13 +2358,16 @@ public class SQLAdminExample {
     // * Sha1 FingerPrint.
     String sha1Fingerprint = "";
 
+
     SQLAdmin.SslCerts.Get request = sqladminService.sslCerts().get(project, instance, sha1Fingerprint);
     SslCert response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -2081,7 +2376,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -2096,15 +2391,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.SslCertsInsertRequest;
 import com.google.api.services.sqladmin.model.SslCertsInsertResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -2119,11 +2415,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
 
     // * Project ID of the project to which the newly created Cloud SQL instances should belong.
     String project = "";
@@ -2131,16 +2432,20 @@ public class SQLAdminExample {
     // * Cloud SQL instance ID. This does not include the project ID.
     String instance = "";
 
-    SslCertsInsertRequest content = new SslCertsInsertRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    SQLAdmin.SslCerts.Insert request = sqladminService.sslCerts().insert(project, instance, content);
+    SslCertsInsertRequest requestBody = new SslCertsInsertRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    SQLAdmin.SslCerts.Insert request = sqladminService.sslCerts().insert(project, instance, requestBody);
     SslCertsInsertResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -2149,7 +2454,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -2163,15 +2468,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.SslCertsListResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -2186,11 +2492,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
 
     // * Project ID of the project for which to list Cloud SQL instances.
     String project = "";
@@ -2198,13 +2509,16 @@ public class SQLAdminExample {
     // * Cloud SQL instance ID. This does not include the project ID.
     String instance = "";
 
+
     SQLAdmin.SslCerts.List request = sqladminService.sslCerts().list(project, instance);
     SslCertsListResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -2213,7 +2527,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -2227,15 +2541,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.TiersListResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -2250,22 +2565,30 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
 
     // * Project ID of the project for which to list tiers.
     String project = "";
 
+
     SQLAdmin.Tiers.List request = sqladminService.tiers().list(project);
     TiersListResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -2274,7 +2597,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -2288,15 +2611,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.Operation;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -2311,11 +2635,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -2329,13 +2658,16 @@ public class SQLAdminExample {
     // * Name of the user in the instance.
     String name = "";
 
+
     SQLAdmin.Users.Delete request = sqladminService.users().delete(project, instance, host, name);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -2344,7 +2676,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -2359,15 +2691,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.Operation;
 import com.google.api.services.sqladmin.model.User;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -2382,11 +2715,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -2394,16 +2732,20 @@ public class SQLAdminExample {
     // * Database instance ID. This does not include the project ID.
     String instance = "";
 
-    User content = new User();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    SQLAdmin.Users.Insert request = sqladminService.users().insert(project, instance, content);
+    User requestBody = new User();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    SQLAdmin.Users.Insert request = sqladminService.users().insert(project, instance, requestBody);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -2412,7 +2754,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -2426,15 +2768,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.UsersListResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -2449,11 +2792,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -2461,13 +2809,16 @@ public class SQLAdminExample {
     // * Database instance ID. This does not include the project ID.
     String instance = "";
 
+
     SQLAdmin.Users.List request = sqladminService.users().list(project, instance);
     UsersListResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud SQL Administration API
@@ -2476,7 +2827,7 @@ public class SQLAdminExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -2491,15 +2842,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.model.Operation;
 import com.google.api.services.sqladmin.model.User;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class SQLAdminExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -2514,11 +2866,16 @@ public class SQLAdminExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // Construct the sqladmin service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
     SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
 
     // * Project ID of the project that contains the instance.
     String project = "";
@@ -2532,12 +2889,16 @@ public class SQLAdminExample {
     // * Name of the user in the instance.
     String name = "";
 
-    User content = new User();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    SQLAdmin.Users.Update request = sqladminService.users().update(project, instance, host, name, content);
+    User requestBody = new User();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    SQLAdmin.Users.Update request = sqladminService.users().update(project, instance, host, name, requestBody);
     Operation response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }

@@ -7,7 +7,7 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -16,49 +16,61 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dns.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dns.v1.Data;
 
+
 namespace DnsSample
 {
-    public class Program
+    public class DnsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dns service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DnsService dnsService = new DnsService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Create() method:
 
-            // Identifies the project addressed by this request.
+            // TODO: Change placeholders below to desired parameter values for the `Create` method:
+
+            // * Identifies the project addressed by this request.
             string project = "";
 
-            // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+            // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
             string managedZone = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Change content = new Data.Change();
 
-            ChangesResource.CreateRequest request = dnsService.Changes.Create(content, project, managedZone);
+            Data.Change requestBody = new Data.Change();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ChangesResource.CreateRequest request = dnsService.Changes.Create(requestBody, project, managedZone);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Change response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Change response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -70,7 +82,7 @@ namespace DnsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -79,49 +91,60 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dns.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dns.v1.Data;
 
+
 namespace DnsSample
 {
-    public class Program
+    public class DnsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dns service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DnsService dnsService = new DnsService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
 
-            // Identifies the project addressed by this request.
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // * Identifies the project addressed by this request.
             string project = "";
 
-            // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+            // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
             string managedZone = "";
 
-            // The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
+            // * The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
             string changeId = "";
 
-            ChangesResource.GetRequest request = dnsService.Changes.Get(project, managedZone, changeId);
-            Data.Change response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            ChangesResource.GetRequest request = dnsService.Changes.Get(project, managedZone, changeId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Change response = request.Execute();
             // Data.Change response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -133,7 +156,7 @@ namespace DnsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -142,59 +165,69 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dns.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dns.v1.Data;
 
+
 namespace DnsSample
 {
-    public class Program
+    public class DnsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dns service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DnsService dnsService = new DnsService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
-            // Identifies the project addressed by this request.
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * Identifies the project addressed by this request.
             string project = "";
 
-            // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+            // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
             string managedZone = "";
 
+
             ChangesResource.ListRequest request = dnsService.Changes.List(project, managedZone);
+
             Data.ChangesListResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Changes == null)
                 {
                     continue;
                 }
-                foreach (Data.Change item in response.Changes)
+                foreach (Data.Change change in response.Changes)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `change` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(change));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.ChangesListResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -206,7 +239,7 @@ namespace DnsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -215,46 +248,58 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dns.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dns.v1.Data;
 
+
 namespace DnsSample
 {
-    public class Program
+    public class DnsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dns service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DnsService dnsService = new DnsService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Create() method:
 
-            // Identifies the project addressed by this request.
+            // TODO: Change placeholders below to desired parameter values for the `Create` method:
+
+            // * Identifies the project addressed by this request.
             string project = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.ManagedZone content = new Data.ManagedZone();
 
-            ManagedZonesResource.CreateRequest request = dnsService.ManagedZones.Create(content, project);
+            Data.ManagedZone requestBody = new Data.ManagedZone();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ManagedZonesResource.CreateRequest request = dnsService.ManagedZones.Create(requestBody, project);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ManagedZone response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.ManagedZone response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -266,7 +311,7 @@ namespace DnsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -276,42 +321,49 @@ using Google.Apis.Dns.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
 
+
 namespace DnsSample
 {
-    public class Program
+    public class DnsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dns service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DnsService dnsService = new DnsService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Delete() method:
 
-            // Identifies the project addressed by this request.
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+            // * Identifies the project addressed by this request.
             string project = "";
 
-            // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+            // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
             string managedZone = "";
 
-            ManagedZonesResource.DeleteRequest request = dnsService.ManagedZones.Delete(project, managedZone);
-            request.Execute();
 
-            // To execute asynchronously in an async method, use
+            ManagedZonesResource.DeleteRequest request = dnsService.ManagedZones.Delete(project, managedZone);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            request.Execute();
             // await request.ExecuteAsync();
         }
     }
@@ -324,7 +376,7 @@ namespace DnsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -333,46 +385,57 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dns.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dns.v1.Data;
 
+
 namespace DnsSample
 {
-    public class Program
+    public class DnsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dns service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DnsService dnsService = new DnsService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
 
-            // Identifies the project addressed by this request.
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // * Identifies the project addressed by this request.
             string project = "";
 
-            // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+            // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
             string managedZone = "";
 
-            ManagedZonesResource.GetRequest request = dnsService.ManagedZones.Get(project, managedZone);
-            Data.ManagedZone response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            ManagedZonesResource.GetRequest request = dnsService.ManagedZones.Get(project, managedZone);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.ManagedZone response = request.Execute();
             // Data.ManagedZone response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -384,7 +447,7 @@ namespace DnsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -393,56 +456,66 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dns.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dns.v1.Data;
 
+
 namespace DnsSample
 {
-    public class Program
+    public class DnsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dns service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DnsService dnsService = new DnsService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
-            // Identifies the project addressed by this request.
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * Identifies the project addressed by this request.
             string project = "";
 
+
             ManagedZonesResource.ListRequest request = dnsService.ManagedZones.List(project);
+
             Data.ManagedZonesListResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.ManagedZones == null)
                 {
                     continue;
                 }
-                foreach (Data.ManagedZone item in response.ManagedZones)
+                foreach (Data.ManagedZone managedZone in response.ManagedZones)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `managedZone` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(managedZone));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.ManagedZonesListResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -454,7 +527,7 @@ namespace DnsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -463,43 +536,54 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dns.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dns.v1.Data;
 
+
 namespace DnsSample
 {
-    public class Program
+    public class DnsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dns service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DnsService dnsService = new DnsService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
 
-            // Identifies the project addressed by this request.
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // * Identifies the project addressed by this request.
             string project = "";
+
 
             ProjectsResource.GetRequest request = dnsService.Projects.Get(project);
-            Data.Project response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Project response = request.Execute();
             // Data.Project response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -511,7 +595,7 @@ namespace DnsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -520,59 +604,69 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dns.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Dns.v1.Data;
 
+
 namespace DnsSample
 {
-    public class Program
+    public class DnsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the dns service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             DnsService dnsService = new DnsService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
-            // Identifies the project addressed by this request.
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * Identifies the project addressed by this request.
             string project = "";
 
-            // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+            // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
             string managedZone = "";
 
+
             ResourceRecordSetsResource.ListRequest request = dnsService.ResourceRecordSets.List(project, managedZone);
+
             Data.ResourceRecordSetsListResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Rrsets == null)
                 {
                     continue;
                 }
-                foreach (Data.ResourceRecordSet item in response.Rrsets)
+                foreach (Data.ResourceRecordSet resourceRecordSet in response.Rrsets)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `resourceRecordSet` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(resourceRecordSet));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.ResourceRecordSetsListResponse response = await request.ExecuteAsync();
         }
     }
 }

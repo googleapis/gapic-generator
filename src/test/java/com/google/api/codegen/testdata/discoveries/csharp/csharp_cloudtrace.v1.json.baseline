@@ -7,7 +7,7 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -16,46 +16,58 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudtrace.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Cloudtrace.v1.Data;
 
+
 namespace CloudtraceSample
 {
-    public class Program
+    public class CloudtraceServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the cloudtrace service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             CloudtraceService cloudtraceService = new CloudtraceService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the PatchTraces() method:
 
-            // ID of the Cloud project where the trace data is stored.
+            // TODO: Change placeholders below to desired parameter values for the `PatchTraces` method:
+
+            // * ID of the Cloud project where the trace data is stored.
             string projectId = "";
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Traces content = new Data.Traces();
 
-            ProjectsResource.PatchTracesRequest request = cloudtraceService.Projects.PatchTraces(content, projectId);
+            Data.Traces requestBody = new Data.Traces();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
+
+            ProjectsResource.PatchTracesRequest request = cloudtraceService.Projects.PatchTraces(requestBody, projectId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Empty response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Empty response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -67,7 +79,7 @@ namespace CloudtraceSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -76,46 +88,57 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudtrace.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Cloudtrace.v1.Data;
 
+
 namespace CloudtraceSample
 {
-    public class Program
+    public class CloudtraceServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the cloudtrace service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             CloudtraceService cloudtraceService = new CloudtraceService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
 
-            // ID of the Cloud project where the trace data is stored.
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // * ID of the Cloud project where the trace data is stored.
             string projectId = "";
 
-            // ID of the trace to return.
+            // * ID of the trace to return.
             string traceId = "";
 
-            ProjectsResource.TracesResource.GetRequest request = cloudtraceService.Projects.Traces.Get(projectId, traceId);
-            Data.Trace response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            ProjectsResource.TracesResource.GetRequest request = cloudtraceService.Projects.Traces.Get(projectId, traceId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Trace response = request.Execute();
             // Data.Trace response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -127,7 +150,7 @@ namespace CloudtraceSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -136,56 +159,66 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudtrace.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Cloudtrace.v1.Data;
 
+
 namespace CloudtraceSample
 {
-    public class Program
+    public class CloudtraceServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
+            // Construct the cloudtrace service object for interacting with the API.
+            // You can browse other available API services and versions at
+            // https://developers.google.com/api-client-library/dotnet/apis/
             CloudtraceService cloudtraceService = new CloudtraceService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
-            // ID of the Cloud project where the trace data is stored.
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // * ID of the Cloud project where the trace data is stored.
             string projectId = "";
 
+
             ProjectsResource.TracesResource.ListRequest request = cloudtraceService.Projects.Traces.List(projectId);
+
             Data.ListTracesResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Traces == null)
                 {
                     continue;
                 }
-                foreach (Data.Trace item in response.Traces)
+                foreach (Data.Trace trace in response.Traces)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Change code below to process each `trace` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(trace));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.ListTracesResponse response = await request.ExecuteAsync();
         }
     }
 }

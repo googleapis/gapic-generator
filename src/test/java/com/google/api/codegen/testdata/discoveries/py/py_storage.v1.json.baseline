@@ -8,17 +8,18 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -27,7 +28,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+# TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 # * Name of a bucket.
 bucket = ''
@@ -35,6 +36,7 @@ bucket = ''
 # * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 #   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
+
 
 request = service.bucketAccessControls().delete(bucket=bucket, entity=entity)
 request.execute()
@@ -47,9 +49,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -57,9 +59,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -68,7 +71,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+# TODO: Change placeholders below to desired parameter values for the `get` method:
 
 # * Name of a bucket.
 bucket = ''
@@ -76,11 +79,12 @@ bucket = ''
 # * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 #   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
+
 
 request = service.bucketAccessControls().get(bucket=bucket, entity=entity)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -91,9 +95,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -101,9 +105,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -112,19 +117,21 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+# TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 # * Name of a bucket.
 bucket = ''
 
+
 bucket_access_control_body = {
-# TODO: Add desired entries of the 'bucket_access_control_body' dict
+    # TODO: Add desired entries of the `bucket_access_control_body` dict.
 }
+
 
 request = service.bucketAccessControls().insert(bucket=bucket, body=bucket_access_control_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -135,9 +142,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -145,9 +152,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -156,15 +164,16 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * Name of a bucket.
 bucket = ''
+
 
 request = service.bucketAccessControls().list(bucket=bucket)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -175,9 +184,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -185,9 +194,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -196,7 +206,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+# TODO: Change placeholders below to desired parameter values for the `patch` method:
 
 # * Name of a bucket.
 bucket = ''
@@ -205,14 +215,16 @@ bucket = ''
 #   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
+
 bucket_access_control_body = {
-# TODO: Add desired entries of the 'bucket_access_control_body' dict to be changed
+    # TODO: Add desired entries of the `bucket_access_control_body` dict to be changed.
 }
+
 
 request = service.bucketAccessControls().patch(bucket=bucket, entity=entity, body=bucket_access_control_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -223,9 +235,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -233,9 +245,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -244,7 +257,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+# TODO: Change placeholders below to desired parameter values for the `update` method:
 
 # * Name of a bucket.
 bucket = ''
@@ -253,14 +266,16 @@ bucket = ''
 #   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
+
 bucket_access_control_body = {
-# TODO: Add desired entries of the 'bucket_access_control_body' dict
+    # TODO: Add desired entries of the `bucket_access_control_body` dict.
 }
+
 
 request = service.bucketAccessControls().update(bucket=bucket, entity=entity, body=bucket_access_control_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -271,17 +286,18 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -290,10 +306,11 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+# TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 # * Name of a bucket.
 bucket = ''
+
 
 request = service.buckets().delete(bucket=bucket)
 request.execute()
@@ -306,9 +323,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -316,9 +333,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -327,15 +345,16 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+# TODO: Change placeholders below to desired parameter values for the `get` method:
 
 # * Name of a bucket.
 bucket = ''
 
+
 request = service.buckets().get(bucket=bucket)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -346,9 +365,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -356,9 +375,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -367,19 +387,21 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+# TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 # * A valid API project identifier.
 project = ''
 
+
 bucket_body = {
-# TODO: Add desired entries of the 'bucket_body' dict
+    # TODO: Add desired entries of the `bucket_body` dict.
 }
+
 
 request = service.buckets().insert(project=project, body=bucket_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -390,17 +412,20 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
+
+from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -409,10 +434,11 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * A valid API project identifier.
 project = ''
+
 
 buckets = service.buckets()
 request = buckets.list(project=project)
@@ -420,7 +446,8 @@ while request is not None:
     response = request.execute()
 
     for bucket in response['items']:
-        # TODO: Add code here to process each 'bucket' resource
+        # TODO: Change code below to process each `bucket` resource:
+        pprint(bucket)
 
     request = buckets.list_next(previous_request=request, previous_response=response)
 """
@@ -432,9 +459,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -442,9 +469,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -453,19 +481,21 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+# TODO: Change placeholders below to desired parameter values for the `patch` method:
 
 # * Name of a bucket.
 bucket = ''
 
+
 bucket_body = {
-# TODO: Add desired entries of the 'bucket_body' dict to be changed
+    # TODO: Add desired entries of the `bucket_body` dict to be changed.
 }
+
 
 request = service.buckets().patch(bucket=bucket, body=bucket_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -476,9 +506,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -486,9 +516,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -497,19 +528,21 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+# TODO: Change placeholders below to desired parameter values for the `update` method:
 
 # * Name of a bucket.
 bucket = ''
 
+
 bucket_body = {
-# TODO: Add desired entries of the 'bucket_body' dict
+    # TODO: Add desired entries of the `bucket_body` dict.
 }
+
 
 request = service.buckets().update(bucket=bucket, body=bucket_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -520,17 +553,18 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -539,10 +573,10 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-
 channel_body = {
-# TODO: Add desired entries of the 'channel_body' dict
+    # TODO: Add desired entries of the `channel_body` dict.
 }
+
 
 request = service.channels().stop(body=channel_body)
 request.execute()
@@ -555,17 +589,18 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -574,7 +609,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+# TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 # * Name of a bucket.
 bucket = ''
@@ -582,6 +617,7 @@ bucket = ''
 # * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 #   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
+
 
 request = service.defaultObjectAccessControls().delete(bucket=bucket, entity=entity)
 request.execute()
@@ -594,9 +630,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -604,9 +640,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -615,7 +652,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+# TODO: Change placeholders below to desired parameter values for the `get` method:
 
 # * Name of a bucket.
 bucket = ''
@@ -623,11 +660,12 @@ bucket = ''
 # * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 #   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
+
 
 request = service.defaultObjectAccessControls().get(bucket=bucket, entity=entity)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -638,9 +676,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -648,9 +686,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -659,19 +698,21 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+# TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 # * Name of a bucket.
 bucket = ''
 
+
 object_access_control_body = {
-# TODO: Add desired entries of the 'object_access_control_body' dict
+    # TODO: Add desired entries of the `object_access_control_body` dict.
 }
+
 
 request = service.defaultObjectAccessControls().insert(bucket=bucket, body=object_access_control_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -682,9 +723,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -692,9 +733,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -703,15 +745,16 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * Name of a bucket.
 bucket = ''
+
 
 request = service.defaultObjectAccessControls().list(bucket=bucket)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -722,9 +765,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -732,9 +775,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -743,7 +787,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+# TODO: Change placeholders below to desired parameter values for the `patch` method:
 
 # * Name of a bucket.
 bucket = ''
@@ -752,14 +796,16 @@ bucket = ''
 #   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
+
 object_access_control_body = {
-# TODO: Add desired entries of the 'object_access_control_body' dict to be changed
+    # TODO: Add desired entries of the `object_access_control_body` dict to be changed.
 }
+
 
 request = service.defaultObjectAccessControls().patch(bucket=bucket, entity=entity, body=object_access_control_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -770,9 +816,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -780,9 +826,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -791,7 +838,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+# TODO: Change placeholders below to desired parameter values for the `update` method:
 
 # * Name of a bucket.
 bucket = ''
@@ -800,14 +847,16 @@ bucket = ''
 #   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
+
 object_access_control_body = {
-# TODO: Add desired entries of the 'object_access_control_body' dict
+    # TODO: Add desired entries of the `object_access_control_body` dict.
 }
+
 
 request = service.defaultObjectAccessControls().update(bucket=bucket, entity=entity, body=object_access_control_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -818,17 +867,18 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -837,7 +887,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+# TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 # * Name of a bucket.
 bucket = ''
@@ -849,6 +899,7 @@ object = ''
 # * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 #   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
+
 
 request = service.objectAccessControls().delete(bucket=bucket, object=object, entity=entity)
 request.execute()
@@ -861,9 +912,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -871,9 +922,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -882,7 +934,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+# TODO: Change placeholders below to desired parameter values for the `get` method:
 
 # * Name of a bucket.
 bucket = ''
@@ -894,11 +946,12 @@ object = ''
 # * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 #   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
+
 
 request = service.objectAccessControls().get(bucket=bucket, object=object, entity=entity)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -909,9 +962,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -919,9 +972,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -930,7 +984,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+# TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 # * Name of a bucket.
 bucket = ''
@@ -939,14 +993,16 @@ bucket = ''
 #   Encoding URI Path Parts.
 object = ''
 
+
 object_access_control_body = {
-# TODO: Add desired entries of the 'object_access_control_body' dict
+    # TODO: Add desired entries of the `object_access_control_body` dict.
 }
+
 
 request = service.objectAccessControls().insert(bucket=bucket, object=object, body=object_access_control_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -957,9 +1013,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -967,9 +1023,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -978,7 +1035,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * Name of a bucket.
 bucket = ''
@@ -986,11 +1043,12 @@ bucket = ''
 # * Name of the object. For information about how to URL encode object names to be path safe, see
 #   Encoding URI Path Parts.
 object = ''
+
 
 request = service.objectAccessControls().list(bucket=bucket, object=object)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -1001,9 +1059,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -1011,9 +1069,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -1022,7 +1081,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+# TODO: Change placeholders below to desired parameter values for the `patch` method:
 
 # * Name of a bucket.
 bucket = ''
@@ -1035,14 +1094,16 @@ object = ''
 #   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
+
 object_access_control_body = {
-# TODO: Add desired entries of the 'object_access_control_body' dict to be changed
+    # TODO: Add desired entries of the `object_access_control_body` dict to be changed.
 }
+
 
 request = service.objectAccessControls().patch(bucket=bucket, object=object, entity=entity, body=object_access_control_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -1053,9 +1114,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -1063,9 +1124,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -1074,7 +1136,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+# TODO: Change placeholders below to desired parameter values for the `update` method:
 
 # * Name of a bucket.
 bucket = ''
@@ -1087,14 +1149,16 @@ object = ''
 #   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
+
 object_access_control_body = {
-# TODO: Add desired entries of the 'object_access_control_body' dict
+    # TODO: Add desired entries of the `object_access_control_body` dict.
 }
+
 
 request = service.objectAccessControls().update(bucket=bucket, object=object, entity=entity, body=object_access_control_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -1105,9 +1169,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -1115,9 +1179,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -1126,7 +1191,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'compose' method:
+# TODO: Change placeholders below to desired parameter values for the `compose` method:
 
 # * Name of the bucket in which to store the new object.
 destinationBucket = ''
@@ -1135,14 +1200,16 @@ destinationBucket = ''
 #   Encoding URI Path Parts.
 destinationObject = ''
 
+
 compose_request_body = {
-# TODO: Add desired entries of the 'compose_request_body' dict
+    # TODO: Add desired entries of the `compose_request_body` dict.
 }
+
 
 request = service.objects().compose(destinationBucket=destinationBucket, destinationObject=destinationObject, body=compose_request_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -1153,9 +1220,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -1163,9 +1230,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -1174,7 +1242,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'copy' method:
+# TODO: Change placeholders below to desired parameter values for the `copy` method:
 
 # * Name of the bucket in which to find the source object.
 sourceBucket = ''
@@ -1192,14 +1260,16 @@ destinationBucket = ''
 #   object metadata's name value, if any.
 destinationObject = ''
 
+
 object__body = {
-# TODO: Add desired entries of the 'object__body' dict
+    # TODO: Add desired entries of the `object__body` dict.
 }
+
 
 request = service.objects().copy(sourceBucket=sourceBucket, sourceObject=sourceObject, destinationBucket=destinationBucket, destinationObject=destinationObject, body=object__body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -1210,17 +1280,18 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -1229,7 +1300,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+# TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 # * Name of the bucket in which the object resides.
 bucket = ''
@@ -1237,6 +1308,7 @@ bucket = ''
 # * Name of the object. For information about how to URL encode object names to be path safe, see
 #   Encoding URI Path Parts.
 object = ''
+
 
 request = service.objects().delete(bucket=bucket, object=object)
 request.execute()
@@ -1249,9 +1321,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -1259,9 +1331,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -1270,7 +1343,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+# TODO: Change placeholders below to desired parameter values for the `get` method:
 
 # * Name of the bucket in which the object resides.
 bucket = ''
@@ -1279,10 +1352,11 @@ bucket = ''
 #   Encoding URI Path Parts.
 object = ''
 
+
 request = service.objects().get(bucket=bucket, object=object)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -1293,9 +1367,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -1303,9 +1377,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -1314,20 +1389,22 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+# TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 # * Name of the bucket in which to store the new object. Overrides the provided object metadata's
 #   bucket value, if any.
 bucket = ''
 
+
 object__body = {
-# TODO: Add desired entries of the 'object__body' dict
+    # TODO: Add desired entries of the `object__body` dict.
 }
+
 
 request = service.objects().insert(bucket=bucket, body=object__body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -1338,17 +1415,20 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
+
+from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -1357,10 +1437,11 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # * Name of the bucket in which to look for objects.
 bucket = ''
+
 
 objects = service.objects()
 request = objects.list(bucket=bucket)
@@ -1368,7 +1449,8 @@ while request is not None:
     response = request.execute()
 
     for object_ in response['items']:
-        # TODO: Add code here to process each 'object_' resource
+        # TODO: Change code below to process each `object_` resource:
+        pprint(object_)
 
     request = objects.list_next(previous_request=request, previous_response=response)
 """
@@ -1380,9 +1462,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -1390,9 +1472,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -1401,7 +1484,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+# TODO: Change placeholders below to desired parameter values for the `patch` method:
 
 # * Name of the bucket in which the object resides.
 bucket = ''
@@ -1410,14 +1493,16 @@ bucket = ''
 #   Encoding URI Path Parts.
 object = ''
 
+
 object__body = {
-# TODO: Add desired entries of the 'object__body' dict to be changed
+    # TODO: Add desired entries of the `object__body` dict to be changed.
 }
+
 
 request = service.objects().patch(bucket=bucket, object=object, body=object__body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -1428,9 +1513,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -1438,9 +1523,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -1449,7 +1535,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'rewrite' method:
+# TODO: Change placeholders below to desired parameter values for the `rewrite` method:
 
 # * Name of the bucket in which to find the source object.
 sourceBucket = ''
@@ -1467,14 +1553,16 @@ destinationBucket = ''
 #   path safe, see Encoding URI Path Parts.
 destinationObject = ''
 
+
 object__body = {
-# TODO: Add desired entries of the 'object__body' dict
+    # TODO: Add desired entries of the `object__body` dict.
 }
+
 
 request = service.objects().rewrite(sourceBucket=sourceBucket, sourceObject=sourceObject, destinationBucket=destinationBucket, destinationObject=destinationObject, body=object__body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -1485,9 +1573,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -1495,9 +1583,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -1506,7 +1595,7 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+# TODO: Change placeholders below to desired parameter values for the `update` method:
 
 # * Name of the bucket in which the object resides.
 bucket = ''
@@ -1515,14 +1604,16 @@ bucket = ''
 #   Encoding URI Path Parts.
 object = ''
 
+
 object__body = {
-# TODO: Add desired entries of the 'object__body' dict
+    # TODO: Add desired entries of the `object__body` dict.
 }
+
 
 request = service.objects().update(bucket=bucket, object=object, body=object__body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -1533,9 +1624,9 @@ BEFORE RUNNING:
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
    https://cloud.google.com/sdk/ and run
-   'gcloud beta auth application-default login'
+   `gcloud beta auth application-default login`
 3. Install the Python client library for Google APIs by running
-   'pip install --upgrade google-api-python-client'
+   `pip install --upgrade google-api-python-client`
 """
 
 from pprint import pprint
@@ -1543,9 +1634,10 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the 'gcloud' tool when running locally
+# Authentication is provided by the `gcloud` tool when running locally
 # and by built-in service accounts when running on GAE, GCE, or GKE.
-# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 # Construct the storage service object (version v1) for interacting
@@ -1554,17 +1646,19 @@ credentials = GoogleCredentials.get_application_default()
 service = discovery.build('storage', 'v1', credentials=credentials)
 
 
-# TODO: Change placeholders below to appropriate parameter values for the 'watchAll' method:
+# TODO: Change placeholders below to desired parameter values for the `watchAll` method:
 
 # * Name of the bucket in which to look for objects.
 bucket = ''
 
+
 channel_body = {
-# TODO: Add desired entries of the 'channel_body' dict
+    # TODO: Add desired entries of the `channel_body` dict.
 }
+
 
 request = service.objects().watchAll(bucket=bucket, body=channel_body)
 response = request.execute()
 
-# TODO: Change code below to process the 'response' dict:
+# TODO: Change code below to process the `response` dict:
 pprint(response)

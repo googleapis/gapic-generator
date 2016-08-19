@@ -7,18 +7,28 @@
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/autoscaler_v1beta2'
+require 'json'
 
+# Construct the autoscaler service object (version v1beta2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AutoscalerV1beta2::AutoscalerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_autoscaler' method:
+
+# TODO: Change placeholders below to desired parameter values for the `delete_autoscaler` method:
 
 # * Project ID of Autoscaler resource.
 project = ''
@@ -28,9 +38,13 @@ zone = ''
 
 # * Name of the Autoscaler resource.
 autoscaler = ''
+
 
 # Perform the call
 response = service.delete_autoscaler(project, zone, autoscaler)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Compute Engine Autoscaler API
@@ -39,18 +53,28 @@ response = service.delete_autoscaler(project, zone, autoscaler)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/autoscaler_v1beta2'
+require 'json'
 
+# Construct the autoscaler service object (version v1beta2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AutoscalerV1beta2::AutoscalerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_autoscaler' method:
+
+# TODO: Change placeholders below to desired parameter values for the `get_autoscaler` method:
 
 # * Project ID of Autoscaler resource.
 project = ''
@@ -60,9 +84,13 @@ zone = ''
 
 # * Name of the Autoscaler resource.
 autoscaler = ''
+
 
 # Perform the call
 response = service.get_autoscaler(project, zone, autoscaler)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Compute Engine Autoscaler API
@@ -71,18 +99,28 @@ response = service.get_autoscaler(project, zone, autoscaler)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/autoscaler_v1beta2'
+require 'json'
 
+# Construct the autoscaler service object (version v1beta2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AutoscalerV1beta2::AutoscalerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert_autoscaler' method:
+
+# TODO: Change placeholders below to desired parameter values for the `insert_autoscaler` method:
 
 # * Project ID of Autoscaler resource.
 project = ''
@@ -90,11 +128,16 @@ project = ''
 # * Zone name of Autoscaler resource.
 zone = ''
 
-autoscaler_object = Google::Apis::AutoscalerV1beta2::Autoscaler.new
+
+autoscaler_body = Google::Apis::AutoscalerV1beta2::Autoscaler.new
+# TODO: Assign values to desired members of the `autoscaler_body` object.
 
 
 # Perform the call
-response = service.insert_autoscaler(project, zone, autoscaler_object)
+response = service.insert_autoscaler(project, zone, autoscaler_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Compute Engine Autoscaler API
@@ -103,18 +146,28 @@ response = service.insert_autoscaler(project, zone, autoscaler_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/autoscaler_v1beta2'
+require 'json'
 
+# Construct the autoscaler service object (version v1beta2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AutoscalerV1beta2::AutoscalerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_autoscalers' method:
+
+# TODO: Change placeholders below to desired parameter values for the `list_autoscalers` method:
 
 # * Project ID of Autoscaler resource.
 project = ''
@@ -122,13 +175,16 @@ project = ''
 # * Zone name of Autoscaler resource.
 zone = ''
 
+
 # Perform the call
-result_list = service.fetch_all(items: :items) { |token|
+items = service.fetch_all(items: :items) do |token|
   service.list_autoscalers(project, zone, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+items.each do |autoscaler|
+  # TODO: Change code below to process each `autoscaler` resource:
+  puts JSON.pretty_generate(autoscaler)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Compute Engine Autoscaler API
@@ -137,18 +193,28 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/autoscaler_v1beta2'
+require 'json'
 
+# Construct the autoscaler service object (version v1beta2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AutoscalerV1beta2::AutoscalerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch_autoscaler' method:
+
+# TODO: Change placeholders below to desired parameter values for the `patch_autoscaler` method:
 
 # * Project ID of Autoscaler resource.
 project = ''
@@ -159,11 +225,16 @@ zone = ''
 # * Name of the Autoscaler resource.
 autoscaler = ''
 
-autoscaler_object = Google::Apis::AutoscalerV1beta2::Autoscaler.new
+
+autoscaler_body = Google::Apis::AutoscalerV1beta2::Autoscaler.new
+# TODO: Assign values to desired members of the `autoscaler_body` object to be changed.
 
 
 # Perform the call
-response = service.patch_autoscaler(project, zone, autoscaler, autoscaler_object)
+response = service.patch_autoscaler(project, zone, autoscaler, autoscaler_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Compute Engine Autoscaler API
@@ -172,18 +243,28 @@ response = service.patch_autoscaler(project, zone, autoscaler, autoscaler_object
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/autoscaler_v1beta2'
+require 'json'
 
+# Construct the autoscaler service object (version v1beta2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AutoscalerV1beta2::AutoscalerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_autoscaler' method:
+
+# TODO: Change placeholders below to desired parameter values for the `update_autoscaler` method:
 
 # * Project ID of Autoscaler resource.
 project = ''
@@ -194,11 +275,16 @@ zone = ''
 # * Name of the Autoscaler resource.
 autoscaler = ''
 
-autoscaler_object = Google::Apis::AutoscalerV1beta2::Autoscaler.new
+
+autoscaler_body = Google::Apis::AutoscalerV1beta2::Autoscaler.new
+# TODO: Assign values to desired members of the `autoscaler_body` object.
 
 
 # Perform the call
-response = service.update_autoscaler(project, zone, autoscaler, autoscaler_object)
+response = service.update_autoscaler(project, zone, autoscaler, autoscaler_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Compute Engine Autoscaler API
@@ -207,27 +293,38 @@ response = service.update_autoscaler(project, zone, autoscaler, autoscaler_objec
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/autoscaler_v1beta2'
+require 'json'
 
+# Construct the autoscaler service object (version v1beta2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AutoscalerV1beta2::AutoscalerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_zone_operation' method:
 
+# TODO: Change placeholders below to desired parameter values for the `delete_zone_operation` method:
 
+# * project
 project = ''
 
-
+# * zone
 zone = ''
 
-
+# * operation
 operation = ''
+
 
 # Perform the call
 service.delete_zone_operation(project, zone, operation)
@@ -239,30 +336,44 @@ service.delete_zone_operation(project, zone, operation)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/autoscaler_v1beta2'
+require 'json'
 
+# Construct the autoscaler service object (version v1beta2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AutoscalerV1beta2::AutoscalerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_zone_operation' method:
 
+# TODO: Change placeholders below to desired parameter values for the `get_zone_operation` method:
 
+# * project
 project = ''
 
-
+# * zone
 zone = ''
 
-
+# * operation
 operation = ''
+
 
 # Perform the call
 response = service.get_zone_operation(project, zone, operation)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Compute Engine Autoscaler API
@@ -271,32 +382,45 @@ response = service.get_zone_operation(project, zone, operation)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/autoscaler_v1beta2'
+require 'json'
 
+# Construct the autoscaler service object (version v1beta2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AutoscalerV1beta2::AutoscalerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_zone_operations' method:
 
+# TODO: Change placeholders below to desired parameter values for the `list_zone_operations` method:
 
+# * project
 project = ''
 
-
+# * zone
 zone = ''
 
+
 # Perform the call
-result_list = service.fetch_all(items: :items) { |token|
+items = service.fetch_all(items: :items) do |token|
   service.list_zone_operations(project, zone, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+items.each do |operation|
+  # TODO: Change code below to process each `operation` resource:
+  puts JSON.pretty_generate(operation)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Compute Engine Autoscaler API
@@ -305,26 +429,39 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/autoscaler_v1beta2'
+require 'json'
 
+# Construct the autoscaler service object (version v1beta2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/ruby/apis/
 service = Google::Apis::AutoscalerV1beta2::AutoscalerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_zones' method:
 
+# TODO: Change placeholders below to desired parameter values for the `list_zones` method:
 
+# * project
 project = ''
 
+
 # Perform the call
-result_list = service.fetch_all(items: :items) { |token|
+items = service.fetch_all(items: :items) do |token|
   service.list_zones(project, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+items.each do |zone|
+  # TODO: Change code below to process each `zone` resource:
+  puts JSON.pretty_generate(zone)
+end
