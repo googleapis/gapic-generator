@@ -12,21 +12,23 @@
     // ---------------
     // 1. If not already done, enable the {@context.getService.getTitle}
     //    and check the quota for your project at
-    //    https://console.developers.google.com/apis/api/{@context.getApi.getName}
+    //    https://console.developers.google.com/apis/api/{@apiName}
     // 2. This sample uses Application Default Credentials for authentication.
     //    If not already done, install the gcloud CLI from
     //    https://cloud.google.com/sdk/ and run
-    //    'gcloud beta auth application-default login'
+    //    `gcloud beta auth application-default login`
     // 3. Install the Node.js client library and Application Default Credentials
-    //    library by running 'npm install googleapis --save'
+    //    library by running `npm install googleapis --save`
     var google = require('googleapis');
+
     var {@apiName} = google.{@apiName}('{@apiVersion}');
 
-    google.auth.getApplicationDefault(function(err, authClient) {
-      if (err) {
-        console.log('Authentication failed because of ', err);
-        return;
-      }
+    // Authentication is provided by the `gcloud` tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+    // For more information, see
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    google.auth.getApplicationDefault(function({@errorName()}, authClient) {
+      {@handleError(errorName(), @TRUE)}
       if (authClient.createScopedRequired && authClient.createScopedRequired()) {
         var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
         authClient = authClient.createScoped(scopes);
@@ -34,7 +36,6 @@
 
       var {@requestName()} = {
         {@initialize(method)}
-        // Auth client
         auth: authClient
       };
 
@@ -49,79 +50,159 @@
 
 @private initialize(method)
   @let methodName = context.getMethodName(method), \
-        apiaryConfig = context.getApiaryConfig, \
-        signatureType = apiaryConfig.getType(method.getRequestTypeUrl), \
+        signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
         params = context.getFlatMethodParams(method)
-    // {@TODO()} Change placeholders below to appropriate parameter values for the '{@methodName}' method:
+    @if params
+      @join param : params
+        @let paramField = context.getField(signatureType, param), \
+             paramValue = context.typeDefaultValue(signatureType, paramField, method), \
+             paramDescription = context.getDescription(signatureType.getName, param)
+          {@description(paramDescription)}
+          {@context.mapParamName(param)}: {@paramValue} // {@TODO()} Update placeholder value(s).
 
-    @join param : params
-      @let paramField = context.getField(signatureType, param), \
-           paramValue = context.typeDefaultValue(signatureType, paramField, method), \
-           paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
-        {@description(paramDescription)}
-        {@context.mapParamName(param)}: {@paramValue}
-
+        @end
       @end
+
     @end
     @if context.hasRequestField(method)
-      resource: {},
+
+      resource: {
+        @if context.isPatch(method)
+          // {@TODO()} Add the desired properties to be changed.
+        @else
+          // {@TODO()} Add the desired properties.
+        @end
+      },
 
     @end
     @if context.hasMediaUpload(method)
-      media: {
-        // See https://github.com/google/google-api-nodejs-client#media-uploads
-        mimeType: 'text/plain',
-        body: 'Hello World!'
-      },
-    @end
-  @end
-@end
 
-@private elementPath(resourcePath)
-  @join r : resourcePath on "."
-    {@r}
+      media: {
+        // {@TODO()} Add desired media content for upload. See:
+        // https://github.com/google/google-api-nodejs-client#media-uploads
+        mimeType: 'text/plain',
+        body: ''
+      },
+
+    @end
   @end
 @end
 
 @private compactCall(method)
-  @let methodName = context.getMethodName(method), \
-       resourcesPath = context.getApiaryConfig.getResources(method.getName)
-    {@context.getApi.getName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, function(err, result) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(result);
-      }
+  @if context.isResponseEmpty(method)
+    {@request(method)}({@requestName()}, function({@errorName()}) {
+      {@handleError(errorName(), @FALSE)}
+    });
+  @else
+    {@request(method)}({@requestName()}, function({@errorName()}, {@responseName()}) {
+      {@handleError(errorName(), @TRUE)}
+
+      // {@TODO()} Use {@responseName()}
+      {@print(responseName())}
     });
   @end
 @end
 
 @private iterableCall(method)
-  @let methodName = context.getMethodName(method), \
-       resourcesPath = context.getApiaryConfig.getResources(method.getName)
+  @let apiName = context.getApi.getName, \
+       methodName = context.getMethodName(method), \
+       resourcesPath = context.getApiaryConfig.getResources(method.getName), \
+       responseType = method.getResponseTypeUrl, \
+       responseTypeRef = context.getApiaryConfig.getType(responseType), \
+       resourceField = context.getFirstRepeatedField(responseTypeRef), \
+       resources = resourceField.getName, \
+       resourcesPage = pageName(resources)
+    {@apiName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, function {@handlePageName()}({@errorName()}, {@responseName()}) {
+      {@handleError(errorName(), @TRUE)}
 
-    var recur = function(err, result) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(result);
-        if (result.nextPageToken) {
-          {@requestName()}.pageToken = result.nextPageToken;
-          {@context.getApi.getName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, recur);
-        }
+      var {@resourcesPage} = {@responseName()}['{@resources}'];
+      if (!{@resourcesPage}) {
+        console.log('{}');
+        return;
       }
-    };
+      @if context.isMapField(responseTypeRef, resourceField.getName)
+        @let keyName = context.keyTypeName(resourceField)
+          Object.keys({@resourcesPage}).forEach(function ({@keyName}) {
+            // {@TODO()} Use {@keyName}
+            {@printEntry(resourcesPage, keyName)}
+          });
+        @end
+      @else
+        for (var {@indexName()} = 0; {@indexName()} < {@resourcesPage}.length; {@indexName()}++) {
+          // {@TODO()} Use {@resourcesPage}
+          {@print(index(resourcesPage, indexName()))}
+        }
+      @end
 
-    {@context.getApi.getName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, recur);
+      if ({@responseName()}.nextPageToken) {
+        {@requestName()}.pageToken = {@responseName()}.nextPageToken;
+        {@apiName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, {@handlePageName()});
+      }
+    });
   @end
+@end
+
+@private request(method)
+  @let apiName = context.getApi.getName, \
+       methodName = context.getMethodName(method), \
+       resourcesPath = context.getApiaryConfig.getResources(method.getName)
+    {@apiName}.{@elementPath(resourcesPath)}.{@methodName}
+  @end
+@end
+
+@private handleError(err, return)
+  if ({@err}) {
+    console.log({@err});
+    @if return
+      return;
+    @end
+  }
+@end
+
+@private errorName()
+  err
+@end
+
+@private handlePageName()
+  handlePage
+@end
+
+@private indexName()
+  i
 @end
 
 @private requestName()
   request
 @end
 
+@private responseName()
+  response
+@end
+
+@private pageName(resources)
+  {@resources}Page
+@end
+
+@private elementPath(elements)
+  @join element : elements on "."
+    {@element}
+  @end
+@end
+
 @private description(description)
-  @join line : context.lineWrapDoc(description, 100)
+  @join line : context.lineWrapDoc(description)
     // {@line}
   @end
+@end
+
+@private print(element)
+  console.log(JSON.stringify({@element}, null, 2));
+@end
+
+@private printEntry(page, key)
+  console.log({@key} + ': ' + JSON.stringify({@page}[{@key}], null, 2));
+@end
+
+@private index(page, i)
+  {@page}[{@i}]
 @end

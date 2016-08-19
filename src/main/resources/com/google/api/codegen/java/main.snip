@@ -357,7 +357,7 @@
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
   @join commentLine : apiMethodDoc.mainDocLines
-    {@""} * {@commentLine}
+    {@""} * {@commentLine} 
   @end
    *
    * Sample code:
@@ -368,7 +368,7 @@
    * </code></pre>
   @if apiMethodDoc.paramDocs
     {@""} *
-    @join doc : apiMethodDoc.paramDocs
+    @join doc : apiMethodDoc.paramDocs 
       {@paramDoc(doc)}
     @end
   @end
@@ -406,13 +406,5 @@
 @end
 
 @private pathTemplateCheckLine(pathTemplateCheck)
-  @if pathTemplateCheck.allowEmptyString
-    if (!{@pathTemplateCheck.paramName}.isEmpty()) {
-      {@pathTemplateCheck.pathTemplateName}.validate({@pathTemplateCheck.paramName}, \
-        "{@pathTemplateCheck.validationMessageContext}");
-    }
-  @else
-    {@pathTemplateCheck.pathTemplateName}.validate({@pathTemplateCheck.paramName}, \
-      "{@pathTemplateCheck.validationMessageContext}");
-  @end
+  {@pathTemplateCheck.pathTemplateName}.validate({@pathTemplateCheck.paramName}, "{@pathTemplateCheck.validationMessageContext}");
 @end

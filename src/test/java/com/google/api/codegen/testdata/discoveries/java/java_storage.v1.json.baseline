@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -8,7 +8,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -26,10 +26,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -44,24 +43,23 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
-
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = "{MY-ENTITY}";
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
+    String entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
 
     Storage.BucketAccessControls.Delete request = storageService.bucketAccessControls().delete(bucket, entity);
     request.execute();
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -70,7 +68,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -84,15 +82,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.BucketAccessControl;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -107,26 +106,27 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
-
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = "{MY-ENTITY}";
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
+    String entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
 
     Storage.BucketAccessControls.Get request = storageService.bucketAccessControls().get(bucket, entity);
     BucketAccessControl response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -135,7 +135,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -149,15 +149,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.BucketAccessControl;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -172,25 +173,27 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
+    // TODO: Assign values to the desired fields.
+    BucketAccessControl requestBody = new BucketAccessControl();
 
-    BucketAccessControl content = new BucketAccessControl();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.BucketAccessControls.Insert request = storageService.bucketAccessControls().insert(bucket, content);
+    Storage.BucketAccessControls.Insert request = storageService.bucketAccessControls().insert(bucket, requestBody);
     BucketAccessControl response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -199,7 +202,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -213,15 +216,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.BucketAccessControls;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -236,22 +240,23 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
     Storage.BucketAccessControls.List request = storageService.bucketAccessControls().list(bucket);
     BucketAccessControls response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -260,7 +265,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -274,15 +279,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.BucketAccessControl;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -297,29 +303,31 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
+    String entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
 
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = "{MY-ENTITY}";
+    // TODO: Assign values to the desired fields to be changed.
+    BucketAccessControl requestBody = new BucketAccessControl();
 
-    BucketAccessControl content = new BucketAccessControl();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Storage.BucketAccessControls.Patch request = storageService.bucketAccessControls().patch(bucket, entity, content);
+    Storage.BucketAccessControls.Patch request = storageService.bucketAccessControls().patch(bucket, entity, requestBody);
     BucketAccessControl response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -328,7 +336,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -342,15 +350,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.BucketAccessControl;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -365,29 +374,31 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
+    String entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
 
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = "{MY-ENTITY}";
+    // TODO: Assign values to the desired fields.
+    BucketAccessControl requestBody = new BucketAccessControl();
 
-    BucketAccessControl content = new BucketAccessControl();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.BucketAccessControls.Update request = storageService.bucketAccessControls().update(bucket, entity, content);
+    Storage.BucketAccessControls.Update request = storageService.bucketAccessControls().update(bucket, entity, requestBody);
     BucketAccessControl response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -396,7 +407,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -414,10 +425,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -432,20 +442,19 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
-
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
     Storage.Buckets.Delete request = storageService.buckets().delete(bucket);
     request.execute();
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -454,7 +463,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -468,15 +477,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.Bucket;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -491,22 +501,23 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
     Storage.Buckets.Get request = storageService.buckets().get(bucket);
     Bucket response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -515,7 +526,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -529,15 +540,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.Bucket;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -552,25 +564,27 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+    // A valid API project identifier.
+    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-    // * A valid API project identifier.
-    String project = "{MY-PROJECT}";
+    // TODO: Assign values to the desired fields.
+    Bucket requestBody = new Bucket();
 
-    Bucket content = new Bucket();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.Buckets.Insert request = storageService.buckets().insert(project, content);
+    Storage.Buckets.Insert request = storageService.buckets().insert(project, requestBody);
     Bucket response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -579,7 +593,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -594,15 +608,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.Bucket;
 import com.google.api.services.storage.model.Buckets;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -617,16 +632,18 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * A valid API project identifier.
-    String project = "{MY-PROJECT}";
+    // A valid API project identifier.
+    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
     Storage.Buckets.List request = storageService.buckets().list(project);
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     Buckets response;
     do {
       response = request.execute();
@@ -634,14 +651,15 @@ public class StorageExample {
         continue;
 
       for (Bucket bucket : response.getItems()) {
-        // TODO: Add code here to process each 'bucket' resource
+        // TODO: Use bucket
+        System.out.println(gson.toJson(new JsonParser().parse(bucket.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -650,7 +668,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -664,15 +682,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.Bucket;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -687,25 +706,27 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
+    // TODO: Assign values to the desired fields to be changed.
+    Bucket requestBody = new Bucket();
 
-    Bucket content = new Bucket();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Storage.Buckets.Patch request = storageService.buckets().patch(bucket, content);
+    Storage.Buckets.Patch request = storageService.buckets().patch(bucket, requestBody);
     Bucket response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -714,7 +735,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -728,15 +749,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.Bucket;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -751,25 +773,27 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
+    // TODO: Assign values to the desired fields.
+    Bucket requestBody = new Bucket();
 
-    Bucket content = new Bucket();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.Buckets.Update request = storageService.buckets().update(bucket, content);
+    Storage.Buckets.Update request = storageService.buckets().update(bucket, requestBody);
     Bucket response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -778,7 +802,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -797,10 +821,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -815,19 +838,21 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
 
-    Channel content = new Channel();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
+    // TODO: Assign values to the desired fields.
+    Channel requestBody = new Channel();
 
-    Storage.Channels.Stop request = storageService.channels().stop(content);
+
+    Storage.Channels.Stop request = storageService.channels().stop(requestBody);
     request.execute();
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -836,7 +861,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -854,10 +879,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -872,24 +896,23 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
-
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = "{MY-ENTITY}";
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
+    String entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
 
     Storage.DefaultObjectAccessControls.Delete request = storageService.defaultObjectAccessControls().delete(bucket, entity);
     request.execute();
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -898,7 +921,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -912,15 +935,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.ObjectAccessControl;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -935,26 +959,27 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
-
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = "{MY-ENTITY}";
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
+    String entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
 
     Storage.DefaultObjectAccessControls.Get request = storageService.defaultObjectAccessControls().get(bucket, entity);
     ObjectAccessControl response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -963,7 +988,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -977,15 +1002,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.ObjectAccessControl;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1000,25 +1026,27 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
+    // TODO: Assign values to the desired fields.
+    ObjectAccessControl requestBody = new ObjectAccessControl();
 
-    ObjectAccessControl content = new ObjectAccessControl();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.DefaultObjectAccessControls.Insert request = storageService.defaultObjectAccessControls().insert(bucket, content);
+    Storage.DefaultObjectAccessControls.Insert request = storageService.defaultObjectAccessControls().insert(bucket, requestBody);
     ObjectAccessControl response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1027,7 +1055,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1041,15 +1069,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.ObjectAccessControls;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1064,22 +1093,23 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
     Storage.DefaultObjectAccessControls.List request = storageService.defaultObjectAccessControls().list(bucket);
     ObjectAccessControls response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1088,7 +1118,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1102,15 +1132,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.ObjectAccessControl;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1125,29 +1156,31 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
+    String entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
 
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = "{MY-ENTITY}";
+    // TODO: Assign values to the desired fields to be changed.
+    ObjectAccessControl requestBody = new ObjectAccessControl();
 
-    ObjectAccessControl content = new ObjectAccessControl();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Storage.DefaultObjectAccessControls.Patch request = storageService.defaultObjectAccessControls().patch(bucket, entity, content);
+    Storage.DefaultObjectAccessControls.Patch request = storageService.defaultObjectAccessControls().patch(bucket, entity, requestBody);
     ObjectAccessControl response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1156,7 +1189,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1170,15 +1203,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.ObjectAccessControl;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1193,29 +1227,31 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
+    String entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
 
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = "{MY-ENTITY}";
+    // TODO: Assign values to the desired fields.
+    ObjectAccessControl requestBody = new ObjectAccessControl();
 
-    ObjectAccessControl content = new ObjectAccessControl();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.DefaultObjectAccessControls.Update request = storageService.defaultObjectAccessControls().update(bucket, entity, content);
+    Storage.DefaultObjectAccessControls.Update request = storageService.defaultObjectAccessControls().update(bucket, entity, requestBody);
     ObjectAccessControl response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1224,7 +1260,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1242,10 +1278,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1260,28 +1295,27 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
+    String object = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
 
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
-    String object = "{MY-OBJECT}";
-
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = "{MY-ENTITY}";
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
+    String entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
 
     Storage.ObjectAccessControls.Delete request = storageService.objectAccessControls().delete(bucket, object, entity);
     request.execute();
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1290,7 +1324,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1304,15 +1338,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.ObjectAccessControl;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1327,30 +1362,31 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
+    String object = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
 
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
-    String object = "{MY-OBJECT}";
-
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = "{MY-ENTITY}";
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
+    String entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
 
     Storage.ObjectAccessControls.Get request = storageService.objectAccessControls().get(bucket, object, entity);
     ObjectAccessControl response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1359,7 +1395,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1373,15 +1409,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.ObjectAccessControl;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1396,29 +1433,31 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
+    String object = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
 
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
-    String object = "{MY-OBJECT}";
+    // TODO: Assign values to the desired fields.
+    ObjectAccessControl requestBody = new ObjectAccessControl();
 
-    ObjectAccessControl content = new ObjectAccessControl();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.ObjectAccessControls.Insert request = storageService.objectAccessControls().insert(bucket, object, content);
+    Storage.ObjectAccessControls.Insert request = storageService.objectAccessControls().insert(bucket, object, requestBody);
     ObjectAccessControl response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1427,7 +1466,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1441,15 +1480,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.ObjectAccessControls;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1464,26 +1504,27 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
-
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
-    String object = "{MY-OBJECT}";
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
+    String object = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
 
     Storage.ObjectAccessControls.List request = storageService.objectAccessControls().list(bucket, object);
     ObjectAccessControls response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1492,7 +1533,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1506,15 +1547,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.ObjectAccessControl;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1529,33 +1571,35 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
+    String object = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
 
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
-    String object = "{MY-OBJECT}";
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
+    String entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
 
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = "{MY-ENTITY}";
+    // TODO: Assign values to the desired fields to be changed.
+    ObjectAccessControl requestBody = new ObjectAccessControl();
 
-    ObjectAccessControl content = new ObjectAccessControl();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Storage.ObjectAccessControls.Patch request = storageService.objectAccessControls().patch(bucket, object, entity, content);
+    Storage.ObjectAccessControls.Patch request = storageService.objectAccessControls().patch(bucket, object, entity, requestBody);
     ObjectAccessControl response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1564,7 +1608,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1578,15 +1622,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.ObjectAccessControl;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1601,33 +1646,35 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+    // Name of a bucket.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of a bucket.
-    String bucket = "{MY-BUCKET}";
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
+    String object = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
 
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
-    String object = "{MY-OBJECT}";
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
+    String entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
 
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = "{MY-ENTITY}";
+    // TODO: Assign values to the desired fields.
+    ObjectAccessControl requestBody = new ObjectAccessControl();
 
-    ObjectAccessControl content = new ObjectAccessControl();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.ObjectAccessControls.Update request = storageService.objectAccessControls().update(bucket, object, entity, content);
+    Storage.ObjectAccessControls.Update request = storageService.objectAccessControls().update(bucket, object, entity, requestBody);
     ObjectAccessControl response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1636,7 +1683,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1651,15 +1698,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.ComposeRequest;
 import com.google.api.services.storage.model.StorageObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1674,29 +1722,31 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'compose' method:
+    // Name of the bucket in which to store the new object.
+    String destinationBucket = "{MY-DESTINATION-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of the bucket in which to store the new object.
-    String destinationBucket = "{MY-DESTINATION-BUCKET}";
+    // Name of the new object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
+    String destinationObject = "{MY-DESTINATION-OBJECT}"; // TODO: Update placeholder value(s).
 
-    // * Name of the new object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
-    String destinationObject = "{MY-DESTINATION-OBJECT}";
+    // TODO: Assign values to the desired fields.
+    ComposeRequest requestBody = new ComposeRequest();
 
-    ComposeRequest content = new ComposeRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.Objects.Compose request = storageService.objects().compose(destinationBucket, destinationObject, content);
+    Storage.Objects.Compose request = storageService.objects().compose(destinationBucket, destinationObject, requestBody);
     StorageObject response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1705,7 +1755,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1719,15 +1769,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.StorageObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1742,38 +1793,40 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'copy' method:
+    // Name of the bucket in which to find the source object.
+    String sourceBucket = "{MY-SOURCE-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of the bucket in which to find the source object.
-    String sourceBucket = "{MY-SOURCE-BUCKET}";
+    // Name of the source object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
+    String sourceObject = "{MY-SOURCE-OBJECT}"; // TODO: Update placeholder value(s).
 
-    // * Name of the source object. For information about how to URL encode object names to be path safe,
-    //   see Encoding URI Path Parts.
-    String sourceObject = "{MY-SOURCE-OBJECT}";
+    // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
+    // value, if any.For information about how to URL encode object names to be path safe, see Encoding URI
+    // Path Parts.
+    String destinationBucket = "{MY-DESTINATION-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of the bucket in which to store the new object. Overrides the provided object metadata's
-    //   bucket value, if any.For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
-    String destinationBucket = "{MY-DESTINATION-BUCKET}";
+    // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
+    // object metadata's name value, if any.
+    String destinationObject = "{MY-DESTINATION-OBJECT}"; // TODO: Update placeholder value(s).
 
-    // * Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
-    //   object metadata's name value, if any.
-    String destinationObject = "{MY-DESTINATION-OBJECT}";
+    // TODO: Assign values to the desired fields.
+    StorageObject requestBody = new StorageObject();
 
-    StorageObject content = new StorageObject();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.Objects.Copy request = storageService.objects().copy(sourceBucket, sourceObject, destinationBucket, destinationObject, content);
+    Storage.Objects.Copy request = storageService.objects().copy(sourceBucket, sourceObject, destinationBucket, destinationObject, requestBody);
     StorageObject response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1782,7 +1835,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1800,10 +1853,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1818,24 +1870,23 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // Name of the bucket in which the object resides.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of the bucket in which the object resides.
-    String bucket = "{MY-BUCKET}";
-
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
-    String object = "{MY-OBJECT}";
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
+    String object = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
 
     Storage.Objects.Delete request = storageService.objects().delete(bucket, object);
     request.execute();
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1844,7 +1895,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1858,15 +1909,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.StorageObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1881,26 +1933,27 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // Name of the bucket in which the object resides.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of the bucket in which the object resides.
-    String bucket = "{MY-BUCKET}";
-
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
-    String object = "{MY-OBJECT}";
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
+    String object = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
 
     Storage.Objects.Get request = storageService.objects().get(bucket, object);
     StorageObject response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1909,7 +1962,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1923,15 +1976,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.StorageObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1946,26 +2000,28 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+    // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
+    // value, if any.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of the bucket in which to store the new object. Overrides the provided object metadata's
-    //   bucket value, if any.
-    String bucket = "{MY-BUCKET}";
+    // TODO: Assign values to the desired fields.
+    StorageObject requestBody = new StorageObject();
 
-    StorageObject content = new StorageObject();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.Objects.Insert request = storageService.objects().insert(bucket, content);
+    Storage.Objects.Insert request = storageService.objects().insert(bucket, requestBody);
     StorageObject response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1974,7 +2030,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1989,15 +2045,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.Objects;
 import com.google.api.services.storage.model.StorageObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -2012,16 +2069,18 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * Name of the bucket in which to look for objects.
-    String bucket = "{MY-BUCKET}";
+    // Name of the bucket in which to look for objects.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
     Storage.Objects.List request = storageService.objects().list(bucket);
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     Objects response;
     do {
       response = request.execute();
@@ -2029,14 +2088,15 @@ public class StorageExample {
         continue;
 
       for (StorageObject storageObject : response.getItems()) {
-        // TODO: Add code here to process each 'storageObject' resource
+        // TODO: Use storageObject
+        System.out.println(gson.toJson(new JsonParser().parse(storageObject.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -2045,7 +2105,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -2059,15 +2119,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.StorageObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -2082,29 +2143,31 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+    // Name of the bucket in which the object resides.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of the bucket in which the object resides.
-    String bucket = "{MY-BUCKET}";
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
+    String object = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
 
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
-    String object = "{MY-OBJECT}";
+    // TODO: Assign values to the desired fields to be changed.
+    StorageObject requestBody = new StorageObject();
 
-    StorageObject content = new StorageObject();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Storage.Objects.Patch request = storageService.objects().patch(bucket, object, content);
+    Storage.Objects.Patch request = storageService.objects().patch(bucket, object, requestBody);
     StorageObject response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -2113,7 +2176,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -2128,15 +2191,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.RewriteResponse;
 import com.google.api.services.storage.model.StorageObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -2151,38 +2215,40 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'rewrite' method:
+    // Name of the bucket in which to find the source object.
+    String sourceBucket = "{MY-SOURCE-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of the bucket in which to find the source object.
-    String sourceBucket = "{MY-SOURCE-BUCKET}";
+    // Name of the source object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
+    String sourceObject = "{MY-SOURCE-OBJECT}"; // TODO: Update placeholder value(s).
 
-    // * Name of the source object. For information about how to URL encode object names to be path safe,
-    //   see Encoding URI Path Parts.
-    String sourceObject = "{MY-SOURCE-OBJECT}";
+    // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
+    // value, if any.
+    String destinationBucket = "{MY-DESTINATION-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of the bucket in which to store the new object. Overrides the provided object metadata's
-    //   bucket value, if any.
-    String destinationBucket = "{MY-DESTINATION-BUCKET}";
+    // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
+    // object metadata's name value, if any. For information about how to URL encode object names to be
+    // path safe, see Encoding URI Path Parts.
+    String destinationObject = "{MY-DESTINATION-OBJECT}"; // TODO: Update placeholder value(s).
 
-    // * Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
-    //   object metadata's name value, if any. For information about how to URL encode object names to be
-    //   path safe, see Encoding URI Path Parts.
-    String destinationObject = "{MY-DESTINATION-OBJECT}";
+    // TODO: Assign values to the desired fields.
+    StorageObject requestBody = new StorageObject();
 
-    StorageObject content = new StorageObject();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.Objects.Rewrite request = storageService.objects().rewrite(sourceBucket, sourceObject, destinationBucket, destinationObject, content);
+    Storage.Objects.Rewrite request = storageService.objects().rewrite(sourceBucket, sourceObject, destinationBucket, destinationObject, requestBody);
     RewriteResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -2191,7 +2257,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -2205,15 +2271,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.StorageObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -2228,29 +2295,31 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+    // Name of the bucket in which the object resides.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of the bucket in which the object resides.
-    String bucket = "{MY-BUCKET}";
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
+    String object = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
 
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
-    String object = "{MY-OBJECT}";
+    // TODO: Assign values to the desired fields.
+    StorageObject requestBody = new StorageObject();
 
-    StorageObject content = new StorageObject();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.Objects.Update request = storageService.objects().update(bucket, object, content);
+    Storage.Objects.Update request = storageService.objects().update(bucket, object, requestBody);
     StorageObject response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -2259,7 +2328,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -2273,15 +2342,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.Channel;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class StorageExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -2296,21 +2366,23 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'watchAll' method:
+    // Name of the bucket in which to look for objects.
+    String bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-    // * Name of the bucket in which to look for objects.
-    String bucket = "{MY-BUCKET}";
+    // TODO: Assign values to the desired fields.
+    Channel requestBody = new Channel();
 
-    Channel content = new Channel();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.Objects.WatchAll request = storageService.objects().watchAll(bucket, content);
+    Storage.Objects.WatchAll request = storageService.objects().watchAll(bucket, requestBody);
     Channel response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }

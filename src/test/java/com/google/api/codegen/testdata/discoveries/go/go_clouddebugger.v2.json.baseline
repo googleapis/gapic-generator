@@ -9,11 +9,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -22,25 +25,31 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := clouddebugger.New(hc)
+
+  s, err := clouddebugger.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Identifies the debuggee.
-  // TODO: Update placeholder value.
-  debuggeeId := "{MY-DEBUGGEE-ID}"
+  debuggeeId := "{MY-DEBUGGEE-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Controller.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
+  resp, err := s.Controller.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -52,11 +61,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -65,31 +77,38 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := clouddebugger.New(hc)
+
+  s, err := clouddebugger.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Identifies the debuggee being debugged.
-  // TODO: Update placeholder value.
-  debuggeeId := "{MY-DEBUGGEE-ID}"
+  debuggeeId := "{MY-DEBUGGEE-ID}" // TODO: Update placeholder value(s).
 
   // Breakpoint identifier, unique in the scope of the debuggee.
-  // TODO: Update placeholder value.
-  id := "{MY-ID}"
+  id := "{MY-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Controller.Debuggees.Breakpoints.Update(debuggeeId, id, &clouddebugger.UpdateActiveBreakpointRequest{
-                                                           // TODO: Fill required fields.
-                                                         }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  updateActiveBreakpointRequest := &clouddebugger.UpdateActiveBreakpointRequest{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Controller.Debuggees.Breakpoints.Update(debuggeeId, id, &updateActiveBreakpointRequest).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -101,11 +120,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -114,25 +136,32 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := clouddebugger.New(hc)
+
+  s, err := clouddebugger.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
+  registerDebuggeeRequest := &clouddebugger.RegisterDebuggeeRequest{
+    // TODO: Add the desired fields.
+  }
 
-
-  resp, err := c.Controller.Debuggees.Register(&clouddebugger.RegisterDebuggeeRequest{
-                                                 // TODO: Fill required fields.
-                                               }).Context(ctx).Do()
+  resp, err := s.Controller.Debuggees.Register(registerDebuggeeRequest).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -144,11 +173,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -157,29 +189,34 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := clouddebugger.New(hc)
+
+  s, err := clouddebugger.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // ID of the debuggee whose breakpoint to delete.
-  // TODO: Update placeholder value.
-  debuggeeId := "{MY-DEBUGGEE-ID}"
+  debuggeeId := "{MY-DEBUGGEE-ID}" // TODO: Update placeholder value(s).
 
   // ID of the breakpoint to delete.
-  // TODO: Update placeholder value.
-  breakpointId := "{MY-BREAKPOINT-ID}"
+  breakpointId := "{MY-BREAKPOINT-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Debugger.Debuggees.Breakpoints.Delete(debuggeeId, breakpointId).Context(ctx).Do()
+  resp, err := s.Debugger.Debuggees.Breakpoints.Delete(debuggeeId, breakpointId).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -191,11 +228,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -204,29 +244,34 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := clouddebugger.New(hc)
+
+  s, err := clouddebugger.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // ID of the debuggee whose breakpoint to get.
-  // TODO: Update placeholder value.
-  debuggeeId := "{MY-DEBUGGEE-ID}"
+  debuggeeId := "{MY-DEBUGGEE-ID}" // TODO: Update placeholder value(s).
 
   // ID of the breakpoint to get.
-  // TODO: Update placeholder value.
-  breakpointId := "{MY-BREAKPOINT-ID}"
+  breakpointId := "{MY-BREAKPOINT-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Debugger.Debuggees.Breakpoints.Get(debuggeeId, breakpointId).Context(ctx).Do()
+  resp, err := s.Debugger.Debuggees.Breakpoints.Get(debuggeeId, breakpointId).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -238,11 +283,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -251,25 +299,31 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := clouddebugger.New(hc)
+
+  s, err := clouddebugger.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // ID of the debuggee whose breakpoints to list.
-  // TODO: Update placeholder value.
-  debuggeeId := "{MY-DEBUGGEE-ID}"
+  debuggeeId := "{MY-DEBUGGEE-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Debugger.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
+  resp, err := s.Debugger.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -281,11 +335,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -294,27 +351,35 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := clouddebugger.New(hc)
+
+  s, err := clouddebugger.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // ID of the debuggee where the breakpoint is to be set.
-  // TODO: Update placeholder value.
-  debuggeeId := "{MY-DEBUGGEE-ID}"
+  debuggeeId := "{MY-DEBUGGEE-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Debugger.Debuggees.Breakpoints.Set(debuggeeId, &clouddebugger.Breakpoint{
-                                                      // TODO: Fill required fields.
-                                                    }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  breakpoint := &clouddebugger.Breakpoint{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Debugger.Debuggees.Breakpoints.Set(debuggeeId, &breakpoint).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -326,11 +391,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -339,21 +407,26 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := clouddebugger.New(hc)
+
+  s, err := clouddebugger.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-
-
-  resp, err := c.Debugger.Debuggees.List().Context(ctx).Do()
+  resp, err := s.Debugger.Debuggees.List().Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }

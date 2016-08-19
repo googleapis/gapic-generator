@@ -9,11 +9,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -22,27 +25,35 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, cloudtrace.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := cloudtrace.New(hc)
+
+  s, err := cloudtrace.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // ID of the Cloud project where the trace data is stored.
-  // TODO: Update placeholder value.
-  projectId := "{MY-PROJECT-ID}"
+  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Projects.PatchTraces(projectId, &cloudtrace.Traces{
-                                        // TODO: Fill required fields.
-                                      }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  traces := &cloudtrace.Traces{
+    // TODO: Add the desired fields to be changed.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Projects.PatchTraces(projectId, &traces).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -54,11 +65,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -67,29 +81,34 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, cloudtrace.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := cloudtrace.New(hc)
+
+  s, err := cloudtrace.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // ID of the Cloud project where the trace data is stored.
-  // TODO: Update placeholder value.
-  projectId := "{MY-PROJECT-ID}"
+  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
   // ID of the trace to return.
-  // TODO: Update placeholder value.
-  traceId := "{MY-TRACE-ID}"
+  traceId := "{MY-TRACE-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Projects.Traces.Get(projectId, traceId).Context(ctx).Do()
+  resp, err := s.Projects.Traces.Get(projectId, traceId).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -101,11 +120,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -114,28 +136,32 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, cloudtrace.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := cloudtrace.New(hc)
+
+  s, err := cloudtrace.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // ID of the Cloud project where the trace data is stored.
-  // TODO: Update placeholder value.
-  projectId := "{MY-PROJECT-ID}"
+  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
-
-  call := c.Projects.Traces.List(projectId)
+  call := s.Projects.Traces.List(projectId)
   if err := call.Pages(ctx, func(page *cloudtrace.ListTracesResponse) error {
-    for _, v := range page.Traces {
-      // TODO: Use v.
-      _ = v
+    for _, trace := range page.Traces {
+      // TODO: Use trace
+      fmt.Printf("%#v\n", trace)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }

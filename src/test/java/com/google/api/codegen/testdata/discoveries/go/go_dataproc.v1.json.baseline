@@ -9,11 +9,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -22,31 +25,38 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := dataproc.New(hc)
+
+  s, err := dataproc.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-  // TODO: Update placeholder value.
-  projectId := "{MY-PROJECT-ID}"
+  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  // TODO: Update placeholder value.
-  region := "{MY-REGION}"
+  region := "{MY-REGION}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Projects.Regions.Clusters.Create(projectId, region, &dataproc.Cluster{
-                                                    // TODO: Fill required fields.
-                                                  }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  cluster := &dataproc.Cluster{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Projects.Regions.Clusters.Create(projectId, region, &cluster).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -58,11 +68,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -71,33 +84,37 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := dataproc.New(hc)
+
+  s, err := dataproc.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-  // TODO: Update placeholder value.
-  projectId := "{MY-PROJECT-ID}"
+  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  // TODO: Update placeholder value.
-  region := "{MY-REGION}"
+  region := "{MY-REGION}" // TODO: Update placeholder value(s).
 
   // [Required] The cluster name.
-  // TODO: Update placeholder value.
-  clusterName := "{MY-CLUSTER-NAME}"
+  clusterName := "{MY-CLUSTER-NAME}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Projects.Regions.Clusters.Delete(projectId, region, clusterName).Context(ctx).Do()
+  resp, err := s.Projects.Regions.Clusters.Delete(projectId, region, clusterName).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -109,11 +126,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -122,35 +142,41 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := dataproc.New(hc)
+
+  s, err := dataproc.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-  // TODO: Update placeholder value.
-  projectId := "{MY-PROJECT-ID}"
+  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  // TODO: Update placeholder value.
-  region := "{MY-REGION}"
+  region := "{MY-REGION}" // TODO: Update placeholder value(s).
 
   // [Required] The cluster name.
-  // TODO: Update placeholder value.
-  clusterName := "{MY-CLUSTER-NAME}"
+  clusterName := "{MY-CLUSTER-NAME}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Projects.Regions.Clusters.Diagnose(projectId, region, clusterName, &dataproc.DiagnoseClusterRequest{
-                                                      // TODO: Fill required fields.
-                                                    }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  diagnoseClusterRequest := &dataproc.DiagnoseClusterRequest{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Projects.Regions.Clusters.Diagnose(projectId, region, clusterName, &diagnoseClusterRequest).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -162,11 +188,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -175,33 +204,37 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := dataproc.New(hc)
+
+  s, err := dataproc.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-  // TODO: Update placeholder value.
-  projectId := "{MY-PROJECT-ID}"
+  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  // TODO: Update placeholder value.
-  region := "{MY-REGION}"
+  region := "{MY-REGION}" // TODO: Update placeholder value(s).
 
   // [Required] The cluster name.
-  // TODO: Update placeholder value.
-  clusterName := "{MY-CLUSTER-NAME}"
+  clusterName := "{MY-CLUSTER-NAME}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Projects.Regions.Clusters.Get(projectId, region, clusterName).Context(ctx).Do()
+  resp, err := s.Projects.Regions.Clusters.Get(projectId, region, clusterName).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -213,11 +246,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -226,33 +262,36 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := dataproc.New(hc)
+
+  s, err := dataproc.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-  // TODO: Update placeholder value.
-  projectId := "{MY-PROJECT-ID}"
+  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  // TODO: Update placeholder value.
-  region := "{MY-REGION}"
+  region := "{MY-REGION}" // TODO: Update placeholder value(s).
 
-
-  call := c.Projects.Regions.Clusters.List(projectId, region)
+  call := s.Projects.Regions.Clusters.List(projectId, region)
   if err := call.Pages(ctx, func(page *dataproc.ListClustersResponse) error {
-    for _, v := range page.Clusters {
-      // TODO: Use v.
-      _ = v
+    for _, cluster := range page.Clusters {
+      // TODO: Use cluster
+      fmt.Printf("%#v\n", cluster)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -265,11 +304,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -278,35 +320,41 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := dataproc.New(hc)
+
+  s, err := dataproc.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // [Required] The ID of the Google Cloud Platform project the cluster belongs to.
-  // TODO: Update placeholder value.
-  projectId := "{MY-PROJECT-ID}"
+  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  // TODO: Update placeholder value.
-  region := "{MY-REGION}"
+  region := "{MY-REGION}" // TODO: Update placeholder value(s).
 
   // [Required] The cluster name.
-  // TODO: Update placeholder value.
-  clusterName := "{MY-CLUSTER-NAME}"
+  clusterName := "{MY-CLUSTER-NAME}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Projects.Regions.Clusters.Patch(projectId, region, clusterName, &dataproc.Cluster{
-                                                   // TODO: Fill required fields.
-                                                 }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  cluster := &dataproc.Cluster{
+    // TODO: Add the desired fields to be changed.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Projects.Regions.Clusters.Patch(projectId, region, clusterName, &cluster).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -318,11 +366,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -331,35 +382,41 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := dataproc.New(hc)
+
+  s, err := dataproc.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // [Required] The ID of the Google Cloud Platform project that the job belongs to.
-  // TODO: Update placeholder value.
-  projectId := "{MY-PROJECT-ID}"
+  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  // TODO: Update placeholder value.
-  region := "{MY-REGION}"
+  region := "{MY-REGION}" // TODO: Update placeholder value(s).
 
   // [Required] The job ID.
-  // TODO: Update placeholder value.
-  jobId := "{MY-JOB-ID}"
+  jobId := "{MY-JOB-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Projects.Regions.Jobs.Cancel(projectId, region, jobId, &dataproc.CancelJobRequest{
-                                                // TODO: Fill required fields.
-                                              }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  cancelJobRequest := &dataproc.CancelJobRequest{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Projects.Regions.Jobs.Cancel(projectId, region, jobId, &cancelJobRequest).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -371,11 +428,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -384,33 +444,37 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := dataproc.New(hc)
+
+  s, err := dataproc.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // [Required] The ID of the Google Cloud Platform project that the job belongs to.
-  // TODO: Update placeholder value.
-  projectId := "{MY-PROJECT-ID}"
+  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  // TODO: Update placeholder value.
-  region := "{MY-REGION}"
+  region := "{MY-REGION}" // TODO: Update placeholder value(s).
 
   // [Required] The job ID.
-  // TODO: Update placeholder value.
-  jobId := "{MY-JOB-ID}"
+  jobId := "{MY-JOB-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Projects.Regions.Jobs.Delete(projectId, region, jobId).Context(ctx).Do()
+  resp, err := s.Projects.Regions.Jobs.Delete(projectId, region, jobId).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -422,11 +486,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -435,33 +502,37 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := dataproc.New(hc)
+
+  s, err := dataproc.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // [Required] The ID of the Google Cloud Platform project that the job belongs to.
-  // TODO: Update placeholder value.
-  projectId := "{MY-PROJECT-ID}"
+  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  // TODO: Update placeholder value.
-  region := "{MY-REGION}"
+  region := "{MY-REGION}" // TODO: Update placeholder value(s).
 
   // [Required] The job ID.
-  // TODO: Update placeholder value.
-  jobId := "{MY-JOB-ID}"
+  jobId := "{MY-JOB-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Projects.Regions.Jobs.Get(projectId, region, jobId).Context(ctx).Do()
+  resp, err := s.Projects.Regions.Jobs.Get(projectId, region, jobId).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -473,11 +544,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -486,33 +560,36 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := dataproc.New(hc)
+
+  s, err := dataproc.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // [Required] The ID of the Google Cloud Platform project that the job belongs to.
-  // TODO: Update placeholder value.
-  projectId := "{MY-PROJECT-ID}"
+  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  // TODO: Update placeholder value.
-  region := "{MY-REGION}"
+  region := "{MY-REGION}" // TODO: Update placeholder value(s).
 
-
-  call := c.Projects.Regions.Jobs.List(projectId, region)
+  call := s.Projects.Regions.Jobs.List(projectId, region)
   if err := call.Pages(ctx, func(page *dataproc.ListJobsResponse) error {
-    for _, v := range page.Jobs {
-      // TODO: Use v.
-      _ = v
+    for _, job := range page.Jobs {
+      // TODO: Use job
+      fmt.Printf("%#v\n", job)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -525,11 +602,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -538,31 +618,38 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := dataproc.New(hc)
+
+  s, err := dataproc.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // [Required] The ID of the Google Cloud Platform project that the job belongs to.
-  // TODO: Update placeholder value.
-  projectId := "{MY-PROJECT-ID}"
+  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  // TODO: Update placeholder value.
-  region := "{MY-REGION}"
+  region := "{MY-REGION}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Projects.Regions.Jobs.Submit(projectId, region, &dataproc.SubmitJobRequest{
-                                                // TODO: Fill required fields.
-                                              }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  submitJobRequest := &dataproc.SubmitJobRequest{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Projects.Regions.Jobs.Submit(projectId, region, &submitJobRequest).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -574,11 +661,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -587,25 +677,31 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := dataproc.New(hc)
+
+  s, err := dataproc.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // The name of the operation resource to be cancelled.
-  // TODO: Update placeholder value.
-  name := "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}"
+  name := "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Projects.Regions.Operations.Cancel(name).Context(ctx).Do()
+  resp, err := s.Projects.Regions.Operations.Cancel(name).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -617,11 +713,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -630,25 +729,31 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := dataproc.New(hc)
+
+  s, err := dataproc.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // The name of the operation resource to be deleted.
-  // TODO: Update placeholder value.
-  name := "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}"
+  name := "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Projects.Regions.Operations.Delete(name).Context(ctx).Do()
+  resp, err := s.Projects.Regions.Operations.Delete(name).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -660,11 +765,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -673,25 +781,31 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := dataproc.New(hc)
+
+  s, err := dataproc.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // The name of the operation resource.
-  // TODO: Update placeholder value.
-  name := "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}"
+  name := "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Projects.Regions.Operations.Get(name).Context(ctx).Do()
+  resp, err := s.Projects.Regions.Operations.Get(name).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -703,11 +817,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -716,28 +833,32 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := dataproc.New(hc)
+
+  s, err := dataproc.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // The name of the operation collection.
-  // TODO: Update placeholder value.
-  name := "{MY-NAME}"
+  name := "{MY-NAME}" // TODO: Update placeholder value(s).
 
-
-  call := c.Projects.Regions.Operations.List(name)
+  call := s.Projects.Regions.Operations.List(name)
   if err := call.Pages(ctx, func(page *dataproc.ListOperationsResponse) error {
-    for _, v := range page.Operations {
-      // TODO: Use v.
-      _ = v
+    for _, operation := range page.Operations {
+      // TODO: Use operation
+      fmt.Printf("%#v\n", operation)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }

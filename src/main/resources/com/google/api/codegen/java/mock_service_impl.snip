@@ -11,31 +11,24 @@
 
   @@javax.annotation.Generated("by GAPIC")
   public class {@mockServiceImpl.name} implements {@mockServiceImpl.grpcClassName}  {
-    private ArrayList<GeneratedMessage> requests;
-    private Queue<GeneratedMessage> responses;
+     private ArrayList<GeneratedMessage> requests;
 
-    public {@mockServiceImpl.name}() {
-      requests = new ArrayList<>();
-      responses = new LinkedList<>();
-    }
+     public {@mockServiceImpl.name}() {
+       requests = new ArrayList<>();
+     }
 
-    public List<GeneratedMessage> getRequests() {
-      return requests;
-    }
+     public List<GeneratedMessage> getRequests() {
+       return requests;
+     }
 
-    public void setResponses(List<GeneratedMessage> responses) {
-      this.responses = Lists.newLinkedList(responses);
-    }
+     public void reset() {
+       requests = new ArrayList<>();
+     }
 
-    public void reset() {
-      requests = new ArrayList<>();
-      responses = new LinkedList<>();
-    }
+     @join method : mockServiceImpl.grpcMethods
+      {@grpcMethod(method)}
 
-    @join method : mockServiceImpl.grpcMethods
-     {@grpcMethod(method)}
-
-    @end
+     @end
   }
 @end
 

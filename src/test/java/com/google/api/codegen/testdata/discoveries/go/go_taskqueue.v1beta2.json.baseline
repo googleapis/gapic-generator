@@ -9,11 +9,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -22,29 +25,34 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, taskqueue.TaskqueueScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := taskqueue.New(hc)
+
+  s, err := taskqueue.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // The project under which the queue lies.
-  // TODO: Update placeholder value.
-  project := "{MY-PROJECT}"
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
   // The id of the taskqueue to get the properties of.
-  // TODO: Update placeholder value.
-  taskqueue2 := "{MY-TASKQUEUE}"
+  taskqueue2 := "{MY-TASKQUEUE}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Taskqueues.Get(project, taskqueue2).Context(ctx).Do()
+  resp, err := s.Taskqueues.Get(project, taskqueue2).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -56,11 +64,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -69,29 +80,32 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, taskqueue.TaskqueueScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := taskqueue.New(hc)
+
+  s, err := taskqueue.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // The project under which the queue lies.
-  // TODO: Update placeholder value.
-  project := "{MY-PROJECT}"
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
   // The taskqueue to delete a task from.
-  // TODO: Update placeholder value.
-  taskqueue2 := "{MY-TASKQUEUE}"
+  taskqueue2 := "{MY-TASKQUEUE}" // TODO: Update placeholder value(s).
 
   // The id of the task to delete.
-  // TODO: Update placeholder value.
-  task := "{MY-TASK}"
+  task := "{MY-TASK}" // TODO: Update placeholder value(s).
 
-  if err := c.Tasks.Delete(project, taskqueue2, task).Context(ctx).Do(); err != nil {
-    // TODO: Handle error.
+  if err := s.Tasks.Delete(project, taskqueue2, task).Context(ctx).Do(); err != nil {
+    log.Fatal(err)
   }
 }
 package main
@@ -104,11 +118,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -117,33 +134,37 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, taskqueue.TaskqueueScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := taskqueue.New(hc)
+
+  s, err := taskqueue.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // The project under which the queue lies.
-  // TODO: Update placeholder value.
-  project := "{MY-PROJECT}"
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
   // The taskqueue in which the task belongs.
-  // TODO: Update placeholder value.
-  taskqueue2 := "{MY-TASKQUEUE}"
+  taskqueue2 := "{MY-TASKQUEUE}" // TODO: Update placeholder value(s).
 
   // The task to get properties of.
-  // TODO: Update placeholder value.
-  task := "{MY-TASK}"
+  task := "{MY-TASK}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Tasks.Get(project, taskqueue2, task).Context(ctx).Do()
+  resp, err := s.Tasks.Get(project, taskqueue2, task).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -155,11 +176,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -168,31 +192,38 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, taskqueue.TaskqueueScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := taskqueue.New(hc)
+
+  s, err := taskqueue.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // The project under which the queue lies
-  // TODO: Update placeholder value.
-  project := "{MY-PROJECT}"
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
   // The taskqueue to insert the task into
-  // TODO: Update placeholder value.
-  taskqueue2 := "{MY-TASKQUEUE}"
+  taskqueue2 := "{MY-TASKQUEUE}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Tasks.Insert(project, taskqueue2, &taskqueue.Task{
-                                // TODO: Fill required fields.
-                              }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  task := &taskqueue.Task{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Tasks.Insert(project, taskqueue2, &task).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -204,11 +235,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -217,37 +251,40 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, taskqueue.TaskqueueScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := taskqueue.New(hc)
+
+  s, err := taskqueue.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // The project under which the queue lies.
-  // TODO: Update placeholder value.
-  project := "{MY-PROJECT}"
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
   // The taskqueue to lease a task from.
-  // TODO: Update placeholder value.
-  taskqueue2 := "{MY-TASKQUEUE}"
+  taskqueue2 := "{MY-TASKQUEUE}" // TODO: Update placeholder value(s).
 
   // The number of tasks to lease.
-  // TODO: Update placeholder value.
-  numTasks := int64(0)
+  numTasks := int64(0) // TODO: Update placeholder value(s).
 
   // The lease in seconds.
-  // TODO: Update placeholder value.
-  leaseSecs := int64(0)
+  leaseSecs := int64(0) // TODO: Update placeholder value(s).
 
-  resp, err := c.Tasks.Lease(project, taskqueue2, numTasks, leaseSecs).Context(ctx).Do()
+  resp, err := s.Tasks.Lease(project, taskqueue2, numTasks, leaseSecs).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -259,11 +296,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -272,29 +312,34 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, taskqueue.TaskqueueScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := taskqueue.New(hc)
+
+  s, err := taskqueue.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // The project under which the queue lies.
-  // TODO: Update placeholder value.
-  project := "{MY-PROJECT}"
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
   // The id of the taskqueue to list tasks from.
-  // TODO: Update placeholder value.
-  taskqueue2 := "{MY-TASKQUEUE}"
+  taskqueue2 := "{MY-TASKQUEUE}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Tasks.List(project, taskqueue2).Context(ctx).Do()
+  resp, err := s.Tasks.List(project, taskqueue2).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -306,11 +351,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -319,39 +367,44 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, taskqueue.TaskqueueScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := taskqueue.New(hc)
+
+  s, err := taskqueue.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // The project under which the queue lies.
-  // TODO: Update placeholder value.
-  project := "{MY-PROJECT}"
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
 
-  // TODO: Update placeholder value.
-  taskqueue2 := "{MY-TASKQUEUE}"
+  taskqueue2 := "{MY-TASKQUEUE}" // TODO: Update placeholder value(s).
 
 
-  // TODO: Update placeholder value.
-  task := "{MY-TASK}"
+  task := "{MY-TASK}" // TODO: Update placeholder value(s).
 
   // The new lease in seconds.
-  // TODO: Update placeholder value.
-  newLeaseSeconds := int64(0)
+  newLeaseSeconds := int64(0) // TODO: Update placeholder value(s).
 
-  resp, err := c.Tasks.Patch(project, taskqueue2, task, newLeaseSeconds, &taskqueue.Task{
-                               // TODO: Fill required fields.
-                             }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  task := &taskqueue.Task{
+    // TODO: Add the desired fields to be changed.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Tasks.Patch(project, taskqueue2, task, newLeaseSeconds, &task).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -363,11 +416,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -376,37 +432,42 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, taskqueue.TaskqueueScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := taskqueue.New(hc)
+
+  s, err := taskqueue.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // The project under which the queue lies.
-  // TODO: Update placeholder value.
-  project := "{MY-PROJECT}"
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
 
-  // TODO: Update placeholder value.
-  taskqueue2 := "{MY-TASKQUEUE}"
+  taskqueue2 := "{MY-TASKQUEUE}" // TODO: Update placeholder value(s).
 
 
-  // TODO: Update placeholder value.
-  task := "{MY-TASK}"
+  task := "{MY-TASK}" // TODO: Update placeholder value(s).
 
   // The new lease in seconds.
-  // TODO: Update placeholder value.
-  newLeaseSeconds := int64(0)
+  newLeaseSeconds := int64(0) // TODO: Update placeholder value(s).
 
-  resp, err := c.Tasks.Update(project, taskqueue2, task, newLeaseSeconds, &taskqueue.Task{
-                                // TODO: Fill required fields.
-                              }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  task := &taskqueue.Task{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Tasks.Update(project, taskqueue2, task, newLeaseSeconds, &task).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
