@@ -217,12 +217,10 @@ public class MockLibraryServiceImpl implements LibraryService  {
   }
 
   @Override
-  public void streamShelves(ListShelvesRequest request,
-    StreamObserver<ListShelvesResponse> responseObserver) {
-    ListShelvesResponse response = (ListShelvesResponse) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+  public StreamObserver<ListShelvesRequest> streamShelves(
+      StreamObserver<ListShelvesResponse> responseObserver) {
+    System.err.println("Streaming method is not supported.");
+    return null;
   }
 
   @Override

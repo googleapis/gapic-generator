@@ -308,6 +308,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .name(methodContext.getNamer().getApiMethodName(method))
         .requestTypeName(requestTypeName)
         .responseTypeName(responseTypeName)
+        .isStreaming(method.getRequestStreaming() || method.getResponseStreaming())
         .build();
   }
 }
