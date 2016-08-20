@@ -17,6 +17,7 @@ package com.google.api.codegen.nodejs;
 import com.google.api.codegen.CodegenContext;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
@@ -43,7 +44,7 @@ public class NodeJSSnippetSetRunner<ElementT> implements SnippetSetRunner.Genera
             NodeJSSnippetSet.class,
             resourceRoot,
             snippetFileName,
-            ImmutableMap.<String, Object>of("context", context));
+            ImmutableMap.<String, Object>of("context", context, "util", new CommonRenderingUtil()));
 
     String outputFilename = snippets.generateFilename(element).prettyPrint();
     Doc body = snippets.generateBody(element);

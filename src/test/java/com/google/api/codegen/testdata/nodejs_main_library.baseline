@@ -316,6 +316,18 @@ LibraryServiceApi.matchBookFromArchivedBookName =
  * @returns {gax.EventEmitter} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
+ *
+ * @example
+ *
+ * var libraryServiceApi = LibraryServiceApi();
+ * var shelf = new Shelf();
+ * libraryServiceApi.createShelf(shelf, function(err, response) {
+ *     if (err) {
+ *         console.error(err);
+ *         return;
+ *     }
+ *     // doThingsWith(response)
+ * });
  */
 LibraryServiceApi.prototype.createShelf = function createShelf() {
   var args = arguejs({
@@ -348,6 +360,19 @@ LibraryServiceApi.prototype.createShelf = function createShelf() {
  * @returns {gax.EventEmitter} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
+ *
+ * @example
+ *
+ * var libraryServiceApi = LibraryServiceApi();
+ * var formattedName = LibraryServiceApi.shelfPath("[SHELF]");
+ * var options = '';
+ * libraryServiceApi.getShelf(formattedName, options, function(err, response) {
+ *     if (err) {
+ *         console.error(err);
+ *         return;
+ *     }
+ *     // doThingsWith(response)
+ * });
  */
 LibraryServiceApi.prototype.getShelf = function getShelf() {
   var args = arguejs({
@@ -381,6 +406,14 @@ LibraryServiceApi.prototype.getShelf = function getShelf() {
  *   instances on 'data' event. This object can also be configured to emit
  *   pages of the responses through the options parameter.
  * @throws an error if the RPC is aborted.
+ *
+ * @example
+ *
+ * var libraryServiceApi = LibraryServiceApi();
+ *
+ * libraryServiceApi.listShelves().on('data', function(element) {
+ *     // doThingsWith(element)
+ * });
  */
 LibraryServiceApi.prototype.listShelves = function listShelves() {
   var args = arguejs({
@@ -405,6 +438,16 @@ LibraryServiceApi.prototype.listShelves = function listShelves() {
  * @returns {gax.EventEmitter} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
+ *
+ * @example
+ *
+ * var libraryServiceApi = LibraryServiceApi();
+ * var formattedName = LibraryServiceApi.shelfPath("[SHELF]");
+ * libraryServiceApi.deleteShelf(formattedName, function(err) {
+ *     if (err) {
+ *         console.error(err);
+ *     }
+ * });
  */
 LibraryServiceApi.prototype.deleteShelf = function deleteShelf() {
   var args = arguejs({
@@ -435,6 +478,19 @@ LibraryServiceApi.prototype.deleteShelf = function deleteShelf() {
  * @returns {gax.EventEmitter} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
+ *
+ * @example
+ *
+ * var libraryServiceApi = LibraryServiceApi();
+ * var formattedName = LibraryServiceApi.shelfPath("[SHELF]");
+ * var formattedOtherShelfName = LibraryServiceApi.shelfPath("[SHELF]");
+ * libraryServiceApi.mergeShelves(formattedName, formattedOtherShelfName, function(err, response) {
+ *     if (err) {
+ *         console.error(err);
+ *         return;
+ *     }
+ *     // doThingsWith(response)
+ * });
  */
 LibraryServiceApi.prototype.mergeShelves = function mergeShelves() {
   var args = arguejs({
@@ -465,6 +521,19 @@ LibraryServiceApi.prototype.mergeShelves = function mergeShelves() {
  * @returns {gax.EventEmitter} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
+ *
+ * @example
+ *
+ * var libraryServiceApi = LibraryServiceApi();
+ * var formattedName = LibraryServiceApi.shelfPath("[SHELF]");
+ * var book = new Book();
+ * libraryServiceApi.createBook(formattedName, book, function(err, response) {
+ *     if (err) {
+ *         console.error(err);
+ *         return;
+ *     }
+ *     // doThingsWith(response)
+ * });
  */
 LibraryServiceApi.prototype.createBook = function createBook() {
   var args = arguejs({
@@ -500,6 +569,19 @@ LibraryServiceApi.prototype.createBook = function createBook() {
  *   a gax.BundleEventEmitter but the API is immediately invoked, so it behaves same
  *   as a gax.EventEmitter does.
  * @throws an error if the RPC is aborted.
+ *
+ * @example
+ *
+ * var libraryServiceApi = LibraryServiceApi();
+ * var shelf = new Shelf();
+ * var books = [];
+ * libraryServiceApi.publishSeries(shelf, books, function(err, response) {
+ *     if (err) {
+ *         console.error(err);
+ *         return;
+ *     }
+ *     // doThingsWith(response)
+ * });
  */
 LibraryServiceApi.prototype.publishSeries = function publishSeries() {
   var args = arguejs({
@@ -532,6 +614,18 @@ LibraryServiceApi.prototype.publishSeries = function publishSeries() {
  * @returns {gax.EventEmitter} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
+ *
+ * @example
+ *
+ * var libraryServiceApi = LibraryServiceApi();
+ * var formattedName = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
+ * libraryServiceApi.getBook(formattedName, function(err, response) {
+ *     if (err) {
+ *         console.error(err);
+ *         return;
+ *     }
+ *     // doThingsWith(response)
+ * });
  */
 LibraryServiceApi.prototype.getBook = function getBook() {
   var args = arguejs({
@@ -567,6 +661,14 @@ LibraryServiceApi.prototype.getBook = function getBook() {
  *   instances on 'data' event. This object can also be configured to emit
  *   pages of the responses through the options parameter.
  * @throws an error if the RPC is aborted.
+ *
+ * @example
+ *
+ * var libraryServiceApi = LibraryServiceApi();
+ * var formattedName = LibraryServiceApi.shelfPath("[SHELF]");
+ * libraryServiceApi.listBooks(formattedName).on('data', function(element) {
+ *     // doThingsWith(element)
+ * });
  */
 LibraryServiceApi.prototype.listBooks = function listBooks() {
   var args = arguejs({
@@ -600,6 +702,16 @@ LibraryServiceApi.prototype.listBooks = function listBooks() {
  * @returns {gax.EventEmitter} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
+ *
+ * @example
+ *
+ * var libraryServiceApi = LibraryServiceApi();
+ * var formattedName = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
+ * libraryServiceApi.deleteBook(formattedName, function(err) {
+ *     if (err) {
+ *         console.error(err);
+ *     }
+ * });
  */
 LibraryServiceApi.prototype.deleteBook = function deleteBook() {
   var args = arguejs({
@@ -633,6 +745,19 @@ LibraryServiceApi.prototype.deleteBook = function deleteBook() {
  * @returns {gax.EventEmitter} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
+ *
+ * @example
+ *
+ * var libraryServiceApi = LibraryServiceApi();
+ * var formattedName = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
+ * var book = new Book();
+ * libraryServiceApi.updateBook(formattedName, book, function(err, response) {
+ *     if (err) {
+ *         console.error(err);
+ *         return;
+ *     }
+ *     // doThingsWith(response)
+ * });
  */
 LibraryServiceApi.prototype.updateBook = function updateBook() {
   var args = arguejs({
@@ -670,6 +795,19 @@ LibraryServiceApi.prototype.updateBook = function updateBook() {
  * @returns {gax.EventEmitter} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
+ *
+ * @example
+ *
+ * var libraryServiceApi = LibraryServiceApi();
+ * var formattedName = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
+ * var formattedOtherShelfName = LibraryServiceApi.shelfPath("[SHELF]");
+ * libraryServiceApi.moveBook(formattedName, formattedOtherShelfName, function(err, response) {
+ *     if (err) {
+ *         console.error(err);
+ *         return;
+ *     }
+ *     // doThingsWith(response)
+ * });
  */
 LibraryServiceApi.prototype.moveBook = function moveBook() {
   var args = arguejs({
@@ -704,6 +842,14 @@ LibraryServiceApi.prototype.moveBook = function moveBook() {
  *   instances on 'data' event. This object can also be configured to emit
  *   pages of the responses through the options parameter.
  * @throws an error if the RPC is aborted.
+ *
+ * @example
+ *
+ * var libraryServiceApi = LibraryServiceApi();
+ *
+ * libraryServiceApi.listStrings().on('data', function(element) {
+ *     // doThingsWith(element)
+ * });
  */
 LibraryServiceApi.prototype.listStrings = function listStrings() {
   var args = arguejs({
@@ -735,6 +881,20 @@ LibraryServiceApi.prototype.listStrings = function listStrings() {
  * @returns {gax.EventEmitter} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
+ *
+ * @example
+ *
+ * var libraryServiceApi = LibraryServiceApi();
+ * var formattedName = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
+ * var comment = '';
+ * var commentsElement = new Comment();
+ * commentsElement.setComment(comment);
+ * var comments = [commentsElement];
+ * libraryServiceApi.addComments(formattedName, comments, function(err) {
+ *     if (err) {
+ *         console.error(err);
+ *     }
+ * });
  */
 LibraryServiceApi.prototype.addComments = function addComments() {
   var args = arguejs({
@@ -763,6 +923,18 @@ LibraryServiceApi.prototype.addComments = function addComments() {
  * @returns {gax.EventEmitter} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
+ *
+ * @example
+ *
+ * var libraryServiceApi = LibraryServiceApi();
+ * var formattedName = LibraryServiceApi.archivedBookPath("[ARCHIVE_PATH]", "[BOOK]");
+ * libraryServiceApi.getBookFromArchive(formattedName, function(err, response) {
+ *     if (err) {
+ *         console.error(err);
+ *         return;
+ *     }
+ *     // doThingsWith(response)
+ * });
  */
 LibraryServiceApi.prototype.getBookFromArchive = function getBookFromArchive() {
   var args = arguejs({
@@ -793,6 +965,19 @@ LibraryServiceApi.prototype.getBookFromArchive = function getBookFromArchive() {
  * @returns {gax.EventEmitter} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
+ *
+ * @example
+ *
+ * var libraryServiceApi = LibraryServiceApi();
+ * var formattedName = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
+ * var indexName = 'default index';
+ * var indexMapItem = '';
+ * var indexMap = {'default_key' : indexMapItem,};
+ * libraryServiceApi.updateBookIndex(formattedName, indexName, indexMap, function(err) {
+ *     if (err) {
+ *         console.error(err);
+ *     }
+ * });
  */
 LibraryServiceApi.prototype.updateBookIndex = function updateBookIndex() {
   var args = arguejs({
@@ -827,6 +1012,19 @@ LibraryServiceApi.prototype.updateBookIndex = function updateBookIndex() {
  * @returns {gax.EventEmitter} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
+ *
+ * @example
+ *
+ * var libraryServiceApi = LibraryServiceApi();
+ * var formattedResource = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
+ * var tag = '';
+ * libraryServiceApi.addTag(formattedResource, tag, function(err, response) {
+ *     if (err) {
+ *         console.error(err);
+ *         return;
+ *     }
+ *     // doThingsWith(response)
+ * });
  */
 LibraryServiceApi.prototype.addTag = function addTag() {
   var args = arguejs({

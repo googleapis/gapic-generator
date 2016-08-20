@@ -17,6 +17,14 @@ package com.google.api.codegen.nodejs;
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.transformer.nodejs.NodeJSModelTypeNameConverter;
+import com.google.api.codegen.transformer.nodejs.NodeJSSurfaceNamer;
+import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
+import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.Field;
@@ -40,7 +48,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 /**
- * A GapicContext specialized for Node.JS.
+ * A GapicContext specialized for NodeJS.
  */
 public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
 
@@ -50,6 +58,23 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
 
   // Snippet Helpers
   // ===============
+
+  /**
+   * Return ApiMethodView for sample gen.
+   *
+   * <p>TODO: Temporary solution to use MVVM with just sample gen.
+   */
+  public ApiMethodView getApiMethodView(Interface service, Method method) {
+    ModelTypeTable modelTypeTable =
+        new ModelTypeTable(new NodeJSTypeTable(), new NodeJSModelTypeNameConverter());
+    SurfaceTransformerContext context =
+        SurfaceTransformerContext.create(
+            service, getApiConfig(), modelTypeTable, new NodeJSSurfaceNamer());
+    MethodTransformerContext methodContext = context.asMethodContext(method);
+    ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
+
+    return apiMethodTransformer.generateOptionalArrayMethod(methodContext);
+  }
 
   public String filePath(ProtoFile file) {
     return file.getSimpleName().replace(".proto", "_pb2.js");

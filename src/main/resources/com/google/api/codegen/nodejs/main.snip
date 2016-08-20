@@ -1,3 +1,5 @@
+@extends "nodejs/method_sample.snip"
+
 @snippet generateFilename(service)
   {@context.upperCamelToLowerUnderscore(context.getApiWrapperName(service))}.js
 @end
@@ -341,6 +343,16 @@
   {@context.upperCamelToLowerCamel(method.getSimpleName())}
 @end
 
+@private decorateSampleCodeSegment(service, method)
+  @let apiMethod = context.getApiMethodView(service, method), \
+       coreSampleCode = sampleCode(apiMethod), \
+       finalSampleCode = decorateSampleCode(apiMethod, coreSampleCode)
+       @if finalSampleCode
+         {@finalSampleCode}
+       @end
+  @end
+@end
+
 @private flattenedMethod(service, method)
   @let serviceName = context.getApiWrapperName(service), \
        documentation = comments(context.methodComments(method)), \
@@ -350,6 +362,12 @@
     @if documentation
       /**
        {@documentation}
+       *
+       * @@example
+       *
+       @join sampleLine : util.getDocLines({@decorateSampleCodeSegment(service, method)})
+         {@""}* {@sampleLine}
+       @end
        */
     @end
 
