@@ -20,6 +20,7 @@ import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
@@ -195,6 +196,10 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
     if (type.isMessage()) {
       return TypedValue.create(getTypeName(type), "%s.newBuilder().build()");
     }
+    if (type.isEnum()) {
+      EnumValue enumValue = type.getEnumType().getValues().get(0);
+      return TypedValue.create(getTypeName(type), "%s." + enumValue.getSimpleName());
+    }
     return TypedValue.create(getTypeName(type), "null");
   }
 
@@ -209,8 +214,9 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
       }
       name = name + "." + outerClassName;
     }
-    String shortName = elem.getFullName().substring(elem.getFile().getFullName().length() + 1);
-    name = name + "." + shortName;
+    String typeName = elem.getFullName().substring(elem.getFile().getFullName().length() + 1);
+    name = name + "." + typeName;
+    String shortName = name.substring(name.lastIndexOf('.') + 1);
 
     return new TypeName(name, shortName);
   }
