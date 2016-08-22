@@ -102,14 +102,58 @@ public class ApiaryConfig {
   private final Table<Type, String, Field> fields = HashBasedTable.<Type, String, Field>create();
 
   /*
-   * The service canonical name, or name if no canonical name
+   * The service canonical name, or name if no canonical name.
    */
   private String serviceCanonicalName;
 
   /*
-   * The service version string
+   * The service version string.
    */
   private String serviceVersion;
+
+  private Map<String, AuthType> authOverrides = new HashMap<>();
+
+  /*
+   * If present in the scope list, indicates that the API supports application default credentials
+   * based auth.
+   */
+  private static final String CLOUD_PLATFORM_SCOPE =
+      "https://www.googleapis.com/auth/cloud-platform";
+
+  /*
+   * Possible auth types supported by discovery.
+   */
+  public enum AuthType {
+    APPLICATION_DEFAULT_CREDENTIALS,
+    OAUTH_3L,
+    API_KEY
+  }
+
+  /*
+   * Returns the auth type supported by the service.
+   */
+  public AuthType getAuthType() {
+    String key = getServiceCanonicalName();
+    if (authOverrides.containsKey(key)) {
+      return authOverrides.get(key);
+    }
+    // This statement is based on the assumption that every method in a service contains all the
+    // scopes necessary to determine the correct auth mechanism for the entire service.
+    // Therefore, we use the scopes of the first method in the auth scopes array.
+    key = getAuthScopes().keySet().iterator().next();
+    List<String> scopes = getAuthScopes().get(key);
+    if (scopes.isEmpty()) {
+      // If there are no scopes, it's api key based.
+      return AuthType.API_KEY;
+    } else {
+      // If there are scopes, but cloud platform is one of them, then we can use ADC.
+      if (scopes.contains(CLOUD_PLATFORM_SCOPE)) {
+        return AuthType.APPLICATION_DEFAULT_CREDENTIALS;
+      }
+      // Otherwise it's 3 legged OAuth.
+      return AuthType.OAUTH_3L;
+    }
+  }
 
   public ListMultimap<String, String> getMethodParams() {
     return methodParams;
