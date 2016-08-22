@@ -87,6 +87,28 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   }
 
   /**
+   * The name for the module for this vkit module.
+   */
+  public String getModuleName(Interface service) {
+    List<String> names = Splitter.on(".").splitToList(service.getFullName());
+    if (names.size() >= 3) {
+      return lowerUnderscoreToLowerCamel(
+          names.get(names.size() - 3) + "_" + names.get(names.size() - 2));
+    } else if (names.size() >= 2) {
+      return names.get(names.size() - 2);
+    }
+    return upperCamelToLowerCamel(service.getSimpleName());
+  }
+
+  /**
+   * Returns the major version part in the API namespace.
+   */
+  public String getApiVersion(Interface service) {
+    List<String> names = Splitter.on(".").splitToList(service.getFullName());
+    return names.get(names.size() - 2);
+  }
+
+  /**
    * Returns type information for a field in JSDoc style.
    */
   private String fieldTypeCardinalityComment(Field field) {
