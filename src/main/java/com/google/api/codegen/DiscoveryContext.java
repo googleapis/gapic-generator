@@ -210,7 +210,13 @@ public abstract class DiscoveryContext extends CodegenContext {
       }
     }
     String stringPattern = getApiaryConfig().getFieldPattern().get(type.getName(), field.getName());
-    return lineEnding(stringLiteral(Strings.nullToEmpty(DefaultString.forPattern(stringPattern))));
+    DefaultString defString = DefaultString.of(getApi().getName(), field.getName(), stringPattern);
+
+    String line = stringLiteral(defString.getDeclare());
+    if (defString.getComment() != null) {
+      line = lineComment(line, "eg. " + stringLiteral(defString.getComment()));
+    }
+    return lineEnding(line);
   }
 
   // Line wrap `str`, returning a list of lines. Each line in the returned list is guaranteed to not
