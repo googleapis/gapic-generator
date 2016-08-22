@@ -43,6 +43,8 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.GeneratedMessage;
 import com.google.tagger.v1.AddTagRequest;
 import com.google.tagger.v1.AddTagResponse;
+import com.google.tagger.v1.RemoveTagRequest;
+import com.google.tagger.v1.RemoveTagResponse;
 import io.grpc.stub.StreamObserver;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -229,6 +231,15 @@ public class MockLibraryServiceImpl implements LibraryService  {
   public void addTag(AddTagRequest request,
     StreamObserver<AddTagResponse> responseObserver) {
     AddTagResponse response = (AddTagResponse) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
+  }
+
+  @Override
+  public void removeTag(RemoveTagRequest request,
+    StreamObserver<RemoveTagResponse> responseObserver) {
+    RemoveTagResponse response = (RemoveTagResponse) responses.remove();
     requests.add(request);
     responseObserver.onNext(response);
     responseObserver.onCompleted();

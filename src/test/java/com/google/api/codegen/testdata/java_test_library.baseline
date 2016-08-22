@@ -50,6 +50,8 @@ import com.google.protobuf.FieldMask;
 import com.google.protobuf.GeneratedMessage;
 import com.google.tagger.v1.AddTagRequest;
 import com.google.tagger.v1.AddTagResponse;
+import com.google.tagger.v1.RemoveTagRequest;
+import com.google.tagger.v1.RemoveTagResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -547,6 +549,29 @@ public class LibraryServiceTest {
     List<GeneratedMessage> actualRequests = serviceHelper.getService().getRequests();
     Assert.assertEquals(1, actualRequests.size());
     AddTagRequest actualRequest = (AddTagRequest)actualRequests.get(0);
+
+    Assert.assertEquals(actualRequest.getResource(), formattedResource);
+    Assert.assertEquals(actualRequest.getTag(), tag);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void removeTagTest() {
+    RemoveTagResponse expectedResponse = RemoveTagResponse.newBuilder()
+      .build();
+    List<GeneratedMessage> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    serviceHelper.getService().setResponses(expectedResponses);
+
+    String formattedResource = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+    String tag = "";
+    RemoveTagResponse actualResponse =
+        api.removeTag(formattedResource, tag);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<GeneratedMessage> actualRequests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    RemoveTagRequest actualRequest = (RemoveTagRequest)actualRequests.get(0);
 
     Assert.assertEquals(actualRequest.getResource(), formattedResource);
     Assert.assertEquals(actualRequest.getTag(), tag);

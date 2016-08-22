@@ -171,7 +171,8 @@ function LibraryServiceApi(opts) {
     'addComments',
     'getBookFromArchive',
     'updateBookIndex',
-    'addTag'
+    'addTag',
+    'removeTag'
   ];
   methods.forEach(function(methodName) {
     this['_' + methodName] = gax.createApiCall(
@@ -814,7 +815,7 @@ LibraryServiceApi.prototype.updateBookIndex = function updateBookIndex() {
  * Adds a tag to the book.
  *
  * @param {String} resource
- *   REQUIRED: The resource for which policy is being specified.
+ *   REQUIRED: The resource which the tag is being added to.
  *   Resource is usually specified as a path, such as,
  *   projects/{project}/zones/{zone}/disks/{disk}.
  * @param {String} tag
@@ -840,4 +841,36 @@ LibraryServiceApi.prototype.addTag = function addTag() {
     'tag': args.tag
   };
   return this._addTag(req, args.options, args.callback);
+};
+
+/**
+ * Removes a tag from the entity.
+ *
+ * @param {String} resource
+ *   REQUIRED: The resource which the tag is being removed from.
+ *   Resource is usually specified as a path, such as,
+ *   projects/{project}/zones/{zone}/disks/{disk}.
+ * @param {String} tag
+ *   REQUIRED: The tag to remove.
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @param {?APICallback<google.tagger.v1.RemoveTagResponse>} callback
+ *   The function which will be called with the result of the API call.
+ * @returns {gax.EventEmitter} - the event emitter to handle the call
+ *   status.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.removeTag = function removeTag() {
+  var args = arguejs({
+    'resource': String,
+    'tag': String,
+    'options': [gax.CallOptions],
+    'callback': [Function]
+  }, arguments);
+  var req = {
+    'resource': args.resource,
+    'tag': args.tag
+  };
+  return this._removeTag(req, args.options, args.callback);
 };

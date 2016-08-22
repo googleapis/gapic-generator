@@ -317,6 +317,9 @@ class LibraryServiceApi(object):
         self._add_tag = api_callable.create_api_call(
             self.stub.AddTag,
             settings=defaults['add_tag'])
+        self._remove_tag = api_callable.create_api_call(
+            self.stub.RemoveTag,
+            settings=defaults['remove_tag'])
 
     # Service calls
     def create_shelf(
@@ -895,7 +898,7 @@ class LibraryServiceApi(object):
           >>> response = api.add_tag(resource, tag)
 
         Args:
-          resource (string): REQUIRED: The resource for which policy is being specified.
+          resource (string): REQUIRED: The resource which the tag is being added to.
             Resource is usually specified as a path, such as,
             projects/{project}/zones/{zone}/disks/{disk}.
           tag (string): REQUIRED: The tag to add.
@@ -909,4 +912,35 @@ class LibraryServiceApi(object):
             resource=resource,
             tag=tag)
         self._add_tag(request, options)
+
+    def remove_tag(
+            self,
+            resource,
+            tag,
+            options=None):
+        """
+        Removes a tag from the entity.
+
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> api = LibraryServiceApi()
+          >>> resource = api.book_path('[SHELF]', '[BOOK]')
+          >>> tag = ''
+          >>> response = api.remove_tag(resource, tag)
+
+        Args:
+          resource (string): REQUIRED: The resource which the tag is being removed from.
+            Resource is usually specified as a path, such as,
+            projects/{project}/zones/{zone}/disks/{disk}.
+          tag (string): REQUIRED: The tag to remove.
+          options (:class:`google.gax.CallOptions`): Overrides the default
+            settings for this call, e.g, timeout, retries etc.
+
+        Raises:
+          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+        """
+        request = tagger_pb2.RemoveTagRequest(
+            resource=resource,
+            tag=tag)
+        self._remove_tag(request, options)
 

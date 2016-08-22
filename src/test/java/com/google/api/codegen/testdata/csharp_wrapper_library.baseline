@@ -85,6 +85,7 @@ namespace Google.Example.Library.V1
             GetBookFromArchiveSettings = existing.GetBookFromArchiveSettings?.Clone();
             UpdateBookIndexSettings = existing.UpdateBookIndexSettings?.Clone();
             AddTagSettings = existing.AddTagSettings?.Clone();
+            RemoveTagSettings = existing.RemoveTagSettings?.Clone();
         }
 
         /// <summary>
@@ -693,6 +694,38 @@ namespace Google.Example.Library.V1
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
         public CallSettings AddTagSettings { get; set; } = new CallSettings
+        {
+            Timing = CallTiming.FromRetry(new RetrySettings
+            {
+                RetryBackoff = GetDefaultRetryBackoff(),
+                TimeoutBackoff = GetDefaultTimeoutBackoff(),
+                RetryFilter = NonIdempotentRetryFilter,
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
+        };
+
+        /// <summary>
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
+        /// <see cref="LibraryServiceClient.RemoveTag"/> and <see cref="LibraryServiceClient.RemoveTagAsync"/>.
+        /// </summary>
+        /// <remarks>
+        /// The default <see cref="LibraryServiceClient.RemoveTag"/> and
+        /// <see cref="LibraryServiceClient.RemoveTagAsync"/> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description>No status codes</description></item>
+        /// </list>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public CallSettings RemoveTagSettings { get; set; } = new CallSettings
         {
             Timing = CallTiming.FromRetry(new RetrySettings
             {
@@ -1693,7 +1726,7 @@ namespace Google.Example.Library.V1
         /// Adds a tag to the book.
         /// </summary>
         /// <param name="resource">
-        /// REQUIRED: The resource for which policy is being specified.
+        /// REQUIRED: The resource which the tag is being added to.
         /// Resource is usually specified as a path, such as,
         /// projects/{project}/zones/{zone}/disks/{disk}.
         /// </param>
@@ -1712,7 +1745,7 @@ namespace Google.Example.Library.V1
         /// Adds a tag to the book.
         /// </summary>
         /// <param name="resource">
-        /// REQUIRED: The resource for which policy is being specified.
+        /// REQUIRED: The resource which the tag is being added to.
         /// Resource is usually specified as a path, such as,
         /// projects/{project}/zones/{zone}/disks/{disk}.
         /// </param>
@@ -1731,7 +1764,7 @@ namespace Google.Example.Library.V1
         /// Adds a tag to the book.
         /// </summary>
         /// <param name="resource">
-        /// REQUIRED: The resource for which policy is being specified.
+        /// REQUIRED: The resource which the tag is being added to.
         /// Resource is usually specified as a path, such as,
         /// projects/{project}/zones/{zone}/disks/{disk}.
         /// </param>
@@ -1739,6 +1772,63 @@ namespace Google.Example.Library.V1
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>The RPC response.</returns>
         public virtual AddTagResponse AddTag(
+            string resource,
+            string tag,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Removes a tag from the entity.
+        /// </summary>
+        /// <param name="resource">
+        /// REQUIRED: The resource which the tag is being removed from.
+        /// Resource is usually specified as a path, such as,
+        /// projects/{project}/zones/{zone}/disks/{disk}.
+        /// </param>
+        /// <param name="tag">REQUIRED: The tag to remove.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task<RemoveTagResponse> RemoveTagAsync(
+            string resource,
+            string tag,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Removes a tag from the entity.
+        /// </summary>
+        /// <param name="resource">
+        /// REQUIRED: The resource which the tag is being removed from.
+        /// Resource is usually specified as a path, such as,
+        /// projects/{project}/zones/{zone}/disks/{disk}.
+        /// </param>
+        /// <param name="tag">REQUIRED: The tag to remove.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task<RemoveTagResponse> RemoveTagAsync(
+            string resource,
+            string tag,
+            CancellationToken cancellationToken) => RemoveTagAsync(
+                resource,
+                tag,
+                new CallSettings { CancellationToken = cancellationToken });
+
+        /// <summary>
+        /// Removes a tag from the entity.
+        /// </summary>
+        /// <param name="resource">
+        /// REQUIRED: The resource which the tag is being removed from.
+        /// Resource is usually specified as a path, such as,
+        /// projects/{project}/zones/{zone}/disks/{disk}.
+        /// </param>
+        /// <param name="tag">REQUIRED: The tag to remove.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public virtual RemoveTagResponse RemoveTag(
             string resource,
             string tag,
             CallSettings callSettings = null)
@@ -1768,6 +1858,7 @@ namespace Google.Example.Library.V1
         private readonly ApiCall<GetBookFromArchiveRequest, Book> _callGetBookFromArchive;
         private readonly ApiCall<UpdateBookIndexRequest, Empty> _callUpdateBookIndex;
         private readonly ApiCall<AddTagRequest, AddTagResponse> _callAddTag;
+        private readonly ApiCall<RemoveTagRequest, RemoveTagResponse> _callRemoveTag;
 
         public LibraryServiceClientImpl(LibraryService.LibraryServiceClient grpcClient, LibraryServiceSettings settings)
         {
@@ -1808,6 +1899,8 @@ namespace Google.Example.Library.V1
                 GrpcClient.UpdateBookIndexAsync, GrpcClient.UpdateBookIndex, effectiveSettings.UpdateBookIndexSettings);
             _callAddTag = _clientHelper.BuildApiCall<AddTagRequest, AddTagResponse>(
                 GrpcClient.AddTagAsync, GrpcClient.AddTag, effectiveSettings.AddTagSettings);
+            _callRemoveTag = _clientHelper.BuildApiCall<RemoveTagRequest, RemoveTagResponse>(
+                GrpcClient.RemoveTagAsync, GrpcClient.RemoveTag, effectiveSettings.RemoveTagSettings);
         }
 
         public override LibraryService.LibraryServiceClient GrpcClient { get; }
@@ -2534,7 +2627,7 @@ namespace Google.Example.Library.V1
         /// Adds a tag to the book.
         /// </summary>
         /// <param name="resource">
-        /// REQUIRED: The resource for which policy is being specified.
+        /// REQUIRED: The resource which the tag is being added to.
         /// Resource is usually specified as a path, such as,
         /// projects/{project}/zones/{zone}/disks/{disk}.
         /// </param>
@@ -2556,7 +2649,7 @@ namespace Google.Example.Library.V1
         /// Adds a tag to the book.
         /// </summary>
         /// <param name="resource">
-        /// REQUIRED: The resource for which policy is being specified.
+        /// REQUIRED: The resource which the tag is being added to.
         /// Resource is usually specified as a path, such as,
         /// projects/{project}/zones/{zone}/disks/{disk}.
         /// </param>
@@ -2568,6 +2661,50 @@ namespace Google.Example.Library.V1
             string tag,
             CallSettings callSettings = null) => _callAddTag.Sync(
                 new AddTagRequest
+                {
+                    Resource = resource,
+                    Tag = tag,
+                },
+                callSettings);
+
+        /// <summary>
+        /// Removes a tag from the entity.
+        /// </summary>
+        /// <param name="resource">
+        /// REQUIRED: The resource which the tag is being removed from.
+        /// Resource is usually specified as a path, such as,
+        /// projects/{project}/zones/{zone}/disks/{disk}.
+        /// </param>
+        /// <param name="tag">REQUIRED: The tag to remove.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public override Task<RemoveTagResponse> RemoveTagAsync(
+            string resource,
+            string tag,
+            CallSettings callSettings = null) => _callRemoveTag.Async(
+                new RemoveTagRequest
+                {
+                    Resource = resource,
+                    Tag = tag,
+                },
+                callSettings);
+
+        /// <summary>
+        /// Removes a tag from the entity.
+        /// </summary>
+        /// <param name="resource">
+        /// REQUIRED: The resource which the tag is being removed from.
+        /// Resource is usually specified as a path, such as,
+        /// projects/{project}/zones/{zone}/disks/{disk}.
+        /// </param>
+        /// <param name="tag">REQUIRED: The tag to remove.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public override RemoveTagResponse RemoveTag(
+            string resource,
+            string tag,
+            CallSettings callSettings = null) => _callRemoveTag.Sync(
+                new RemoveTagRequest
                 {
                     Resource = resource,
                     Tag = tag,
