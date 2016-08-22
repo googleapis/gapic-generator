@@ -151,7 +151,11 @@ public class PythonGapicContext extends GapicContext {
       case TYPE_MESSAGE:
         return ":class:`" + importHandler.elementPath(type.getMessageType(), true) + "`";
       case TYPE_ENUM:
-        return ":class:`" + importHandler.elementPath(type.getEnumType(), true) + "`";
+        return "enum from :class:`"
+            + getApiConfig().getPackageName()
+            + ".enums."
+            + pythonCommon.wrapIfKeywordOrBuiltIn(type.getEnumType().getSimpleName())
+            + "`";
       default:
         if (type.isPrimitive()) {
           return PRIMITIVE_TYPE_NAMES.get(type.getKind());
@@ -162,8 +166,8 @@ public class PythonGapicContext extends GapicContext {
   }
 
   /** Returns a comment string for field, consisting of type information and proto comment. */
-  private String fieldComment(String name, String cardinality, String paramComment) {
-    String comment = String.format("  %s (%s)", name, cardinality);
+  private String fieldComment(String name, String type, String paramComment) {
+    String comment = String.format("  %s (%s)", name, type);
     if (!Strings.isNullOrEmpty(paramComment)) {
       if (paramComment.charAt(paramComment.length() - 1) == '\n') {
         paramComment = paramComment.substring(0, paramComment.length() - 1);

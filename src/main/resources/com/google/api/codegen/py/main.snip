@@ -98,50 +98,8 @@
     @end
 @end
 
-@private enumComments(enum)
-    @let overview = context.getSphinxifiedScopedDescription(enum)
-        """
-        @if overview
-            @join line : context.splitToLines(overview)
-                {@line}
-            @end
-        {@BREAK}
-        @end
-        Attributes:
-        @join value : enum.getValues()
-            @join line : {@context.enumValueComment(value)} if line
-                {@line}
-            @end
-        @end
-        """
-    @end
-@end
-
-@private enumSection(enum)
-    class {@context.python.wrapIfKeywordOrBuiltIn(enum.getSimpleName)}(object):
-        {@enumComments(enum)}
-        @join value : enum.getValues
-            {@context.python.wrapIfKeywordOrBuiltIn(value.getSimpleName)} = {@value.getNumber}
-        @end
-@end
-
-@private shouldGenerateEnum(element)
-    @if element.isEnum
-        @if element.getEnumType.isReachable
-            TRUE
-        @end
-    @end
-@end
-
-@private enumConstants(service)
-    @join type : context.getModel.getSymbolTable.getDeclaredTypes if shouldGenerateEnum(type) on BREAK.add(BREAK)
-        {@enumSection(type.getEnumType)}
-    @end
-@end
-
 @private constantSection(service)
-    @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service), \
-            enums = enumConstants(service)
+    @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
         SERVICE_ADDRESS = '{@context.getServiceConfig.getServiceAddress(service)}'
         """The default address of the service."""
 
@@ -190,10 +148,6 @@
                 '{@auth_scope}',
             @end
         )
-        @if enums
-
-            {@enums}
-        @end
     @end
 @end
 

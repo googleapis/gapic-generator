@@ -1,4 +1,4 @@
-============== file: library/library_service_api.py ==============
+============== file: google/example/library/v1/library_service_api.py ==============
 # Copyright 2016 Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -107,42 +107,6 @@ class LibraryServiceApi(object):
         'https://www.googleapis.com/auth/cloud-platform',
         'https://www.googleapis.com/auth/library',
     )
-
-    class Material(object):
-        """
-        Attributes:
-          PAPIER_MACHE (int)
-          WOOD (int)
-          PORCELAIN (int)
-          SEQUINS (int)
-          CARDBOARD (int)
-        """
-        PAPIER_MACHE = 0
-        WOOD = 1
-        PORCELAIN = 2
-        SEQUINS = 3
-        CARDBOARD = 4
-
-    class NullValue(object):
-        """
-        ``NullValue`` is a singleton enumeration to represent the null value for the
-        ``Value`` type union.
-
-         The JSON representation for ``NullValue`` is JSON ``null``.
-
-        Attributes:
-          NULL_VALUE (int): Null value.
-        """
-        NULL_VALUE = 0
-
-    class Rating(object):
-        """
-        Attributes:
-          GOOD (int): GOOD enum description
-          BAD (int)
-        """
-        GOOD = 0
-        BAD = 1
 
     _SHELF_PATH_TEMPLATE = path_template.PathTemplate(
         'shelves/{shelf}')
@@ -385,7 +349,7 @@ class LibraryServiceApi(object):
         Creates a shelf, and returns the new Shelf.
 
         Example:
-          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1.library_service_api import LibraryServiceApi
           >>> from google.example.library.v1 import library_pb2
           >>> api = LibraryServiceApi()
           >>> shelf = library_pb2.Shelf()
@@ -418,7 +382,7 @@ class LibraryServiceApi(object):
         Gets a shelf.
 
         Example:
-          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1.library_service_api import LibraryServiceApi
           >>> api = LibraryServiceApi()
           >>> name = api.shelf_path('[SHELF]')
           >>> options_ = ''
@@ -457,7 +421,7 @@ class LibraryServiceApi(object):
         Lists shelves.
 
         Example:
-          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1.library_service_api import LibraryServiceApi
           >>> from google.gax import CallOptions, INITIAL_PAGE
           >>> api = LibraryServiceApi()
           >>>
@@ -496,7 +460,7 @@ class LibraryServiceApi(object):
         Deletes a shelf.
 
         Example:
-          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1.library_service_api import LibraryServiceApi
           >>> api = LibraryServiceApi()
           >>> name = api.shelf_path('[SHELF]')
           >>> api.delete_shelf(name)
@@ -525,7 +489,7 @@ class LibraryServiceApi(object):
         ``other_shelf_name``. Returns the updated shelf.
 
         Example:
-          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1.library_service_api import LibraryServiceApi
           >>> api = LibraryServiceApi()
           >>> name = api.shelf_path('[SHELF]')
           >>> other_shelf_name = api.shelf_path('[SHELF]')
@@ -558,7 +522,7 @@ class LibraryServiceApi(object):
         Creates a book.
 
         Example:
-          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1.library_service_api import LibraryServiceApi
           >>> from google.example.library.v1 import library_pb2
           >>> api = LibraryServiceApi()
           >>> name = api.shelf_path('[SHELF]')
@@ -593,7 +557,7 @@ class LibraryServiceApi(object):
         Creates a series of books.
 
         Example:
-          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1.library_service_api import LibraryServiceApi
           >>> from google.example.library.v1 import library_pb2
           >>> api = LibraryServiceApi()
           >>> shelf = library_pb2.Shelf()
@@ -628,7 +592,7 @@ class LibraryServiceApi(object):
         Gets a book.
 
         Example:
-          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1.library_service_api import LibraryServiceApi
           >>> api = LibraryServiceApi()
           >>> name = api.book_path('[SHELF]', '[BOOK]')
           >>> response = api.get_book(name)
@@ -659,7 +623,7 @@ class LibraryServiceApi(object):
         Lists books in a shelf.
 
         Example:
-          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1.library_service_api import LibraryServiceApi
           >>> from google.gax import CallOptions, INITIAL_PAGE
           >>> api = LibraryServiceApi()
           >>> name = api.shelf_path('[SHELF]')
@@ -710,7 +674,7 @@ class LibraryServiceApi(object):
         Deletes a book.
 
         Example:
-          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1.library_service_api import LibraryServiceApi
           >>> api = LibraryServiceApi()
           >>> name = api.book_path('[SHELF]', '[BOOK]')
           >>> api.delete_book(name)
@@ -739,7 +703,7 @@ class LibraryServiceApi(object):
         Updates a book.
 
         Example:
-          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1.library_service_api import LibraryServiceApi
           >>> from google.example.library.v1 import library_pb2
           >>> api = LibraryServiceApi()
           >>> name = api.book_path('[SHELF]', '[BOOK]')
@@ -781,7 +745,7 @@ class LibraryServiceApi(object):
         Moves a book to another shelf, and returns the new book.
 
         Example:
-          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1.library_service_api import LibraryServiceApi
           >>> api = LibraryServiceApi()
           >>> name = api.book_path('[SHELF]', '[BOOK]')
           >>> other_shelf_name = api.shelf_path('[SHELF]')
@@ -814,7 +778,7 @@ class LibraryServiceApi(object):
         Lists a primitive resource. To test go page streaming.
 
         Example:
-          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1.library_service_api import LibraryServiceApi
           >>> from google.gax import CallOptions, INITIAL_PAGE
           >>> api = LibraryServiceApi()
           >>>
@@ -863,7 +827,7 @@ class LibraryServiceApi(object):
         Adds comments to a book
 
         Example:
-          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1.library_service_api import LibraryServiceApi
           >>> from google.example.library.v1 import library_pb2
           >>> api = LibraryServiceApi()
           >>> name = api.book_path('[SHELF]', '[BOOK]')
@@ -896,7 +860,7 @@ class LibraryServiceApi(object):
         Gets a book from an archive.
 
         Example:
-          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1.library_service_api import LibraryServiceApi
           >>> api = LibraryServiceApi()
           >>> name = api.archived_book_path('[ARCHIVE_PATH]', '[BOOK]')
           >>> response = api.get_book_from_archive(name)
@@ -927,7 +891,7 @@ class LibraryServiceApi(object):
         Updates the index of a book.
 
         Example:
-          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1.library_service_api import LibraryServiceApi
           >>> api = LibraryServiceApi()
           >>> name = api.book_path('[SHELF]', '[BOOK]')
           >>> index_name = ''
@@ -1054,7 +1018,7 @@ class LibraryServiceApi(object):
         Adds a tag to the book. This RPC is a mixin.
 
         Example:
-          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1.library_service_api import LibraryServiceApi
           >>> api = LibraryServiceApi()
           >>> resource = api.book_path('[SHELF]', '[BOOK]')
           >>> tag = ''
