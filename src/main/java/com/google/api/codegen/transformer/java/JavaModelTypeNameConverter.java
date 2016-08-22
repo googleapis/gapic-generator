@@ -195,6 +195,9 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
     if (type.isMessage()) {
       return TypedValue.create(getTypeName(type), "%s.newBuilder().build()");
     }
+    if (type.isEnum()) {
+      return TypedValue.create(getTypeName(type), "%s.forNumber(0)");
+    }
     return TypedValue.create(getTypeName(type), "null");
   }
 
