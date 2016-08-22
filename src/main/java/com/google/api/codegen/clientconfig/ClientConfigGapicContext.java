@@ -17,9 +17,12 @@ package com.google.api.codegen.clientconfig;
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.BundlingConfig;
 import com.google.api.codegen.GapicContext;
+import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableMap;
 
+import java.util.List;
 import java.util.Map;
 
 public class ClientConfigGapicContext extends GapicContext {
@@ -49,5 +52,10 @@ public class ClientConfigGapicContext extends GapicContext {
       builder.put("delay_threshold_millis", Long.toString(bundling.getDelayThresholdMillis()));
     }
     return builder.build();
+  }
+
+  @Override
+  public List<Method> getNonStreamingMethods(Interface service) {
+    return getNonStreamingMethodsV2(service);
   }
 }

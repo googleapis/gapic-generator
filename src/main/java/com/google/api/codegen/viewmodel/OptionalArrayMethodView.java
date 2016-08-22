@@ -49,6 +49,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract boolean hasReturnValue();
 
+  public abstract String stubName();
+
   public static Builder newBuilder() {
     return new AutoValue_OptionalArrayMethodView.Builder();
   }
@@ -82,6 +84,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder optionalRequestObjectParams(List<RequestObjectParamView> val);
 
     public abstract Builder hasReturnValue(boolean val);
+
+    public abstract Builder stubName(String val);
 
     public abstract OptionalArrayMethodView build();
   }

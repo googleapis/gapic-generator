@@ -477,4 +477,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getMockGrpcServiceImplName(Interface service) {
     return className(Name.upperCamel("Mock", service.getSimpleName(), "Impl"));
   }
+
+  public String getStubName(Interface service) {
+    return varName(Name.upperCamel(service.getSimpleName(), "Stub"));
+  }
+
+  public String getCreateStubFunctionName(Interface service) {
+    return varName(Name.upperCamel("Create", service.getSimpleName(), "Stub", "Function"));
+  }
 }

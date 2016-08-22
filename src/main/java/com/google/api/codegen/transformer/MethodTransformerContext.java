@@ -18,6 +18,7 @@ import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.RerouteLogic;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
@@ -51,6 +52,11 @@ public abstract class MethodTransformerContext {
   public abstract Method getMethod();
 
   public abstract MethodConfig getMethodConfig();
+
+  public Interface getTargetInterface() {
+    return RerouteLogic.getTargetInterface(
+        getInterface(), getMethodConfig().getRerouteToGrpcInterface());
+  }
 
   public InterfaceConfig getInterfaceConfig() {
     return getApiConfig().getInterfaceConfig(getInterface());

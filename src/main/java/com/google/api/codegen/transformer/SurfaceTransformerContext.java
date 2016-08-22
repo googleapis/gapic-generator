@@ -20,7 +20,6 @@ import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
 
 import java.util.ArrayList;
@@ -77,8 +76,9 @@ public abstract class SurfaceTransformerContext {
    * Returns a list of simple RPC methods.
    */
   public List<Method> getNonStreamingMethods() {
-    List<Method> methods = new ArrayList<>(getInterface().getMethods().size());
-    for (Method method : getInterface().getMethods()) {
+    List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
+    for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
+      Method method = methodConfig.getMethod();
       if (!method.getRequestStreaming() && !method.getResponseStreaming()) {
         methods.add(method);
       }

@@ -48,6 +48,8 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.GeneratedMessage;
+import com.google.tagger.v1.AddLabelRequest;
+import com.google.tagger.v1.AddLabelResponse;
 import com.google.tagger.v1.AddTagRequest;
 import com.google.tagger.v1.AddTagResponse;
 import java.io.IOException;
@@ -670,6 +672,29 @@ public class LibraryServiceTest {
 
     Assert.assertEquals(formattedResource, actualRequest.getResource());
     Assert.assertEquals(tag, actualRequest.getTag());
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void addLabelTest() {
+    AddLabelResponse expectedResponse = AddLabelResponse.newBuilder()
+      .build();
+    List<GeneratedMessage> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    serviceHelper.getService().setResponses(expectedResponses);
+
+    String formattedResource = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+    String label = "";
+    AddLabelResponse actualResponse =
+        api.addLabel(formattedResource, label);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<GeneratedMessage> actualRequests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    AddLabelRequest actualRequest = (AddLabelRequest)actualRequests.get(0);
+
+    Assert.assertEquals(actualRequest.getResource(), formattedResource);
+    Assert.assertEquals(actualRequest.getLabel(), label);
   }
 
 }

@@ -24,20 +24,23 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-import org.joda.time.Duration;
-
 import io.grpc.Status;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.List;
 
 import javax.annotation.Nullable;
+
+import org.joda.time.Duration;
 
 /**
  * InterfaceConfig represents the code-gen config for an API interface, and includes the
  * configuration for methods and resource names.
  */
 public class InterfaceConfig {
+  private final List<MethodConfig> methodConfigs;
   private final ImmutableMap<String, CollectionConfig> collectionConfigs;
   private final ImmutableMap<String, MethodConfig> methodConfigMap;
   private final ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition;
@@ -59,6 +62,7 @@ public class InterfaceConfig {
     ImmutableMap<String, RetrySettings> retrySettingsDefinition =
         createRetrySettingsDefinition(diagCollector, interfaceConfigProto);
 
+    List<MethodConfig> methodConfigs = null;
     ImmutableMap<String, MethodConfig> methodConfigMap = null;
     if (retryCodesDefinition != null && retrySettingsDefinition != null) {
       methodConfigMap =
@@ -68,13 +72,18 @@ public class InterfaceConfig {
               iface,
               retryCodesDefinition.keySet(),
               retrySettingsDefinition.keySet());
+      methodConfigs = createMethodConfigs(methodConfigMap, interfaceConfigProto);
     }
 
     if (collectionConfigs == null || methodConfigMap == null) {
       return null;
     } else {
       return new InterfaceConfig(
-          collectionConfigs, methodConfigMap, retryCodesDefinition, retrySettingsDefinition);
+          methodConfigs,
+          collectionConfigs,
+          methodConfigMap,
+          retryCodesDefinition,
+          retrySettingsDefinition);
     }
   }
 
@@ -166,7 +175,9 @@ public class InterfaceConfig {
     ImmutableMap.Builder<String, MethodConfig> methodConfigMapBuilder = ImmutableMap.builder();
 
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
-      Method method = iface.lookupMethod(methodConfigProto.getName());
+      Interface targetInterface =
+          RerouteLogic.getTargetInterface(iface, methodConfigProto.getRerouteToGrpcInterface());
+      Method method = targetInterface.lookupMethod(methodConfigProto.getName());
       if (method == null) {
         diagCollector.addDiag(
             Diag.error(
@@ -193,15 +204,34 @@ public class InterfaceConfig {
     }
   }
 
+  private static List<MethodConfig> createMethodConfigs(
+      ImmutableMap<String, MethodConfig> methodConfigMap,
+      InterfaceConfigProto interfaceConfigProto) {
+    List<MethodConfig> methodConfigs = new ArrayList<>();
+    for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
+      methodConfigs.add(methodConfigMap.get(methodConfigProto.getName()));
+    }
+    return methodConfigs;
+  }
+
   private InterfaceConfig(
+      List<MethodConfig> methodConfigs,
       ImmutableMap<String, CollectionConfig> collectionConfigs,
       ImmutableMap<String, MethodConfig> methodConfigMap,
       ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition,
       ImmutableMap<String, RetrySettings> retryParamsDefinition) {
+    this.methodConfigs = methodConfigs;
     this.collectionConfigs = collectionConfigs;
     this.methodConfigMap = methodConfigMap;
     this.retryCodesDefinition = retryCodesDefinition;
     this.retrySettingsDefinition = retryParamsDefinition;
+  }
+
+  /**
+   * Returns the list of MethodConfigs.
+   */
+  public List<MethodConfig> getMethodConfigs() {
+    return methodConfigs;
   }
 
   public CollectionConfig getCollectionConfig(String entityName) {
