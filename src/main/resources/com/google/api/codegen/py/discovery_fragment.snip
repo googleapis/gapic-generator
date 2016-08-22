@@ -18,23 +18,21 @@
         2. This sample uses Application Default Credentials for authentication.
            If not already done, install the gcloud CLI from
            https://cloud.google.com/sdk/ and run
-           'gcloud beta auth application-default login'
+           `gcloud beta auth application-default login`
         3. Install the Python client library for Google APIs by running
-           'pip install --upgrade google-api-python-client'
+           `pip install --upgrade google-api-python-client`
         """
 
         @join import : imports
             {@import}
         @end
 
-        @# Authentication is provided by the 'gcloud' tool when running locally
+        @# Authentication is provided by the `gcloud` tool when running locally
         @# and by built-in service accounts when running on GAE, GCE, or GKE.
-        @# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+        @# For more information, see
+        @# https://developers.google.com/identity/protocols/application-default-credentials
         credentials = GoogleCredentials.get_application_default()
 
-        @# Construct the {@apiName} service object (version {@apiVersion}) for interacting
-        @# with the API. You can browse other available API services and versions at
-        @# https://developers.google.com/api-client-library/python/apis/
         {@serviceName()} = discovery.build('{@apiName}', '{@apiVersion}', credentials=credentials)
         {@body}
     @end
@@ -42,17 +40,11 @@
 
 @snippet generateBody(method)
     {@alwaysImport()}
-    @let params = context.getApiaryConfig.getMethodParams(method.getName)
-        {@initialize(method, params)}
-
-        @if context.hasRequestField(method)
-            {@initializeRequest(method)}
-        @end
-        @if context.isPageStreaming(method)
-            {@iterableCall(method)}
-        @else
-            {@compactCall(method)}
-        @end
+    {@initialize(method)}
+    @if context.isPageStreaming(method)
+        {@iterableCall(method)}
+    @else
+        {@compactCall(method)}
     @end
 @end
 
@@ -67,28 +59,33 @@
          responseType = method.getResponseTypeUrl, \
          responseTypeRef = context.getApiaryConfig.getType(responseType), \
          resourceField = context.getFirstRepeatedField(responseTypeRef), \
-         resources = resourceField.getName, \
-         resourceName = context.elementTypeName(responseTypeRef, resourceField)
+         resources = resourceField.getName
         {@resourcesObject} = {@serviceName()}.{@elementPath(resourcesPath)}
-        request = {@resourcesObject}.{@methodName}({@arguments(method)})
-        while request is not None:
-            response = request.execute()
+        {@requestName()} = {@resourcesObject}.{@methodName}({@arguments(method)})
+        while {@requestName()} is not None:
+            {@responseName()} = {@requestName()}.execute()
 
-            # TODO(tcoffee): add sample processing code to show visible results
             @if context.isMapField(responseTypeRef, resourceField.getName)
-                for {@resourceName} in response['{@resources}'].items():
-                    @# {@TODO()} Add code here to process each ({@resourceName}) entry
+                @let keyName = context.keyTypeName(resourceField), \
+                     valueName = context.valueTypeName(resourceField)
+                    for {@keyName}, {@valueName} in {@responseName()}['{@resources}'].items():
+                        @# {@TODO()} Use {@keyName}, {@valueName}
+                        {@printEntry(keyName, valueName)}
+                @end
             @else
-                for {@resourceName} in response['{@resources}']:
-                    @# {@TODO()} Add code here to process each '{@resourceName}' resource
+                @let resourceName = context.elementTypeName(resourceField)
+                    for {@resourceName} in {@responseName()}['{@resources}']:
+                        @# {@TODO()} Use {@resourceName}
+                        {@print(resourceName)}
+                @end
             @end
 
             # used to handle inconsistency in log entries list method for Logging API
             # remove exceptional case if inconsistency is resolved
             @if context.isLogEntriesListMethod(method)
-                {@requestName(method)}.pageToken = response.nextPageToken
+                {@requestBodyName(method)}.pageToken = {@responseName()}.nextPageToken
             @else
-                request = {@resourcesObject}.{@methodName}_next(previous_request=request, previous_response=response)
+                {@requestName()} = {@resourcesObject}.{@methodName}_next(previous_request={@requestName()}, previous_response={@responseName()})
             @end
     @end
 @end
@@ -96,82 +93,78 @@
 @private compactCall(method)
     @let methodName = context.getMethodName(method), \
          resourcesPath = context.getApiaryConfig.getResources(method.getName)
-        request = {@serviceName()}.{@elementPath(resourcesPath)}.{@methodName}({@arguments(method)})
+        {@requestName()} = {@serviceName()}.{@elementPath(resourcesPath)}.{@methodName}({@arguments(method)})
         @if context.isResponseEmpty(method)
-            request.execute()
+            {@requestName()}.execute()
         @else
-            response = request.execute()
+            {@responseName()} = {@requestName()}.execute()
 
-            @# {@TODO()} Change code below to process the 'response' dict:
-	    @let pprint = importHandler.addImportStandard("pprint", "pprint")
-	    	{@pprint}(response)
-            @end
+            @# {@TODO()} Use {@responseName()}
+            {@print(responseName())}
         @end
     @end
 @end
 
 # TODO(tcoffee): configure snippet grouping to handle long argument lists
 @private arguments(method)
-    @if context.hasRequestField(method)
-        @let params = context.getFlatMethodParams(method)
+    @let params = context.getFlatMethodParams(method)
+        @if context.hasRequestField(method)
             @if params
-                {@argumentList(params)}, body={@requestName(method)}
+                {@argumentList(params)}, body={@requestBodyName(method)}
             @else
-                body={@requestName(method)}
+                body={@requestBodyName(method)}
             @end
+        @else
+            {@argumentList(params)}
         @end
-    @else
-        {@argumentList(context.getMethodParams(method))}
     @end
 @end
 
-# TODO(tcoffee): generate appropriately typed default values for params
-@private initialize(method, params)
+@private initialize(method)
     @let methodName = context.getMethodName(method), \
-         apiaryConfig = context.getApiaryConfig, \
-         signatureType = apiaryConfig.getType(method.getRequestTypeUrl), \
+         signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
          params = context.getFlatMethodParams(method)
         @if params
+            @join param : params
+                @let paramField = context.getField(signatureType, param), \
+                     paramValue = context.typeDefaultValue(signatureType, paramField, method), \
+                     paramDescription = context.getDescription(signatureType.getName, param)
+                    {@description(paramDescription)}
+                    {@param} = {@paramValue}  @# {TODO()} Update placeholder value(s).
 
-            @# {@TODO()} Change placeholders below to appropriate parameter values for the '{@methodName}' method:
-
-        @end
-        @join param : params
-            @let paramField = context.getField(signatureType, param), \
-                 paramValue = context.typeDefaultValue(signatureType, paramField, method), \
-                 paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
-
-                {@description(paramDescription)}
-                {@param} = {@paramValue}
+                @end
             @end
+
         @end
     @end
-@end
+    @if context.hasRequestField(method)
 
-# TODO(tcoffee): add additional commented code for individual fields of request objects?
-@private initializeRequest(method)
-    {@requestName(method)} = {
-    @if context.isPatch(method)
-        @# {@TODO()} Add desired entries of the '{@requestName(method)}' dict to be changed
-    @else
-        @# {@TODO()} Add desired entries of the '{@requestName(method)}' dict
+        {@requestBodyName(method)} = {
+            @if context.isPatch(method)
+                @# {@TODO()} Add the desired entries to be changed.
+            @else
+                @# {@TODO()} Add the desired entries.
+            @end
+        }
+
+
     @end
-    }
-
 @end
 
 @private serviceName()
     service
 @end
 
-@private requestName(method)
-    {@context.getSampleVarName(context.getRequestField(method).getTypeUrl)}_body
+@private requestName()
+    request
 @end
 
-@private item(description)
-    @if description
-        @# * {@description}
-    @end
+@private requestBodyName(method)
+    {@context.objectTypeName(context.getRequestField(method))}_body
+@end
+
+@private responseName()
+  response
 @end
 
 @private elementPath(elements)
@@ -187,12 +180,24 @@
 @end
 
 @private description(description)
-  @join line : context.lineWrapDoc(description, 100)
-    @# {@line}
-  @end
+    @join line : context.lineWrapDoc(description)
+        @# {@line}
+    @end
+@end
+
+@private print(element)
+    @let pprint = importHandler.addImportStandard("pprint", "pprint")
+        {@pprint}({@element})
+    @end
+@end
+
+@private printEntry(key, value)
+    @let pprint = importHandler.addImportStandard("pprint", "pprint")
+        {@pprint}(({@key}, {@value}))
+    @end
 @end
 
 @private alwaysImport() fill
-  {@context.silent(importHandler.addImportLocal("googleapiclient", "discovery"))}
-  {@context.silent(importHandler.addImportLocal("oauth2client.client", "GoogleCredentials"))}
+    {@context.silent(importHandler.addImportLocal("googleapiclient", "discovery"))}
+    {@context.silent(importHandler.addImportLocal("oauth2client.client", "GoogleCredentials"))}
 @end

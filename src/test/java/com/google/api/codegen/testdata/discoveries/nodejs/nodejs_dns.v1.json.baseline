@@ -7,15 +7,20 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var dns = google.dns('v1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -24,25 +29,139 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+    // Identifies the project addressed by this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Identifies the project addressed by this request.
-    project: "{MY-PROJECT}",
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    managedZone: "{MY-MANAGED-ZONE}", // TODO: Update placeholder value(s).
 
-    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    managedZone: "{MY-MANAGED-ZONE}",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  dns.changes.create(request, function(err, result) {
+  dns.changes.create(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud DNS API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dns
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var dns = google.dns('v1');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Identifies the project addressed by this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    managedZone: "{MY-MANAGED-ZONE}", // TODO: Update placeholder value(s).
+
+    // The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
+    changeId: "{MY-CHANGE-ID}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  dns.changes.get(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud DNS API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dns
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var dns = google.dns('v1');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Identifies the project addressed by this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    managedZone: "{MY-MANAGED-ZONE}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  dns.changes.list(request, function handlePage(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var changesPage = response['changes'];
+    if (!changesPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < changesPage.length; i++) {
+      // TODO: Use changesPage
+      console.log(JSON.stringify(changesPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      dns.changes.list(request, handlePage);
     }
   });
 });
@@ -54,15 +173,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var dns = google.dns('v1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -71,26 +195,68 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // Identifies the project addressed by this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Identifies the project addressed by this request.
-    project: "{MY-PROJECT}",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    managedZone: "{MY-MANAGED-ZONE}",
-
-    // * The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
-    changeId: "{MY-CHANGE-ID}",
-
-    // Auth client
     auth: authClient
   };
 
-  dns.changes.get(request, function(err, result) {
+  dns.managedZones.create(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud DNS API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dns
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var dns = google.dns('v1');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Identifies the project addressed by this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    managedZone: "{MY-MANAGED-ZONE}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  dns.managedZones.delete(request, function(err) {
+    if (err) {
+      console.log(err);
     }
   });
 });
@@ -102,15 +268,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var dns = google.dns('v1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -119,32 +290,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // Identifies the project addressed by this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Identifies the project addressed by this request.
-    project: "{MY-PROJECT}",
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    managedZone: "{MY-MANAGED-ZONE}", // TODO: Update placeholder value(s).
 
-    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    managedZone: "{MY-MANAGED-ZONE}",
-
-    // Auth client
     auth: authClient
   };
 
-
-  var recur = function(err, result) {
+  dns.managedZones.get(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        dns.changes.list(request, recur);
-      }
+      return;
     }
-  };
 
-  dns.changes.list(request, recur);
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
 });
 // BEFORE RUNNING:
 // ---------------
@@ -154,15 +317,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var dns = google.dns('v1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -171,22 +339,31 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+    // Identifies the project addressed by this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Identifies the project addressed by this request.
-    project: "{MY-PROJECT}",
-
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  dns.managedZones.create(request, function(err, result) {
+  dns.managedZones.list(request, function handlePage(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    var managedZonesPage = response['managedZones'];
+    if (!managedZonesPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < managedZonesPage.length; i++) {
+      // TODO: Use managedZonesPage
+      console.log(JSON.stringify(managedZonesPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      dns.managedZones.list(request, handlePage);
     }
   });
 });
@@ -198,15 +375,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var dns = google.dns('v1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -215,24 +397,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // Identifies the project addressed by this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Identifies the project addressed by this request.
-    project: "{MY-PROJECT}",
-
-    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    managedZone: "{MY-MANAGED-ZONE}",
-
-    // Auth client
     auth: authClient
   };
 
-  dns.managedZones.delete(request, function(err, result) {
+  dns.projects.get(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -243,15 +421,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var dns = google.dns('v1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -260,166 +443,34 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // Identifies the project addressed by this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Identifies the project addressed by this request.
-    project: "{MY-PROJECT}",
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    managedZone: "{MY-MANAGED-ZONE}", // TODO: Update placeholder value(s).
 
-    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    managedZone: "{MY-MANAGED-ZONE}",
-
-    // Auth client
     auth: authClient
   };
 
-  dns.managedZones.get(request, function(err, result) {
+  dns.resourceRecordSets.list(request, function handlePage(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    var rrsetsPage = response['rrsets'];
+    if (!rrsetsPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < rrsetsPage.length; i++) {
+      // TODO: Use rrsetsPage
+      console.log(JSON.stringify(rrsetsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      dns.resourceRecordSets.list(request, handlePage);
     }
   });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud DNS API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dns
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var dns = google.dns('v1');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * Identifies the project addressed by this request.
-    project: "{MY-PROJECT}",
-
-    // Auth client
-    auth: authClient
-  };
-
-
-  var recur = function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        dns.managedZones.list(request, recur);
-      }
-    }
-  };
-
-  dns.managedZones.list(request, recur);
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud DNS API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dns
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var dns = google.dns('v1');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-
-    // * Identifies the project addressed by this request.
-    project: "{MY-PROJECT}",
-
-    // Auth client
-    auth: authClient
-  };
-
-  dns.projects.get(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud DNS API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dns
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var dns = google.dns('v1');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * Identifies the project addressed by this request.
-    project: "{MY-PROJECT}",
-
-    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    managedZone: "{MY-MANAGED-ZONE}",
-
-    // Auth client
-    auth: authClient
-  };
-
-
-  var recur = function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        dns.resourceRecordSets.list(request, recur);
-      }
-    }
-  };
-
-  dns.resourceRecordSets.list(request, recur);
 });

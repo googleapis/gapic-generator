@@ -7,30 +7,37 @@
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
+require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'cancel_deployment_preview' method:
+# The project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The project ID for this request.
-project = '{MY-PROJECT}'
+# The name of the deployment for this request.
+deployment = '{MY-DEPLOYMENT}' # TODO: Change placeholder value(s).
 
-# * The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'
-
-deployments_cancel_preview_request_object = Google::Apis::DeploymentmanagerV2::DeploymentsCancelPreviewRequest.new
-
+# TODO: Assign values to the desired members.
+deployments_cancel_preview_request_body = Google::Apis::DeploymentmanagerV2::DeploymentsCancelPreviewRequest.new
 
 # Perform the call
-response = service.cancel_deployment_preview(project, deployment, deployments_cancel_preview_request_object)
+response = service.cancel_deployment_preview(project, deployment, deployments_cancel_preview_request_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -39,27 +46,34 @@ response = service.cancel_deployment_preview(project, deployment, deployments_ca
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
+require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_deployment' method:
+# The project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The project ID for this request.
-project = '{MY-PROJECT}'
-
-# * The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'
+# The name of the deployment for this request.
+deployment = '{MY-DEPLOYMENT}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.delete_deployment(project, deployment)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -68,27 +82,34 @@ response = service.delete_deployment(project, deployment)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
+require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_deployment' method:
+# The project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The project ID for this request.
-project = '{MY-PROJECT}'
-
-# * The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'
+# The name of the deployment for this request.
+deployment = '{MY-DEPLOYMENT}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_deployment(project, deployment)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -97,27 +118,34 @@ response = service.get_deployment(project, deployment)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
+require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert_deployment' method:
+# The project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The project ID for this request.
-project = '{MY-PROJECT}'
-
-deployment_object = Google::Apis::DeploymentmanagerV2::Deployment.new
-
+# TODO: Assign values to the desired members.
+deployment_body = Google::Apis::DeploymentmanagerV2::Deployment.new
 
 # Perform the call
-response = service.insert_deployment(project, deployment_object)
+response = service.insert_deployment(project, deployment_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -126,29 +154,35 @@ response = service.insert_deployment(project, deployment_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
+require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_deployments' method:
-
-# * The project ID for this request.
-project = '{MY-PROJECT}'
+# The project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
 # Perform the call
-result_list = service.fetch_all(items: :deployments) { |token|
+deployments = service.fetch_all(items: :deployments) do |token|
   service.list_deployments(project, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+deployments.each do |deployment|
+  # TODO: Use deployment
+  puts JSON.pretty_generate(deployment)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -157,30 +191,37 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
+require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch_deployment' method:
+# The project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The project ID for this request.
-project = '{MY-PROJECT}'
+# The name of the deployment for this request.
+deployment = '{MY-DEPLOYMENT}' # TODO: Change placeholder value(s).
 
-# * The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'
-
-deployment_object = Google::Apis::DeploymentmanagerV2::Deployment.new
-
+# TODO: Assign values to the desired members to be changed.
+deployment_body = Google::Apis::DeploymentmanagerV2::Deployment.new
 
 # Perform the call
-response = service.patch_deployment(project, deployment, deployment_object)
+response = service.patch_deployment(project, deployment, deployment_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -189,30 +230,37 @@ response = service.patch_deployment(project, deployment, deployment_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
+require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'stop_deployment' method:
+# The project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The project ID for this request.
-project = '{MY-PROJECT}'
+# The name of the deployment for this request.
+deployment = '{MY-DEPLOYMENT}' # TODO: Change placeholder value(s).
 
-# * The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'
-
-deployments_stop_request_object = Google::Apis::DeploymentmanagerV2::DeploymentsStopRequest.new
-
+# TODO: Assign values to the desired members.
+deployments_stop_request_body = Google::Apis::DeploymentmanagerV2::DeploymentsStopRequest.new
 
 # Perform the call
-response = service.stop_deployment(project, deployment, deployments_stop_request_object)
+response = service.stop_deployment(project, deployment, deployments_stop_request_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -221,30 +269,37 @@ response = service.stop_deployment(project, deployment, deployments_stop_request
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
+require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_deployment' method:
+# The project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The project ID for this request.
-project = '{MY-PROJECT}'
+# The name of the deployment for this request.
+deployment = '{MY-DEPLOYMENT}' # TODO: Change placeholder value(s).
 
-# * The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'
-
-deployment_object = Google::Apis::DeploymentmanagerV2::Deployment.new
-
+# TODO: Assign values to the desired members.
+deployment_body = Google::Apis::DeploymentmanagerV2::Deployment.new
 
 # Perform the call
-response = service.update_deployment(project, deployment, deployment_object)
+response = service.update_deployment(project, deployment, deployment_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -253,30 +308,37 @@ response = service.update_deployment(project, deployment, deployment_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
+require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_manifest' method:
+# The project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The project ID for this request.
-project = '{MY-PROJECT}'
+# The name of the deployment for this request.
+deployment = '{MY-DEPLOYMENT}' # TODO: Change placeholder value(s).
 
-# * The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'
-
-# * The name of the manifest for this request.
-manifest = '{MY-MANIFEST}'
+# The name of the manifest for this request.
+manifest = '{MY-MANIFEST}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_manifest(project, deployment, manifest)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -285,32 +347,38 @@ response = service.get_manifest(project, deployment, manifest)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
+require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_manifests' method:
+# The project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The project ID for this request.
-project = '{MY-PROJECT}'
-
-# * The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'
+# The name of the deployment for this request.
+deployment = '{MY-DEPLOYMENT}' # TODO: Change placeholder value(s).
 
 # Perform the call
-result_list = service.fetch_all(items: :manifests) { |token|
+manifests = service.fetch_all(items: :manifests) do |token|
   service.list_manifests(project, deployment, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+manifests.each do |manifest|
+  # TODO: Use manifest
+  puts JSON.pretty_generate(manifest)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -319,27 +387,34 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
+require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_operation' method:
+# The project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The project ID for this request.
-project = '{MY-PROJECT}'
-
-# * The name of the operation for this request.
-operation = '{MY-OPERATION}'
+# The name of the operation for this request.
+operation = '{MY-OPERATION}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_operation(project, operation)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -348,29 +423,35 @@ response = service.get_operation(project, operation)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
+require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_operations' method:
-
-# * The project ID for this request.
-project = '{MY-PROJECT}'
+# The project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
 # Perform the call
-result_list = service.fetch_all(items: :operations) { |token|
+operations = service.fetch_all(items: :operations) do |token|
   service.list_operations(project, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+operations.each do |operation|
+  # TODO: Use operation
+  puts JSON.pretty_generate(operation)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -379,30 +460,37 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
+require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_resource' method:
+# The project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The project ID for this request.
-project = '{MY-PROJECT}'
+# The name of the deployment for this request.
+deployment = '{MY-DEPLOYMENT}' # TODO: Change placeholder value(s).
 
-# * The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'
-
-# * The name of the resource for this request.
-resource = '{MY-RESOURCE}'
+# The name of the resource for this request.
+resource = '{MY-RESOURCE}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_resource(project, deployment, resource)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -411,32 +499,38 @@ response = service.get_resource(project, deployment, resource)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
+require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_resources' method:
+# The project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The project ID for this request.
-project = '{MY-PROJECT}'
-
-# * The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'
+# The name of the deployment for this request.
+deployment = '{MY-DEPLOYMENT}' # TODO: Change placeholder value(s).
 
 # Perform the call
-result_list = service.fetch_all(items: :resources) { |token|
+resources = service.fetch_all(items: :resources) do |token|
   service.list_resources(project, deployment, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+resources.each do |resource|
+  # TODO: Use resource
+  puts JSON.pretty_generate(resource)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -445,26 +539,32 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
+require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_types' method:
-
-# * The project ID for this request.
-project = '{MY-PROJECT}'
+# The project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
 # Perform the call
-result_list = service.fetch_all(items: :types) { |token|
+types = service.fetch_all(items: :types) do |token|
   service.list_types(project, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+types.each do |type|
+  # TODO: Use type
+  puts JSON.pretty_generate(type)
+end

@@ -9,7 +9,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -17,25 +17,30 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Dns service.
 $service = new Google_Service_Dns($client);
 
-// * Identifies the project addressed by this request.
-$project = '{MY-PROJECT}';
+// Identifies the project addressed by this request.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-$managedZone = '{MY-MANAGED-ZONE}';
+// Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+$managedZone = '{MY-MANAGED-ZONE}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Dns_Change($client);
 
 $response = $service->changes->create($project, $managedZone, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -46,7 +51,7 @@ $response = $service->changes->create($project, $managedZone, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -54,26 +59,30 @@ $response = $service->changes->create($project, $managedZone, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Dns service.
 $service = new Google_Service_Dns($client);
 
-// * Identifies the project addressed by this request.
-$project = '{MY-PROJECT}';
+// Identifies the project addressed by this request.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-$managedZone = '{MY-MANAGED-ZONE}';
+// Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+$managedZone = '{MY-MANAGED-ZONE}'; // TODO: Update placeholder value(s).
 
-// * The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
-$changeId = '{MY-CHANGE-ID}';
+// The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
+$changeId = '{MY-CHANGE-ID}'; // TODO: Update placeholder value(s).
 
 $response = $service->changes->get($project, $managedZone, $changeId);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -84,7 +93,7 @@ $response = $service->changes->get($project, $managedZone, $changeId);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -92,27 +101,34 @@ $response = $service->changes->get($project, $managedZone, $changeId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Dns service.
 $service = new Google_Service_Dns($client);
 
-// * Identifies the project addressed by this request.
-$project = '{MY-PROJECT}';
+// Identifies the project addressed by this request.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-$managedZone = '{MY-MANAGED-ZONE}';
+// Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+$managedZone = '{MY-MANAGED-ZONE}'; // TODO: Update placeholder value(s).
 
-$response = $service->changes->listChanges($project, $managedZone);
+$optParams = array();
+do {
+  $response = $service->changes->listChanges($project, $managedZone, $optParams);
 
-foreach ($response['changes'] as $element) {
-  // TODO: Add code here to process the element.
-}
+  foreach ($response['changes'] as $change) {
+    // TODO: Use change
+    echo '<pre>', var_export($change, true), '</pre>', "\n";
+  }
 
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -123,7 +139,7 @@ foreach ($response['changes'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -131,22 +147,27 @@ foreach ($response['changes'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Dns service.
 $service = new Google_Service_Dns($client);
 
-// * Identifies the project addressed by this request.
-$project = '{MY-PROJECT}';
+// Identifies the project addressed by this request.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Dns_ManagedZone($client);
 
 $response = $service->managedZones->create($project, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -157,7 +178,7 @@ $response = $service->managedZones->create($project, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -165,23 +186,24 @@ $response = $service->managedZones->create($project, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Dns service.
 $service = new Google_Service_Dns($client);
 
-// * Identifies the project addressed by this request.
-$project = '{MY-PROJECT}';
+// Identifies the project addressed by this request.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-$managedZone = '{MY-MANAGED-ZONE}';
+// Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+$managedZone = '{MY-MANAGED-ZONE}'; // TODO: Update placeholder value(s).
 
-$response = $service->managedZones->delete($project, $managedZone);
-
+$service->managedZones->delete($project, $managedZone);
 <?php
 /*
  * BEFORE RUNNING:
@@ -192,7 +214,7 @@ $response = $service->managedZones->delete($project, $managedZone);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -200,23 +222,27 @@ $response = $service->managedZones->delete($project, $managedZone);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Dns service.
 $service = new Google_Service_Dns($client);
 
-// * Identifies the project addressed by this request.
-$project = '{MY-PROJECT}';
+// Identifies the project addressed by this request.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-$managedZone = '{MY-MANAGED-ZONE}';
+// Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+$managedZone = '{MY-MANAGED-ZONE}'; // TODO: Update placeholder value(s).
 
 $response = $service->managedZones->get($project, $managedZone);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -227,7 +253,7 @@ $response = $service->managedZones->get($project, $managedZone);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -235,24 +261,31 @@ $response = $service->managedZones->get($project, $managedZone);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Dns service.
 $service = new Google_Service_Dns($client);
 
-// * Identifies the project addressed by this request.
-$project = '{MY-PROJECT}';
+// Identifies the project addressed by this request.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-$response = $service->managedZones->listManagedZones($project);
+$optParams = array();
+do {
+  $response = $service->managedZones->listManagedZones($project, $optParams);
 
-foreach ($response['managedZones'] as $element) {
-  // TODO: Add code here to process the element.
-}
+  foreach ($response['managedZones'] as $managed_zone) {
+    // TODO: Use managed_zone
+    echo '<pre>', var_export($managed_zone, true), '</pre>', "\n";
+  }
 
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -263,7 +296,7 @@ foreach ($response['managedZones'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -271,20 +304,24 @@ foreach ($response['managedZones'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Dns service.
 $service = new Google_Service_Dns($client);
 
-// * Identifies the project addressed by this request.
-$project = '{MY-PROJECT}';
+// Identifies the project addressed by this request.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
 $response = $service->projects->get($project);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -295,7 +332,7 @@ $response = $service->projects->get($project);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -303,24 +340,31 @@ $response = $service->projects->get($project);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Dns service.
 $service = new Google_Service_Dns($client);
 
-// * Identifies the project addressed by this request.
-$project = '{MY-PROJECT}';
+// Identifies the project addressed by this request.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-$managedZone = '{MY-MANAGED-ZONE}';
+// Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+$managedZone = '{MY-MANAGED-ZONE}'; // TODO: Update placeholder value(s).
 
-$response = $service->resourceRecordSets->listResourceRecordSets($project, $managedZone);
+$optParams = array();
+do {
+  $response = $service->resourceRecordSets->listResourceRecordSets($project, $managedZone, $optParams);
 
-foreach ($response['rrsets'] as $element) {
-  // TODO: Add code here to process the element.
-}
+  foreach ($response['rrsets'] as $resource_record_set) {
+    // TODO: Use resource_record_set
+    echo '<pre>', var_export($resource_record_set, true), '</pre>', "\n";
+  }
 
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);

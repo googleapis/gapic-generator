@@ -7,15 +7,20 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var deploymentmanager = google.deploymentmanager('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -24,25 +29,232 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'cancelPreview' method:
+    // The project ID for this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The project ID for this request.
-    project: "{MY-PROJECT}",
+    // The name of the deployment for this request.
+    deployment: "{MY-DEPLOYMENT}", // TODO: Update placeholder value(s).
 
-    // * The name of the deployment for this request.
-    deployment: "{MY-DEPLOYMENT}",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  deploymentmanager.deployments.cancelPreview(request, function(err, result) {
+  deploymentmanager.deployments.cancelPreview(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Deployment Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/deploymentmanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var deploymentmanager = google.deploymentmanager('v2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // The project ID for this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // The name of the deployment for this request.
+    deployment: "{MY-DEPLOYMENT}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  deploymentmanager.deployments.delete(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Deployment Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/deploymentmanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var deploymentmanager = google.deploymentmanager('v2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // The project ID for this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // The name of the deployment for this request.
+    deployment: "{MY-DEPLOYMENT}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  deploymentmanager.deployments.get(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Deployment Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/deploymentmanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var deploymentmanager = google.deploymentmanager('v2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // The project ID for this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  deploymentmanager.deployments.insert(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Deployment Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/deploymentmanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var deploymentmanager = google.deploymentmanager('v2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // The project ID for this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  deploymentmanager.deployments.list(request, function handlePage(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var deploymentsPage = response['deployments'];
+    if (!deploymentsPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < deploymentsPage.length; i++) {
+      // TODO: Use deploymentsPage
+      console.log(JSON.stringify(deploymentsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      deploymentmanager.deployments.list(request, handlePage);
     }
   });
 });
@@ -54,15 +266,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var deploymentmanager = google.deploymentmanager('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -71,23 +288,245 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // The project ID for this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The project ID for this request.
-    project: "{MY-PROJECT}",
+    // The name of the deployment for this request.
+    deployment: "{MY-DEPLOYMENT}", // TODO: Update placeholder value(s).
 
-    // * The name of the deployment for this request.
-    deployment: "{MY-DEPLOYMENT}",
+    resource: {
+      // TODO: Add the desired properties to be changed.
+    },
 
-    // Auth client
     auth: authClient
   };
 
-  deploymentmanager.deployments.delete(request, function(err, result) {
+  deploymentmanager.deployments.patch(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Deployment Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/deploymentmanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var deploymentmanager = google.deploymentmanager('v2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // The project ID for this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // The name of the deployment for this request.
+    deployment: "{MY-DEPLOYMENT}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  deploymentmanager.deployments.stop(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Deployment Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/deploymentmanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var deploymentmanager = google.deploymentmanager('v2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // The project ID for this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // The name of the deployment for this request.
+    deployment: "{MY-DEPLOYMENT}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  deploymentmanager.deployments.update(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Deployment Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/deploymentmanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var deploymentmanager = google.deploymentmanager('v2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // The project ID for this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // The name of the deployment for this request.
+    deployment: "{MY-DEPLOYMENT}", // TODO: Update placeholder value(s).
+
+    // The name of the manifest for this request.
+    manifest: "{MY-MANIFEST}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  deploymentmanager.manifests.get(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Deployment Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/deploymentmanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var deploymentmanager = google.deploymentmanager('v2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // The project ID for this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // The name of the deployment for this request.
+    deployment: "{MY-DEPLOYMENT}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  deploymentmanager.manifests.list(request, function handlePage(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var manifestsPage = response['manifests'];
+    if (!manifestsPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < manifestsPage.length; i++) {
+      // TODO: Use manifestsPage
+      console.log(JSON.stringify(manifestsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      deploymentmanager.manifests.list(request, handlePage);
     }
   });
 });
@@ -99,15 +538,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var deploymentmanager = google.deploymentmanager('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -116,23 +560,80 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // The project ID for this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The project ID for this request.
-    project: "{MY-PROJECT}",
+    // The name of the operation for this request.
+    operation: "{MY-OPERATION}", // TODO: Update placeholder value(s).
 
-    // * The name of the deployment for this request.
-    deployment: "{MY-DEPLOYMENT}",
-
-    // Auth client
     auth: authClient
   };
 
-  deploymentmanager.deployments.get(request, function(err, result) {
+  deploymentmanager.operations.get(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Deployment Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/deploymentmanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var deploymentmanager = google.deploymentmanager('v2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // The project ID for this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  deploymentmanager.operations.list(request, function handlePage(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var operationsPage = response['operations'];
+    if (!operationsPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < operationsPage.length; i++) {
+      // TODO: Use operationsPage
+      console.log(JSON.stringify(operationsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      deploymentmanager.operations.list(request, handlePage);
     }
   });
 });
@@ -144,15 +645,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var deploymentmanager = google.deploymentmanager('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -161,22 +667,86 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+    // The project ID for this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The project ID for this request.
-    project: "{MY-PROJECT}",
+    // The name of the deployment for this request.
+    deployment: "{MY-DEPLOYMENT}", // TODO: Update placeholder value(s).
 
-    resource: {},
+    // The name of the resource for this request.
+    resource_: "{MY-RESOURCE}", // TODO: Update placeholder value(s).
 
-    // Auth client
     auth: authClient
   };
 
-  deploymentmanager.deployments.insert(request, function(err, result) {
+  deploymentmanager.resources.get(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Deployment Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/deploymentmanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var deploymentmanager = google.deploymentmanager('v2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // The project ID for this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // The name of the deployment for this request.
+    deployment: "{MY-DEPLOYMENT}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  deploymentmanager.resources.list(request, function handlePage(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var resourcesPage = response['resources'];
+    if (!resourcesPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < resourcesPage.length; i++) {
+      // TODO: Use resourcesPage
+      console.log(JSON.stringify(resourcesPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      deploymentmanager.resources.list(request, handlePage);
     }
   });
 });
@@ -188,15 +758,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var deploymentmanager = google.deploymentmanager('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -205,511 +780,31 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // The project ID for this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The project ID for this request.
-    project: "{MY-PROJECT}",
-
-    // Auth client
     auth: authClient
   };
 
-
-  var recur = function(err, result) {
+  deploymentmanager.types.list(request, function handlePage(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        deploymentmanager.deployments.list(request, recur);
-      }
+      return;
     }
-  };
 
-  deploymentmanager.deployments.list(request, recur);
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Deployment Manager API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/deploymentmanager
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var deploymentmanager = google.deploymentmanager('v2');
+    var typesPage = response['types'];
+    if (!typesPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < typesPage.length; i++) {
+      // TODO: Use typesPage
+      console.log(JSON.stringify(typesPage[i], null, 2));
+    }
 
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
-
-    // * The project ID for this request.
-    project: "{MY-PROJECT}",
-
-    // * The name of the deployment for this request.
-    deployment: "{MY-DEPLOYMENT}",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  deploymentmanager.deployments.patch(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      deploymentmanager.types.list(request, handlePage);
     }
   });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Deployment Manager API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/deploymentmanager
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var deploymentmanager = google.deploymentmanager('v2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'stop' method:
-
-    // * The project ID for this request.
-    project: "{MY-PROJECT}",
-
-    // * The name of the deployment for this request.
-    deployment: "{MY-DEPLOYMENT}",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  deploymentmanager.deployments.stop(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Deployment Manager API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/deploymentmanager
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var deploymentmanager = google.deploymentmanager('v2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
-
-    // * The project ID for this request.
-    project: "{MY-PROJECT}",
-
-    // * The name of the deployment for this request.
-    deployment: "{MY-DEPLOYMENT}",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  deploymentmanager.deployments.update(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Deployment Manager API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/deploymentmanager
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var deploymentmanager = google.deploymentmanager('v2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-
-    // * The project ID for this request.
-    project: "{MY-PROJECT}",
-
-    // * The name of the deployment for this request.
-    deployment: "{MY-DEPLOYMENT}",
-
-    // * The name of the manifest for this request.
-    manifest: "{MY-MANIFEST}",
-
-    // Auth client
-    auth: authClient
-  };
-
-  deploymentmanager.manifests.get(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Deployment Manager API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/deploymentmanager
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var deploymentmanager = google.deploymentmanager('v2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * The project ID for this request.
-    project: "{MY-PROJECT}",
-
-    // * The name of the deployment for this request.
-    deployment: "{MY-DEPLOYMENT}",
-
-    // Auth client
-    auth: authClient
-  };
-
-
-  var recur = function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        deploymentmanager.manifests.list(request, recur);
-      }
-    }
-  };
-
-  deploymentmanager.manifests.list(request, recur);
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Deployment Manager API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/deploymentmanager
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var deploymentmanager = google.deploymentmanager('v2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-
-    // * The project ID for this request.
-    project: "{MY-PROJECT}",
-
-    // * The name of the operation for this request.
-    operation: "{MY-OPERATION}",
-
-    // Auth client
-    auth: authClient
-  };
-
-  deploymentmanager.operations.get(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Deployment Manager API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/deploymentmanager
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var deploymentmanager = google.deploymentmanager('v2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * The project ID for this request.
-    project: "{MY-PROJECT}",
-
-    // Auth client
-    auth: authClient
-  };
-
-
-  var recur = function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        deploymentmanager.operations.list(request, recur);
-      }
-    }
-  };
-
-  deploymentmanager.operations.list(request, recur);
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Deployment Manager API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/deploymentmanager
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var deploymentmanager = google.deploymentmanager('v2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-
-    // * The project ID for this request.
-    project: "{MY-PROJECT}",
-
-    // * The name of the deployment for this request.
-    deployment: "{MY-DEPLOYMENT}",
-
-    // * The name of the resource for this request.
-    resource_: "{MY-RESOURCE}",
-
-    // Auth client
-    auth: authClient
-  };
-
-  deploymentmanager.resources.get(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Deployment Manager API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/deploymentmanager
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var deploymentmanager = google.deploymentmanager('v2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * The project ID for this request.
-    project: "{MY-PROJECT}",
-
-    // * The name of the deployment for this request.
-    deployment: "{MY-DEPLOYMENT}",
-
-    // Auth client
-    auth: authClient
-  };
-
-
-  var recur = function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        deploymentmanager.resources.list(request, recur);
-      }
-    }
-  };
-
-  deploymentmanager.resources.list(request, recur);
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Deployment Manager API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/deploymentmanager
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var deploymentmanager = google.deploymentmanager('v2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * The project ID for this request.
-    project: "{MY-PROJECT}",
-
-    // Auth client
-    auth: authClient
-  };
-
-
-  var recur = function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        deploymentmanager.types.list(request, recur);
-      }
-    }
-  };
-
-  deploymentmanager.types.list(request, recur);
 });

@@ -131,10 +131,6 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
   // Snippet Helpers
   // ===============
 
-  public String getSampleVarName(String typeName) {
-    return upperCamelToLowerCamel(getSimpleName(typeName));
-  }
-
   @Override
   public String getMethodName(Method method) {
     return getSimpleName(getRename(method.getName(), RENAMED_METHOD_MAP));
@@ -182,7 +178,7 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
    * Returns the root URL prefix for the API Java Client Library.
    */
   public String getApiRootUrl() {
-    Api api = this.getApi();
+    Api api = getApi();
     String apiName = api.getName();
     String apiRoot = JAVA_SERVICE_TYPE_PREFIX + apiName + ".";
     if (VERSIONED_PACKAGE_SET.contains(apiName)) {
@@ -199,7 +195,7 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
   public String getApiPackage() {
     return getTypeName(
         getApiRootUrl()
-            + getRename(lowerCamelToUpperCamel(this.getApi().getName()), RENAMED_PACKAGE_MAP));
+            + getRename(lowerCamelToUpperCamel(getApi().getName()), RENAMED_PACKAGE_MAP));
   }
 
   /*
@@ -216,81 +212,45 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
     return getTypeRename(typeName.toString());
   }
 
-  /*
-   * Takes a model reference type name and returns its simple name, and also saves the
-   * type in the import list.
-   */
-  public String getTypeUrl(String typeUrl) {
-    return getTypeName(getApiRootUrl() + "model." + typeUrl);
-  }
-
-  /*
-   * Takes a field and returns the simple name of its model reference type, and also saves the
-   * type in the import list.
-   */
-  public String getTypeUrl(Field field) {
-    return getTypeUrl(field.getTypeUrl());
-  }
-
-  /**
-   * Returns the Java representation of a type's field's type.
-   */
   public String typeName(Type type, Field field) {
-    String fieldName = field.getName();
-    String fieldTypeName = field.getTypeUrl();
-    if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
-      Type items = this.getApiaryConfig().getType(fieldTypeName);
-      if (isMapField(type, fieldName)) {
-        return String.format(
-            "%s<%s, %s>",
-            getTypeName("java.util.Map"),
-            typeName(items, this.getField(items, "key")),
-            typeName(items, this.getField(items, "value")));
-      } else {
-        return String.format("%s<%s>", getTypeName("java.util.List"), elementTypeName(field));
-      }
-    } else {
-      if (field.getKind() == Field.Kind.TYPE_MESSAGE) {
-        return getTypeUrl(fieldTypeName);
-      } else {
-        return basicTypeName(field);
-      }
-    }
+    return typeName(type, field, null);
   }
 
-  /**
-   * Returns the Java representation of a type's repeated field's element's type.
-   */
-  public String elementTypeName(Type type, Field field) {
-    String fieldName = field.getName();
-    String fieldTypeName = field.getTypeUrl();
-    Type items = this.getApiaryConfig().getType(fieldTypeName);
-    if (isMapField(type, fieldName)) {
-      return String.format(
-          "%s.Entry<%s, %s>",
-          getTypeName("java.util.Map"),
-          typeName(items, this.getField(items, "key")),
-          typeName(items, this.getField(items, "value")));
-    } else {
-      return elementTypeName(field);
-    }
+  @Override
+  protected String arrayTypeName(String elementName) {
+    return String.format("%s<%s>", getTypeName("java.util.List"), elementName);
   }
 
-  /**
-   * Returns the Java representation of an array field's element's type.
-   */
-  private String elementTypeName(Field field) {
-    String fieldTypeName = field.getTypeUrl();
-    Type items = this.getApiaryConfig().getType(fieldTypeName);
-    if (field.getKind() == Field.Kind.TYPE_MESSAGE) {
-      Field elements = this.getField(items, DiscoveryImporter.ELEMENTS_FIELD_NAME);
-      if (elements != null) {
-        return typeName(items, elements);
-      } else {
-        return getTypeUrl(fieldTypeName);
-      }
-    }
+  @Override
+  protected String mapTypeName(String keyName, String valueName) {
+    return String.format("%s<%s, %s>", getTypeName("java.util.Map"), keyName, valueName);
+  }
+
+  @Override
+  public String objectTypeName(String typeName) {
+    return getTypeName(getApiRootUrl() + "model." + typeName);
+  }
+
+  @Override
+  protected String nativeTypeName(Type type, Field field, String name) {
+    return basicTypeName(field);
+  }
+
+  @Override
+  protected String nativeElementTypeName(Field field) {
     return basicTypeNameBoxed(field);
+  }
+
+  /**
+   * Returns a name for a map field's entry's type.
+   */
+  public String entryTypeName(Field field) {
+    Type items = getApiaryConfig().getType(field.getTypeUrl());
+    return String.format(
+        "%s.Entry<%s, %s>",
+        getTypeName("java.util.Map"),
+        typeName(items, getField(items, "key")),
+        typeName(items, getField(items, "value")));
   }
 
   /**
@@ -324,13 +284,13 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
   public String typeDefaultValue(Type type, Field field) {
     if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
       String fieldTypeName = field.getTypeUrl();
-      Type items = this.getApiaryConfig().getType(fieldTypeName);
+      Type items = getApiaryConfig().getType(fieldTypeName);
       if (isMapField(type, field.getName())) {
         return String.format(
             "new %s<%s, %s>();",
             getTypeName("java.util.HashMap"),
-            typeName(items, this.getField(items, "key")),
-            typeName(items, this.getField(items, "value")));
+            typeName(items, getField(items, "key")),
+            typeName(items, getField(items, "value")));
       }
       return String.format(
           "new %s<%s>();", getTypeName("java.util.ArrayList"), elementTypeName(field));

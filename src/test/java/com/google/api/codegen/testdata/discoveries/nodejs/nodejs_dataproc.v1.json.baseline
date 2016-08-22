@@ -7,15 +7,20 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var dataproc = google.dataproc('v1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -24,25 +29,247 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+    // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
 
-    // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-    projectId: "{MY-PROJECT-ID}",
+    // [Required] The Cloud Dataproc region in which to handle the request.
+    region: "{MY-REGION}", // TODO: Update placeholder value(s).
 
-    // * [Required] The Cloud Dataproc region in which to handle the request.
-    region: "{MY-REGION}",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  dataproc.projects.regions.clusters.create(request, function(err, result) {
+  dataproc.projects.regions.clusters.create(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Dataproc API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dataproc
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var dataproc = google.dataproc('v1');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+
+    // [Required] The Cloud Dataproc region in which to handle the request.
+    region: "{MY-REGION}", // TODO: Update placeholder value(s).
+
+    // [Required] The cluster name.
+    clusterName: "{MY-CLUSTER-NAME}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  dataproc.projects.regions.clusters.delete(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Dataproc API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dataproc
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var dataproc = google.dataproc('v1');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+
+    // [Required] The Cloud Dataproc region in which to handle the request.
+    region: "{MY-REGION}", // TODO: Update placeholder value(s).
+
+    // [Required] The cluster name.
+    clusterName: "{MY-CLUSTER-NAME}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  dataproc.projects.regions.clusters.diagnose(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Dataproc API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dataproc
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var dataproc = google.dataproc('v1');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+
+    // [Required] The Cloud Dataproc region in which to handle the request.
+    region: "{MY-REGION}", // TODO: Update placeholder value(s).
+
+    // [Required] The cluster name.
+    clusterName: "{MY-CLUSTER-NAME}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  dataproc.projects.regions.clusters.get(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Dataproc API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dataproc
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var dataproc = google.dataproc('v1');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+
+    // [Required] The Cloud Dataproc region in which to handle the request.
+    region: "{MY-REGION}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  dataproc.projects.regions.clusters.list(request, function handlePage(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var clustersPage = response['clusters'];
+    if (!clustersPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < clustersPage.length; i++) {
+      // TODO: Use clustersPage
+      console.log(JSON.stringify(clustersPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      dataproc.projects.regions.clusters.list(request, handlePage);
     }
   });
 });
@@ -54,15 +281,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var dataproc = google.dataproc('v1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -71,26 +303,133 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // [Required] The ID of the Google Cloud Platform project the cluster belongs to.
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
 
-    // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-    projectId: "{MY-PROJECT-ID}",
+    // [Required] The Cloud Dataproc region in which to handle the request.
+    region: "{MY-REGION}", // TODO: Update placeholder value(s).
 
-    // * [Required] The Cloud Dataproc region in which to handle the request.
-    region: "{MY-REGION}",
+    // [Required] The cluster name.
+    clusterName: "{MY-CLUSTER-NAME}", // TODO: Update placeholder value(s).
 
-    // * [Required] The cluster name.
-    clusterName: "{MY-CLUSTER-NAME}",
+    resource: {
+      // TODO: Add the desired properties to be changed.
+    },
 
-    // Auth client
     auth: authClient
   };
 
-  dataproc.projects.regions.clusters.delete(request, function(err, result) {
+  dataproc.projects.regions.clusters.patch(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Dataproc API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dataproc
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var dataproc = google.dataproc('v1');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // [Required] The ID of the Google Cloud Platform project that the job belongs to.
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+
+    // [Required] The Cloud Dataproc region in which to handle the request.
+    region: "{MY-REGION}", // TODO: Update placeholder value(s).
+
+    // [Required] The job ID.
+    jobId: "{MY-JOB-ID}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  dataproc.projects.regions.jobs.cancel(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Dataproc API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dataproc
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var dataproc = google.dataproc('v1');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // [Required] The ID of the Google Cloud Platform project that the job belongs to.
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+
+    // [Required] The Cloud Dataproc region in which to handle the request.
+    region: "{MY-REGION}", // TODO: Update placeholder value(s).
+
+    // [Required] The job ID.
+    jobId: "{MY-JOB-ID}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  dataproc.projects.regions.jobs.delete(request, function(err) {
+    if (err) {
+      console.log(err);
     }
   });
 });
@@ -102,15 +441,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var dataproc = google.dataproc('v1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -119,28 +463,86 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'diagnose' method:
+    // [Required] The ID of the Google Cloud Platform project that the job belongs to.
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
 
-    // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-    projectId: "{MY-PROJECT-ID}",
+    // [Required] The Cloud Dataproc region in which to handle the request.
+    region: "{MY-REGION}", // TODO: Update placeholder value(s).
 
-    // * [Required] The Cloud Dataproc region in which to handle the request.
-    region: "{MY-REGION}",
+    // [Required] The job ID.
+    jobId: "{MY-JOB-ID}", // TODO: Update placeholder value(s).
 
-    // * [Required] The cluster name.
-    clusterName: "{MY-CLUSTER-NAME}",
-
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  dataproc.projects.regions.clusters.diagnose(request, function(err, result) {
+  dataproc.projects.regions.jobs.get(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Dataproc API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dataproc
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var dataproc = google.dataproc('v1');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // [Required] The ID of the Google Cloud Platform project that the job belongs to.
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+
+    // [Required] The Cloud Dataproc region in which to handle the request.
+    region: "{MY-REGION}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  dataproc.projects.regions.jobs.list(request, function handlePage(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var jobsPage = response['jobs'];
+    if (!jobsPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < jobsPage.length; i++) {
+      // TODO: Use jobsPage
+      console.log(JSON.stringify(jobsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      dataproc.projects.regions.jobs.list(request, handlePage);
     }
   });
 });
@@ -152,15 +554,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var dataproc = google.dataproc('v1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -169,26 +576,68 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // [Required] The ID of the Google Cloud Platform project that the job belongs to.
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
 
-    // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-    projectId: "{MY-PROJECT-ID}",
+    // [Required] The Cloud Dataproc region in which to handle the request.
+    region: "{MY-REGION}", // TODO: Update placeholder value(s).
 
-    // * [Required] The Cloud Dataproc region in which to handle the request.
-    region: "{MY-REGION}",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    // * [Required] The cluster name.
-    clusterName: "{MY-CLUSTER-NAME}",
-
-    // Auth client
     auth: authClient
   };
 
-  dataproc.projects.regions.clusters.get(request, function(err, result) {
+  dataproc.projects.regions.jobs.submit(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Dataproc API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dataproc
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var dataproc = google.dataproc('v1');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // The name of the operation resource to be cancelled.
+    name: "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  dataproc.projects.regions.operations.cancel(request, function(err) {
+    if (err) {
+      console.log(err);
     }
   });
 });
@@ -200,15 +649,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var dataproc = google.dataproc('v1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -217,80 +671,15 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // The name of the operation resource to be deleted.
+    name: "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}", // TODO: Update placeholder value(s).
 
-    // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-    projectId: "{MY-PROJECT-ID}",
-
-    // * [Required] The Cloud Dataproc region in which to handle the request.
-    region: "{MY-REGION}",
-
-    // Auth client
     auth: authClient
   };
 
-
-  var recur = function(err, result) {
+  dataproc.projects.regions.operations.delete(request, function(err) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        dataproc.projects.regions.clusters.list(request, recur);
-      }
-    }
-  };
-
-  dataproc.projects.regions.clusters.list(request, recur);
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Dataproc API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dataproc
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var dataproc = google.dataproc('v1');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
-
-    // * [Required] The ID of the Google Cloud Platform project the cluster belongs to.
-    projectId: "{MY-PROJECT-ID}",
-
-    // * [Required] The Cloud Dataproc region in which to handle the request.
-    region: "{MY-REGION}",
-
-    // * [Required] The cluster name.
-    clusterName: "{MY-CLUSTER-NAME}",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  dataproc.projects.regions.clusters.patch(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
     }
   });
 });
@@ -302,15 +691,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var dataproc = google.dataproc('v1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -319,29 +713,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'cancel' method:
+    // The name of the operation resource.
+    name: "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}", // TODO: Update placeholder value(s).
 
-    // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
-    projectId: "{MY-PROJECT-ID}",
-
-    // * [Required] The Cloud Dataproc region in which to handle the request.
-    region: "{MY-REGION}",
-
-    // * [Required] The job ID.
-    jobId: "{MY-JOB-ID}",
-
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  dataproc.projects.regions.jobs.cancel(request, function(err, result) {
+  dataproc.projects.regions.operations.get(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -352,15 +737,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var dataproc = google.dataproc('v1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -369,348 +759,31 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // The name of the operation collection.
+    name: "{MY-NAME}", // TODO: Update placeholder value(s).
 
-    // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
-    projectId: "{MY-PROJECT-ID}",
-
-    // * [Required] The Cloud Dataproc region in which to handle the request.
-    region: "{MY-REGION}",
-
-    // * [Required] The job ID.
-    jobId: "{MY-JOB-ID}",
-
-    // Auth client
     auth: authClient
   };
 
-  dataproc.projects.regions.jobs.delete(request, function(err, result) {
+  dataproc.projects.regions.operations.list(request, function handlePage(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    var operationsPage = response['operations'];
+    if (!operationsPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < operationsPage.length; i++) {
+      // TODO: Use operationsPage
+      console.log(JSON.stringify(operationsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      dataproc.projects.regions.operations.list(request, handlePage);
     }
   });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Dataproc API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dataproc
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var dataproc = google.dataproc('v1');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-
-    // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
-    projectId: "{MY-PROJECT-ID}",
-
-    // * [Required] The Cloud Dataproc region in which to handle the request.
-    region: "{MY-REGION}",
-
-    // * [Required] The job ID.
-    jobId: "{MY-JOB-ID}",
-
-    // Auth client
-    auth: authClient
-  };
-
-  dataproc.projects.regions.jobs.get(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Dataproc API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dataproc
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var dataproc = google.dataproc('v1');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
-    projectId: "{MY-PROJECT-ID}",
-
-    // * [Required] The Cloud Dataproc region in which to handle the request.
-    region: "{MY-REGION}",
-
-    // Auth client
-    auth: authClient
-  };
-
-
-  var recur = function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        dataproc.projects.regions.jobs.list(request, recur);
-      }
-    }
-  };
-
-  dataproc.projects.regions.jobs.list(request, recur);
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Dataproc API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dataproc
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var dataproc = google.dataproc('v1');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'submit' method:
-
-    // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
-    projectId: "{MY-PROJECT-ID}",
-
-    // * [Required] The Cloud Dataproc region in which to handle the request.
-    region: "{MY-REGION}",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  dataproc.projects.regions.jobs.submit(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Dataproc API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dataproc
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var dataproc = google.dataproc('v1');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'cancel' method:
-
-    // * The name of the operation resource to be cancelled.
-    name: "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}",
-
-    // Auth client
-    auth: authClient
-  };
-
-  dataproc.projects.regions.operations.cancel(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Dataproc API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dataproc
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var dataproc = google.dataproc('v1');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
-
-    // * The name of the operation resource to be deleted.
-    name: "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}",
-
-    // Auth client
-    auth: authClient
-  };
-
-  dataproc.projects.regions.operations.delete(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Dataproc API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dataproc
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var dataproc = google.dataproc('v1');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-
-    // * The name of the operation resource.
-    name: "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}",
-
-    // Auth client
-    auth: authClient
-  };
-
-  dataproc.projects.regions.operations.get(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Dataproc API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dataproc
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var dataproc = google.dataproc('v1');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * The name of the operation collection.
-    name: "{MY-NAME}",
-
-    // Auth client
-    auth: authClient
-  };
-
-
-  var recur = function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        dataproc.projects.regions.operations.list(request, recur);
-      }
-    }
-  };
-
-  dataproc.projects.regions.operations.list(request, recur);
 });

@@ -9,11 +9,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -22,25 +25,31 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := appengine.New(hc)
+
+  s, err := appengine.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Part of `name`. Name of the application to get. For example: "apps/myapp".
-  // TODO: Update placeholder value.
-  appsId := "{MY-APPS-ID}"
+  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Apps.Get(appsId).Context(ctx).Do()
+  resp, err := s.Apps.Get(appsId).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -52,11 +61,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -65,29 +77,34 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := appengine.New(hc)
+
+  s, err := appengine.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Part of `name`. The name of the operation resource.
-  // TODO: Update placeholder value.
-  appsId := "{MY-APPS-ID}"
+  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
 
   // Part of `name`. See documentation of `appsId`.
-  // TODO: Update placeholder value.
-  operationsId := "{MY-OPERATIONS-ID}"
+  operationsId := "{MY-OPERATIONS-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Apps.Operations.Get(appsId, operationsId).Context(ctx).Do()
+  resp, err := s.Apps.Operations.Get(appsId, operationsId).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -99,11 +116,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -112,29 +132,33 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := appengine.New(hc)
+
+  s, err := appengine.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Part of `name`. The name of the operation collection.
-  // TODO: Update placeholder value.
-  appsId := "{MY-APPS-ID}"
+  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
 
-
-  call := c.Apps.Operations.List(appsId)
+  call := s.Apps.Operations.List(appsId)
   if err := call.Pages(ctx, func(page *appengine.ListOperationsResponse) error {
-    for _, v := range page.Operations {
-      // TODO: Use v.
-      _ = v
+    for _, operation := range page.Operations {
+      // TODO: Use operation
+      fmt.Printf("%#v\n", operation)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -147,11 +171,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -160,29 +187,34 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := appengine.New(hc)
+
+  s, err := appengine.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
-  // TODO: Update placeholder value.
-  appsId := "{MY-APPS-ID}"
+  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
 
   // Part of `name`. See documentation of `appsId`.
-  // TODO: Update placeholder value.
-  servicesId := "{MY-SERVICES-ID}"
+  servicesId := "{MY-SERVICES-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Apps.Services.Delete(appsId, servicesId).Context(ctx).Do()
+  resp, err := s.Apps.Services.Delete(appsId, servicesId).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -194,11 +226,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -207,29 +242,34 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := appengine.New(hc)
+
+  s, err := appengine.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
-  // TODO: Update placeholder value.
-  appsId := "{MY-APPS-ID}"
+  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
 
   // Part of `name`. See documentation of `appsId`.
-  // TODO: Update placeholder value.
-  servicesId := "{MY-SERVICES-ID}"
+  servicesId := "{MY-SERVICES-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Apps.Services.Get(appsId, servicesId).Context(ctx).Do()
+  resp, err := s.Apps.Services.Get(appsId, servicesId).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -241,11 +281,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -254,29 +297,33 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := appengine.New(hc)
+
+  s, err := appengine.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Part of `name`. Name of the resource requested. For example: "apps/myapp".
-  // TODO: Update placeholder value.
-  appsId := "{MY-APPS-ID}"
+  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
 
-
-  call := c.Apps.Services.List(appsId)
+  call := s.Apps.Services.List(appsId)
   if err := call.Pages(ctx, func(page *appengine.ListServicesResponse) error {
-    for _, v := range page.Services {
-      // TODO: Use v.
-      _ = v
+    for _, service := range page.Services {
+      // TODO: Use service
+      fmt.Printf("%#v\n", service)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -289,11 +336,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -302,31 +352,38 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := appengine.New(hc)
+
+  s, err := appengine.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
-  // TODO: Update placeholder value.
-  appsId := "{MY-APPS-ID}"
+  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
 
   // Part of `name`. See documentation of `appsId`.
-  // TODO: Update placeholder value.
-  servicesId := "{MY-SERVICES-ID}"
+  servicesId := "{MY-SERVICES-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Apps.Services.Patch(appsId, servicesId, &appengine.Service{
-                                       // TODO: Fill required fields.
-                                     }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  service := &appengine.Service{
+    // TODO: Add the desired fields to be changed.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Apps.Services.Patch(appsId, servicesId, &service).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -338,11 +395,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -351,31 +411,38 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := appengine.New(hc)
+
+  s, err := appengine.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
-  // TODO: Update placeholder value.
-  appsId := "{MY-APPS-ID}"
+  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
 
   // Part of `name`. See documentation of `appsId`.
-  // TODO: Update placeholder value.
-  servicesId := "{MY-SERVICES-ID}"
+  servicesId := "{MY-SERVICES-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Apps.Services.Versions.Create(appsId, servicesId, &appengine.Version{
-                                                 // TODO: Fill required fields.
-                                               }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  version := &appengine.Version{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Apps.Services.Versions.Create(appsId, servicesId, &version).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -387,11 +454,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -400,34 +470,38 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := appengine.New(hc)
+
+  s, err := appengine.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Part of `name`. Name of the resource requested. For example:
   // "apps/myapp/services/default/versions/v1".
-  // TODO: Update placeholder value.
-  appsId := "{MY-APPS-ID}"
+  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
 
   // Part of `name`. See documentation of `appsId`.
-  // TODO: Update placeholder value.
-  servicesId := "{MY-SERVICES-ID}"
+  servicesId := "{MY-SERVICES-ID}" // TODO: Update placeholder value(s).
 
   // Part of `name`. See documentation of `appsId`.
-  // TODO: Update placeholder value.
-  versionsId := "{MY-VERSIONS-ID}"
+  versionsId := "{MY-VERSIONS-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Apps.Services.Versions.Delete(appsId, servicesId, versionsId).Context(ctx).Do()
+  resp, err := s.Apps.Services.Versions.Delete(appsId, servicesId, versionsId).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -439,11 +513,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -452,34 +529,38 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := appengine.New(hc)
+
+  s, err := appengine.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Part of `name`. Name of the resource requested. For example:
   // "apps/myapp/services/default/versions/v1".
-  // TODO: Update placeholder value.
-  appsId := "{MY-APPS-ID}"
+  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
 
   // Part of `name`. See documentation of `appsId`.
-  // TODO: Update placeholder value.
-  servicesId := "{MY-SERVICES-ID}"
+  servicesId := "{MY-SERVICES-ID}" // TODO: Update placeholder value(s).
 
   // Part of `name`. See documentation of `appsId`.
-  // TODO: Update placeholder value.
-  versionsId := "{MY-VERSIONS-ID}"
+  versionsId := "{MY-VERSIONS-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Apps.Services.Versions.Get(appsId, servicesId, versionsId).Context(ctx).Do()
+  resp, err := s.Apps.Services.Versions.Get(appsId, servicesId, versionsId).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -491,11 +572,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -504,38 +588,40 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := appengine.New(hc)
+
+  s, err := appengine.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Part of `name`. Name of the resource requested. For example:
   // "apps/myapp/services/default/versions/v1".
-  // TODO: Update placeholder value.
-  appsId := "{MY-APPS-ID}"
+  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
 
   // Part of `name`. See documentation of `appsId`.
-  // TODO: Update placeholder value.
-  servicesId := "{MY-SERVICES-ID}"
+  servicesId := "{MY-SERVICES-ID}" // TODO: Update placeholder value(s).
 
   // Part of `name`. See documentation of `appsId`.
-  // TODO: Update placeholder value.
-  versionsId := "{MY-VERSIONS-ID}"
+  versionsId := "{MY-VERSIONS-ID}" // TODO: Update placeholder value(s).
 
-
-  call := c.Apps.Services.Versions.Instances.List(appsId, servicesId, versionsId)
+  call := s.Apps.Services.Versions.Instances.List(appsId, servicesId, versionsId)
   if err := call.Pages(ctx, func(page *appengine.ListInstancesResponse) error {
-    for _, v := range page.Instances {
-      // TODO: Use v.
-      _ = v
+    for _, instance := range page.Instances {
+      // TODO: Use instance
+      fmt.Printf("%#v\n", instance)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -548,11 +634,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -561,33 +650,36 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := appengine.New(hc)
+
+  s, err := appengine.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
-  // TODO: Update placeholder value.
-  appsId := "{MY-APPS-ID}"
+  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
 
   // Part of `name`. See documentation of `appsId`.
-  // TODO: Update placeholder value.
-  servicesId := "{MY-SERVICES-ID}"
+  servicesId := "{MY-SERVICES-ID}" // TODO: Update placeholder value(s).
 
-
-  call := c.Apps.Services.Versions.List(appsId, servicesId)
+  call := s.Apps.Services.Versions.List(appsId, servicesId)
   if err := call.Pages(ctx, func(page *appengine.ListVersionsResponse) error {
-    for _, v := range page.Versions {
-      // TODO: Use v.
-      _ = v
+    for _, version := range page.Versions {
+      // TODO: Use version
+      fmt.Printf("%#v\n", version)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -600,11 +692,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -613,34 +708,40 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := appengine.New(hc)
+
+  s, err := appengine.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Part of `name`. Name of the resource to update. For example:
   // "apps/myapp/services/default/versions/1".
-  // TODO: Update placeholder value.
-  appsId := "{MY-APPS-ID}"
+  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
 
   // Part of `name`. See documentation of `appsId`.
-  // TODO: Update placeholder value.
-  servicesId := "{MY-SERVICES-ID}"
+  servicesId := "{MY-SERVICES-ID}" // TODO: Update placeholder value(s).
 
   // Part of `name`. See documentation of `appsId`.
-  // TODO: Update placeholder value.
-  versionsId := "{MY-VERSIONS-ID}"
+  versionsId := "{MY-VERSIONS-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Apps.Services.Versions.Patch(appsId, servicesId, versionsId, &appengine.Version{
-                                                // TODO: Fill required fields.
-                                              }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  version := &appengine.Version{
+    // TODO: Add the desired fields to be changed.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Apps.Services.Versions.Patch(appsId, servicesId, versionsId, &version).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }

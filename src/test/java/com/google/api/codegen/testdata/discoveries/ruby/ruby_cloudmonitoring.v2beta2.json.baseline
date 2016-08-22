@@ -7,27 +7,34 @@
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudmonitoring_v2beta2'
+require 'json'
 
 service = Google::Apis::CloudmonitoringV2beta2::CloudMonitoringService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'create_metric_descriptor' method:
+# The project id. The value can be the numeric project ID or string-based project name.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The project id. The value can be the numeric project ID or string-based project name.
-project = '{MY-PROJECT}'
-
-metric_descriptor_object = Google::Apis::CloudmonitoringV2beta2::MetricDescriptor.new
-
+# TODO: Assign values to the desired members.
+metric_descriptor_body = Google::Apis::CloudmonitoringV2beta2::MetricDescriptor.new
 
 # Perform the call
-response = service.create_metric_descriptor(project, metric_descriptor_object)
+response = service.create_metric_descriptor(project, metric_descriptor_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Monitoring API
@@ -36,27 +43,34 @@ response = service.create_metric_descriptor(project, metric_descriptor_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudmonitoring_v2beta2'
+require 'json'
 
 service = Google::Apis::CloudmonitoringV2beta2::CloudMonitoringService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_metric_descriptor' method:
+# The project ID to which the metric belongs.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The project ID to which the metric belongs.
-project = '{MY-PROJECT}'
-
-# * Name of the metric.
-metric = '{MY-METRIC}'
+# Name of the metric.
+metric = '{MY-METRIC}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.delete_metric_descriptor(project, metric)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Monitoring API
@@ -65,32 +79,38 @@ response = service.delete_metric_descriptor(project, metric)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudmonitoring_v2beta2'
+require 'json'
 
 service = Google::Apis::CloudmonitoringV2beta2::CloudMonitoringService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_metric_descriptors' method:
+# The project id. The value can be the numeric project ID or string-based project name.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The project id. The value can be the numeric project ID or string-based project name.
-project = '{MY-PROJECT}'
-
-list_metric_descriptors_request_object = Google::Apis::CloudmonitoringV2beta2::ListMetricDescriptorsRequest.new
-
+# TODO: Assign values to the desired members.
+list_metric_descriptors_request_body = Google::Apis::CloudmonitoringV2beta2::ListMetricDescriptorsRequest.new
 
 # Perform the call
-result_list = service.fetch_all(items: :metrics) { |token|
-  service.list_metric_descriptors(project, list_metric_descriptors_request_object, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+metrics = service.fetch_all(items: :metrics) do |token|
+  service.list_metric_descriptors(project, list_metric_descriptors_request_body, page_token: token)
+end
+
+metrics.each do |metric_descriptor|
+  # TODO: Use metric_descriptor
+  puts JSON.pretty_generate(metric_descriptor)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Monitoring API
@@ -99,40 +119,46 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudmonitoring_v2beta2'
+require 'json'
 
 service = Google::Apis::CloudmonitoringV2beta2::CloudMonitoringService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_timeseries' method:
+# The project ID to which this time series belongs. The value can be the numeric project ID or
+# string-based project name.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The project ID to which this time series belongs. The value can be the numeric project ID or
-#   string-based project name.
-project = '{MY-PROJECT}'
+# Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
+# compute.googleapis.com/instance/disk/read_ops_count.
+metric = '{MY-METRIC}' # TODO: Change placeholder value(s).
 
-# * Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
-#   compute.googleapis.com/instance/disk/read_ops_count.
-metric = '{MY-METRIC}'
+# End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
+youngest = '{MY-YOUNGEST}' # TODO: Change placeholder value(s).
 
-# * End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
-youngest = '{MY-YOUNGEST}'
-
-list_timeseries_request_object = Google::Apis::CloudmonitoringV2beta2::ListTimeseriesRequest.new
-
+# TODO: Assign values to the desired members.
+list_timeseries_request_body = Google::Apis::CloudmonitoringV2beta2::ListTimeseriesRequest.new
 
 # Perform the call
-result_list = service.fetch_all(items: :timeseries) { |token|
-  service.list_timeseries(project, metric, youngest, list_timeseries_request_object, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+timeseries = service.fetch_all(items: :timeseries) do |token|
+  service.list_timeseries(project, metric, youngest, list_timeseries_request_body, page_token: token)
+end
+
+timeseries.each do |timeseries|
+  # TODO: Use timeseries
+  puts JSON.pretty_generate(timeseries)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Monitoring API
@@ -141,27 +167,34 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudmonitoring_v2beta2'
+require 'json'
 
 service = Google::Apis::CloudmonitoringV2beta2::CloudMonitoringService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'write_timeseries' method:
+# The project ID. The value can be the numeric project ID or string-based project name.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The project ID. The value can be the numeric project ID or string-based project name.
-project = '{MY-PROJECT}'
-
-write_timeseries_request_object = Google::Apis::CloudmonitoringV2beta2::WriteTimeseriesRequest.new
-
+# TODO: Assign values to the desired members.
+write_timeseries_request_body = Google::Apis::CloudmonitoringV2beta2::WriteTimeseriesRequest.new
 
 # Perform the call
-response = service.write_timeseries(project, write_timeseries_request_object)
+response = service.write_timeseries(project, write_timeseries_request_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Monitoring API
@@ -170,37 +203,43 @@ response = service.write_timeseries(project, write_timeseries_request_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudmonitoring_v2beta2'
+require 'json'
 
 service = Google::Apis::CloudmonitoringV2beta2::CloudMonitoringService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_timeseries_descriptors' method:
+# The project ID to which this time series belongs. The value can be the numeric project ID or
+# string-based project name.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The project ID to which this time series belongs. The value can be the numeric project ID or
-#   string-based project name.
-project = '{MY-PROJECT}'
+# Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
+# compute.googleapis.com/instance/disk/read_ops_count.
+metric = '{MY-METRIC}' # TODO: Change placeholder value(s).
 
-# * Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
-#   compute.googleapis.com/instance/disk/read_ops_count.
-metric = '{MY-METRIC}'
+# End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
+youngest = '{MY-YOUNGEST}' # TODO: Change placeholder value(s).
 
-# * End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
-youngest = '{MY-YOUNGEST}'
-
-list_timeseries_descriptors_request_object = Google::Apis::CloudmonitoringV2beta2::ListTimeseriesDescriptorsRequest.new
-
+# TODO: Assign values to the desired members.
+list_timeseries_descriptors_request_body = Google::Apis::CloudmonitoringV2beta2::ListTimeseriesDescriptorsRequest.new
 
 # Perform the call
-result_list = service.fetch_all(items: :timeseries) { |token|
-  service.list_timeseries_descriptors(project, metric, youngest, list_timeseries_descriptors_request_object, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+timeseries = service.fetch_all(items: :timeseries) do |token|
+  service.list_timeseries_descriptors(project, metric, youngest, list_timeseries_descriptors_request_body, page_token: token)
+end
+
+timeseries.each do |timeseries_descriptor|
+  # TODO: Use timeseries_descriptor
+  puts JSON.pretty_generate(timeseries_descriptor)
+end
