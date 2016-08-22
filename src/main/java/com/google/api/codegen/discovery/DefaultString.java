@@ -103,13 +103,10 @@ public class DefaultString {
    */
   @VisibleForTesting
   static String forPattern(String pattern) {
-    // We only care about patterns that has alternating literal and wildcard like
+    // We only care about patterns that have alternating literal and wildcard like
     //  ^foo/[^/]*/bar/[^/]*$
     // Ignore if what we get looks nothing like this.
-    if (pattern == null
-        || !pattern.startsWith("^")
-        || !pattern.endsWith("$")
-        || substrCount(pattern, "/") != substrCount(pattern, WILDCARD_PATTERN) * 3 - 1) {
+    if (pattern == null || !pattern.startsWith("^") || !pattern.endsWith("$")) {
       return null;
     }
     pattern = pattern.substring(1, pattern.length() - 1);
@@ -128,22 +125,6 @@ public class DefaultString {
           .append('}');
     }
     return ret.substring(1);
-  }
-
-  /**
-   * Counts the number of non-overlapping instances of `needle` in `haystack`.
-   */
-  private static int substrCount(String haystack, String needle) {
-    int count = 0;
-    int fromIndex = 0;
-    for (; ; ) {
-      int index = haystack.indexOf(needle, fromIndex);
-      if (index < 0) {
-        return count;
-      }
-      fromIndex = index + needle.length();
-      count++;
-    }
   }
 
   /**
