@@ -14,9 +14,11 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.client.repackaged.com.google.common.base.Strings;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Predicate;
@@ -50,6 +52,7 @@ public class MethodConfig {
   private final boolean hasRequestObjectMethod;
   private final ImmutableMap<String, String> fieldNamePatterns;
   private final List<String> sampleCodeInitFields;
+  private final String rerouteToGrpcInterface;
 
   /**
    * Creates an instance of MethodConfig based on MethodConfigProto, linking it up with the provided
@@ -169,6 +172,11 @@ public class MethodConfig {
     sampleCodeInitFields.addAll(methodConfigProto.getRequiredFieldsList());
     sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
 
+    String rerouteToGrpcInterface = methodConfigProto.getRerouteToGrpcInterface();
+    if (Strings.isNullOrEmpty(rerouteToGrpcInterface)) {
+      rerouteToGrpcInterface = null;
+    }
+
     if (error) {
       return null;
     } else {
@@ -183,7 +191,8 @@ public class MethodConfig {
           requiredFields,
           optionalFields,
           fieldNamePatterns,
-          sampleCodeInitFields);
+          sampleCodeInitFields,
+          rerouteToGrpcInterface);
     }
   }
 
@@ -198,7 +207,8 @@ public class MethodConfig {
       Iterable<Field> requiredFields,
       Iterable<Field> optionalFields,
       ImmutableMap<String, String> fieldNamePatterns,
-      List<String> sampleCodeInitFields) {
+      List<String> sampleCodeInitFields,
+      String rerouteToGrpcInterface) {
     this.pageStreaming = pageStreaming;
     this.flattening = flattening;
     this.retryCodesConfigName = retryCodesConfigName;
@@ -210,6 +220,7 @@ public class MethodConfig {
     this.optionalFields = optionalFields;
     this.fieldNamePatterns = fieldNamePatterns;
     this.sampleCodeInitFields = sampleCodeInitFields;
+    this.rerouteToGrpcInterface = rerouteToGrpcInterface;
   }
 
   /** Returns true if this method has page streaming configured. */
@@ -280,5 +291,9 @@ public class MethodConfig {
   /** Returns the field structure of fields that needs to be initialized in sample code. */
   public List<String> getSampleCodeInitFields() {
     return sampleCodeInitFields;
+  }
+
+  public String getRerouteToGrpcInterface() {
+    return rerouteToGrpcInterface;
   }
 }
