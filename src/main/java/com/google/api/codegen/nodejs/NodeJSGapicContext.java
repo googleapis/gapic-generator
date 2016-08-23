@@ -35,6 +35,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -110,7 +111,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   /**
    * Returns type information for a field in JSDoc style.
    */
-  private String fieldTypeCardinalityComment(Field field) {
+  private String fieldTypeCardinalityComment(Field field, Interface service) {
     TypeRef type = field.getType();
 
     String cardinalityComment = "";
@@ -121,15 +122,16 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
         cardinalityComment = "[]";
       }
     }
-    String typeComment = jsTypeName(field.getType());
+    String typeComment = jsTypeName(field.getType(), service);
     return String.format("%s%s", typeComment, cardinalityComment);
   }
 
   /**
    * Returns a JSDoc comment string for the field as a parameter to a function.
    */
-  private String fieldParamComment(Field field, String paramComment, boolean isOptional) {
-    String commentType = fieldTypeCardinalityComment(field);
+  private String fieldParamComment(
+      Field field, String paramComment, boolean isOptional, Interface service) {
+    String commentType = fieldTypeCardinalityComment(field, service);
     String fieldName = wrapIfKeywordOrBuiltIn(lowerUnderscoreToLowerCamel(field.getSimpleName()));
     if (isOptional) {
       fieldName = "otherArgs." + fieldName;
@@ -141,13 +143,12 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
 
   /**
    * Returns a JSDoc comment string for the field as an attribute of a message.
+   * private String fieldPropertyComment(Field field) {
+   * String commentType = fieldTypeCardinalityComment(field);
+   * String fieldName = wrapIfKeywordOrBuiltIn(field.getSimpleName());
+   * return fieldComment(String.format("@property {%s} %s", commentType, fieldName), null, field);
+   * }
    */
-  private String fieldPropertyComment(Field field) {
-    String commentType = fieldTypeCardinalityComment(field);
-    String fieldName = wrapIfKeywordOrBuiltIn(field.getSimpleName());
-    return fieldComment(String.format("@property {%s} %s", commentType, fieldName), null, field);
-  }
-
   private String fieldComment(String comment, String paramComment, Field field) {
     if (paramComment == null) {
       paramComment = DocumentationUtil.getScopedDescription(field);
@@ -165,10 +166,12 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   @Nullable
   private String returnTypeComment(Method method, MethodConfig config) {
     if (config.isPageStreaming()) {
-      String resourceType = jsTypeName(config.getPageStreaming().getResourcesField().getType());
-      return "@returns {Stream<"
-          + resourceType
-          + ">}\n"
+      TypeRef resourceTypeRef = config.getPageStreaming().getResourcesField().getType();
+      String resourceType = jsTypeName(resourceTypeRef, (Interface) method.getParent());
+      if (!resourceTypeRef.isPrimitive()) {
+        resourceType = "{@link " + resourceType + "}";
+      }
+      return "@returns {Stream}\n"
           + "  An object stream. By default, this emits "
           + resourceType
           + "\n  instances on 'data' event. This object can also be configured to emit\n"
@@ -178,13 +181,13 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     MessageType returnMessageType = method.getOutputMessage();
     boolean isEmpty = returnMessageType.getFullName().equals("google.protobuf.Empty");
 
-    String classInfo = jsTypeName(method.getOutputType());
+    String classInfo = jsTypeName(method.getOutputType(), (Interface) method.getParent());
 
     String callbackType = isEmpty ? "EmptyCallback" : String.format("APICallback<%s>", classInfo);
     String returnMessage =
-        "@returns {"
+        "@returns {external:\""
             + (config.isBundling() ? "gax.BundleEventEmitter" : "gax.EventEmitter")
-            + "} - the event emitter to handle the call\n"
+            + "\"} - the event emitter to handle the call\n"
             + "  status.";
     if (config.isBundling()) {
       returnMessage +=
@@ -210,7 +213,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
     for (Field field : config.getRequiredFields()) {
-      paramTypesBuilder.append(fieldParamComment(field, null, false));
+      paramTypesBuilder.append(fieldParamComment(field, null, false, (Interface) msg.getParent()));
     }
     Iterable<Field> optionalParams = removePageTokenFromFields(config.getOptionalFields(), config);
     if (optionalParams.iterator().hasNext()) {
@@ -226,14 +229,16 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
                       + "parameter does not affect the return value. If page streaming is\n"
                       + "performed per-page, this determines the maximum number of\n"
                       + "resources in a page.",
-                  true));
+                  true,
+                  (Interface) msg.getParent()));
         } else {
-          paramTypesBuilder.append(fieldParamComment(field, null, true));
+          paramTypesBuilder.append(
+              fieldParamComment(field, null, true, (Interface) msg.getParent()));
         }
       }
     }
     paramTypesBuilder.append(
-        "@param {gax.CallOptions=} options\n"
+        "@param {external:\"gax.CallOptions\"=} options\n"
             + "  Overrides the default settings for this call, e.g, timeout,\n"
             + "  retries, etc.");
     String paramTypes = paramTypesBuilder.toString();
@@ -260,22 +265,22 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
 
   /**
    * Return the doccomment for the message.
+   * public List<String> methodDocComment(MessageType msg) {
+   * StringBuilder attributesBuilder = new StringBuilder();
+   * attributesBuilder.append("@typedef {Object} " + msg.getFullName() + "\n");
+   * for (Field field : msg.getFields()) {
+   * attributesBuilder.append(fieldPropertyComment(field));
+   * }
+   *
+   * String attributes = attributesBuilder.toString().trim();
+   *
+   * List<String> content = defaultComments(msg);
+   * return ImmutableList.<String>builder()
+   * .addAll(content)
+   * .addAll(convertToCommentedBlock(attributes))
+   * .build();
+   * }
    */
-  public List<String> methodDocComment(MessageType msg) {
-    StringBuilder attributesBuilder = new StringBuilder();
-    attributesBuilder.append("@typedef {Object} " + msg.getFullName() + "\n");
-    for (Field field : msg.getFields()) {
-      attributesBuilder.append(fieldPropertyComment(field));
-    }
-
-    String attributes = attributesBuilder.toString().trim();
-
-    List<String> content = defaultComments(msg);
-    return ImmutableList.<String>builder()
-        .addAll(content)
-        .addAll(convertToCommentedBlock(attributes))
-        .build();
-  }
 
   /**
    * Return a non-conflicting safe name if name is a JS reserved word.
@@ -287,15 +292,25 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     return name;
   }
 
+  public String jsTypeNameForProtoElement(ProtoElement element, Interface service) {
+    String namespace = getNamespace(service);
+    String fullName = element.getFullName();
+    if (fullName.startsWith(namespace + ".")) {
+      return fullName.substring(namespace.length() + 1);
+    }
+    return "external:\"" + fullName + "\"";
+  }
+
   /**
    * Returns the name of JS type for the given typeRef.
    */
-  public String jsTypeName(TypeRef typeRef) {
+  public String jsTypeName(TypeRef typeRef, Interface service) {
+    String namespace = getNamespace(service);
     switch (typeRef.getKind()) {
       case TYPE_MESSAGE:
-        return typeRef.getMessageType().getFullName();
+        return jsTypeNameForProtoElement(typeRef.getMessageType(), service);
       case TYPE_ENUM:
-        return typeRef.getEnumType().getFullName();
+        return jsTypeNameForProtoElement(typeRef.getEnumType(), service);
       default:
         {
           String name = PRIMITIVE_TYPE_NAMES.get(typeRef.getKind());
