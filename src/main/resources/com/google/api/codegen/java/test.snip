@@ -52,31 +52,48 @@
   @@Test
   @@SuppressWarnings("all")
   public void {@test.name}() {
+    {@setResponse(test.mockResponse)}
+
     {@initCode(test.initCode)}
     {@methodCall(test)}
 
-    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
-    Assert.assertEquals(1, requests.size());
-    {@test.requestTypeName} request = ({@test.requestTypeName})requests.get(0);
+    List<GeneratedMessage> actualRequests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    {@test.requestTypeName} actualRequest = ({@test.requestTypeName})actualRequests.get(0);
 
     @join assert : test.asserts
-      Assert.assertEquals(request.{@assert.actualValueGetter}(), {@assert.expectedValueIdentifier});
+      Assert.assertEquals(actualRequest.{@assert.actualValueGetter}(), {@assert.expectedValueIdentifier});
     @end
   }
+@end
+
+@private setResponse(response)
+  {@initCode(response.initCode)}
+  List<GeneratedMessage> expectedResponses = new ArrayList<>();
+  expectedResponses.add(expectedResponse);
+  serviceHelper.getService().setResponses(expectedResponses);
 @end
 
 @private methodCall(test)
   @switch test.methodType
   @case "PagedFlattenedMethod"
-    PageAccessor<{@test.resourceTypeName}> response = api.{@test.surfaceMethodName}(\
+    PageAccessor<{@test.resourceTypeName}> pageAccessor = api.{@test.surfaceMethodName}(\
       {@sampleMethodCallArgList(test.initCode.fieldSettings)});
 
     // PageAccessor will not make actual request until it is being used.
     // Add all the pages here in order to make grpc requests.
-    List<{@test.resourceTypeName}> resources = Lists.newArrayList(response.getPageValues());
+    List<{@test.resourceTypeName}> resources = Lists.newArrayList(pageAccessor.getPageValues());
+    Assert.assertEquals(0, resources.size());
   @case "FlattenedMethod"
-    api.{@test.surfaceMethodName}(\
-      {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+    @if test.hasReturnValue
+      {@test.responseTypeName} actualResponse =
+          api.{@test.surfaceMethodName}(\
+          {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+      Assert.assertEquals(expectedResponse, actualResponse);
+    @else
+      api.{@test.surfaceMethodName}(\
+            {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+    @end
   @default
     $unhandledCase: {@test.type}$
   @end
