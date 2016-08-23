@@ -11,42 +11,41 @@
 
   @@javax.annotation.Generated("by GAPIC")
   public class {@mockServiceImpl.name} implements {@mockServiceImpl.grpcClassName}  {
-     private ArrayList<GeneratedMessage> requests;
+    private ArrayList<GeneratedMessage> requests;
+    private Queue<GeneratedMessage> responses;
 
-     public {@mockServiceImpl.name}() {
-       requests = new ArrayList<>();
-     }
+    public {@mockServiceImpl.name}() {
+      requests = new ArrayList<>();
+      responses = new LinkedList<>();
+    }
 
-     public List<GeneratedMessage> getRequests() {
-       return requests;
-     }
+    public List<GeneratedMessage> getRequests() {
+      return requests;
+    }
 
-     public void reset() {
-       requests = new ArrayList<>();
-     }
+    public void setResponses(List<GeneratedMessage> responses) {
+      this.responses = Lists.newLinkedList(responses);
+    }
 
-     @join method : mockServiceImpl.grpcMethods
-      {@grpcMethod(method)}
+    public void reset() {
+      requests = new ArrayList<>();
+      responses = new LinkedList<>();
+    }
 
-     @end
+    @join method : mockServiceImpl.grpcMethods
+     {@grpcMethod(method)}
+
+    @end
   }
 @end
 
 @private grpcMethod(method)
   @@Override
-  @if method.isStreaming
-    public StreamObserver<{@method.requestTypeName}> {@method.name}(
-        StreamObserver<{@method.responseTypeName}> responseObserver) {
-      System.err.println("Streaming method is not supported.");
-      return null;
-    }
-  @else
-    public void {@method.name}({@method.requestTypeName} request,
-      StreamObserver<{@method.responseTypeName}> responseObserver) {
-      {@method.responseTypeName} response = ({@method.responseTypeName}) responses.remove();
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    }
-  @end
+  public void {@method.name}({@method.requestTypeName} request,
+    StreamObserver<{@method.responseTypeName}> responseObserver) {
+    {@method.responseTypeName} response = ({@method.responseTypeName}) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
+  }
 @end
