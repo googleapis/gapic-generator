@@ -171,6 +171,11 @@ message MethodConfigProto {
   // Specifies complex structure fields that need to be initialized by the sample code for
   // the sample to be usable.
   repeated string sample_code_init_fields = 10;
+
+  // Route calls through a different gRPC interface than the one this method
+  // is contained in. This specifically supports the Pub/Sub IAM hack to route
+  // IAM methods to IamPolicy for Pub/Sub.
+  string reroute_to_grpc_interface = 12;
 }
 
 // `FlatteningConfigProto` describes the parameter groups for which a

@@ -323,6 +323,7 @@ public class ApiMethodTransformer {
     apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
     apiMethod.key(namer.getMethodKey(context.getMethod()));
     apiMethod.grpcMethodName(namer.getGrpcMethodName(context.getMethod()));
+    apiMethod.stubName(namer.getStubName(context.getTargetInterface()));
 
     apiMethod.methodParams(generateOptionalArrayMethodParams(context));
 

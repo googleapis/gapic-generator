@@ -484,4 +484,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
       return methodName(Name.from("get").join(name));
     }
   }
+
+  public String getStubName(Interface service) {
+    return varName(Name.upperCamel(service.getSimpleName(), "Stub"));
+  }
+
+  public String getCreateStubFunctionName(Interface service) {
+    return varName(Name.upperCamel("Create", service.getSimpleName(), "Stub", "Function"));
+  }
 }

@@ -20,6 +20,7 @@ import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.Model;
 import com.google.auto.value.AutoValue;
 
 import java.util.Collection;
@@ -51,6 +52,20 @@ public abstract class MethodTransformerContext {
   public abstract Method getMethod();
 
   public abstract MethodConfig getMethodConfig();
+
+  public Interface getTargetInterface() {
+    Interface targetInterface = getInterface();
+    String rerouteToGrpcInterface = getMethodConfig().getRerouteToGrpcInterface();
+    if (rerouteToGrpcInterface != null) {
+      targetInterface =
+          getInterface().getModel().getSymbolTable().lookupInterface(rerouteToGrpcInterface);
+      if (targetInterface == null) {
+        throw new IllegalArgumentException(
+            "reroute_to_grpc_interface not found: " + rerouteToGrpcInterface);
+      }
+    }
+    return targetInterface;
+  }
 
   public InterfaceConfig getInterfaceConfig() {
     return getApiConfig().getInterfaceConfig(getInterface());

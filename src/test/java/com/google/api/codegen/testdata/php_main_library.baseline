@@ -56,6 +56,8 @@ use google\example\library\v1\UpdateBookIndexRequest\IndexMapEntry;
 use google\example\library\v1\UpdateBookRequest;
 use google\protobuf\FieldMask;
 use google\tagger\v1\AddTagRequest;
+use google\tagger\v1\RemoveTagRequest;
+use google\tagger\v1\TaggerClient;
 
 /**
  * Service Description: This API represents a simple digital library.  It lets you manage Shelf
@@ -117,7 +119,8 @@ class LibraryServiceApi
     private static $archivedBookNameTemplate;
 
     private $grpcCredentialsHelper;
-    private $stub;
+    private $libraryServiceStub;
+    private $taggerStub;
     private $scopes;
     private $defaultCallSettings;
     private $descriptors;
@@ -339,6 +342,7 @@ class LibraryServiceApi
             'getBookFromArchive' => $defaultDescriptors,
             'updateBookIndex' => $defaultDescriptors,
             'addTag' => $defaultDescriptors,
+            'removeTag' => $defaultDescriptors,
         ];
         $pageStreamingDescriptors = self::getPageStreamingDescriptors();
         foreach ($pageStreamingDescriptors as $method => $pageStreamingDescriptor) {
@@ -358,17 +362,26 @@ class LibraryServiceApi
 
         $this->scopes = $options['scopes'];
 
-        $generatedCreateStub = function ($hostname, $opts) {
-            return new LibraryServiceClient($hostname, $opts);
-        };
         $createStubOptions = [];
         if (!empty($options['sslCreds'])) {
             $createStubOptions['sslCreds'] = $options['sslCreds'];
         }
         $grpcCredentialsHelperOptions = array_diff_key($options, $defaultOptions);
         $this->grpcCredentialsHelper = new GrpcCredentialsHelper($this->scopes, $grpcCredentialsHelperOptions);
-        $this->stub = $this->grpcCredentialsHelper->createStub(
-            $generatedCreateStub,
+
+        $createLibraryServiceStubFunction = function ($hostname, $opts) {
+            return new LibraryServiceClient($hostname, $opts);
+        };
+        $this->libraryServiceStub = $this->grpcCredentialsHelper->createStub(
+            $createLibraryServiceStubFunction,
+            $options['serviceAddress'],
+            $options['port'],
+            $createStubOptions);
+        $createTaggerStubFunction = function ($hostname, $opts) {
+            return new TaggerClient($hostname, $opts);
+        };
+        $this->taggerStub = $this->grpcCredentialsHelper->createStub(
+            $createTaggerStubFunction,
             $options['serviceAddress'],
             $options['port'],
             $createStubOptions);
@@ -413,7 +426,7 @@ class LibraryServiceApi
         $mergedSettings = $this->defaultCallSettings['createShelf']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
-            $this->stub, 'CreateShelf', $mergedSettings, $this->descriptors['createShelf']);
+            $this->libraryServiceStub, 'CreateShelf', $mergedSettings, $this->descriptors['createShelf']);
 
         return $callable(
             $request,
@@ -472,7 +485,7 @@ class LibraryServiceApi
         $mergedSettings = $this->defaultCallSettings['getShelf']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
-            $this->stub, 'GetShelf', $mergedSettings, $this->descriptors['getShelf']);
+            $this->libraryServiceStub, 'GetShelf', $mergedSettings, $this->descriptors['getShelf']);
 
         return $callable(
             $request,
@@ -527,7 +540,7 @@ class LibraryServiceApi
         $mergedSettings = $this->defaultCallSettings['listShelves']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
-            $this->stub, 'ListShelves', $mergedSettings, $this->descriptors['listShelves']);
+            $this->libraryServiceStub, 'ListShelves', $mergedSettings, $this->descriptors['listShelves']);
 
         return $callable(
             $request,
@@ -572,7 +585,7 @@ class LibraryServiceApi
         $mergedSettings = $this->defaultCallSettings['deleteShelf']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
-            $this->stub, 'DeleteShelf', $mergedSettings, $this->descriptors['deleteShelf']);
+            $this->libraryServiceStub, 'DeleteShelf', $mergedSettings, $this->descriptors['deleteShelf']);
 
         return $callable(
             $request,
@@ -624,7 +637,7 @@ class LibraryServiceApi
         $mergedSettings = $this->defaultCallSettings['mergeShelves']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
-            $this->stub, 'MergeShelves', $mergedSettings, $this->descriptors['mergeShelves']);
+            $this->libraryServiceStub, 'MergeShelves', $mergedSettings, $this->descriptors['mergeShelves']);
 
         return $callable(
             $request,
@@ -674,7 +687,7 @@ class LibraryServiceApi
         $mergedSettings = $this->defaultCallSettings['createBook']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
-            $this->stub, 'CreateBook', $mergedSettings, $this->descriptors['createBook']);
+            $this->libraryServiceStub, 'CreateBook', $mergedSettings, $this->descriptors['createBook']);
 
         return $callable(
             $request,
@@ -731,7 +744,7 @@ class LibraryServiceApi
         $mergedSettings = $this->defaultCallSettings['publishSeries']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
-            $this->stub, 'PublishSeries', $mergedSettings, $this->descriptors['publishSeries']);
+            $this->libraryServiceStub, 'PublishSeries', $mergedSettings, $this->descriptors['publishSeries']);
 
         return $callable(
             $request,
@@ -778,7 +791,7 @@ class LibraryServiceApi
         $mergedSettings = $this->defaultCallSettings['getBook']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
-            $this->stub, 'GetBook', $mergedSettings, $this->descriptors['getBook']);
+            $this->libraryServiceStub, 'GetBook', $mergedSettings, $this->descriptors['getBook']);
 
         return $callable(
             $request,
@@ -847,7 +860,7 @@ class LibraryServiceApi
         $mergedSettings = $this->defaultCallSettings['listBooks']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
-            $this->stub, 'ListBooks', $mergedSettings, $this->descriptors['listBooks']);
+            $this->libraryServiceStub, 'ListBooks', $mergedSettings, $this->descriptors['listBooks']);
 
         return $callable(
             $request,
@@ -892,7 +905,7 @@ class LibraryServiceApi
         $mergedSettings = $this->defaultCallSettings['deleteBook']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
-            $this->stub, 'DeleteBook', $mergedSettings, $this->descriptors['deleteBook']);
+            $this->libraryServiceStub, 'DeleteBook', $mergedSettings, $this->descriptors['deleteBook']);
 
         return $callable(
             $request,
@@ -952,7 +965,7 @@ class LibraryServiceApi
         $mergedSettings = $this->defaultCallSettings['updateBook']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
-            $this->stub, 'UpdateBook', $mergedSettings, $this->descriptors['updateBook']);
+            $this->libraryServiceStub, 'UpdateBook', $mergedSettings, $this->descriptors['updateBook']);
 
         return $callable(
             $request,
@@ -1002,7 +1015,7 @@ class LibraryServiceApi
         $mergedSettings = $this->defaultCallSettings['moveBook']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
-            $this->stub, 'MoveBook', $mergedSettings, $this->descriptors['moveBook']);
+            $this->libraryServiceStub, 'MoveBook', $mergedSettings, $this->descriptors['moveBook']);
 
         return $callable(
             $request,
@@ -1068,7 +1081,7 @@ class LibraryServiceApi
         $mergedSettings = $this->defaultCallSettings['listStrings']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
-            $this->stub, 'ListStrings', $mergedSettings, $this->descriptors['listStrings']);
+            $this->libraryServiceStub, 'ListStrings', $mergedSettings, $this->descriptors['listStrings']);
 
         return $callable(
             $request,
@@ -1123,7 +1136,7 @@ class LibraryServiceApi
         $mergedSettings = $this->defaultCallSettings['addComments']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
-            $this->stub, 'AddComments', $mergedSettings, $this->descriptors['addComments']);
+            $this->libraryServiceStub, 'AddComments', $mergedSettings, $this->descriptors['addComments']);
 
         return $callable(
             $request,
@@ -1170,7 +1183,7 @@ class LibraryServiceApi
         $mergedSettings = $this->defaultCallSettings['getBookFromArchive']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
-            $this->stub, 'GetBookFromArchive', $mergedSettings, $this->descriptors['getBookFromArchive']);
+            $this->libraryServiceStub, 'GetBookFromArchive', $mergedSettings, $this->descriptors['getBookFromArchive']);
 
         return $callable(
             $request,
@@ -1224,7 +1237,7 @@ class LibraryServiceApi
         $mergedSettings = $this->defaultCallSettings['updateBookIndex']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
-            $this->stub, 'UpdateBookIndex', $mergedSettings, $this->descriptors['updateBookIndex']);
+            $this->libraryServiceStub, 'UpdateBookIndex', $mergedSettings, $this->descriptors['updateBookIndex']);
 
         return $callable(
             $request,
@@ -1249,7 +1262,7 @@ class LibraryServiceApi
      * }
      * ```
      *
-     * @param string $resource REQUIRED: The resource for which policy is being specified.
+     * @param string $resource REQUIRED: The resource which the tag is being added to.
      * Resource is usually specified as a path, such as,
      * projects/{project}/zones/{zone}/disks/{disk}.
      * @param string $tag REQUIRED: The tag to add.
@@ -1276,7 +1289,59 @@ class LibraryServiceApi
         $mergedSettings = $this->defaultCallSettings['addTag']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
-            $this->stub, 'AddTag', $mergedSettings, $this->descriptors['addTag']);
+            $this->libraryServiceStub, 'AddTag', $mergedSettings, $this->descriptors['addTag']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    /**
+     * Removes a tag from the entity.
+     *
+     * Sample code:
+     * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $formattedResource = LibraryServiceApi::formatBookName("[SHELF]", "[BOOK]");
+     *     $tag = "";
+     *     $response = $libraryServiceApi->removeTag($formattedResource, $tag);
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
+     * ```
+     *
+     * @param string $resource REQUIRED: The resource which the tag is being removed from.
+     * Resource is usually specified as a path, such as,
+     * projects/{project}/zones/{zone}/disks/{disk}.
+     * @param string $tag REQUIRED: The tag to remove.
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeoutMillis is ignored.
+     *     @type int $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     *
+     * @return google\tagger\v1\RemoveTagResponse
+     *
+     * @throws Google\GAX\ApiException if the remote call fails
+     */
+    public function removeTag($resource, $tag, $optionalArgs = [])
+    {
+        $request = new RemoveTagRequest();
+        $request->setResource($resource);
+        $request->setTag($tag);
+
+        $mergedSettings = $this->defaultCallSettings['removeTag']->merge(
+            new CallSettings($optionalArgs));
+        $callable = ApiCallable::createApiCall(
+            $this->taggerStub, 'RemoveTag', $mergedSettings, $this->descriptors['removeTag']);
 
         return $callable(
             $request,
@@ -1290,7 +1355,8 @@ class LibraryServiceApi
      */
     public function close()
     {
-        $this->stub->close();
+        $this->libraryServiceStub->close();
+        $this->taggerStub->close();
     }
 
     private function createCredentialsCallback()

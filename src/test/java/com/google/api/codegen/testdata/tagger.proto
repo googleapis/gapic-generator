@@ -14,10 +14,13 @@ service Tagger {
 
   // Adds a tag to the entity.
   rpc AddTag(AddTagRequest) returns (AddTagResponse);
+
+  // Removes a tag from the entity.
+  rpc RemoveTag(RemoveTagRequest) returns (RemoveTagResponse);
 }
 
 message AddTagRequest {
-  // REQUIRED: The resource for which policy is being specified.
+  // REQUIRED: The resource which the tag is being added to.
   // Resource is usually specified as a path, such as,
   // projects/{project}/zones/{zone}/disks/{disk}.
   string resource = 1;
@@ -26,7 +29,22 @@ message AddTagRequest {
   string tag = 2;
 }
 
-// Response message for `AddTagRequest` method.
+message RemoveTagRequest {
+  // REQUIRED: The resource which the tag is being removed from.
+  // Resource is usually specified as a path, such as,
+  // projects/{project}/zones/{zone}/disks/{disk}.
+  string resource = 1;
+
+  // REQUIRED: The tag to remove.
+  string tag = 2;
+}
+
+// Response message for the `AddTagRequest` method.
 message AddTagResponse {
+  // empty for now
+}
+
+// Response message for the `RemoveTagRequest` method.
+message RemoveTagResponse {
   // empty for now
 }

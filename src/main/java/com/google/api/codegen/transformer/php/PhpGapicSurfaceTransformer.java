@@ -29,6 +29,7 @@ import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
+import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -36,7 +37,9 @@ import com.google.api.tools.framework.model.Model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The ModelToViewTransformer to transform a Model into the standard GAPIC surface in PHP.
@@ -120,6 +123,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     xapiClass.apiMethods(methods);
 
+    xapiClass.stubs(generateGrpcStubs(context));
+
     // must be done as the last step to catch all imports
     xapiClass.imports(context.getTypeTable().getImports());
 
@@ -159,5 +164,28 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     }
 
     return apiMethods;
+  }
+
+  private List<GrpcStubView> generateGrpcStubs(SurfaceTransformerContext context) {
+    List<GrpcStubView> stubs = new ArrayList<>();
+
+    Map<String, Interface> interfaces = new HashMap<>();
+    for (Method method : context.getNonStreamingMethods()) {
+      Interface targetInterface = context.asMethodContext(method).getTargetInterface();
+      interfaces.put(targetInterface.getFullName(), targetInterface);
+    }
+    SurfaceNamer namer = context.getNamer();
+    for (Interface interfaze : interfaces.values()) {
+      GrpcStubView.Builder stub = GrpcStubView.newBuilder();
+
+      stub.name(namer.getStubName(interfaze));
+      stub.createStubFunctionName(namer.getCreateStubFunctionName(interfaze));
+      String grpcClientTypeName = namer.getGrpcClientTypeName(interfaze);
+      stub.grpcClientTypeName(context.getTypeTable().getAndSaveNicknameFor(grpcClientTypeName));
+
+      stubs.add(stub.build());
+    }
+
+    return stubs;
   }
 }

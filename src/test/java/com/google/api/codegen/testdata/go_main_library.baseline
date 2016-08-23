@@ -59,6 +59,7 @@ type CallOptions struct {
     GetBookFromArchive []gax.CallOption
     UpdateBookIndex []gax.CallOption
     AddTag []gax.CallOption
+    RemoveTag []gax.CallOption
 }
 
 func defaultClientOptions() []option.ClientOption {
@@ -102,6 +103,7 @@ func defaultCallOptions() *CallOptions {
         GetBookFromArchive: append(defaultRetryOptions(), withIdempotentRetryCodes),
         UpdateBookIndex: append(defaultRetryOptions(), withIdempotentRetryCodes),
         AddTag: defaultRetryOptions(),
+        RemoveTag: defaultRetryOptions(),
     }
 }
 
@@ -487,6 +489,22 @@ func (c *Client) AddTag(ctx context.Context, req *taggerpb.AddTagRequest) (*tagg
         resp, err = c.client.AddTag(ctx, req)
         return err
     }, c.CallOptions.AddTag...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+
+// RemoveTag removes a tag from the entity.
+func (c *Client) RemoveTag(ctx context.Context, req *taggerpb.RemoveTagRequest) (*taggerpb.RemoveTagResponse, error) {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    var resp *taggerpb.RemoveTagResponse
+    err := gax.Invoke(ctx, func (ctx context.Context) error {
+        var err error
+        resp, err = c.client.RemoveTag(ctx, req)
+        return err
+    }, c.CallOptions.RemoveTag...)
     if err != nil {
         return nil, err
     }

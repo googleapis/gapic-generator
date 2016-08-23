@@ -47,6 +47,8 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
 import com.google.tagger.v1.AddTagRequest;
 import com.google.tagger.v1.AddTagResponse;
+import com.google.tagger.v1.RemoveTagRequest;
+import com.google.tagger.v1.RemoveTagResponse;
 import io.grpc.ManagedChannel;
 import java.io.Closeable;
 import java.io.IOException;
@@ -145,6 +147,7 @@ public class LibraryServiceApi implements AutoCloseable {
   private final ApiCallable<GetBookFromArchiveRequest, Book> getBookFromArchiveCallable;
   private final ApiCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable;
   private final ApiCallable<AddTagRequest, AddTagResponse> addTagCallable;
+  private final ApiCallable<RemoveTagRequest, RemoveTagResponse> removeTagCallable;
 
   public final LibraryServiceSettings getSettings() {
     return settings;
@@ -280,6 +283,7 @@ public class LibraryServiceApi implements AutoCloseable {
     this.getBookFromArchiveCallable = ApiCallable.create(settings.getBookFromArchiveSettings(), this.channel, this.executor);
     this.updateBookIndexCallable = ApiCallable.create(settings.updateBookIndexSettings(), this.channel, this.executor);
     this.addTagCallable = ApiCallable.create(settings.addTagSettings(), this.channel, this.executor);
+    this.removeTagCallable = ApiCallable.create(settings.removeTagSettings(), this.channel, this.executor);
 
     if (settings.getChannelProvider().shouldAutoClose()) {
       closeables.add(
@@ -1665,7 +1669,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * @param resource REQUIRED: The resource for which policy is being specified.
+   * @param resource REQUIRED: The resource which the tag is being added to.
    * Resource is usually specified as a path, such as,
    * projects/{project}/zones/{zone}/disks/{disk}.
    * @param tag REQUIRED: The tag to add.
@@ -1726,6 +1730,82 @@ public class LibraryServiceApi implements AutoCloseable {
    */
   public final ApiCallable<AddTagRequest, AddTagResponse> addTagCallable() {
     return addTagCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Removes a tag from the entity.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
+   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String tag = "";
+   *   RemoveTagResponse response = libraryServiceApi.removeTag(formattedResource, tag);
+   * }
+   * </code></pre>
+   *
+   * @param resource REQUIRED: The resource which the tag is being removed from.
+   * Resource is usually specified as a path, such as,
+   * projects/{project}/zones/{zone}/disks/{disk}.
+   * @param tag REQUIRED: The tag to remove.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final RemoveTagResponse removeTag(String resource, String tag) {
+    BOOK_PATH_TEMPLATE.validate(resource, "removeTag");
+    RemoveTagRequest request =
+        RemoveTagRequest.newBuilder()
+        .setResource(resource)
+        .setTag(tag)
+        .build();
+    return removeTag(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Removes a tag from the entity.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
+   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String tag = "";
+   *   RemoveTagRequest request = RemoveTagRequest.newBuilder()
+   *     .setResource(formattedResource)
+   *     .setTag(tag)
+   *     .build();
+   *   RemoveTagResponse response = libraryServiceApi.removeTag(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final RemoveTagResponse removeTag(RemoveTagRequest request) {
+    return removeTagCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Removes a tag from the entity.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
+   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String tag = "";
+   *   RemoveTagRequest request = RemoveTagRequest.newBuilder()
+   *     .setResource(formattedResource)
+   *     .setTag(tag)
+   *     .build();
+   *   ListenableFuture&lt;RemoveTagResponse&gt; future = libraryServiceApi.removeTagCallable().futureCall(request);
+   *   // Do something
+   *   RemoveTagResponse response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<RemoveTagRequest, RemoveTagResponse> removeTagCallable() {
+    return removeTagCallable;
   }
 
   /**
