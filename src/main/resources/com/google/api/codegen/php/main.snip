@@ -191,7 +191,9 @@
             ${@descriptor.varName} =
                     new PageStreamingDescriptor([
                         'requestPageTokenField' => '{@descriptor.requestTokenFieldName}',
-                        'requestPageSizeField' => '{@descriptor.requestPageSizeFieldName}',
+                        @if descriptor.requestHasPageSizeField
+                            'requestPageSizeField' => '{@descriptor.requestPageSizeFieldName}',
+                        @end
                         'responsePageTokenField' => '{@descriptor.responseTokenFieldName}',
                         'resourceField' => '{@descriptor.resourcesFieldName}',
                     ]);

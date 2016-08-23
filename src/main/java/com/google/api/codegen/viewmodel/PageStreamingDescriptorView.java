@@ -16,12 +16,15 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 
+import javax.annotation.Nullable;
+
 @AutoValue
 public abstract class PageStreamingDescriptorView {
   public abstract String varName();
 
   public abstract String requestTokenFieldName();
 
+  @Nullable
   public abstract String requestPageSizeFieldName();
 
   public abstract String responseTokenFieldName();
@@ -32,6 +35,10 @@ public abstract class PageStreamingDescriptorView {
 
   public static Builder newBuilder() {
     return new AutoValue_PageStreamingDescriptorView.Builder();
+  }
+
+  public boolean requestHasPageSizeField() {
+    return requestPageSizeFieldName() != null;
   }
 
   @AutoValue.Builder
