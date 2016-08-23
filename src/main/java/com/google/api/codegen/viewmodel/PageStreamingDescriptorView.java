@@ -22,6 +22,8 @@ public abstract class PageStreamingDescriptorView {
 
   public abstract String requestTokenFieldName();
 
+  public abstract String requestPageSizeFieldName();
+
   public abstract String responseTokenFieldName();
 
   public abstract String resourcesFieldName();
@@ -37,6 +39,8 @@ public abstract class PageStreamingDescriptorView {
     public abstract Builder varName(String val);
 
     public abstract Builder requestTokenFieldName(String val);
+
+    public abstract Builder requestPageSizeFieldName(String val);
 
     public abstract Builder responseTokenFieldName(String val);
 

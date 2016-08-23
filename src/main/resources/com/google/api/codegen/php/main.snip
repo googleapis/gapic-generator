@@ -191,6 +191,7 @@
             ${@descriptor.varName} =
                     new PageStreamingDescriptor([
                         'requestPageTokenField' => '{@descriptor.requestTokenFieldName}',
+                        'requestPageSizeField' => '{@descriptor.requestPageSizeFieldName}',
                         'responsePageTokenField' => '{@descriptor.responseTokenFieldName}',
                         'resourceField' => '{@descriptor.resourcesFieldName}',
                     ]);
@@ -282,7 +283,7 @@
 
         // TODO load the client config in a more package-friendly way
         // https://github.com/googleapis/toolkit/issues/332
-        $clientConfigJsonString = file_get_contents('{@xapiClass.clientConfigPath}');
+        $clientConfigJsonString = file_get_contents(__DIR__ . '{@xapiClass.clientConfigPath}');
         $clientConfig = json_decode($clientConfigJsonString, true);
         $this->defaultCallSettings =
                 CallSettings::load('{@xapiClass.interfaceKey}',

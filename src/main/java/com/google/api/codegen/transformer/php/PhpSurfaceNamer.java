@@ -60,7 +60,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getClientConfigPath(Interface service) {
-    return "./resources/"
+    return "/resources/"
         + Name.upperCamel(service.getSimpleName()).join("client_config").toLowerUnderscore()
         + ".json";
   }
