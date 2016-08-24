@@ -140,7 +140,10 @@ public class InitCodeTransformer {
   }
 
   private GapicSurfaceTestAssertView createAssertView(String expected, String actual) {
-    return GapicSurfaceTestAssertView.newBuilder().expected(expected).actual(actual).build();
+    return GapicSurfaceTestAssertView.newBuilder()
+        .expectedValueIdentifier(expected)
+        .actualValueGetter(actual)
+        .build();
   }
 
   private Map<String, Object> createSampleInitFieldStructure(MethodTransformerContext context) {

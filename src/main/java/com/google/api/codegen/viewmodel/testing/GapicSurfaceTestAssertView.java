@@ -18,9 +18,9 @@ import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class GapicSurfaceTestAssertView {
-  public abstract String actual();
+  public abstract String actualValueGetter();
 
-  public abstract String expected();
+  public abstract String expectedValueIdentifier();
 
   public static Builder newBuilder() {
     return new AutoValue_GapicSurfaceTestAssertView.Builder();
@@ -28,9 +28,9 @@ public abstract class GapicSurfaceTestAssertView {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder actual(String val);
+    public abstract Builder actualValueGetter(String val);
 
-    public abstract Builder expected(String val);
+    public abstract Builder expectedValueIdentifier(String val);
 
     public abstract GapicSurfaceTestAssertView build();
   }
