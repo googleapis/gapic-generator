@@ -33,11 +33,7 @@ import java.util.regex.Pattern;
  * structure (as constructed by FieldStructureParser).
  */
 public class InitCodeGenerator {
-  private List<InitCodeLine> initLineSpecs;
-
-  public InitCodeGenerator() {
-    initLineSpecs = new ArrayList<>();
-  }
+  private final List<InitCodeLine> initLineSpecs = new ArrayList<>();
 
   /**
    * Generates the InitCode for a method, where the input of the function representing the method

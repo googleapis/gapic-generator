@@ -24,7 +24,7 @@ import java.util.Set;
  * The index will keep increasing until an unused symbol is found.
  */
 public class SymbolTable {
-  private Set<String> symbolTable = new HashSet<>();
+  private final Set<String> symbolTable = new HashSet<>();
 
   public Name getNewSymbol(Name desiredName) {
     Name actualName = desiredName;

@@ -26,8 +26,8 @@ import java.util.HashMap;
  * populated fields and the sequence.
  */
 public class TestValueGenerator {
-  private HashMap<Name, String> valueTable = new HashMap<>();
-  private ValueProducer producer;
+  private final HashMap<Name, String> valueTable = new HashMap<>();
+  private final ValueProducer producer;
 
   public TestValueGenerator(ValueProducer producer) {
     this.producer = producer;

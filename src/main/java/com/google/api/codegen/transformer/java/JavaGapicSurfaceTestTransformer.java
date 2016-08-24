@@ -55,12 +55,11 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static String MOCK_SERVICE_FILE = "java/mock_service.snip";
   private static String MOCK_SERVICE_IMPL_FILE = "java/mock_service_impl.snip";
 
-  private GapicCodePathMapper pathMapper;
-  private TestValueGenerator valueGenerator;
+  private final GapicCodePathMapper pathMapper;
+  private final TestValueGenerator valueGenerator = new TestValueGenerator(new JavaValueProducer());
 
   public JavaGapicSurfaceTestTransformer(GapicCodePathMapper javaPathMapper) {
     this.pathMapper = javaPathMapper;
-    this.valueGenerator = new TestValueGenerator(new JavaValueProducer());
   }
 
   @Override
