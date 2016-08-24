@@ -25,6 +25,8 @@ import com.google.auto.value.AutoValue;
 
 import java.util.Collection;
 
+import javax.annotation.Nullable;
+
 /**
  * The context for transforming a method to a view model object.
  */
@@ -51,6 +53,7 @@ public abstract class MethodTransformerContext {
 
   public abstract Method getMethod();
 
+  @Nullable
   public abstract MethodConfig getMethodConfig();
 
   public Interface getTargetInterface() {
