@@ -61,7 +61,7 @@ public class PhpTypeTable implements TypeTable {
   }
 
   @Override
-  public TypeName getContainerTypeName(String containerFullName, String elementFullName) {
+  public TypeName getContainerTypeName(String containerFullName, String... elementFullNames) {
     return getTypeName(containerFullName);
   }
 

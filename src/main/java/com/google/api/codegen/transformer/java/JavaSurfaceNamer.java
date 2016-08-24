@@ -109,10 +109,14 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getAndSavePagedResponseTypeName(ModelTypeTable typeTable, TypeRef resourceType) {
-    String resourceTypeName = typeTable.getFullNameForElementType(resourceType);
+  public String getAndSavePagedResponseTypeName(
+      ModelTypeTable typeTable, TypeRef... parameterizedTypes) {
+    String[] typeList = new String[parameterizedTypes.length];
+    for (int i = 0; i < typeList.length; i++) {
+      typeList[i] = typeTable.getFullNameForElementType(parameterizedTypes[i]);
+    }
     return typeTable.getAndSaveNicknameForContainer(
-        "com.google.api.gax.core.PageAccessor", resourceTypeName);
+        "com.google.api.gax.core.PagedListResponse", typeList);
   }
 
   @Override

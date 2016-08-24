@@ -176,7 +176,13 @@ public class ApiMethodTransformer {
     methodViewBuilder.listMethod(
         ListMethodDetailView.newBuilder().resourceTypeName(resourceTypeName).build());
     methodViewBuilder.responseTypeName(
-        context.getNamer().getAndSavePagedResponseTypeName(context.getTypeTable(), resourceType));
+        context
+            .getNamer()
+            .getAndSavePagedResponseTypeName(
+                context.getTypeTable(),
+                context.getMethod().getInputType(),
+                context.getMethod().getOutputType(),
+                resourceType));
     methodViewBuilder.hasReturnValue(true);
   }
 

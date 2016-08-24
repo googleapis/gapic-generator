@@ -83,14 +83,24 @@ public class JavaTypeTable implements TypeTable {
   }
 
   @Override
-  public TypeName getContainerTypeName(String containerFullName, String elementFullName) {
+  public TypeName getContainerTypeName(String containerFullName, String... elementFullNames) {
     TypeName containerTypeName = getTypeName(containerFullName);
-    TypeName elementTypeName = getTypeName(elementFullName);
+    TypeName[] elementTypeNames = new TypeName[elementFullNames.length];
+    StringBuilder patternBuilder = new StringBuilder("%s<");
+    for (int i = 0; i < elementTypeNames.length; i++) {
+      elementTypeNames[i] = getTypeName(elementFullNames[i]);
+      if (i == 0) {
+        patternBuilder.append("%i");
+      } else {
+        patternBuilder.append(",%i");
+      }
+    }
+    patternBuilder.append(">");
     return new TypeName(
         containerTypeName.getFullName(),
         containerTypeName.getNickname(),
-        "%s<%i>",
-        elementTypeName);
+        patternBuilder.toString(),
+        elementTypeNames);
   }
 
   @Override

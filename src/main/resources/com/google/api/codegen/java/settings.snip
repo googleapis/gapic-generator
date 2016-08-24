@@ -212,6 +212,25 @@
               .build();
           }
           @@Override
+          public {@desc.requestTypeName} injectPageSize({@desc.requestTypeName} payload, int pageSize) {
+            @if desc.requestHasPageSize
+              return {@desc.requestTypeName}
+                .newBuilder(payload)
+                .{@desc.requestPageSizeSetFunction}(pageSize)
+                .build();
+            @else
+              throw new UnsupportedOperationException("page size is not supported by this API method");
+            @end
+          }
+          @@Override
+          public Integer extractPageSize({@desc.requestTypeName} payload) {
+            @if desc.requestHasPageSize
+              return payload.{@desc.requestPageSizeGetFunction}();
+            @else
+              throw new UnsupportedOperationException("page size is not supported by this API method");
+            @end
+          }
+          @@Override
           public Object extractNextToken({@desc.responseTypeName} payload) {
             return payload.{@desc.responseTokenGetFunction}();
           }

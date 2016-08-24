@@ -90,6 +90,14 @@ public class PageStreamingTransformer {
 
     desc.requestTokenSetFunction(
         namer.getFieldSetFunctionName(pageStreaming.getRequestTokenField()));
+    desc.requestPageSizeSetFunction(
+        pageStreaming.hasPageSizeField()
+            ? namer.getFieldSetFunctionName(pageStreaming.getPageSizeField())
+            : null);
+    desc.requestPageSizeGetFunction(
+        pageStreaming.hasPageSizeField()
+            ? namer.getFieldGetFunctionName(pageStreaming.getPageSizeField())
+            : null);
     desc.responseTokenGetFunction(
         namer.getFieldGetFunctionName(pageStreaming.getResponseTokenField()));
     desc.resourcesFieldGetFunction(
