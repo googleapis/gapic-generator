@@ -1,0 +1,81 @@
+@snippet generateFilename(service)
+  {@service.getSimpleName}Snippets.g.cs
+@end
+
+@snippet generateClass(service, body, imports)
+    // Copyright 2016 Google Inc. All Rights Reserved.
+    //
+    // Licensed under the Apache License, Version 2.0 (the "License");
+    // you may not use this file except in compliance with the License.
+    // You may obtain a copy of the License at
+    //
+    //     http://www.apache.org/licenses/LICENSE-2.0
+    //
+    // Unless required by applicable law or agreed to in writing, software
+    // distributed under the License is distributed on an "AS IS" BASIS,
+    // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    // See the License for the specific language governing permissions and
+    // limitations under the License.
+
+    // Generated code. DO NOT EDIT!
+
+    @join import : context.removeItem(imports, context.getNamespace(service.getFile))
+        using {@import};
+    @end
+
+    namespace {@context.getNamespace(service.getFile)}.Snippets
+    {
+        {@body}
+    }
+@end
+
+@snippet generateBody(service)
+    {@imports()}
+    public class {@service.getSimpleName}ClientSnippets
+    {
+        @join method : context.getMethodInfos(service)
+            @join flat : method.flats
+                {@asyncSnippet(service.getSimpleName, method, flat)}
+                
+                {@syncSnippet(service.getSimpleName, method, flat)}
+                
+            @end
+        @end
+    }
+
+@end
+
+@private imports() fill
+    {@context.addImport("System")}
+    {@context.addImport("System.Collections.Generic")}
+    {@context.addImport("System.Threading.Tasks")}
+@end
+
+@private asyncSnippet(name, method, flat)
+    public async Task {@method.name}Async()
+    {
+        // Snippet: {@method.name}Async({@flat.paramTypesList},CallSettings)
+        // Additional: {@method.name}Async({@flat.paramTypesList},CancellationToken)
+        {@name}Client client = await {@name}Client.CreateAsync();
+        @join param : flat.params
+            {@param.typeName} {@param.name} = {@param.emptyValue};
+        @end
+        {@method.syncReturnTypeName} response = await client.{@method.name}Async(
+            {@flat.paramNamesList});
+        // End snippet
+    }
+@end
+
+@private syncSnippet(name, method, flat)
+    public void {@method.name}()
+    {
+        // Snippet: {@method.name}({@flat.paramTypesList},CallSettings)
+        {@name}Client client = {@name}Client.Create();
+        @join param : flat.params
+            {@param.typeName} {@param.name} = {@param.emptyValue};
+        @end
+        {@method.syncReturnTypeName} response = client.{@method.name}(
+            {@flat.paramNamesList});
+        // End snippet
+    }
+@end
