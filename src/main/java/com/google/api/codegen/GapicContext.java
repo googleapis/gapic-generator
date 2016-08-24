@@ -130,6 +130,10 @@ public class GapicContext extends CodegenContext {
    */
   public List<Method> getNonStreamingMethodsV2(Interface service) {
     InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
+    if (interfaceConfig == null) {
+      throw new IllegalStateException(
+          "Service not configured in GAPIC config: " + service.getFullName());
+    }
     List<Method> methods = new ArrayList<>(interfaceConfig.getMethodConfigs().size());
     for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
       Method method = methodConfig.getMethod();

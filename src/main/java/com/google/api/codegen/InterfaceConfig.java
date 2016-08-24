@@ -20,6 +20,7 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -176,7 +177,7 @@ public class InterfaceConfig {
 
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
       Interface targetInterface =
-          RerouteLogic.getTargetInterface(iface, methodConfigProto.getRerouteToGrpcInterface());
+          getTargetInterface(iface, methodConfigProto.getRerouteToGrpcInterface());
       Method method = targetInterface.lookupMethod(methodConfigProto.getName());
       if (method == null) {
         diagCollector.addDiag(
@@ -263,5 +264,23 @@ public class InterfaceConfig {
 
   public ImmutableMap<String, RetrySettings> getRetrySettingsDefinition() {
     return retrySettingsDefinition;
+  }
+
+  /**
+   * If rerouteToGrpcInterface is set, then looks up that interface and returns it, otherwise
+   * returns the value of defaultInterface.
+   */
+  public static Interface getTargetInterface(
+      Interface defaultInterface, String rerouteToGrpcInterface) {
+    Interface targetInterface = defaultInterface;
+    if (!Strings.isNullOrEmpty(rerouteToGrpcInterface)) {
+      targetInterface =
+          defaultInterface.getModel().getSymbolTable().lookupInterface(rerouteToGrpcInterface);
+      if (targetInterface == null) {
+        throw new IllegalArgumentException(
+            "reroute_to_grpc_interface not found: " + rerouteToGrpcInterface);
+      }
+    }
+    return targetInterface;
   }
 }

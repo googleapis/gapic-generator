@@ -49,7 +49,6 @@ import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +84,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     return views;
   }
 
-  public Iterable<Interface> getGrpcInterfacesToMock(Model model, ApiConfig apiConfig) {
+  private Iterable<Interface> getGrpcInterfacesToMock(Model model, ApiConfig apiConfig) {
     Map<String, Interface> interfaces = new LinkedHashMap<>();
 
     for (Interface service : new InterfaceView().getElementIterable(model)) {
@@ -130,10 +129,9 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("org.junit.BeforeClass");
     typeTable.saveNicknameFor("org.junit.Test");
     typeTable.saveNicknameFor("java.io.IOException");
-    typeTable.saveNicknameFor("java.util.Arrays");
-    typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("java.util.ArrayList");
     typeTable.saveNicknameFor("java.util.Arrays");
+    typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("com.google.api.gax.testing.MockServiceHelper");
     typeTable.saveNicknameFor("com.google.api.gax.testing.MockGrpcService");
     typeTable.saveNicknameFor("com.google.api.gax.core.PageAccessor");
