@@ -17,7 +17,6 @@ package com.google.api.codegen.viewmodel.testing;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.auto.value.AutoValue;
-
 import java.util.List;
 
 @AutoValue
@@ -42,7 +41,9 @@ public abstract class GapicSurfaceTestCaseView {
 
   public abstract InitCodeView initCode();
 
-  public abstract List<GapicSurfaceTestAssertView> asserts();
+  public abstract List<GapicSurfaceTestAssertView> requestAsserts();
+
+  public abstract List<GapicSurfaceTestAssertView> responseAsserts();
 
   public static Builder newBuilder() {
     return new AutoValue_GapicSurfaceTestCaseView.Builder();
@@ -68,7 +69,9 @@ public abstract class GapicSurfaceTestCaseView {
 
     public abstract Builder initCode(InitCodeView val);
 
-    public abstract Builder asserts(List<GapicSurfaceTestAssertView> val);
+    public abstract Builder requestAsserts(List<GapicSurfaceTestAssertView> val);
+
+    public abstract Builder responseAsserts(List<GapicSurfaceTestAssertView> val);
 
     public abstract Builder mockResponse(MockGrpcResponseView val);
 

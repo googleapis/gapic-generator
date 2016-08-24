@@ -46,7 +46,6 @@ import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -115,7 +114,7 @@ public class InitCodeTransformer {
         .build();
   }
 
-  public List<GapicSurfaceTestAssertView> generateTestAssertViews(
+  public List<GapicSurfaceTestAssertView> generateRequestAssertViews(
       MethodTransformerContext context, Iterable<Field> fields) {
     Map<String, Object> initFieldStructure = createSampleInitFieldStructure(context);
     InitCodeGenerator generator = new InitCodeGenerator();
@@ -133,12 +132,17 @@ public class InitCodeTransformer {
     for (FieldSetting fieldSetting : initCode.getArgFields()) {
       String getterMethod =
           namer.getFieldGetFunctionName(fieldSetting.getType(), fieldSetting.getIdentifier());
-      String actualValueIdentifier =
-          namer.methodCall("actualRequest", getterMethod, new ArrayList<String>());
       String expectedValueIdentifier =
           namer.getVariableName(fieldSetting.getIdentifier(), fieldSetting.getInitValueConfig());
-      assertViews.add(createAssertView(expectedValueIdentifier, actualValueIdentifier));
+      assertViews.add(createAssertView(expectedValueIdentifier, getterMethod));
     }
+    return assertViews;
+  }
+
+  public List<GapicSurfaceTestAssertView> generateResponseAssertViews(
+      MethodTransformerContext context) {
+    List<GapicSurfaceTestAssertView> assertViews = new ArrayList<>();
+    SurfaceNamer namer = context.getNamer();
 
     // Add response fields checking
     if (!context.getMethodConfig().isPageStreaming()) {
@@ -146,11 +150,7 @@ public class InitCodeTransformer {
         if (field.getType().isPrimitive()) {
           String getterMethod =
               namer.getFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
-          String actualValueIdentifier =
-              namer.methodCall("actualResponse", getterMethod, new ArrayList<String>());
-          String expectedValueIdentifier =
-              namer.methodCall("expectedResponse", getterMethod, new ArrayList<String>());
-          assertViews.add(createAssertView(expectedValueIdentifier, actualValueIdentifier));
+          assertViews.add(createAssertView(getterMethod, getterMethod));
         }
       }
     }

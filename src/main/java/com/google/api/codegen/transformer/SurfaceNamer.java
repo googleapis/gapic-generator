@@ -469,9 +469,4 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getMockGrpcServiceImplName(Interface service) {
     return className(Name.upperCamel("Mock", service.getSimpleName(), "Impl"));
   }
-
-  /** The method call string which combines the given the callee and the called method name */
-  public String methodCall(String callee, String method, List<String> params) {
-    return callee + "." + method + "(" + Joiner.on(", ").join(params) + ")";
-  }
 }

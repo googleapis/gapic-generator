@@ -43,7 +43,6 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -204,11 +203,13 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
     String requestTypeName =
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
-
     String responseTypeName =
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
-    List<GapicSurfaceTestAssertView> assertViews =
-        initCodeTransformer.generateTestAssertViews(methodContext, paramFields);
+
+    List<GapicSurfaceTestAssertView> requestAssertViews =
+        initCodeTransformer.generateRequestAssertViews(methodContext, paramFields);
+    List<GapicSurfaceTestAssertView> responseAssertViews =
+        initCodeTransformer.generateResponseAssertViews(methodContext);
 
     return GapicSurfaceTestCaseView.newBuilder()
         .name(getTestName(testNameTable, namer, method))
@@ -220,7 +221,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .methodType(type)
         .resourceTypeName(resourceTypeName)
         .resourcesFieldGetterName(resourcesFieldGetterName)
-        .asserts(assertViews)
+        .requestAsserts(requestAssertViews)
+        .responseAsserts(responseAssertViews)
         .mockResponse(createMockResponseView(methodContext, initSymbolTable))
         .build();
   }
