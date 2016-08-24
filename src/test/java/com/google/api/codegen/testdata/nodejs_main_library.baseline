@@ -277,19 +277,41 @@ LibraryServiceApi.matchBookFromArchivedBookName =
  *   Null if API succeeds.
  */
 
+// externals
+
+/**
+ * @external "gax.CallOptions"
+ * @see https://googleapis.github.io/gax-nodejs/CallOptions.html
+ */
+
+/**
+ * @external "gax.constructSettings"
+ * @see https://googleapis.github.io/gax-nodejs/global.html#constructSettings
+ */
+
+/**
+ * @external "gax.EventEmitter"
+ * @see https://googleapis.github.io/gax-nodejs/EventEmitter.html
+ */
+
+/**
+ * @external "gax.BundleEventEmitter"
+ * @see https://googleapis.github.io/gax-nodejs/BundleEventEmitter.html
+ */
+
 // Service calls
 
 /**
  * Creates a shelf, and returns the new Shelf.
  *
- * @param {google.example.library.v1.Shelf} shelf
+ * @param {Shelf} shelf
  *   The shelf to create.
- * @param {gax.CallOptions=} options
+ * @param {external:"gax.CallOptions"=} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
- * @param {APICallback<google.example.library.v1.Shelf>=} callback
+ * @param {APICallback<Shelf>=} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.EventEmitter} - the event emitter to handle the call
+ * @returns {external:"gax.EventEmitter"} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
  */
@@ -313,15 +335,15 @@ LibraryServiceApi.prototype.createShelf = function createShelf() {
  * @param {String} options_
  *   To test 'options' parameter name conflict.
  * @param {Object=} otherArgs
- * @param {google.example.library.v1.SomeMessage=} otherArgs.message
+ * @param {SomeMessage=} otherArgs.message
  *   Field to verify that message-type query parameter gets flattened.
- * @param {google.example.library.v1.StringBuilder=} otherArgs.stringBuilder
- * @param {gax.CallOptions=} options
+ * @param {StringBuilder=} otherArgs.stringBuilder
+ * @param {external:"gax.CallOptions"=} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
- * @param {APICallback<google.example.library.v1.Shelf>=} callback
+ * @param {APICallback<Shelf>=} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.EventEmitter} - the event emitter to handle the call
+ * @returns {external:"gax.EventEmitter"} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
  */
@@ -349,11 +371,11 @@ LibraryServiceApi.prototype.getShelf = function getShelf() {
 /**
  * Lists shelves.
  *
- * @param {gax.CallOptions=} options
+ * @param {external:"gax.CallOptions"=} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
- * @returns {Stream<google.example.library.v1.Shelf>}
- *   An object stream. By default, this emits google.example.library.v1.Shelf
+ * @returns {Stream}
+ *   An object stream. By default, this emits {@link Shelf}
  *   instances on 'data' event. This object can also be configured to emit
  *   pages of the responses through the options parameter.
  * @throws an error if the RPC is aborted.
@@ -373,12 +395,12 @@ LibraryServiceApi.prototype.listShelves = function listShelves() {
  *
  * @param {String} name
  *   The name of the shelf to delete.
- * @param {gax.CallOptions=} options
+ * @param {external:"gax.CallOptions"=} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
  * @param {EmptyCallback=} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.EventEmitter} - the event emitter to handle the call
+ * @returns {external:"gax.EventEmitter"} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
  */
@@ -403,12 +425,12 @@ LibraryServiceApi.prototype.deleteShelf = function deleteShelf() {
  *   The name of the shelf we're adding books to.
  * @param {String} otherShelfName
  *   The name of the shelf we're removing books from and deleting.
- * @param {gax.CallOptions=} options
+ * @param {external:"gax.CallOptions"=} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
- * @param {APICallback<google.example.library.v1.Shelf>=} callback
+ * @param {APICallback<Shelf>=} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.EventEmitter} - the event emitter to handle the call
+ * @returns {external:"gax.EventEmitter"} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
  */
@@ -431,14 +453,14 @@ LibraryServiceApi.prototype.mergeShelves = function mergeShelves() {
  *
  * @param {String} name
  *   The name of the shelf in which the book is created.
- * @param {google.example.library.v1.Book} book
+ * @param {Book} book
  *   The book to create.
- * @param {gax.CallOptions=} options
+ * @param {external:"gax.CallOptions"=} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
- * @param {APICallback<google.example.library.v1.Book>=} callback
+ * @param {APICallback<Book>=} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.EventEmitter} - the event emitter to handle the call
+ * @returns {external:"gax.EventEmitter"} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
  */
@@ -459,19 +481,19 @@ LibraryServiceApi.prototype.createBook = function createBook() {
 /**
  * Creates a series of books.
  *
- * @param {google.example.library.v1.Shelf} shelf
+ * @param {Shelf} shelf
  *   The shelf in which the series is created.
- * @param {google.example.library.v1.Book[]} books
+ * @param {Book[]} books
  *   The books to publish in the series.
  * @param {Object=} otherArgs
  * @param {number=} otherArgs.edition
  *   The edition of the series
- * @param {gax.CallOptions=} options
+ * @param {external:"gax.CallOptions"=} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
- * @param {APICallback<google.example.library.v1.PublishSeriesResponse>=} callback
+ * @param {APICallback<PublishSeriesResponse>=} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.BundleEventEmitter} - the event emitter to handle the call
+ * @returns {external:"gax.BundleEventEmitter"} - the event emitter to handle the call
  *   status. When isBundling: false is specified in the options, it still returns
  *   a gax.BundleEventEmitter but the API is immediately invoked, so it behaves same
  *   as a gax.EventEmitter does.
@@ -500,12 +522,12 @@ LibraryServiceApi.prototype.publishSeries = function publishSeries() {
  *
  * @param {String} name
  *   The name of the book to retrieve.
- * @param {gax.CallOptions=} options
+ * @param {external:"gax.CallOptions"=} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
- * @param {APICallback<google.example.library.v1.Book>=} callback
+ * @param {APICallback<Book>=} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.EventEmitter} - the event emitter to handle the call
+ * @returns {external:"gax.EventEmitter"} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
  */
@@ -535,11 +557,11 @@ LibraryServiceApi.prototype.getBook = function getBook() {
  *   resources in a page.
  * @param {String=} otherArgs.filter
  *   To test python built-in wrapping.
- * @param {gax.CallOptions=} options
+ * @param {external:"gax.CallOptions"=} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
- * @returns {Stream<google.example.library.v1.Book>}
- *   An object stream. By default, this emits google.example.library.v1.Book
+ * @returns {Stream}
+ *   An object stream. By default, this emits {@link Book}
  *   instances on 'data' event. This object can also be configured to emit
  *   pages of the responses through the options parameter.
  * @throws an error if the RPC is aborted.
@@ -568,12 +590,12 @@ LibraryServiceApi.prototype.listBooks = function listBooks() {
  *
  * @param {String} name
  *   The name of the book to delete.
- * @param {gax.CallOptions=} options
+ * @param {external:"gax.CallOptions"=} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
  * @param {EmptyCallback=} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.EventEmitter} - the event emitter to handle the call
+ * @returns {external:"gax.EventEmitter"} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
  */
@@ -594,19 +616,19 @@ LibraryServiceApi.prototype.deleteBook = function deleteBook() {
  *
  * @param {String} name
  *   The name of the book to update.
- * @param {google.example.library.v1.Book} book
+ * @param {Book} book
  *   The book to update with.
  * @param {Object=} otherArgs
- * @param {google.protobuf.FieldMask=} otherArgs.updateMask
+ * @param {external:"google.protobuf.FieldMask"=} otherArgs.updateMask
  *   A field mask to apply, rendered as an HTTP parameter.
- * @param {google.example.library.v1.FieldMask=} otherArgs.physicalMask
+ * @param {FieldMask=} otherArgs.physicalMask
  *   To test Python import clash resolution.
- * @param {gax.CallOptions=} options
+ * @param {external:"gax.CallOptions"=} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
- * @param {APICallback<google.example.library.v1.Book>=} callback
+ * @param {APICallback<Book>=} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.EventEmitter} - the event emitter to handle the call
+ * @returns {external:"gax.EventEmitter"} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
  */
@@ -638,12 +660,12 @@ LibraryServiceApi.prototype.updateBook = function updateBook() {
  *   The name of the book to move.
  * @param {String} otherShelfName
  *   The name of the destination shelf.
- * @param {gax.CallOptions=} options
+ * @param {external:"gax.CallOptions"=} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
- * @param {APICallback<google.example.library.v1.Book>=} callback
+ * @param {APICallback<Book>=} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.EventEmitter} - the event emitter to handle the call
+ * @returns {external:"gax.EventEmitter"} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
  */
@@ -672,10 +694,10 @@ LibraryServiceApi.prototype.moveBook = function moveBook() {
  *   parameter does not affect the return value. If page streaming is
  *   performed per-page, this determines the maximum number of
  *   resources in a page.
- * @param {gax.CallOptions=} options
+ * @param {external:"gax.CallOptions"=} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
- * @returns {Stream<String>}
+ * @returns {Stream}
  *   An object stream. By default, this emits String
  *   instances on 'data' event. This object can also be configured to emit
  *   pages of the responses through the options parameter.
@@ -702,13 +724,13 @@ LibraryServiceApi.prototype.listStrings = function listStrings() {
  * Adds comments to a book
  *
  * @param {String} name
- * @param {google.example.library.v1.Comment[]} comments
- * @param {gax.CallOptions=} options
+ * @param {Comment[]} comments
+ * @param {external:"gax.CallOptions"=} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
  * @param {EmptyCallback=} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.EventEmitter} - the event emitter to handle the call
+ * @returns {external:"gax.EventEmitter"} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
  */
@@ -731,12 +753,12 @@ LibraryServiceApi.prototype.addComments = function addComments() {
  *
  * @param {String} name
  *   The name of the book to retrieve.
- * @param {gax.CallOptions=} options
+ * @param {external:"gax.CallOptions"=} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
- * @param {APICallback<google.example.library.v1.Book>=} callback
+ * @param {APICallback<Book>=} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.EventEmitter} - the event emitter to handle the call
+ * @returns {external:"gax.EventEmitter"} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
  */
@@ -761,12 +783,12 @@ LibraryServiceApi.prototype.getBookFromArchive = function getBookFromArchive() {
  *   The name of the index for the book
  * @param {Object} indexMap
  *   The index to update the book with
- * @param {gax.CallOptions=} options
+ * @param {external:"gax.CallOptions"=} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
  * @param {EmptyCallback=} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.EventEmitter} - the event emitter to handle the call
+ * @returns {external:"gax.EventEmitter"} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
  */
@@ -795,12 +817,12 @@ LibraryServiceApi.prototype.updateBookIndex = function updateBookIndex() {
  *   projects/{project}/zones/{zone}/disks/{disk}.
  * @param {String} tag
  *   REQUIRED: The tag to add.
- * @param {gax.CallOptions=} options
+ * @param {external:"gax.CallOptions"=} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
- * @param {APICallback<google.tagger.v1.AddTagResponse>=} callback
+ * @param {APICallback<external:"google.tagger.v1.AddTagResponse">=} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.EventEmitter} - the event emitter to handle the call
+ * @returns {external:"gax.EventEmitter"} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
  */
@@ -841,7 +863,7 @@ function LibraryServiceApiBuilder(gaxGrpc) {
    *   A ClientCredentials for use with an SSL-enabled channel.
    * @param {Object=} opts.clientConfig
    *   The customized config to build the call settings. See
-   *   {@link gax.constructSettings} for the format.
+   *   {@link external:"gax.constructSettings"} for the format.
    * @param {number=} opts.timeout
    *   The default timeout, in seconds, for calls made through this client.
    * @param {number=} opts.appName
