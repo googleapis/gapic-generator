@@ -16,10 +16,12 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.LanguageUtil;
+import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.metacode.FieldSetting;
 import com.google.api.codegen.metacode.FieldStructureParser;
 import com.google.api.codegen.metacode.InitCode;
 import com.google.api.codegen.metacode.InitCodeGenerator;
+import com.google.api.codegen.metacode.InitCodeGeneratorContext;
 import com.google.api.codegen.metacode.InitCodeLine;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.metacode.ListInitCodeLine;
@@ -27,6 +29,8 @@ import com.google.api.codegen.metacode.MapInitCodeLine;
 import com.google.api.codegen.metacode.SimpleInitCodeLine;
 import com.google.api.codegen.metacode.StructureInitCodeLine;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.FieldSettingView;
 import com.google.api.codegen.viewmodel.FormattedInitValueView;
 import com.google.api.codegen.viewmodel.InitCodeLineView;
@@ -52,27 +56,53 @@ import java.util.Map;
  */
 public class InitCodeTransformer {
 
-  public InitCodeView generateInitCode(MethodTransformerContext context, Iterable<Field> fields) {
-    Map<String, Object> initFieldStructure = createInitFieldStructure(context);
+  public InitCodeView generateInitCode(
+      MethodTransformerContext context,
+      Iterable<Field> fields,
+      SymbolTable table,
+      TestValueGenerator valueGenerator) {
+    Map<String, Object> initFieldStructure = createSampleInitFieldStructure(context);
+    InitCodeGeneratorContext initCodeContext =
+        InitCodeGeneratorContext.newBuilder()
+            .symbolTable(table)
+            .valueGenerator(valueGenerator)
+            .initStructure(initFieldStructure)
+            .method(context.getMethod())
+            .build();
     InitCodeGenerator generator = new InitCodeGenerator();
-    InitCode initCode =
-        generator.generateRequestFieldInitCode(context.getMethod(), initFieldStructure, fields);
+    InitCode initCode = generator.generateRequestFieldInitCode(initCodeContext, fields);
 
     return buildInitCodeView(context, initCode);
   }
 
-  public InitCodeView generateRequestObjectInitCode(MethodTransformerContext context) {
-    Map<String, Object> initFieldStructure = createInitFieldStructure(context);
+  public InitCodeView generateRequestObjectInitCode(
+      MethodTransformerContext context, SymbolTable table, TestValueGenerator valueGenerator) {
+    Map<String, Object> initFieldStructure = createSampleInitFieldStructure(context);
+    InitCodeGeneratorContext initCodeContext =
+        InitCodeGeneratorContext.newBuilder()
+            .symbolTable(table)
+            .valueGenerator(valueGenerator)
+            .initStructure(initFieldStructure)
+            .method(context.getMethod())
+            .build();
     InitCodeGenerator generator = new InitCodeGenerator();
-    InitCode initCode =
-        generator.generateRequestObjectInitCode(context.getMethod(), initFieldStructure);
+    InitCode initCode = generator.generateRequestObjectInitCode(initCodeContext);
 
     return buildInitCodeView(context, initCode);
   }
 
-  public InitCodeView generateMockResponseObjectInitCode(MethodTransformerContext context) {
+  public InitCodeView generateMockResponseObjectInitCode(
+      MethodTransformerContext context, SymbolTable table, TestValueGenerator valueGenerator) {
+    Map<String, Object> initFieldStructure = createMockResponseInitFieldStructure(context);
+    InitCodeGeneratorContext initCodeContext =
+        InitCodeGeneratorContext.newBuilder()
+            .symbolTable(table)
+            .valueGenerator(valueGenerator)
+            .initStructure(initFieldStructure)
+            .method(context.getMethod())
+            .build();
     InitCodeGenerator generator = new InitCodeGenerator();
-    InitCode initCode = generator.generateMockResponseObjectInitCode(context.getMethod());
+    InitCode initCode = generator.generateMockResponseObjectInitCode(initCodeContext);
 
     return buildInitCodeView(context, initCode);
   }
@@ -84,48 +114,75 @@ public class InitCodeTransformer {
         .build();
   }
 
-  public List<GapicSurfaceTestAssertView> generateTestAssertViews(
+  public List<GapicSurfaceTestAssertView> generateRequestAssertViews(
       MethodTransformerContext context, Iterable<Field> fields) {
-    List<GapicSurfaceTestAssertView> assertViews = new ArrayList<>();
-    Map<String, Object> initFieldStructure = createInitFieldStructure(context);
+    Map<String, Object> initFieldStructure = createSampleInitFieldStructure(context);
     InitCodeGenerator generator = new InitCodeGenerator();
+    InitCodeGeneratorContext initCodeContext =
+        InitCodeGeneratorContext.newBuilder()
+            .symbolTable(new SymbolTable())
+            .initStructure(initFieldStructure)
+            .method(context.getMethod())
+            .build();
+    InitCode initCode = generator.generateRequestFieldInitCode(initCodeContext, fields);
 
-    InitCode initCode =
-        generator.generateRequestFieldInitCode(context.getMethod(), initFieldStructure, fields);
-
+    List<GapicSurfaceTestAssertView> assertViews = new ArrayList<>();
+    SurfaceNamer namer = context.getNamer();
+    // Add request fields checking
     for (FieldSetting fieldSetting : initCode.getArgFields()) {
-      SurfaceNamer namer = context.getNamer();
-      GapicSurfaceTestAssertView assertView =
-          GapicSurfaceTestAssertView.newBuilder()
-              .expectedValueIdentifier(
-                  namer.getVariableName(
-                      fieldSetting.getIdentifier(), fieldSetting.getInitValueConfig()))
-              .actualValueGetter(
-                  namer.getGetFunctionCallName(
-                      fieldSetting.getIdentifier(), fieldSetting.getType()))
-              .build();
-      assertViews.add(assertView);
+      String getterMethod =
+          namer.getFieldGetFunctionName(fieldSetting.getType(), fieldSetting.getIdentifier());
+      String expectedValueIdentifier =
+          namer.getVariableName(fieldSetting.getIdentifier(), fieldSetting.getInitValueConfig());
+      assertViews.add(createAssertView(expectedValueIdentifier, getterMethod));
     }
-
     return assertViews;
   }
 
-  public Map<String, Object> createInitFieldStructure(MethodTransformerContext context) {
+  private GapicSurfaceTestAssertView createAssertView(String expected, String actual) {
+    return GapicSurfaceTestAssertView.newBuilder()
+        .expectedValueIdentifier(expected)
+        .actualValueGetter(actual)
+        .build();
+  }
+
+  private Map<String, Object> createSampleInitFieldStructure(MethodTransformerContext context) {
+    Map<String, Object> initFieldStructure =
+        FieldStructureParser.parseFields(
+            context.getMethodConfig().getSampleCodeInitFields(), createInitValueMap(context));
+    return initFieldStructure;
+  }
+
+  private Map<String, Object> createMockResponseInitFieldStructure(
+      MethodTransformerContext context) {
+    ArrayList<String> fields = new ArrayList<>();
+    for (Field field : context.getMethod().getOutputMessage().getFields()) {
+      if (field.getType().isPrimitive()) {
+        fields.add(field.getSimpleName());
+      }
+    }
+    if (context.getMethodConfig().isPageStreaming()) {
+      PageStreamingConfig config = context.getMethodConfig().getPageStreaming();
+      fields.add(config.getResourcesField().getSimpleName() + "[0]");
+    }
+    Map<String, Object> initFieldStructure =
+        FieldStructureParser.parseFields(fields, createInitValueMap(context));
+    return initFieldStructure;
+  }
+
+  private ImmutableMap<String, InitValueConfig> createInitValueMap(
+      MethodTransformerContext context) {
     Map<String, String> fieldNamePatterns = context.getMethodConfig().getFieldNamePatterns();
-    ImmutableMap.Builder<String, InitValueConfig> initValueConfigMap = ImmutableMap.builder();
+    ImmutableMap.Builder<String, InitValueConfig> mapBuilder = ImmutableMap.builder();
     for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
       CollectionConfig collectionConfig = context.getCollectionConfig(fieldNamePattern.getValue());
       String apiWrapperClassName =
           context.getNamer().getApiWrapperClassName(context.getInterface());
       InitValueConfig initValueConfig =
           InitValueConfig.create(apiWrapperClassName, collectionConfig);
-      initValueConfigMap.put(fieldNamePattern.getKey(), initValueConfig);
+      mapBuilder.put(fieldNamePattern.getKey(), initValueConfig);
     }
-
-    Map<String, Object> initFieldStructure =
-        FieldStructureParser.parseFields(
-            context.getMethodConfig().getSampleCodeInitFields(), initValueConfigMap.build());
-    return initFieldStructure;
+    return mapBuilder.build();
   }
 
   private List<InitCodeLineView> generateSurfaceInitCodeLines(

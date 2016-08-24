@@ -19,6 +19,7 @@ import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.CallableMethodDetailView;
@@ -183,7 +184,8 @@ public class ApiMethodTransformer {
       ImmutableList<Field> fields,
       StaticLangApiMethodView.Builder methodViewBuilder) {
     SurfaceNamer namer = context.getNamer();
-    methodViewBuilder.initCode(initCodeTransformer.generateInitCode(context, fields));
+    methodViewBuilder.initCode(
+        initCodeTransformer.generateInitCode(context, fields, new SymbolTable(), null));
     methodViewBuilder.doc(
         ApiMethodDocView.newBuilder()
             .mainDocLines(namer.getDocLines(context.getMethod()))
@@ -214,7 +216,8 @@ public class ApiMethodTransformer {
                     getRequestObjectParamDoc(context, context.getMethod().getInputType())))
             .throwsDocLines(namer.getThrowsDocLines())
             .build());
-    methodViewBuilder.initCode(initCodeTransformer.generateRequestObjectInitCode(context));
+    methodViewBuilder.initCode(
+        initCodeTransformer.generateRequestObjectInitCode(context, new SymbolTable(), null));
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
@@ -239,7 +242,8 @@ public class ApiMethodTransformer {
             .paramDocs(new ArrayList<ParamDocView>())
             .throwsDocLines(new ArrayList<String>())
             .build());
-    methodViewBuilder.initCode(initCodeTransformer.generateRequestObjectInitCode(context));
+    methodViewBuilder.initCode(
+        initCodeTransformer.generateRequestObjectInitCode(context, new SymbolTable(), null));
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
@@ -313,7 +317,7 @@ public class ApiMethodTransformer {
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
     apiMethod.initCode(
         initCodeTransformer.generateInitCode(
-            context, context.getMethodConfig().getRequiredFields()));
+            context, context.getMethodConfig().getRequiredFields(), new SymbolTable(), null));
 
     apiMethod.doc(generateOptionalArrayMethodDoc(context));
 
