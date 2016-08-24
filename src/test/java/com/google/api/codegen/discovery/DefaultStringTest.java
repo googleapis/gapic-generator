@@ -23,6 +23,21 @@ import java.util.Map;
 
 public class DefaultStringTest {
   @Test
+  public void testOf() {
+    DefaultString def = DefaultString.of("compute", "zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
+    Truth.assertThat(def.getDeclare()).isEqualTo("{MY-ZONE}");
+    Truth.assertThat(def.getComment()).isEqualTo("us-central1-f");
+
+    def = DefaultString.of("pubsub", "project", "^projects/[^/]*$");
+    Truth.assertThat(def.getDeclare()).isEqualTo("projects/{MY-PROJECT}");
+    Truth.assertThat(def.getComment()).isNull();
+
+    def = DefaultString.of("foo", "bar", null);
+    Truth.assertThat(def.getDeclare()).isEqualTo("{MY-BAR}");
+    Truth.assertThat(def.getComment()).isNull();
+  }
+
+  @Test
   public void testInvalidPattern() {
     String[] invalid =
         new String[] {

@@ -7,15 +7,20 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var sqladmin = google.sqladmin('v1beta4');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -24,26 +29,138 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the project that contains the instance.
-    project: "",
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
 
-    // * Cloud SQL instance ID. This does not include the project ID.
-    instance: "",
+    // The ID of the Backup Run to delete. To find a Backup Run ID, use the list method.
+    id: '', // TODO: Update placeholder value(s).
 
-    // * The ID of the Backup Run to delete. To find a Backup Run ID, use the list method.
-    id: '',
-
-    // Auth client
     auth: authClient
   };
 
-  sqladmin.backupRuns.delete(request, function(err, result) {
+  sqladmin.backupRuns.delete(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    // The ID of this Backup Run.
+    id: '', // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  sqladmin.backupRuns.get(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  sqladmin.backupRuns.list(request, function handlePage(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var itemsPage = response['items'];
+    if (!itemsPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < itemsPage.length; i++) {
+      // TODO: Use itemsPage
+      console.log(JSON.stringify(itemsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      sqladmin.backupRuns.list(request, handlePage);
     }
   });
 });
@@ -55,15 +172,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var sqladmin = google.sqladmin('v1beta4');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -72,26 +194,753 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the project that contains the instance.
-    project: "",
+    // Database instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
 
-    // * Cloud SQL instance ID. This does not include the project ID.
-    instance: "",
+    // Name of the database to be deleted in the instance.
+    database: "{MY-DATABASE}", // TODO: Update placeholder value(s).
 
-    // * The ID of this Backup Run.
-    id: '',
-
-    // Auth client
     auth: authClient
   };
 
-  sqladmin.backupRuns.get(request, function(err, result) {
+  sqladmin.databases.delete(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Database instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    // Name of the database in the instance.
+    database: "{MY-DATABASE}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  sqladmin.databases.get(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Database instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  sqladmin.databases.insert(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the project for which to list Cloud SQL instances.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  sqladmin.databases.list(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Database instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    // Name of the database to be updated in the instance.
+    database: "{MY-DATABASE}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties to be changed.
+    },
+
+    auth: authClient
+  };
+
+  sqladmin.databases.patch(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Database instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    // Name of the database to be updated in the instance.
+    database: "{MY-DATABASE}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  sqladmin.databases.update(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+
+    auth: authClient
+  };
+
+  sqladmin.flags.list(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the source as well as the clone Cloud SQL instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  sqladmin.instances.clone(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the project that contains the instance to be deleted.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  sqladmin.instances.delete(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the project that contains the instance to be exported.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  sqladmin.instances.export(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // ID of the project that contains the read replica.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  sqladmin.instances.failover(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Database instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  sqladmin.instances.get(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  sqladmin.instances.import(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the project to which the newly created Cloud SQL instances should belong.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  sqladmin.instances.insert(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the project for which to list Cloud SQL instances.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  sqladmin.instances.list(request, function handlePage(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var itemsPage = response['items'];
+    if (!itemsPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < itemsPage.length; i++) {
+      // TODO: Use itemsPage
+      console.log(JSON.stringify(itemsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      sqladmin.instances.list(request, handlePage);
     }
   });
 });
@@ -103,15 +952,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var sqladmin = google.sqladmin('v1beta4');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -120,32 +974,28 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the project that contains the instance.
-    project: "",
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
 
-    // * Cloud SQL instance ID. This does not include the project ID.
-    instance: "",
+    resource: {
+      // TODO: Add the desired properties to be changed.
+    },
 
-    // Auth client
     auth: authClient
   };
 
-
-  var recur = function(err, result) {
+  sqladmin.instances.patch(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        sqladmin.backupRuns.list(request, recur);
-      }
+      return;
     }
-  };
 
-  sqladmin.backupRuns.list(request, recur);
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
 });
 // BEFORE RUNNING:
 // ---------------
@@ -155,15 +1005,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var sqladmin = google.sqladmin('v1beta4');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -172,26 +1027,434 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // ID of the project that contains the read replica.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the project that contains the instance.
-    project: "",
+    // Cloud SQL read replica instance name.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
 
-    // * Database instance ID. This does not include the project ID.
-    instance: "",
-
-    // * Name of the database to be deleted in the instance.
-    database: "",
-
-    // Auth client
     auth: authClient
   };
 
-  sqladmin.databases.delete(request, function(err, result) {
+  sqladmin.instances.promoteReplica(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  sqladmin.instances.resetSslConfig(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the project that contains the instance to be restarted.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  sqladmin.instances.restart(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  sqladmin.instances.restoreBackup(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // ID of the project that contains the read replica.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Cloud SQL read replica instance name.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  sqladmin.instances.startReplica(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // ID of the project that contains the read replica.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Cloud SQL read replica instance name.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  sqladmin.instances.stopReplica(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  sqladmin.instances.update(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Instance operation ID.
+    operation: "{MY-OPERATION}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  sqladmin.operations.get(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var sqladmin = google.sqladmin('v1beta4');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  sqladmin.operations.list(request, function handlePage(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var itemsPage = response['items'];
+    if (!itemsPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < itemsPage.length; i++) {
+      // TODO: Use itemsPage
+      console.log(JSON.stringify(itemsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      sqladmin.operations.list(request, handlePage);
     }
   });
 });
@@ -203,15 +1466,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var sqladmin = google.sqladmin('v1beta4');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -220,27 +1488,27 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // Project ID of the Cloud SQL project.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the project that contains the instance.
-    project: "",
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
 
-    // * Database instance ID. This does not include the project ID.
-    instance: "",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    // * Name of the database in the instance.
-    database: "",
-
-    // Auth client
     auth: authClient
   };
 
-  sqladmin.databases.get(request, function(err, result) {
+  sqladmin.sslCerts.createEphemeral(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -251,15 +1519,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var sqladmin = google.sqladmin('v1beta4');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -268,26 +1541,26 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+    // Project ID of the project that contains the instance to be deleted.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the project that contains the instance.
-    project: "",
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
 
-    // * Database instance ID. This does not include the project ID.
-    instance: "",
+    // Sha1 FingerPrint.
+    sha1Fingerprint: "{MY-SHA1-FINGERPRINT}", // TODO: Update placeholder value(s).
 
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  sqladmin.databases.insert(request, function(err, result) {
+  sqladmin.sslCerts.delete(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -298,15 +1571,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var sqladmin = google.sqladmin('v1beta4');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -315,24 +1593,26 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the project for which to list Cloud SQL instances.
-    project: "",
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
 
-    // * Cloud SQL instance ID. This does not include the project ID.
-    instance: "",
+    // Sha1 FingerPrint.
+    sha1Fingerprint: "{MY-SHA1-FINGERPRINT}", // TODO: Update placeholder value(s).
 
-    // Auth client
     auth: authClient
   };
 
-  sqladmin.databases.list(request, function(err, result) {
+  sqladmin.sslCerts.get(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -343,15 +1623,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var sqladmin = google.sqladmin('v1beta4');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -360,29 +1645,27 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+    // Project ID of the project to which the newly created Cloud SQL instances should belong.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the project that contains the instance.
-    project: "",
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
 
-    // * Database instance ID. This does not include the project ID.
-    instance: "",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    // * Name of the database to be updated in the instance.
-    database: "",
-
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  sqladmin.databases.patch(request, function(err, result) {
+  sqladmin.sslCerts.insert(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -393,15 +1676,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var sqladmin = google.sqladmin('v1beta4');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -410,29 +1698,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+    // Project ID of the project for which to list Cloud SQL instances.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the project that contains the instance.
-    project: "",
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
 
-    // * Database instance ID. This does not include the project ID.
-    instance: "",
-
-    // * Name of the database to be updated in the instance.
-    database: "",
-
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  sqladmin.databases.update(request, function(err, result) {
+  sqladmin.sslCerts.list(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -443,15 +1725,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var sqladmin = google.sqladmin('v1beta4');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -460,18 +1747,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // Project ID of the project for which to list tiers.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // Auth client
     auth: authClient
   };
 
-  sqladmin.flags.list(request, function(err, result) {
+  sqladmin.tiers.list(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -482,15 +1771,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var sqladmin = google.sqladmin('v1beta4');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -499,26 +1793,29 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'clone' method:
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the source as well as the clone Cloud SQL instance.
-    project: "",
+    // Database instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
 
-    // * The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
-    instance: "",
+    // Host of the user in the instance.
+    host: "{MY-HOST}", // TODO: Update placeholder value(s).
 
-    resource: {},
+    // Name of the user in the instance.
+    name: "{MY-NAME}", // TODO: Update placeholder value(s).
 
-    // Auth client
     auth: authClient
   };
 
-  sqladmin.instances.clone(request, function(err, result) {
+  sqladmin.users.delete(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -529,15 +1826,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var sqladmin = google.sqladmin('v1beta4');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -546,24 +1848,27 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the project that contains the instance to be deleted.
-    project: "",
+    // Database instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
 
-    // * Cloud SQL instance ID. This does not include the project ID.
-    instance: "",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    // Auth client
     auth: authClient
   };
 
-  sqladmin.instances.delete(request, function(err, result) {
+  sqladmin.users.insert(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -574,15 +1879,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var sqladmin = google.sqladmin('v1beta4');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -591,26 +1901,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'export' method:
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the project that contains the instance to be exported.
-    project: "",
+    // Database instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
 
-    // * Cloud SQL instance ID. This does not include the project ID.
-    instance: "",
-
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  sqladmin.instances.export(request, function(err, result) {
+  sqladmin.users.list(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -621,15 +1928,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var sqladmin = google.sqladmin('v1beta4');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -638,1146 +1950,32 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'failover' method:
+    // Project ID of the project that contains the instance.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * ID of the project that contains the read replica.
-    project: "",
+    // Database instance ID. This does not include the project ID.
+    instance: "{MY-INSTANCE}", // TODO: Update placeholder value(s).
 
-    // * Cloud SQL instance ID. This does not include the project ID.
-    instance: "",
+    // Host of the user in the instance.
+    host: "{MY-HOST}", // TODO: Update placeholder value(s).
 
-    resource: {},
+    // Name of the user in the instance.
+    name: "{MY-NAME}", // TODO: Update placeholder value(s).
 
-    // Auth client
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
     auth: authClient
   };
 
-  sqladmin.instances.failover(request, function(err, result) {
+  sqladmin.users.update(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
 
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-
-    // * Project ID of the project that contains the instance.
-    project: "",
-
-    // * Database instance ID. This does not include the project ID.
-    instance: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.instances.get(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'import' method:
-
-    // * Project ID of the project that contains the instance.
-    project: "",
-
-    // * Cloud SQL instance ID. This does not include the project ID.
-    instance: "",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.instances.import(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
-
-    // * Project ID of the project to which the newly created Cloud SQL instances should belong.
-    project: "",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.instances.insert(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * Project ID of the project for which to list Cloud SQL instances.
-    project: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-
-  var recur = function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        sqladmin.instances.list(request, recur);
-      }
-    }
-  };
-
-  sqladmin.instances.list(request, recur);
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
-
-    // * Project ID of the project that contains the instance.
-    project: "",
-
-    // * Cloud SQL instance ID. This does not include the project ID.
-    instance: "",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.instances.patch(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'promoteReplica' method:
-
-    // * ID of the project that contains the read replica.
-    project: "",
-
-    // * Cloud SQL read replica instance name.
-    instance: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.instances.promoteReplica(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'resetSslConfig' method:
-
-    // * Project ID of the project that contains the instance.
-    project: "",
-
-    // * Cloud SQL instance ID. This does not include the project ID.
-    instance: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.instances.resetSslConfig(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'restart' method:
-
-    // * Project ID of the project that contains the instance to be restarted.
-    project: "",
-
-    // * Cloud SQL instance ID. This does not include the project ID.
-    instance: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.instances.restart(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'restoreBackup' method:
-
-    // * Project ID of the project that contains the instance.
-    project: "",
-
-    // * Cloud SQL instance ID. This does not include the project ID.
-    instance: "",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.instances.restoreBackup(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'startReplica' method:
-
-    // * ID of the project that contains the read replica.
-    project: "",
-
-    // * Cloud SQL read replica instance name.
-    instance: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.instances.startReplica(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'stopReplica' method:
-
-    // * ID of the project that contains the read replica.
-    project: "",
-
-    // * Cloud SQL read replica instance name.
-    instance: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.instances.stopReplica(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
-
-    // * Project ID of the project that contains the instance.
-    project: "",
-
-    // * Cloud SQL instance ID. This does not include the project ID.
-    instance: "",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.instances.update(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-
-    // * Project ID of the project that contains the instance.
-    project: "",
-
-    // * Instance operation ID.
-    operation: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.operations.get(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * Project ID of the project that contains the instance.
-    project: "",
-
-    // * Cloud SQL instance ID. This does not include the project ID.
-    instance: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-
-  var recur = function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        sqladmin.operations.list(request, recur);
-      }
-    }
-  };
-
-  sqladmin.operations.list(request, recur);
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'createEphemeral' method:
-
-    // * Project ID of the Cloud SQL project.
-    project: "",
-
-    // * Cloud SQL instance ID. This does not include the project ID.
-    instance: "",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.sslCerts.createEphemeral(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
-
-    // * Project ID of the project that contains the instance to be deleted.
-    project: "",
-
-    // * Cloud SQL instance ID. This does not include the project ID.
-    instance: "",
-
-    // * Sha1 FingerPrint.
-    sha1Fingerprint: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.sslCerts.delete(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-
-    // * Project ID of the project that contains the instance.
-    project: "",
-
-    // * Cloud SQL instance ID. This does not include the project ID.
-    instance: "",
-
-    // * Sha1 FingerPrint.
-    sha1Fingerprint: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.sslCerts.get(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
-
-    // * Project ID of the project to which the newly created Cloud SQL instances should belong.
-    project: "",
-
-    // * Cloud SQL instance ID. This does not include the project ID.
-    instance: "",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.sslCerts.insert(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * Project ID of the project for which to list Cloud SQL instances.
-    project: "",
-
-    // * Cloud SQL instance ID. This does not include the project ID.
-    instance: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.sslCerts.list(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * Project ID of the project for which to list tiers.
-    project: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.tiers.list(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
-
-    // * Project ID of the project that contains the instance.
-    project: "",
-
-    // * Database instance ID. This does not include the project ID.
-    instance: "",
-
-    // * Host of the user in the instance.
-    host: "",
-
-    // * Name of the user in the instance.
-    name: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.users.delete(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
-
-    // * Project ID of the project that contains the instance.
-    project: "",
-
-    // * Database instance ID. This does not include the project ID.
-    instance: "",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.users.insert(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * Project ID of the project that contains the instance.
-    project: "",
-
-    // * Database instance ID. This does not include the project ID.
-    instance: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.users.list(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud SQL Administration API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
-
-    // * Project ID of the project that contains the instance.
-    project: "",
-
-    // * Database instance ID. This does not include the project ID.
-    instance: "",
-
-    // * Host of the user in the instance.
-    host: "",
-
-    // * Name of the user in the instance.
-    name: "",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  sqladmin.users.update(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });

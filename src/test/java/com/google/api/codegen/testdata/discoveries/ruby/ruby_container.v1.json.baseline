@@ -7,32 +7,39 @@
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/container_v1'
+require 'json'
 
 service = Google::Apis::ContainerV1::ContainerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'create_cluster' method:
+# The Google Developers Console [project ID or project number]
+# (https://developers.google.com/console/help/new/#projectnumber).
+project_id = '{MY-PROJECT-ID}' # TODO: Change placeholder value(s).
 
-# * The Google Developers Console [project ID or project number]
-#   (https://developers.google.com/console/help/new/#projectnumber).
-project_id = ''
+# The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+# resides.
+zone = '{MY-ZONE}' # TODO: Change placeholder value(s).
 
-# * The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
-#   resides.
-zone = ''
-
-create_cluster_request_object = Google::Apis::ContainerV1::CreateClusterRequest.new
-
+# TODO: Assign values to the desired members.
+create_cluster_request_body = Google::Apis::ContainerV1::CreateClusterRequest.new
 
 # Perform the call
-response = service.create_cluster(project_id, zone, create_cluster_request_object)
+response = service.create_cluster(project_id, zone, create_cluster_request_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Container Engine API
@@ -41,32 +48,39 @@ response = service.create_cluster(project_id, zone, create_cluster_request_objec
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/container_v1'
+require 'json'
 
 service = Google::Apis::ContainerV1::ContainerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_zone_cluster' method:
+# The Google Developers Console [project ID or project number]
+# (https://developers.google.com/console/help/new/#projectnumber).
+project_id = '{MY-PROJECT-ID}' # TODO: Change placeholder value(s).
 
-# * The Google Developers Console [project ID or project number]
-#   (https://developers.google.com/console/help/new/#projectnumber).
-project_id = ''
+# The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+# resides.
+zone = '{MY-ZONE}' # TODO: Change placeholder value(s).
 
-# * The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
-#   resides.
-zone = ''
-
-# * The name of the cluster to delete.
-cluster_id = ''
+# The name of the cluster to delete.
+cluster_id = '{MY-CLUSTER-ID}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.delete_zone_cluster(project_id, zone, cluster_id)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Container Engine API
@@ -75,32 +89,39 @@ response = service.delete_zone_cluster(project_id, zone, cluster_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/container_v1'
+require 'json'
 
 service = Google::Apis::ContainerV1::ContainerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_zone_cluster' method:
+# The Google Developers Console [project ID or project number]
+# (https://developers.google.com/console/help/new/#projectnumber).
+project_id = '{MY-PROJECT-ID}' # TODO: Change placeholder value(s).
 
-# * The Google Developers Console [project ID or project number]
-#   (https://developers.google.com/console/help/new/#projectnumber).
-project_id = ''
+# The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+# resides.
+zone = '{MY-ZONE}' # TODO: Change placeholder value(s).
 
-# * The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
-#   resides.
-zone = ''
-
-# * The name of the cluster to retrieve.
-cluster_id = ''
+# The name of the cluster to retrieve.
+cluster_id = '{MY-CLUSTER-ID}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_zone_cluster(project_id, zone, cluster_id)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Container Engine API
@@ -109,29 +130,36 @@ response = service.get_zone_cluster(project_id, zone, cluster_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/container_v1'
+require 'json'
 
 service = Google::Apis::ContainerV1::ContainerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_zone_clusters' method:
+# The Google Developers Console [project ID or project number]
+# (https://developers.google.com/console/help/new/#projectnumber).
+project_id = '{MY-PROJECT-ID}' # TODO: Change placeholder value(s).
 
-# * The Google Developers Console [project ID or project number]
-#   (https://developers.google.com/console/help/new/#projectnumber).
-project_id = ''
-
-# * The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
-#   resides, or "-" for all zones.
-zone = ''
+# The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+# resides, or "-" for all zones.
+zone = '{MY-ZONE}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.list_zone_clusters(project_id, zone)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Container Engine API
@@ -140,35 +168,42 @@ response = service.list_zone_clusters(project_id, zone)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/container_v1'
+require 'json'
 
 service = Google::Apis::ContainerV1::ContainerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_cluster' method:
+# The Google Developers Console [project ID or project number]
+# (https://developers.google.com/console/help/new/#projectnumber).
+project_id = '{MY-PROJECT-ID}' # TODO: Change placeholder value(s).
 
-# * The Google Developers Console [project ID or project number]
-#   (https://developers.google.com/console/help/new/#projectnumber).
-project_id = ''
+# The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+# resides.
+zone = '{MY-ZONE}' # TODO: Change placeholder value(s).
 
-# * The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
-#   resides.
-zone = ''
+# The name of the cluster to upgrade.
+cluster_id = '{MY-CLUSTER-ID}' # TODO: Change placeholder value(s).
 
-# * The name of the cluster to upgrade.
-cluster_id = ''
-
-update_cluster_request_object = Google::Apis::ContainerV1::UpdateClusterRequest.new
-
+# TODO: Assign values to the desired members.
+update_cluster_request_body = Google::Apis::ContainerV1::UpdateClusterRequest.new
 
 # Perform the call
-response = service.update_cluster(project_id, zone, cluster_id, update_cluster_request_object)
+response = service.update_cluster(project_id, zone, cluster_id, update_cluster_request_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Container Engine API
@@ -177,29 +212,36 @@ response = service.update_cluster(project_id, zone, cluster_id, update_cluster_r
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/container_v1'
+require 'json'
 
 service = Google::Apis::ContainerV1::ContainerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_project_zone_serverconfig' method:
+# The Google Developers Console [project ID or project number]
+# (https://developers.google.com/console/help/new/#projectnumber).
+project_id = '{MY-PROJECT-ID}' # TODO: Change placeholder value(s).
 
-# * The Google Developers Console [project ID or project number]
-#   (https://developers.google.com/console/help/new/#projectnumber).
-project_id = ''
-
-# * The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
-#   for, or "-" for all zones.
-zone = ''
+# The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
+# for, or "-" for all zones.
+zone = '{MY-ZONE}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_project_zone_serverconfig(project_id, zone)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Container Engine API
@@ -208,32 +250,39 @@ response = service.get_project_zone_serverconfig(project_id, zone)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/container_v1'
+require 'json'
 
 service = Google::Apis::ContainerV1::ContainerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_zone_operation' method:
+# The Google Developers Console [project ID or project number]
+# (https://developers.google.com/console/help/new/#projectnumber).
+project_id = '{MY-PROJECT-ID}' # TODO: Change placeholder value(s).
 
-# * The Google Developers Console [project ID or project number]
-#   (https://developers.google.com/console/help/new/#projectnumber).
-project_id = ''
+# The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+# resides.
+zone = '{MY-ZONE}' # TODO: Change placeholder value(s).
 
-# * The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
-#   resides.
-zone = ''
-
-# * The server-assigned `name` of the operation.
-operation_id = ''
+# The server-assigned `name` of the operation.
+operation_id = '{MY-OPERATION-ID}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_zone_operation(project_id, zone, operation_id)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Container Engine API
@@ -242,26 +291,33 @@ response = service.get_zone_operation(project_id, zone, operation_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/container_v1'
+require 'json'
 
 service = Google::Apis::ContainerV1::ContainerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_zone_operations' method:
+# The Google Developers Console [project ID or project number]
+# (https://developers.google.com/console/help/new/#projectnumber).
+project_id = '{MY-PROJECT-ID}' # TODO: Change placeholder value(s).
 
-# * The Google Developers Console [project ID or project number]
-#   (https://developers.google.com/console/help/new/#projectnumber).
-project_id = ''
-
-# * The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
-#   for, or "-" for all zones.
-zone = ''
+# The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
+# for, or "-" for all zones.
+zone = '{MY-ZONE}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.list_zone_operations(project_id, zone)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)

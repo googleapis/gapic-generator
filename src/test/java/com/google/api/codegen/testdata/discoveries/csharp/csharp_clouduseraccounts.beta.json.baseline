@@ -7,7 +7,7 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -17,19 +17,21 @@ using Google.Apis.CloudUserAccounts.beta;
 using Google.Apis.Services;
 using System.Threading.Tasks;
 
+
 namespace CloudUserAccountsSample
 {
-    public class Program
+    public class CloudUserAccountsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -41,18 +43,16 @@ namespace CloudUserAccountsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Delete() method:
-
             // Project ID for this request.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
             // Name of the Operations resource to delete.
-            string operation = "";
+            string operation = "{MY-OPERATION}"; // TODO: Update placeholder value(s).
 
             GlobalAccountsOperationsResource.DeleteRequest request = cloudUserAccountsService.GlobalAccountsOperations.Delete(project, operation);
-            request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            request.Execute();
             // await request.ExecuteAsync();
         }
     }
@@ -65,7 +65,7 @@ namespace CloudUserAccountsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -74,22 +74,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
+
 namespace CloudUserAccountsSample
 {
-    public class Program
+    public class CloudUserAccountsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -101,19 +104,20 @@ namespace CloudUserAccountsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
-
             // Project ID for this request.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
             // Name of the Operations resource to return.
-            string operation = "";
+            string operation = "{MY-OPERATION}"; // TODO: Update placeholder value(s).
 
             GlobalAccountsOperationsResource.GetRequest request = cloudUserAccountsService.GlobalAccountsOperations.Get(project, operation);
-            Data.Operation response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -125,7 +129,7 @@ namespace CloudUserAccountsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -134,22 +138,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
+
 namespace CloudUserAccountsSample
 {
-    public class Program
+    public class CloudUserAccountsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -161,29 +168,29 @@ namespace CloudUserAccountsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
-
             // Project ID for this request.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
             GlobalAccountsOperationsResource.ListRequest request = cloudUserAccountsService.GlobalAccountsOperations.List(project);
+
             Data.OperationList response;
             do
             {
+                // To execute asynchronously in an async method, replace request.Execute() as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Items == null)
                 {
                     continue;
                 }
-                foreach (Data.Operation item in response.Items)
+                foreach (Data.Operation operation in response.Items)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Use operation
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(operation));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.OperationList response = await request.ExecuteAsync();
         }
     }
 }
@@ -195,7 +202,7 @@ namespace CloudUserAccountsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -204,22 +211,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
+
 namespace CloudUserAccountsSample
 {
-    public class Program
+    public class CloudUserAccountsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -231,22 +241,23 @@ namespace CloudUserAccountsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the AddMember() method:
-
             // Project ID for this request.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
             // Name of the group for this request.
-            string groupName = "";
+            string groupName = "{MY-GROUP-NAME}"; // TODO: Update placeholder value(s).
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.GroupsAddMemberRequest content = new Data.GroupsAddMemberRequest();
+            // TODO: Assign values to the desired properties.
+            Data.GroupsAddMemberRequest requestBody = new Data.GroupsAddMemberRequest();
 
-            GroupsResource.AddMemberRequest request = cloudUserAccountsService.Groups.AddMember(content, project, groupName);
+            GroupsResource.AddMemberRequest request = cloudUserAccountsService.Groups.AddMember(requestBody, project, groupName);
+
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
             Data.Operation response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -258,7 +269,7 @@ namespace CloudUserAccountsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -267,22 +278,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
+
 namespace CloudUserAccountsSample
 {
-    public class Program
+    public class CloudUserAccountsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -294,19 +308,20 @@ namespace CloudUserAccountsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Delete() method:
-
             // Project ID for this request.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
             // Name of the Group resource to delete.
-            string groupName = "";
+            string groupName = "{MY-GROUP-NAME}"; // TODO: Update placeholder value(s).
 
             GroupsResource.DeleteRequest request = cloudUserAccountsService.Groups.Delete(project, groupName);
-            Data.Operation response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -318,7 +333,7 @@ namespace CloudUserAccountsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -327,22 +342,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
+
 namespace CloudUserAccountsSample
 {
-    public class Program
+    public class CloudUserAccountsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -354,19 +372,20 @@ namespace CloudUserAccountsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
-
             // Project ID for this request.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
             // Name of the Group resource to return.
-            string groupName = "";
+            string groupName = "{MY-GROUP-NAME}"; // TODO: Update placeholder value(s).
 
             GroupsResource.GetRequest request = cloudUserAccountsService.Groups.Get(project, groupName);
+
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
             Data.Group response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Group response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -378,7 +397,7 @@ namespace CloudUserAccountsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -387,22 +406,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
+
 namespace CloudUserAccountsSample
 {
-    public class Program
+    public class CloudUserAccountsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -414,19 +436,20 @@ namespace CloudUserAccountsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Insert() method:
-
             // Project ID for this request.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Group content = new Data.Group();
+            // TODO: Assign values to the desired properties.
+            Data.Group requestBody = new Data.Group();
 
-            GroupsResource.InsertRequest request = cloudUserAccountsService.Groups.Insert(content, project);
+            GroupsResource.InsertRequest request = cloudUserAccountsService.Groups.Insert(requestBody, project);
+
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
             Data.Operation response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -438,7 +461,7 @@ namespace CloudUserAccountsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -447,22 +470,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
+
 namespace CloudUserAccountsSample
 {
-    public class Program
+    public class CloudUserAccountsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -474,29 +500,29 @@ namespace CloudUserAccountsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
-
             // Project ID for this request.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
             GroupsResource.ListRequest request = cloudUserAccountsService.Groups.List(project);
+
             Data.GroupList response;
             do
             {
+                // To execute asynchronously in an async method, replace request.Execute() as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Items == null)
                 {
                     continue;
                 }
-                foreach (Data.Group item in response.Items)
+                foreach (Data.Group group_ in response.Items)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Use group_
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(group_));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.GroupList response = await request.ExecuteAsync();
         }
     }
 }
@@ -508,7 +534,7 @@ namespace CloudUserAccountsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -517,22 +543,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
+
 namespace CloudUserAccountsSample
 {
-    public class Program
+    public class CloudUserAccountsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -544,22 +573,23 @@ namespace CloudUserAccountsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the RemoveMember() method:
-
             // Project ID for this request.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
             // Name of the group for this request.
-            string groupName = "";
+            string groupName = "{MY-GROUP-NAME}"; // TODO: Update placeholder value(s).
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.GroupsRemoveMemberRequest content = new Data.GroupsRemoveMemberRequest();
+            // TODO: Assign values to the desired properties.
+            Data.GroupsRemoveMemberRequest requestBody = new Data.GroupsRemoveMemberRequest();
 
-            GroupsResource.RemoveMemberRequest request = cloudUserAccountsService.Groups.RemoveMember(content, project, groupName);
+            GroupsResource.RemoveMemberRequest request = cloudUserAccountsService.Groups.RemoveMember(requestBody, project, groupName);
+
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
             Data.Operation response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -571,7 +601,7 @@ namespace CloudUserAccountsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -580,22 +610,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
+
 namespace CloudUserAccountsSample
 {
-    public class Program
+    public class CloudUserAccountsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -607,25 +640,26 @@ namespace CloudUserAccountsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the GetAuthorizedKeysView() method:
-
             // Project ID for this request.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
             // Name of the zone for this request.
-            string zone = "";
+            string zone = "{MY-ZONE}"  // eg. "us-central1-f"; // TODO: Update placeholder value(s).
 
             // The user account for which you want to get a list of authorized public keys.
-            string user = "";
+            string user = "{MY-USER}"; // TODO: Update placeholder value(s).
 
             // The fully-qualified URL of the virtual machine requesting the view.
-            string instance = "";
+            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
 
             LinuxResource.GetAuthorizedKeysViewRequest request = cloudUserAccountsService.Linux.GetAuthorizedKeysView(project, zone, user, instance);
-            Data.LinuxGetAuthorizedKeysViewResponse response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            Data.LinuxGetAuthorizedKeysViewResponse response = request.Execute();
             // Data.LinuxGetAuthorizedKeysViewResponse response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -637,7 +671,7 @@ namespace CloudUserAccountsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -646,22 +680,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
+
 namespace CloudUserAccountsSample
 {
-    public class Program
+    public class CloudUserAccountsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -673,22 +710,23 @@ namespace CloudUserAccountsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the GetLinuxAccountViews() method:
-
             // Project ID for this request.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
             // Name of the zone for this request.
-            string zone = "";
+            string zone = "{MY-ZONE}"  // eg. "us-central1-f"; // TODO: Update placeholder value(s).
 
             // The fully-qualified URL of the virtual machine requesting the views.
-            string instance = "";
+            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
 
             LinuxResource.GetLinuxAccountViewsRequest request = cloudUserAccountsService.Linux.GetLinuxAccountViews(project, zone, instance);
-            Data.LinuxGetLinuxAccountViewsResponse response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            Data.LinuxGetLinuxAccountViewsResponse response = request.Execute();
             // Data.LinuxGetLinuxAccountViewsResponse response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -700,7 +738,7 @@ namespace CloudUserAccountsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -709,22 +747,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
+
 namespace CloudUserAccountsSample
 {
-    public class Program
+    public class CloudUserAccountsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -736,22 +777,23 @@ namespace CloudUserAccountsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the AddPublicKey() method:
-
             // Project ID for this request.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
             // Name of the user for this request.
-            string user = "";
+            string user = "{MY-USER}"; // TODO: Update placeholder value(s).
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.PublicKey content = new Data.PublicKey();
+            // TODO: Assign values to the desired properties.
+            Data.PublicKey requestBody = new Data.PublicKey();
 
-            UsersResource.AddPublicKeyRequest request = cloudUserAccountsService.Users.AddPublicKey(content, project, user);
+            UsersResource.AddPublicKeyRequest request = cloudUserAccountsService.Users.AddPublicKey(requestBody, project, user);
+
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
             Data.Operation response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -763,7 +805,7 @@ namespace CloudUserAccountsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -772,22 +814,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
+
 namespace CloudUserAccountsSample
 {
-    public class Program
+    public class CloudUserAccountsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -799,19 +844,20 @@ namespace CloudUserAccountsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Delete() method:
-
             // Project ID for this request.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
             // Name of the user resource to delete.
-            string user = "";
+            string user = "{MY-USER}"; // TODO: Update placeholder value(s).
 
             UsersResource.DeleteRequest request = cloudUserAccountsService.Users.Delete(project, user);
-            Data.Operation response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -823,7 +869,7 @@ namespace CloudUserAccountsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -832,22 +878,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
+
 namespace CloudUserAccountsSample
 {
-    public class Program
+    public class CloudUserAccountsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -859,19 +908,20 @@ namespace CloudUserAccountsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
-
             // Project ID for this request.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
             // Name of the user resource to return.
-            string user = "";
+            string user = "{MY-USER}"; // TODO: Update placeholder value(s).
 
             UsersResource.GetRequest request = cloudUserAccountsService.Users.Get(project, user);
+
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
             Data.User response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.User response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -883,7 +933,7 @@ namespace CloudUserAccountsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -892,22 +942,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
+
 namespace CloudUserAccountsSample
 {
-    public class Program
+    public class CloudUserAccountsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -919,19 +972,20 @@ namespace CloudUserAccountsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Insert() method:
-
             // Project ID for this request.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.User content = new Data.User();
+            // TODO: Assign values to the desired properties.
+            Data.User requestBody = new Data.User();
 
-            UsersResource.InsertRequest request = cloudUserAccountsService.Users.Insert(content, project);
+            UsersResource.InsertRequest request = cloudUserAccountsService.Users.Insert(requestBody, project);
+
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
             Data.Operation response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -943,7 +997,7 @@ namespace CloudUserAccountsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -952,22 +1006,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
+
 namespace CloudUserAccountsSample
 {
-    public class Program
+    public class CloudUserAccountsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -979,29 +1036,29 @@ namespace CloudUserAccountsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
-
             // Project ID for this request.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
             UsersResource.ListRequest request = cloudUserAccountsService.Users.List(project);
+
             Data.UserList response;
             do
             {
+                // To execute asynchronously in an async method, replace request.Execute() as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Items == null)
                 {
                     continue;
                 }
-                foreach (Data.User item in response.Items)
+                foreach (Data.User user in response.Items)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Use user
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(user));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.UserList response = await request.ExecuteAsync();
         }
     }
 }
@@ -1013,7 +1070,7 @@ namespace CloudUserAccountsSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -1022,22 +1079,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
+
 namespace CloudUserAccountsSample
 {
-    public class Program
+    public class CloudUserAccountsServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1049,23 +1109,24 @@ namespace CloudUserAccountsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the RemovePublicKey() method:
-
             // Project ID for this request.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
             // Name of the user for this request.
-            string user = "";
+            string user = "{MY-USER}"; // TODO: Update placeholder value(s).
 
             // The fingerprint of the public key to delete. Public keys are identified by their fingerprint, which
             // is defined by RFC4716 to be the MD5 digest of the public key.
-            string fingerprint = "";
+            string fingerprint = "{MY-FINGERPRINT}"; // TODO: Update placeholder value(s).
 
             UsersResource.RemovePublicKeyRequest request = cloudUserAccountsService.Users.RemovePublicKey(project, user, fingerprint);
-            Data.Operation response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }

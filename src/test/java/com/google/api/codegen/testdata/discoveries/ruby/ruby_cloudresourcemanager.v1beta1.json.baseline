@@ -7,24 +7,31 @@
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1beta1'
+require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_organization' method:
-
-# * The id of the Organization resource to fetch.
-organization_id = ''
+# The id of the Organization resource to fetch.
+organization_id = '{MY-ORGANIZATION-ID}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_organization(organization_id)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -33,29 +40,36 @@ response = service.get_organization(organization_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1beta1'
+require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_organization_iam_policy' method:
+# REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
+# path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
+# this value is resource specific and is specified in the `getIamPolicy` documentation.
+resource = '{MY-RESOURCE}' # TODO: Change placeholder value(s).
 
-# * REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
-#   a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
-#   in this value is resource specific and is specified in the `getIamPolicy` documentation.
-resource = ''
-
-get_iam_policy_request_object = Google::Apis::CloudresourcemanagerV1beta1::GetIamPolicyRequest.new
-
+# TODO: Assign values to the desired members.
+get_iam_policy_request_body = Google::Apis::CloudresourcemanagerV1beta1::GetIamPolicyRequest.new
 
 # Perform the call
-response = service.get_organization_iam_policy(resource, get_iam_policy_request_object)
+response = service.get_organization_iam_policy(resource, get_iam_policy_request_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -64,26 +78,33 @@ response = service.get_organization_iam_policy(resource, get_iam_policy_request_
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1beta1'
+require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 
-
 # Perform the call
-result_list = service.fetch_all(items: :organizations) { |token|
+organizations = service.fetch_all(items: :organizations) do |token|
   service.list_organizations(, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+organizations.each do |organization|
+  # TODO: Use organization
+  puts JSON.pretty_generate(organization)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -92,29 +113,36 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1beta1'
+require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'set_organization_iam_policy' method:
+# REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
+# path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
+# this value is resource specific and is specified in the `setIamPolicy` documentation.
+resource = '{MY-RESOURCE}' # TODO: Change placeholder value(s).
 
-# * REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
-#   a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
-#   in this value is resource specific and is specified in the `setIamPolicy` documentation.
-resource = ''
-
-set_iam_policy_request_object = Google::Apis::CloudresourcemanagerV1beta1::SetIamPolicyRequest.new
-
+# TODO: Assign values to the desired members.
+set_iam_policy_request_body = Google::Apis::CloudresourcemanagerV1beta1::SetIamPolicyRequest.new
 
 # Perform the call
-response = service.set_organization_iam_policy(resource, set_iam_policy_request_object)
+response = service.set_organization_iam_policy(resource, set_iam_policy_request_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -123,30 +151,37 @@ response = service.set_organization_iam_policy(resource, set_iam_policy_request_
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1beta1'
+require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'test_organization_iam_permissions' method:
+# REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
+# specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path
+# specified in this value is resource specific and is specified in the `testIamPermissions`
+# documentation.
+resource = '{MY-RESOURCE}' # TODO: Change placeholder value(s).
 
-# * REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
-#   specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the
-#   path specified in this value is resource specific and is specified in the `testIamPermissions`
-#   documentation.
-resource = ''
-
-test_iam_permissions_request_object = Google::Apis::CloudresourcemanagerV1beta1::TestIamPermissionsRequest.new
-
+# TODO: Assign values to the desired members.
+test_iam_permissions_request_body = Google::Apis::CloudresourcemanagerV1beta1::TestIamPermissionsRequest.new
 
 # Perform the call
-response = service.test_organization_iam_permissions(resource, test_iam_permissions_request_object)
+response = service.test_organization_iam_permissions(resource, test_iam_permissions_request_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -155,28 +190,35 @@ response = service.test_organization_iam_permissions(resource, test_iam_permissi
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1beta1'
+require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_organization' method:
+# An immutable id for the Organization that is assigned on creation. This should be omitted when
+# creating a new Organization. This field is read-only.
+organization_id = '{MY-ORGANIZATION-ID}' # TODO: Change placeholder value(s).
 
-# * An immutable id for the Organization that is assigned on creation. This should be omitted when
-#   creating a new Organization. This field is read-only.
-organization_id = ''
-
-organization_object = Google::Apis::CloudresourcemanagerV1beta1::Organization.new
-
+# TODO: Assign values to the desired members.
+organization_body = Google::Apis::CloudresourcemanagerV1beta1::Organization.new
 
 # Perform the call
-response = service.update_organization(organization_id, organization_object)
+response = service.update_organization(organization_id, organization_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -185,24 +227,32 @@ response = service.update_organization(organization_id, organization_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1beta1'
+require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 
-
-project_object = Google::Apis::CloudresourcemanagerV1beta1::Project.new
-
+# TODO: Assign values to the desired members.
+project_body = Google::Apis::CloudresourcemanagerV1beta1::Project.new
 
 # Perform the call
-response = service.create_project(project_object)
+response = service.create_project(project_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -211,21 +261,25 @@ response = service.create_project(project_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1beta1'
+require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_project' method:
-
-# * The Project ID (for example, `foo-bar-123`). Required.
-project_id = ''
+# The Project ID (for example, `foo-bar-123`). Required.
+project_id = '{MY-PROJECT-ID}' # TODO: Change placeholder value(s).
 
 # Perform the call
 service.delete_project(project_id)
@@ -237,24 +291,31 @@ service.delete_project(project_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1beta1'
+require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_project' method:
-
-# * The Project ID (for example, `my-project-123`). Required.
-project_id = ''
+# The Project ID (for example, `my-project-123`). Required.
+project_id = '{MY-PROJECT-ID}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_project(project_id)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -263,29 +324,36 @@ response = service.get_project(project_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1beta1'
+require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_project_iam_policy' method:
+# REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
+# path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
+# this value is resource specific and is specified in the `getIamPolicy` documentation.
+resource = '{MY-RESOURCE}' # TODO: Change placeholder value(s).
 
-# * REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
-#   a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
-#   in this value is resource specific and is specified in the `getIamPolicy` documentation.
-resource = ''
-
-get_iam_policy_request_object = Google::Apis::CloudresourcemanagerV1beta1::GetIamPolicyRequest.new
-
+# TODO: Assign values to the desired members.
+get_iam_policy_request_body = Google::Apis::CloudresourcemanagerV1beta1::GetIamPolicyRequest.new
 
 # Perform the call
-response = service.get_project_iam_policy(resource, get_iam_policy_request_object)
+response = service.get_project_iam_policy(resource, get_iam_policy_request_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -294,26 +362,33 @@ response = service.get_project_iam_policy(resource, get_iam_policy_request_objec
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1beta1'
+require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 
-
 # Perform the call
-result_list = service.fetch_all(items: :projects) { |token|
+projects = service.fetch_all(items: :projects) do |token|
   service.list_projects(, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+projects.each do |project|
+  # TODO: Use project
+  puts JSON.pretty_generate(project)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -322,29 +397,36 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1beta1'
+require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'set_project_iam_policy' method:
+# REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
+# path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
+# this value is resource specific and is specified in the `setIamPolicy` documentation.
+resource = '{MY-RESOURCE}' # TODO: Change placeholder value(s).
 
-# * REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
-#   a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
-#   in this value is resource specific and is specified in the `setIamPolicy` documentation.
-resource = ''
-
-set_iam_policy_request_object = Google::Apis::CloudresourcemanagerV1beta1::SetIamPolicyRequest.new
-
+# TODO: Assign values to the desired members.
+set_iam_policy_request_body = Google::Apis::CloudresourcemanagerV1beta1::SetIamPolicyRequest.new
 
 # Perform the call
-response = service.set_project_iam_policy(resource, set_iam_policy_request_object)
+response = service.set_project_iam_policy(resource, set_iam_policy_request_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -353,30 +435,37 @@ response = service.set_project_iam_policy(resource, set_iam_policy_request_objec
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1beta1'
+require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'test_project_iam_permissions' method:
+# REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
+# specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path
+# specified in this value is resource specific and is specified in the `testIamPermissions`
+# documentation.
+resource = '{MY-RESOURCE}' # TODO: Change placeholder value(s).
 
-# * REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
-#   specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the
-#   path specified in this value is resource specific and is specified in the `testIamPermissions`
-#   documentation.
-resource = ''
-
-test_iam_permissions_request_object = Google::Apis::CloudresourcemanagerV1beta1::TestIamPermissionsRequest.new
-
+# TODO: Assign values to the desired members.
+test_iam_permissions_request_body = Google::Apis::CloudresourcemanagerV1beta1::TestIamPermissionsRequest.new
 
 # Perform the call
-response = service.test_project_iam_permissions(resource, test_iam_permissions_request_object)
+response = service.test_project_iam_permissions(resource, test_iam_permissions_request_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -385,27 +474,31 @@ response = service.test_project_iam_permissions(resource, test_iam_permissions_r
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1beta1'
+require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'undelete_project' method:
+# The project ID (for example, `foo-bar-123`). Required.
+project_id = '{MY-PROJECT-ID}' # TODO: Change placeholder value(s).
 
-# * The project ID (for example, `foo-bar-123`). Required.
-project_id = ''
-
-undelete_project_request_object = Google::Apis::CloudresourcemanagerV1beta1::UndeleteProjectRequest.new
-
+# TODO: Assign values to the desired members.
+undelete_project_request_body = Google::Apis::CloudresourcemanagerV1beta1::UndeleteProjectRequest.new
 
 # Perform the call
-service.undelete_project(project_id, undelete_project_request_object)
+service.undelete_project(project_id, undelete_project_request_body)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -414,24 +507,31 @@ service.undelete_project(project_id, undelete_project_request_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1beta1'
+require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_project' method:
+# The project ID (for example, `my-project-123`). Required.
+project_id = '{MY-PROJECT-ID}' # TODO: Change placeholder value(s).
 
-# * The project ID (for example, `my-project-123`). Required.
-project_id = ''
-
-project_object = Google::Apis::CloudresourcemanagerV1beta1::Project.new
-
+# TODO: Assign values to the desired members.
+project_body = Google::Apis::CloudresourcemanagerV1beta1::Project.new
 
 # Perform the call
-response = service.update_project(project_id, project_object)
+response = service.update_project(project_id, project_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)

@@ -9,7 +9,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -17,26 +17,30 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Replicapoolupdater service.
 $service = new Google_Service_Replicapoolupdater($client);
 
-// * The Google Developers Console project name.
-$project = '';
+// The Google Developers Console project name.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * The name of the zone in which the update's target resides.
-$zone = '';
+// The name of the zone in which the update's target resides.
+$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
 
-// * The name of the update.
-$rollingUpdate = '';
+// The name of the update.
+$rollingUpdate = '{MY-ROLLING-UPDATE}'; // TODO: Update placeholder value(s).
 
 $response = $service->rollingUpdates->cancel($project, $zone, $rollingUpdate);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -47,7 +51,7 @@ $response = $service->rollingUpdates->cancel($project, $zone, $rollingUpdate);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -55,26 +59,30 @@ $response = $service->rollingUpdates->cancel($project, $zone, $rollingUpdate);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Replicapoolupdater service.
 $service = new Google_Service_Replicapoolupdater($client);
 
-// * The Google Developers Console project name.
-$project = '';
+// The Google Developers Console project name.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * The name of the zone in which the update's target resides.
-$zone = '';
+// The name of the zone in which the update's target resides.
+$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
 
-// * The name of the update.
-$rollingUpdate = '';
+// The name of the update.
+$rollingUpdate = '{MY-ROLLING-UPDATE}'; // TODO: Update placeholder value(s).
 
 $response = $service->rollingUpdates->get($project, $zone, $rollingUpdate);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -85,7 +93,7 @@ $response = $service->rollingUpdates->get($project, $zone, $rollingUpdate);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -93,25 +101,30 @@ $response = $service->rollingUpdates->get($project, $zone, $rollingUpdate);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Replicapoolupdater service.
 $service = new Google_Service_Replicapoolupdater($client);
 
-// * The Google Developers Console project name.
-$project = '';
+// The Google Developers Console project name.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * The name of the zone in which the update's target resides.
-$zone = '';
+// The name of the zone in which the update's target resides.
+$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Replicapoolupdater_RollingUpdate($client);
 
 $response = $service->rollingUpdates->insert($project, $zone, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -122,7 +135,7 @@ $response = $service->rollingUpdates->insert($project, $zone, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -130,27 +143,34 @@ $response = $service->rollingUpdates->insert($project, $zone, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Replicapoolupdater service.
 $service = new Google_Service_Replicapoolupdater($client);
 
-// * The Google Developers Console project name.
-$project = '';
+// The Google Developers Console project name.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * The name of the zone in which the update's target resides.
-$zone = '';
+// The name of the zone in which the update's target resides.
+$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
 
-$response = $service->rollingUpdates->listRollingUpdates($project, $zone);
+$optParams = array();
+do {
+  $response = $service->rollingUpdates->listRollingUpdates($project, $zone, $optParams);
 
-foreach ($response['items'] as $element) {
-  // TODO: Add code here to process the element.
-}
+  foreach ($response['items'] as $rolling_update) {
+    // TODO: Use rolling_update
+    echo '<pre>', var_export($rolling_update, true), '</pre>', "\n";
+  }
 
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -161,7 +181,7 @@ foreach ($response['items'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -169,30 +189,37 @@ foreach ($response['items'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Replicapoolupdater service.
 $service = new Google_Service_Replicapoolupdater($client);
 
-// * The Google Developers Console project name.
-$project = '';
+// The Google Developers Console project name.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * The name of the zone in which the update's target resides.
-$zone = '';
+// The name of the zone in which the update's target resides.
+$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
 
-// * The name of the update.
-$rollingUpdate = '';
+// The name of the update.
+$rollingUpdate = '{MY-ROLLING-UPDATE}'; // TODO: Update placeholder value(s).
 
-$response = $service->rollingUpdates->listInstanceUpdates($project, $zone, $rollingUpdate);
+$optParams = array();
+do {
+  $response = $service->rollingUpdates->listInstanceUpdates($project, $zone, $rollingUpdate, $optParams);
 
-foreach ($response['items'] as $element) {
-  // TODO: Add code here to process the element.
-}
+  foreach ($response['items'] as $instance_update) {
+    // TODO: Use instance_update
+    echo '<pre>', var_export($instance_update, true), '</pre>', "\n";
+  }
 
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -203,7 +230,7 @@ foreach ($response['items'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -211,26 +238,30 @@ foreach ($response['items'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Replicapoolupdater service.
 $service = new Google_Service_Replicapoolupdater($client);
 
-// * The Google Developers Console project name.
-$project = '';
+// The Google Developers Console project name.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * The name of the zone in which the update's target resides.
-$zone = '';
+// The name of the zone in which the update's target resides.
+$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
 
-// * The name of the update.
-$rollingUpdate = '';
+// The name of the update.
+$rollingUpdate = '{MY-ROLLING-UPDATE}'; // TODO: Update placeholder value(s).
 
 $response = $service->rollingUpdates->pause($project, $zone, $rollingUpdate);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -241,7 +272,7 @@ $response = $service->rollingUpdates->pause($project, $zone, $rollingUpdate);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -249,26 +280,30 @@ $response = $service->rollingUpdates->pause($project, $zone, $rollingUpdate);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Replicapoolupdater service.
 $service = new Google_Service_Replicapoolupdater($client);
 
-// * The Google Developers Console project name.
-$project = '';
+// The Google Developers Console project name.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * The name of the zone in which the update's target resides.
-$zone = '';
+// The name of the zone in which the update's target resides.
+$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
 
-// * The name of the update.
-$rollingUpdate = '';
+// The name of the update.
+$rollingUpdate = '{MY-ROLLING-UPDATE}'; // TODO: Update placeholder value(s).
 
 $response = $service->rollingUpdates->resume($project, $zone, $rollingUpdate);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -279,7 +314,7 @@ $response = $service->rollingUpdates->resume($project, $zone, $rollingUpdate);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -287,26 +322,30 @@ $response = $service->rollingUpdates->resume($project, $zone, $rollingUpdate);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Replicapoolupdater service.
 $service = new Google_Service_Replicapoolupdater($client);
 
-// * The Google Developers Console project name.
-$project = '';
+// The Google Developers Console project name.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * The name of the zone in which the update's target resides.
-$zone = '';
+// The name of the zone in which the update's target resides.
+$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
 
-// * The name of the update.
-$rollingUpdate = '';
+// The name of the update.
+$rollingUpdate = '{MY-ROLLING-UPDATE}'; // TODO: Update placeholder value(s).
 
 $response = $service->rollingUpdates->rollback($project, $zone, $rollingUpdate);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -317,7 +356,7 @@ $response = $service->rollingUpdates->rollback($project, $zone, $rollingUpdate);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -325,26 +364,30 @@ $response = $service->rollingUpdates->rollback($project, $zone, $rollingUpdate);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Replicapoolupdater service.
 $service = new Google_Service_Replicapoolupdater($client);
 
-// * Name of the project scoping this request.
-$project = '';
+// Name of the project scoping this request.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * Name of the zone scoping this request.
-$zone = '';
+// Name of the zone scoping this request.
+$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
 
-// * Name of the operation resource to return.
-$operation = '';
+// Name of the operation resource to return.
+$operation = '{MY-OPERATION}'; // TODO: Update placeholder value(s).
 
 $response = $service->zoneOperations->get($project, $zone, $operation);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -355,7 +398,7 @@ $response = $service->zoneOperations->get($project, $zone, $operation);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -363,24 +406,31 @@ $response = $service->zoneOperations->get($project, $zone, $operation);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Replicapoolupdater service.
 $service = new Google_Service_Replicapoolupdater($client);
 
-// * Name of the project scoping this request.
-$project = '';
+// Name of the project scoping this request.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * Name of the zone scoping this request.
-$zone = '';
+// Name of the zone scoping this request.
+$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
 
-$response = $service->zoneOperations->listZoneOperations($project, $zone);
+$optParams = array();
+do {
+  $response = $service->zoneOperations->listZoneOperations($project, $zone, $optParams);
 
-foreach ($response['items'] as $element) {
-  // TODO: Add code here to process the element.
-}
+  foreach ($response['items'] as $operation) {
+    // TODO: Use operation
+    echo '<pre>', var_export($operation, true), '</pre>', "\n";
+  }
 
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);

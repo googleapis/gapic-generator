@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud DNS API
@@ -8,7 +8,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -22,15 +22,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dns.Dns;
 import com.google.api.services.dns.model.Change;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DnsExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -45,28 +46,30 @@ public class DnsExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+    // Identifies the project addressed by this request.
+    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-    // * Identifies the project addressed by this request.
-    String project = "";
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    String managedZone = "{MY-MANAGED-ZONE}"; // TODO: Update placeholder value(s).
 
-    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    String managedZone = "";
+    // TODO: Assign values to the desired fields.
+    Change requestBody = new Change();
 
-    Change content = new Change();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Dns.Changes.Create request = dnsService.changes().create(project, managedZone, content);
+    Dns.Changes.Create request = dnsService.changes().create(project, managedZone, requestBody);
     Change response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud DNS API
@@ -75,7 +78,7 @@ public class DnsExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -89,15 +92,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dns.Dns;
 import com.google.api.services.dns.model.Change;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DnsExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -112,28 +116,29 @@ public class DnsExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // Identifies the project addressed by this request.
+    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-    // * Identifies the project addressed by this request.
-    String project = "";
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    String managedZone = "{MY-MANAGED-ZONE}"; // TODO: Update placeholder value(s).
 
-    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    String managedZone = "";
-
-    // * The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
-    String changeId = "";
+    // The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
+    String changeId = "{MY-CHANGE-ID}"; // TODO: Update placeholder value(s).
 
     Dns.Changes.Get request = dnsService.changes().get(project, managedZone, changeId);
     Change response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud DNS API
@@ -142,7 +147,7 @@ public class DnsExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -157,15 +162,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dns.Dns;
 import com.google.api.services.dns.model.Change;
 import com.google.api.services.dns.model.ChangesListResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DnsExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -180,19 +186,21 @@ public class DnsExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // Identifies the project addressed by this request.
+    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-    // * Identifies the project addressed by this request.
-    String project = "";
-
-    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    String managedZone = "";
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    String managedZone = "{MY-MANAGED-ZONE}"; // TODO: Update placeholder value(s).
 
     Dns.Changes.List request = dnsService.changes().list(project, managedZone);
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     ChangesListResponse response;
     do {
       response = request.execute();
@@ -200,14 +208,15 @@ public class DnsExample {
         continue;
 
       for (Change change : response.getChanges()) {
-        // TODO: Add code here to process each 'change' resource
+        // TODO: Use change
+        System.out.println(gson.toJson(new JsonParser().parse(change.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud DNS API
@@ -216,7 +225,7 @@ public class DnsExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -230,15 +239,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dns.Dns;
 import com.google.api.services.dns.model.ManagedZone;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DnsExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -253,25 +263,27 @@ public class DnsExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+    // Identifies the project addressed by this request.
+    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-    // * Identifies the project addressed by this request.
-    String project = "";
+    // TODO: Assign values to the desired fields.
+    ManagedZone requestBody = new ManagedZone();
 
-    ManagedZone content = new ManagedZone();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Dns.ManagedZones.Create request = dnsService.managedZones().create(project, content);
+    Dns.ManagedZones.Create request = dnsService.managedZones().create(project, requestBody);
     ManagedZone response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud DNS API
@@ -280,7 +292,7 @@ public class DnsExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -298,10 +310,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DnsExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -316,23 +327,22 @@ public class DnsExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // Identifies the project addressed by this request.
+    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-    // * Identifies the project addressed by this request.
-    String project = "";
-
-    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    String managedZone = "";
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    String managedZone = "{MY-MANAGED-ZONE}"; // TODO: Update placeholder value(s).
 
     Dns.ManagedZones.Delete request = dnsService.managedZones().delete(project, managedZone);
     request.execute();
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud DNS API
@@ -341,7 +351,7 @@ public class DnsExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -355,15 +365,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dns.Dns;
 import com.google.api.services.dns.model.ManagedZone;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DnsExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -378,25 +389,26 @@ public class DnsExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // Identifies the project addressed by this request.
+    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-    // * Identifies the project addressed by this request.
-    String project = "";
-
-    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    String managedZone = "";
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    String managedZone = "{MY-MANAGED-ZONE}"; // TODO: Update placeholder value(s).
 
     Dns.ManagedZones.Get request = dnsService.managedZones().get(project, managedZone);
     ManagedZone response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud DNS API
@@ -405,7 +417,7 @@ public class DnsExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -420,15 +432,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dns.Dns;
 import com.google.api.services.dns.model.ManagedZone;
 import com.google.api.services.dns.model.ManagedZonesListResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DnsExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -443,16 +456,18 @@ public class DnsExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * Identifies the project addressed by this request.
-    String project = "";
+    // Identifies the project addressed by this request.
+    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
     Dns.ManagedZones.List request = dnsService.managedZones().list(project);
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     ManagedZonesListResponse response;
     do {
       response = request.execute();
@@ -460,14 +475,15 @@ public class DnsExample {
         continue;
 
       for (ManagedZone managedZone : response.getManagedZones()) {
-        // TODO: Add code here to process each 'managedZone' resource
+        // TODO: Use managedZone
+        System.out.println(gson.toJson(new JsonParser().parse(managedZone.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud DNS API
@@ -476,7 +492,7 @@ public class DnsExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -490,15 +506,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dns.Dns;
 import com.google.api.services.dns.model.Project;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DnsExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -513,22 +530,23 @@ public class DnsExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-
-    // * Identifies the project addressed by this request.
-    String project = "";
+    // Identifies the project addressed by this request.
+    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
     Dns.Projects.Get request = dnsService.projects().get(project);
     Project response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud DNS API
@@ -537,7 +555,7 @@ public class DnsExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -552,15 +570,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dns.Dns;
 import com.google.api.services.dns.model.ResourceRecordSet;
 import com.google.api.services.dns.model.ResourceRecordSetsListResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class DnsExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -575,19 +594,21 @@ public class DnsExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // Identifies the project addressed by this request.
+    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-    // * Identifies the project addressed by this request.
-    String project = "";
-
-    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    String managedZone = "";
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    String managedZone = "{MY-MANAGED-ZONE}"; // TODO: Update placeholder value(s).
 
     Dns.ResourceRecordSets.List request = dnsService.resourceRecordSets().list(project, managedZone);
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     ResourceRecordSetsListResponse response;
     do {
       response = request.execute();
@@ -595,7 +616,8 @@ public class DnsExample {
         continue;
 
       for (ResourceRecordSet resourceRecordSet : response.getRrsets()) {
-        // TODO: Add code here to process each 'resourceRecordSet' resource
+        // TODO: Use resourceRecordSet
+        System.out.println(gson.toJson(new JsonParser().parse(resourceRecordSet.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());

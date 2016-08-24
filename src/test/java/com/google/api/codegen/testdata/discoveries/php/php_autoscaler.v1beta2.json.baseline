@@ -9,7 +9,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -17,26 +17,30 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Autoscaler service.
 $service = new Google_Service_Autoscaler($client);
 
-// * Project ID of Autoscaler resource.
-$project = '';
+// Project ID of Autoscaler resource.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * Zone name of Autoscaler resource.
-$zone = '';
+// Zone name of Autoscaler resource.
+$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
 
-// * Name of the Autoscaler resource.
-$autoscaler = '';
+// Name of the Autoscaler resource.
+$autoscaler = '{MY-AUTOSCALER}'; // TODO: Update placeholder value(s).
 
 $response = $service->autoscalers->delete($project, $zone, $autoscaler);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -47,7 +51,7 @@ $response = $service->autoscalers->delete($project, $zone, $autoscaler);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -55,26 +59,30 @@ $response = $service->autoscalers->delete($project, $zone, $autoscaler);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Autoscaler service.
 $service = new Google_Service_Autoscaler($client);
 
-// * Project ID of Autoscaler resource.
-$project = '';
+// Project ID of Autoscaler resource.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * Zone name of Autoscaler resource.
-$zone = '';
+// Zone name of Autoscaler resource.
+$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
 
-// * Name of the Autoscaler resource.
-$autoscaler = '';
+// Name of the Autoscaler resource.
+$autoscaler = '{MY-AUTOSCALER}'; // TODO: Update placeholder value(s).
 
 $response = $service->autoscalers->get($project, $zone, $autoscaler);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -85,7 +93,7 @@ $response = $service->autoscalers->get($project, $zone, $autoscaler);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -93,25 +101,30 @@ $response = $service->autoscalers->get($project, $zone, $autoscaler);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Autoscaler service.
 $service = new Google_Service_Autoscaler($client);
 
-// * Project ID of Autoscaler resource.
-$project = '';
+// Project ID of Autoscaler resource.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * Zone name of Autoscaler resource.
-$zone = '';
+// Zone name of Autoscaler resource.
+$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Autoscaler_Autoscaler($client);
 
 $response = $service->autoscalers->insert($project, $zone, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -122,7 +135,7 @@ $response = $service->autoscalers->insert($project, $zone, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -130,27 +143,34 @@ $response = $service->autoscalers->insert($project, $zone, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Autoscaler service.
 $service = new Google_Service_Autoscaler($client);
 
-// * Project ID of Autoscaler resource.
-$project = '';
+// Project ID of Autoscaler resource.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * Zone name of Autoscaler resource.
-$zone = '';
+// Zone name of Autoscaler resource.
+$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
 
-$response = $service->autoscalers->listAutoscalers($project, $zone);
+$optParams = array();
+do {
+  $response = $service->autoscalers->listAutoscalers($project, $zone, $optParams);
 
-foreach ($response['items'] as $element) {
-  // TODO: Add code here to process the element.
-}
+  foreach ($response['items'] as $autoscaler) {
+    // TODO: Use autoscaler
+    echo '<pre>', var_export($autoscaler, true), '</pre>', "\n";
+  }
 
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -161,7 +181,7 @@ foreach ($response['items'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -169,28 +189,33 @@ foreach ($response['items'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Autoscaler service.
 $service = new Google_Service_Autoscaler($client);
 
-// * Project ID of Autoscaler resource.
-$project = '';
+// Project ID of Autoscaler resource.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * Zone name of Autoscaler resource.
-$zone = '';
+// Zone name of Autoscaler resource.
+$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
 
-// * Name of the Autoscaler resource.
-$autoscaler = '';
+// Name of the Autoscaler resource.
+$autoscaler = '{MY-AUTOSCALER}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties to be changed.
 $postBody = new Google_Service_Autoscaler_Autoscaler($client);
 
 $response = $service->autoscalers->patch($project, $zone, $autoscaler, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -201,7 +226,7 @@ $response = $service->autoscalers->patch($project, $zone, $autoscaler, $postBody
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -209,28 +234,33 @@ $response = $service->autoscalers->patch($project, $zone, $autoscaler, $postBody
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Autoscaler service.
 $service = new Google_Service_Autoscaler($client);
 
-// * Project ID of Autoscaler resource.
-$project = '';
+// Project ID of Autoscaler resource.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-// * Zone name of Autoscaler resource.
-$zone = '';
+// Zone name of Autoscaler resource.
+$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
 
-// * Name of the Autoscaler resource.
-$autoscaler = '';
+// Name of the Autoscaler resource.
+$autoscaler = '{MY-AUTOSCALER}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Autoscaler_Autoscaler($client);
 
 $response = $service->autoscalers->update($project, $zone, $autoscaler, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -241,7 +271,7 @@ $response = $service->autoscalers->update($project, $zone, $autoscaler, $postBod
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -249,26 +279,27 @@ $response = $service->autoscalers->update($project, $zone, $autoscaler, $postBod
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Autoscaler service.
 $service = new Google_Service_Autoscaler($client);
 
 
-$project = '';
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
 
-$zone = '';
+$zone = '{MY-ZONE}'  // eg. 'us-central1-f'; // TODO: Update placeholder value(s).
 
 
-$operation = '';
+$operation = '{MY-OPERATION}'; // TODO: Update placeholder value(s).
 
-$response = $service->zoneOperations->delete($project, $zone, $operation);
-
+$service->zoneOperations->delete($project, $zone, $operation);
 <?php
 /*
  * BEFORE RUNNING:
@@ -279,7 +310,7 @@ $response = $service->zoneOperations->delete($project, $zone, $operation);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -287,26 +318,30 @@ $response = $service->zoneOperations->delete($project, $zone, $operation);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Autoscaler service.
 $service = new Google_Service_Autoscaler($client);
 
 
-$project = '';
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
 
-$zone = '';
+$zone = '{MY-ZONE}'  // eg. 'us-central1-f'; // TODO: Update placeholder value(s).
 
 
-$operation = '';
+$operation = '{MY-OPERATION}'; // TODO: Update placeholder value(s).
 
 $response = $service->zoneOperations->get($project, $zone, $operation);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -317,7 +352,7 @@ $response = $service->zoneOperations->get($project, $zone, $operation);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -325,27 +360,34 @@ $response = $service->zoneOperations->get($project, $zone, $operation);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Autoscaler service.
 $service = new Google_Service_Autoscaler($client);
 
 
-$project = '';
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
 
-$zone = '';
+$zone = '{MY-ZONE}'  // eg. 'us-central1-f'; // TODO: Update placeholder value(s).
 
-$response = $service->zoneOperations->listZoneOperations($project, $zone);
+$optParams = array();
+do {
+  $response = $service->zoneOperations->listZoneOperations($project, $zone, $optParams);
 
-foreach ($response['items'] as $element) {
-  // TODO: Add code here to process the element.
-}
+  foreach ($response['items'] as $operation) {
+    // TODO: Use operation
+    echo '<pre>', var_export($operation, true), '</pre>', "\n";
+  }
 
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -356,7 +398,7 @@ foreach ($response['items'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -364,21 +406,28 @@ foreach ($response['items'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Autoscaler service.
 $service = new Google_Service_Autoscaler($client);
 
 
-$project = '';
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-$response = $service->zones->listZones($project);
+$optParams = array();
+do {
+  $response = $service->zones->listZones($project, $optParams);
 
-foreach ($response['items'] as $element) {
-  // TODO: Add code here to process the element.
-}
+  foreach ($response['items'] as $zone) {
+    // TODO: Use zone
+    echo '<pre>', var_export($zone, true), '</pre>', "\n";
+  }
 
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);

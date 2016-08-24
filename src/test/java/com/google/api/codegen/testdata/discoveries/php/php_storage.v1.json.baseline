@@ -9,7 +9,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -17,24 +17,25 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-//   group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '';
+// The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+// group-emailAddress, allUsers, or allAuthenticatedUsers.
+$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
 
-$response = $service->bucketAccessControls->delete($bucket, $entity);
-
+$service->bucketAccessControls->delete($bucket, $entity);
 <?php
 /*
  * BEFORE RUNNING:
@@ -45,7 +46,7 @@ $response = $service->bucketAccessControls->delete($bucket, $entity);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -53,24 +54,28 @@ $response = $service->bucketAccessControls->delete($bucket, $entity);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-//   group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '';
+// The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+// group-emailAddress, allUsers, or allAuthenticatedUsers.
+$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
 
 $response = $service->bucketAccessControls->get($bucket, $entity);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -81,7 +86,7 @@ $response = $service->bucketAccessControls->get($bucket, $entity);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -89,22 +94,27 @@ $response = $service->bucketAccessControls->get($bucket, $entity);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Storage_BucketAccessControl($client);
 
 $response = $service->bucketAccessControls->insert($bucket, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -115,7 +125,7 @@ $response = $service->bucketAccessControls->insert($bucket, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -123,20 +133,24 @@ $response = $service->bucketAccessControls->insert($bucket, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
 $response = $service->bucketAccessControls->listBucketAccessControls($bucket);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -147,7 +161,7 @@ $response = $service->bucketAccessControls->listBucketAccessControls($bucket);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -155,26 +169,31 @@ $response = $service->bucketAccessControls->listBucketAccessControls($bucket);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-//   group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '';
+// The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+// group-emailAddress, allUsers, or allAuthenticatedUsers.
+$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties to be changed.
 $postBody = new Google_Service_Storage_BucketAccessControl($client);
 
 $response = $service->bucketAccessControls->patch($bucket, $entity, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -185,7 +204,7 @@ $response = $service->bucketAccessControls->patch($bucket, $entity, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -193,26 +212,31 @@ $response = $service->bucketAccessControls->patch($bucket, $entity, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-//   group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '';
+// The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+// group-emailAddress, allUsers, or allAuthenticatedUsers.
+$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Storage_BucketAccessControl($client);
 
 $response = $service->bucketAccessControls->update($bucket, $entity, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -223,7 +247,7 @@ $response = $service->bucketAccessControls->update($bucket, $entity, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -231,20 +255,21 @@ $response = $service->bucketAccessControls->update($bucket, $entity, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-$response = $service->buckets->delete($bucket);
-
+$service->buckets->delete($bucket);
 <?php
 /*
  * BEFORE RUNNING:
@@ -255,7 +280,7 @@ $response = $service->buckets->delete($bucket);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -263,20 +288,24 @@ $response = $service->buckets->delete($bucket);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
 $response = $service->buckets->get($bucket);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -287,7 +316,7 @@ $response = $service->buckets->get($bucket);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -295,22 +324,27 @@ $response = $service->buckets->get($bucket);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * A valid API project identifier.
-$project = '';
+// A valid API project identifier.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Storage_Bucket($client);
 
 $response = $service->buckets->insert($project, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -321,7 +355,7 @@ $response = $service->buckets->insert($project, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -329,24 +363,31 @@ $response = $service->buckets->insert($project, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * A valid API project identifier.
-$project = '';
+// A valid API project identifier.
+$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
-$response = $service->buckets->listBuckets($project);
+$optParams = array();
+do {
+  $response = $service->buckets->listBuckets($project, $optParams);
 
-foreach ($response['items'] as $element) {
-  // TODO: Add code here to process the element.
-}
+  foreach ($response['items'] as $bucket) {
+    // TODO: Use bucket
+    echo '<pre>', var_export($bucket, true), '</pre>', "\n";
+  }
 
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -357,7 +398,7 @@ foreach ($response['items'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -365,22 +406,27 @@ foreach ($response['items'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties to be changed.
 $postBody = new Google_Service_Storage_Bucket($client);
 
 $response = $service->buckets->patch($bucket, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -391,7 +437,7 @@ $response = $service->buckets->patch($bucket, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -399,22 +445,27 @@ $response = $service->buckets->patch($bucket, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Storage_Bucket($client);
 
 $response = $service->buckets->update($bucket, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -425,7 +476,7 @@ $response = $service->buckets->update($bucket, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -433,20 +484,22 @@ $response = $service->buckets->update($bucket, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Storage_Channel($client);
 
-$response = $service->channels->stop($postBody);
-
+$service->channels->stop($postBody);
 <?php
 /*
  * BEFORE RUNNING:
@@ -457,7 +510,7 @@ $response = $service->channels->stop($postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -465,24 +518,25 @@ $response = $service->channels->stop($postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-//   group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '';
+// The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+// group-emailAddress, allUsers, or allAuthenticatedUsers.
+$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
 
-$response = $service->defaultObjectAccessControls->delete($bucket, $entity);
-
+$service->defaultObjectAccessControls->delete($bucket, $entity);
 <?php
 /*
  * BEFORE RUNNING:
@@ -493,7 +547,7 @@ $response = $service->defaultObjectAccessControls->delete($bucket, $entity);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -501,24 +555,28 @@ $response = $service->defaultObjectAccessControls->delete($bucket, $entity);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-//   group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '';
+// The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+// group-emailAddress, allUsers, or allAuthenticatedUsers.
+$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
 
 $response = $service->defaultObjectAccessControls->get($bucket, $entity);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -529,7 +587,7 @@ $response = $service->defaultObjectAccessControls->get($bucket, $entity);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -537,22 +595,27 @@ $response = $service->defaultObjectAccessControls->get($bucket, $entity);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Storage_ObjectAccessControl($client);
 
 $response = $service->defaultObjectAccessControls->insert($bucket, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -563,7 +626,7 @@ $response = $service->defaultObjectAccessControls->insert($bucket, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -571,20 +634,24 @@ $response = $service->defaultObjectAccessControls->insert($bucket, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
 $response = $service->defaultObjectAccessControls->listDefaultObjectAccessControls($bucket);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -595,7 +662,7 @@ $response = $service->defaultObjectAccessControls->listDefaultObjectAccessContro
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -603,26 +670,31 @@ $response = $service->defaultObjectAccessControls->listDefaultObjectAccessContro
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-//   group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '';
+// The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+// group-emailAddress, allUsers, or allAuthenticatedUsers.
+$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties to be changed.
 $postBody = new Google_Service_Storage_ObjectAccessControl($client);
 
 $response = $service->defaultObjectAccessControls->patch($bucket, $entity, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -633,7 +705,7 @@ $response = $service->defaultObjectAccessControls->patch($bucket, $entity, $post
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -641,26 +713,31 @@ $response = $service->defaultObjectAccessControls->patch($bucket, $entity, $post
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-//   group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '';
+// The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+// group-emailAddress, allUsers, or allAuthenticatedUsers.
+$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Storage_ObjectAccessControl($client);
 
 $response = $service->defaultObjectAccessControls->update($bucket, $entity, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -671,7 +748,7 @@ $response = $service->defaultObjectAccessControls->update($bucket, $entity, $pos
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -679,28 +756,29 @@ $response = $service->defaultObjectAccessControls->update($bucket, $entity, $pos
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * Name of the object. For information about how to URL encode object names to be path safe, see
-//   Encoding URI Path Parts.
-$object = '';
+// Name of the object. For information about how to URL encode object names to be path safe, see
+// Encoding URI Path Parts.
+$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
 
-// * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-//   group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '';
+// The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+// group-emailAddress, allUsers, or allAuthenticatedUsers.
+$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
 
-$response = $service->objectAccessControls->delete($bucket, $object, $entity);
-
+$service->objectAccessControls->delete($bucket, $object, $entity);
 <?php
 /*
  * BEFORE RUNNING:
@@ -711,7 +789,7 @@ $response = $service->objectAccessControls->delete($bucket, $object, $entity);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -719,28 +797,32 @@ $response = $service->objectAccessControls->delete($bucket, $object, $entity);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * Name of the object. For information about how to URL encode object names to be path safe, see
-//   Encoding URI Path Parts.
-$object = '';
+// Name of the object. For information about how to URL encode object names to be path safe, see
+// Encoding URI Path Parts.
+$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
 
-// * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-//   group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '';
+// The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+// group-emailAddress, allUsers, or allAuthenticatedUsers.
+$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
 
 $response = $service->objectAccessControls->get($bucket, $object, $entity);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -751,7 +833,7 @@ $response = $service->objectAccessControls->get($bucket, $object, $entity);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -759,26 +841,31 @@ $response = $service->objectAccessControls->get($bucket, $object, $entity);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * Name of the object. For information about how to URL encode object names to be path safe, see
-//   Encoding URI Path Parts.
-$object = '';
+// Name of the object. For information about how to URL encode object names to be path safe, see
+// Encoding URI Path Parts.
+$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Storage_ObjectAccessControl($client);
 
 $response = $service->objectAccessControls->insert($bucket, $object, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -789,7 +876,7 @@ $response = $service->objectAccessControls->insert($bucket, $object, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -797,24 +884,28 @@ $response = $service->objectAccessControls->insert($bucket, $object, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * Name of the object. For information about how to URL encode object names to be path safe, see
-//   Encoding URI Path Parts.
-$object = '';
+// Name of the object. For information about how to URL encode object names to be path safe, see
+// Encoding URI Path Parts.
+$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
 
 $response = $service->objectAccessControls->listObjectAccessControls($bucket, $object);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -825,7 +916,7 @@ $response = $service->objectAccessControls->listObjectAccessControls($bucket, $o
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -833,30 +924,35 @@ $response = $service->objectAccessControls->listObjectAccessControls($bucket, $o
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * Name of the object. For information about how to URL encode object names to be path safe, see
-//   Encoding URI Path Parts.
-$object = '';
+// Name of the object. For information about how to URL encode object names to be path safe, see
+// Encoding URI Path Parts.
+$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
 
-// * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-//   group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '';
+// The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+// group-emailAddress, allUsers, or allAuthenticatedUsers.
+$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties to be changed.
 $postBody = new Google_Service_Storage_ObjectAccessControl($client);
 
 $response = $service->objectAccessControls->patch($bucket, $object, $entity, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -867,7 +963,7 @@ $response = $service->objectAccessControls->patch($bucket, $object, $entity, $po
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -875,30 +971,35 @@ $response = $service->objectAccessControls->patch($bucket, $object, $entity, $po
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of a bucket.
-$bucket = '';
+// Name of a bucket.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * Name of the object. For information about how to URL encode object names to be path safe, see
-//   Encoding URI Path Parts.
-$object = '';
+// Name of the object. For information about how to URL encode object names to be path safe, see
+// Encoding URI Path Parts.
+$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
 
-// * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-//   group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '';
+// The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+// group-emailAddress, allUsers, or allAuthenticatedUsers.
+$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Storage_ObjectAccessControl($client);
 
 $response = $service->objectAccessControls->update($bucket, $object, $entity, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -909,7 +1010,7 @@ $response = $service->objectAccessControls->update($bucket, $object, $entity, $p
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -917,26 +1018,31 @@ $response = $service->objectAccessControls->update($bucket, $object, $entity, $p
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of the bucket in which to store the new object.
-$destinationBucket = '';
+// Name of the bucket in which to store the new object.
+$destinationBucket = '{MY-DESTINATION-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * Name of the new object. For information about how to URL encode object names to be path safe, see
-//   Encoding URI Path Parts.
-$destinationObject = '';
+// Name of the new object. For information about how to URL encode object names to be path safe, see
+// Encoding URI Path Parts.
+$destinationObject = '{MY-DESTINATION-OBJECT}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Storage_ComposeRequest($client);
 
 $response = $service->objects->compose($destinationBucket, $destinationObject, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -947,7 +1053,7 @@ $response = $service->objects->compose($destinationBucket, $destinationObject, $
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -955,35 +1061,40 @@ $response = $service->objects->compose($destinationBucket, $destinationObject, $
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of the bucket in which to find the source object.
-$sourceBucket = '';
+// Name of the bucket in which to find the source object.
+$sourceBucket = '{MY-SOURCE-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * Name of the source object. For information about how to URL encode object names to be path safe,
-//   see Encoding URI Path Parts.
-$sourceObject = '';
+// Name of the source object. For information about how to URL encode object names to be path safe, see
+// Encoding URI Path Parts.
+$sourceObject = '{MY-SOURCE-OBJECT}'; // TODO: Update placeholder value(s).
 
-// * Name of the bucket in which to store the new object. Overrides the provided object metadata's
-//   bucket value, if any.For information about how to URL encode object names to be path safe, see
-//   Encoding URI Path Parts.
-$destinationBucket = '';
+// Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
+// value, if any.For information about how to URL encode object names to be path safe, see Encoding URI
+// Path Parts.
+$destinationBucket = '{MY-DESTINATION-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
-//   object metadata's name value, if any.
-$destinationObject = '';
+// Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
+// object metadata's name value, if any.
+$destinationObject = '{MY-DESTINATION-OBJECT}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Storage_StorageObject($client);
 
 $response = $service->objects->copy($sourceBucket, $sourceObject, $destinationBucket, $destinationObject, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -994,7 +1105,7 @@ $response = $service->objects->copy($sourceBucket, $sourceObject, $destinationBu
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1002,24 +1113,25 @@ $response = $service->objects->copy($sourceBucket, $sourceObject, $destinationBu
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of the bucket in which the object resides.
-$bucket = '';
+// Name of the bucket in which the object resides.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * Name of the object. For information about how to URL encode object names to be path safe, see
-//   Encoding URI Path Parts.
-$object = '';
+// Name of the object. For information about how to URL encode object names to be path safe, see
+// Encoding URI Path Parts.
+$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
 
-$response = $service->objects->delete($bucket, $object);
-
+$service->objects->delete($bucket, $object);
 <?php
 /*
  * BEFORE RUNNING:
@@ -1030,7 +1142,7 @@ $response = $service->objects->delete($bucket, $object);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1038,24 +1150,28 @@ $response = $service->objects->delete($bucket, $object);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of the bucket in which the object resides.
-$bucket = '';
+// Name of the bucket in which the object resides.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * Name of the object. For information about how to URL encode object names to be path safe, see
-//   Encoding URI Path Parts.
-$object = '';
+// Name of the object. For information about how to URL encode object names to be path safe, see
+// Encoding URI Path Parts.
+$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
 
 $response = $service->objects->get($bucket, $object);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1066,7 +1182,7 @@ $response = $service->objects->get($bucket, $object);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1074,23 +1190,28 @@ $response = $service->objects->get($bucket, $object);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of the bucket in which to store the new object. Overrides the provided object metadata's
-//   bucket value, if any.
-$bucket = '';
+// Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
+// value, if any.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Storage_StorageObject($client);
 
 $response = $service->objects->insert($bucket, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1101,7 +1222,7 @@ $response = $service->objects->insert($bucket, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1109,24 +1230,31 @@ $response = $service->objects->insert($bucket, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of the bucket in which to look for objects.
-$bucket = '';
+// Name of the bucket in which to look for objects.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-$response = $service->objects->listObjects($bucket);
+$optParams = array();
+do {
+  $response = $service->objects->listObjects($bucket, $optParams);
 
-foreach ($response['items'] as $element) {
-  // TODO: Add code here to process the element.
-}
+  foreach ($response['items'] as $object) {
+    // TODO: Use object
+    echo '<pre>', var_export($object, true), '</pre>', "\n";
+  }
 
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -1137,7 +1265,7 @@ foreach ($response['items'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1145,26 +1273,31 @@ foreach ($response['items'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of the bucket in which the object resides.
-$bucket = '';
+// Name of the bucket in which the object resides.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * Name of the object. For information about how to URL encode object names to be path safe, see
-//   Encoding URI Path Parts.
-$object = '';
+// Name of the object. For information about how to URL encode object names to be path safe, see
+// Encoding URI Path Parts.
+$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties to be changed.
 $postBody = new Google_Service_Storage_StorageObject($client);
 
 $response = $service->objects->patch($bucket, $object, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1175,7 +1308,7 @@ $response = $service->objects->patch($bucket, $object, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1183,35 +1316,40 @@ $response = $service->objects->patch($bucket, $object, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of the bucket in which to find the source object.
-$sourceBucket = '';
+// Name of the bucket in which to find the source object.
+$sourceBucket = '{MY-SOURCE-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * Name of the source object. For information about how to URL encode object names to be path safe,
-//   see Encoding URI Path Parts.
-$sourceObject = '';
+// Name of the source object. For information about how to URL encode object names to be path safe, see
+// Encoding URI Path Parts.
+$sourceObject = '{MY-SOURCE-OBJECT}'; // TODO: Update placeholder value(s).
 
-// * Name of the bucket in which to store the new object. Overrides the provided object metadata's
-//   bucket value, if any.
-$destinationBucket = '';
+// Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
+// value, if any.
+$destinationBucket = '{MY-DESTINATION-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
-//   object metadata's name value, if any. For information about how to URL encode object names to be
-//   path safe, see Encoding URI Path Parts.
-$destinationObject = '';
+// Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
+// object metadata's name value, if any. For information about how to URL encode object names to be
+// path safe, see Encoding URI Path Parts.
+$destinationObject = '{MY-DESTINATION-OBJECT}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Storage_StorageObject($client);
 
 $response = $service->objects->rewrite($sourceBucket, $sourceObject, $destinationBucket, $destinationObject, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1222,7 +1360,7 @@ $response = $service->objects->rewrite($sourceBucket, $sourceObject, $destinatio
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1230,26 +1368,31 @@ $response = $service->objects->rewrite($sourceBucket, $sourceObject, $destinatio
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of the bucket in which the object resides.
-$bucket = '';
+// Name of the bucket in which the object resides.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
-// * Name of the object. For information about how to URL encode object names to be path safe, see
-//   Encoding URI Path Parts.
-$object = '';
+// Name of the object. For information about how to URL encode object names to be path safe, see
+// Encoding URI Path Parts.
+$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Storage_StorageObject($client);
 
 $response = $service->objects->update($bucket, $object, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -1260,7 +1403,7 @@ $response = $service->objects->update($bucket, $object, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -1268,19 +1411,24 @@ $response = $service->objects->update($bucket, $object, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storage service.
 $service = new Google_Service_Storage($client);
 
-// * Name of the bucket in which to look for objects.
-$bucket = '';
+// Name of the bucket in which to look for objects.
+$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Storage_Channel($client);
 
 $response = $service->objects->watchAll($bucket, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";

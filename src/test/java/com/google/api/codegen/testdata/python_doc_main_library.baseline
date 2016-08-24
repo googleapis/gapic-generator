@@ -330,7 +330,7 @@ class LibraryServiceApi(object):
           >>> from library.library_service_api import LibraryServiceApi
           >>> from google.example.library.v1 import library_pb2
           >>> api = LibraryServiceApi()
-          >>> shelf = library_pb2.Shelf()
+          >>> shelf = tagger_pb2.Shelf()
           >>> response = api.create_shelf(shelf)
 
         Args:
@@ -380,9 +380,9 @@ class LibraryServiceApi(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
         """
         if message is None:
-            message = library_pb2.SomeMessage()
+            message = tagger_pb2.SomeMessage()
         if string_builder is None:
-            string_builder = library_pb2.StringBuilder()
+            string_builder = tagger_pb2.StringBuilder()
         request = library_pb2.GetShelfRequest(
             name=name,
             options=options_,
@@ -500,7 +500,7 @@ class LibraryServiceApi(object):
           >>> from google.example.library.v1 import library_pb2
           >>> api = LibraryServiceApi()
           >>> name = api.shelf_path('[SHELF]')
-          >>> book = library_pb2.Book()
+          >>> book = tagger_pb2.Book()
           >>> response = api.create_book(name, book)
 
         Args:
@@ -533,7 +533,7 @@ class LibraryServiceApi(object):
           >>> from library.library_service_api import LibraryServiceApi
           >>> from google.example.library.v1 import library_pb2
           >>> api = LibraryServiceApi()
-          >>> shelf = library_pb2.Shelf()
+          >>> shelf = tagger_pb2.Shelf()
           >>> books = []
           >>> response = api.publish_series(shelf, books)
 
@@ -676,7 +676,7 @@ class LibraryServiceApi(object):
           >>> from google.example.library.v1 import library_pb2
           >>> api = LibraryServiceApi()
           >>> name = api.book_path('[SHELF]', '[BOOK]')
-          >>> book = library_pb2.Book()
+          >>> book = tagger_pb2.Book()
           >>> response = api.update_book(name, book)
 
         Args:
@@ -798,7 +798,8 @@ class LibraryServiceApi(object):
           >>> api = LibraryServiceApi()
           >>> name = api.book_path('[SHELF]', '[BOOK]')
           >>> comment = ''
-          >>> comments_element = library_pb2.Comment(comment)
+          >>> stage = tagger_pb2.Comment.Stage.UNSET
+          >>> comments_element = tagger_pb2.Comment(comment, stage)
           >>> comments = [comments_element]
           >>> api.add_comments(name, comments)
 

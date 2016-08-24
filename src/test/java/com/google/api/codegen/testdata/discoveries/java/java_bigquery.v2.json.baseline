@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -8,7 +8,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -26,10 +26,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -44,23 +43,22 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // Project ID of the dataset being deleted
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-    // * Project ID of the dataset being deleted
-    String projectId = "";
-
-    // * Dataset ID of dataset being deleted
-    String datasetId = "";
+    // Dataset ID of dataset being deleted
+    String datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
 
     Bigquery.Datasets.Delete request = bigqueryService.datasets().delete(projectId, datasetId);
     request.execute();
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -69,7 +67,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -83,15 +81,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.Dataset;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -106,25 +105,26 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // Project ID of the requested dataset
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-    // * Project ID of the requested dataset
-    String projectId = "";
-
-    // * Dataset ID of the requested dataset
-    String datasetId = "";
+    // Dataset ID of the requested dataset
+    String datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
 
     Bigquery.Datasets.Get request = bigqueryService.datasets().get(projectId, datasetId);
     Dataset response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -133,7 +133,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -147,15 +147,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.Dataset;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -170,25 +171,27 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+    // Project ID of the new dataset
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-    // * Project ID of the new dataset
-    String projectId = "";
+    // TODO: Assign values to the desired fields.
+    Dataset requestBody = new Dataset();
 
-    Dataset content = new Dataset();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Bigquery.Datasets.Insert request = bigqueryService.datasets().insert(projectId, content);
+    Bigquery.Datasets.Insert request = bigqueryService.datasets().insert(projectId, requestBody);
     Dataset response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -197,7 +200,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -212,15 +215,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.DatasetList;
 import com.google.api.services.bigquery.model.DatasetList.Datasets;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -235,16 +239,18 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * Project ID of the datasets to be listed
-    String projectId = "";
+    // Project ID of the datasets to be listed
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
     Bigquery.Datasets.List request = bigqueryService.datasets().list(projectId);
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     DatasetList response;
     do {
       response = request.execute();
@@ -252,14 +258,15 @@ public class BigqueryExample {
         continue;
 
       for (Datasets datasets : response.getDatasets()) {
-        // TODO: Add code here to process each 'datasets' resource
+        // TODO: Use datasets
+        System.out.println(gson.toJson(new JsonParser().parse(datasets.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -268,7 +275,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -282,15 +289,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.Dataset;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -305,28 +313,30 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+    // Project ID of the dataset being updated
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-    // * Project ID of the dataset being updated
-    String projectId = "";
+    // Dataset ID of the dataset being updated
+    String datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
 
-    // * Dataset ID of the dataset being updated
-    String datasetId = "";
+    // TODO: Assign values to the desired fields to be changed.
+    Dataset requestBody = new Dataset();
 
-    Dataset content = new Dataset();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Bigquery.Datasets.Patch request = bigqueryService.datasets().patch(projectId, datasetId, content);
+    Bigquery.Datasets.Patch request = bigqueryService.datasets().patch(projectId, datasetId, requestBody);
     Dataset response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -335,7 +345,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -349,15 +359,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.Dataset;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -372,28 +383,30 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+    // Project ID of the dataset being updated
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-    // * Project ID of the dataset being updated
-    String projectId = "";
+    // Dataset ID of the dataset being updated
+    String datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
 
-    // * Dataset ID of the dataset being updated
-    String datasetId = "";
+    // TODO: Assign values to the desired fields.
+    Dataset requestBody = new Dataset();
 
-    Dataset content = new Dataset();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Bigquery.Datasets.Update request = bigqueryService.datasets().update(projectId, datasetId, content);
+    Bigquery.Datasets.Update request = bigqueryService.datasets().update(projectId, datasetId, requestBody);
     Dataset response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -402,7 +415,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -416,15 +429,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.JobCancelResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -439,25 +453,26 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'cancel' method:
+    // [Required] Project ID of the job to cancel
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-    // * [Required] Project ID of the job to cancel
-    String projectId = "";
-
-    // * [Required] Job ID of the job to cancel
-    String jobId = "";
+    // [Required] Job ID of the job to cancel
+    String jobId = "{MY-JOB-ID}"; // TODO: Update placeholder value(s).
 
     Bigquery.Jobs.Cancel request = bigqueryService.jobs().cancel(projectId, jobId);
     JobCancelResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -466,7 +481,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -480,15 +495,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.Job;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -503,25 +519,26 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // [Required] Project ID of the requested job
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-    // * [Required] Project ID of the requested job
-    String projectId = "";
-
-    // * [Required] Job ID of the requested job
-    String jobId = "";
+    // [Required] Job ID of the requested job
+    String jobId = "{MY-JOB-ID}"; // TODO: Update placeholder value(s).
 
     Bigquery.Jobs.Get request = bigqueryService.jobs().get(projectId, jobId);
     Job response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -530,7 +547,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -544,15 +561,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.GetQueryResultsResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -567,25 +585,26 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'getQueryResults' method:
+    // [Required] Project ID of the query job
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-    // * [Required] Project ID of the query job
-    String projectId = "";
-
-    // * [Required] Job ID of the query job
-    String jobId = "";
+    // [Required] Job ID of the query job
+    String jobId = "{MY-JOB-ID}"; // TODO: Update placeholder value(s).
 
     Bigquery.Jobs.GetQueryResults request = bigqueryService.jobs().getQueryResults(projectId, jobId);
     GetQueryResultsResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -594,7 +613,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -608,15 +627,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.Job;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -631,25 +651,27 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+    // Project ID of the project that will be billed for the job
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-    // * Project ID of the project that will be billed for the job
-    String projectId = "";
+    // TODO: Assign values to the desired fields.
+    Job requestBody = new Job();
 
-    Job content = new Job();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Bigquery.Jobs.Insert request = bigqueryService.jobs().insert(projectId, content);
+    Bigquery.Jobs.Insert request = bigqueryService.jobs().insert(projectId, requestBody);
     Job response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -658,7 +680,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -673,15 +695,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.JobList;
 import com.google.api.services.bigquery.model.JobList.Jobs;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -696,16 +719,18 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * Project ID of the jobs to list
-    String projectId = "";
+    // Project ID of the jobs to list
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
     Bigquery.Jobs.List request = bigqueryService.jobs().list(projectId);
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     JobList response;
     do {
       response = request.execute();
@@ -713,14 +738,15 @@ public class BigqueryExample {
         continue;
 
       for (Jobs jobs : response.getJobs()) {
-        // TODO: Add code here to process each 'jobs' resource
+        // TODO: Use jobs
+        System.out.println(gson.toJson(new JsonParser().parse(jobs.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -729,7 +755,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -744,15 +770,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.QueryRequest;
 import com.google.api.services.bigquery.model.QueryResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -767,25 +794,27 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'query' method:
+    // Project ID of the project billed for the query
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-    // * Project ID of the project billed for the query
-    String projectId = "";
+    // TODO: Assign values to the desired fields.
+    QueryRequest requestBody = new QueryRequest();
 
-    QueryRequest content = new QueryRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Bigquery.Jobs.Query request = bigqueryService.jobs().query(projectId, content);
+    Bigquery.Jobs.Query request = bigqueryService.jobs().query(projectId, requestBody);
     QueryResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -794,7 +823,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -809,15 +838,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.ProjectList;
 import com.google.api.services.bigquery.model.ProjectList.Projects;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -832,12 +862,16 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
 
     Bigquery.Projects.List request = bigqueryService.projects().list();
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     ProjectList response;
     do {
       response = request.execute();
@@ -845,14 +879,15 @@ public class BigqueryExample {
         continue;
 
       for (Projects projects : response.getProjects()) {
-        // TODO: Add code here to process each 'projects' resource
+        // TODO: Use projects
+        System.out.println(gson.toJson(new JsonParser().parse(projects.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -861,7 +896,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -876,15 +911,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.TableDataInsertAllRequest;
 import com.google.api.services.bigquery.model.TableDataInsertAllResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -899,31 +935,33 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insertAll' method:
+    // Project ID of the destination table.
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-    // * Project ID of the destination table.
-    String projectId = "";
+    // Dataset ID of the destination table.
+    String datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
 
-    // * Dataset ID of the destination table.
-    String datasetId = "";
+    // Table ID of the destination table.
+    String tableId = "{MY-TABLE-ID}"; // TODO: Update placeholder value(s).
 
-    // * Table ID of the destination table.
-    String tableId = "";
+    // TODO: Assign values to the desired fields.
+    TableDataInsertAllRequest requestBody = new TableDataInsertAllRequest();
 
-    TableDataInsertAllRequest content = new TableDataInsertAllRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Bigquery.Tabledata.InsertAll request = bigqueryService.tabledata().insertAll(projectId, datasetId, tableId, content);
+    Bigquery.Tabledata.InsertAll request = bigqueryService.tabledata().insertAll(projectId, datasetId, tableId, requestBody);
     TableDataInsertAllResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -932,7 +970,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -946,15 +984,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.TableDataList;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -969,28 +1008,29 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // Project ID of the table to read
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-    // * Project ID of the table to read
-    String projectId = "";
+    // Dataset ID of the table to read
+    String datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
 
-    // * Dataset ID of the table to read
-    String datasetId = "";
-
-    // * Table ID of the table to read
-    String tableId = "";
+    // Table ID of the table to read
+    String tableId = "{MY-TABLE-ID}"; // TODO: Update placeholder value(s).
 
     Bigquery.Tabledata.List request = bigqueryService.tabledata().list(projectId, datasetId, tableId);
     TableDataList response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -999,7 +1039,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1017,10 +1057,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1035,26 +1074,25 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // Project ID of the table to delete
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-    // * Project ID of the table to delete
-    String projectId = "";
+    // Dataset ID of the table to delete
+    String datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
 
-    // * Dataset ID of the table to delete
-    String datasetId = "";
-
-    // * Table ID of the table to delete
-    String tableId = "";
+    // Table ID of the table to delete
+    String tableId = "{MY-TABLE-ID}"; // TODO: Update placeholder value(s).
 
     Bigquery.Tables.Delete request = bigqueryService.tables().delete(projectId, datasetId, tableId);
     request.execute();
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -1063,7 +1101,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1077,15 +1115,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.Table;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1100,28 +1139,29 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // Project ID of the requested table
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-    // * Project ID of the requested table
-    String projectId = "";
+    // Dataset ID of the requested table
+    String datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
 
-    // * Dataset ID of the requested table
-    String datasetId = "";
-
-    // * Table ID of the requested table
-    String tableId = "";
+    // Table ID of the requested table
+    String tableId = "{MY-TABLE-ID}"; // TODO: Update placeholder value(s).
 
     Bigquery.Tables.Get request = bigqueryService.tables().get(projectId, datasetId, tableId);
     Table response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -1130,7 +1170,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1144,15 +1184,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.Table;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1167,28 +1208,30 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+    // Project ID of the new table
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-    // * Project ID of the new table
-    String projectId = "";
+    // Dataset ID of the new table
+    String datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
 
-    // * Dataset ID of the new table
-    String datasetId = "";
+    // TODO: Assign values to the desired fields.
+    Table requestBody = new Table();
 
-    Table content = new Table();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Bigquery.Tables.Insert request = bigqueryService.tables().insert(projectId, datasetId, content);
+    Bigquery.Tables.Insert request = bigqueryService.tables().insert(projectId, datasetId, requestBody);
     Table response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -1197,7 +1240,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1212,15 +1255,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.TableList;
 import com.google.api.services.bigquery.model.TableList.Tables;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1235,19 +1279,21 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // Project ID of the tables to list
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-    // * Project ID of the tables to list
-    String projectId = "";
-
-    // * Dataset ID of the tables to list
-    String datasetId = "";
+    // Dataset ID of the tables to list
+    String datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
 
     Bigquery.Tables.List request = bigqueryService.tables().list(projectId, datasetId);
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     TableList response;
     do {
       response = request.execute();
@@ -1255,14 +1301,15 @@ public class BigqueryExample {
         continue;
 
       for (Tables tables : response.getTables()) {
-        // TODO: Add code here to process each 'tables' resource
+        // TODO: Use tables
+        System.out.println(gson.toJson(new JsonParser().parse(tables.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -1271,7 +1318,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1285,15 +1332,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.Table;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1308,31 +1356,33 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+    // Project ID of the table to update
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-    // * Project ID of the table to update
-    String projectId = "";
+    // Dataset ID of the table to update
+    String datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
 
-    // * Dataset ID of the table to update
-    String datasetId = "";
+    // Table ID of the table to update
+    String tableId = "{MY-TABLE-ID}"; // TODO: Update placeholder value(s).
 
-    // * Table ID of the table to update
-    String tableId = "";
+    // TODO: Assign values to the desired fields to be changed.
+    Table requestBody = new Table();
 
-    Table content = new Table();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Bigquery.Tables.Patch request = bigqueryService.tables().patch(projectId, datasetId, tableId, content);
+    Bigquery.Tables.Patch request = bigqueryService.tables().patch(projectId, datasetId, tableId, requestBody);
     Table response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -1341,7 +1391,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -1355,15 +1405,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.Table;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class BigqueryExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -1378,27 +1429,29 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+    // Project ID of the table to update
+    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-    // * Project ID of the table to update
-    String projectId = "";
+    // Dataset ID of the table to update
+    String datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
 
-    // * Dataset ID of the table to update
-    String datasetId = "";
+    // Table ID of the table to update
+    String tableId = "{MY-TABLE-ID}"; // TODO: Update placeholder value(s).
 
-    // * Table ID of the table to update
-    String tableId = "";
+    // TODO: Assign values to the desired fields.
+    Table requestBody = new Table();
 
-    Table content = new Table();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Bigquery.Tables.Update request = bigqueryService.tables().update(projectId, datasetId, tableId, content);
+    Bigquery.Tables.Update request = bigqueryService.tables().update(projectId, datasetId, tableId, requestBody);
     Table response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }

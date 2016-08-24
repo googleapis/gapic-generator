@@ -7,15 +7,20 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var cloudmonitoring = google.cloudmonitoring('v2beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -24,22 +29,134 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+    // The project id. The value can be the numeric project ID or string-based project name.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The project id. The value can be the numeric project ID or string-based project name.
-    project: "",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  cloudmonitoring.metricDescriptors.create(request, function(err, result) {
+  cloudmonitoring.metricDescriptors.create(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud Monitoring API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudmonitoring
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var cloudmonitoring = google.cloudmonitoring('v2beta2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // The project ID to which the metric belongs.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Name of the metric.
+    metric: "{MY-METRIC}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  cloudmonitoring.metricDescriptors.delete(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud Monitoring API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudmonitoring
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var cloudmonitoring = google.cloudmonitoring('v2beta2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // The project id. The value can be the numeric project ID or string-based project name.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  cloudmonitoring.metricDescriptors.list(request, function handlePage(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var metricsPage = response['metrics'];
+    if (!metricsPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < metricsPage.length; i++) {
+      // TODO: Use metricsPage
+      console.log(JSON.stringify(metricsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      cloudmonitoring.metricDescriptors.list(request, handlePage);
     }
   });
 });
@@ -51,15 +168,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var cloudmonitoring = google.cloudmonitoring('v2beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -68,23 +190,43 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // The project ID to which this time series belongs. The value can be the numeric project ID or
+    // string-based project name.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The project ID to which the metric belongs.
-    project: "",
+    // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
+    // compute.googleapis.com/instance/disk/read_ops_count.
+    metric: "{MY-METRIC}", // TODO: Update placeholder value(s).
 
-    // * Name of the metric.
-    metric: "",
+    // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
+    youngest: "{MY-YOUNGEST}", // TODO: Update placeholder value(s).
 
-    // Auth client
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
     auth: authClient
   };
 
-  cloudmonitoring.metricDescriptors.delete(request, function(err, result) {
+  cloudmonitoring.timeseries.list(request, function handlePage(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    var timeseriesPage = response['timeseries'];
+    if (!timeseriesPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < timeseriesPage.length; i++) {
+      // TODO: Use timeseriesPage
+      console.log(JSON.stringify(timeseriesPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      cloudmonitoring.timeseries.list(request, handlePage);
     }
   });
 });
@@ -96,15 +238,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var cloudmonitoring = google.cloudmonitoring('v2beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -113,133 +260,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // The project ID. The value can be the numeric project ID or string-based project name.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The project id. The value can be the numeric project ID or string-based project name.
-    project: "",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-
-  var recur = function(err, result) {
+  cloudmonitoring.timeseries.write(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        cloudmonitoring.metricDescriptors.list(request, recur);
-      }
+      return;
     }
-  };
 
-  cloudmonitoring.metricDescriptors.list(request, recur);
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud Monitoring API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudmonitoring
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var cloudmonitoring = google.cloudmonitoring('v2beta2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * The project ID to which this time series belongs. The value can be the numeric project ID or
-    //   string-based project name.
-    project: "",
-
-    // * Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
-    //   compute.googleapis.com/instance/disk/read_ops_count.
-    metric: "",
-
-    // * End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
-    youngest: "",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-
-  var recur = function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        cloudmonitoring.timeseries.list(request, recur);
-      }
-    }
-  };
-
-  cloudmonitoring.timeseries.list(request, recur);
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud Monitoring API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudmonitoring
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var cloudmonitoring = google.cloudmonitoring('v2beta2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'write' method:
-
-    // * The project ID. The value can be the numeric project ID or string-based project name.
-    project: "",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  cloudmonitoring.timeseries.write(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -250,15 +288,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var cloudmonitoring = google.cloudmonitoring('v2beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -267,37 +310,43 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // The project ID to which this time series belongs. The value can be the numeric project ID or
+    // string-based project name.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The project ID to which this time series belongs. The value can be the numeric project ID or
-    //   string-based project name.
-    project: "",
+    // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
+    // compute.googleapis.com/instance/disk/read_ops_count.
+    metric: "{MY-METRIC}", // TODO: Update placeholder value(s).
 
-    // * Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
-    //   compute.googleapis.com/instance/disk/read_ops_count.
-    metric: "",
+    // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
+    youngest: "{MY-YOUNGEST}", // TODO: Update placeholder value(s).
 
-    // * End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
-    youngest: "",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-
-  var recur = function(err, result) {
+  cloudmonitoring.timeseriesDescriptors.list(request, function handlePage(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        cloudmonitoring.timeseriesDescriptors.list(request, recur);
-      }
+      return;
     }
-  };
 
-  cloudmonitoring.timeseriesDescriptors.list(request, recur);
+    var timeseriesPage = response['timeseries'];
+    if (!timeseriesPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < timeseriesPage.length; i++) {
+      // TODO: Use timeseriesPage
+      console.log(JSON.stringify(timeseriesPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      cloudmonitoring.timeseriesDescriptors.list(request, handlePage);
+    }
+  });
 });

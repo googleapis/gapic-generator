@@ -9,7 +9,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -17,21 +17,25 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Cloudbilling service.
 $service = new Google_Service_Cloudbilling($client);
 
-// * The resource name of the billing account to retrieve. For example,
-//   `billingAccounts/012345-567890-ABCDEF`.
-$name = 'billingAccounts/{MY-BILLINGACCOUNT}';
+// The resource name of the billing account to retrieve. For example,
+// `billingAccounts/012345-567890-ABCDEF`.
+$name = 'billingAccounts/{MY-BILLINGACCOUNT}'; // TODO: Update placeholder value(s).
 
 $response = $service->billingAccounts->get($name);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -42,7 +46,7 @@ $response = $service->billingAccounts->get($name);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -50,22 +54,29 @@ $response = $service->billingAccounts->get($name);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Cloudbilling service.
 $service = new Google_Service_Cloudbilling($client);
 
 
-$response = $service->billingAccounts->listBillingAccounts();
+$optParams = array();
+do {
+  $response = $service->billingAccounts->listBillingAccounts($optParams);
 
-foreach ($response['billingAccounts'] as $element) {
-  // TODO: Add code here to process the element.
-}
+  foreach ($response['billingAccounts'] as $billing_account) {
+    // TODO: Use billing_account
+    echo '<pre>', var_export($billing_account, true), '</pre>', "\n";
+  }
 
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -76,7 +87,7 @@ foreach ($response['billingAccounts'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -84,25 +95,32 @@ foreach ($response['billingAccounts'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Cloudbilling service.
 $service = new Google_Service_Cloudbilling($client);
 
-// * The resource name of the billing account associated with the projects that you want to list. For
-//   example, `billingAccounts/012345-567890-ABCDEF`.
-$name = 'billingAccounts/{MY-BILLINGACCOUNT}';
+// The resource name of the billing account associated with the projects that you want to list. For
+// example, `billingAccounts/012345-567890-ABCDEF`.
+$name = 'billingAccounts/{MY-BILLINGACCOUNT}'; // TODO: Update placeholder value(s).
 
-$response = $service->billingAccounts_projects->listBillingAccountsProjects($name);
+$optParams = array();
+do {
+  $response = $service->billingAccounts_projects->listBillingAccountsProjects($name, $optParams);
 
-foreach ($response['projectBillingInfo'] as $element) {
-  // TODO: Add code here to process the element.
-}
+  foreach ($response['projectBillingInfo'] as $project_billing_info) {
+    // TODO: Use project_billing_info
+    echo '<pre>', var_export($project_billing_info, true), '</pre>', "\n";
+  }
 
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -113,7 +131,7 @@ foreach ($response['projectBillingInfo'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -121,21 +139,25 @@ foreach ($response['projectBillingInfo'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Cloudbilling service.
 $service = new Google_Service_Cloudbilling($client);
 
-// * The resource name of the project for which billing information is retrieved. For example,
-//   `projects/tokyo-rain-123`.
-$name = 'projects/{MY-PROJECT}';
+// The resource name of the project for which billing information is retrieved. For example,
+// `projects/tokyo-rain-123`.
+$name = 'projects/{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
 $response = $service->projects->getBillingInfo($name);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -146,7 +168,7 @@ $response = $service->projects->getBillingInfo($name);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -154,20 +176,25 @@ $response = $service->projects->getBillingInfo($name);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Cloudbilling service.
 $service = new Google_Service_Cloudbilling($client);
 
-// * The resource name of the project associated with the billing information that you want to update.
-//   For example, `projects/tokyo-rain-123`.
-$name = 'projects/{MY-PROJECT}';
+// The resource name of the project associated with the billing information that you want to update.
+// For example, `projects/tokyo-rain-123`.
+$name = 'projects/{MY-PROJECT}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Cloudbilling_ProjectBillingInfo($client);
 
 $response = $service->projects->updateBillingInfo($name, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";

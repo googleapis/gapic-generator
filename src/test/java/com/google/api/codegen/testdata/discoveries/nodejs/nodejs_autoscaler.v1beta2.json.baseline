@@ -7,15 +7,20 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var autoscaler = google.autoscaler('v1beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -24,26 +29,191 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // Project ID of Autoscaler resource.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Project ID of Autoscaler resource.
-    project: "",
+    // Zone name of Autoscaler resource.
+    zone: "{MY-ZONE}", // TODO: Update placeholder value(s).
 
-    // * Zone name of Autoscaler resource.
-    zone: "",
+    // Name of the Autoscaler resource.
+    autoscaler: "{MY-AUTOSCALER}", // TODO: Update placeholder value(s).
 
-    // * Name of the Autoscaler resource.
-    autoscaler: "",
-
-    // Auth client
     auth: authClient
   };
 
-  autoscaler.autoscalers.delete(request, function(err, result) {
+  autoscaler.autoscalers.delete(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Compute Engine Autoscaler API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/autoscaler
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var autoscaler = google.autoscaler('v1beta2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of Autoscaler resource.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Zone name of Autoscaler resource.
+    zone: "{MY-ZONE}", // TODO: Update placeholder value(s).
+
+    // Name of the Autoscaler resource.
+    autoscaler: "{MY-AUTOSCALER}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  autoscaler.autoscalers.get(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Compute Engine Autoscaler API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/autoscaler
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var autoscaler = google.autoscaler('v1beta2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of Autoscaler resource.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Zone name of Autoscaler resource.
+    zone: "{MY-ZONE}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  autoscaler.autoscalers.insert(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Compute Engine Autoscaler API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/autoscaler
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var autoscaler = google.autoscaler('v1beta2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of Autoscaler resource.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Zone name of Autoscaler resource.
+    zone: "{MY-ZONE}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  autoscaler.autoscalers.list(request, function handlePage(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var itemsPage = response['items'];
+    if (!itemsPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < itemsPage.length; i++) {
+      // TODO: Use itemsPage
+      console.log(JSON.stringify(itemsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      autoscaler.autoscalers.list(request, handlePage);
     }
   });
 });
@@ -55,15 +225,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var autoscaler = google.autoscaler('v1beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -72,26 +247,133 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // Project ID of Autoscaler resource.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Project ID of Autoscaler resource.
-    project: "",
+    // Zone name of Autoscaler resource.
+    zone: "{MY-ZONE}", // TODO: Update placeholder value(s).
 
-    // * Zone name of Autoscaler resource.
-    zone: "",
+    // Name of the Autoscaler resource.
+    autoscaler: "{MY-AUTOSCALER}", // TODO: Update placeholder value(s).
 
-    // * Name of the Autoscaler resource.
-    autoscaler: "",
+    resource: {
+      // TODO: Add the desired properties to be changed.
+    },
 
-    // Auth client
     auth: authClient
   };
 
-  autoscaler.autoscalers.get(request, function(err, result) {
+  autoscaler.autoscalers.patch(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Compute Engine Autoscaler API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/autoscaler
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var autoscaler = google.autoscaler('v1beta2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of Autoscaler resource.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // Zone name of Autoscaler resource.
+    zone: "{MY-ZONE}", // TODO: Update placeholder value(s).
+
+    // Name of the Autoscaler resource.
+    autoscaler: "{MY-AUTOSCALER}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  autoscaler.autoscalers.update(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Compute Engine Autoscaler API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/autoscaler
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var autoscaler = google.autoscaler('v1beta2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+
+    zone: "{MY-ZONE}"  // eg. "us-central1-f", // TODO: Update placeholder value(s).
+
+
+    operation: "{MY-OPERATION}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  autoscaler.zoneOperations.delete(request, function(err) {
+    if (err) {
+      console.log(err);
     }
   });
 });
@@ -103,15 +385,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var autoscaler = google.autoscaler('v1beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -120,25 +407,86 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
 
-    // * Project ID of Autoscaler resource.
-    project: "",
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Zone name of Autoscaler resource.
-    zone: "",
 
-    resource: {},
+    zone: "{MY-ZONE}"  // eg. "us-central1-f", // TODO: Update placeholder value(s).
 
-    // Auth client
+
+    operation: "{MY-OPERATION}", // TODO: Update placeholder value(s).
+
     auth: authClient
   };
 
-  autoscaler.autoscalers.insert(request, function(err, result) {
+  autoscaler.zoneOperations.get(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Compute Engine Autoscaler API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/autoscaler
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var autoscaler = google.autoscaler('v1beta2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+
+    zone: "{MY-ZONE}"  // eg. "us-central1-f", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  autoscaler.zoneOperations.list(request, function handlePage(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var itemsPage = response['items'];
+    if (!itemsPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < itemsPage.length; i++) {
+      // TODO: Use itemsPage
+      console.log(JSON.stringify(itemsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      autoscaler.zoneOperations.list(request, handlePage);
     }
   });
 });
@@ -150,15 +498,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var autoscaler = google.autoscaler('v1beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -167,327 +520,31 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * Project ID of Autoscaler resource.
-    project: "",
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Zone name of Autoscaler resource.
-    zone: "",
-
-    // Auth client
     auth: authClient
   };
 
-
-  var recur = function(err, result) {
+  autoscaler.zones.list(request, function handlePage(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        autoscaler.autoscalers.list(request, recur);
-      }
+      return;
     }
-  };
 
-  autoscaler.autoscalers.list(request, recur);
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Compute Engine Autoscaler API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/autoscaler
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var autoscaler = google.autoscaler('v1beta2');
+    var itemsPage = response['items'];
+    if (!itemsPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < itemsPage.length; i++) {
+      // TODO: Use itemsPage
+      console.log(JSON.stringify(itemsPage[i], null, 2));
+    }
 
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
-
-    // * Project ID of Autoscaler resource.
-    project: "",
-
-    // * Zone name of Autoscaler resource.
-    zone: "",
-
-    // * Name of the Autoscaler resource.
-    autoscaler: "",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  autoscaler.autoscalers.patch(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      autoscaler.zones.list(request, handlePage);
     }
   });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Compute Engine Autoscaler API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/autoscaler
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var autoscaler = google.autoscaler('v1beta2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
-
-    // * Project ID of Autoscaler resource.
-    project: "",
-
-    // * Zone name of Autoscaler resource.
-    zone: "",
-
-    // * Name of the Autoscaler resource.
-    autoscaler: "",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  autoscaler.autoscalers.update(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Compute Engine Autoscaler API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/autoscaler
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var autoscaler = google.autoscaler('v1beta2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
-
-
-    project: "",
-
-
-    zone: "",
-
-
-    operation: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-  autoscaler.zoneOperations.delete(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Compute Engine Autoscaler API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/autoscaler
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var autoscaler = google.autoscaler('v1beta2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-
-
-    project: "",
-
-
-    zone: "",
-
-
-    operation: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-  autoscaler.zoneOperations.get(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Compute Engine Autoscaler API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/autoscaler
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var autoscaler = google.autoscaler('v1beta2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-
-    project: "",
-
-
-    zone: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-
-  var recur = function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        autoscaler.zoneOperations.list(request, recur);
-      }
-    }
-  };
-
-  autoscaler.zoneOperations.list(request, recur);
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Compute Engine Autoscaler API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/autoscaler
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var autoscaler = google.autoscaler('v1beta2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-
-    project: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-
-  var recur = function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        autoscaler.zones.list(request, recur);
-      }
-    }
-  };
-
-  autoscaler.zones.list(request, recur);
 });

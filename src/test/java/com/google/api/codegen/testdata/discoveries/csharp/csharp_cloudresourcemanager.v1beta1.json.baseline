@@ -7,7 +7,7 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -16,22 +16,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
+
 namespace CloudresourcemanagerSample
 {
-    public class Program
+    public class CloudresourcemanagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -43,16 +46,17 @@ namespace CloudresourcemanagerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Get() method:
-
             // The id of the Organization resource to fetch.
-            string organizationId = "";
+            string organizationId = "{MY-ORGANIZATION-ID}"; // TODO: Update placeholder value(s).
 
             OrganizationsResource.GetRequest request = cloudresourcemanagerService.Organizations.Get(organizationId);
-            Data.Organization response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            Data.Organization response = request.Execute();
             // Data.Organization response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -64,7 +68,7 @@ namespace CloudresourcemanagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -73,22 +77,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
+
 namespace CloudresourcemanagerSample
 {
-    public class Program
+    public class CloudresourcemanagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -99,22 +106,23 @@ namespace CloudresourcemanagerSample
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
-
-            // TODO: Change placeholders below to values for parameters to the GetIamPolicy() method:
 
             // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
             // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
             // this value is resource specific and is specified in the `getIamPolicy` documentation.
-            string resource = "";
+            string resource = "{MY-RESOURCE}"; // TODO: Update placeholder value(s).
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.GetIamPolicyRequest content = new Data.GetIamPolicyRequest();
+            // TODO: Assign values to the desired properties.
+            Data.GetIamPolicyRequest requestBody = new Data.GetIamPolicyRequest();
 
-            OrganizationsResource.GetIamPolicyRequest request = cloudresourcemanagerService.Organizations.GetIamPolicy(content, resource);
+            OrganizationsResource.GetIamPolicyRequest request = cloudresourcemanagerService.Organizations.GetIamPolicy(requestBody, resource);
+
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
             Data.Policy response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Policy response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -126,7 +134,7 @@ namespace CloudresourcemanagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -135,22 +143,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
+
 namespace CloudresourcemanagerSample
 {
-    public class Program
+    public class CloudresourcemanagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -163,23 +174,25 @@ namespace CloudresourcemanagerSample
             });
 
             OrganizationsResource.ListRequest request = cloudresourcemanagerService.Organizations.List();
+
             Data.ListOrganizationsResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace request.Execute() as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Organizations == null)
                 {
                     continue;
                 }
-                foreach (Data.Organization item in response.Organizations)
+                foreach (Data.Organization organization in response.Organizations)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Use organization
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(organization));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.ListOrganizationsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -191,7 +204,7 @@ namespace CloudresourcemanagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -200,22 +213,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
+
 namespace CloudresourcemanagerSample
 {
-    public class Program
+    public class CloudresourcemanagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -226,22 +242,23 @@ namespace CloudresourcemanagerSample
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
-
-            // TODO: Change placeholders below to values for parameters to the SetIamPolicy() method:
 
             // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
             // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
             // this value is resource specific and is specified in the `setIamPolicy` documentation.
-            string resource = "";
+            string resource = "{MY-RESOURCE}"; // TODO: Update placeholder value(s).
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.SetIamPolicyRequest content = new Data.SetIamPolicyRequest();
+            // TODO: Assign values to the desired properties.
+            Data.SetIamPolicyRequest requestBody = new Data.SetIamPolicyRequest();
 
-            OrganizationsResource.SetIamPolicyRequest request = cloudresourcemanagerService.Organizations.SetIamPolicy(content, resource);
+            OrganizationsResource.SetIamPolicyRequest request = cloudresourcemanagerService.Organizations.SetIamPolicy(requestBody, resource);
+
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
             Data.Policy response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Policy response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -253,7 +270,7 @@ namespace CloudresourcemanagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -262,22 +279,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
+
 namespace CloudresourcemanagerSample
 {
-    public class Program
+    public class CloudresourcemanagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -288,23 +308,24 @@ namespace CloudresourcemanagerSample
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
-
-            // TODO: Change placeholders below to values for parameters to the TestIamPermissions() method:
 
             // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
             // specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path
             // specified in this value is resource specific and is specified in the `testIamPermissions`
             // documentation.
-            string resource = "";
+            string resource = "{MY-RESOURCE}"; // TODO: Update placeholder value(s).
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.TestIamPermissionsRequest content = new Data.TestIamPermissionsRequest();
+            // TODO: Assign values to the desired properties.
+            Data.TestIamPermissionsRequest requestBody = new Data.TestIamPermissionsRequest();
 
-            OrganizationsResource.TestIamPermissionsRequest request = cloudresourcemanagerService.Organizations.TestIamPermissions(content, resource);
+            OrganizationsResource.TestIamPermissionsRequest request = cloudresourcemanagerService.Organizations.TestIamPermissions(requestBody, resource);
+
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
             Data.TestIamPermissionsResponse response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.TestIamPermissionsResponse response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -316,7 +337,7 @@ namespace CloudresourcemanagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -325,22 +346,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
+
 namespace CloudresourcemanagerSample
 {
-    public class Program
+    public class CloudresourcemanagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -351,21 +375,22 @@ namespace CloudresourcemanagerSample
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
-
-            // TODO: Change placeholders below to values for parameters to the Update() method:
 
             // An immutable id for the Organization that is assigned on creation. This should be omitted when
             // creating a new Organization. This field is read-only.
-            string organizationId = "";
+            string organizationId = "{MY-ORGANIZATION-ID}"; // TODO: Update placeholder value(s).
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Organization content = new Data.Organization();
+            // TODO: Assign values to the desired properties.
+            Data.Organization requestBody = new Data.Organization();
 
-            OrganizationsResource.UpdateRequest request = cloudresourcemanagerService.Organizations.Update(content, organizationId);
+            OrganizationsResource.UpdateRequest request = cloudresourcemanagerService.Organizations.Update(requestBody, organizationId);
+
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
             Data.Organization response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Organization response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -377,7 +402,7 @@ namespace CloudresourcemanagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -386,22 +411,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
+
 namespace CloudresourcemanagerSample
 {
-    public class Program
+    public class CloudresourcemanagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -413,14 +441,17 @@ namespace CloudresourcemanagerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Project content = new Data.Project();
+            // TODO: Assign values to the desired properties.
+            Data.Project requestBody = new Data.Project();
 
-            ProjectsResource.CreateRequest request = cloudresourcemanagerService.Projects.Create(content);
+            ProjectsResource.CreateRequest request = cloudresourcemanagerService.Projects.Create(requestBody);
+
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
             Data.Project response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Project response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -432,7 +463,7 @@ namespace CloudresourcemanagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -441,22 +472,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
+
 namespace CloudresourcemanagerSample
 {
-    public class Program
+    public class CloudresourcemanagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -467,17 +501,18 @@ namespace CloudresourcemanagerSample
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
-
-            // TODO: Change placeholders below to values for parameters to the Delete() method:
 
             // The Project ID (for example, `foo-bar-123`). Required.
-            string projectId = "";
+            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
             ProjectsResource.DeleteRequest request = cloudresourcemanagerService.Projects.Delete(projectId);
-            Data.Empty response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            Data.Empty response = request.Execute();
             // Data.Empty response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -489,7 +524,7 @@ namespace CloudresourcemanagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -498,22 +533,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
+
 namespace CloudresourcemanagerSample
 {
-    public class Program
+    public class CloudresourcemanagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -524,17 +562,18 @@ namespace CloudresourcemanagerSample
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
-
-            // TODO: Change placeholders below to values for parameters to the Get() method:
 
             // The Project ID (for example, `my-project-123`). Required.
-            string projectId = "";
+            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
             ProjectsResource.GetRequest request = cloudresourcemanagerService.Projects.Get(projectId);
-            Data.Project response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            Data.Project response = request.Execute();
             // Data.Project response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -546,7 +585,7 @@ namespace CloudresourcemanagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -555,22 +594,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
+
 namespace CloudresourcemanagerSample
 {
-    public class Program
+    public class CloudresourcemanagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -581,22 +623,23 @@ namespace CloudresourcemanagerSample
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
-
-            // TODO: Change placeholders below to values for parameters to the GetIamPolicy() method:
 
             // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
             // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
             // this value is resource specific and is specified in the `getIamPolicy` documentation.
-            string resource = "";
+            string resource = "{MY-RESOURCE}"; // TODO: Update placeholder value(s).
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.GetIamPolicyRequest content = new Data.GetIamPolicyRequest();
+            // TODO: Assign values to the desired properties.
+            Data.GetIamPolicyRequest requestBody = new Data.GetIamPolicyRequest();
 
-            ProjectsResource.GetIamPolicyRequest request = cloudresourcemanagerService.Projects.GetIamPolicy(content, resource);
+            ProjectsResource.GetIamPolicyRequest request = cloudresourcemanagerService.Projects.GetIamPolicy(requestBody, resource);
+
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
             Data.Policy response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Policy response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -608,7 +651,7 @@ namespace CloudresourcemanagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -617,22 +660,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
+
 namespace CloudresourcemanagerSample
 {
-    public class Program
+    public class CloudresourcemanagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -645,23 +691,25 @@ namespace CloudresourcemanagerSample
             });
 
             ProjectsResource.ListRequest request = cloudresourcemanagerService.Projects.List();
+
             Data.ListProjectsResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace request.Execute() as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Projects == null)
                 {
                     continue;
                 }
-                foreach (Data.Project item in response.Projects)
+                foreach (Data.Project project in response.Projects)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Use project
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(project));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.ListProjectsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -673,7 +721,7 @@ namespace CloudresourcemanagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -682,22 +730,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
+
 namespace CloudresourcemanagerSample
 {
-    public class Program
+    public class CloudresourcemanagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -708,22 +759,23 @@ namespace CloudresourcemanagerSample
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
-
-            // TODO: Change placeholders below to values for parameters to the SetIamPolicy() method:
 
             // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
             // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
             // this value is resource specific and is specified in the `setIamPolicy` documentation.
-            string resource = "";
+            string resource = "{MY-RESOURCE}"; // TODO: Update placeholder value(s).
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.SetIamPolicyRequest content = new Data.SetIamPolicyRequest();
+            // TODO: Assign values to the desired properties.
+            Data.SetIamPolicyRequest requestBody = new Data.SetIamPolicyRequest();
 
-            ProjectsResource.SetIamPolicyRequest request = cloudresourcemanagerService.Projects.SetIamPolicy(content, resource);
+            ProjectsResource.SetIamPolicyRequest request = cloudresourcemanagerService.Projects.SetIamPolicy(requestBody, resource);
+
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
             Data.Policy response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Policy response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -735,7 +787,7 @@ namespace CloudresourcemanagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -744,22 +796,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
+
 namespace CloudresourcemanagerSample
 {
-    public class Program
+    public class CloudresourcemanagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -770,23 +825,24 @@ namespace CloudresourcemanagerSample
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
-
-            // TODO: Change placeholders below to values for parameters to the TestIamPermissions() method:
 
             // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
             // specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path
             // specified in this value is resource specific and is specified in the `testIamPermissions`
             // documentation.
-            string resource = "";
+            string resource = "{MY-RESOURCE}"; // TODO: Update placeholder value(s).
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.TestIamPermissionsRequest content = new Data.TestIamPermissionsRequest();
+            // TODO: Assign values to the desired properties.
+            Data.TestIamPermissionsRequest requestBody = new Data.TestIamPermissionsRequest();
 
-            ProjectsResource.TestIamPermissionsRequest request = cloudresourcemanagerService.Projects.TestIamPermissions(content, resource);
+            ProjectsResource.TestIamPermissionsRequest request = cloudresourcemanagerService.Projects.TestIamPermissions(requestBody, resource);
+
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
             Data.TestIamPermissionsResponse response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.TestIamPermissionsResponse response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -798,7 +854,7 @@ namespace CloudresourcemanagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -807,22 +863,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
+
 namespace CloudresourcemanagerSample
 {
-    public class Program
+    public class CloudresourcemanagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -833,20 +892,21 @@ namespace CloudresourcemanagerSample
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
-
-            // TODO: Change placeholders below to values for parameters to the Undelete() method:
 
             // The project ID (for example, `foo-bar-123`). Required.
-            string projectId = "";
+            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.UndeleteProjectRequest content = new Data.UndeleteProjectRequest();
+            // TODO: Assign values to the desired properties.
+            Data.UndeleteProjectRequest requestBody = new Data.UndeleteProjectRequest();
 
-            ProjectsResource.UndeleteRequest request = cloudresourcemanagerService.Projects.Undelete(content, projectId);
+            ProjectsResource.UndeleteRequest request = cloudresourcemanagerService.Projects.Undelete(requestBody, projectId);
+
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
             Data.Empty response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Empty response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -858,7 +918,7 @@ namespace CloudresourcemanagerSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -867,22 +927,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
+
 namespace CloudresourcemanagerSample
 {
-    public class Program
+    public class CloudresourcemanagerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -894,19 +957,20 @@ namespace CloudresourcemanagerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Update() method:
-
             // The project ID (for example, `my-project-123`). Required.
-            string projectId = "";
+            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.Project content = new Data.Project();
+            // TODO: Assign values to the desired properties.
+            Data.Project requestBody = new Data.Project();
 
-            ProjectsResource.UpdateRequest request = cloudresourcemanagerService.Projects.Update(content, projectId);
+            ProjectsResource.UpdateRequest request = cloudresourcemanagerService.Projects.Update(requestBody, projectId);
+
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
             Data.Project response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.Project response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }

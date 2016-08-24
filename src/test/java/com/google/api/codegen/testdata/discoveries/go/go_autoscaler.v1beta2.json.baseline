@@ -9,11 +9,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -22,30 +25,37 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := autoscaler.New(hc)
+
+  s, err := autoscaler.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Project ID of Autoscaler resource.
-  project := "" // TODO: Update placeholder value.
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
   // Zone name of Autoscaler resource.
-  zone := "" // TODO: Update placeholder value.
+  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
 
   // Name of the Autoscaler resource.
-  autoscaler2 := "" // TODO: Update placeholder value.
+  autoscaler2 := "{MY-AUTOSCALER}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Autoscalers.Delete(project, zone, autoscaler2).Context(ctx).Do()
+  resp, err := s.Autoscalers.Delete(project, zone, autoscaler2).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -57,11 +67,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -70,30 +83,37 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := autoscaler.New(hc)
+
+  s, err := autoscaler.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Project ID of Autoscaler resource.
-  project := "" // TODO: Update placeholder value.
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
   // Zone name of Autoscaler resource.
-  zone := "" // TODO: Update placeholder value.
+  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
 
   // Name of the Autoscaler resource.
-  autoscaler2 := "" // TODO: Update placeholder value.
+  autoscaler2 := "{MY-AUTOSCALER}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Autoscalers.Get(project, zone, autoscaler2).Context(ctx).Do()
+  resp, err := s.Autoscalers.Get(project, zone, autoscaler2).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -105,11 +125,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -118,29 +141,38 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := autoscaler.New(hc)
+
+  s, err := autoscaler.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Project ID of Autoscaler resource.
-  project := "" // TODO: Update placeholder value.
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
   // Zone name of Autoscaler resource.
-  zone := "" // TODO: Update placeholder value.
+  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Autoscalers.Insert(project, zone, &autoscaler.Autoscaler{
-                                      // TODO: Fill required fields.
-                                    }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  autoscaler := &autoscaler.Autoscaler{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Autoscalers.Insert(project, zone, &autoscaler).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -152,11 +184,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -165,31 +200,36 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := autoscaler.New(hc)
+
+  s, err := autoscaler.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Project ID of Autoscaler resource.
-  project := "" // TODO: Update placeholder value.
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
   // Zone name of Autoscaler resource.
-  zone := "" // TODO: Update placeholder value.
+  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
 
-
-  call := c.Autoscalers.List(project, zone)
+  call := s.Autoscalers.List(project, zone)
   if err := call.Pages(ctx, func(page *autoscaler.AutoscalerListResponse) error {
-    for _, v := range page.Items {
-      // TODO: Use v.
-      _ = v
+    for _, autoscaler := range page.Items {
+      // TODO: Use autoscaler
+      fmt.Printf("%#v\n", autoscaler)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -202,11 +242,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -215,32 +258,41 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := autoscaler.New(hc)
+
+  s, err := autoscaler.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Project ID of Autoscaler resource.
-  project := "" // TODO: Update placeholder value.
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
   // Zone name of Autoscaler resource.
-  zone := "" // TODO: Update placeholder value.
+  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
 
   // Name of the Autoscaler resource.
-  autoscaler2 := "" // TODO: Update placeholder value.
+  autoscaler2 := "{MY-AUTOSCALER}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Autoscalers.Patch(project, zone, autoscaler2, &autoscaler.Autoscaler{
-                                     // TODO: Fill required fields.
-                                   }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  autoscaler := &autoscaler.Autoscaler{
+    // TODO: Add the desired fields to be changed.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Autoscalers.Patch(project, zone, autoscaler2, &autoscaler).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -252,11 +304,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -265,32 +320,41 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := autoscaler.New(hc)
+
+  s, err := autoscaler.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Project ID of Autoscaler resource.
-  project := "" // TODO: Update placeholder value.
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
   // Zone name of Autoscaler resource.
-  zone := "" // TODO: Update placeholder value.
+  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
 
   // Name of the Autoscaler resource.
-  autoscaler2 := "" // TODO: Update placeholder value.
+  autoscaler2 := "{MY-AUTOSCALER}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Autoscalers.Update(project, zone, autoscaler2, &autoscaler.Autoscaler{
-                                      // TODO: Fill required fields.
-                                    }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  autoscaler := &autoscaler.Autoscaler{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Autoscalers.Update(project, zone, autoscaler2, &autoscaler).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -302,11 +366,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -315,26 +382,32 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := autoscaler.New(hc)
+
+  s, err := autoscaler.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
 
-  project := "" // TODO: Update placeholder value.
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
 
-  zone := "" // TODO: Update placeholder value.
+  zone := "{MY-ZONE}"  // eg. "us-central1-f" // TODO: Update placeholder value(s).
 
 
-  operation := "" // TODO: Update placeholder value.
+  operation := "{MY-OPERATION}" // TODO: Update placeholder value(s).
 
-  if err := c.ZoneOperations.Delete(project, zone, operation).Context(ctx).Do(); err != nil {
-    // TODO: Handle error.
+  if err := s.ZoneOperations.Delete(project, zone, operation).Context(ctx).Do(); err != nil {
+    log.Fatal(err)
   }
 }
 package main
@@ -347,11 +420,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -360,30 +436,37 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := autoscaler.New(hc)
+
+  s, err := autoscaler.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
 
-  project := "" // TODO: Update placeholder value.
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
 
-  zone := "" // TODO: Update placeholder value.
+  zone := "{MY-ZONE}"  // eg. "us-central1-f" // TODO: Update placeholder value(s).
 
 
-  operation := "" // TODO: Update placeholder value.
+  operation := "{MY-OPERATION}" // TODO: Update placeholder value(s).
 
-  resp, err := c.ZoneOperations.Get(project, zone, operation).Context(ctx).Do()
+  resp, err := s.ZoneOperations.Get(project, zone, operation).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -395,11 +478,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -408,31 +494,36 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := autoscaler.New(hc)
+
+  s, err := autoscaler.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
 
-  project := "" // TODO: Update placeholder value.
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
 
-  zone := "" // TODO: Update placeholder value.
+  zone := "{MY-ZONE}"  // eg. "us-central1-f" // TODO: Update placeholder value(s).
 
-
-  call := c.ZoneOperations.List(project, zone)
+  call := s.ZoneOperations.List(project, zone)
   if err := call.Pages(ctx, func(page *autoscaler.OperationList) error {
-    for _, v := range page.Items {
-      // TODO: Use v.
-      _ = v
+    for _, operation := range page.Items {
+      // TODO: Use operation
+      fmt.Printf("%#v\n", operation)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -445,11 +536,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -458,27 +552,32 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := autoscaler.New(hc)
+
+  s, err := autoscaler.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
 
-  project := "" // TODO: Update placeholder value.
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-
-  call := c.Zones.List(project)
+  call := s.Zones.List(project)
   if err := call.Pages(ctx, func(page *autoscaler.ZoneList) error {
-    for _, v := range page.Items {
-      // TODO: Use v.
-      _ = v
+    for _, zone := range page.Items {
+      // TODO: Use zone
+      fmt.Printf("%#v\n", zone)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }

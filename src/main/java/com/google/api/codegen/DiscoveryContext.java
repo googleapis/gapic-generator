@@ -66,7 +66,7 @@ public abstract class DiscoveryContext extends CodegenContext {
   // so they can be accessed by templates.
 
   public Api getApi() {
-    return this.getService().getApis(0);
+    return getService().getApis(0);
   }
 
   public String getApiRevision() {
@@ -82,6 +82,108 @@ public abstract class DiscoveryContext extends CodegenContext {
 
   public String getSimpleName(String name) {
     return name.substring(name.lastIndexOf('.') + 1);
+  }
+
+  public String getSampleVarName(String typeName) {
+    return upperCamelToLowerCamel(getSimpleName(typeName));
+  }
+
+  /**
+   * Returns a name for a type's field's type.
+   */
+  public String typeName(Type type, Field field, String name) {
+    if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
+      if (isMapField(type, field.getName())) {
+        return mapTypeName(field);
+      } else {
+        return arrayTypeName(field);
+      }
+    } else {
+      if (field.getKind() == Field.Kind.TYPE_MESSAGE) {
+        return objectTypeName(field);
+      } else {
+        return nativeTypeName(type, field, name);
+      }
+    }
+  }
+
+  /**
+   * Returns a name for an array field's type.
+   */
+  protected String arrayTypeName(Field field) {
+    return arrayTypeName(elementTypeName(field));
+  }
+
+  protected String arrayTypeName(String elementName) {
+    return String.format("%s_array", elementName);
+  }
+
+  /**
+   * Returns a name for a map field's type.
+   */
+  protected String mapTypeName(Field field) {
+    return mapTypeName(keyTypeName(field), valueTypeName(field));
+  }
+
+  protected String mapTypeName(String keyName, String valueName) {
+    return String.format("%s_to_%s_map", keyName, valueName);
+  }
+
+  /**
+   * Returns a name for an object field's type.
+   */
+  public String objectTypeName(Field field) {
+    return objectTypeName(field.getTypeUrl());
+  }
+
+  protected String objectTypeName(String typeName) {
+    return upperCamelToLowerUnderscore(typeName);
+  }
+
+  /**
+   * Returns a name for a natively-typed field's type.
+   */
+  protected String nativeTypeName(Type type, Field field, String name) {
+    return name;
+  }
+
+  /**
+   * Returns a name for an array field element's type.
+   */
+  public String elementTypeName(Field field) {
+    Type items = getApiaryConfig().getType(field.getTypeUrl());
+    if (field.getKind() == Field.Kind.TYPE_MESSAGE) {
+      Field elements = getField(items, DiscoveryImporter.ELEMENTS_FIELD_NAME);
+      if (elements != null) {
+        return typeName(items, elements, "item");
+      } else {
+        return objectTypeName(field);
+      }
+    }
+    return nativeElementTypeName(field);
+  }
+
+  /**
+   * Returns a name for a natively-typed array field element's type.
+   */
+  protected String nativeElementTypeName(Field field) {
+    return "item";
+  }
+
+  /**
+   * Returns a name for a map field key's type.
+   */
+  public String keyTypeName(Field field) {
+    Type items = getApiaryConfig().getType(field.getTypeUrl());
+    return typeName(items, getField(items, "key"), "name");
+  }
+
+  /**
+   * Returns a name for a map field value's type.
+   */
+  public String valueTypeName(Field field) {
+    Type items = getApiaryConfig().getType(field.getTypeUrl());
+    return typeName(items, getField(items, "value"), "value");
   }
 
   @Nullable
@@ -210,18 +312,43 @@ public abstract class DiscoveryContext extends CodegenContext {
       }
     }
     String stringPattern = getApiaryConfig().getFieldPattern().get(type.getName(), field.getName());
-    return lineEnding(stringLiteral(Strings.nullToEmpty(DefaultString.forPattern(stringPattern))));
+    DefaultString defString = DefaultString.of(getApi().getName(), field.getName(), stringPattern);
+
+    String line = stringLiteral(defString.getDeclare());
+    if (defString.getComment() != null) {
+      line = lineComment(line, "eg. " + stringLiteral(defString.getComment()));
+    }
+    return lineEnding(line);
   }
 
-  // Line wrap `str`, returning a list of lines. Each line in the returned list is guaranteed to not
-  // have new line characters. The first line begins with `firstLinePrefix` (defaults to list
-  // bullet: "* "), while subsequent lines begin with a hanging indent of equal width.
+  /**
+   * Returns description of type's field from {@link ApiaryConfig}, or field's name if no description
+   * is available.
+   */
+  public String getDescription(String typeName, String fieldName) {
+    String description = apiaryConfig.getDescription(typeName, fieldName);
+    if (description != null) {
+      return description;
+    } else {
+      return fieldName;
+    }
+  }
+
+  /**
+   * Line wrap `str`, returning a list of lines. Each line in the returned list is guaranteed to not
+   * have new line characters. The first line begins with `firstLinePrefix` (defaults to list
+   * bullet: "* "), while subsequent lines begin with a hanging indent of equal width.
+   */
   public List<String> lineWrapDoc(String str, int maxWidth, String firstLinePrefix) {
     return s_lineWrapDoc(str, maxWidth, firstLinePrefix);
   }
 
   public List<String> lineWrapDoc(String str, int maxWidth) {
-    return lineWrapDoc(str, maxWidth, "* ");
+    return lineWrapDoc(str, maxWidth, "");
+  }
+
+  public List<String> lineWrapDoc(String str) {
+    return lineWrapDoc(str, 100);
   }
 
   // For testing.

@@ -99,8 +99,37 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   }
 
   public boolean isGcloud() {
-    String packageName = getApiConfig().getPackageName();
-    return !Strings.isNullOrEmpty(packageName) && packageName.startsWith("@google-cloud/");
+    return NodeJSUtils.isGcloud(getApiConfig());
+  }
+
+  /**
+   * The namespace (full package name) for the service.
+   */
+  public String getNamespace(Interface service) {
+    String fullName = service.getFullName();
+    int slash = fullName.lastIndexOf('.');
+    return fullName.substring(0, slash);
+  }
+
+  /**
+   * The name for the module for this vkit module. This assumes that the service's
+   * full name will be in the format of 'google.some.apiname.version.ServiceName',
+   * and extracts the 'apiname' and 'version' part and combine them to lower-camelcased
+   * style (like pubsubV1).
+   */
+  public String getModuleName(Interface service) {
+    List<String> names = Splitter.on(".").splitToList(service.getFullName());
+    return names.get(names.size() - 3) + lowerUnderscoreToUpperCamel(names.get(names.size() - 2));
+  }
+
+  /**
+   * Returns the major version part in the API namespace. This assumes that the service's
+   * full name will be in the format of 'google.some.apiname.version.ServiceName', and
+   * extracts the 'version' part.
+   */
+  public String getApiVersion(Interface service) {
+    List<String> names = Splitter.on(".").splitToList(service.getFullName());
+    return names.get(names.size() - 2);
   }
 
   /**
@@ -129,6 +158,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     String fieldName = wrapIfKeywordOrBuiltIn(lowerUnderscoreToLowerCamel(field.getSimpleName()));
     if (isOptional) {
       fieldName = "otherArgs." + fieldName;
+      commentType = commentType + "=";
     }
     return fieldComment(
         String.format("@param {%s} %s", commentType, fieldName), paramComment, field);
@@ -187,9 +217,9 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
               + "  a gax.BundleEventEmitter but the API is immediately invoked, so it behaves same\n"
               + "  as a gax.EventEmitter does.";
     }
-    return "@param {?"
+    return "@param {"
         + callbackType
-        + "} callback\n"
+        + "=} callback\n"
         + "  The function which will be called with the result of the API call.\n"
         + returnMessage;
   }
@@ -209,7 +239,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     }
     Iterable<Field> optionalParams = removePageTokenFromFields(config.getOptionalFields(), config);
     if (optionalParams.iterator().hasNext()) {
-      paramTypesBuilder.append("@param {?Object} otherArgs\n");
+      paramTypesBuilder.append("@param {Object=} otherArgs\n");
       for (Field field : optionalParams) {
         if (config.isPageStreaming()
             && field.equals((config.getPageStreaming().getPageSizeField()))) {
@@ -228,7 +258,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       }
     }
     paramTypesBuilder.append(
-        "@param {?gax.CallOptions} options\n"
+        "@param {gax.CallOptions=} options\n"
             + "  Overrides the default settings for this call, e.g, timeout,\n"
             + "  retries, etc.");
     String paramTypes = paramTypesBuilder.toString();

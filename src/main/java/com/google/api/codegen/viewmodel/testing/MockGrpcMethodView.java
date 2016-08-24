@@ -24,6 +24,8 @@ public abstract class MockGrpcMethodView {
 
   public abstract String responseTypeName();
 
+  public abstract boolean isStreaming();
+
   public static Builder newBuilder() {
     return new AutoValue_MockGrpcMethodView.Builder();
   }
@@ -35,6 +37,8 @@ public abstract class MockGrpcMethodView {
     public abstract Builder requestTypeName(String val);
 
     public abstract Builder responseTypeName(String val);
+
+    public abstract Builder isStreaming(boolean val);
 
     public abstract MockGrpcMethodView build();
   }

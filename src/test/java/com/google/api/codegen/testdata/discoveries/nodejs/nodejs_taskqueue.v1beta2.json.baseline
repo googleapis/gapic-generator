@@ -7,15 +7,20 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var taskqueue = google.taskqueue('v1beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -24,23 +29,70 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // The project under which the queue lies.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The project under which the queue lies.
-    project: "",
+    // The id of the taskqueue to get the properties of.
+    taskqueue: "{MY-TASKQUEUE}", // TODO: Update placeholder value(s).
 
-    // * The id of the taskqueue to get the properties of.
-    taskqueue: "",
-
-    // Auth client
     auth: authClient
   };
 
-  taskqueue.taskqueues.get(request, function(err, result) {
+  taskqueue.taskqueues.get(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the TaskQueue API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/taskqueue
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var taskqueue = google.taskqueue('v1beta2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // The project under which the queue lies.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // The taskqueue to delete a task from.
+    taskqueue: "{MY-TASKQUEUE}", // TODO: Update placeholder value(s).
+
+    // The id of the task to delete.
+    task: "{MY-TASK}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  taskqueue.tasks.delete(request, function(err) {
+    if (err) {
+      console.log(err);
     }
   });
 });
@@ -52,15 +104,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var taskqueue = google.taskqueue('v1beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -69,27 +126,26 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // The project under which the queue lies.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The project under which the queue lies.
-    project: "",
+    // The taskqueue in which the task belongs.
+    taskqueue: "{MY-TASKQUEUE}", // TODO: Update placeholder value(s).
 
-    // * The taskqueue to delete a task from.
-    taskqueue: "",
+    // The task to get properties of.
+    task: "{MY-TASK}", // TODO: Update placeholder value(s).
 
-    // * The id of the task to delete.
-    task: "",
-
-    // Auth client
     auth: authClient
   };
 
-  taskqueue.tasks.delete(request, function(err, result) {
+  taskqueue.tasks.get(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -100,15 +156,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var taskqueue = google.taskqueue('v1beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -117,27 +178,27 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // The project under which the queue lies
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The project under which the queue lies.
-    project: "",
+    // The taskqueue to insert the task into
+    taskqueue: "{MY-TASKQUEUE}", // TODO: Update placeholder value(s).
 
-    // * The taskqueue in which the task belongs.
-    taskqueue: "",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    // * The task to get properties of.
-    task: "",
-
-    // Auth client
     auth: authClient
   };
 
-  taskqueue.tasks.get(request, function(err, result) {
+  taskqueue.tasks.insert(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -148,15 +209,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var taskqueue = google.taskqueue('v1beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -165,26 +231,29 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+    // The project under which the queue lies.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The project under which the queue lies
-    project: "",
+    // The taskqueue to lease a task from.
+    taskqueue: "{MY-TASKQUEUE}", // TODO: Update placeholder value(s).
 
-    // * The taskqueue to insert the task into
-    taskqueue: "",
+    // The number of tasks to lease.
+    numTasks: 0, // TODO: Update placeholder value(s).
 
-    resource: {},
+    // The lease in seconds.
+    leaseSecs: 0, // TODO: Update placeholder value(s).
 
-    // Auth client
     auth: authClient
   };
 
-  taskqueue.tasks.insert(request, function(err, result) {
+  taskqueue.tasks.lease(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -195,15 +264,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var taskqueue = google.taskqueue('v1beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -212,30 +286,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'lease' method:
+    // The project under which the queue lies.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The project under which the queue lies.
-    project: "",
+    // The id of the taskqueue to list tasks from.
+    taskqueue: "{MY-TASKQUEUE}", // TODO: Update placeholder value(s).
 
-    // * The taskqueue to lease a task from.
-    taskqueue: "",
-
-    // * The number of tasks to lease.
-    numTasks: 0,
-
-    // * The lease in seconds.
-    leaseSecs: 0,
-
-    // Auth client
     auth: authClient
   };
 
-  taskqueue.tasks.lease(request, function(err, result) {
+  taskqueue.tasks.list(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -246,15 +313,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var taskqueue = google.taskqueue('v1beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -263,24 +335,33 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // The project under which the queue lies.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The project under which the queue lies.
-    project: "",
 
-    // * The id of the taskqueue to list tasks from.
-    taskqueue: "",
+    taskqueue: "{MY-TASKQUEUE}", // TODO: Update placeholder value(s).
 
-    // Auth client
+
+    task: "{MY-TASK}", // TODO: Update placeholder value(s).
+
+    // The new lease in seconds.
+    newLeaseSeconds: 0, // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties to be changed.
+    },
+
     auth: authClient
   };
 
-  taskqueue.tasks.list(request, function(err, result) {
+  taskqueue.tasks.patch(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -291,15 +372,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var taskqueue = google.taskqueue('v1beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -308,84 +394,32 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
-
-    // * The project under which the queue lies.
-    project: "",
+    // The project under which the queue lies.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
 
-    taskqueue: "",
+    taskqueue: "{MY-TASKQUEUE}", // TODO: Update placeholder value(s).
 
 
-    task: "",
+    task: "{MY-TASK}", // TODO: Update placeholder value(s).
 
-    // * The new lease in seconds.
-    newLeaseSeconds: 0,
+    // The new lease in seconds.
+    newLeaseSeconds: 0, // TODO: Update placeholder value(s).
 
-    resource: {},
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    // Auth client
     auth: authClient
   };
 
-  taskqueue.tasks.patch(request, function(err, result) {
+  taskqueue.tasks.update(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the TaskQueue API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/taskqueue
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var taskqueue = google.taskqueue('v1beta2');
 
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
-
-    // * The project under which the queue lies.
-    project: "",
-
-
-    taskqueue: "",
-
-
-    task: "",
-
-    // * The new lease in seconds.
-    newLeaseSeconds: 0,
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  taskqueue.tasks.update(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
