@@ -29,7 +29,6 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.base.Joiner;
 
 import java.util.ArrayList;
 import java.util.List;
