@@ -109,18 +109,6 @@ public class LibraryServiceTest {
 
     Shelf shelf = Shelf.newBuilder().build();
 
-    String name = "name3373707";
-    String theme = "theme110327241";
-    String internalTheme = "internalTheme792518087";
-    Shelf expectedResponse = Shelf.newBuilder()
-      .setName(name)
-      .setTheme(theme)
-      .setInternalTheme(internalTheme)
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
-
     Shelf actualResponse =
         api.createShelf(shelf);
     Assert.assertEquals(expectedResponse, actualResponse);
@@ -148,18 +136,6 @@ public class LibraryServiceTest {
     serviceHelper.getService().setResponses(expectedResponses);
 
     String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
-
-    String formattedName2 = LibraryServiceApi.formatShelfName("[SHELF]");
-    String theme = "theme110327241";
-    String internalTheme = "internalTheme792518087";
-    Shelf expectedResponse = Shelf.newBuilder()
-      .setName(formattedName2)
-      .setTheme(theme)
-      .setInternalTheme(internalTheme)
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
 
     Shelf actualResponse =
         api.getShelf(formattedName);
@@ -189,18 +165,6 @@ public class LibraryServiceTest {
 
     String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
     SomeMessage message = SomeMessage.newBuilder().build();
-
-    String formattedName2 = LibraryServiceApi.formatShelfName("[SHELF]");
-    String theme = "theme110327241";
-    String internalTheme = "internalTheme792518087";
-    Shelf expectedResponse = Shelf.newBuilder()
-      .setName(formattedName2)
-      .setTheme(theme)
-      .setInternalTheme(internalTheme)
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
 
     Shelf actualResponse =
         api.getShelf(formattedName, message);
@@ -233,18 +197,6 @@ public class LibraryServiceTest {
     SomeMessage message = SomeMessage.newBuilder().build();
     com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
 
-    String formattedName2 = LibraryServiceApi.formatShelfName("[SHELF]");
-    String theme = "theme110327241";
-    String internalTheme = "internalTheme792518087";
-    Shelf expectedResponse = Shelf.newBuilder()
-      .setName(formattedName2)
-      .setTheme(theme)
-      .setInternalTheme(internalTheme)
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
-
     Shelf actualResponse =
         api.getShelf(formattedName, message, stringBuilder);
     Assert.assertEquals(expectedResponse, actualResponse);
@@ -274,17 +226,6 @@ public class LibraryServiceTest {
 
 
 
-    Shelf shelvesElement = Shelf.newBuilder().build();
-    List<Shelf> shelves = Arrays.asList(shelvesElement);
-    String nextPageToken = "nextPageToken-1530815211";
-    ListShelvesResponse expectedResponse = ListShelvesResponse.newBuilder()
-      .addAllShelves(shelves)
-      .setNextPageToken(nextPageToken)
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
-
     PageAccessor<Shelf> pageAccessor = api.listShelves();
 
     // PageAccessor will not make actual request until it is being used.
@@ -309,12 +250,6 @@ public class LibraryServiceTest {
     serviceHelper.getService().setResponses(expectedResponses);
 
     String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
-
-    Empty expectedResponse = Empty.newBuilder()
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
 
     api.deleteShelf(formattedName);
 
@@ -342,18 +277,6 @@ public class LibraryServiceTest {
 
     String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
     String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
-
-    String formattedName2 = LibraryServiceApi.formatShelfName("[SHELF]");
-    String theme = "theme110327241";
-    String internalTheme = "internalTheme792518087";
-    Shelf expectedResponse = Shelf.newBuilder()
-      .setName(formattedName2)
-      .setTheme(theme)
-      .setInternalTheme(internalTheme)
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
 
     Shelf actualResponse =
         api.mergeShelves(formattedName, formattedOtherShelfName);
@@ -387,20 +310,6 @@ public class LibraryServiceTest {
     String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
     Book book = Book.newBuilder().build();
 
-    String formattedName2 = LibraryServiceApi.formatShelfName("[SHELF]");
-    String author = "author-1406328437";
-    String title = "title110371416";
-    boolean read = true;
-    Book expectedResponse = Book.newBuilder()
-      .setName(formattedName2)
-      .setAuthor(author)
-      .setTitle(title)
-      .setRead(read)
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
-
     Book actualResponse =
         api.createBook(formattedName, book);
     Assert.assertEquals(expectedResponse, actualResponse);
@@ -427,14 +336,6 @@ public class LibraryServiceTest {
     Shelf shelf = Shelf.newBuilder().build();
     List<Book> books = new ArrayList<>();
     int edition = -1887963714;
-
-    List<String> bookNames = new ArrayList<>();
-    PublishSeriesResponse expectedResponse = PublishSeriesResponse.newBuilder()
-      .addAllBookNames(bookNames)
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
 
     PublishSeriesResponse actualResponse =
         api.publishSeries(shelf, books, edition);
@@ -468,20 +369,6 @@ public class LibraryServiceTest {
 
     String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
 
-    String formattedName2 = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
-    String author = "author-1406328437";
-    String title = "title110371416";
-    boolean read = true;
-    Book expectedResponse = Book.newBuilder()
-      .setName(formattedName2)
-      .setAuthor(author)
-      .setTitle(title)
-      .setRead(read)
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
-
     Book actualResponse =
         api.getBook(formattedName);
     Assert.assertEquals(expectedResponse, actualResponse);
@@ -510,17 +397,6 @@ public class LibraryServiceTest {
     String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
     String filter = "filter-1274492040";
 
-    Book booksElement = Book.newBuilder().build();
-    List<Book> books = Arrays.asList(booksElement);
-    String nextPageToken = "nextPageToken-1530815211";
-    ListBooksResponse expectedResponse = ListBooksResponse.newBuilder()
-      .addAllBooks(books)
-      .setNextPageToken(nextPageToken)
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
-
     PageAccessor<Book> pageAccessor = api.listBooks(formattedName, filter);
 
     // PageAccessor will not make actual request until it is being used.
@@ -547,12 +423,6 @@ public class LibraryServiceTest {
     serviceHelper.getService().setResponses(expectedResponses);
 
     String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
-
-    Empty expectedResponse = Empty.newBuilder()
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
 
     api.deleteBook(formattedName);
 
@@ -582,20 +452,6 @@ public class LibraryServiceTest {
 
     String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
     Book book = Book.newBuilder().build();
-
-    String formattedName2 = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
-    String author = "author-1406328437";
-    String title = "title110371416";
-    boolean read = true;
-    Book expectedResponse = Book.newBuilder()
-      .setName(formattedName2)
-      .setAuthor(author)
-      .setTitle(title)
-      .setRead(read)
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
 
     Book actualResponse =
         api.updateBook(formattedName, book);
@@ -631,20 +487,6 @@ public class LibraryServiceTest {
     FieldMask updateMask = FieldMask.newBuilder().build();
     com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
 
-    String formattedName2 = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
-    String author = "author-1406328437";
-    String title = "title110371416";
-    boolean read = true;
-    Book expectedResponse = Book.newBuilder()
-      .setName(formattedName2)
-      .setAuthor(author)
-      .setTitle(title)
-      .setRead(read)
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
-
     Book actualResponse =
         api.updateBook(formattedName, book, updateMask, physicalMask);
     Assert.assertEquals(expectedResponse, actualResponse);
@@ -679,20 +521,6 @@ public class LibraryServiceTest {
     String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
     String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
 
-    String formattedName2 = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
-    String author = "author-1406328437";
-    String title = "title110371416";
-    boolean read = true;
-    Book expectedResponse = Book.newBuilder()
-      .setName(formattedName2)
-      .setAuthor(author)
-      .setTitle(title)
-      .setRead(read)
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
-
     Book actualResponse =
         api.moveBook(formattedName, formattedOtherShelfName);
     Assert.assertEquals(expectedResponse, actualResponse);
@@ -720,17 +548,6 @@ public class LibraryServiceTest {
     serviceHelper.getService().setResponses(expectedResponses);
 
 
-
-    String stringsElement = "stringsElement474465855";
-    List<String> strings = Arrays.asList(stringsElement);
-    String nextPageToken = "nextPageToken-1530815211";
-    ListStringsResponse expectedResponse = ListStringsResponse.newBuilder()
-      .addAllStrings(strings)
-      .setNextPageToken(nextPageToken)
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
 
     PageAccessor<String> pageAccessor = api.listStrings();
 
@@ -764,12 +581,6 @@ public class LibraryServiceTest {
       .build();
     List<Comment> comments = Arrays.asList(commentsElement);
 
-    Empty expectedResponse = Empty.newBuilder()
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
-
     api.addComments(formattedName, comments);
 
     List<GeneratedMessage> actualRequests = serviceHelper.getService().getRequests();
@@ -799,20 +610,6 @@ public class LibraryServiceTest {
 
     String formattedName = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
 
-    String formattedName2 = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
-    String author = "author-1406328437";
-    String title = "title110371416";
-    boolean read = true;
-    Book expectedResponse = Book.newBuilder()
-      .setName(formattedName2)
-      .setAuthor(author)
-      .setTitle(title)
-      .setRead(read)
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
-
     Book actualResponse =
         api.getBookFromArchive(formattedName);
     Assert.assertEquals(expectedResponse, actualResponse);
@@ -839,12 +636,6 @@ public class LibraryServiceTest {
     Map<String, String> indexMap = new HashMap<>();
     indexMap.put("default_key", indexMapItem);
 
-    Empty expectedResponse = Empty.newBuilder()
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
-
     api.updateBookIndex(formattedName, indexName, indexMap);
 
     List<GeneratedMessage> actualRequests = serviceHelper.getService().getRequests();
@@ -867,12 +658,6 @@ public class LibraryServiceTest {
 
     String formattedResource = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
     String tag = "tag114586";
-
-    AddTagResponse expectedResponse = AddTagResponse.newBuilder()
-      .build();
-    List<GeneratedMessage> expectedResponses = new ArrayList<>();
-    expectedResponses.add(expectedResponse);
-    serviceHelper.getService().setResponses(expectedResponses);
 
     AddTagResponse actualResponse =
         api.addTag(formattedResource, tag);
