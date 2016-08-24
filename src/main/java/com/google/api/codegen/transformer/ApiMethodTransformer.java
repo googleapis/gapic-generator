@@ -311,6 +311,7 @@ public class ApiMethodTransformer {
     }
     apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
+    apiMethod.apiModuleName(namer.getApiWrapperModuleName(context.getInterface()));
     apiMethod.initCode(
         initCodeTransformer.generateInitCode(
             context, context.getMethodConfig().getRequiredFields()));

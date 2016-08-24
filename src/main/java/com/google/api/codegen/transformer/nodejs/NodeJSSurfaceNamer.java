@@ -26,6 +26,9 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Splitter;
+
+import java.util.List;
 
 /**
  * The SurfaceNamer for NodeJS.
@@ -36,6 +39,24 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
         new NodeJSNameFormatter(),
         new ModelTypeFormatterImpl(new NodeJSModelTypeNameConverter()),
         new NodeJSTypeTable());
+  }
+
+  /**
+   * NodeJS uses a special format for ApiWrapperModuleName.
+   *
+   * <p>The name for the module for this vkit module. This assumes that the service's full name will
+   * be in the format of 'google.some.apiname.version.ServiceName', and extracts the 'apiname' and
+   * 'version' part and combine them to lower-camelcased style (like pubsubV1).
+   *
+   * <p>Based on {@link com.google.api.codegen.nodejs.NodeJSGapicContext#getModuleName}.
+   */
+  public String getApiWrapperModuleName(Interface interfaze) {
+    List<String> names = Splitter.on(".").splitToList(interfaze.getFullName());
+    if (names.size() < 3) {
+      throw new IllegalArgumentException(interfaze.getFullName());
+    }
+
+    return names.get(names.size() - 3) + Name.from(names.get(names.size() - 2)).toUpperCamel();
   }
 
   @Override

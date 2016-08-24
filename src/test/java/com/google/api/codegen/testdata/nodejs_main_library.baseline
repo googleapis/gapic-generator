@@ -295,9 +295,9 @@ LibraryServiceApi.matchBookFromArchivedBookName =
  *
  * @example
  *
- * var libraryServiceApi = LibraryServiceApi();
- * var shelf = new Shelf();
- * libraryServiceApi.createShelf(shelf, function(err, response) {
+ * var api = libraryV1.libraryServiceApi;
+ * var shelf = {};
+ * api.createShelf(shelf, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -339,10 +339,10 @@ LibraryServiceApi.prototype.createShelf = function createShelf() {
  *
  * @example
  *
- * var libraryServiceApi = LibraryServiceApi();
+ * var api = libraryV1.libraryServiceApi;
  * var formattedName = LibraryServiceApi.shelfPath("[SHELF]");
  * var options = '';
- * libraryServiceApi.getShelf(formattedName, options, function(err, response) {
+ * api.getShelf(formattedName, options, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -385,9 +385,9 @@ LibraryServiceApi.prototype.getShelf = function getShelf() {
  *
  * @example
  *
- * var libraryServiceApi = LibraryServiceApi();
+ * var api = libraryV1.libraryServiceApi;
  *
- * libraryServiceApi.listShelves().on('data', function(element) {
+ * api.listShelves().on('data', function(element) {
  *     // doThingsWith(element)
  * });
  */
@@ -417,9 +417,9 @@ LibraryServiceApi.prototype.listShelves = function listShelves() {
  *
  * @example
  *
- * var libraryServiceApi = LibraryServiceApi();
+ * var api = libraryV1.libraryServiceApi;
  * var formattedName = LibraryServiceApi.shelfPath("[SHELF]");
- * libraryServiceApi.deleteShelf(formattedName, function(err) {
+ * api.deleteShelf(formattedName, function(err) {
  *     if (err) {
  *         console.error(err);
  *     }
@@ -457,10 +457,10 @@ LibraryServiceApi.prototype.deleteShelf = function deleteShelf() {
  *
  * @example
  *
- * var libraryServiceApi = LibraryServiceApi();
+ * var api = libraryV1.libraryServiceApi;
  * var formattedName = LibraryServiceApi.shelfPath("[SHELF]");
  * var formattedOtherShelfName = LibraryServiceApi.shelfPath("[SHELF]");
- * libraryServiceApi.mergeShelves(formattedName, formattedOtherShelfName, function(err, response) {
+ * api.mergeShelves(formattedName, formattedOtherShelfName, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -500,10 +500,10 @@ LibraryServiceApi.prototype.mergeShelves = function mergeShelves() {
  *
  * @example
  *
- * var libraryServiceApi = LibraryServiceApi();
+ * var api = libraryV1.libraryServiceApi;
  * var formattedName = LibraryServiceApi.shelfPath("[SHELF]");
- * var book = new Book();
- * libraryServiceApi.createBook(formattedName, book, function(err, response) {
+ * var book = {};
+ * api.createBook(formattedName, book, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -548,10 +548,10 @@ LibraryServiceApi.prototype.createBook = function createBook() {
  *
  * @example
  *
- * var libraryServiceApi = LibraryServiceApi();
- * var shelf = new Shelf();
+ * var api = libraryV1.libraryServiceApi;
+ * var shelf = {};
  * var books = [];
- * libraryServiceApi.publishSeries(shelf, books, function(err, response) {
+ * api.publishSeries(shelf, books, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -593,9 +593,9 @@ LibraryServiceApi.prototype.publishSeries = function publishSeries() {
  *
  * @example
  *
- * var libraryServiceApi = LibraryServiceApi();
+ * var api = libraryV1.libraryServiceApi;
  * var formattedName = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
- * libraryServiceApi.getBook(formattedName, function(err, response) {
+ * api.getBook(formattedName, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -640,9 +640,9 @@ LibraryServiceApi.prototype.getBook = function getBook() {
  *
  * @example
  *
- * var libraryServiceApi = LibraryServiceApi();
+ * var api = libraryV1.libraryServiceApi;
  * var formattedName = LibraryServiceApi.shelfPath("[SHELF]");
- * libraryServiceApi.listBooks(formattedName).on('data', function(element) {
+ * api.listBooks(formattedName).on('data', function(element) {
  *     // doThingsWith(element)
  * });
  */
@@ -681,9 +681,9 @@ LibraryServiceApi.prototype.listBooks = function listBooks() {
  *
  * @example
  *
- * var libraryServiceApi = LibraryServiceApi();
+ * var api = libraryV1.libraryServiceApi;
  * var formattedName = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
- * libraryServiceApi.deleteBook(formattedName, function(err) {
+ * api.deleteBook(formattedName, function(err) {
  *     if (err) {
  *         console.error(err);
  *     }
@@ -724,10 +724,10 @@ LibraryServiceApi.prototype.deleteBook = function deleteBook() {
  *
  * @example
  *
- * var libraryServiceApi = LibraryServiceApi();
+ * var api = libraryV1.libraryServiceApi;
  * var formattedName = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
- * var book = new Book();
- * libraryServiceApi.updateBook(formattedName, book, function(err, response) {
+ * var book = {};
+ * api.updateBook(formattedName, book, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -774,10 +774,10 @@ LibraryServiceApi.prototype.updateBook = function updateBook() {
  *
  * @example
  *
- * var libraryServiceApi = LibraryServiceApi();
+ * var api = libraryV1.libraryServiceApi;
  * var formattedName = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
  * var formattedOtherShelfName = LibraryServiceApi.shelfPath("[SHELF]");
- * libraryServiceApi.moveBook(formattedName, formattedOtherShelfName, function(err, response) {
+ * api.moveBook(formattedName, formattedOtherShelfName, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -821,9 +821,9 @@ LibraryServiceApi.prototype.moveBook = function moveBook() {
  *
  * @example
  *
- * var libraryServiceApi = LibraryServiceApi();
+ * var api = libraryV1.libraryServiceApi;
  *
- * libraryServiceApi.listStrings().on('data', function(element) {
+ * api.listStrings().on('data', function(element) {
  *     // doThingsWith(element)
  * });
  */
@@ -860,13 +860,16 @@ LibraryServiceApi.prototype.listStrings = function listStrings() {
  *
  * @example
  *
- * var libraryServiceApi = LibraryServiceApi();
+ * var api = libraryV1.libraryServiceApi;
  * var formattedName = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
  * var comment = '';
- * var commentsElement = new Comment();
- * commentsElement.setComment(comment);
+ * var stage = Stage.UNSET;
+ * var commentsElement = {
+ *         'comment' : comment,
+ *         'stage' : stage
+ *     };
  * var comments = [commentsElement];
- * libraryServiceApi.addComments(formattedName, comments, function(err) {
+ * api.addComments(formattedName, comments, function(err) {
  *     if (err) {
  *         console.error(err);
  *     }
@@ -902,9 +905,9 @@ LibraryServiceApi.prototype.addComments = function addComments() {
  *
  * @example
  *
- * var libraryServiceApi = LibraryServiceApi();
+ * var api = libraryV1.libraryServiceApi;
  * var formattedName = LibraryServiceApi.archivedBookPath("[ARCHIVE_PATH]", "[BOOK]");
- * libraryServiceApi.getBookFromArchive(formattedName, function(err, response) {
+ * api.getBookFromArchive(formattedName, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -944,12 +947,12 @@ LibraryServiceApi.prototype.getBookFromArchive = function getBookFromArchive() {
  *
  * @example
  *
- * var libraryServiceApi = LibraryServiceApi();
+ * var api = libraryV1.libraryServiceApi;
  * var formattedName = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
  * var indexName = 'default index';
  * var indexMapItem = '';
  * var indexMap = {'default_key' : indexMapItem,};
- * libraryServiceApi.updateBookIndex(formattedName, indexName, indexMap, function(err) {
+ * api.updateBookIndex(formattedName, indexName, indexMap, function(err) {
  *     if (err) {
  *         console.error(err);
  *     }
@@ -991,10 +994,10 @@ LibraryServiceApi.prototype.updateBookIndex = function updateBookIndex() {
  *
  * @example
  *
- * var libraryServiceApi = LibraryServiceApi();
+ * var api = libraryV1.libraryServiceApi;
  * var formattedResource = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
  * var tag = '';
- * libraryServiceApi.addTag(formattedResource, tag, function(err, response) {
+ * api.addTag(formattedResource, tag, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;

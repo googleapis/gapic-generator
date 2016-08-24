@@ -1,5 +1,5 @@
 @snippet decorateSampleCode(apiMethod, coreSampleCode)
-    var {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}();
+    var api = {@apiMethod.apiModuleName}.{@apiMethod.apiVariableName};
     {@initCode(apiMethod.initCode)}
     {@coreSampleCode}
 @end
@@ -30,13 +30,13 @@
 @end
 
 @private methodCallSampleCode(apiMethod)
-    {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+    api.{@apiMethod.name}(\
         {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
 @end
 
 @private methodCallSampleCodeWithReturnValue(apiMethod)
     @if sampleMethodCallArgList(apiMethod.initCode.fieldSettings)
-        {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+        api.{@apiMethod.name}(\
             {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)}, function(err, response) {
             if (err) {
                 console.error(err);
@@ -45,7 +45,7 @@
             // doThingsWith(response)
         })
     @else
-        {@apiMethod.apiVariableName}.{@apiMethod.name}(function(err, response) {
+        api.{@apiMethod.name}(function(err, response) {
             if (err) {
                 console.error(err);
                 return;
@@ -57,14 +57,14 @@
 
 @private methodCallSampleCodeWithoutReturnValue(apiMethod)
     @if sampleMethodCallArgList(apiMethod.initCode.fieldSettings)
-        {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+        api.{@apiMethod.name}(\
             {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)}, function(err) {
             if (err) {
                 console.error(err);
             }
         })
     @else
-        {@apiMethod.apiVariableName}.{@apiMethod.name}(function(err) {
+        api.{@apiMethod.name}(function(err) {
             if (err) {
                 console.error(err);
             }
@@ -96,10 +96,11 @@
 @end
 
 @private initLineStructure(line)
-    var {@line.identifier} = new {@line.typeName}();
-    @join fieldSetting : line.fieldSettings
-        {@line.identifier}.{@fieldSetting.fieldSetFunction}({@fieldSetting.identifier});
-    @end
+    var {@line.identifier} = {
+            @join fieldSetting : line.fieldSettings on ",".add(BREAK)
+                '{@fieldSetting.identifier}' : {@fieldSetting.identifier}
+            @end
+        };
 @end
 
 @private initLineList(line)

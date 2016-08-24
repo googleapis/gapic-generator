@@ -62,7 +62,8 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   /**
    * Return ApiMethodView for sample gen.
    *
-   * <p>TODO: Temporary solution to use MVVM with just sample gen.
+   * TODO: Temporary solution to use MVVM with just sample gen. This class
+   *       will eventually go away when code gen also converts to MVVM.
    */
   public ApiMethodView getApiMethodView(Interface service, Method method) {
     ModelTypeTable modelTypeTable =
