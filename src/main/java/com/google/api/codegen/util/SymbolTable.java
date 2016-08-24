@@ -18,9 +18,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A utility class used to get and store unique symbols
+ * A utility class used to get and store unique symbols.
  *
- * If a symbol is already used, the table will try to append a index number to its end.
+ * If a symbol is already used, the table will try to append an index number onto the end of it.
  * The index will keep increasing until an unused symbol is found.
  */
 public class SymbolTable {

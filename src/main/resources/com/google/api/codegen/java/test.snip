@@ -64,14 +64,8 @@
     Assert.assertEquals(1, actualRequests.size());
     {@test.requestTypeName} actualRequest = ({@test.requestTypeName})actualRequests.get(0);
 
-    @join assert : test.requestAsserts
-      Assert.assertEquals({@assert.expectedValueIdentifier}, \
-        actualRequest.{@assert.actualValueIdentifier}());
-    @end
-
-    @join assert : test.responseAsserts
-      Assert.assertEquals(expectedResponse.{@assert.expectedValueIdentifier}(), \
-        actualResponse.{@assert.actualValueIdentifier}());
+    @join assert : test.asserts
+      Assert.assertEquals({@assert.expected}, actualRequest.{@assert.actual}());
     @end
   }
 @end

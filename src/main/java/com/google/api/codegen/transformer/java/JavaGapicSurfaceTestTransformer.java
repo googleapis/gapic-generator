@@ -28,7 +28,8 @@ import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaTypeTable;
-import com.google.api.codegen.util.testing.JavaTestValueGenerator;
+import com.google.api.codegen.util.testing.JavaValueProducer;
+import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -43,6 +44,7 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,11 +56,11 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static String MOCK_SERVICE_IMPL_FILE = "java/mock_service_impl.snip";
 
   private GapicCodePathMapper pathMapper;
-  private JavaTestValueGenerator valueGenerator;
+  private TestValueGenerator valueGenerator;
 
   public JavaGapicSurfaceTestTransformer(GapicCodePathMapper javaPathMapper) {
     this.pathMapper = javaPathMapper;
-    this.valueGenerator = new JavaTestValueGenerator();
+    this.valueGenerator = new TestValueGenerator(new JavaValueProducer());
   }
 
   @Override
@@ -208,8 +210,6 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
     List<GapicSurfaceTestAssertView> requestAssertViews =
         initCodeTransformer.generateRequestAssertViews(methodContext, paramFields);
-    List<GapicSurfaceTestAssertView> responseAssertViews =
-        initCodeTransformer.generateResponseAssertViews(methodContext);
 
     return GapicSurfaceTestCaseView.newBuilder()
         .name(getTestName(testNameTable, namer, method))
@@ -221,8 +221,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .methodType(type)
         .resourceTypeName(resourceTypeName)
         .resourcesFieldGetterName(resourcesFieldGetterName)
-        .requestAsserts(requestAssertViews)
-        .responseAsserts(responseAssertViews)
+        .asserts(requestAssertViews)
         .mockResponse(createMockResponseView(methodContext, initSymbolTable))
         .build();
   }

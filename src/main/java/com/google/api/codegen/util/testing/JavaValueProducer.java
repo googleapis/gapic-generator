@@ -16,26 +16,29 @@ package com.google.api.codegen.util.testing;
 
 import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-/**
- * A utility class used by the Java test generator which populates values for primitive fields.
- */
-public class JavaTestValueGenerator extends TestValueGenerator {
+/** A utility class used by the Java test generator which populates values for primitive fields. */
+public class JavaValueProducer implements ValueProducer {
 
   @Override
-  protected String generateValue(TypeRef typeRef, Name identifier) {
-    String typeName = typeRef.getPrimitiveTypeName();
-    if (typeName == "string") {
+  public String produce(TypeRef typeRef, Name identifier) {
+    Type type = typeRef.getKind();
+    if (type == Type.TYPE_STRING) {
       return identifier.toLowerCamel() + Integer.toString(identifier.hashCode());
-    } else if (typeName == "bool") {
+    } else if (type == Type.TYPE_BOOL) {
       return identifier.hashCode() % 2 == 0 ? "true" : "false";
-    } else if (typeName.contains("int")) {
-      return Integer.toString(identifier.hashCode());
-    } else if (typeName == "byte") {
+    } else if (type == Type.TYPE_BYTES) {
       byte lowByte = (byte) (identifier.hashCode());
       return Byte.toString(lowByte);
-    } else {
+    } else if (typeRef.getPrimitiveTypeName().contains("int")) {
+      return Integer.toString(identifier.hashCode());
+    } else if (type == Type.TYPE_DOUBLE
+        || type == Type.TYPE_FLOAT
+        || typeRef.getPrimitiveTypeName().contains("fixed")) {
       return Double.toString(identifier.hashCode() / 10);
+    } else {
+      throw new RuntimeException("Unknown type in ValueProducer.");
     }
   }
 }

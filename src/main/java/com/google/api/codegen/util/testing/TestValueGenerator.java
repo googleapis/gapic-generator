@@ -25,21 +25,24 @@ import java.util.HashMap;
  * <p>The populated values will be unique (except for boolean values) and deterministic based on the
  * populated fields and the sequence.
  */
-public abstract class TestValueGenerator {
-  protected HashMap<Name, String> valueTable = new HashMap<>();
+public class TestValueGenerator {
+  private HashMap<Name, String> valueTable = new HashMap<>();
+  private ValueProducer producer;
+
+  public TestValueGenerator(ValueProducer producer) {
+    this.producer = producer;
+  }
 
   public String getAndStoreValue(TypeRef type, Name identifier) {
     if (!valueTable.containsKey(identifier)) {
-      String value = generateValue(type, identifier);
+      String value = producer.produce(type, identifier);
       while (type.getPrimitiveTypeName() != "bool" && valueTable.containsValue(value)) {
         // If the value already exists regenerate using a deterministically different identifier.
         identifier = identifier.join("1");
-        value = generateValue(type, identifier);
+        value = producer.produce(type, identifier);
       }
-      valueTable.put(identifier, generateValue(type, identifier));
+      valueTable.put(identifier, value);
     }
     return valueTable.get(identifier);
   }
-
-  protected abstract String generateValue(TypeRef typeRef, Name identifier);
 }

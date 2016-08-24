@@ -24,11 +24,13 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 /**
- * Container class used by InitCodeGenerator.
+ * Context class used by InitCodeGenerator.
  *
- * <p>Contains context information related to init code generation stage which includes: 1.
- * SymbolTable to produce unique variable names. 2. TestValueGenerator to populate unique values. 3.
- * Initialized fields structure configuration map. 4. The method to generate.
+ * Contains context information related to init code generation stage which includes:
+ * 1. SymbolTable to produce unique variable names.
+ * 2. TestValueGenerator to populate unique values.
+ * 3. Initialized fields structure configuration map.
+ * 4. The method to generate.
  */
 @AutoValue
 public abstract class InitCodeGeneratorContext {

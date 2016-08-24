@@ -30,7 +30,7 @@ import com.google.api.codegen.metacode.SimpleInitCodeLine;
 import com.google.api.codegen.metacode.StructureInitCodeLine;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
-import com.google.api.codegen.util.testing.JavaTestValueGenerator;
+import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.FieldSettingView;
 import com.google.api.codegen.viewmodel.FormattedInitValueView;
 import com.google.api.codegen.viewmodel.InitCodeLineView;
@@ -60,7 +60,7 @@ public class InitCodeTransformer {
       MethodTransformerContext context,
       Iterable<Field> fields,
       SymbolTable table,
-      JavaTestValueGenerator valueGenerator) {
+      TestValueGenerator valueGenerator) {
     Map<String, Object> initFieldStructure = createSampleInitFieldStructure(context);
     InitCodeGeneratorContext initCodeContext =
         InitCodeGeneratorContext.newBuilder()
@@ -76,7 +76,7 @@ public class InitCodeTransformer {
   }
 
   public InitCodeView generateRequestObjectInitCode(
-      MethodTransformerContext context, SymbolTable table, JavaTestValueGenerator valueGenerator) {
+      MethodTransformerContext context, SymbolTable table, TestValueGenerator valueGenerator) {
     Map<String, Object> initFieldStructure = createSampleInitFieldStructure(context);
     InitCodeGeneratorContext initCodeContext =
         InitCodeGeneratorContext.newBuilder()
@@ -92,7 +92,7 @@ public class InitCodeTransformer {
   }
 
   public InitCodeView generateMockResponseObjectInitCode(
-      MethodTransformerContext context, SymbolTable table, JavaTestValueGenerator valueGenerator) {
+      MethodTransformerContext context, SymbolTable table, TestValueGenerator valueGenerator) {
     Map<String, Object> initFieldStructure = createMockResponseInitFieldStructure(context);
     InitCodeGeneratorContext initCodeContext =
         InitCodeGeneratorContext.newBuilder()
@@ -139,30 +139,8 @@ public class InitCodeTransformer {
     return assertViews;
   }
 
-  public List<GapicSurfaceTestAssertView> generateResponseAssertViews(
-      MethodTransformerContext context) {
-    List<GapicSurfaceTestAssertView> assertViews = new ArrayList<>();
-    SurfaceNamer namer = context.getNamer();
-
-    // Add response fields checking
-    if (!context.getMethodConfig().isPageStreaming()) {
-      for (Field field : context.getMethod().getOutputMessage().getFields()) {
-        if (field.getType().isPrimitive()) {
-          String getterMethod =
-              namer.getFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
-          assertViews.add(createAssertView(getterMethod, getterMethod));
-        }
-      }
-    }
-    return assertViews;
-  }
-
-  private GapicSurfaceTestAssertView createAssertView(
-      String expectedIdentifier, String actualIdentifier) {
-    return GapicSurfaceTestAssertView.newBuilder()
-        .expectedValueIdentifier(expectedIdentifier)
-        .actualValueIdentifier(actualIdentifier)
-        .build();
+  private GapicSurfaceTestAssertView createAssertView(String expected, String actual) {
+    return GapicSurfaceTestAssertView.newBuilder().expected(expected).actual(actual).build();
   }
 
   private Map<String, Object> createSampleInitFieldStructure(MethodTransformerContext context) {

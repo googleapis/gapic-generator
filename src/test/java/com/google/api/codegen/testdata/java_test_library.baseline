@@ -130,10 +130,6 @@ public class LibraryServiceTest {
     CreateShelfRequest actualRequest = (CreateShelfRequest)actualRequests.get(0);
 
     Assert.assertEquals(shelf, actualRequest.getShelf());
-
-    Assert.assertEquals(expectedResponse.getName(), actualResponse.getName());
-    Assert.assertEquals(expectedResponse.getTheme(), actualResponse.getTheme());
-    Assert.assertEquals(expectedResponse.getInternalTheme(), actualResponse.getInternalTheme());
   }
 
   @Test
@@ -174,10 +170,6 @@ public class LibraryServiceTest {
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
     Assert.assertEquals(formattedName, actualRequest.getName());
-
-    Assert.assertEquals(expectedResponse.getName(), actualResponse.getName());
-    Assert.assertEquals(expectedResponse.getTheme(), actualResponse.getTheme());
-    Assert.assertEquals(expectedResponse.getInternalTheme(), actualResponse.getInternalTheme());
   }
 
   @Test
@@ -220,10 +212,6 @@ public class LibraryServiceTest {
 
     Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(message, actualRequest.getMessage());
-
-    Assert.assertEquals(expectedResponse.getName(), actualResponse.getName());
-    Assert.assertEquals(expectedResponse.getTheme(), actualResponse.getTheme());
-    Assert.assertEquals(expectedResponse.getInternalTheme(), actualResponse.getInternalTheme());
   }
 
   @Test
@@ -268,10 +256,6 @@ public class LibraryServiceTest {
     Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(message, actualRequest.getMessage());
     Assert.assertEquals(stringBuilder, actualRequest.getStringBuilder());
-
-    Assert.assertEquals(expectedResponse.getName(), actualResponse.getName());
-    Assert.assertEquals(expectedResponse.getTheme(), actualResponse.getTheme());
-    Assert.assertEquals(expectedResponse.getInternalTheme(), actualResponse.getInternalTheme());
   }
 
   @Test
@@ -313,7 +297,6 @@ public class LibraryServiceTest {
     Assert.assertEquals(1, actualRequests.size());
     ListShelvesRequest actualRequest = (ListShelvesRequest)actualRequests.get(0);
 
-
   }
 
   @Test
@@ -340,7 +323,6 @@ public class LibraryServiceTest {
     DeleteShelfRequest actualRequest = (DeleteShelfRequest)actualRequests.get(0);
 
     Assert.assertEquals(formattedName, actualRequest.getName());
-
   }
 
   @Test
@@ -383,10 +365,6 @@ public class LibraryServiceTest {
 
     Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(formattedOtherShelfName, actualRequest.getOtherShelfName());
-
-    Assert.assertEquals(expectedResponse.getName(), actualResponse.getName());
-    Assert.assertEquals(expectedResponse.getTheme(), actualResponse.getTheme());
-    Assert.assertEquals(expectedResponse.getInternalTheme(), actualResponse.getInternalTheme());
   }
 
   @Test
@@ -433,11 +411,6 @@ public class LibraryServiceTest {
 
     Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(book, actualRequest.getBook());
-
-    Assert.assertEquals(expectedResponse.getName(), actualResponse.getName());
-    Assert.assertEquals(expectedResponse.getAuthor(), actualResponse.getAuthor());
-    Assert.assertEquals(expectedResponse.getTitle(), actualResponse.getTitle());
-    Assert.assertEquals(expectedResponse.getRead(), actualResponse.getRead());
   }
 
   @Test
@@ -474,8 +447,6 @@ public class LibraryServiceTest {
     Assert.assertEquals(shelf, actualRequest.getShelf());
     Assert.assertEquals(books, actualRequest.getBooksList());
     Assert.assertEquals(edition, actualRequest.getEdition());
-
-    Assert.assertEquals(expectedResponse.getBookNamesList(), actualResponse.getBookNamesList());
   }
 
   @Test
@@ -520,11 +491,6 @@ public class LibraryServiceTest {
     GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
 
     Assert.assertEquals(formattedName, actualRequest.getName());
-
-    Assert.assertEquals(expectedResponse.getName(), actualResponse.getName());
-    Assert.assertEquals(expectedResponse.getAuthor(), actualResponse.getAuthor());
-    Assert.assertEquals(expectedResponse.getTitle(), actualResponse.getTitle());
-    Assert.assertEquals(expectedResponse.getRead(), actualResponse.getRead());
   }
 
   @Test
@@ -569,7 +535,6 @@ public class LibraryServiceTest {
 
     Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(filter, actualRequest.getFilter());
-
   }
 
   @Test
@@ -596,7 +561,6 @@ public class LibraryServiceTest {
     DeleteBookRequest actualRequest = (DeleteBookRequest)actualRequests.get(0);
 
     Assert.assertEquals(formattedName, actualRequest.getName());
-
   }
 
   @Test
@@ -643,11 +607,6 @@ public class LibraryServiceTest {
 
     Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(book, actualRequest.getBook());
-
-    Assert.assertEquals(expectedResponse.getName(), actualResponse.getName());
-    Assert.assertEquals(expectedResponse.getAuthor(), actualResponse.getAuthor());
-    Assert.assertEquals(expectedResponse.getTitle(), actualResponse.getTitle());
-    Assert.assertEquals(expectedResponse.getRead(), actualResponse.getRead());
   }
 
   @Test
@@ -698,11 +657,6 @@ public class LibraryServiceTest {
     Assert.assertEquals(book, actualRequest.getBook());
     Assert.assertEquals(updateMask, actualRequest.getUpdateMask());
     Assert.assertEquals(physicalMask, actualRequest.getPhysicalMask());
-
-    Assert.assertEquals(expectedResponse.getName(), actualResponse.getName());
-    Assert.assertEquals(expectedResponse.getAuthor(), actualResponse.getAuthor());
-    Assert.assertEquals(expectedResponse.getTitle(), actualResponse.getTitle());
-    Assert.assertEquals(expectedResponse.getRead(), actualResponse.getRead());
   }
 
   @Test
@@ -749,11 +703,6 @@ public class LibraryServiceTest {
 
     Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(formattedOtherShelfName, actualRequest.getOtherShelfName());
-
-    Assert.assertEquals(expectedResponse.getName(), actualResponse.getName());
-    Assert.assertEquals(expectedResponse.getAuthor(), actualResponse.getAuthor());
-    Assert.assertEquals(expectedResponse.getTitle(), actualResponse.getTitle());
-    Assert.assertEquals(expectedResponse.getRead(), actualResponse.getRead());
   }
 
   @Test
@@ -795,7 +744,6 @@ public class LibraryServiceTest {
     Assert.assertEquals(1, actualRequests.size());
     ListStringsRequest actualRequest = (ListStringsRequest)actualRequests.get(0);
 
-
   }
 
   @Test
@@ -808,7 +756,7 @@ public class LibraryServiceTest {
     serviceHelper.getService().setResponses(expectedResponses);
 
     String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
-    ByteString comment = ByteString.copyFromUtf8("9.5039855E7");
+    ByteString comment = ByteString.copyFromUtf8("95");
     Stage stage = Stage.UNSET;
     Comment commentsElement = Comment.newBuilder()
       .setComment(comment)
@@ -830,7 +778,6 @@ public class LibraryServiceTest {
 
     Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(comments, actualRequest.getCommentsList());
-
   }
 
   @Test
@@ -875,11 +822,6 @@ public class LibraryServiceTest {
     GetBookFromArchiveRequest actualRequest = (GetBookFromArchiveRequest)actualRequests.get(0);
 
     Assert.assertEquals(formattedName, actualRequest.getName());
-
-    Assert.assertEquals(expectedResponse.getName(), actualResponse.getName());
-    Assert.assertEquals(expectedResponse.getAuthor(), actualResponse.getAuthor());
-    Assert.assertEquals(expectedResponse.getTitle(), actualResponse.getTitle());
-    Assert.assertEquals(expectedResponse.getRead(), actualResponse.getRead());
   }
 
   @Test
@@ -912,7 +854,6 @@ public class LibraryServiceTest {
     Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(indexName, actualRequest.getIndexName());
     Assert.assertEquals(indexMap, actualRequest.getIndexMap());
-
   }
 
   @Test
@@ -943,7 +884,6 @@ public class LibraryServiceTest {
 
     Assert.assertEquals(formattedResource, actualRequest.getResource());
     Assert.assertEquals(tag, actualRequest.getTag());
-
   }
 
 }

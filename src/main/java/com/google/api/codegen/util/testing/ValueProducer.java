@@ -12,26 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.viewmodel.testing;
+package com.google.api.codegen.util.testing;
 
-import com.google.auto.value.AutoValue;
+import com.google.api.codegen.util.Name;
+import com.google.api.tools.framework.model.TypeRef;
 
-@AutoValue
-public abstract class GapicSurfaceTestAssertView {
-  public abstract String actual();
-
-  public abstract String expected();
-
-  public static Builder newBuilder() {
-    return new AutoValue_GapicSurfaceTestAssertView.Builder();
-  }
-
-  @AutoValue.Builder
-  public abstract static class Builder {
-    public abstract Builder actual(String val);
-
-    public abstract Builder expected(String val);
-
-    public abstract GapicSurfaceTestAssertView build();
-  }
+/** A utility interface used by TestValueGenerator. */
+public interface ValueProducer {
+  public String produce(TypeRef typeRef, Name identifier);
 }
