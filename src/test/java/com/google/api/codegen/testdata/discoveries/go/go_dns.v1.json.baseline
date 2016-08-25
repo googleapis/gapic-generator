@@ -45,11 +45,11 @@ func main() {
   // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
   managedZone := "{MY-MANAGED-ZONE}" // TODO: Update placeholder value(s).
 
-  body := &dns.Change{
+  resource := &dns.Change{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Changes.Create(project, managedZone, body).Context(ctx).Do()
+  resp, err := s.Changes.Create(project, managedZone, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -214,11 +214,11 @@ func main() {
   // Identifies the project addressed by this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  body := &dns.ManagedZone{
+  resource := &dns.ManagedZone{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.ManagedZones.Create(project, body).Context(ctx).Do()
+  resp, err := s.ManagedZones.Create(project, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }

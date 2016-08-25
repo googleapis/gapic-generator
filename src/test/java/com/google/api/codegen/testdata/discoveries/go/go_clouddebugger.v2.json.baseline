@@ -96,11 +96,11 @@ func main() {
   // Breakpoint identifier, unique in the scope of the debuggee.
   id := "{MY-ID}" // TODO: Update placeholder value(s).
 
-  body := &clouddebugger.UpdateActiveBreakpointRequest{
+  resource := &clouddebugger.UpdateActiveBreakpointRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Controller.Debuggees.Breakpoints.Update(debuggeeId, id, body).Context(ctx).Do()
+  resp, err := s.Controller.Debuggees.Breakpoints.Update(debuggeeId, id, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -148,11 +148,11 @@ func main() {
     log.Fatal(err)
   }
 
-  body := &clouddebugger.RegisterDebuggeeRequest{
+  resource := &clouddebugger.RegisterDebuggeeRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Controller.Debuggees.Register(body).Context(ctx).Do()
+  resp, err := s.Controller.Debuggees.Register(resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -362,11 +362,11 @@ func main() {
   // ID of the debuggee where the breakpoint is to be set.
   debuggeeId := "{MY-DEBUGGEE-ID}" // TODO: Update placeholder value(s).
 
-  body := &clouddebugger.Breakpoint{
+  resource := &clouddebugger.Breakpoint{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Debugger.Debuggees.Breakpoints.Set(debuggeeId, body).Context(ctx).Do()
+  resp, err := s.Debugger.Debuggees.Breakpoints.Set(debuggeeId, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }

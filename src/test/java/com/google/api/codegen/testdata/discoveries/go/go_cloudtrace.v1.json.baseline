@@ -42,11 +42,11 @@ func main() {
   // ID of the Cloud project where the trace data is stored.
   projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
-  body := &cloudtrace.Traces{
+  resource := &cloudtrace.Traces{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.Projects.PatchTraces(projectId, body).Context(ctx).Do()
+  resp, err := s.Projects.PatchTraces(projectId, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }

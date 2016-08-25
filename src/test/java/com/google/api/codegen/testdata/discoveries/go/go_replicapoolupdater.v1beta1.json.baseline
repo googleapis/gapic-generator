@@ -159,11 +159,11 @@ func main() {
   // The name of the zone in which the update's target resides.
   zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
 
-  body := &replicapoolupdater.RollingUpdate{
+  resource := &replicapoolupdater.RollingUpdate{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.RollingUpdates.Insert(project, zone, body).Context(ctx).Do()
+  resp, err := s.RollingUpdates.Insert(project, zone, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }

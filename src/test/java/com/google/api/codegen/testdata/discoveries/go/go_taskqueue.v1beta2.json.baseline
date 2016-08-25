@@ -209,11 +209,11 @@ func main() {
   // The taskqueue to insert the task into
   taskqueue2 := "{MY-TASKQUEUE}" // TODO: Update placeholder value(s).
 
-  body := &taskqueue.Task{
+  resource := &taskqueue.Task{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Tasks.Insert(project, taskqueue2, body).Context(ctx).Do()
+  resp, err := s.Tasks.Insert(project, taskqueue2, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -387,11 +387,11 @@ func main() {
   // The new lease in seconds.
   newLeaseSeconds := int64(0) // TODO: Update placeholder value(s).
 
-  body := &taskqueue.Task{
+  resource := &taskqueue.Task{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.Tasks.Patch(project, taskqueue2, task, newLeaseSeconds, body).Context(ctx).Do()
+  resp, err := s.Tasks.Patch(project, taskqueue2, task, newLeaseSeconds, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -451,11 +451,11 @@ func main() {
   // The new lease in seconds.
   newLeaseSeconds := int64(0) // TODO: Update placeholder value(s).
 
-  body := &taskqueue.Task{
+  resource := &taskqueue.Task{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Tasks.Update(project, taskqueue2, task, newLeaseSeconds, body).Context(ctx).Do()
+  resp, err := s.Tasks.Update(project, taskqueue2, task, newLeaseSeconds, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
