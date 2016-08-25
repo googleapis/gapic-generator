@@ -295,7 +295,7 @@ LibraryServiceApi.matchBookFromArchivedBookName =
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi;
+ * var api = libraryV1.libraryServiceApi();
  * var shelf = {};
  * api.createShelf(shelf, function(err, response) {
  *     if (err) {
@@ -339,7 +339,7 @@ LibraryServiceApi.prototype.createShelf = function createShelf() {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi;
+ * var api = libraryV1.libraryServiceApi();
  * var formattedName = LibraryServiceApi.shelfPath("[SHELF]");
  * var options = '';
  * api.getShelf(formattedName, options, function(err, response) {
@@ -385,7 +385,7 @@ LibraryServiceApi.prototype.getShelf = function getShelf() {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi;
+ * var api = libraryV1.libraryServiceApi();
  *
  * api.listShelves().on('data', function(element) {
  *     // doThingsWith(element)
@@ -417,7 +417,7 @@ LibraryServiceApi.prototype.listShelves = function listShelves() {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi;
+ * var api = libraryV1.libraryServiceApi();
  * var formattedName = LibraryServiceApi.shelfPath("[SHELF]");
  * api.deleteShelf(formattedName, function(err) {
  *     if (err) {
@@ -457,7 +457,7 @@ LibraryServiceApi.prototype.deleteShelf = function deleteShelf() {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi;
+ * var api = libraryV1.libraryServiceApi();
  * var formattedName = LibraryServiceApi.shelfPath("[SHELF]");
  * var formattedOtherShelfName = LibraryServiceApi.shelfPath("[SHELF]");
  * api.mergeShelves(formattedName, formattedOtherShelfName, function(err, response) {
@@ -500,7 +500,7 @@ LibraryServiceApi.prototype.mergeShelves = function mergeShelves() {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi;
+ * var api = libraryV1.libraryServiceApi();
  * var formattedName = LibraryServiceApi.shelfPath("[SHELF]");
  * var book = {};
  * api.createBook(formattedName, book, function(err, response) {
@@ -548,7 +548,7 @@ LibraryServiceApi.prototype.createBook = function createBook() {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi;
+ * var api = libraryV1.libraryServiceApi();
  * var shelf = {};
  * var books = [];
  * api.publishSeries(shelf, books, function(err, response) {
@@ -593,7 +593,7 @@ LibraryServiceApi.prototype.publishSeries = function publishSeries() {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi;
+ * var api = libraryV1.libraryServiceApi();
  * var formattedName = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
  * api.getBook(formattedName, function(err, response) {
  *     if (err) {
@@ -640,7 +640,7 @@ LibraryServiceApi.prototype.getBook = function getBook() {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi;
+ * var api = libraryV1.libraryServiceApi();
  * var formattedName = LibraryServiceApi.shelfPath("[SHELF]");
  * api.listBooks(formattedName).on('data', function(element) {
  *     // doThingsWith(element)
@@ -681,7 +681,7 @@ LibraryServiceApi.prototype.listBooks = function listBooks() {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi;
+ * var api = libraryV1.libraryServiceApi();
  * var formattedName = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
  * api.deleteBook(formattedName, function(err) {
  *     if (err) {
@@ -724,7 +724,7 @@ LibraryServiceApi.prototype.deleteBook = function deleteBook() {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi;
+ * var api = libraryV1.libraryServiceApi();
  * var formattedName = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
  * var book = {};
  * api.updateBook(formattedName, book, function(err, response) {
@@ -774,7 +774,7 @@ LibraryServiceApi.prototype.updateBook = function updateBook() {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi;
+ * var api = libraryV1.libraryServiceApi();
  * var formattedName = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
  * var formattedOtherShelfName = LibraryServiceApi.shelfPath("[SHELF]");
  * api.moveBook(formattedName, formattedOtherShelfName, function(err, response) {
@@ -821,7 +821,7 @@ LibraryServiceApi.prototype.moveBook = function moveBook() {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi;
+ * var api = libraryV1.libraryServiceApi();
  *
  * api.listStrings().on('data', function(element) {
  *     // doThingsWith(element)
@@ -860,14 +860,14 @@ LibraryServiceApi.prototype.listStrings = function listStrings() {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi;
+ * var api = libraryV1.libraryServiceApi();
  * var formattedName = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
  * var comment = '';
  * var stage = Stage.UNSET;
  * var commentsElement = {
- *         'comment' : comment,
- *         'stage' : stage
- *     };
+ *     comment : comment,
+ *     stage : stage
+ * };
  * var comments = [commentsElement];
  * api.addComments(formattedName, comments, function(err) {
  *     if (err) {
@@ -905,7 +905,7 @@ LibraryServiceApi.prototype.addComments = function addComments() {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi;
+ * var api = libraryV1.libraryServiceApi();
  * var formattedName = LibraryServiceApi.archivedBookPath("[ARCHIVE_PATH]", "[BOOK]");
  * api.getBookFromArchive(formattedName, function(err, response) {
  *     if (err) {
@@ -947,7 +947,7 @@ LibraryServiceApi.prototype.getBookFromArchive = function getBookFromArchive() {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi;
+ * var api = libraryV1.libraryServiceApi();
  * var formattedName = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
  * var indexName = 'default index';
  * var indexMapItem = '';
@@ -994,7 +994,7 @@ LibraryServiceApi.prototype.updateBookIndex = function updateBookIndex() {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi;
+ * var api = libraryV1.libraryServiceApi();
  * var formattedResource = LibraryServiceApi.bookPath("[SHELF]", "[BOOK]");
  * var tag = '';
  * api.addTag(formattedResource, tag, function(err, response) {

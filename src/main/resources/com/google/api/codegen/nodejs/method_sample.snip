@@ -1,5 +1,5 @@
 @snippet decorateSampleCode(apiMethod, coreSampleCode)
-    var api = {@apiMethod.apiModuleName}.{@apiMethod.apiVariableName};
+    var api = {@apiMethod.apiModuleName}.{@apiMethod.apiVariableName}();
     {@initCode(apiMethod.initCode)}
     {@coreSampleCode}
 @end
@@ -97,10 +97,10 @@
 
 @private initLineStructure(line)
     var {@line.identifier} = {
-            @join fieldSetting : line.fieldSettings on ",".add(BREAK)
-                '{@fieldSetting.identifier}' : {@fieldSetting.identifier}
-            @end
-        };
+        @join fieldSetting : line.fieldSettings on ",".add(BREAK)
+            {@fieldSetting.identifier} : {@fieldSetting.identifier}
+        @end
+    };
 @end
 
 @private initLineList(line)
@@ -108,9 +108,9 @@
 @end
 
 @snippet varList(args)
-  @join arg : args on ", "
-    {@arg}
-  @end
+    @join arg : args on ", "
+        {@arg}
+    @end
 @end
 
 @private initLineMap(line)
@@ -118,9 +118,9 @@
 @end
 
 @private keyVarList(mapEntries)
-  @join mapEntry : mapEntries vertical
-    {@mapEntry.key} : {@mapEntry.value},
-  @end
+    @join mapEntry : mapEntries vertical
+        {@mapEntry.key} : {@mapEntry.value},
+    @end
 @end
 
 @private initLineSimple(line)
