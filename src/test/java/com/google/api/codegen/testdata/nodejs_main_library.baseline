@@ -185,7 +185,7 @@ LibraryServiceApi.prototype.shelfPath = function shelfPath(shelf) {
  *   A fully-qualified path representing a shelf resources.
  * @returns {String} - A string representing the shelf.
  */
-LibraryServiceApi.matchShelfFromShelfName =
+LibraryServiceApi.prototype.matchShelfFromShelfName =
     function matchShelfFromShelfName(shelfName) {
   return SHELF_PATH_TEMPLATE.match(shelfName).shelf;
 };
@@ -209,7 +209,7 @@ LibraryServiceApi.prototype.bookPath = function bookPath(shelf, book) {
  *   A fully-qualified path representing a book resources.
  * @returns {String} - A string representing the shelf.
  */
-LibraryServiceApi.matchShelfFromBookName =
+LibraryServiceApi.prototype.matchShelfFromBookName =
     function matchShelfFromBookName(bookName) {
   return BOOK_PATH_TEMPLATE.match(bookName).shelf;
 };
@@ -220,7 +220,7 @@ LibraryServiceApi.matchShelfFromBookName =
  *   A fully-qualified path representing a book resources.
  * @returns {String} - A string representing the book.
  */
-LibraryServiceApi.matchBookFromBookName =
+LibraryServiceApi.prototype.matchBookFromBookName =
     function matchBookFromBookName(bookName) {
   return BOOK_PATH_TEMPLATE.match(bookName).book;
 };
@@ -231,7 +231,7 @@ LibraryServiceApi.matchBookFromBookName =
  * @param {String} book
  * @returns {String}
  */
-LibraryServiceApi.prototype.archived_bookPath = function archived_bookPath(archive_path, book) {
+LibraryServiceApi.prototype.archivedBookPath = function archivedBookPath(archive_path, book) {
   return ARCHIVED_BOOK_PATH_TEMPLATE.render({
     'archive_path': archive_path,
     'book': book
@@ -244,7 +244,7 @@ LibraryServiceApi.prototype.archived_bookPath = function archived_bookPath(archi
  *   A fully-qualified path representing a archived_book resources.
  * @returns {String} - A string representing the archive_path.
  */
-LibraryServiceApi.matchArchivePathFromArchivedBookName =
+LibraryServiceApi.prototype.matchArchivePathFromArchivedBookName =
     function matchArchivePathFromArchivedBookName(archivedBookName) {
   return ARCHIVED_BOOK_PATH_TEMPLATE.match(archivedBookName).archive_path;
 };
@@ -255,7 +255,7 @@ LibraryServiceApi.matchArchivePathFromArchivedBookName =
  *   A fully-qualified path representing a archived_book resources.
  * @returns {String} - A string representing the book.
  */
-LibraryServiceApi.matchBookFromArchivedBookName =
+LibraryServiceApi.prototype.matchBookFromArchivedBookName =
     function matchBookFromArchivedBookName(archivedBookName) {
   return ARCHIVED_BOOK_PATH_TEMPLATE.match(archivedBookName).book;
 };

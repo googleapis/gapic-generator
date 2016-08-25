@@ -308,8 +308,8 @@
    @end
    * @@returns {String}
    */
-  {@context.getApiWrapperName(service)}.prototype.{@collectionConfig.getEntityName}Path = \
-  function {@collectionConfig.getEntityName}Path({@createResourceFunctionParams(collectionConfig)}) {
+  {@context.getApiWrapperName(service)}.prototype.{@resourceFunctionName(collectionConfig)} = \
+  function {@resourceFunctionName(collectionConfig)}({@createResourceFunctionParams(collectionConfig)}) {
     return {@pathTemplateName(collectionConfig)}.render({
       {@createRenderDictionary(collectionConfig)}
     });
@@ -327,12 +327,16 @@
        *   A fully-qualified path representing a {@collectionConfig.getEntityName} resources.
        * @@returns {String} - A string representing the {@subField}.
        */
-      {@context.getApiWrapperName(service)}.match{@subFieldUpper}From{@fieldPath} =
+      {@context.getApiWrapperName(service)}.prototype.match{@subFieldUpper}From{@fieldPath} =
           function match{@subFieldUpper}From{@fieldPath}({@fieldParam}) {
         return {@pathTemplateName(collectionConfig)}.match({@fieldParam}).{@subField};
       };
     @end
   @end
+@end
+
+@private resourceFunctionName(collectionConfig)
+  {@context.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName)}Path
 @end
 
 @private resourceName(collectionConfig)
