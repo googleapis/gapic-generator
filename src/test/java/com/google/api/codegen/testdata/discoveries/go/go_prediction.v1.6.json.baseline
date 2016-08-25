@@ -14,7 +14,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -46,17 +45,17 @@ func main() {
   // The name of a hosted model.
   hostedModelName := "{MY-HOSTED-MODEL-NAME}" // TODO: Update placeholder value(s).
 
-  input := &prediction.Input{
+  resource := &prediction.Input{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Hostedmodels.Predict(project, hostedModelName, &input).Context(ctx).Do()
+  resp, err := s.Hostedmodels.Predict(project, hostedModelName, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -73,7 +72,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -111,7 +109,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -128,7 +126,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -179,7 +176,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -217,7 +213,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -234,7 +230,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -263,17 +258,17 @@ func main() {
   // The project associated with the model.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  insert := &prediction.Insert{
+  resource := &prediction.Insert{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Trainedmodels.Insert(project, &insert).Context(ctx).Do()
+  resp, err := s.Trainedmodels.Insert(project, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -290,7 +285,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -323,7 +317,7 @@ func main() {
   if err := call.Pages(ctx, func(page *prediction.List) error {
     for _, insert2 := range page.Items {
       // TODO: Use insert2
-      fmt.Printf("%#v\n", insert2)
+      log.Printf("%#v\n", insert2)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -345,7 +339,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -377,17 +370,17 @@ func main() {
   // The unique name for the predictive model.
   id := "{MY-ID}" // TODO: Update placeholder value(s).
 
-  input := &prediction.Input{
+  resource := &prediction.Input{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Trainedmodels.Predict(project, id, &input).Context(ctx).Do()
+  resp, err := s.Trainedmodels.Predict(project, id, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -404,7 +397,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -436,15 +428,15 @@ func main() {
   // The unique name for the predictive model.
   id := "{MY-ID}" // TODO: Update placeholder value(s).
 
-  update := &prediction.Update{
+  resource := &prediction.Update{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Trainedmodels.Update(project, id, &update).Context(ctx).Do()
+  resp, err := s.Trainedmodels.Update(project, id, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }

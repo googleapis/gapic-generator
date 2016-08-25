@@ -28,7 +28,6 @@
     //    project directory.
 
     import (
-      "fmt"
       "log"
 
       "golang.org/x/net/context"
@@ -83,7 +82,7 @@
     }
 
     // {@TODO()} Use {@responseName()}
-    fmt.Printf("%#v\n", {@responseName()})
+    log.Printf("%#v\n", {@responseName()})
   @end
 @end
 
@@ -99,14 +98,14 @@
              valueName = context.valueTypeName(resourceField)
           for {@keyName}, {@valueName} := range page.{@resources} {
             // {@TODO()} Use {@keyName}, {@valueName}
-            fmt.Printf("%v: %#v\n", {@keyName}, {@valueName})
+            log.Printf("%v: %#v\n", {@keyName}, {@valueName})
           }
         @end
       @else
         @let resourceName = context.elementTypeName(resourceField)
           for _, {@resourceName} := range page.{@resources} {
             // {@TODO()} Use {@resourceName}
-            fmt.Printf("%#v\n", {@resourceName})
+            log.Printf("%#v\n", {@resourceName})
           }
         @end
       @end
@@ -164,7 +163,7 @@
   @let params = context.getFlatMethodParams(method)
     @if context.hasRequestField(method)
       @if params
-        {@argumentList(params)}, &{@requestBodyName(method)}
+        {@argumentList(params)}, {@requestBodyName(method)}
       @else
         {@requestBodyName(method)}
       @end
@@ -187,7 +186,7 @@
 @end
 
 @private requestBodyName(method)
-  {@context.objectTypeName(context.getRequestField(method))}
+  resource
 @end
 
 @private responseName()
