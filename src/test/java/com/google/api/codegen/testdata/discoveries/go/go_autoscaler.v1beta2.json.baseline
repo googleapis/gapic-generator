@@ -14,7 +14,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -55,7 +54,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -72,7 +71,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -113,7 +111,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -130,7 +128,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -162,17 +159,17 @@ func main() {
   // Zone name of Autoscaler resource.
   zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
 
-  autoscaler := &autoscaler.Autoscaler{
+  body := &autoscaler.Autoscaler{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Autoscalers.Insert(project, zone, &autoscaler).Context(ctx).Do()
+  resp, err := s.Autoscalers.Insert(project, zone, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -189,7 +186,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -225,7 +221,7 @@ func main() {
   if err := call.Pages(ctx, func(page *autoscaler.AutoscalerListResponse) error {
     for _, autoscaler := range page.Items {
       // TODO: Use autoscaler
-      fmt.Printf("%#v\n", autoscaler)
+      log.Printf("%#v\n", autoscaler)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -247,7 +243,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -282,17 +277,17 @@ func main() {
   // Name of the Autoscaler resource.
   autoscaler2 := "{MY-AUTOSCALER}" // TODO: Update placeholder value(s).
 
-  autoscaler := &autoscaler.Autoscaler{
+  body := &autoscaler.Autoscaler{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.Autoscalers.Patch(project, zone, autoscaler2, &autoscaler).Context(ctx).Do()
+  resp, err := s.Autoscalers.Patch(project, zone, autoscaler2, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -309,7 +304,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -344,17 +338,17 @@ func main() {
   // Name of the Autoscaler resource.
   autoscaler2 := "{MY-AUTOSCALER}" // TODO: Update placeholder value(s).
 
-  autoscaler := &autoscaler.Autoscaler{
+  body := &autoscaler.Autoscaler{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Autoscalers.Update(project, zone, autoscaler2, &autoscaler).Context(ctx).Do()
+  resp, err := s.Autoscalers.Update(project, zone, autoscaler2, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -371,7 +365,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -425,7 +418,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -466,7 +458,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -483,7 +475,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -519,7 +510,7 @@ func main() {
   if err := call.Pages(ctx, func(page *autoscaler.OperationList) error {
     for _, operation := range page.Items {
       // TODO: Use operation
-      fmt.Printf("%#v\n", operation)
+      log.Printf("%#v\n", operation)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -541,7 +532,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -574,7 +564,7 @@ func main() {
   if err := call.Pages(ctx, func(page *autoscaler.ZoneList) error {
     for _, zone := range page.Items {
       // TODO: Use zone
-      fmt.Printf("%#v\n", zone)
+      log.Printf("%#v\n", zone)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {

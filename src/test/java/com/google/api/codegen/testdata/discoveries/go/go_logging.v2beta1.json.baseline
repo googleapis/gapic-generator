@@ -14,7 +14,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -40,17 +39,17 @@ func main() {
     log.Fatal(err)
   }
 
-  listLogEntriesRequest := &logging.ListLogEntriesRequest{
+  body := &logging.ListLogEntriesRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Entries.List(listLogEntriesRequest).Context(ctx).Do()
+  resp, err := s.Entries.List(body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -67,7 +66,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -93,17 +91,17 @@ func main() {
     log.Fatal(err)
   }
 
-  writeLogEntriesRequest := &logging.WriteLogEntriesRequest{
+  body := &logging.WriteLogEntriesRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Entries.Write(writeLogEntriesRequest).Context(ctx).Do()
+  resp, err := s.Entries.Write(body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -120,7 +118,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -150,7 +147,7 @@ func main() {
   if err := call.Pages(ctx, func(page *logging.ListMonitoredResourceDescriptorsResponse) error {
     for _, monitoredResourceDescriptor := range page.ResourceDescriptors {
       // TODO: Use monitoredResourceDescriptor
-      fmt.Printf("%#v\n", monitoredResourceDescriptor)
+      log.Printf("%#v\n", monitoredResourceDescriptor)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -172,7 +169,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -207,7 +203,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -224,7 +220,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -254,17 +249,17 @@ func main() {
   // The new metric must be provided in the request.
   projectName := "projects/{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  logMetric := &logging.LogMetric{
+  body := &logging.LogMetric{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Metrics.Create(projectName, &logMetric).Context(ctx).Do()
+  resp, err := s.Projects.Metrics.Create(projectName, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -281,7 +276,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -316,7 +310,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -333,7 +327,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -368,7 +361,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -385,7 +378,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -419,7 +411,7 @@ func main() {
   if err := call.Pages(ctx, func(page *logging.ListLogMetricsResponse) error {
     for _, logMetric := range page.Metrics {
       // TODO: Use logMetric
-      fmt.Printf("%#v\n", logMetric)
+      log.Printf("%#v\n", logMetric)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -441,7 +433,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -472,17 +463,17 @@ func main() {
   // `metricName`. If the metric does not exist, it is created.
   metricName := "projects/{MY-PROJECT}/metrics/{MY-METRIC}" // TODO: Update placeholder value(s).
 
-  logMetric := &logging.LogMetric{
+  body := &logging.LogMetric{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Metrics.Update(metricName, &logMetric).Context(ctx).Do()
+  resp, err := s.Projects.Metrics.Update(metricName, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -499,7 +490,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -529,17 +519,17 @@ func main() {
   // The new sink must be provided in the request.
   projectName := "projects/{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  logSink := &logging.LogSink{
+  body := &logging.LogSink{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Sinks.Create(projectName, &logSink).Context(ctx).Do()
+  resp, err := s.Projects.Sinks.Create(projectName, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -556,7 +546,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -591,7 +580,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -608,7 +597,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -643,7 +631,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -660,7 +648,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -694,7 +681,7 @@ func main() {
   if err := call.Pages(ctx, func(page *logging.ListSinksResponse) error {
     for _, logSink := range page.Sinks {
       // TODO: Use logSink
-      fmt.Printf("%#v\n", logSink)
+      log.Printf("%#v\n", logSink)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -716,7 +703,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -747,15 +733,15 @@ func main() {
   // If the sink does not exist, it is created.
   sinkName := "projects/{MY-PROJECT}/sinks/{MY-SINK}" // TODO: Update placeholder value(s).
 
-  logSink := &logging.LogSink{
+  body := &logging.LogSink{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Sinks.Update(sinkName, &logSink).Context(ctx).Do()
+  resp, err := s.Projects.Sinks.Update(sinkName, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }

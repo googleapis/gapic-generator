@@ -14,7 +14,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -47,7 +46,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.AddressAggregatedList) error {
     for name, addressesScopedList := range page.Items {
       // TODO: Use name, addressesScopedList
-      fmt.Printf("%v: %#v\n", name, addressesScopedList)
+      log.Printf("%v: %#v\n", name, addressesScopedList)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -69,7 +68,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -110,7 +108,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -127,7 +125,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -168,7 +165,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -185,7 +182,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -217,17 +213,17 @@ func main() {
   // Name of the region for this request.
   region := "{MY-REGION}" // TODO: Update placeholder value(s).
 
-  address := &compute.Address{
+  body := &compute.Address{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Addresses.Insert(project, region, &address).Context(ctx).Do()
+  resp, err := s.Addresses.Insert(project, region, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -244,7 +240,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -280,7 +275,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.AddressList) error {
     for _, address := range page.Items {
       // TODO: Use address
-      fmt.Printf("%#v\n", address)
+      log.Printf("%#v\n", address)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -302,7 +297,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -335,7 +329,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.AutoscalerAggregatedList) error {
     for name, autoscalersScopedList := range page.Items {
       // TODO: Use name, autoscalersScopedList
-      fmt.Printf("%v: %#v\n", name, autoscalersScopedList)
+      log.Printf("%v: %#v\n", name, autoscalersScopedList)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -357,7 +351,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -398,7 +391,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -415,7 +408,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -456,7 +448,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -473,7 +465,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -505,17 +496,17 @@ func main() {
   // Name of the zone for this request.
   zone := "{MY-ZONE}" // TODO: Update placeholder value(s). eg. "us-central1-f"
 
-  autoscaler := &compute.Autoscaler{
+  body := &compute.Autoscaler{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Autoscalers.Insert(project, zone, &autoscaler).Context(ctx).Do()
+  resp, err := s.Autoscalers.Insert(project, zone, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -532,7 +523,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -568,7 +558,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.AutoscalerList) error {
     for _, autoscaler := range page.Items {
       // TODO: Use autoscaler
-      fmt.Printf("%#v\n", autoscaler)
+      log.Printf("%#v\n", autoscaler)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -590,7 +580,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -625,17 +614,17 @@ func main() {
   // Name of the autoscaler to update.
   autoscaler := "{MY-AUTOSCALER}" // TODO: Update placeholder value(s).
 
-  autoscaler := &compute.Autoscaler{
+  body := &compute.Autoscaler{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.Autoscalers.Patch(project, zone, autoscaler, &autoscaler).Context(ctx).Do()
+  resp, err := s.Autoscalers.Patch(project, zone, autoscaler, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -652,7 +641,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -684,17 +672,17 @@ func main() {
   // Name of the zone for this request.
   zone := "{MY-ZONE}" // TODO: Update placeholder value(s). eg. "us-central1-f"
 
-  autoscaler := &compute.Autoscaler{
+  body := &compute.Autoscaler{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Autoscalers.Update(project, zone, &autoscaler).Context(ctx).Do()
+  resp, err := s.Autoscalers.Update(project, zone, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -711,7 +699,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -749,7 +736,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -766,7 +753,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -804,7 +790,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -821,7 +807,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -853,17 +838,17 @@ func main() {
   // Name of the BackendService resource to which the queried instance belongs.
   backendService := "{MY-BACKEND-SERVICE}" // TODO: Update placeholder value(s).
 
-  resourceGroupReference := &compute.ResourceGroupReference{
+  body := &compute.ResourceGroupReference{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.BackendServices.GetHealth(project, backendService, &resourceGroupReference).Context(ctx).Do()
+  resp, err := s.BackendServices.GetHealth(project, backendService, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -880,7 +865,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -909,17 +893,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  backendService := &compute.BackendService{
+  body := &compute.BackendService{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.BackendServices.Insert(project, &backendService).Context(ctx).Do()
+  resp, err := s.BackendServices.Insert(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -936,7 +920,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -969,7 +952,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.BackendServiceList) error {
     for _, backendService := range page.Items {
       // TODO: Use backendService
-      fmt.Printf("%#v\n", backendService)
+      log.Printf("%#v\n", backendService)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -991,7 +974,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1023,17 +1005,17 @@ func main() {
   // Name of the BackendService resource to update.
   backendService := "{MY-BACKEND-SERVICE}" // TODO: Update placeholder value(s).
 
-  backendService := &compute.BackendService{
+  body := &compute.BackendService{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.BackendServices.Patch(project, backendService, &backendService).Context(ctx).Do()
+  resp, err := s.BackendServices.Patch(project, backendService, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1050,7 +1032,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1082,17 +1063,17 @@ func main() {
   // Name of the BackendService resource to update.
   backendService := "{MY-BACKEND-SERVICE}" // TODO: Update placeholder value(s).
 
-  backendService := &compute.BackendService{
+  body := &compute.BackendService{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.BackendServices.Update(project, backendService, &backendService).Context(ctx).Do()
+  resp, err := s.BackendServices.Update(project, backendService, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1109,7 +1090,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1142,7 +1122,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.DiskTypeAggregatedList) error {
     for name, diskTypesScopedList := range page.Items {
       // TODO: Use name, diskTypesScopedList
-      fmt.Printf("%v: %#v\n", name, diskTypesScopedList)
+      log.Printf("%v: %#v\n", name, diskTypesScopedList)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -1164,7 +1144,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1205,7 +1184,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1222,7 +1201,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1258,7 +1236,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.DiskTypeList) error {
     for _, diskType := range page.Items {
       // TODO: Use diskType
-      fmt.Printf("%#v\n", diskType)
+      log.Printf("%#v\n", diskType)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -1280,7 +1258,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1313,7 +1290,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.DiskAggregatedList) error {
     for name, disksScopedList := range page.Items {
       // TODO: Use name, disksScopedList
-      fmt.Printf("%v: %#v\n", name, disksScopedList)
+      log.Printf("%v: %#v\n", name, disksScopedList)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -1335,7 +1312,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1370,17 +1346,17 @@ func main() {
   // Name of the persistent disk to snapshot.
   disk := "{MY-DISK}" // TODO: Update placeholder value(s).
 
-  snapshot := &compute.Snapshot{
+  body := &compute.Snapshot{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Disks.CreateSnapshot(project, zone, disk, &snapshot).Context(ctx).Do()
+  resp, err := s.Disks.CreateSnapshot(project, zone, disk, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1397,7 +1373,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1438,7 +1413,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1455,7 +1430,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1496,7 +1470,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1513,7 +1487,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1545,17 +1518,17 @@ func main() {
   // The name of the zone for this request.
   zone := "{MY-ZONE}" // TODO: Update placeholder value(s). eg. "us-central1-f"
 
-  disk := &compute.Disk{
+  body := &compute.Disk{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Disks.Insert(project, zone, &disk).Context(ctx).Do()
+  resp, err := s.Disks.Insert(project, zone, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1572,7 +1545,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1608,7 +1580,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.DiskList) error {
     for _, disk := range page.Items {
       // TODO: Use disk
-      fmt.Printf("%#v\n", disk)
+      log.Printf("%#v\n", disk)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -1630,7 +1602,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1668,7 +1639,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1685,7 +1656,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1723,7 +1693,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1740,7 +1710,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1769,17 +1738,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  firewall := &compute.Firewall{
+  body := &compute.Firewall{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Firewalls.Insert(project, &firewall).Context(ctx).Do()
+  resp, err := s.Firewalls.Insert(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1796,7 +1765,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1829,7 +1797,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.FirewallList) error {
     for _, firewall := range page.Items {
       // TODO: Use firewall
-      fmt.Printf("%#v\n", firewall)
+      log.Printf("%#v\n", firewall)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -1851,7 +1819,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1883,17 +1850,17 @@ func main() {
   // Name of the firewall rule to update.
   firewall := "{MY-FIREWALL}" // TODO: Update placeholder value(s).
 
-  firewall := &compute.Firewall{
+  body := &compute.Firewall{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.Firewalls.Patch(project, firewall, &firewall).Context(ctx).Do()
+  resp, err := s.Firewalls.Patch(project, firewall, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1910,7 +1877,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1942,17 +1908,17 @@ func main() {
   // Name of the firewall rule to update.
   firewall := "{MY-FIREWALL}" // TODO: Update placeholder value(s).
 
-  firewall := &compute.Firewall{
+  body := &compute.Firewall{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Firewalls.Update(project, firewall, &firewall).Context(ctx).Do()
+  resp, err := s.Firewalls.Update(project, firewall, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1969,7 +1935,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -2002,7 +1967,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.ForwardingRuleAggregatedList) error {
     for name, forwardingRulesScopedList := range page.Items {
       // TODO: Use name, forwardingRulesScopedList
-      fmt.Printf("%v: %#v\n", name, forwardingRulesScopedList)
+      log.Printf("%v: %#v\n", name, forwardingRulesScopedList)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -2024,7 +1989,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -2065,7 +2029,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -2082,7 +2046,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -2123,7 +2086,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -2140,7 +2103,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -2172,17 +2134,17 @@ func main() {
   // Name of the region scoping this request.
   region := "{MY-REGION}" // TODO: Update placeholder value(s).
 
-  forwardingRule := &compute.ForwardingRule{
+  body := &compute.ForwardingRule{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.ForwardingRules.Insert(project, region, &forwardingRule).Context(ctx).Do()
+  resp, err := s.ForwardingRules.Insert(project, region, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -2199,7 +2161,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -2235,7 +2196,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.ForwardingRuleList) error {
     for _, forwardingRule := range page.Items {
       // TODO: Use forwardingRule
-      fmt.Printf("%#v\n", forwardingRule)
+      log.Printf("%#v\n", forwardingRule)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -2257,7 +2218,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -2292,17 +2252,17 @@ func main() {
   // Name of the ForwardingRule resource in which target is to be set.
   forwardingRule := "{MY-FORWARDING-RULE}" // TODO: Update placeholder value(s).
 
-  targetReference := &compute.TargetReference{
+  body := &compute.TargetReference{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.ForwardingRules.SetTarget(project, region, forwardingRule, &targetReference).Context(ctx).Do()
+  resp, err := s.ForwardingRules.SetTarget(project, region, forwardingRule, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -2319,7 +2279,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -2357,7 +2316,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -2374,7 +2333,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -2412,7 +2370,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -2429,7 +2387,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -2458,17 +2415,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  address := &compute.Address{
+  body := &compute.Address{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.GlobalAddresses.Insert(project, &address).Context(ctx).Do()
+  resp, err := s.GlobalAddresses.Insert(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -2485,7 +2442,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -2518,7 +2474,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.AddressList) error {
     for _, address := range page.Items {
       // TODO: Use address
-      fmt.Printf("%#v\n", address)
+      log.Printf("%#v\n", address)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -2540,7 +2496,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -2578,7 +2533,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -2595,7 +2550,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -2633,7 +2587,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -2650,7 +2604,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -2679,17 +2632,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  forwardingRule := &compute.ForwardingRule{
+  body := &compute.ForwardingRule{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.GlobalForwardingRules.Insert(project, &forwardingRule).Context(ctx).Do()
+  resp, err := s.GlobalForwardingRules.Insert(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -2706,7 +2659,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -2739,7 +2691,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.ForwardingRuleList) error {
     for _, forwardingRule := range page.Items {
       // TODO: Use forwardingRule
-      fmt.Printf("%#v\n", forwardingRule)
+      log.Printf("%#v\n", forwardingRule)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -2761,7 +2713,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -2793,17 +2744,17 @@ func main() {
   // Name of the ForwardingRule resource in which target is to be set.
   forwardingRule := "{MY-FORWARDING-RULE}" // TODO: Update placeholder value(s).
 
-  targetReference := &compute.TargetReference{
+  body := &compute.TargetReference{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.GlobalForwardingRules.SetTarget(project, forwardingRule, &targetReference).Context(ctx).Do()
+  resp, err := s.GlobalForwardingRules.SetTarget(project, forwardingRule, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -2820,7 +2771,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -2853,7 +2803,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.OperationAggregatedList) error {
     for name, operationsScopedList := range page.Items {
       // TODO: Use name, operationsScopedList
-      fmt.Printf("%v: %#v\n", name, operationsScopedList)
+      log.Printf("%v: %#v\n", name, operationsScopedList)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -2875,7 +2825,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -2926,7 +2875,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -2964,7 +2912,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -2981,7 +2929,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -3014,7 +2961,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.OperationList) error {
     for _, operation := range page.Items {
       // TODO: Use operation
-      fmt.Printf("%#v\n", operation)
+      log.Printf("%#v\n", operation)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -3036,7 +2983,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -3074,7 +3020,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -3091,7 +3037,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -3129,7 +3074,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -3146,7 +3091,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -3175,17 +3119,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  httpHealthCheck := &compute.HttpHealthCheck{
+  body := &compute.HttpHealthCheck{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.HttpHealthChecks.Insert(project, &httpHealthCheck).Context(ctx).Do()
+  resp, err := s.HttpHealthChecks.Insert(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -3202,7 +3146,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -3235,7 +3178,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.HttpHealthCheckList) error {
     for _, httpHealthCheck := range page.Items {
       // TODO: Use httpHealthCheck
-      fmt.Printf("%#v\n", httpHealthCheck)
+      log.Printf("%#v\n", httpHealthCheck)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -3257,7 +3200,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -3289,17 +3231,17 @@ func main() {
   // Name of the HttpHealthCheck resource to update.
   httpHealthCheck := "{MY-HTTP-HEALTH-CHECK}" // TODO: Update placeholder value(s).
 
-  httpHealthCheck := &compute.HttpHealthCheck{
+  body := &compute.HttpHealthCheck{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.HttpHealthChecks.Patch(project, httpHealthCheck, &httpHealthCheck).Context(ctx).Do()
+  resp, err := s.HttpHealthChecks.Patch(project, httpHealthCheck, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -3316,7 +3258,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -3348,17 +3289,17 @@ func main() {
   // Name of the HttpHealthCheck resource to update.
   httpHealthCheck := "{MY-HTTP-HEALTH-CHECK}" // TODO: Update placeholder value(s).
 
-  httpHealthCheck := &compute.HttpHealthCheck{
+  body := &compute.HttpHealthCheck{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.HttpHealthChecks.Update(project, httpHealthCheck, &httpHealthCheck).Context(ctx).Do()
+  resp, err := s.HttpHealthChecks.Update(project, httpHealthCheck, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -3375,7 +3316,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -3413,7 +3353,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -3430,7 +3370,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -3468,7 +3407,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -3485,7 +3424,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -3514,17 +3452,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  httpsHealthCheck := &compute.HttpsHealthCheck{
+  body := &compute.HttpsHealthCheck{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.HttpsHealthChecks.Insert(project, &httpsHealthCheck).Context(ctx).Do()
+  resp, err := s.HttpsHealthChecks.Insert(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -3541,7 +3479,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -3574,7 +3511,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.HttpsHealthCheckList) error {
     for _, httpsHealthCheck := range page.Items {
       // TODO: Use httpsHealthCheck
-      fmt.Printf("%#v\n", httpsHealthCheck)
+      log.Printf("%#v\n", httpsHealthCheck)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -3596,7 +3533,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -3628,17 +3564,17 @@ func main() {
   // Name of the HttpsHealthCheck resource to update.
   httpsHealthCheck := "{MY-HTTPS-HEALTH-CHECK}" // TODO: Update placeholder value(s).
 
-  httpsHealthCheck := &compute.HttpsHealthCheck{
+  body := &compute.HttpsHealthCheck{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.HttpsHealthChecks.Patch(project, httpsHealthCheck, &httpsHealthCheck).Context(ctx).Do()
+  resp, err := s.HttpsHealthChecks.Patch(project, httpsHealthCheck, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -3655,7 +3591,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -3687,17 +3622,17 @@ func main() {
   // Name of the HttpsHealthCheck resource to update.
   httpsHealthCheck := "{MY-HTTPS-HEALTH-CHECK}" // TODO: Update placeholder value(s).
 
-  httpsHealthCheck := &compute.HttpsHealthCheck{
+  body := &compute.HttpsHealthCheck{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.HttpsHealthChecks.Update(project, httpsHealthCheck, &httpsHealthCheck).Context(ctx).Do()
+  resp, err := s.HttpsHealthChecks.Update(project, httpsHealthCheck, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -3714,7 +3649,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -3752,7 +3686,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -3769,7 +3703,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -3801,17 +3734,17 @@ func main() {
   // Image name.
   image := "{MY-IMAGE}" // TODO: Update placeholder value(s).
 
-  deprecationStatus := &compute.DeprecationStatus{
+  body := &compute.DeprecationStatus{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Images.Deprecate(project, image, &deprecationStatus).Context(ctx).Do()
+  resp, err := s.Images.Deprecate(project, image, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -3828,7 +3761,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -3866,7 +3798,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -3883,7 +3815,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -3912,17 +3843,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  image := &compute.Image{
+  body := &compute.Image{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Images.Insert(project, &image).Context(ctx).Do()
+  resp, err := s.Images.Insert(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -3939,7 +3870,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -3972,7 +3902,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.ImageList) error {
     for _, image := range page.Items {
       // TODO: Use image
-      fmt.Printf("%#v\n", image)
+      log.Printf("%#v\n", image)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -3994,7 +3924,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -4029,17 +3958,17 @@ func main() {
   // The name of the managed instance group.
   instanceGroupManager := "{MY-INSTANCE-GROUP-MANAGER}" // TODO: Update placeholder value(s).
 
-  instanceGroupManagersAbandonInstancesRequest := &compute.InstanceGroupManagersAbandonInstancesRequest{
+  body := &compute.InstanceGroupManagersAbandonInstancesRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.InstanceGroupManagers.AbandonInstances(project, zone, instanceGroupManager, &instanceGroupManagersAbandonInstancesRequest).Context(ctx).Do()
+  resp, err := s.InstanceGroupManagers.AbandonInstances(project, zone, instanceGroupManager, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -4056,7 +3985,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -4089,7 +4017,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.InstanceGroupManagerAggregatedList) error {
     for name, instanceGroupManagersScopedList := range page.Items {
       // TODO: Use name, instanceGroupManagersScopedList
-      fmt.Printf("%v: %#v\n", name, instanceGroupManagersScopedList)
+      log.Printf("%v: %#v\n", name, instanceGroupManagersScopedList)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -4111,7 +4039,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -4152,7 +4079,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -4169,7 +4096,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -4204,17 +4130,17 @@ func main() {
   // The name of the managed instance group.
   instanceGroupManager := "{MY-INSTANCE-GROUP-MANAGER}" // TODO: Update placeholder value(s).
 
-  instanceGroupManagersDeleteInstancesRequest := &compute.InstanceGroupManagersDeleteInstancesRequest{
+  body := &compute.InstanceGroupManagersDeleteInstancesRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.InstanceGroupManagers.DeleteInstances(project, zone, instanceGroupManager, &instanceGroupManagersDeleteInstancesRequest).Context(ctx).Do()
+  resp, err := s.InstanceGroupManagers.DeleteInstances(project, zone, instanceGroupManager, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -4231,7 +4157,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -4272,7 +4197,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -4289,7 +4214,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -4321,17 +4245,17 @@ func main() {
   // The name of the zone where you want to create the managed instance group.
   zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
 
-  instanceGroupManager := &compute.InstanceGroupManager{
+  body := &compute.InstanceGroupManager{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.InstanceGroupManagers.Insert(project, zone, &instanceGroupManager).Context(ctx).Do()
+  resp, err := s.InstanceGroupManagers.Insert(project, zone, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -4348,7 +4272,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -4384,7 +4307,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.InstanceGroupManagerList) error {
     for _, instanceGroupManager := range page.Items {
       // TODO: Use instanceGroupManager
-      fmt.Printf("%#v\n", instanceGroupManager)
+      log.Printf("%#v\n", instanceGroupManager)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -4406,7 +4329,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -4447,7 +4369,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -4464,7 +4386,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -4499,17 +4420,17 @@ func main() {
   // The name of the managed instance group.
   instanceGroupManager := "{MY-INSTANCE-GROUP-MANAGER}" // TODO: Update placeholder value(s).
 
-  instanceGroupManagersRecreateInstancesRequest := &compute.InstanceGroupManagersRecreateInstancesRequest{
+  body := &compute.InstanceGroupManagersRecreateInstancesRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.InstanceGroupManagers.RecreateInstances(project, zone, instanceGroupManager, &instanceGroupManagersRecreateInstancesRequest).Context(ctx).Do()
+  resp, err := s.InstanceGroupManagers.RecreateInstances(project, zone, instanceGroupManager, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -4526,7 +4447,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -4572,7 +4492,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -4589,7 +4509,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -4624,17 +4543,17 @@ func main() {
   // The name of the managed instance group.
   instanceGroupManager := "{MY-INSTANCE-GROUP-MANAGER}" // TODO: Update placeholder value(s).
 
-  instanceGroupManagersSetInstanceTemplateRequest := &compute.InstanceGroupManagersSetInstanceTemplateRequest{
+  body := &compute.InstanceGroupManagersSetInstanceTemplateRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.InstanceGroupManagers.SetInstanceTemplate(project, zone, instanceGroupManager, &instanceGroupManagersSetInstanceTemplateRequest).Context(ctx).Do()
+  resp, err := s.InstanceGroupManagers.SetInstanceTemplate(project, zone, instanceGroupManager, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -4651,7 +4570,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -4686,17 +4604,17 @@ func main() {
   // The name of the managed instance group.
   instanceGroupManager := "{MY-INSTANCE-GROUP-MANAGER}" // TODO: Update placeholder value(s).
 
-  instanceGroupManagersSetTargetPoolsRequest := &compute.InstanceGroupManagersSetTargetPoolsRequest{
+  body := &compute.InstanceGroupManagersSetTargetPoolsRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.InstanceGroupManagers.SetTargetPools(project, zone, instanceGroupManager, &instanceGroupManagersSetTargetPoolsRequest).Context(ctx).Do()
+  resp, err := s.InstanceGroupManagers.SetTargetPools(project, zone, instanceGroupManager, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -4713,7 +4631,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -4748,17 +4665,17 @@ func main() {
   // The name of the instance group where you are adding instances.
   instanceGroup := "{MY-INSTANCE-GROUP}" // TODO: Update placeholder value(s).
 
-  instanceGroupsAddInstancesRequest := &compute.InstanceGroupsAddInstancesRequest{
+  body := &compute.InstanceGroupsAddInstancesRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.InstanceGroups.AddInstances(project, zone, instanceGroup, &instanceGroupsAddInstancesRequest).Context(ctx).Do()
+  resp, err := s.InstanceGroups.AddInstances(project, zone, instanceGroup, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -4775,7 +4692,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -4808,7 +4724,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.InstanceGroupAggregatedList) error {
     for name, instanceGroupsScopedList := range page.Items {
       // TODO: Use name, instanceGroupsScopedList
-      fmt.Printf("%v: %#v\n", name, instanceGroupsScopedList)
+      log.Printf("%v: %#v\n", name, instanceGroupsScopedList)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -4830,7 +4746,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -4871,7 +4786,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -4888,7 +4803,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -4929,7 +4843,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -4946,7 +4860,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -4978,17 +4891,17 @@ func main() {
   // The name of the zone where you want to create the instance group.
   zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
 
-  instanceGroup := &compute.InstanceGroup{
+  body := &compute.InstanceGroup{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.InstanceGroups.Insert(project, zone, &instanceGroup).Context(ctx).Do()
+  resp, err := s.InstanceGroups.Insert(project, zone, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -5005,7 +4918,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -5041,7 +4953,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.InstanceGroupList) error {
     for _, instanceGroup := range page.Items {
       // TODO: Use instanceGroup
-      fmt.Printf("%#v\n", instanceGroup)
+      log.Printf("%#v\n", instanceGroup)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -5063,7 +4975,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -5098,17 +5009,17 @@ func main() {
   // The name of the instance group from which you want to generate a list of included instances.
   instanceGroup := "{MY-INSTANCE-GROUP}" // TODO: Update placeholder value(s).
 
-  instanceGroupsListInstancesRequest := &compute.InstanceGroupsListInstancesRequest{
+  body := &compute.InstanceGroupsListInstancesRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.InstanceGroups.ListInstances(project, zone, instanceGroup, &instanceGroupsListInstancesRequest).Context(ctx).Do()
+  resp, err := s.InstanceGroups.ListInstances(project, zone, instanceGroup, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -5125,7 +5036,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -5160,17 +5070,17 @@ func main() {
   // The name of the instance group where the specified instances will be removed.
   instanceGroup := "{MY-INSTANCE-GROUP}" // TODO: Update placeholder value(s).
 
-  instanceGroupsRemoveInstancesRequest := &compute.InstanceGroupsRemoveInstancesRequest{
+  body := &compute.InstanceGroupsRemoveInstancesRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.InstanceGroups.RemoveInstances(project, zone, instanceGroup, &instanceGroupsRemoveInstancesRequest).Context(ctx).Do()
+  resp, err := s.InstanceGroups.RemoveInstances(project, zone, instanceGroup, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -5187,7 +5097,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -5222,17 +5131,17 @@ func main() {
   // The name of the instance group where the named ports are updated.
   instanceGroup := "{MY-INSTANCE-GROUP}" // TODO: Update placeholder value(s).
 
-  instanceGroupsSetNamedPortsRequest := &compute.InstanceGroupsSetNamedPortsRequest{
+  body := &compute.InstanceGroupsSetNamedPortsRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.InstanceGroups.SetNamedPorts(project, zone, instanceGroup, &instanceGroupsSetNamedPortsRequest).Context(ctx).Do()
+  resp, err := s.InstanceGroups.SetNamedPorts(project, zone, instanceGroup, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -5249,7 +5158,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -5287,7 +5195,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -5304,7 +5212,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -5342,7 +5249,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -5359,7 +5266,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -5388,17 +5294,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  instanceTemplate := &compute.InstanceTemplate{
+  body := &compute.InstanceTemplate{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.InstanceTemplates.Insert(project, &instanceTemplate).Context(ctx).Do()
+  resp, err := s.InstanceTemplates.Insert(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -5415,7 +5321,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -5448,7 +5353,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.InstanceTemplateList) error {
     for _, instanceTemplate := range page.Items {
       // TODO: Use instanceTemplate
-      fmt.Printf("%#v\n", instanceTemplate)
+      log.Printf("%#v\n", instanceTemplate)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -5470,7 +5375,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -5508,17 +5412,17 @@ func main() {
   // The name of the network interface to add to this instance.
   networkInterface := "{MY-NETWORK-INTERFACE}" // TODO: Update placeholder value(s).
 
-  accessConfig := &compute.AccessConfig{
+  body := &compute.AccessConfig{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Instances.AddAccessConfig(project, zone, instance, networkInterface, &accessConfig).Context(ctx).Do()
+  resp, err := s.Instances.AddAccessConfig(project, zone, instance, networkInterface, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -5535,7 +5439,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -5568,7 +5471,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.InstanceAggregatedList) error {
     for name, instancesScopedList := range page.Items {
       // TODO: Use name, instancesScopedList
-      fmt.Printf("%v: %#v\n", name, instancesScopedList)
+      log.Printf("%v: %#v\n", name, instancesScopedList)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -5590,7 +5493,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -5625,17 +5527,17 @@ func main() {
   // The instance name for this request.
   instance := "{MY-INSTANCE}" // TODO: Update placeholder value(s).
 
-  attachedDisk := &compute.AttachedDisk{
+  body := &compute.AttachedDisk{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Instances.AttachDisk(project, zone, instance, &attachedDisk).Context(ctx).Do()
+  resp, err := s.Instances.AttachDisk(project, zone, instance, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -5652,7 +5554,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -5693,7 +5594,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -5710,7 +5611,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -5757,7 +5657,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -5774,7 +5674,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -5818,7 +5717,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -5835,7 +5734,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -5876,7 +5774,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -5893,7 +5791,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -5934,7 +5831,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -5951,7 +5848,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -5983,17 +5879,17 @@ func main() {
   // The name of the zone for this request.
   zone := "{MY-ZONE}" // TODO: Update placeholder value(s). eg. "us-central1-f"
 
-  instance := &compute.Instance{
+  body := &compute.Instance{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Instances.Insert(project, zone, &instance).Context(ctx).Do()
+  resp, err := s.Instances.Insert(project, zone, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -6010,7 +5906,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -6046,7 +5941,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.InstanceList) error {
     for _, instance := range page.Items {
       // TODO: Use instance
-      fmt.Printf("%#v\n", instance)
+      log.Printf("%#v\n", instance)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -6068,7 +5963,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -6109,7 +6003,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -6126,7 +6020,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -6173,7 +6066,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -6190,7 +6083,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -6225,17 +6117,17 @@ func main() {
   // Name of the instance scoping this request.
   instance := "{MY-INSTANCE}" // TODO: Update placeholder value(s).
 
-  instancesSetMachineTypeRequest := &compute.InstancesSetMachineTypeRequest{
+  body := &compute.InstancesSetMachineTypeRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Instances.SetMachineType(project, zone, instance, &instancesSetMachineTypeRequest).Context(ctx).Do()
+  resp, err := s.Instances.SetMachineType(project, zone, instance, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -6252,7 +6144,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -6287,17 +6178,17 @@ func main() {
   // Name of the instance scoping this request.
   instance := "{MY-INSTANCE}" // TODO: Update placeholder value(s).
 
-  metadata := &compute.Metadata{
+  body := &compute.Metadata{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Instances.SetMetadata(project, zone, instance, &metadata).Context(ctx).Do()
+  resp, err := s.Instances.SetMetadata(project, zone, instance, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -6314,7 +6205,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -6349,17 +6239,17 @@ func main() {
   // Instance name.
   instance := "{MY-INSTANCE}" // TODO: Update placeholder value(s).
 
-  scheduling := &compute.Scheduling{
+  body := &compute.Scheduling{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Instances.SetScheduling(project, zone, instance, &scheduling).Context(ctx).Do()
+  resp, err := s.Instances.SetScheduling(project, zone, instance, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -6376,7 +6266,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -6411,17 +6300,17 @@ func main() {
   // Name of the instance scoping this request.
   instance := "{MY-INSTANCE}" // TODO: Update placeholder value(s).
 
-  tags := &compute.Tags{
+  body := &compute.Tags{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Instances.SetTags(project, zone, instance, &tags).Context(ctx).Do()
+  resp, err := s.Instances.SetTags(project, zone, instance, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -6438,7 +6327,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -6479,7 +6367,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -6496,7 +6384,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -6537,7 +6424,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -6554,7 +6441,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -6592,7 +6478,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -6609,7 +6495,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -6642,7 +6527,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.MachineTypeAggregatedList) error {
     for name, machineTypesScopedList := range page.Items {
       // TODO: Use name, machineTypesScopedList
-      fmt.Printf("%v: %#v\n", name, machineTypesScopedList)
+      log.Printf("%v: %#v\n", name, machineTypesScopedList)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -6664,7 +6549,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -6705,7 +6589,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -6722,7 +6606,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -6758,7 +6641,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.MachineTypeList) error {
     for _, machineType := range page.Items {
       // TODO: Use machineType
-      fmt.Printf("%#v\n", machineType)
+      log.Printf("%#v\n", machineType)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -6780,7 +6663,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -6818,7 +6700,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -6835,7 +6717,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -6873,7 +6754,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -6890,7 +6771,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -6919,17 +6799,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  network := &compute.Network{
+  body := &compute.Network{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Networks.Insert(project, &network).Context(ctx).Do()
+  resp, err := s.Networks.Insert(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -6946,7 +6826,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -6979,7 +6858,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.NetworkList) error {
     for _, network := range page.Items {
       // TODO: Use network
-      fmt.Printf("%#v\n", network)
+      log.Printf("%#v\n", network)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -7001,7 +6880,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -7036,7 +6914,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -7053,7 +6931,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -7082,17 +6959,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  diskMoveRequest := &compute.DiskMoveRequest{
+  body := &compute.DiskMoveRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.MoveDisk(project, &diskMoveRequest).Context(ctx).Do()
+  resp, err := s.Projects.MoveDisk(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -7109,7 +6986,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -7138,17 +7014,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  instanceMoveRequest := &compute.InstanceMoveRequest{
+  body := &compute.InstanceMoveRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.MoveInstance(project, &instanceMoveRequest).Context(ctx).Do()
+  resp, err := s.Projects.MoveInstance(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -7165,7 +7041,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -7194,17 +7069,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  metadata := &compute.Metadata{
+  body := &compute.Metadata{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.SetCommonInstanceMetadata(project, &metadata).Context(ctx).Do()
+  resp, err := s.Projects.SetCommonInstanceMetadata(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -7221,7 +7096,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -7250,17 +7124,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  usageExportLocation := &compute.UsageExportLocation{
+  body := &compute.UsageExportLocation{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.SetUsageExportBucket(project, &usageExportLocation).Context(ctx).Do()
+  resp, err := s.Projects.SetUsageExportBucket(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -7277,7 +7151,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -7331,7 +7204,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -7372,7 +7244,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -7389,7 +7261,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -7425,7 +7296,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.OperationList) error {
     for _, operation := range page.Items {
       // TODO: Use operation
-      fmt.Printf("%#v\n", operation)
+      log.Printf("%#v\n", operation)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -7447,7 +7318,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -7485,7 +7355,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -7502,7 +7372,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -7535,7 +7404,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.RegionList) error {
     for _, region := range page.Items {
       // TODO: Use region
-      fmt.Printf("%#v\n", region)
+      log.Printf("%#v\n", region)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -7557,7 +7426,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -7595,7 +7463,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -7612,7 +7480,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -7650,7 +7517,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -7667,7 +7534,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -7696,17 +7562,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  route := &compute.Route{
+  body := &compute.Route{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Routes.Insert(project, &route).Context(ctx).Do()
+  resp, err := s.Routes.Insert(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -7723,7 +7589,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -7756,7 +7621,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.RouteList) error {
     for _, route := range page.Items {
       // TODO: Use route
-      fmt.Printf("%#v\n", route)
+      log.Printf("%#v\n", route)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -7778,7 +7643,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -7816,7 +7680,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -7833,7 +7697,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -7871,7 +7734,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -7888,7 +7751,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -7921,7 +7783,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.SnapshotList) error {
     for _, snapshot := range page.Items {
       // TODO: Use snapshot
-      fmt.Printf("%#v\n", snapshot)
+      log.Printf("%#v\n", snapshot)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -7943,7 +7805,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -7981,7 +7842,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -7998,7 +7859,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -8036,7 +7896,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -8053,7 +7913,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -8082,17 +7941,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  sslCertificate := &compute.SslCertificate{
+  body := &compute.SslCertificate{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.SslCertificates.Insert(project, &sslCertificate).Context(ctx).Do()
+  resp, err := s.SslCertificates.Insert(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -8109,7 +7968,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -8142,7 +8000,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.SslCertificateList) error {
     for _, sslCertificate := range page.Items {
       // TODO: Use sslCertificate
-      fmt.Printf("%#v\n", sslCertificate)
+      log.Printf("%#v\n", sslCertificate)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -8164,7 +8022,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -8197,7 +8054,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.SubnetworkAggregatedList) error {
     for name, subnetworksScopedList := range page.Items {
       // TODO: Use name, subnetworksScopedList
-      fmt.Printf("%v: %#v\n", name, subnetworksScopedList)
+      log.Printf("%v: %#v\n", name, subnetworksScopedList)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -8219,7 +8076,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -8260,7 +8116,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -8277,7 +8133,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -8318,7 +8173,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -8335,7 +8190,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -8367,17 +8221,17 @@ func main() {
   // Name of the region scoping this request.
   region := "{MY-REGION}" // TODO: Update placeholder value(s).
 
-  subnetwork := &compute.Subnetwork{
+  body := &compute.Subnetwork{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Subnetworks.Insert(project, region, &subnetwork).Context(ctx).Do()
+  resp, err := s.Subnetworks.Insert(project, region, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -8394,7 +8248,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -8430,7 +8283,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.SubnetworkList) error {
     for _, subnetwork := range page.Items {
       // TODO: Use subnetwork
-      fmt.Printf("%#v\n", subnetwork)
+      log.Printf("%#v\n", subnetwork)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -8452,7 +8305,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -8490,7 +8342,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -8507,7 +8359,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -8545,7 +8396,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -8562,7 +8413,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -8591,17 +8441,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  targetHttpProxy := &compute.TargetHttpProxy{
+  body := &compute.TargetHttpProxy{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.TargetHttpProxies.Insert(project, &targetHttpProxy).Context(ctx).Do()
+  resp, err := s.TargetHttpProxies.Insert(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -8618,7 +8468,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -8651,7 +8500,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.TargetHttpProxyList) error {
     for _, targetHttpProxy := range page.Items {
       // TODO: Use targetHttpProxy
-      fmt.Printf("%#v\n", targetHttpProxy)
+      log.Printf("%#v\n", targetHttpProxy)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -8673,7 +8522,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -8705,17 +8553,17 @@ func main() {
   // Name of the TargetHttpProxy to set a URL map for.
   targetHttpProxy := "{MY-TARGET-HTTP-PROXY}" // TODO: Update placeholder value(s).
 
-  urlMapReference := &compute.UrlMapReference{
+  body := &compute.UrlMapReference{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.TargetHttpProxies.SetUrlMap(project, targetHttpProxy, &urlMapReference).Context(ctx).Do()
+  resp, err := s.TargetHttpProxies.SetUrlMap(project, targetHttpProxy, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -8732,7 +8580,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -8770,7 +8617,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -8787,7 +8634,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -8825,7 +8671,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -8842,7 +8688,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -8871,17 +8716,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  targetHttpsProxy := &compute.TargetHttpsProxy{
+  body := &compute.TargetHttpsProxy{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.TargetHttpsProxies.Insert(project, &targetHttpsProxy).Context(ctx).Do()
+  resp, err := s.TargetHttpsProxies.Insert(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -8898,7 +8743,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -8931,7 +8775,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.TargetHttpsProxyList) error {
     for _, targetHttpsProxy := range page.Items {
       // TODO: Use targetHttpsProxy
-      fmt.Printf("%#v\n", targetHttpsProxy)
+      log.Printf("%#v\n", targetHttpsProxy)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -8953,7 +8797,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -8985,17 +8828,17 @@ func main() {
   // Name of the TargetHttpsProxy resource to set an SslCertificates resource for.
   targetHttpsProxy := "{MY-TARGET-HTTPS-PROXY}" // TODO: Update placeholder value(s).
 
-  targetHttpsProxiesSetSslCertificatesRequest := &compute.TargetHttpsProxiesSetSslCertificatesRequest{
+  body := &compute.TargetHttpsProxiesSetSslCertificatesRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.TargetHttpsProxies.SetSslCertificates(project, targetHttpsProxy, &targetHttpsProxiesSetSslCertificatesRequest).Context(ctx).Do()
+  resp, err := s.TargetHttpsProxies.SetSslCertificates(project, targetHttpsProxy, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -9012,7 +8855,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -9044,17 +8886,17 @@ func main() {
   // Name of the TargetHttpsProxy resource whose URL map is to be set.
   targetHttpsProxy := "{MY-TARGET-HTTPS-PROXY}" // TODO: Update placeholder value(s).
 
-  urlMapReference := &compute.UrlMapReference{
+  body := &compute.UrlMapReference{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.TargetHttpsProxies.SetUrlMap(project, targetHttpsProxy, &urlMapReference).Context(ctx).Do()
+  resp, err := s.TargetHttpsProxies.SetUrlMap(project, targetHttpsProxy, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -9071,7 +8913,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -9104,7 +8945,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.TargetInstanceAggregatedList) error {
     for name, targetInstancesScopedList := range page.Items {
       // TODO: Use name, targetInstancesScopedList
-      fmt.Printf("%v: %#v\n", name, targetInstancesScopedList)
+      log.Printf("%v: %#v\n", name, targetInstancesScopedList)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -9126,7 +8967,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -9167,7 +9007,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -9184,7 +9024,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -9225,7 +9064,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -9242,7 +9081,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -9274,17 +9112,17 @@ func main() {
   // Name of the zone scoping this request.
   zone := "{MY-ZONE}" // TODO: Update placeholder value(s). eg. "us-central1-f"
 
-  targetInstance := &compute.TargetInstance{
+  body := &compute.TargetInstance{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.TargetInstances.Insert(project, zone, &targetInstance).Context(ctx).Do()
+  resp, err := s.TargetInstances.Insert(project, zone, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -9301,7 +9139,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -9337,7 +9174,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.TargetInstanceList) error {
     for _, targetInstance := range page.Items {
       // TODO: Use targetInstance
-      fmt.Printf("%#v\n", targetInstance)
+      log.Printf("%#v\n", targetInstance)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -9359,7 +9196,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -9394,17 +9230,17 @@ func main() {
   // Name of the target pool to add a health check to.
   targetPool := "{MY-TARGET-POOL}" // TODO: Update placeholder value(s).
 
-  targetPoolsAddHealthCheckRequest := &compute.TargetPoolsAddHealthCheckRequest{
+  body := &compute.TargetPoolsAddHealthCheckRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.TargetPools.AddHealthCheck(project, region, targetPool, &targetPoolsAddHealthCheckRequest).Context(ctx).Do()
+  resp, err := s.TargetPools.AddHealthCheck(project, region, targetPool, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -9421,7 +9257,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -9456,17 +9291,17 @@ func main() {
   // Name of the TargetPool resource to add instances to.
   targetPool := "{MY-TARGET-POOL}" // TODO: Update placeholder value(s).
 
-  targetPoolsAddInstanceRequest := &compute.TargetPoolsAddInstanceRequest{
+  body := &compute.TargetPoolsAddInstanceRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.TargetPools.AddInstance(project, region, targetPool, &targetPoolsAddInstanceRequest).Context(ctx).Do()
+  resp, err := s.TargetPools.AddInstance(project, region, targetPool, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -9483,7 +9318,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -9516,7 +9350,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.TargetPoolAggregatedList) error {
     for name, targetPoolsScopedList := range page.Items {
       // TODO: Use name, targetPoolsScopedList
-      fmt.Printf("%v: %#v\n", name, targetPoolsScopedList)
+      log.Printf("%v: %#v\n", name, targetPoolsScopedList)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -9538,7 +9372,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -9579,7 +9412,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -9596,7 +9429,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -9637,7 +9469,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -9654,7 +9486,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -9689,17 +9520,17 @@ func main() {
   // Name of the TargetPool resource to which the queried instance belongs.
   targetPool := "{MY-TARGET-POOL}" // TODO: Update placeholder value(s).
 
-  instanceReference := &compute.InstanceReference{
+  body := &compute.InstanceReference{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.TargetPools.GetHealth(project, region, targetPool, &instanceReference).Context(ctx).Do()
+  resp, err := s.TargetPools.GetHealth(project, region, targetPool, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -9716,7 +9547,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -9748,17 +9578,17 @@ func main() {
   // Name of the region scoping this request.
   region := "{MY-REGION}" // TODO: Update placeholder value(s).
 
-  targetPool := &compute.TargetPool{
+  body := &compute.TargetPool{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.TargetPools.Insert(project, region, &targetPool).Context(ctx).Do()
+  resp, err := s.TargetPools.Insert(project, region, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -9775,7 +9605,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -9811,7 +9640,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.TargetPoolList) error {
     for _, targetPool := range page.Items {
       // TODO: Use targetPool
-      fmt.Printf("%#v\n", targetPool)
+      log.Printf("%#v\n", targetPool)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -9833,7 +9662,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -9868,17 +9696,17 @@ func main() {
   // Name of the target pool to remove health checks from.
   targetPool := "{MY-TARGET-POOL}" // TODO: Update placeholder value(s).
 
-  targetPoolsRemoveHealthCheckRequest := &compute.TargetPoolsRemoveHealthCheckRequest{
+  body := &compute.TargetPoolsRemoveHealthCheckRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.TargetPools.RemoveHealthCheck(project, region, targetPool, &targetPoolsRemoveHealthCheckRequest).Context(ctx).Do()
+  resp, err := s.TargetPools.RemoveHealthCheck(project, region, targetPool, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -9895,7 +9723,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -9930,17 +9757,17 @@ func main() {
   // Name of the TargetPool resource to remove instances from.
   targetPool := "{MY-TARGET-POOL}" // TODO: Update placeholder value(s).
 
-  targetPoolsRemoveInstanceRequest := &compute.TargetPoolsRemoveInstanceRequest{
+  body := &compute.TargetPoolsRemoveInstanceRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.TargetPools.RemoveInstance(project, region, targetPool, &targetPoolsRemoveInstanceRequest).Context(ctx).Do()
+  resp, err := s.TargetPools.RemoveInstance(project, region, targetPool, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -9957,7 +9784,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -9992,17 +9818,17 @@ func main() {
   // Name of the TargetPool resource to set a backup pool for.
   targetPool := "{MY-TARGET-POOL}" // TODO: Update placeholder value(s).
 
-  targetReference := &compute.TargetReference{
+  body := &compute.TargetReference{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.TargetPools.SetBackup(project, region, targetPool, &targetReference).Context(ctx).Do()
+  resp, err := s.TargetPools.SetBackup(project, region, targetPool, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -10019,7 +9845,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -10052,7 +9877,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.TargetVpnGatewayAggregatedList) error {
     for name, targetVpnGatewaysScopedList := range page.Items {
       // TODO: Use name, targetVpnGatewaysScopedList
-      fmt.Printf("%v: %#v\n", name, targetVpnGatewaysScopedList)
+      log.Printf("%v: %#v\n", name, targetVpnGatewaysScopedList)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -10074,7 +9899,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -10115,7 +9939,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -10132,7 +9956,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -10173,7 +9996,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -10190,7 +10013,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -10222,17 +10044,17 @@ func main() {
   // Name of the region for this request.
   region := "{MY-REGION}" // TODO: Update placeholder value(s).
 
-  targetVpnGateway := &compute.TargetVpnGateway{
+  body := &compute.TargetVpnGateway{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.TargetVpnGateways.Insert(project, region, &targetVpnGateway).Context(ctx).Do()
+  resp, err := s.TargetVpnGateways.Insert(project, region, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -10249,7 +10071,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -10285,7 +10106,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.TargetVpnGatewayList) error {
     for _, targetVpnGateway := range page.Items {
       // TODO: Use targetVpnGateway
-      fmt.Printf("%#v\n", targetVpnGateway)
+      log.Printf("%#v\n", targetVpnGateway)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -10307,7 +10128,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -10345,7 +10165,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -10362,7 +10182,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -10400,7 +10219,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -10417,7 +10236,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -10446,17 +10264,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  urlMap := &compute.UrlMap{
+  body := &compute.UrlMap{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.UrlMaps.Insert(project, &urlMap).Context(ctx).Do()
+  resp, err := s.UrlMaps.Insert(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -10473,7 +10291,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -10506,7 +10323,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.UrlMapList) error {
     for _, urlMap := range page.Items {
       // TODO: Use urlMap
-      fmt.Printf("%#v\n", urlMap)
+      log.Printf("%#v\n", urlMap)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -10528,7 +10345,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -10560,17 +10376,17 @@ func main() {
   // Name of the UrlMap resource to update.
   urlMap := "{MY-URL-MAP}" // TODO: Update placeholder value(s).
 
-  urlMap := &compute.UrlMap{
+  body := &compute.UrlMap{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.UrlMaps.Patch(project, urlMap, &urlMap).Context(ctx).Do()
+  resp, err := s.UrlMaps.Patch(project, urlMap, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -10587,7 +10403,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -10619,17 +10434,17 @@ func main() {
   // Name of the UrlMap resource to update.
   urlMap := "{MY-URL-MAP}" // TODO: Update placeholder value(s).
 
-  urlMap := &compute.UrlMap{
+  body := &compute.UrlMap{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.UrlMaps.Update(project, urlMap, &urlMap).Context(ctx).Do()
+  resp, err := s.UrlMaps.Update(project, urlMap, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -10646,7 +10461,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -10678,17 +10492,17 @@ func main() {
   // Name of the UrlMap resource to be validated as.
   urlMap := "{MY-URL-MAP}" // TODO: Update placeholder value(s).
 
-  urlMapsValidateRequest := &compute.UrlMapsValidateRequest{
+  body := &compute.UrlMapsValidateRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.UrlMaps.Validate(project, urlMap, &urlMapsValidateRequest).Context(ctx).Do()
+  resp, err := s.UrlMaps.Validate(project, urlMap, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -10705,7 +10519,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -10738,7 +10551,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.VpnTunnelAggregatedList) error {
     for name, vpnTunnelsScopedList := range page.Items {
       // TODO: Use name, vpnTunnelsScopedList
-      fmt.Printf("%v: %#v\n", name, vpnTunnelsScopedList)
+      log.Printf("%v: %#v\n", name, vpnTunnelsScopedList)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -10760,7 +10573,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -10801,7 +10613,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -10818,7 +10630,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -10859,7 +10670,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -10876,7 +10687,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -10908,17 +10718,17 @@ func main() {
   // Name of the region for this request.
   region := "{MY-REGION}" // TODO: Update placeholder value(s).
 
-  vpnTunnel := &compute.VpnTunnel{
+  body := &compute.VpnTunnel{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.VpnTunnels.Insert(project, region, &vpnTunnel).Context(ctx).Do()
+  resp, err := s.VpnTunnels.Insert(project, region, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -10935,7 +10745,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -10971,7 +10780,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.VpnTunnelList) error {
     for _, vpnTunnel := range page.Items {
       // TODO: Use vpnTunnel
-      fmt.Printf("%#v\n", vpnTunnel)
+      log.Printf("%#v\n", vpnTunnel)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -10993,7 +10802,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -11047,7 +10855,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -11088,7 +10895,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -11105,7 +10912,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -11141,7 +10947,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.OperationList) error {
     for _, operation := range page.Items {
       // TODO: Use operation
-      fmt.Printf("%#v\n", operation)
+      log.Printf("%#v\n", operation)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -11163,7 +10969,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -11201,7 +11006,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -11218,7 +11023,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -11251,7 +11055,7 @@ func main() {
   if err := call.Pages(ctx, func(page *compute.ZoneList) error {
     for _, zone := range page.Items {
       // TODO: Use zone
-      fmt.Printf("%#v\n", zone)
+      log.Printf("%#v\n", zone)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {

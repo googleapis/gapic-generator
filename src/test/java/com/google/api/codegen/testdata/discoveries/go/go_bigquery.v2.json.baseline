@@ -14,7 +14,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -65,7 +64,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -103,7 +101,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -120,7 +118,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -149,17 +146,17 @@ func main() {
   // Project ID of the new dataset
   projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
-  dataset := &bigquery.Dataset{
+  body := &bigquery.Dataset{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Datasets.Insert(projectId, &dataset).Context(ctx).Do()
+  resp, err := s.Datasets.Insert(projectId, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -176,7 +173,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -209,7 +205,7 @@ func main() {
   if err := call.Pages(ctx, func(page *bigquery.DatasetList) error {
     for _, datasetList.Datasets := range page.Datasets {
       // TODO: Use datasetList.Datasets
-      fmt.Printf("%#v\n", datasetList.Datasets)
+      log.Printf("%#v\n", datasetList.Datasets)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -231,7 +227,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -263,17 +258,17 @@ func main() {
   // Dataset ID of the dataset being updated
   datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
 
-  dataset := &bigquery.Dataset{
+  body := &bigquery.Dataset{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.Datasets.Patch(projectId, datasetId, &dataset).Context(ctx).Do()
+  resp, err := s.Datasets.Patch(projectId, datasetId, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -290,7 +285,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -322,17 +316,17 @@ func main() {
   // Dataset ID of the dataset being updated
   datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
 
-  dataset := &bigquery.Dataset{
+  body := &bigquery.Dataset{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Datasets.Update(projectId, datasetId, &dataset).Context(ctx).Do()
+  resp, err := s.Datasets.Update(projectId, datasetId, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -349,7 +343,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -387,7 +380,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -404,7 +397,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -442,7 +434,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -459,7 +451,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -497,7 +488,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -514,7 +505,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -543,17 +533,17 @@ func main() {
   // Project ID of the project that will be billed for the job
   projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
-  job := &bigquery.Job{
+  body := &bigquery.Job{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Jobs.Insert(projectId, &job).Context(ctx).Do()
+  resp, err := s.Jobs.Insert(projectId, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -570,7 +560,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -603,7 +592,7 @@ func main() {
   if err := call.Pages(ctx, func(page *bigquery.JobList) error {
     for _, jobList.Jobs := range page.Jobs {
       // TODO: Use jobList.Jobs
-      fmt.Printf("%#v\n", jobList.Jobs)
+      log.Printf("%#v\n", jobList.Jobs)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -625,7 +614,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -654,17 +642,17 @@ func main() {
   // Project ID of the project billed for the query
   projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
-  queryRequest := &bigquery.QueryRequest{
+  body := &bigquery.QueryRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Jobs.Query(projectId, &queryRequest).Context(ctx).Do()
+  resp, err := s.Jobs.Query(projectId, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -681,7 +669,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -711,7 +698,7 @@ func main() {
   if err := call.Pages(ctx, func(page *bigquery.ProjectList) error {
     for _, projectList.Projects := range page.Projects {
       // TODO: Use projectList.Projects
-      fmt.Printf("%#v\n", projectList.Projects)
+      log.Printf("%#v\n", projectList.Projects)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -733,7 +720,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -768,17 +754,17 @@ func main() {
   // Table ID of the destination table.
   tableId := "{MY-TABLE-ID}" // TODO: Update placeholder value(s).
 
-  tableDataInsertAllRequest := &bigquery.TableDataInsertAllRequest{
+  body := &bigquery.TableDataInsertAllRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Tabledata.InsertAll(projectId, datasetId, tableId, &tableDataInsertAllRequest).Context(ctx).Do()
+  resp, err := s.Tabledata.InsertAll(projectId, datasetId, tableId, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -795,7 +781,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -836,7 +821,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -853,7 +838,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -907,7 +891,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -948,7 +931,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -965,7 +948,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -997,17 +979,17 @@ func main() {
   // Dataset ID of the new table
   datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
 
-  table := &bigquery.Table{
+  body := &bigquery.Table{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Tables.Insert(projectId, datasetId, &table).Context(ctx).Do()
+  resp, err := s.Tables.Insert(projectId, datasetId, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1024,7 +1006,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1060,7 +1041,7 @@ func main() {
   if err := call.Pages(ctx, func(page *bigquery.TableList) error {
     for _, tableList.Tables := range page.Tables {
       // TODO: Use tableList.Tables
-      fmt.Printf("%#v\n", tableList.Tables)
+      log.Printf("%#v\n", tableList.Tables)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -1082,7 +1063,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1117,17 +1097,17 @@ func main() {
   // Table ID of the table to update
   tableId := "{MY-TABLE-ID}" // TODO: Update placeholder value(s).
 
-  table := &bigquery.Table{
+  body := &bigquery.Table{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.Tables.Patch(projectId, datasetId, tableId, &table).Context(ctx).Do()
+  resp, err := s.Tables.Patch(projectId, datasetId, tableId, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1144,7 +1124,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1179,15 +1158,15 @@ func main() {
   // Table ID of the table to update
   tableId := "{MY-TABLE-ID}" // TODO: Update placeholder value(s).
 
-  table := &bigquery.Table{
+  body := &bigquery.Table{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Tables.Update(projectId, datasetId, tableId, &table).Context(ctx).Do()
+  resp, err := s.Tables.Update(projectId, datasetId, tableId, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }

@@ -14,7 +14,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -50,7 +49,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -67,7 +66,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -97,7 +95,7 @@ func main() {
   if err := call.Pages(ctx, func(page *cloudbilling.ListBillingAccountsResponse) error {
     for _, billingAccount := range page.BillingAccounts {
       // TODO: Use billingAccount
-      fmt.Printf("%#v\n", billingAccount)
+      log.Printf("%#v\n", billingAccount)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -119,7 +117,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -153,7 +150,7 @@ func main() {
   if err := call.Pages(ctx, func(page *cloudbilling.ListProjectBillingInfoResponse) error {
     for _, projectBillingInfo := range page.ProjectBillingInfo {
       // TODO: Use projectBillingInfo
-      fmt.Printf("%#v\n", projectBillingInfo)
+      log.Printf("%#v\n", projectBillingInfo)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -175,7 +172,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -211,7 +207,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -228,7 +224,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -258,15 +253,15 @@ func main() {
   // For example, `projects/tokyo-rain-123`.
   name := "projects/{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  projectBillingInfo := &cloudbilling.ProjectBillingInfo{
+  body := &cloudbilling.ProjectBillingInfo{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.UpdateBillingInfo(name, &projectBillingInfo).Context(ctx).Do()
+  resp, err := s.Projects.UpdateBillingInfo(name, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }

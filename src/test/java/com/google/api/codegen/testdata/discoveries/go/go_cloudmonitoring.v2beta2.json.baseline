@@ -14,7 +14,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -43,17 +42,17 @@ func main() {
   // The project id. The value can be the numeric project ID or string-based project name.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  metricDescriptor := &cloudmonitoring.MetricDescriptor{
+  body := &cloudmonitoring.MetricDescriptor{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.MetricDescriptors.Create(project, &metricDescriptor).Context(ctx).Do()
+  resp, err := s.MetricDescriptors.Create(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -70,7 +69,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -108,7 +106,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -125,7 +123,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -154,17 +151,17 @@ func main() {
   // The project id. The value can be the numeric project ID or string-based project name.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  listMetricDescriptorsRequest := &cloudmonitoring.ListMetricDescriptorsRequest{
+  body := &cloudmonitoring.ListMetricDescriptorsRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.MetricDescriptors.List(project, &listMetricDescriptorsRequest).Context(ctx).Do()
+  resp, err := s.MetricDescriptors.List(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -181,7 +178,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -218,17 +214,17 @@ func main() {
   // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
   youngest := "{MY-YOUNGEST}" // TODO: Update placeholder value(s).
 
-  listTimeseriesRequest := &cloudmonitoring.ListTimeseriesRequest{
+  body := &cloudmonitoring.ListTimeseriesRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Timeseries.List(project, metric, youngest, &listTimeseriesRequest).Context(ctx).Do()
+  resp, err := s.Timeseries.List(project, metric, youngest, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -245,7 +241,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -274,17 +269,17 @@ func main() {
   // The project ID. The value can be the numeric project ID or string-based project name.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  writeTimeseriesRequest := &cloudmonitoring.WriteTimeseriesRequest{
+  body := &cloudmonitoring.WriteTimeseriesRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Timeseries.Write(project, &writeTimeseriesRequest).Context(ctx).Do()
+  resp, err := s.Timeseries.Write(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -301,7 +296,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -338,15 +332,15 @@ func main() {
   // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
   youngest := "{MY-YOUNGEST}" // TODO: Update placeholder value(s).
 
-  listTimeseriesDescriptorsRequest := &cloudmonitoring.ListTimeseriesDescriptorsRequest{
+  body := &cloudmonitoring.ListTimeseriesDescriptorsRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.TimeseriesDescriptors.List(project, metric, youngest, &listTimeseriesDescriptorsRequest).Context(ctx).Do()
+  resp, err := s.TimeseriesDescriptors.List(project, metric, youngest, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }

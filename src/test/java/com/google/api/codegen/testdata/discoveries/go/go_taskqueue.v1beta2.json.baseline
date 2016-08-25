@@ -14,7 +14,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -52,7 +51,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -69,7 +68,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -123,7 +121,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -164,7 +161,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -181,7 +178,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -213,17 +209,17 @@ func main() {
   // The taskqueue to insert the task into
   taskqueue2 := "{MY-TASKQUEUE}" // TODO: Update placeholder value(s).
 
-  task := &taskqueue.Task{
+  body := &taskqueue.Task{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Tasks.Insert(project, taskqueue2, &task).Context(ctx).Do()
+  resp, err := s.Tasks.Insert(project, taskqueue2, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -240,7 +236,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -284,7 +279,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -301,7 +296,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -339,7 +333,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -356,7 +350,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -394,17 +387,17 @@ func main() {
   // The new lease in seconds.
   newLeaseSeconds := int64(0) // TODO: Update placeholder value(s).
 
-  task := &taskqueue.Task{
+  body := &taskqueue.Task{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.Tasks.Patch(project, taskqueue2, task, newLeaseSeconds, &task).Context(ctx).Do()
+  resp, err := s.Tasks.Patch(project, taskqueue2, task, newLeaseSeconds, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -421,7 +414,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -459,15 +451,15 @@ func main() {
   // The new lease in seconds.
   newLeaseSeconds := int64(0) // TODO: Update placeholder value(s).
 
-  task := &taskqueue.Task{
+  body := &taskqueue.Task{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Tasks.Update(project, taskqueue2, task, newLeaseSeconds, &task).Context(ctx).Do()
+  resp, err := s.Tasks.Update(project, taskqueue2, task, newLeaseSeconds, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }

@@ -14,7 +14,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -46,17 +45,17 @@ func main() {
   // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
   managedZone := "{MY-MANAGED-ZONE}" // TODO: Update placeholder value(s).
 
-  change := &dns.Change{
+  body := &dns.Change{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Changes.Create(project, managedZone, &change).Context(ctx).Do()
+  resp, err := s.Changes.Create(project, managedZone, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -73,7 +72,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -114,7 +112,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -131,7 +129,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -167,7 +164,7 @@ func main() {
   if err := call.Pages(ctx, func(page *dns.ChangesListResponse) error {
     for _, change := range page.Changes {
       // TODO: Use change
-      fmt.Printf("%#v\n", change)
+      log.Printf("%#v\n", change)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -189,7 +186,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -218,17 +214,17 @@ func main() {
   // Identifies the project addressed by this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  managedZone := &dns.ManagedZone{
+  body := &dns.ManagedZone{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.ManagedZones.Create(project, &managedZone).Context(ctx).Do()
+  resp, err := s.ManagedZones.Create(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -245,7 +241,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -296,7 +291,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -334,7 +328,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -351,7 +345,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -384,7 +377,7 @@ func main() {
   if err := call.Pages(ctx, func(page *dns.ManagedZonesListResponse) error {
     for _, managedZone := range page.ManagedZones {
       // TODO: Use managedZone
-      fmt.Printf("%#v\n", managedZone)
+      log.Printf("%#v\n", managedZone)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -406,7 +399,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -441,7 +433,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -458,7 +450,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -494,7 +485,7 @@ func main() {
   if err := call.Pages(ctx, func(page *dns.ResourceRecordSetsListResponse) error {
     for _, resourceRecordSet := range page.Rrsets {
       // TODO: Use resourceRecordSet
-      fmt.Printf("%#v\n", resourceRecordSet)
+      log.Printf("%#v\n", resourceRecordSet)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {

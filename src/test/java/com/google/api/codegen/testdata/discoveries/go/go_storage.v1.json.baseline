@@ -14,7 +14,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -66,7 +65,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -105,7 +103,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -122,7 +120,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -151,17 +148,17 @@ func main() {
   // Name of a bucket.
   bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
-  bucketAccessControl := &storage.BucketAccessControl{
+  body := &storage.BucketAccessControl{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.BucketAccessControls.Insert(bucket, &bucketAccessControl).Context(ctx).Do()
+  resp, err := s.BucketAccessControls.Insert(bucket, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -178,7 +175,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -213,7 +209,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -230,7 +226,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -263,17 +258,17 @@ func main() {
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
   entity := "{MY-ENTITY}" // TODO: Update placeholder value(s).
 
-  bucketAccessControl := &storage.BucketAccessControl{
+  body := &storage.BucketAccessControl{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.BucketAccessControls.Patch(bucket, entity, &bucketAccessControl).Context(ctx).Do()
+  resp, err := s.BucketAccessControls.Patch(bucket, entity, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -290,7 +285,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -323,17 +317,17 @@ func main() {
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
   entity := "{MY-ENTITY}" // TODO: Update placeholder value(s).
 
-  bucketAccessControl := &storage.BucketAccessControl{
+  body := &storage.BucketAccessControl{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.BucketAccessControls.Update(bucket, entity, &bucketAccessControl).Context(ctx).Do()
+  resp, err := s.BucketAccessControls.Update(bucket, entity, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -350,7 +344,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -398,7 +391,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -433,7 +425,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -450,7 +442,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -479,17 +470,17 @@ func main() {
   // A valid API project identifier.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  bucket := &storage.Bucket{
+  body := &storage.Bucket{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Buckets.Insert(project, &bucket).Context(ctx).Do()
+  resp, err := s.Buckets.Insert(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -506,7 +497,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -539,7 +529,7 @@ func main() {
   if err := call.Pages(ctx, func(page *storage.Buckets) error {
     for _, bucket := range page.Items {
       // TODO: Use bucket
-      fmt.Printf("%#v\n", bucket)
+      log.Printf("%#v\n", bucket)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -561,7 +551,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -590,17 +579,17 @@ func main() {
   // Name of a bucket.
   bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
-  bucket := &storage.Bucket{
+  body := &storage.Bucket{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.Buckets.Patch(bucket, &bucket).Context(ctx).Do()
+  resp, err := s.Buckets.Patch(bucket, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -617,7 +606,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -646,17 +634,17 @@ func main() {
   // Name of a bucket.
   bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
-  bucket := &storage.Bucket{
+  body := &storage.Bucket{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Buckets.Update(bucket, &bucket).Context(ctx).Do()
+  resp, err := s.Buckets.Update(bucket, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -673,7 +661,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -699,11 +686,11 @@ func main() {
     log.Fatal(err)
   }
 
-  channel := &storage.Channel{
+  body := &storage.Channel{
     // TODO: Add the desired fields.
   }
 
-  if err := s.Channels.Stop(channel).Context(ctx).Do(); err != nil {
+  if err := s.Channels.Stop(body).Context(ctx).Do(); err != nil {
     log.Fatal(err)
   }
 }
@@ -722,7 +709,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -774,7 +760,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -813,7 +798,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -830,7 +815,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -859,17 +843,17 @@ func main() {
   // Name of a bucket.
   bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
-  objectAccessControl := &storage.ObjectAccessControl{
+  body := &storage.ObjectAccessControl{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.DefaultObjectAccessControls.Insert(bucket, &objectAccessControl).Context(ctx).Do()
+  resp, err := s.DefaultObjectAccessControls.Insert(bucket, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -886,7 +870,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -921,7 +904,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -938,7 +921,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -971,17 +953,17 @@ func main() {
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
   entity := "{MY-ENTITY}" // TODO: Update placeholder value(s).
 
-  objectAccessControl := &storage.ObjectAccessControl{
+  body := &storage.ObjectAccessControl{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.DefaultObjectAccessControls.Patch(bucket, entity, &objectAccessControl).Context(ctx).Do()
+  resp, err := s.DefaultObjectAccessControls.Patch(bucket, entity, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -998,7 +980,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1031,17 +1012,17 @@ func main() {
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
   entity := "{MY-ENTITY}" // TODO: Update placeholder value(s).
 
-  objectAccessControl := &storage.ObjectAccessControl{
+  body := &storage.ObjectAccessControl{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.DefaultObjectAccessControls.Update(bucket, entity, &objectAccessControl).Context(ctx).Do()
+  resp, err := s.DefaultObjectAccessControls.Update(bucket, entity, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1058,7 +1039,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1114,7 +1094,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1157,7 +1136,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1174,7 +1153,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1207,17 +1185,17 @@ func main() {
   // Encoding URI Path Parts.
   object := "{MY-OBJECT}" // TODO: Update placeholder value(s).
 
-  objectAccessControl := &storage.ObjectAccessControl{
+  body := &storage.ObjectAccessControl{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.ObjectAccessControls.Insert(bucket, object, &objectAccessControl).Context(ctx).Do()
+  resp, err := s.ObjectAccessControls.Insert(bucket, object, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1234,7 +1212,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1273,7 +1250,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1290,7 +1267,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1327,17 +1303,17 @@ func main() {
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
   entity := "{MY-ENTITY}" // TODO: Update placeholder value(s).
 
-  objectAccessControl := &storage.ObjectAccessControl{
+  body := &storage.ObjectAccessControl{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.ObjectAccessControls.Patch(bucket, object, entity, &objectAccessControl).Context(ctx).Do()
+  resp, err := s.ObjectAccessControls.Patch(bucket, object, entity, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1354,7 +1330,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1391,17 +1366,17 @@ func main() {
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
   entity := "{MY-ENTITY}" // TODO: Update placeholder value(s).
 
-  objectAccessControl := &storage.ObjectAccessControl{
+  body := &storage.ObjectAccessControl{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.ObjectAccessControls.Update(bucket, object, entity, &objectAccessControl).Context(ctx).Do()
+  resp, err := s.ObjectAccessControls.Update(bucket, object, entity, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1418,7 +1393,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1451,17 +1425,17 @@ func main() {
   // Encoding URI Path Parts.
   destinationObject := "{MY-DESTINATION-OBJECT}" // TODO: Update placeholder value(s).
 
-  composeRequest := &storage.ComposeRequest{
+  body := &storage.ComposeRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Objects.Compose(destinationBucket, destinationObject, &composeRequest).Context(ctx).Do()
+  resp, err := s.Objects.Compose(destinationBucket, destinationObject, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1478,7 +1452,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1520,17 +1493,17 @@ func main() {
   // object metadata's name value, if any.
   destinationObject := "{MY-DESTINATION-OBJECT}" // TODO: Update placeholder value(s).
 
-  object := &storage.Object{
+  body := &storage.Object{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Objects.Copy(sourceBucket, sourceObject, destinationBucket, destinationObject, &object).Context(ctx).Do()
+  resp, err := s.Objects.Copy(sourceBucket, sourceObject, destinationBucket, destinationObject, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1547,7 +1520,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1599,7 +1571,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1638,7 +1609,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1655,7 +1626,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1685,17 +1655,17 @@ func main() {
   // value, if any.
   bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
-  object := &storage.Object{
+  body := &storage.Object{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Objects.Insert(bucket, &object).Context(ctx).Do()
+  resp, err := s.Objects.Insert(bucket, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1712,7 +1682,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1745,7 +1714,7 @@ func main() {
   if err := call.Pages(ctx, func(page *storage.Objects) error {
     for _, object := range page.Items {
       // TODO: Use object
-      fmt.Printf("%#v\n", object)
+      log.Printf("%#v\n", object)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -1767,7 +1736,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1800,17 +1768,17 @@ func main() {
   // Encoding URI Path Parts.
   object := "{MY-OBJECT}" // TODO: Update placeholder value(s).
 
-  object := &storage.Object{
+  body := &storage.Object{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.Objects.Patch(bucket, object, &object).Context(ctx).Do()
+  resp, err := s.Objects.Patch(bucket, object, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1827,7 +1795,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1869,17 +1836,17 @@ func main() {
   // path safe, see Encoding URI Path Parts.
   destinationObject := "{MY-DESTINATION-OBJECT}" // TODO: Update placeholder value(s).
 
-  object := &storage.Object{
+  body := &storage.Object{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Objects.Rewrite(sourceBucket, sourceObject, destinationBucket, destinationObject, &object).Context(ctx).Do()
+  resp, err := s.Objects.Rewrite(sourceBucket, sourceObject, destinationBucket, destinationObject, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1896,7 +1863,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1929,17 +1895,17 @@ func main() {
   // Encoding URI Path Parts.
   object := "{MY-OBJECT}" // TODO: Update placeholder value(s).
 
-  object := &storage.Object{
+  body := &storage.Object{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Objects.Update(bucket, object, &object).Context(ctx).Do()
+  resp, err := s.Objects.Update(bucket, object, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1956,7 +1922,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1985,15 +1950,15 @@ func main() {
   // Name of the bucket in which to look for objects.
   bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
-  channel := &storage.Channel{
+  body := &storage.Channel{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Objects.WatchAll(bucket, &channel).Context(ctx).Do()
+  resp, err := s.Objects.WatchAll(bucket, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }

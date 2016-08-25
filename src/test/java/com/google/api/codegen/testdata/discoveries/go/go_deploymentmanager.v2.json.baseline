@@ -14,7 +14,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -46,17 +45,17 @@ func main() {
   // The name of the deployment for this request.
   deployment := "{MY-DEPLOYMENT}" // TODO: Update placeholder value(s).
 
-  deploymentsCancelPreviewRequest := &deploymentmanager.DeploymentsCancelPreviewRequest{
+  body := &deploymentmanager.DeploymentsCancelPreviewRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Deployments.CancelPreview(project, deployment, &deploymentsCancelPreviewRequest).Context(ctx).Do()
+  resp, err := s.Deployments.CancelPreview(project, deployment, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -73,7 +72,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -111,7 +109,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -128,7 +126,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -166,7 +163,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -183,7 +180,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -212,17 +208,17 @@ func main() {
   // The project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  deployment := &deploymentmanager.Deployment{
+  body := &deploymentmanager.Deployment{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Deployments.Insert(project, &deployment).Context(ctx).Do()
+  resp, err := s.Deployments.Insert(project, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -239,7 +235,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -272,7 +267,7 @@ func main() {
   if err := call.Pages(ctx, func(page *deploymentmanager.DeploymentsListResponse) error {
     for _, deployment := range page.Deployments {
       // TODO: Use deployment
-      fmt.Printf("%#v\n", deployment)
+      log.Printf("%#v\n", deployment)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -294,7 +289,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -326,17 +320,17 @@ func main() {
   // The name of the deployment for this request.
   deployment := "{MY-DEPLOYMENT}" // TODO: Update placeholder value(s).
 
-  deployment := &deploymentmanager.Deployment{
+  body := &deploymentmanager.Deployment{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.Deployments.Patch(project, deployment, &deployment).Context(ctx).Do()
+  resp, err := s.Deployments.Patch(project, deployment, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -353,7 +347,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -385,17 +378,17 @@ func main() {
   // The name of the deployment for this request.
   deployment := "{MY-DEPLOYMENT}" // TODO: Update placeholder value(s).
 
-  deploymentsStopRequest := &deploymentmanager.DeploymentsStopRequest{
+  body := &deploymentmanager.DeploymentsStopRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Deployments.Stop(project, deployment, &deploymentsStopRequest).Context(ctx).Do()
+  resp, err := s.Deployments.Stop(project, deployment, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -412,7 +405,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -444,17 +436,17 @@ func main() {
   // The name of the deployment for this request.
   deployment := "{MY-DEPLOYMENT}" // TODO: Update placeholder value(s).
 
-  deployment := &deploymentmanager.Deployment{
+  body := &deploymentmanager.Deployment{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Deployments.Update(project, deployment, &deployment).Context(ctx).Do()
+  resp, err := s.Deployments.Update(project, deployment, body).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -471,7 +463,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -512,7 +503,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -529,7 +520,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -565,7 +555,7 @@ func main() {
   if err := call.Pages(ctx, func(page *deploymentmanager.ManifestsListResponse) error {
     for _, manifest := range page.Manifests {
       // TODO: Use manifest
-      fmt.Printf("%#v\n", manifest)
+      log.Printf("%#v\n", manifest)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -587,7 +577,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -625,7 +614,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -642,7 +631,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -675,7 +663,7 @@ func main() {
   if err := call.Pages(ctx, func(page *deploymentmanager.OperationsListResponse) error {
     for _, operation := range page.Operations {
       // TODO: Use operation
-      fmt.Printf("%#v\n", operation)
+      log.Printf("%#v\n", operation)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -697,7 +685,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -738,7 +725,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -755,7 +742,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -791,7 +777,7 @@ func main() {
   if err := call.Pages(ctx, func(page *deploymentmanager.ResourcesListResponse) error {
     for _, resource := range page.Resources {
       // TODO: Use resource
-      fmt.Printf("%#v\n", resource)
+      log.Printf("%#v\n", resource)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -813,7 +799,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -846,7 +831,7 @@ func main() {
   if err := call.Pages(ctx, func(page *deploymentmanager.TypesListResponse) error {
     for _, type := range page.Types {
       // TODO: Use type
-      fmt.Printf("%#v\n", type)
+      log.Printf("%#v\n", type)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
