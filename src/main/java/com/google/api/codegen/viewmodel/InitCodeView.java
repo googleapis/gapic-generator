@@ -14,8 +14,10 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.auto.value.AutoValue;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 @AutoValue
@@ -23,6 +25,13 @@ public abstract class InitCodeView {
   public abstract List<InitCodeLineView> lines();
 
   public abstract List<FieldSettingView> fieldSettings();
+
+  @Nullable
+  public abstract ModelTypeTable typeTable();
+
+  public abstract String packageName();
+
+  public abstract String apiFileName();
 
   public static Builder newBuilder() {
     return new AutoValue_InitCodeView.Builder();
@@ -33,6 +42,12 @@ public abstract class InitCodeView {
     public abstract Builder lines(List<InitCodeLineView> val);
 
     public abstract Builder fieldSettings(List<FieldSettingView> val);
+
+    public abstract Builder typeTable(ModelTypeTable typeTable);
+
+    public abstract Builder packageName(String packageName);
+
+    public abstract Builder apiFileName(String apiFileName);
 
     public abstract InitCodeView build();
   }

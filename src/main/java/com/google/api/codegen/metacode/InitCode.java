@@ -14,20 +14,27 @@
  */
 package com.google.api.codegen.metacode;
 
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 /**
  * InitCode represents the lines of code necessary to compose a structure.
  */
 @AutoValue
 public abstract class InitCode {
-  public static InitCode create(List<InitCodeLine> lines, List<FieldSetting> argFields) {
-    return new AutoValue_InitCode(lines, argFields);
+  public static InitCode create(
+      List<InitCodeLine> lines, List<FieldSetting> argFields, @Nullable ModelTypeTable typeTable) {
+    return new AutoValue_InitCode(lines, argFields, typeTable);
   }
 
   public abstract List<InitCodeLine> getLines();
 
   public abstract List<FieldSetting> getArgFields();
+
+  @Nullable
+  public abstract ModelTypeTable getTypeTable();
 }

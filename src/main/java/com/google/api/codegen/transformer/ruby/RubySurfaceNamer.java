@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.CollectionConfig;
+import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -25,14 +26,20 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Joiner;
+import sun.util.resources.cldr.gu.LocaleNames_gu;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /** The SurfaceNamer for Ruby. */
 public class RubySurfaceNamer extends SurfaceNamer {
-  public RubySurfaceNamer() {
+  public RubySurfaceNamer(String packageName) {
     super(
         new RubyNameFormatter(),
         new ModelTypeFormatterImpl(new RubyModelTypeNameConverter()),
-        new RubyTypeTable());
+        new RubyTypeTable(),
+        packageName);
   }
 
   @Override
@@ -132,5 +139,16 @@ public class RubySurfaceNamer extends SurfaceNamer {
   /** The name of the settings member name for the given method. */
   public String getSettingsMemberName(Method method) {
     return methodName(Name.upperCamel(method.getSimpleName(), "Settings"));
+  }
+
+  @Override
+  public String getApiFileName(Interface service) {
+    String[] names = packageName.split("::");
+    List<String> newNames = new ArrayList<>();
+    for (String name : names) {
+      newNames.add(LanguageUtil.upperCamelToLowerUnderscore(name));
+    }
+    newNames.add(LanguageUtil.upperCamelToLowerUnderscore(getApiWrapperClassName(service)));
+    return Joiner.on("/").join(newNames.toArray());
   }
 }

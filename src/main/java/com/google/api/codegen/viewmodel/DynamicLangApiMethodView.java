@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Joiner;
 
 import java.util.List;
 
@@ -26,13 +27,9 @@ public abstract class DynamicLangApiMethodView implements ApiMethodView {
 
   public abstract String apiClassName();
 
-  public abstract String qualifiedApiClassName();
-
   public abstract String apiVariableName();
 
   public abstract InitCodeView initCode();
-
-  public abstract ApiMethodDocView doc();
 
   public abstract String name();
 
@@ -40,19 +37,13 @@ public abstract class DynamicLangApiMethodView implements ApiMethodView {
 
   public abstract String key();
 
-  public abstract String grpcMethodName();
-
   public abstract List<DynamicLangDefaultableParamView> methodParams();
 
   public abstract List<RequestObjectParamView> requiredRequestObjectParams();
 
   public abstract List<RequestObjectParamView> optionalRequestObjectParams();
 
-  public abstract List<String> sampleTypeAliasingLines();
-
   public abstract boolean hasReturnValue();
-
-  public abstract List<String> sampleImports();
 
   public static Builder newBuilder() {
     return new AutoValue_DynamicLangApiMethodView.Builder();
@@ -64,21 +55,15 @@ public abstract class DynamicLangApiMethodView implements ApiMethodView {
 
     public abstract Builder apiClassName(String val);
 
-    public abstract Builder qualifiedApiClassName(String val);
-
     public abstract Builder apiVariableName(String val);
 
     public abstract Builder initCode(InitCodeView val);
-
-    public abstract Builder doc(ApiMethodDocView val);
 
     public abstract Builder name(String val);
 
     public abstract Builder requestTypeName(String val);
 
     public abstract Builder key(String val);
-
-    public abstract Builder grpcMethodName(String val);
 
     public abstract Builder methodParams(List<DynamicLangDefaultableParamView> val);
 
@@ -87,10 +72,6 @@ public abstract class DynamicLangApiMethodView implements ApiMethodView {
     public abstract Builder optionalRequestObjectParams(List<RequestObjectParamView> val);
 
     public abstract Builder hasReturnValue(boolean val);
-
-    public abstract Builder sampleTypeAliasingLines(List<String> val);
-
-    public abstract Builder sampleImports(List<String> val);
 
     public abstract DynamicLangApiMethodView build();
   }

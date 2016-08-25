@@ -15,6 +15,7 @@
 package com.google.api.codegen.util;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * A type table manages the imports for a set of fully-qualified type names.
@@ -58,4 +59,6 @@ public interface TypeTable extends TypeNameConverter {
    * Returns the imports accumulated so far.
    */
   List<String> getImports();
+
+  Map<String, String> getImportsMap();
 }

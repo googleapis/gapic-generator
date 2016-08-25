@@ -14,9 +14,11 @@
  */
 package com.google.api.codegen.metacode;
 
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
@@ -29,6 +31,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.annotation.Nullable;
 
 /**
  * InitCodeGenerator generates an InitCode object for a given method and initialization field
@@ -44,8 +48,14 @@ public class InitCodeGenerator {
    */
   public InitCode generateRequestObjectInitCode(
       Method method, Map<String, Object> initFieldStructure) {
+    return generateRequestObjectInitCode(method, initFieldStructure, null);
+  }
+
+  public InitCode generateRequestObjectInitCode(
+      Method method, Map<String, Object> initFieldStructure, @Nullable ModelTypeTable typeTable) {
     InitCodeLine lastLine =
-        generateSampleCodeInit(Name.from("request"), method.getInputType(), initFieldStructure);
+        generateSampleCodeInit(
+            Name.from("request"), method.getInputType(), initFieldStructure, typeTable);
     initLineSpecs.add(lastLine);
     FieldSetting requestField =
         FieldSetting.create(
@@ -54,17 +64,17 @@ public class InitCodeGenerator {
             lastLine.getIdentifier(),
             lastLine.getInitValueConfig());
     List<FieldSetting> outputFields = Arrays.asList(requestField);
-    return InitCode.create(initLineSpecs, outputFields);
+    return InitCode.create(initLineSpecs, outputFields, typeTable);
   }
 
   /**
    * Generates the simple InitCode for a response object which matches the output type of the given
    * method.
    */
-  public InitCode generateMockResponseObjectInitCode(Method method) {
+  public InitCode generateMockResponseObjectInitCode(Method method, ModelTypeTable typeTable) {
     InitCodeLine lastLine =
         generateSampleCodeInit(
-            Name.from("expected_response"), method.getOutputType(), new HashMap<>());
+            Name.from("expected_response"), method.getOutputType(), new HashMap<>(), typeTable);
     initLineSpecs.add(lastLine);
     FieldSetting responseField =
         FieldSetting.create(
@@ -73,7 +83,7 @@ public class InitCodeGenerator {
             lastLine.getIdentifier(),
             lastLine.getInitValueConfig());
     List<FieldSetting> outputFields = Arrays.asList(responseField);
-    return InitCode.create(initLineSpecs, outputFields);
+    return InitCode.create(initLineSpecs, outputFields, typeTable);
   }
 
   /**
@@ -82,6 +92,14 @@ public class InitCodeGenerator {
    */
   public InitCode generateRequestFieldInitCode(
       Method method, Map<String, Object> initFieldStructure, Iterable<Field> fields) {
+    return generateRequestFieldInitCode(method, initFieldStructure, fields, null);
+  }
+
+  public InitCode generateRequestFieldInitCode(
+      Method method,
+      Map<String, Object> initFieldStructure,
+      Iterable<Field> fields,
+      @Nullable ModelTypeTable typeTable) {
 
     Map<String, Object> filteredInit = new HashMap<>();
     for (Field field : fields) {
@@ -94,13 +112,14 @@ public class InitCodeGenerator {
     }
 
     InitCodeLine lastLine =
-        generateSampleCodeInit(Name.from("request"), method.getInputType(), filteredInit);
+        generateSampleCodeInit(
+            Name.from("request"), method.getInputType(), filteredInit, typeTable);
     if (!(lastLine instanceof StructureInitCodeLine)) {
       throw new IllegalArgumentException(
           "Expected method request to be a message, found " + lastLine.getClass().getName());
     }
     StructureInitCodeLine requestInitCodeLine = (StructureInitCodeLine) lastLine;
-    return InitCode.create(initLineSpecs, requestInitCodeLine.getFieldSettings());
+    return InitCode.create(initLineSpecs, requestInitCodeLine.getFieldSettings(), typeTable);
   }
 
   private Name getNewSymbol(Name desiredName) {
@@ -114,7 +133,10 @@ public class InitCodeGenerator {
   }
 
   private InitCodeLine generateSampleCodeInitStructure(
-      Name suggestedName, TypeRef typeRef, Map<String, Object> initFieldMap) {
+      Name suggestedName,
+      TypeRef typeRef,
+      Map<String, Object> initFieldMap,
+      ModelTypeTable typeTable) {
     List<FieldSetting> fieldSettings = new ArrayList<>();
     for (Field field : typeRef.getMessageType().getFields()) {
       Object thisFieldInitStructure = initFieldMap.get(field.getSimpleName());
@@ -124,7 +146,7 @@ public class InitCodeGenerator {
 
       InitCodeLine subFieldInit =
           generateSampleCodeInit(
-              Name.from(field.getSimpleName()), field.getType(), thisFieldInitStructure);
+              Name.from(field.getSimpleName()), field.getType(), thisFieldInitStructure, typeTable);
       initLineSpecs.add(subFieldInit);
 
       FieldSetting fieldSetting =
@@ -146,14 +168,18 @@ public class InitCodeGenerator {
   }
 
   private InitCodeLine generateSampleCodeInitList(
-      Name suggestedName, TypeRef typeRef, List<Object> thisFieldInitList) {
+      Name suggestedName,
+      TypeRef typeRef,
+      List<Object> thisFieldInitList,
+      ModelTypeTable typeTable) {
     List<Name> elementIdentifiers = new ArrayList<>();
     for (Object elementInitStructure : thisFieldInitList) {
       Name suggestedElementName = suggestedName.join("element");
       // Using the Optional cardinality replaces the Repeated cardinality
       TypeRef elementType = typeRef.makeOptional();
       InitCodeLine subFieldInit =
-          generateSampleCodeInit(suggestedElementName, elementType, elementInitStructure);
+          generateSampleCodeInit(
+              suggestedElementName, elementType, elementInitStructure, typeTable);
       initLineSpecs.add(subFieldInit);
 
       elementIdentifiers.add(subFieldInit.getIdentifier());
@@ -166,7 +192,10 @@ public class InitCodeGenerator {
   }
 
   private InitCodeLine generateSampleCodeInitMap(
-      Name suggestedName, TypeRef typeRef, Map<String, Object> thisFieldInitMap) {
+      Name suggestedName,
+      TypeRef typeRef,
+      Map<String, Object> thisFieldInitMap,
+      ModelTypeTable typeTable) {
     TypeRef keyTypeRef = typeRef.getMapKeyField().getType();
     TypeRef elementType = typeRef.getMapValueField().getType();
     Map<String, Name> elementIdentifierMap = new HashMap<>();
@@ -187,7 +216,8 @@ public class InitCodeGenerator {
       Object elementInitStructure = thisFieldInitMap.get(keyString);
       Name suggestedElementName = suggestedName.join("item");
       InitCodeLine subFieldInit =
-          generateSampleCodeInit(suggestedElementName, elementType, elementInitStructure);
+          generateSampleCodeInit(
+              suggestedElementName, elementType, elementInitStructure, typeTable);
       initLineSpecs.add(subFieldInit);
 
       elementIdentifierMap.put(validatedKeyString, subFieldInit.getIdentifier());
@@ -201,7 +231,7 @@ public class InitCodeGenerator {
   }
 
   private InitCodeLine generateSampleCodeInit(
-      Name suggestedName, TypeRef typeRef, Object initFieldStructure) {
+      Name suggestedName, TypeRef typeRef, Object initFieldStructure, ModelTypeTable typeTable) {
     // No matter what the type in the model is, we want to stop here, because we
     // have reached the end of initFieldStructure. At codegen time, we will
     // generate the zero value for the type.
@@ -223,6 +253,10 @@ public class InitCodeGenerator {
         }
         initValueConfig = initValueConfig.withInitialValue(validatedValue);
       }
+
+      if (typeRef.isMessage() && typeTable != null) {
+        typeTable.getAndSaveNicknameFor(typeRef);
+      }
       return SimpleInitCodeLine.create(typeRef, identifier, initValueConfig);
     }
 
@@ -241,7 +275,7 @@ public class InitCodeGenerator {
 
       @SuppressWarnings("unchecked")
       Map<String, Object> initFieldMap = (Map<String, Object>) initFieldStructure;
-      return generateSampleCodeInitStructure(suggestedName, typeRef, initFieldMap);
+      return generateSampleCodeInitStructure(suggestedName, typeRef, initFieldMap, typeTable);
 
     } else if (typeRef.isRepeated() && !typeRef.isMap()) {
       if (!(initFieldStructure instanceof List)) {
@@ -257,7 +291,7 @@ public class InitCodeGenerator {
       }
       @SuppressWarnings("unchecked")
       List<Object> thisFieldInitList = (List<Object>) initFieldStructure;
-      return generateSampleCodeInitList(suggestedName, typeRef, thisFieldInitList);
+      return generateSampleCodeInitList(suggestedName, typeRef, thisFieldInitList, typeTable);
 
     } else if (typeRef.isMap()) {
       if (!(initFieldStructure instanceof Map)) {
@@ -274,7 +308,7 @@ public class InitCodeGenerator {
       @SuppressWarnings("unchecked")
       Map<String, Object> thisFieldInitMap = (Map<String, Object>) initFieldStructure;
 
-      return generateSampleCodeInitMap(suggestedName, typeRef, thisFieldInitMap);
+      return generateSampleCodeInitMap(suggestedName, typeRef, thisFieldInitMap, typeTable);
 
     } else {
       throw new IllegalArgumentException("Unexpected type: " + typeRef);

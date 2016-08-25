@@ -40,6 +40,7 @@ import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
@@ -56,7 +57,8 @@ public class InitCodeTransformer {
     Map<String, Object> initFieldStructure = createInitFieldStructure(context);
     InitCodeGenerator generator = new InitCodeGenerator();
     InitCode initCode =
-        generator.generateRequestFieldInitCode(context.getMethod(), initFieldStructure, fields);
+        generator.generateRequestFieldInitCode(
+            context.getMethod(), initFieldStructure, fields, context.getTypeTable().cloneEmpty());
 
     return buildInitCodeView(context, initCode);
   }
@@ -65,14 +67,17 @@ public class InitCodeTransformer {
     Map<String, Object> initFieldStructure = createInitFieldStructure(context);
     InitCodeGenerator generator = new InitCodeGenerator();
     InitCode initCode =
-        generator.generateRequestObjectInitCode(context.getMethod(), initFieldStructure);
+        generator.generateRequestObjectInitCode(
+            context.getMethod(), initFieldStructure, context.getTypeTable().cloneEmpty());
 
     return buildInitCodeView(context, initCode);
   }
 
   public InitCodeView generateMockResponseObjectInitCode(MethodTransformerContext context) {
     InitCodeGenerator generator = new InitCodeGenerator();
-    InitCode initCode = generator.generateMockResponseObjectInitCode(context.getMethod());
+    InitCode initCode =
+        generator.generateMockResponseObjectInitCode(
+            context.getMethod(), context.getTypeTable().cloneEmpty());
 
     return buildInitCodeView(context, initCode);
   }
@@ -81,6 +86,9 @@ public class InitCodeTransformer {
     return InitCodeView.newBuilder()
         .lines(generateSurfaceInitCodeLines(context, initCode))
         .fieldSettings(getFieldSettings(context, initCode.getArgFields()))
+        .typeTable(initCode.getTypeTable())
+        .packageName(context.getApiConfig().getPackageName())
+        .apiFileName(context.getNamer().getApiFileName(context.getInterface()))
         .build();
   }
 

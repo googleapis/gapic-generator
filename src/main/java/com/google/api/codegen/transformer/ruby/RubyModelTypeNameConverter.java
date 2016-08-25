@@ -15,20 +15,15 @@
 package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
+import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.base.Ascii;
-import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
 
@@ -98,11 +93,7 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
   public TypeName getTypeNameForElementType(TypeRef type) {
     String primitiveTypeName = PRIMITIVE_TYPE_MAP.get(type.getKind());
     if (primitiveTypeName != null) {
-      if (primitiveTypeName.contains("::")) {
-        return typeNameConverter.getTypeName(primitiveTypeName);
-      } else {
-        return new TypeName(primitiveTypeName);
-      }
+      return new TypeName(primitiveTypeName);
     }
     switch (type.getKind()) {
       case TYPE_MESSAGE:
@@ -116,7 +107,8 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeName(ProtoElement elem) {
-    return typeNameConverter.getTypeName(lowerDottedToUpperDoubleColoned(elem.getFullName()));
+    return typeNameConverter.getTypeName(
+        NamePath.dotted(elem.getFullName()).withUpperPieces().toDoubleColoned());
   }
 
   /**
@@ -161,21 +153,5 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
         // here
         return value;
     }
-  }
-
-  private String lowerDottedToUpperDoubleColoned(String dottedName) {
-    String[] names = dottedName.split("\\.");
-    List<String> upperNames = new ArrayList<>();
-    for (String name : names) {
-      String newName =
-          (name.isEmpty())
-              ? name
-              : new StringBuilder(name.length())
-                  .append(Ascii.toUpperCase(name.charAt(0)))
-                  .append(name.substring(1))
-                  .toString();
-      upperNames.add(newName);
-    }
-    return Joiner.on("::").join(upperNames);
   }
 }

@@ -16,10 +16,13 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
+import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * A ModelTypeTable manages the imports for a set of fully-qualified type names, and
@@ -119,5 +122,9 @@ public class ModelTypeTable implements ModelTypeFormatter {
    */
   public List<String> getImports() {
     return typeTable.getImports();
+  }
+
+  public Map<String, String> getImportsMap() {
+    return typeTable.getImportsMap();
   }
 }

@@ -24,14 +24,12 @@ import com.google.api.codegen.viewmodel.StaticLangApiMethodView.Builder;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /** ApiMethodTransformer generates view objects from method definitions. */
 public class ApiMethodTransformer {
@@ -294,30 +292,22 @@ public class ApiMethodTransformer {
     DynamicLangApiMethodView.Builder apiMethod = DynamicLangApiMethodView.newBuilder();
 
     if (context.getMethodConfig().isPageStreaming()) {
-      apiMethod.type(ApiMethodType.PagedOptionalArrayMethod);
+      apiMethod.type(ApiMethodType.PagedFlattenedMethod);
     } else {
-      apiMethod.type(ApiMethodType.OptionalArrayMethod);
+      apiMethod.type(ApiMethodType.FlattenedMethod);
     }
-    String apiClassName = namer.getApiWrapperClassName(context.getInterface());
-    apiMethod.apiClassName(apiClassName);
-
-    String qualifiedApiClassName = namer.getQualifiedApiWrapperClassName(context.getInterface());
-    apiMethod.qualifiedApiClassName(qualifiedApiClassName);
-
+    apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
-    apiMethod.initCode(
+    InitCodeView initCode =
         initCodeTransformer.generateInitCode(
-            context, context.getMethodConfig().getRequiredFields()));
-
-    apiMethod.doc(generateOptionalArrayMethodDoc(context));
+            context, context.getMethodConfig().getRequiredFields());
+    apiMethod.initCode(initCode);
 
     apiMethod.name(namer.getApiMethodName(context.getMethod()));
     apiMethod.requestTypeName(
         context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getInputType()));
     apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
     apiMethod.key(namer.getMethodKey(context.getMethod()));
-    apiMethod.grpcMethodName(namer.getGrpcMethodName(context.getMethod()));
-
     apiMethod.methodParams(generateOptionalArrayMethodParams(context));
 
     List<RequestObjectParamView> requiredParams =
@@ -326,11 +316,6 @@ public class ApiMethodTransformer {
     List<RequestObjectParamView> optionalParams =
         generateRequestObjectParams(context, context.getMethodConfig().getOptionalFields());
     apiMethod.optionalRequestObjectParams(optionalParams);
-    apiMethod.sampleTypeAliasingLines(
-        generateSampleTypeAliasingLines(requiredParams, apiClassName, qualifiedApiClassName));
-    apiMethod.sampleImports(
-        generateSampleImports(
-            context.getInterface(), context.getMethodConfig().getRequiredFields()));
     return apiMethod.build();
   }
 

@@ -16,9 +16,7 @@ package com.google.api.codegen.util;
 
 import com.google.common.truth.Truth;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import org.junit.Test;
 
@@ -83,6 +81,11 @@ public class TypeNameTest {
 
     @Override
     public List<String> getImports() {
+      return null;
+    }
+
+    @Override
+    public Map<String, String> getImportsMap() {
       return null;
     }
 

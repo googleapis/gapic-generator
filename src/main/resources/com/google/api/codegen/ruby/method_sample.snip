@@ -10,26 +10,29 @@
 @end
 
 @snippet sampleCode_(apiMethod)
-    @join aliasLine : apiMethod.sampleTypeAliasingLines()
-        {@aliasLine}
-    @end
+    require "{@apiMethod.initCode.apiFileName}"
 
+    {@apiMethod.apiClassName} = {@apiMethod.initCode.packageName}\
+        ::{@apiMethod.apiClassName}
+    @join aliasDef : context.entrySet(apiMethod.initCode.typeTable.getImportsMap)
+        {@aliasDef.getValue} = {@aliasDef.getKey}
+    @end
 
     {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.new
     @if apiMethod.initCode.lines
         {@initCode(apiMethod.initCode)}
     @end
     @switch apiMethod.type.toString
-    @case "OptionalArrayMethod"
-        {@optionalArrayMethodSampleCode(apiMethod)}
-    @case "PagedOptionalArrayMethod"
-        {@pagedOptionalArrayMethodSampleCode(apiMethod)}
+    @case "FlattenedMethod"
+        {@flattenedMethodSampleCode(apiMethod)}
+    @case "PagedFlattenedMethod"
+        {@pagedFlattenedMethodSampleCode(apiMethod)}
     @default
         $unhandledCase: {@apiMethod.type.toString}$
     @end
 @end
 
-@private optionalArrayMethodSampleCode(apiMethod)
+@private flattenedMethodSampleCode(apiMethod)
     @if apiMethod.hasReturnValue
         response = {@methodCallSampleCode(apiMethod)}
     @else
@@ -37,7 +40,7 @@
     @end
 @end
 
-@private pagedOptionalArrayMethodSampleCode(apiMethod)
+@private pagedFlattenedMethodSampleCode(apiMethod)
 
     @# Iterate over all results.
     {@methodCallSampleCode(apiMethod)}.each do |element|

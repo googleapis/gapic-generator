@@ -47,14 +47,25 @@ import java.util.List;
 public class SurfaceNamer extends NameFormatterDelegator {
   private ModelTypeFormatter modelTypeFormatter;
   private TypeNameConverter typeNameConverter;
+  protected String packageName;
 
   public SurfaceNamer(
       NameFormatter languageNamer,
       ModelTypeFormatter modelTypeFormatter,
       TypeNameConverter typeNameConverter) {
+    this(languageNamer, modelTypeFormatter, typeNameConverter, null);
+  }
+
+  public SurfaceNamer(
+      NameFormatter languageNamer,
+      ModelTypeFormatter modelTypeFormatter,
+      TypeNameConverter typeNameConverter,
+      String packageName) {
     super(languageNamer);
     this.modelTypeFormatter = modelTypeFormatter;
     this.typeNameConverter = typeNameConverter;
+    this.packageName =
+        packageName == null ? getNotImplementedString("SurfaceNamer.packageName") : packageName;
   }
 
   public ModelTypeFormatter getModelTypeFormatter() {
@@ -485,20 +496,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  public String getQualifiedClassName(ProtoElement element) {
-    return qualifiedName(typeNameConverter.getNamePath(element.getFullName()));
-  }
-
-  /** The name of the class that implements a particular proto interface. */
-  public String getQualifiedApiWrapperClassName(Interface interfaze) {
-    return qualifiedName(
-        typeNameConverter
-            .getNamePath(interfaze.getFullName())
-            .withHead(getApiWrapperClassName(interfaze)));
-  }
-
-  public String getFlattenedQualiefiedClassName(ProtoElement element) {
-    return qualifiedName(
-        typeNameConverter.getNamePath(element.getFullName()).withFlattenedRequest());
+  public String getApiFileName(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getApiName");
   }
 }

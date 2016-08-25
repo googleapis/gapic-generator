@@ -18,17 +18,20 @@ import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableSet;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+
+import java.util.*;
 
 /** The TypeTable for Ruby. */
 public class RubyTypeTable implements TypeTable {
-  /** A bi-map from full names to short names indicating the import map. */
-  private final BiMap<String, String> imports = HashBiMap.create();
+  /*
+   * A bi-map from full names to short names. In other languages this would indicate imports, but
+   * in ruby this only indicates types to their fully qualified types.
+   */
+  private final BiMap<String, String> nameMap = HashBiMap.create();
 
   @Override
   public TypeTable cloneEmpty() {
@@ -37,11 +40,11 @@ public class RubyTypeTable implements TypeTable {
 
   @Override
   public TypeName getTypeName(String fullName) {
-    int lastColonIndex = fullName.lastIndexOf("::");
-    if (lastColonIndex < 0) {
+    int lastColonedIndex = fullName.lastIndexOf("::");
+    if (lastColonedIndex < 0) {
       throw new IllegalArgumentException("expected fully qualified name");
     }
-    String nickname = fullName.substring(lastColonIndex + 2);
+    String nickname = fullName.substring(lastColonedIndex + 2);
     return new TypeName(fullName, nickname);
   }
 
@@ -71,34 +74,39 @@ public class RubyTypeTable implements TypeTable {
       return alias.getNickname();
     }
     // Derive a short name if possible
-    if (imports.containsKey(alias.getFullName())) {
+    if (nameMap.containsKey(alias.getFullName())) {
       // Short name already there.
-      return imports.get(alias.getFullName());
+      return nameMap.get(alias.getFullName());
     }
-    if (imports.containsValue(alias.getNickname())) {
+    if (nameMap.containsValue(alias.getNickname())) {
       // Short name clashes, use long name.
       return alias.getFullName();
     }
-    imports.put(alias.getFullName(), alias.getNickname());
+    nameMap.put(alias.getFullName(), alias.getNickname());
     return alias.getNickname();
   }
 
   @Override
   public List<String> getImports() {
-    // Clean up the imports.
-    List<String> cleanedImports = new ArrayList<>();
-    for (String imported : imports.keySet()) {
-      cleanedImports.add(imported);
+    // Clean up the nameMap.
+    List<String> sortedImports = new ArrayList<>();
+    for (String imported : nameMap.keySet()) {
+      sortedImports.add(imported);
     }
-    Collections.sort(cleanedImports);
-    return cleanedImports;
+    Collections.sort(sortedImports);
+    return sortedImports;
+  }
+
+  @Override
+  public Map<String, String> getImportsMap() {
+    return new HashMap<>(nameMap);
   }
 
   public boolean hasImports() {
     return !getImports().isEmpty();
   }
 
-  /**
+  /**:
    * A set of ruby keywords and built-ins. keywords:
    * http://docs.ruby-lang.org/en/2.3.0/keywords_rdoc.html
    */
