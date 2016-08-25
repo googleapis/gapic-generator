@@ -138,9 +138,10 @@
       @join param : params
         @let paramField = context.getField(signatureType, param), \
              paramValue = context.typeDefaultValue(signatureType, paramField), \
+             paramSample = context.getDefaultSample(signatureType, paramField), \
              paramDescription = context.getDescription(signatureType.getName, param)
           {@description(paramDescription)}
-          {@unclashVar(param)} := {@paramValue} // {@TODO()} Update placeholder value(s).
+          {@unclashVar(param)} := {@paramValue} // {@TODO()} Update placeholder value(s).{@paramSample}
 
         @end
       @end

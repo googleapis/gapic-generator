@@ -115,7 +115,7 @@ public class PythonDiscoveryContext extends DiscoveryContext {
     // API
     // remove if inconsistency is resolved in discovery docs
     if (isTranslateLanguageDetectionsOrTranslationsField(method, field)) {
-      return lineEnding(stringLiteral(""));
+      return stringLiteral("");
     }
 
     if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
@@ -159,7 +159,7 @@ public class PythonDiscoveryContext extends DiscoveryContext {
         return nativeDefault;
       }
       if (typeName.equals("str")) {
-        return getDefaultString(type, field);
+        return getDefaultString(type, field).getDefine();
       }
     }
     return "None";
@@ -168,16 +168,6 @@ public class PythonDiscoveryContext extends DiscoveryContext {
   @Override
   public String stringLiteral(String value) {
     return "'" + value + "'";
-  }
-
-  @Override
-  public String lineEnding(String value) {
-    return value;
-  }
-
-  @Override
-  public String lineComment(String line, String comment) {
-    return line + "  # " + comment;
   }
 
   // Handlers for Exceptional Inconsistencies

@@ -56,9 +56,10 @@
       @join param : params
         @let paramField = context.getField(signatureType, param), \
              paramValue = context.typeDefaultValue(signatureType, paramField, method), \
+             paramSample = context.getDefaultSample(signatureType, paramField), \
              paramDescription = context.getDescription(signatureType.getName, param)
           {@description(paramDescription)}
-          {@context.mapParamName(param)}: {@paramValue} // {@TODO()} Update placeholder value(s).
+          {@context.mapParamName(param)}: {@paramValue}, // {@TODO()} Update placeholder value(s).{@paramSample}
 
         @end
       @end

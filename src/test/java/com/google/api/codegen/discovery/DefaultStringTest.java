@@ -24,17 +24,20 @@ import java.util.Map;
 public class DefaultStringTest {
   @Test
   public void testOf() {
-    DefaultString def = DefaultString.of("compute", "zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
-    Truth.assertThat(def.getDeclare()).isEqualTo("{MY-ZONE}");
-    Truth.assertThat(def.getComment()).isEqualTo("us-central1-f");
+    String def = DefaultString.getPlaceholder("zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
+    String sample = DefaultString.getSample("compute", "zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
+    Truth.assertThat(def).isEqualTo("{MY-ZONE}");
+    Truth.assertThat(sample).isEqualTo("us-central1-f");
 
-    def = DefaultString.of("pubsub", "project", "^projects/[^/]*$");
-    Truth.assertThat(def.getDeclare()).isEqualTo("projects/{MY-PROJECT}");
-    Truth.assertThat(def.getComment()).isNull();
+    def = DefaultString.getPlaceholder("project", "^projects/[^/]*$");
+    sample = DefaultString.getSample("pubsub", "project", "^projects/[^/]*$");
+    Truth.assertThat(def).isEqualTo("projects/{MY-PROJECT}");
+    Truth.assertThat(sample).isEqualTo("");
 
-    def = DefaultString.of("foo", "bar", null);
-    Truth.assertThat(def.getDeclare()).isEqualTo("{MY-BAR}");
-    Truth.assertThat(def.getComment()).isNull();
+    def = DefaultString.getPlaceholder("bar", null);
+    sample = DefaultString.getSample("foo", "bar", null);
+    Truth.assertThat(def).isEqualTo("{MY-BAR}");
+    Truth.assertThat(sample).isEqualTo("");
   }
 
   @Test

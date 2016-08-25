@@ -287,26 +287,26 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
       Type items = getApiaryConfig().getType(fieldTypeName);
       if (isMapField(type, field.getName())) {
         return String.format(
-            "new %s<%s, %s>();",
+            "new %s<%s, %s>()",
             getTypeName("java.util.HashMap"),
             typeName(items, getField(items, "key")),
             typeName(items, getField(items, "value")));
       }
       return String.format(
-          "new %s<%s>();", getTypeName("java.util.ArrayList"), elementTypeName(field));
+          "new %s<%s>()", getTypeName("java.util.ArrayList"), elementTypeName(field));
     }
     String typeName = FIELD_TYPE_MAP.get(field.getKind());
     if (typeName == null) {
-      return "null;";
+      return "null";
     }
     Class<?> primitiveClass = PRIMITIVE_CLASS_MAP.get(typeName);
     if (primitiveClass != null) {
-      return String.valueOf(Defaults.defaultValue(primitiveClass)) + ";";
+      return String.valueOf(Defaults.defaultValue(primitiveClass)) + "";
     }
     if (typeName.equals("java.lang.String")) {
-      return getDefaultString(type, field);
+      return getDefaultString(type, field).getDefine();
     }
-    return "null;";
+    return "null";
   }
 
   // Handlers for Exceptional Inconsistencies
