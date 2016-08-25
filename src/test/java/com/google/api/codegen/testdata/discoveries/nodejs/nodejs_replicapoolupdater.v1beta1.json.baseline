@@ -7,15 +7,20 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var replicapoolupdater = google.replicapoolupdater('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -24,26 +29,191 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'cancel' method:
+    // The Google Developers Console project name.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The Google Developers Console project name.
-    project: "",
+    // The name of the zone in which the update's target resides.
+    zone: "{MY-ZONE}", // TODO: Update placeholder value(s).
 
-    // * The name of the zone in which the update's target resides.
-    zone: "",
+    // The name of the update.
+    rollingUpdate: "{MY-ROLLING-UPDATE}", // TODO: Update placeholder value(s).
 
-    // * The name of the update.
-    rollingUpdate: "",
-
-    // Auth client
     auth: authClient
   };
 
-  replicapoolupdater.rollingUpdates.cancel(request, function(err, result) {
+  replicapoolupdater.rollingUpdates.cancel(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Compute Engine Instance Group Updater API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/replicapoolupdater
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var replicapoolupdater = google.replicapoolupdater('v1beta1');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // The Google Developers Console project name.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // The name of the zone in which the update's target resides.
+    zone: "{MY-ZONE}", // TODO: Update placeholder value(s).
+
+    // The name of the update.
+    rollingUpdate: "{MY-ROLLING-UPDATE}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  replicapoolupdater.rollingUpdates.get(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Compute Engine Instance Group Updater API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/replicapoolupdater
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var replicapoolupdater = google.replicapoolupdater('v1beta1');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // The Google Developers Console project name.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // The name of the zone in which the update's target resides.
+    zone: "{MY-ZONE}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  replicapoolupdater.rollingUpdates.insert(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Compute Engine Instance Group Updater API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/replicapoolupdater
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var replicapoolupdater = google.replicapoolupdater('v1beta1');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // The Google Developers Console project name.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+
+    // The name of the zone in which the update's target resides.
+    zone: "{MY-ZONE}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  replicapoolupdater.rollingUpdates.list(request, function handlePage(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var itemsPage = response['items'];
+    if (!itemsPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < itemsPage.length; i++) {
+      // TODO: Use itemsPage
+      console.log(JSON.stringify(itemsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      replicapoolupdater.rollingUpdates.list(request, handlePage);
     }
   });
 });
@@ -55,15 +225,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var replicapoolupdater = google.replicapoolupdater('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -72,26 +247,37 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // The Google Developers Console project name.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The Google Developers Console project name.
-    project: "",
+    // The name of the zone in which the update's target resides.
+    zone: "{MY-ZONE}", // TODO: Update placeholder value(s).
 
-    // * The name of the zone in which the update's target resides.
-    zone: "",
+    // The name of the update.
+    rollingUpdate: "{MY-ROLLING-UPDATE}", // TODO: Update placeholder value(s).
 
-    // * The name of the update.
-    rollingUpdate: "",
-
-    // Auth client
     auth: authClient
   };
 
-  replicapoolupdater.rollingUpdates.get(request, function(err, result) {
+  replicapoolupdater.rollingUpdates.listInstanceUpdates(request, function handlePage(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    var itemsPage = response['items'];
+    if (!itemsPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < itemsPage.length; i++) {
+      // TODO: Use itemsPage
+      console.log(JSON.stringify(itemsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      replicapoolupdater.rollingUpdates.listInstanceUpdates(request, handlePage);
     }
   });
 });
@@ -103,15 +289,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var replicapoolupdater = google.replicapoolupdater('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -120,26 +311,26 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+    // The Google Developers Console project name.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The Google Developers Console project name.
-    project: "",
+    // The name of the zone in which the update's target resides.
+    zone: "{MY-ZONE}", // TODO: Update placeholder value(s).
 
-    // * The name of the zone in which the update's target resides.
-    zone: "",
+    // The name of the update.
+    rollingUpdate: "{MY-ROLLING-UPDATE}", // TODO: Update placeholder value(s).
 
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  replicapoolupdater.rollingUpdates.insert(request, function(err, result) {
+  replicapoolupdater.rollingUpdates.pause(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -150,15 +341,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var replicapoolupdater = google.replicapoolupdater('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -167,134 +363,26 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // The Google Developers Console project name.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The Google Developers Console project name.
-    project: "",
+    // The name of the zone in which the update's target resides.
+    zone: "{MY-ZONE}", // TODO: Update placeholder value(s).
 
-    // * The name of the zone in which the update's target resides.
-    zone: "",
+    // The name of the update.
+    rollingUpdate: "{MY-ROLLING-UPDATE}", // TODO: Update placeholder value(s).
 
-    // Auth client
     auth: authClient
   };
 
-
-  var recur = function(err, result) {
+  replicapoolupdater.rollingUpdates.resume(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        replicapoolupdater.rollingUpdates.list(request, recur);
-      }
+      return;
     }
-  };
 
-  replicapoolupdater.rollingUpdates.list(request, recur);
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Compute Engine Instance Group Updater API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/replicapoolupdater
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var replicapoolupdater = google.replicapoolupdater('v1beta1');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'listInstanceUpdates' method:
-
-    // * The Google Developers Console project name.
-    project: "",
-
-    // * The name of the zone in which the update's target resides.
-    zone: "",
-
-    // * The name of the update.
-    rollingUpdate: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-
-  var recur = function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        replicapoolupdater.rollingUpdates.listInstanceUpdates(request, recur);
-      }
-    }
-  };
-
-  replicapoolupdater.rollingUpdates.listInstanceUpdates(request, recur);
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Compute Engine Instance Group Updater API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/replicapoolupdater
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var replicapoolupdater = google.replicapoolupdater('v1beta1');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'pause' method:
-
-    // * The Google Developers Console project name.
-    project: "",
-
-    // * The name of the zone in which the update's target resides.
-    zone: "",
-
-    // * The name of the update.
-    rollingUpdate: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-  replicapoolupdater.rollingUpdates.pause(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -305,15 +393,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var replicapoolupdater = google.replicapoolupdater('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -322,27 +415,26 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'resume' method:
+    // The Google Developers Console project name.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The Google Developers Console project name.
-    project: "",
+    // The name of the zone in which the update's target resides.
+    zone: "{MY-ZONE}", // TODO: Update placeholder value(s).
 
-    // * The name of the zone in which the update's target resides.
-    zone: "",
+    // The name of the update.
+    rollingUpdate: "{MY-ROLLING-UPDATE}", // TODO: Update placeholder value(s).
 
-    // * The name of the update.
-    rollingUpdate: "",
-
-    // Auth client
     auth: authClient
   };
 
-  replicapoolupdater.rollingUpdates.resume(request, function(err, result) {
+  replicapoolupdater.rollingUpdates.rollback(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -353,15 +445,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var replicapoolupdater = google.replicapoolupdater('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -370,27 +467,26 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'rollback' method:
+    // Name of the project scoping this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * The Google Developers Console project name.
-    project: "",
+    // Name of the zone scoping this request.
+    zone: "{MY-ZONE}", // TODO: Update placeholder value(s).
 
-    // * The name of the zone in which the update's target resides.
-    zone: "",
+    // Name of the operation resource to return.
+    operation: "{MY-OPERATION}", // TODO: Update placeholder value(s).
 
-    // * The name of the update.
-    rollingUpdate: "",
-
-    // Auth client
     auth: authClient
   };
 
-  replicapoolupdater.rollingUpdates.rollback(request, function(err, result) {
+  replicapoolupdater.zoneOperations.get(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -401,15 +497,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var replicapoolupdater = google.replicapoolupdater('v1beta1');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -418,78 +519,34 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // Name of the project scoping this request.
+    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
 
-    // * Name of the project scoping this request.
-    project: "",
+    // Name of the zone scoping this request.
+    zone: "{MY-ZONE}", // TODO: Update placeholder value(s).
 
-    // * Name of the zone scoping this request.
-    zone: "",
-
-    // * Name of the operation resource to return.
-    operation: "",
-
-    // Auth client
     auth: authClient
   };
 
-  replicapoolupdater.zoneOperations.get(request, function(err, result) {
+  replicapoolupdater.zoneOperations.list(request, function handlePage(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    var itemsPage = response['items'];
+    if (!itemsPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < itemsPage.length; i++) {
+      // TODO: Use itemsPage
+      console.log(JSON.stringify(itemsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      replicapoolupdater.zoneOperations.list(request, handlePage);
     }
   });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Compute Engine Instance Group Updater API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/replicapoolupdater
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var replicapoolupdater = google.replicapoolupdater('v1beta1');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * Name of the project scoping this request.
-    project: "",
-
-    // * Name of the zone scoping this request.
-    zone: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-
-  var recur = function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        replicapoolupdater.zoneOperations.list(request, recur);
-      }
-    }
-  };
-
-  replicapoolupdater.zoneOperations.list(request, recur);
 });

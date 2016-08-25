@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class InitCode {
   public static InitCode create(
-      List<InitCodeLine> lines, List<FieldSetting> argFields, @Nullable ModelTypeTable typeTable) {
+      List<InitCodeLine> lines, List<FieldSetting> argFields, ModelTypeTable typeTable) {
     return new AutoValue_InitCode(lines, argFields, typeTable);
   }
 

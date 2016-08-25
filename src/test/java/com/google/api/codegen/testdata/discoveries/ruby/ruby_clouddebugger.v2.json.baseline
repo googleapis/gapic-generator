@@ -7,24 +7,31 @@
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouddebugger_v2'
+require 'json'
 
 service = Google::Apis::ClouddebuggerV2::CloudDebuggerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_controller_debuggee_breakpoints' method:
-
-# * Identifies the debuggee.
-debuggee_id = ''
+# Identifies the debuggee.
+debuggee_id = '{MY-DEBUGGEE-ID}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.list_controller_debuggee_breakpoints(debuggee_id)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Debugger API
@@ -33,30 +40,37 @@ response = service.list_controller_debuggee_breakpoints(debuggee_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouddebugger_v2'
+require 'json'
 
 service = Google::Apis::ClouddebuggerV2::CloudDebuggerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_active_breakpoint' method:
+# Identifies the debuggee being debugged.
+debuggee_id = '{MY-DEBUGGEE-ID}' # TODO: Change placeholder value(s).
 
-# * Identifies the debuggee being debugged.
-debuggee_id = ''
+# Breakpoint identifier, unique in the scope of the debuggee.
+id = '{MY-ID}' # TODO: Change placeholder value(s).
 
-# * Breakpoint identifier, unique in the scope of the debuggee.
-id = ''
-
-update_active_breakpoint_request_object = Google::Apis::ClouddebuggerV2::UpdateActiveBreakpointRequest.new
-
+# TODO: Assign values to the desired members.
+update_active_breakpoint_request_body = Google::Apis::ClouddebuggerV2::UpdateActiveBreakpointRequest.new
 
 # Perform the call
-response = service.update_active_breakpoint(debuggee_id, id, update_active_breakpoint_request_object)
+response = service.update_active_breakpoint(debuggee_id, id, update_active_breakpoint_request_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Debugger API
@@ -65,24 +79,32 @@ response = service.update_active_breakpoint(debuggee_id, id, update_active_break
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouddebugger_v2'
+require 'json'
 
 service = Google::Apis::ClouddebuggerV2::CloudDebuggerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 
-
-register_debuggee_request_object = Google::Apis::ClouddebuggerV2::RegisterDebuggeeRequest.new
-
+# TODO: Assign values to the desired members.
+register_debuggee_request_body = Google::Apis::ClouddebuggerV2::RegisterDebuggeeRequest.new
 
 # Perform the call
-response = service.register_debuggee(register_debuggee_request_object)
+response = service.register_debuggee(register_debuggee_request_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Debugger API
@@ -91,24 +113,28 @@ response = service.register_debuggee(register_debuggee_request_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouddebugger_v2'
+require 'json'
 
 service = Google::Apis::ClouddebuggerV2::CloudDebuggerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_debugger_debuggee_breakpoint' method:
+# ID of the debuggee whose breakpoint to delete.
+debuggee_id = '{MY-DEBUGGEE-ID}' # TODO: Change placeholder value(s).
 
-# * ID of the debuggee whose breakpoint to delete.
-debuggee_id = ''
-
-# * ID of the breakpoint to delete.
-breakpoint_id = ''
+# ID of the breakpoint to delete.
+breakpoint_id = '{MY-BREAKPOINT-ID}' # TODO: Change placeholder value(s).
 
 # Perform the call
 service.delete_debugger_debuggee_breakpoint(debuggee_id, breakpoint_id)
@@ -120,27 +146,34 @@ service.delete_debugger_debuggee_breakpoint(debuggee_id, breakpoint_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouddebugger_v2'
+require 'json'
 
 service = Google::Apis::ClouddebuggerV2::CloudDebuggerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_debugger_debuggee_breakpoint' method:
+# ID of the debuggee whose breakpoint to get.
+debuggee_id = '{MY-DEBUGGEE-ID}' # TODO: Change placeholder value(s).
 
-# * ID of the debuggee whose breakpoint to get.
-debuggee_id = ''
-
-# * ID of the breakpoint to get.
-breakpoint_id = ''
+# ID of the breakpoint to get.
+breakpoint_id = '{MY-BREAKPOINT-ID}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_debugger_debuggee_breakpoint(debuggee_id, breakpoint_id)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Debugger API
@@ -149,24 +182,31 @@ response = service.get_debugger_debuggee_breakpoint(debuggee_id, breakpoint_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouddebugger_v2'
+require 'json'
 
 service = Google::Apis::ClouddebuggerV2::CloudDebuggerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_debugger_debuggee_breakpoints' method:
-
-# * ID of the debuggee whose breakpoints to list.
-debuggee_id = ''
+# ID of the debuggee whose breakpoints to list.
+debuggee_id = '{MY-DEBUGGEE-ID}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.list_debugger_debuggee_breakpoints(debuggee_id)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Debugger API
@@ -175,27 +215,34 @@ response = service.list_debugger_debuggee_breakpoints(debuggee_id)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouddebugger_v2'
+require 'json'
 
 service = Google::Apis::ClouddebuggerV2::CloudDebuggerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'set_debugger_debuggee_breakpoint' method:
+# ID of the debuggee where the breakpoint is to be set.
+debuggee_id = '{MY-DEBUGGEE-ID}' # TODO: Change placeholder value(s).
 
-# * ID of the debuggee where the breakpoint is to be set.
-debuggee_id = ''
-
-breakpoint_object = Google::Apis::ClouddebuggerV2::Breakpoint.new
-
+# TODO: Assign values to the desired members.
+breakpoint_body = Google::Apis::ClouddebuggerV2::Breakpoint.new
 
 # Perform the call
-response = service.set_debugger_debuggee_breakpoint(debuggee_id, breakpoint_object)
+response = service.set_debugger_debuggee_breakpoint(debuggee_id, breakpoint_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Debugger API
@@ -204,18 +251,26 @@ response = service.set_debugger_debuggee_breakpoint(debuggee_id, breakpoint_obje
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouddebugger_v2'
+require 'json'
 
 service = Google::Apis::ClouddebuggerV2::CloudDebuggerService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
-
 
 
 # Perform the call
 response = service.list_debugger_debuggees()
+
+# TODO: Use response
+puts JSON.pretty_generate(response)

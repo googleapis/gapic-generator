@@ -9,7 +9,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -17,18 +17,22 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storagetransfer service.
 $service = new Google_Service_Storagetransfer($client);
 
 
 $response = $service->v1->getGoogleServiceAccount();
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -39,7 +43,7 @@ $response = $service->v1->getGoogleServiceAccount();
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -47,21 +51,25 @@ $response = $service->v1->getGoogleServiceAccount();
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storagetransfer service.
 $service = new Google_Service_Storagetransfer($client);
 
-// * The ID of the Google Developers Console project that the Google service account is associated
-//   with. Required.
-$projectId = '';
+// The ID of the Google Developers Console project that the Google service account is associated with.
+// Required.
+$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
 
 $response = $service->googleServiceAccounts->get($projectId);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -72,7 +80,7 @@ $response = $service->googleServiceAccounts->get($projectId);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -80,20 +88,25 @@ $response = $service->googleServiceAccounts->get($projectId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storagetransfer service.
 $service = new Google_Service_Storagetransfer($client);
 
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Storagetransfer_TransferJob($client);
 
 $response = $service->transferJobs->create($postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -104,7 +117,7 @@ $response = $service->transferJobs->create($postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -112,20 +125,24 @@ $response = $service->transferJobs->create($postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storagetransfer service.
 $service = new Google_Service_Storagetransfer($client);
 
-// * The job to get. Required.
-$jobName = '';
+// The job to get. Required.
+$jobName = '{MY-JOB-NAME}'; // TODO: Update placeholder value(s).
 
 $response = $service->transferJobs->get($jobName);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -136,7 +153,7 @@ $response = $service->transferJobs->get($jobName);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -144,22 +161,29 @@ $response = $service->transferJobs->get($jobName);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storagetransfer service.
 $service = new Google_Service_Storagetransfer($client);
 
 
-$response = $service->transferJobs->listTransferJobs();
+$optParams = array();
+do {
+  $response = $service->transferJobs->listTransferJobs($optParams);
 
-foreach ($response['transferJobs'] as $element) {
-  // TODO: Add code here to process the element.
-}
+  foreach ($response['transferJobs'] as $transfer_job) {
+    // TODO: Use transfer_job
+    echo '<pre>', var_export($transfer_job, true), '</pre>', "\n";
+  }
 
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -170,7 +194,7 @@ foreach ($response['transferJobs'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -178,22 +202,27 @@ foreach ($response['transferJobs'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storagetransfer service.
 $service = new Google_Service_Storagetransfer($client);
 
-// * The name of job to update. Required.
-$jobName = '';
+// The name of job to update. Required.
+$jobName = '{MY-JOB-NAME}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties to be changed.
 $postBody = new Google_Service_Storagetransfer_UpdateTransferJobRequest($client);
 
 $response = $service->transferJobs->patch($jobName, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -204,7 +233,7 @@ $response = $service->transferJobs->patch($jobName, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -212,20 +241,21 @@ $response = $service->transferJobs->patch($jobName, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storagetransfer service.
 $service = new Google_Service_Storagetransfer($client);
 
-// * The name of the operation resource to be cancelled.
-$name = '';
+// The name of the operation resource to be cancelled.
+$name = '{MY-NAME}'; // TODO: Update placeholder value(s).
 
-$response = $service->transferOperations->cancel($name);
-
+$service->transferOperations->cancel($name);
 <?php
 /*
  * BEFORE RUNNING:
@@ -236,7 +266,7 @@ $response = $service->transferOperations->cancel($name);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -244,20 +274,21 @@ $response = $service->transferOperations->cancel($name);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storagetransfer service.
 $service = new Google_Service_Storagetransfer($client);
 
-// * The name of the operation resource to be deleted.
-$name = '';
+// The name of the operation resource to be deleted.
+$name = '{MY-NAME}'; // TODO: Update placeholder value(s).
 
-$response = $service->transferOperations->delete($name);
-
+$service->transferOperations->delete($name);
 <?php
 /*
  * BEFORE RUNNING:
@@ -268,7 +299,7 @@ $response = $service->transferOperations->delete($name);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -276,20 +307,24 @@ $response = $service->transferOperations->delete($name);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storagetransfer service.
 $service = new Google_Service_Storagetransfer($client);
 
-// * The name of the operation resource.
-$name = '';
+// The name of the operation resource.
+$name = '{MY-NAME}'; // TODO: Update placeholder value(s).
 
 $response = $service->transferOperations->get($name);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -300,7 +335,7 @@ $response = $service->transferOperations->get($name);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -308,24 +343,31 @@ $response = $service->transferOperations->get($name);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storagetransfer service.
 $service = new Google_Service_Storagetransfer($client);
 
-// * The value `transferOperations`.
-$name = '';
+// The value `transferOperations`.
+$name = '{MY-NAME}'; // TODO: Update placeholder value(s).
 
-$response = $service->transferOperations->listTransferOperations($name);
+$optParams = array();
+do {
+  $response = $service->transferOperations->listTransferOperations($name, $optParams);
 
-foreach ($response['operations'] as $element) {
-  // TODO: Add code here to process the element.
-}
+  foreach ($response['operations'] as $operation) {
+    // TODO: Use operation
+    echo '<pre>', var_export($operation, true), '</pre>', "\n";
+  }
 
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -336,7 +378,7 @@ foreach ($response['operations'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -344,22 +386,24 @@ foreach ($response['operations'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storagetransfer service.
 $service = new Google_Service_Storagetransfer($client);
 
-// * The name of the transfer operation. Required.
-$name = '';
+// The name of the transfer operation. Required.
+$name = '{MY-NAME}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Storagetransfer_PauseTransferOperationRequest($client);
 
-$response = $service->transferOperations->pause($name, $postBody);
-
+$service->transferOperations->pause($name, $postBody);
 <?php
 /*
  * BEFORE RUNNING:
@@ -370,7 +414,7 @@ $response = $service->transferOperations->pause($name, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -378,19 +422,21 @@ $response = $service->transferOperations->pause($name, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Storagetransfer service.
 $service = new Google_Service_Storagetransfer($client);
 
-// * The name of the transfer operation. Required.
-$name = '';
+// The name of the transfer operation. Required.
+$name = '{MY-NAME}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_Storagetransfer_ResumeTransferOperationRequest($client);
 
-$response = $service->transferOperations->resume($name, $postBody);
-
+$service->transferOperations->resume($name, $postBody);

@@ -66,7 +66,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
    * Returns the Ruby filename which holds the gRPC service definition.
    */
   public String getGrpcFilename(Interface service) {
-    return getBasename(service.getFile()) + "_services";
+    return getBasename(service.getFile()) + "_services_pb";
   }
 
   public String getBasename(ProtoFile protoFile) {

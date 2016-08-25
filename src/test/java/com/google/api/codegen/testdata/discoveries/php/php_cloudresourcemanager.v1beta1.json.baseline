@@ -9,7 +9,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -17,20 +17,24 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new CloudResourceManager service.
 $service = new Google_Service_CloudResourceManager($client);
 
-// * The id of the Organization resource to fetch.
-$organizationId = '';
+// The id of the Organization resource to fetch.
+$organizationId = '{MY-ORGANIZATION-ID}'; // TODO: Update placeholder value(s).
 
 $response = $service->organizations->get($organizationId);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -41,7 +45,7 @@ $response = $service->organizations->get($organizationId);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -49,24 +53,29 @@ $response = $service->organizations->get($organizationId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new CloudResourceManager service.
 $service = new Google_Service_CloudResourceManager($client);
 
-// * REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
-//   a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
-//   in this value is resource specific and is specified in the `getIamPolicy` documentation.
-$resource = '';
+// REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
+// path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
+// this value is resource specific and is specified in the `getIamPolicy` documentation.
+$resource = '{MY-RESOURCE}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_CloudResourceManager_GetIamPolicyRequest($client);
 
 $response = $service->organizations->getIamPolicy($resource, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -77,7 +86,7 @@ $response = $service->organizations->getIamPolicy($resource, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -85,22 +94,29 @@ $response = $service->organizations->getIamPolicy($resource, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new CloudResourceManager service.
 $service = new Google_Service_CloudResourceManager($client);
 
 
-$response = $service->organizations->listOrganizations();
+$optParams = array();
+do {
+  $response = $service->organizations->listOrganizations($optParams);
 
-foreach ($response['organizations'] as $element) {
-  // TODO: Add code here to process the element.
-}
+  foreach ($response['organizations'] as $organization) {
+    // TODO: Use organization
+    echo '<pre>', var_export($organization, true), '</pre>', "\n";
+  }
 
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -111,7 +127,7 @@ foreach ($response['organizations'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -119,24 +135,29 @@ foreach ($response['organizations'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new CloudResourceManager service.
 $service = new Google_Service_CloudResourceManager($client);
 
-// * REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
-//   a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
-//   in this value is resource specific and is specified in the `setIamPolicy` documentation.
-$resource = '';
+// REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
+// path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
+// this value is resource specific and is specified in the `setIamPolicy` documentation.
+$resource = '{MY-RESOURCE}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_CloudResourceManager_SetIamPolicyRequest($client);
 
 $response = $service->organizations->setIamPolicy($resource, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -147,7 +168,7 @@ $response = $service->organizations->setIamPolicy($resource, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -155,25 +176,30 @@ $response = $service->organizations->setIamPolicy($resource, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new CloudResourceManager service.
 $service = new Google_Service_CloudResourceManager($client);
 
-// * REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
-//   specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the
-//   path specified in this value is resource specific and is specified in the `testIamPermissions`
-//   documentation.
-$resource = '';
+// REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
+// specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path
+// specified in this value is resource specific and is specified in the `testIamPermissions`
+// documentation.
+$resource = '{MY-RESOURCE}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_CloudResourceManager_TestIamPermissionsRequest($client);
 
 $response = $service->organizations->testIamPermissions($resource, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -184,7 +210,7 @@ $response = $service->organizations->testIamPermissions($resource, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -192,23 +218,28 @@ $response = $service->organizations->testIamPermissions($resource, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new CloudResourceManager service.
 $service = new Google_Service_CloudResourceManager($client);
 
-// * An immutable id for the Organization that is assigned on creation. This should be omitted when
-//   creating a new Organization. This field is read-only.
-$organizationId = '';
+// An immutable id for the Organization that is assigned on creation. This should be omitted when
+// creating a new Organization. This field is read-only.
+$organizationId = '{MY-ORGANIZATION-ID}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_CloudResourceManager_Organization($client);
 
 $response = $service->organizations->update($organizationId, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -219,7 +250,7 @@ $response = $service->organizations->update($organizationId, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -227,20 +258,25 @@ $response = $service->organizations->update($organizationId, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new CloudResourceManager service.
 $service = new Google_Service_CloudResourceManager($client);
 
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_CloudResourceManager_Project($client);
 
 $response = $service->projects->create($postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -251,7 +287,7 @@ $response = $service->projects->create($postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -259,20 +295,21 @@ $response = $service->projects->create($postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new CloudResourceManager service.
 $service = new Google_Service_CloudResourceManager($client);
 
-// * The Project ID (for example, `foo-bar-123`). Required.
-$projectId = '';
+// The Project ID (for example, `foo-bar-123`). Required.
+$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
 
-$response = $service->projects->delete($projectId);
-
+$service->projects->delete($projectId);
 <?php
 /*
  * BEFORE RUNNING:
@@ -283,7 +320,7 @@ $response = $service->projects->delete($projectId);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -291,20 +328,24 @@ $response = $service->projects->delete($projectId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new CloudResourceManager service.
 $service = new Google_Service_CloudResourceManager($client);
 
-// * The Project ID (for example, `my-project-123`). Required.
-$projectId = '';
+// The Project ID (for example, `my-project-123`). Required.
+$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
 
 $response = $service->projects->get($projectId);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -315,7 +356,7 @@ $response = $service->projects->get($projectId);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -323,24 +364,29 @@ $response = $service->projects->get($projectId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new CloudResourceManager service.
 $service = new Google_Service_CloudResourceManager($client);
 
-// * REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
-//   a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
-//   in this value is resource specific and is specified in the `getIamPolicy` documentation.
-$resource = '';
+// REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
+// path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
+// this value is resource specific and is specified in the `getIamPolicy` documentation.
+$resource = '{MY-RESOURCE}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_CloudResourceManager_GetIamPolicyRequest($client);
 
 $response = $service->projects->getIamPolicy($resource, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -351,7 +397,7 @@ $response = $service->projects->getIamPolicy($resource, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -359,22 +405,29 @@ $response = $service->projects->getIamPolicy($resource, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new CloudResourceManager service.
 $service = new Google_Service_CloudResourceManager($client);
 
 
-$response = $service->projects->listProjects();
+$optParams = array();
+do {
+  $response = $service->projects->listProjects($optParams);
 
-foreach ($response['projects'] as $element) {
-  // TODO: Add code here to process the element.
-}
+  foreach ($response['projects'] as $project) {
+    // TODO: Use project
+    echo '<pre>', var_export($project, true), '</pre>', "\n";
+  }
 
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
 <?php
 /*
  * BEFORE RUNNING:
@@ -385,7 +438,7 @@ foreach ($response['projects'] as $element) {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -393,24 +446,29 @@ foreach ($response['projects'] as $element) {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new CloudResourceManager service.
 $service = new Google_Service_CloudResourceManager($client);
 
-// * REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
-//   a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
-//   in this value is resource specific and is specified in the `setIamPolicy` documentation.
-$resource = '';
+// REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
+// path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
+// this value is resource specific and is specified in the `setIamPolicy` documentation.
+$resource = '{MY-RESOURCE}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_CloudResourceManager_SetIamPolicyRequest($client);
 
 $response = $service->projects->setIamPolicy($resource, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -421,7 +479,7 @@ $response = $service->projects->setIamPolicy($resource, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -429,25 +487,30 @@ $response = $service->projects->setIamPolicy($resource, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new CloudResourceManager service.
 $service = new Google_Service_CloudResourceManager($client);
 
-// * REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
-//   specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the
-//   path specified in this value is resource specific and is specified in the `testIamPermissions`
-//   documentation.
-$resource = '';
+// REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
+// specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path
+// specified in this value is resource specific and is specified in the `testIamPermissions`
+// documentation.
+$resource = '{MY-RESOURCE}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_CloudResourceManager_TestIamPermissionsRequest($client);
 
 $response = $service->projects->testIamPermissions($resource, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
  * BEFORE RUNNING:
@@ -458,7 +521,7 @@ $response = $service->projects->testIamPermissions($resource, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -466,22 +529,24 @@ $response = $service->projects->testIamPermissions($resource, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new CloudResourceManager service.
 $service = new Google_Service_CloudResourceManager($client);
 
-// * The project ID (for example, `foo-bar-123`). Required.
-$projectId = '';
+// The project ID (for example, `foo-bar-123`). Required.
+$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_CloudResourceManager_UndeleteProjectRequest($client);
 
-$response = $service->projects->undelete($projectId, $postBody);
-
+$service->projects->undelete($projectId, $postBody);
 <?php
 /*
  * BEFORE RUNNING:
@@ -492,7 +557,7 @@ $response = $service->projects->undelete($projectId, $postBody);
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -500,19 +565,24 @@ $response = $service->projects->undelete($projectId, $postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Create a new client.
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
+$client->setApplicationName('Google Cloud Platform Sample');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new CloudResourceManager service.
 $service = new Google_Service_CloudResourceManager($client);
 
-// * The project ID (for example, `my-project-123`). Required.
-$projectId = '';
+// The project ID (for example, `my-project-123`). Required.
+$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
 
+// TODO: Assign values to the desired properties.
 $postBody = new Google_Service_CloudResourceManager_Project($client);
 
 $response = $service->projects->update($projectId, $postBody);
 
+// TODO: Use $response
+echo '<pre>', var_export($response, true), '</pre>', "\n";

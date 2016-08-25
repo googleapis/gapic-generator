@@ -7,15 +7,20 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var datastore = google.datastore('v1beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -24,23 +29,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'allocateIds' method:
+    // Identifies the dataset.
+    datasetId: "{MY-DATASET-ID}", // TODO: Update placeholder value(s).
 
-    // * Identifies the dataset.
-    datasetId: "",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  datastore.datasets.allocateIds(request, function(err, result) {
+  datastore.datasets.allocateIds(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -51,15 +57,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var datastore = google.datastore('v1beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -68,23 +79,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'beginTransaction' method:
+    // Identifies the dataset.
+    datasetId: "{MY-DATASET-ID}", // TODO: Update placeholder value(s).
 
-    // * Identifies the dataset.
-    datasetId: "",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  datastore.datasets.beginTransaction(request, function(err, result) {
+  datastore.datasets.beginTransaction(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -95,15 +107,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var datastore = google.datastore('v1beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -112,23 +129,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'commit' method:
+    // Identifies the dataset.
+    datasetId: "{MY-DATASET-ID}", // TODO: Update placeholder value(s).
 
-    // * Identifies the dataset.
-    datasetId: "",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  datastore.datasets.commit(request, function(err, result) {
+  datastore.datasets.commit(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -139,15 +157,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var datastore = google.datastore('v1beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -156,23 +179,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'lookup' method:
+    // Identifies the dataset.
+    datasetId: "{MY-DATASET-ID}", // TODO: Update placeholder value(s).
 
-    // * Identifies the dataset.
-    datasetId: "",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  datastore.datasets.lookup(request, function(err, result) {
+  datastore.datasets.lookup(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -183,15 +207,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var datastore = google.datastore('v1beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -200,23 +229,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'rollback' method:
+    // Identifies the dataset.
+    datasetId: "{MY-DATASET-ID}", // TODO: Update placeholder value(s).
 
-    // * Identifies the dataset.
-    datasetId: "",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  datastore.datasets.rollback(request, function(err, result) {
+  datastore.datasets.rollback(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -227,15 +257,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var datastore = google.datastore('v1beta2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -244,22 +279,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'runQuery' method:
+    // Identifies the dataset.
+    datasetId: "{MY-DATASET-ID}", // TODO: Update placeholder value(s).
 
-    // * Identifies the dataset.
-    datasetId: "",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  datastore.datasets.runQuery(request, function(err, result) {
+  datastore.datasets.runQuery(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });

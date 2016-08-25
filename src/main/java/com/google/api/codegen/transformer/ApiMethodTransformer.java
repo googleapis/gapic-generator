@@ -19,17 +19,33 @@ import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.viewmodel.*;
+import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.viewmodel.ApiMethodDocView;
+import com.google.api.codegen.viewmodel.ApiMethodType;
+import com.google.api.codegen.viewmodel.CallableMethodDetailView;
+import com.google.api.codegen.viewmodel.DynamicLangApiMethodView;
+import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
+import com.google.api.codegen.viewmodel.InitCodeView;
+import com.google.api.codegen.viewmodel.ListMethodDetailView;
+import com.google.api.codegen.viewmodel.MapParamDocView;
+import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
+import com.google.api.codegen.viewmodel.ParamDocView;
+import com.google.api.codegen.viewmodel.PathTemplateCheckView;
+import com.google.api.codegen.viewmodel.RequestObjectMethodDetailView;
+import com.google.api.codegen.viewmodel.RequestObjectParamView;
+import com.google.api.codegen.viewmodel.SimpleParamDocView;
+import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView.Builder;
+import com.google.api.codegen.viewmodel.UnpagedListCallableMethodDetailView;
 import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /** ApiMethodTransformer generates view objects from method definitions. */
 public class ApiMethodTransformer {
@@ -170,7 +186,8 @@ public class ApiMethodTransformer {
       ImmutableList<Field> fields,
       StaticLangApiMethodView.Builder methodViewBuilder) {
     SurfaceNamer namer = context.getNamer();
-    methodViewBuilder.initCode(initCodeTransformer.generateInitCode(context, fields));
+    methodViewBuilder.initCode(
+        initCodeTransformer.generateInitCode(context, fields, new SymbolTable(), null));
     methodViewBuilder.doc(
         ApiMethodDocView.newBuilder()
             .mainDocLines(namer.getDocLines(context.getMethod()))
@@ -201,7 +218,8 @@ public class ApiMethodTransformer {
                     getRequestObjectParamDoc(context, context.getMethod().getInputType())))
             .throwsDocLines(namer.getThrowsDocLines())
             .build());
-    methodViewBuilder.initCode(initCodeTransformer.generateRequestObjectInitCode(context));
+    methodViewBuilder.initCode(
+        initCodeTransformer.generateRequestObjectInitCode(context, new SymbolTable(), null));
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
@@ -226,7 +244,8 @@ public class ApiMethodTransformer {
             .paramDocs(new ArrayList<ParamDocView>())
             .throwsDocLines(new ArrayList<String>())
             .build());
-    methodViewBuilder.initCode(initCodeTransformer.generateRequestObjectInitCode(context));
+    methodViewBuilder.initCode(
+        initCodeTransformer.generateRequestObjectInitCode(context, new SymbolTable(), null));
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
@@ -298,24 +317,13 @@ public class ApiMethodTransformer {
     }
     apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
-    InitCodeView initCode =
+    apiMethod.initCode(
         initCodeTransformer.generateInitCode(
-            context, context.getMethodConfig().getRequiredFields());
-    apiMethod.initCode(initCode);
+            context, context.getMethodConfig().getRequiredFields(), new SymbolTable(), null));
 
     apiMethod.name(namer.getApiMethodName(context.getMethod()));
-    apiMethod.requestTypeName(
-        context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getInputType()));
     apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
-    apiMethod.key(namer.getMethodKey(context.getMethod()));
-    apiMethod.methodParams(generateOptionalArrayMethodParams(context));
 
-    List<RequestObjectParamView> requiredParams =
-        generateRequestObjectParams(context, context.getMethodConfig().getRequiredFields());
-    apiMethod.requiredRequestObjectParams(requiredParams);
-    List<RequestObjectParamView> optionalParams =
-        generateRequestObjectParams(context, context.getMethodConfig().getOptionalFields());
-    apiMethod.optionalRequestObjectParams(optionalParams);
     return apiMethod.build();
   }
 
@@ -332,7 +340,7 @@ public class ApiMethodTransformer {
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
     apiMethod.initCode(
         initCodeTransformer.generateInitCode(
-            context, context.getMethodConfig().getRequiredFields()));
+            context, context.getMethodConfig().getRequiredFields(), new SymbolTable(), null));
 
     apiMethod.doc(generateOptionalArrayMethodDoc(context));
 
@@ -342,37 +350,15 @@ public class ApiMethodTransformer {
     apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
     apiMethod.key(namer.getMethodKey(context.getMethod()));
     apiMethod.grpcMethodName(namer.getGrpcMethodName(context.getMethod()));
+
     apiMethod.methodParams(generateOptionalArrayMethodParams(context));
+
     apiMethod.requiredRequestObjectParams(
         generateRequestObjectParams(context, context.getMethodConfig().getRequiredFields()));
     apiMethod.optionalRequestObjectParams(
         generateRequestObjectParams(context, context.getMethodConfig().getOptionalFields()));
+
     return apiMethod.build();
-  }
-
-  private List<String> generateSampleImports(
-      Interface anInterface, Iterable<Field> requiredFields) {
-    List<String> imports = new ArrayList<>();
-    imports.add(anInterface.getFullName());
-    for (Field field : requiredFields) {
-      imports.add(field.getFullName());
-    }
-    return imports;
-  }
-
-  private List<String> generateSampleTypeAliasingLines(
-      List<RequestObjectParamView> requiredParams,
-      String apiClassName,
-      String qualifiedApiClassName) {
-    List<String> lines = new ArrayList<>();
-    for (RequestObjectParamView param : requiredParams) {
-      if (param.isMessage() && !param.isArray() && !param.isMap()) {
-        lines.add(String.format("%s = %s", param.typeName(), param.qualifiedTypeName()));
-      }
-    }
-    lines.add(String.format("%s = %s", apiClassName, qualifiedApiClassName));
-    Collections.sort(lines);
-    return lines;
   }
 
   private ApiMethodDocView generateOptionalArrayMethodDoc(MethodTransformerContext context) {
@@ -441,14 +427,10 @@ public class ApiMethodTransformer {
 
     if (namer.shouldImportRequestObjectParamType(field)) {
       param.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getType()));
-      param.qualifiedTypeName(context.getTypeTable().getFullNameForElementType(field.getType()));
     } else {
       param.typeName(
           namer.getNotImplementedString(
               "ApiMethodTransformer.generateRequestObjectParam - typeName"));
-      param.qualifiedTypeName(
-          namer.getNotImplementedString(
-              "ApiMethodTransformer.generateRequestObjectParam - qualifiedTypeName"));
     }
 
     if (namer.shouldImportRequestObjectParamElementType(field)) {
@@ -463,7 +445,6 @@ public class ApiMethodTransformer {
     param.setCallName(namer.getFieldSetFunctionName(field));
     param.isMap(field.getType().isMap());
     param.isArray(!field.getType().isMap() && field.getType().isRepeated());
-    param.isMessage(field.getType().isMessage());
     return param.build();
   }
 

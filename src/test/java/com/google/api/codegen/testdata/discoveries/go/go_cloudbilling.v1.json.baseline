@@ -9,11 +9,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -22,25 +25,32 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := cloudbilling.New(hc)
+
+  s, err := cloudbilling.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // The resource name of the billing account to retrieve. For example,
   // `billingAccounts/012345-567890-ABCDEF`.
-  name := "billingAccounts/{MY-BILLINGACCOUNT}" // TODO: Update placeholder value.
+  name := "billingAccounts/{MY-BILLINGACCOUNT}" // TODO: Update placeholder value(s).
 
-  resp, err := c.BillingAccounts.Get(name).Context(ctx).Do()
+  resp, err := s.BillingAccounts.Get(name).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -52,11 +62,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -65,27 +78,30 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := cloudbilling.New(hc)
+
+  s, err := cloudbilling.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
-
-
-
-  call := c.BillingAccounts.List()
+  call := s.BillingAccounts.List()
   if err := call.Pages(ctx, func(page *cloudbilling.ListBillingAccountsResponse) error {
-    for _, v := range page.BillingAccounts {
-      // TODO: Use v.
-      _ = v
+    for _, billingAccount := range page.BillingAccounts {
+      // TODO: Use billingAccount
+      fmt.Printf("%#v\n", billingAccount)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -98,11 +114,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -111,29 +130,34 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := cloudbilling.New(hc)
+
+  s, err := cloudbilling.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // The resource name of the billing account associated with the projects that you want to list. For
   // example, `billingAccounts/012345-567890-ABCDEF`.
-  name := "billingAccounts/{MY-BILLINGACCOUNT}" // TODO: Update placeholder value.
+  name := "billingAccounts/{MY-BILLINGACCOUNT}" // TODO: Update placeholder value(s).
 
-
-  call := c.BillingAccounts.Projects.List(name)
+  call := s.BillingAccounts.Projects.List(name)
   if err := call.Pages(ctx, func(page *cloudbilling.ListProjectBillingInfoResponse) error {
-    for _, v := range page.ProjectBillingInfo {
-      // TODO: Use v.
-      _ = v
+    for _, projectBillingInfo := range page.ProjectBillingInfo {
+      // TODO: Use projectBillingInfo
+      fmt.Printf("%#v\n", projectBillingInfo)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -146,11 +170,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -159,25 +186,32 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := cloudbilling.New(hc)
+
+  s, err := cloudbilling.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // The resource name of the project for which billing information is retrieved. For example,
   // `projects/tokyo-rain-123`.
-  name := "projects/{MY-PROJECT}" // TODO: Update placeholder value.
+  name := "projects/{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Projects.GetBillingInfo(name).Context(ctx).Do()
+  resp, err := s.Projects.GetBillingInfo(name).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -189,11 +223,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -202,25 +239,34 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := cloudbilling.New(hc)
+
+  s, err := cloudbilling.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // The resource name of the project associated with the billing information that you want to update.
   // For example, `projects/tokyo-rain-123`.
-  name := "projects/{MY-PROJECT}" // TODO: Update placeholder value.
+  name := "projects/{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Projects.UpdateBillingInfo(name, &cloudbilling.ProjectBillingInfo{
-                                              // TODO: Fill required fields.
-                                            }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  projectBillingInfo := &cloudbilling.ProjectBillingInfo{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Projects.UpdateBillingInfo(name, &projectBillingInfo).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }

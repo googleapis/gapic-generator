@@ -7,30 +7,37 @@
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/replicapoolupdater_v1beta1'
+require 'json'
 
 service = Google::Apis::ReplicapoolupdaterV1beta1::ReplicapoolupdaterService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'cancel_rolling_update' method:
+# The Google Developers Console project name.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The Google Developers Console project name.
-project = ''
+# The name of the zone in which the update's target resides.
+zone = '{MY-ZONE}' # TODO: Change placeholder value(s).
 
-# * The name of the zone in which the update's target resides.
-zone = ''
-
-# * The name of the update.
-rolling_update = ''
+# The name of the update.
+rolling_update = '{MY-ROLLING-UPDATE}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.cancel_rolling_update(project, zone, rolling_update)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Compute Engine Instance Group Updater API
@@ -39,30 +46,37 @@ response = service.cancel_rolling_update(project, zone, rolling_update)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/replicapoolupdater_v1beta1'
+require 'json'
 
 service = Google::Apis::ReplicapoolupdaterV1beta1::ReplicapoolupdaterService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_rolling_update' method:
+# The Google Developers Console project name.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The Google Developers Console project name.
-project = ''
+# The name of the zone in which the update's target resides.
+zone = '{MY-ZONE}' # TODO: Change placeholder value(s).
 
-# * The name of the zone in which the update's target resides.
-zone = ''
-
-# * The name of the update.
-rolling_update = ''
+# The name of the update.
+rolling_update = '{MY-ROLLING-UPDATE}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_rolling_update(project, zone, rolling_update)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Compute Engine Instance Group Updater API
@@ -71,30 +85,37 @@ response = service.get_rolling_update(project, zone, rolling_update)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/replicapoolupdater_v1beta1'
+require 'json'
 
 service = Google::Apis::ReplicapoolupdaterV1beta1::ReplicapoolupdaterService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert_rolling_update' method:
+# The Google Developers Console project name.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The Google Developers Console project name.
-project = ''
+# The name of the zone in which the update's target resides.
+zone = '{MY-ZONE}' # TODO: Change placeholder value(s).
 
-# * The name of the zone in which the update's target resides.
-zone = ''
-
-rolling_update_object = Google::Apis::ReplicapoolupdaterV1beta1::RollingUpdate.new
-
+# TODO: Assign values to the desired members.
+rolling_update_body = Google::Apis::ReplicapoolupdaterV1beta1::RollingUpdate.new
 
 # Perform the call
-response = service.insert_rolling_update(project, zone, rolling_update_object)
+response = service.insert_rolling_update(project, zone, rolling_update_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Compute Engine Instance Group Updater API
@@ -103,32 +124,38 @@ response = service.insert_rolling_update(project, zone, rolling_update_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/replicapoolupdater_v1beta1'
+require 'json'
 
 service = Google::Apis::ReplicapoolupdaterV1beta1::ReplicapoolupdaterService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_rolling_updates' method:
+# The Google Developers Console project name.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The Google Developers Console project name.
-project = ''
-
-# * The name of the zone in which the update's target resides.
-zone = ''
+# The name of the zone in which the update's target resides.
+zone = '{MY-ZONE}' # TODO: Change placeholder value(s).
 
 # Perform the call
-result_list = service.fetch_all(items: :items) { |token|
+items = service.fetch_all(items: :items) do |token|
   service.list_rolling_updates(project, zone, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+items.each do |rolling_update|
+  # TODO: Use rolling_update
+  puts JSON.pretty_generate(rolling_update)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Compute Engine Instance Group Updater API
@@ -137,35 +164,41 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/replicapoolupdater_v1beta1'
+require 'json'
 
 service = Google::Apis::ReplicapoolupdaterV1beta1::ReplicapoolupdaterService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_instance_updates' method:
+# The Google Developers Console project name.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The Google Developers Console project name.
-project = ''
+# The name of the zone in which the update's target resides.
+zone = '{MY-ZONE}' # TODO: Change placeholder value(s).
 
-# * The name of the zone in which the update's target resides.
-zone = ''
-
-# * The name of the update.
-rolling_update = ''
+# The name of the update.
+rolling_update = '{MY-ROLLING-UPDATE}' # TODO: Change placeholder value(s).
 
 # Perform the call
-result_list = service.fetch_all(items: :items) { |token|
+items = service.fetch_all(items: :items) do |token|
   service.list_instance_updates(project, zone, rolling_update, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+items.each do |instance_update|
+  # TODO: Use instance_update
+  puts JSON.pretty_generate(instance_update)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Compute Engine Instance Group Updater API
@@ -174,30 +207,37 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/replicapoolupdater_v1beta1'
+require 'json'
 
 service = Google::Apis::ReplicapoolupdaterV1beta1::ReplicapoolupdaterService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'pause_rolling_update' method:
+# The Google Developers Console project name.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The Google Developers Console project name.
-project = ''
+# The name of the zone in which the update's target resides.
+zone = '{MY-ZONE}' # TODO: Change placeholder value(s).
 
-# * The name of the zone in which the update's target resides.
-zone = ''
-
-# * The name of the update.
-rolling_update = ''
+# The name of the update.
+rolling_update = '{MY-ROLLING-UPDATE}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.pause_rolling_update(project, zone, rolling_update)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Compute Engine Instance Group Updater API
@@ -206,30 +246,37 @@ response = service.pause_rolling_update(project, zone, rolling_update)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/replicapoolupdater_v1beta1'
+require 'json'
 
 service = Google::Apis::ReplicapoolupdaterV1beta1::ReplicapoolupdaterService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'resume_rolling_update' method:
+# The Google Developers Console project name.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The Google Developers Console project name.
-project = ''
+# The name of the zone in which the update's target resides.
+zone = '{MY-ZONE}' # TODO: Change placeholder value(s).
 
-# * The name of the zone in which the update's target resides.
-zone = ''
-
-# * The name of the update.
-rolling_update = ''
+# The name of the update.
+rolling_update = '{MY-ROLLING-UPDATE}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.resume_rolling_update(project, zone, rolling_update)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Compute Engine Instance Group Updater API
@@ -238,30 +285,37 @@ response = service.resume_rolling_update(project, zone, rolling_update)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/replicapoolupdater_v1beta1'
+require 'json'
 
 service = Google::Apis::ReplicapoolupdaterV1beta1::ReplicapoolupdaterService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'rollback_rolling_update' method:
+# The Google Developers Console project name.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * The Google Developers Console project name.
-project = ''
+# The name of the zone in which the update's target resides.
+zone = '{MY-ZONE}' # TODO: Change placeholder value(s).
 
-# * The name of the zone in which the update's target resides.
-zone = ''
-
-# * The name of the update.
-rolling_update = ''
+# The name of the update.
+rolling_update = '{MY-ROLLING-UPDATE}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.rollback_rolling_update(project, zone, rolling_update)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Compute Engine Instance Group Updater API
@@ -270,30 +324,37 @@ response = service.rollback_rolling_update(project, zone, rolling_update)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/replicapoolupdater_v1beta1'
+require 'json'
 
 service = Google::Apis::ReplicapoolupdaterV1beta1::ReplicapoolupdaterService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_zone_operation' method:
+# Name of the project scoping this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * Name of the project scoping this request.
-project = ''
+# Name of the zone scoping this request.
+zone = '{MY-ZONE}' # TODO: Change placeholder value(s).
 
-# * Name of the zone scoping this request.
-zone = ''
-
-# * Name of the operation resource to return.
-operation = ''
+# Name of the operation resource to return.
+operation = '{MY-OPERATION}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_zone_operation(project, zone, operation)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Compute Engine Instance Group Updater API
@@ -302,29 +363,35 @@ response = service.get_zone_operation(project, zone, operation)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/replicapoolupdater_v1beta1'
+require 'json'
 
 service = Google::Apis::ReplicapoolupdaterV1beta1::ReplicapoolupdaterService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_zone_operations' method:
+# Name of the project scoping this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * Name of the project scoping this request.
-project = ''
-
-# * Name of the zone scoping this request.
-zone = ''
+# Name of the zone scoping this request.
+zone = '{MY-ZONE}' # TODO: Change placeholder value(s).
 
 # Perform the call
-result_list = service.fetch_all(items: :items) { |token|
+items = service.fetch_all(items: :items) do |token|
   service.list_zone_operations(project, zone, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+items.each do |operation|
+  # TODO: Use operation
+  puts JSON.pretty_generate(operation)
+end

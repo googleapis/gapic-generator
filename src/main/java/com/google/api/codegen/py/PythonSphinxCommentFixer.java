@@ -15,27 +15,21 @@
 package com.google.api.codegen.py;
 
 import com.google.api.codegen.CommentPatterns;
-
 import java.util.regex.Matcher;
 
-/**
- * Utility class for formatting python comments to follow Sphinx style.
- */
+/** Utility class for formatting python comments to follow Sphinx style. */
 public class PythonSphinxCommentFixer {
 
-  /**
-   * Returns a Sphinx-formatted comment string.
-   */
+  /** Returns a Sphinx-formatted comment string. */
   public static String sphinxify(String comment) {
     comment = CommentPatterns.BACK_QUOTE_PATTERN.matcher(comment).replaceAll("``");
+    comment = comment.replace("\"", "\\\"");
     comment = sphinxifyProtoMarkdownLinks(comment);
     comment = sphinxifyAbsoluteMarkdownLinks(comment);
     return sphinxifyCloudMarkdownLinks(comment);
   }
 
-  /**
-   * Returns a string with all proto markdown links formatted to Sphinx style.
-   */
+  /** Returns a string with all proto markdown links formatted to Sphinx style. */
   private static String sphinxifyProtoMarkdownLinks(String comment) {
     StringBuffer sb = new StringBuffer();
     Matcher m = CommentPatterns.PROTO_LINK_PATTERN.matcher(comment);
@@ -49,9 +43,7 @@ public class PythonSphinxCommentFixer {
     return sb.toString();
   }
 
-  /**
-   * Returns a string with all absolute markdown links formatted to Sphinx style.
-   */
+  /** Returns a string with all absolute markdown links formatted to Sphinx style. */
   private static String sphinxifyAbsoluteMarkdownLinks(String comment) {
     StringBuffer sb = new StringBuffer();
     Matcher m = CommentPatterns.ABSOLUTE_LINK_PATTERN.matcher(comment);
@@ -65,9 +57,7 @@ public class PythonSphinxCommentFixer {
     return sb.toString();
   }
 
-  /**
-   * Returns a string with all cloud markdown links formatted to Sphinx style.
-   */
+  /** Returns a string with all cloud markdown links formatted to Sphinx style. */
   private static String sphinxifyCloudMarkdownLinks(String comment) {
     StringBuffer sb = new StringBuffer();
     Matcher m = CommentPatterns.CLOUD_LINK_PATTERN.matcher(comment);

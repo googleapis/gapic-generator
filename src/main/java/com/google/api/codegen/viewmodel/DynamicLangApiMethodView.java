@@ -14,11 +14,7 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Joiner;
-
-import java.util.List;
 
 @AutoValue
 public abstract class DynamicLangApiMethodView implements ApiMethodView {
@@ -32,16 +28,6 @@ public abstract class DynamicLangApiMethodView implements ApiMethodView {
   public abstract InitCodeView initCode();
 
   public abstract String name();
-
-  public abstract String requestTypeName();
-
-  public abstract String key();
-
-  public abstract List<DynamicLangDefaultableParamView> methodParams();
-
-  public abstract List<RequestObjectParamView> requiredRequestObjectParams();
-
-  public abstract List<RequestObjectParamView> optionalRequestObjectParams();
 
   public abstract boolean hasReturnValue();
 
@@ -60,16 +46,6 @@ public abstract class DynamicLangApiMethodView implements ApiMethodView {
     public abstract Builder initCode(InitCodeView val);
 
     public abstract Builder name(String val);
-
-    public abstract Builder requestTypeName(String val);
-
-    public abstract Builder key(String val);
-
-    public abstract Builder methodParams(List<DynamicLangDefaultableParamView> val);
-
-    public abstract Builder requiredRequestObjectParams(List<RequestObjectParamView> val);
-
-    public abstract Builder optionalRequestObjectParams(List<RequestObjectParamView> val);
 
     public abstract Builder hasReturnValue(boolean val);
 

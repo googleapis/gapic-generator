@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 

@@ -21,6 +21,7 @@ import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
+
 /**
  * A RubyProvider provides general Ruby code generation logic.
  */

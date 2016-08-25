@@ -25,7 +25,11 @@ import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.api.codegen.util.testing.JavaValueProducer;
+import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -42,7 +46,6 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /** A subclass of ModelToViewTransformer which translates model into API tests in Java. */
@@ -52,27 +55,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static String MOCK_SERVICE_FILE = "java/mock_service.snip";
   private static String MOCK_SERVICE_IMPL_FILE = "java/mock_service_impl.snip";
 
-  private GapicCodePathMapper pathMapper;
-
-  // TODO: Reuse this logic with InitCodeGenerator
-  // Github issue: https://github.com/googleapis/toolkit/issues/395
-  private class TestCaseNameTable {
-    private HashMap<String, Integer> nameCount;
-
-    public TestCaseNameTable() {
-      nameCount = new HashMap<>();
-    }
-
-    public String getTestName(SurfaceNamer namer, Method method) {
-      String testedMethodName = method.getSimpleName();
-      Integer count = 1;
-      if (nameCount.containsKey(testedMethodName)) {
-        count = nameCount.get(testedMethodName) + 1;
-      }
-      nameCount.put(testedMethodName, count);
-      return namer.getTestCaseName(method, count);
-    }
-  }
+  private final GapicCodePathMapper pathMapper;
+  private final TestValueGenerator valueGenerator = new TestValueGenerator(new JavaValueProducer());
 
   public JavaGapicSurfaceTestTransformer(GapicCodePathMapper javaPathMapper) {
     this.pathMapper = javaPathMapper;
@@ -117,6 +101,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("org.junit.BeforeClass");
     typeTable.saveNicknameFor("org.junit.Test");
     typeTable.saveNicknameFor("java.io.IOException");
+    typeTable.saveNicknameFor("java.util.Arrays");
     typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("java.util.ArrayList");
     typeTable.saveNicknameFor("com.google.api.gax.testing.MockServiceHelper");
@@ -172,13 +157,13 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private List<GapicSurfaceTestCaseView> createTestCaseViews(SurfaceTransformerContext context) {
     ArrayList<GapicSurfaceTestCaseView> testCaseViews = new ArrayList<>();
-    TestCaseNameTable nameTable = new TestCaseNameTable();
+    SymbolTable testNameTable = new SymbolTable();
     for (Method method : context.getNonStreamingMethods()) {
       MethodTransformerContext methodContext = context.asMethodContext(method);
       MethodConfig methodConfig = methodContext.getMethodConfig();
       if (methodConfig.isFlattening()) {
         for (List<Field> paramFields : methodConfig.getFlattening().getFlatteningGroups()) {
-          testCaseViews.add(createTestCaseView(methodContext, paramFields, nameTable));
+          testCaseViews.add(createTestCaseView(methodContext, paramFields, testNameTable));
         }
       } else {
         // TODO: Add support of non-flattening method
@@ -191,38 +176,42 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   private GapicSurfaceTestCaseView createTestCaseView(
-      MethodTransformerContext methodContext,
-      List<Field> paramFields,
-      TestCaseNameTable nameTable) {
+      MethodTransformerContext methodContext, List<Field> paramFields, SymbolTable testNameTable) {
     MethodConfig methodConfig = methodContext.getMethodConfig();
+    SurfaceNamer namer = methodContext.getNamer();
     Method method = methodContext.getMethod();
     InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
 
-    InitCodeView initCodeView = initCodeTransformer.generateInitCode(methodContext, paramFields);
-    List<GapicSurfaceTestAssertView> assertViews =
-        initCodeTransformer.generateTestAssertViews(methodContext, paramFields);
+    // This symbol table is used to produce unique variable names used in the initialization code.
+    // Shared by both request and response views.
+    SymbolTable initSymbolTable = new SymbolTable();
+
+    InitCodeView initCodeView =
+        initCodeTransformer.generateInitCode(
+            methodContext, paramFields, initSymbolTable, valueGenerator);
 
     String resourceTypeName = "";
+    String resourcesFieldGetterName = "";
     ApiMethodType type = ApiMethodType.FlattenedMethod;
     boolean isPageStreaming = methodConfig.isPageStreaming();
     if (isPageStreaming) {
+      Field resourcesField = methodConfig.getPageStreaming().getResourcesField();
       resourceTypeName =
-          methodContext
-              .getTypeTable()
-              .getAndSaveNicknameForElementType(
-                  methodConfig.getPageStreaming().getResourcesField().getType());
+          methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField.getType());
+      resourcesFieldGetterName = namer.getFieldGetFunctionName(resourcesField);
       type = ApiMethodType.PagedFlattenedMethod;
     }
 
     String requestTypeName =
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
-
     String responseTypeName =
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
 
-    SurfaceNamer namer = methodContext.getNamer();
+    List<GapicSurfaceTestAssertView> requestAssertViews =
+        initCodeTransformer.generateRequestAssertViews(methodContext, paramFields);
+
     return GapicSurfaceTestCaseView.newBuilder()
-        .name(nameTable.getTestName(namer, method))
+        .name(getTestName(testNameTable, namer, method))
         .surfaceMethodName(namer.getApiMethodName(method))
         .hasReturnValue(!ServiceMessages.s_isEmptyType(method.getOutputType()))
         .requestTypeName(requestTypeName)
@@ -230,15 +219,18 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .initCode(initCodeView)
         .methodType(type)
         .resourceTypeName(resourceTypeName)
-        .asserts(assertViews)
-        .mockResponse(createMockResponseView(methodContext))
+        .resourcesFieldGetterName(resourcesFieldGetterName)
+        .asserts(requestAssertViews)
+        .mockResponse(createMockResponseView(methodContext, initSymbolTable))
         .build();
   }
 
-  private MockGrpcResponseView createMockResponseView(MethodTransformerContext methodContext) {
+  private MockGrpcResponseView createMockResponseView(
+      MethodTransformerContext methodContext, SymbolTable symbolTable) {
     InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
     InitCodeView initCodeView =
-        initCodeTransformer.generateMockResponseObjectInitCode(methodContext);
+        initCodeTransformer.generateMockResponseObjectInitCode(
+            methodContext, symbolTable, valueGenerator);
 
     String typeName =
         methodContext
@@ -308,6 +300,12 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .name(methodContext.getNamer().getApiMethodName(method))
         .requestTypeName(requestTypeName)
         .responseTypeName(responseTypeName)
+        .isStreaming(method.getRequestStreaming() || method.getResponseStreaming())
         .build();
+  }
+
+  private String getTestName(SymbolTable symbolTable, SurfaceNamer namer, Method method) {
+    Name name = symbolTable.getNewSymbol(Name.lowerCamel(namer.getTestCaseName(method)));
+    return namer.methodName(name);
   }
 }

@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Translate API
@@ -8,7 +8,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -22,6 +22,8 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.translate.Translate;
 import com.google.api.services.translate.model.DetectionsListResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
@@ -29,10 +31,9 @@ import java.util.Collections;
 import java.util.List;
 
 
-
 public class TranslateExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -47,22 +48,23 @@ public class TranslateExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Translate translateService = new Translate.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * The text to detect
-    List<String> q = new ArrayList<String>();
+    // The text to detect
+    List<String> q = new ArrayList<String>(); // TODO: Update placeholder value(s).
 
     Translate.Detections.List request = translateService.detections().list(q);
     DetectionsListResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Translate API
@@ -71,7 +73,7 @@ public class TranslateExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -85,15 +87,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.translate.Translate;
 import com.google.api.services.translate.model.LanguagesListResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class TranslateExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -108,6 +111,7 @@ public class TranslateExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Translate translateService = new Translate.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -116,10 +120,12 @@ public class TranslateExample {
     Translate.Languages.List request = translateService.languages().list();
     LanguagesListResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Translate API
@@ -128,7 +134,7 @@ public class TranslateExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -142,6 +148,8 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.translate.Translate;
 import com.google.api.services.translate.model.TranslationsListResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
@@ -149,10 +157,9 @@ import java.util.Collections;
 import java.util.List;
 
 
-
 public class TranslateExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -167,21 +174,22 @@ public class TranslateExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Translate translateService = new Translate.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // The text to translate
+    List<String> q = new ArrayList<String>(); // TODO: Update placeholder value(s).
 
-    // * The text to translate
-    List<String> q = new ArrayList<String>();
-
-    // * The target language into which the text should be translated
-    String target = "";
+    // The target language into which the text should be translated
+    String target = "{MY-TARGET}"; // TODO: Update placeholder value(s).
 
     Translate.Translations.List request = translateService.translations().list(q, target);
     TranslationsListResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }

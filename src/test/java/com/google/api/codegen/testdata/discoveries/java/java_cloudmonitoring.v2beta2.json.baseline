@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Monitoring API
@@ -8,7 +8,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -22,15 +22,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudmonitoring.CloudMonitoring;
 import com.google.api.services.cloudmonitoring.model.MetricDescriptor;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class CloudMonitoringExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -45,25 +46,27 @@ public class CloudMonitoringExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     CloudMonitoring cloudmonitoringService = new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+    // The project id. The value can be the numeric project ID or string-based project name.
+    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-    // * The project id. The value can be the numeric project ID or string-based project name.
-    String project = "";
+    // TODO: Assign values to the desired fields.
+    MetricDescriptor requestBody = new MetricDescriptor();
 
-    MetricDescriptor content = new MetricDescriptor();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    CloudMonitoring.MetricDescriptors.Create request = cloudmonitoringService.metricDescriptors().create(project, content);
+    CloudMonitoring.MetricDescriptors.Create request = cloudmonitoringService.metricDescriptors().create(project, requestBody);
     MetricDescriptor response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Monitoring API
@@ -72,7 +75,7 @@ public class CloudMonitoringExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -86,15 +89,16 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudmonitoring.CloudMonitoring;
 import com.google.api.services.cloudmonitoring.model.DeleteMetricDescriptorResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class CloudMonitoringExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -109,25 +113,26 @@ public class CloudMonitoringExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     CloudMonitoring cloudmonitoringService = new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // The project ID to which the metric belongs.
+    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-    // * The project ID to which the metric belongs.
-    String project = "";
-
-    // * Name of the metric.
-    String metric = "";
+    // Name of the metric.
+    String metric = "{MY-METRIC}"; // TODO: Update placeholder value(s).
 
     CloudMonitoring.MetricDescriptors.Delete request = cloudmonitoringService.metricDescriptors().delete(project, metric);
     DeleteMetricDescriptorResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Monitoring API
@@ -136,7 +141,7 @@ public class CloudMonitoringExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -151,15 +156,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudmonitoring.CloudMonitoring;
 import com.google.api.services.cloudmonitoring.model.ListMetricDescriptorsResponse;
 import com.google.api.services.cloudmonitoring.model.MetricDescriptor;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class CloudMonitoringExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -174,16 +180,18 @@ public class CloudMonitoringExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     CloudMonitoring cloudmonitoringService = new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * The project id. The value can be the numeric project ID or string-based project name.
-    String project = "";
+    // The project id. The value can be the numeric project ID or string-based project name.
+    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
     CloudMonitoring.MetricDescriptors.List request = cloudmonitoringService.metricDescriptors().list(project);
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     ListMetricDescriptorsResponse response;
     do {
       response = request.execute();
@@ -191,14 +199,15 @@ public class CloudMonitoringExample {
         continue;
 
       for (MetricDescriptor metricDescriptor : response.getMetrics()) {
-        // TODO: Add code here to process each 'metricDescriptor' resource
+        // TODO: Use metricDescriptor
+        System.out.println(gson.toJson(new JsonParser().parse(metricDescriptor.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Monitoring API
@@ -207,7 +216,7 @@ public class CloudMonitoringExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -222,15 +231,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudmonitoring.CloudMonitoring;
 import com.google.api.services.cloudmonitoring.model.ListTimeseriesResponse;
 import com.google.api.services.cloudmonitoring.model.Timeseries;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class CloudMonitoringExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -245,24 +255,26 @@ public class CloudMonitoringExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     CloudMonitoring cloudmonitoringService = new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // The project ID to which this time series belongs. The value can be the numeric project ID or
+    // string-based project name.
+    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-    // * The project ID to which this time series belongs. The value can be the numeric project ID or
-    //   string-based project name.
-    String project = "";
+    // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
+    // compute.googleapis.com/instance/disk/read_ops_count.
+    String metric = "{MY-METRIC}"; // TODO: Update placeholder value(s).
 
-    // * Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
-    //   compute.googleapis.com/instance/disk/read_ops_count.
-    String metric = "";
-
-    // * End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
-    String youngest = "";
+    // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
+    String youngest = "{MY-YOUNGEST}"; // TODO: Update placeholder value(s).
 
     CloudMonitoring.Timeseries.List request = cloudmonitoringService.timeseries().list(project, metric, youngest);
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     ListTimeseriesResponse response;
     do {
       response = request.execute();
@@ -270,14 +282,15 @@ public class CloudMonitoringExample {
         continue;
 
       for (Timeseries timeseries : response.getTimeseries()) {
-        // TODO: Add code here to process each 'timeseries' resource
+        // TODO: Use timeseries
+        System.out.println(gson.toJson(new JsonParser().parse(timeseries.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Monitoring API
@@ -286,7 +299,7 @@ public class CloudMonitoringExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -301,15 +314,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudmonitoring.CloudMonitoring;
 import com.google.api.services.cloudmonitoring.model.WriteTimeseriesRequest;
 import com.google.api.services.cloudmonitoring.model.WriteTimeseriesResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class CloudMonitoringExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -324,25 +338,27 @@ public class CloudMonitoringExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     CloudMonitoring cloudmonitoringService = new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'write' method:
+    // The project ID. The value can be the numeric project ID or string-based project name.
+    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-    // * The project ID. The value can be the numeric project ID or string-based project name.
-    String project = "";
+    // TODO: Assign values to the desired fields.
+    WriteTimeseriesRequest requestBody = new WriteTimeseriesRequest();
 
-    WriteTimeseriesRequest content = new WriteTimeseriesRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    CloudMonitoring.Timeseries.Write request = cloudmonitoringService.timeseries().write(project, content);
+    CloudMonitoring.Timeseries.Write request = cloudmonitoringService.timeseries().write(project, requestBody);
     WriteTimeseriesResponse response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Use response
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Monitoring API
@@ -351,7 +367,7 @@ public class CloudMonitoringExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -366,15 +382,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudmonitoring.CloudMonitoring;
 import com.google.api.services.cloudmonitoring.model.ListTimeseriesDescriptorsResponse;
 import com.google.api.services.cloudmonitoring.model.TimeseriesDescriptor;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-
 public class CloudMonitoringExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the 'gcloud' tool when running locally
+    // Authentication is provided by the `gcloud` tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
@@ -389,24 +406,26 @@ public class CloudMonitoringExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     CloudMonitoring cloudmonitoringService = new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // The project ID to which this time series belongs. The value can be the numeric project ID or
+    // string-based project name.
+    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-    // * The project ID to which this time series belongs. The value can be the numeric project ID or
-    //   string-based project name.
-    String project = "";
+    // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
+    // compute.googleapis.com/instance/disk/read_ops_count.
+    String metric = "{MY-METRIC}"; // TODO: Update placeholder value(s).
 
-    // * Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
-    //   compute.googleapis.com/instance/disk/read_ops_count.
-    String metric = "";
-
-    // * End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
-    String youngest = "";
+    // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
+    String youngest = "{MY-YOUNGEST}"; // TODO: Update placeholder value(s).
 
     CloudMonitoring.TimeseriesDescriptors.List request = cloudmonitoringService.timeseriesDescriptors().list(project, metric, youngest);
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     ListTimeseriesDescriptorsResponse response;
     do {
       response = request.execute();
@@ -414,7 +433,8 @@ public class CloudMonitoringExample {
         continue;
 
       for (TimeseriesDescriptor timeseriesDescriptor : response.getTimeseries()) {
-        // TODO: Add code here to process each 'timeseriesDescriptor' resource
+        // TODO: Use timeseriesDescriptor
+        System.out.println(gson.toJson(new JsonParser().parse(timeseriesDescriptor.toString())));
       }
 
       request.setPageToken(response.getNextPageToken());

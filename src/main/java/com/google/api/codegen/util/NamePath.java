@@ -39,10 +39,6 @@ public class NamePath {
     return parse("\\\\", pieces);
   }
 
-  public static NamePath doubleColoned(String... pieces) {
-    return parse("::", pieces);
-  }
-
   private static NamePath parse(String separatorRegex, String... pieces) {
     List<String> namePieces = new ArrayList<>();
     for (String piece : pieces) {
@@ -79,6 +75,9 @@ public class NamePath {
     return this;
   }
 
+  /**
+   * Create a new NamePath where each name piece now starts with an uppercase word.
+   */
   public NamePath withUpperPieces() {
     List<String> newPathPieces = new ArrayList<>();
     for (String piece : pathPieces) {
@@ -92,18 +91,6 @@ public class NamePath {
       newPathPieces.add(newPiece);
     }
     return new NamePath(newPathPieces);
-  }
-
-  public NamePath withFlattenedRequest() {
-    if (pathPieces.size() < 2) {
-      return new NamePath(pathPieces);
-    } else {
-      List<String> newPathPieces = new ArrayList<>(pathPieces);
-      if (newPathPieces.get(newPathPieces.size() - 2).matches("(.*)[Rr]equest")) {
-        newPathPieces.remove(newPathPieces.size() - 2);
-      }
-      return new NamePath(newPathPieces);
-    }
   }
 
   /**

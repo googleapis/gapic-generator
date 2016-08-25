@@ -7,24 +7,28 @@
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouduseraccounts_beta'
+require 'json'
 
 service = Google::Apis::ClouduseraccountsBeta::CloudUserAccountsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_global_accounts_operation' method:
+# Project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * Project ID for this request.
-project = ''
-
-# * Name of the Operations resource to delete.
-operation = ''
+# Name of the Operations resource to delete.
+operation = '{MY-OPERATION}' # TODO: Change placeholder value(s).
 
 # Perform the call
 service.delete_global_accounts_operation(project, operation)
@@ -36,27 +40,34 @@ service.delete_global_accounts_operation(project, operation)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouduseraccounts_beta'
+require 'json'
 
 service = Google::Apis::ClouduseraccountsBeta::CloudUserAccountsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_global_accounts_operation' method:
+# Project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * Project ID for this request.
-project = ''
-
-# * Name of the Operations resource to return.
-operation = ''
+# Name of the Operations resource to return.
+operation = '{MY-OPERATION}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_global_accounts_operation(project, operation)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud User Accounts API
@@ -65,29 +76,35 @@ response = service.get_global_accounts_operation(project, operation)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouduseraccounts_beta'
+require 'json'
 
 service = Google::Apis::ClouduseraccountsBeta::CloudUserAccountsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_global_accounts_operations' method:
-
-# * Project ID for this request.
-project = ''
+# Project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
 # Perform the call
-result_list = service.fetch_all(items: :items) { |token|
+items = service.fetch_all(items: :items) do |token|
   service.list_global_accounts_operations(project, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+items.each do |operation|
+  # TODO: Use operation
+  puts JSON.pretty_generate(operation)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud User Accounts API
@@ -96,30 +113,37 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouduseraccounts_beta'
+require 'json'
 
 service = Google::Apis::ClouduseraccountsBeta::CloudUserAccountsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'add_group_member' method:
+# Project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * Project ID for this request.
-project = ''
+# Name of the group for this request.
+group_name = '{MY-GROUP-NAME}' # TODO: Change placeholder value(s).
 
-# * Name of the group for this request.
-group_name = ''
-
-groups_add_member_request_object = Google::Apis::ClouduseraccountsBeta::GroupsAddMemberRequest.new
-
+# TODO: Assign values to the desired members.
+groups_add_member_request_body = Google::Apis::ClouduseraccountsBeta::GroupsAddMemberRequest.new
 
 # Perform the call
-response = service.add_group_member(project, group_name, groups_add_member_request_object)
+response = service.add_group_member(project, group_name, groups_add_member_request_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud User Accounts API
@@ -128,27 +152,34 @@ response = service.add_group_member(project, group_name, groups_add_member_reque
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouduseraccounts_beta'
+require 'json'
 
 service = Google::Apis::ClouduseraccountsBeta::CloudUserAccountsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_group' method:
+# Project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * Project ID for this request.
-project = ''
-
-# * Name of the Group resource to delete.
-group_name = ''
+# Name of the Group resource to delete.
+group_name = '{MY-GROUP-NAME}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.delete_group(project, group_name)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud User Accounts API
@@ -157,27 +188,34 @@ response = service.delete_group(project, group_name)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouduseraccounts_beta'
+require 'json'
 
 service = Google::Apis::ClouduseraccountsBeta::CloudUserAccountsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_group' method:
+# Project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * Project ID for this request.
-project = ''
-
-# * Name of the Group resource to return.
-group_name = ''
+# Name of the Group resource to return.
+group_name = '{MY-GROUP-NAME}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_group(project, group_name)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud User Accounts API
@@ -186,27 +224,34 @@ response = service.get_group(project, group_name)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouduseraccounts_beta'
+require 'json'
 
 service = Google::Apis::ClouduseraccountsBeta::CloudUserAccountsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert_group' method:
+# Project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * Project ID for this request.
-project = ''
-
-group_object = Google::Apis::ClouduseraccountsBeta::Group.new
-
+# TODO: Assign values to the desired members.
+group_body = Google::Apis::ClouduseraccountsBeta::Group.new
 
 # Perform the call
-response = service.insert_group(project, group_object)
+response = service.insert_group(project, group_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud User Accounts API
@@ -215,29 +260,35 @@ response = service.insert_group(project, group_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouduseraccounts_beta'
+require 'json'
 
 service = Google::Apis::ClouduseraccountsBeta::CloudUserAccountsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_groups' method:
-
-# * Project ID for this request.
-project = ''
+# Project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
 # Perform the call
-result_list = service.fetch_all(items: :items) { |token|
+items = service.fetch_all(items: :items) do |token|
   service.list_groups(project, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+items.each do |group|
+  # TODO: Use group
+  puts JSON.pretty_generate(group)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud User Accounts API
@@ -246,30 +297,37 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouduseraccounts_beta'
+require 'json'
 
 service = Google::Apis::ClouduseraccountsBeta::CloudUserAccountsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'remove_group_member' method:
+# Project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * Project ID for this request.
-project = ''
+# Name of the group for this request.
+group_name = '{MY-GROUP-NAME}' # TODO: Change placeholder value(s).
 
-# * Name of the group for this request.
-group_name = ''
-
-groups_remove_member_request_object = Google::Apis::ClouduseraccountsBeta::GroupsRemoveMemberRequest.new
-
+# TODO: Assign values to the desired members.
+groups_remove_member_request_body = Google::Apis::ClouduseraccountsBeta::GroupsRemoveMemberRequest.new
 
 # Perform the call
-response = service.remove_group_member(project, group_name, groups_remove_member_request_object)
+response = service.remove_group_member(project, group_name, groups_remove_member_request_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud User Accounts API
@@ -278,33 +336,40 @@ response = service.remove_group_member(project, group_name, groups_remove_member
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouduseraccounts_beta'
+require 'json'
 
 service = Google::Apis::ClouduseraccountsBeta::CloudUserAccountsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_linux_authorized_keys_view' method:
+# Project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * Project ID for this request.
-project = ''
+# Name of the zone for this request.
+zone = '{MY-ZONE}'  # eg. 'us-central1-f' # TODO: Change placeholder value(s).
 
-# * Name of the zone for this request.
-zone = ''
+# The user account for which you want to get a list of authorized public keys.
+user = '{MY-USER}' # TODO: Change placeholder value(s).
 
-# * The user account for which you want to get a list of authorized public keys.
-user = ''
-
-# * The fully-qualified URL of the virtual machine requesting the view.
-instance = ''
+# The fully-qualified URL of the virtual machine requesting the view.
+instance = '{MY-INSTANCE}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_linux_authorized_keys_view(project, zone, user, instance)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud User Accounts API
@@ -313,30 +378,37 @@ response = service.get_linux_authorized_keys_view(project, zone, user, instance)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouduseraccounts_beta'
+require 'json'
 
 service = Google::Apis::ClouduseraccountsBeta::CloudUserAccountsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_linux_linux_account_views' method:
+# Project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * Project ID for this request.
-project = ''
+# Name of the zone for this request.
+zone = '{MY-ZONE}'  # eg. 'us-central1-f' # TODO: Change placeholder value(s).
 
-# * Name of the zone for this request.
-zone = ''
-
-# * The fully-qualified URL of the virtual machine requesting the views.
-instance = ''
+# The fully-qualified URL of the virtual machine requesting the views.
+instance = '{MY-INSTANCE}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_linux_linux_account_views(project, zone, instance)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud User Accounts API
@@ -345,30 +417,37 @@ response = service.get_linux_linux_account_views(project, zone, instance)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouduseraccounts_beta'
+require 'json'
 
 service = Google::Apis::ClouduseraccountsBeta::CloudUserAccountsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'add_user_public_key' method:
+# Project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * Project ID for this request.
-project = ''
+# Name of the user for this request.
+user = '{MY-USER}' # TODO: Change placeholder value(s).
 
-# * Name of the user for this request.
-user = ''
-
-public_key_object = Google::Apis::ClouduseraccountsBeta::PublicKey.new
-
+# TODO: Assign values to the desired members.
+public_key_body = Google::Apis::ClouduseraccountsBeta::PublicKey.new
 
 # Perform the call
-response = service.add_user_public_key(project, user, public_key_object)
+response = service.add_user_public_key(project, user, public_key_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud User Accounts API
@@ -377,27 +456,34 @@ response = service.add_user_public_key(project, user, public_key_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouduseraccounts_beta'
+require 'json'
 
 service = Google::Apis::ClouduseraccountsBeta::CloudUserAccountsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_user' method:
+# Project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * Project ID for this request.
-project = ''
-
-# * Name of the user resource to delete.
-user = ''
+# Name of the user resource to delete.
+user = '{MY-USER}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.delete_user(project, user)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud User Accounts API
@@ -406,27 +492,34 @@ response = service.delete_user(project, user)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouduseraccounts_beta'
+require 'json'
 
 service = Google::Apis::ClouduseraccountsBeta::CloudUserAccountsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_user' method:
+# Project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * Project ID for this request.
-project = ''
-
-# * Name of the user resource to return.
-user = ''
+# Name of the user resource to return.
+user = '{MY-USER}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_user(project, user)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud User Accounts API
@@ -435,27 +528,34 @@ response = service.get_user(project, user)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouduseraccounts_beta'
+require 'json'
 
 service = Google::Apis::ClouduseraccountsBeta::CloudUserAccountsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert_user' method:
+# Project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * Project ID for this request.
-project = ''
-
-user_object = Google::Apis::ClouduseraccountsBeta::User.new
-
+# TODO: Assign values to the desired members.
+user_body = Google::Apis::ClouduseraccountsBeta::User.new
 
 # Perform the call
-response = service.insert_user(project, user_object)
+response = service.insert_user(project, user_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud User Accounts API
@@ -464,29 +564,35 @@ response = service.insert_user(project, user_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouduseraccounts_beta'
+require 'json'
 
 service = Google::Apis::ClouduseraccountsBeta::CloudUserAccountsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_users' method:
-
-# * Project ID for this request.
-project = ''
+# Project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
 # Perform the call
-result_list = service.fetch_all(items: :items) { |token|
+items = service.fetch_all(items: :items) do |token|
   service.list_users(project, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+items.each do |user|
+  # TODO: Use user
+  puts JSON.pretty_generate(user)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud User Accounts API
@@ -495,28 +601,35 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/clouduseraccounts_beta'
+require 'json'
 
 service = Google::Apis::ClouduseraccountsBeta::CloudUserAccountsService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'remove_user_public_key' method:
+# Project ID for this request.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * Project ID for this request.
-project = ''
+# Name of the user for this request.
+user = '{MY-USER}' # TODO: Change placeholder value(s).
 
-# * Name of the user for this request.
-user = ''
-
-# * The fingerprint of the public key to delete. Public keys are identified by their fingerprint,
-#   which is defined by RFC4716 to be the MD5 digest of the public key.
-fingerprint = ''
+# The fingerprint of the public key to delete. Public keys are identified by their fingerprint, which
+# is defined by RFC4716 to be the MD5 digest of the public key.
+fingerprint = '{MY-FINGERPRINT}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.remove_user_public_key(project, user, fingerprint)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)

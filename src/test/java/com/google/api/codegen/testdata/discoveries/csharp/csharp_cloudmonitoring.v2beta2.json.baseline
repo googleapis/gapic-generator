@@ -7,7 +7,7 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -16,22 +16,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudMonitoring.v2beta2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudMonitoring.v2beta2.Data;
 
+
 namespace CloudMonitoringSample
 {
-    public class Program
+    public class CloudMonitoringServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -43,19 +46,20 @@ namespace CloudMonitoringSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the Create() method:
-
             // The project id. The value can be the numeric project ID or string-based project name.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.MetricDescriptor content = new Data.MetricDescriptor();
+            // TODO: Assign values to the desired properties.
+            Data.MetricDescriptor requestBody = new Data.MetricDescriptor();
 
-            MetricDescriptorsResource.CreateRequest request = cloudMonitoringService.MetricDescriptors.Create(content, project);
+            MetricDescriptorsResource.CreateRequest request = cloudMonitoringService.MetricDescriptors.Create(requestBody, project);
+
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
             Data.MetricDescriptor response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.MetricDescriptor response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -67,7 +71,7 @@ namespace CloudMonitoringSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -76,22 +80,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudMonitoring.v2beta2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudMonitoring.v2beta2.Data;
 
+
 namespace CloudMonitoringSample
 {
-    public class Program
+    public class CloudMonitoringServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -102,20 +109,21 @@ namespace CloudMonitoringSample
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
-
-            // TODO: Change placeholders below to values for parameters to the Delete() method:
 
             // The project ID to which the metric belongs.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
             // Name of the metric.
-            string metric = "";
+            string metric = "{MY-METRIC}"; // TODO: Update placeholder value(s).
 
             MetricDescriptorsResource.DeleteRequest request = cloudMonitoringService.MetricDescriptors.Delete(project, metric);
-            Data.DeleteMetricDescriptorResponse response = request.Execute();
 
-            // To execute asynchronously in an async method, use
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            Data.DeleteMetricDescriptorResponse response = request.Execute();
             // Data.DeleteMetricDescriptorResponse response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -127,7 +135,7 @@ namespace CloudMonitoringSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -136,22 +144,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudMonitoring.v2beta2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudMonitoring.v2beta2.Data;
 
+
 namespace CloudMonitoringSample
 {
-    public class Program
+    public class CloudMonitoringServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -163,32 +174,32 @@ namespace CloudMonitoringSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
-
             // The project id. The value can be the numeric project ID or string-based project name.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.ListMetricDescriptorsRequest content = new Data.ListMetricDescriptorsRequest();
+            // TODO: Assign values to the desired properties.
+            Data.ListMetricDescriptorsRequest requestBody = new Data.ListMetricDescriptorsRequest();
 
-            MetricDescriptorsResource.ListRequest request = cloudMonitoringService.MetricDescriptors.List(content, project);
+            MetricDescriptorsResource.ListRequest request = cloudMonitoringService.MetricDescriptors.List(requestBody, project);
+
             Data.ListMetricDescriptorsResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace request.Execute() as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Metrics == null)
                 {
                     continue;
                 }
-                foreach (Data.MetricDescriptor item in response.Metrics)
+                foreach (Data.MetricDescriptor metricDescriptor in response.Metrics)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Use metricDescriptor
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(metricDescriptor));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.ListMetricDescriptorsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -200,7 +211,7 @@ namespace CloudMonitoringSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -209,22 +220,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudMonitoring.v2beta2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudMonitoring.v2beta2.Data;
 
+
 namespace CloudMonitoringSample
 {
-    public class Program
+    public class CloudMonitoringServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -236,40 +250,40 @@ namespace CloudMonitoringSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Change placeholders below to values for parameters to the List() method:
-
             // The project ID to which this time series belongs. The value can be the numeric project ID or
             // string-based project name.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
             // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
             // compute.googleapis.com/instance/disk/read_ops_count.
-            string metric = "";
+            string metric = "{MY-METRIC}"; // TODO: Update placeholder value(s).
 
             // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
-            string youngest = "";
+            string youngest = "{MY-YOUNGEST}"; // TODO: Update placeholder value(s).
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.ListTimeseriesRequest content = new Data.ListTimeseriesRequest();
+            // TODO: Assign values to the desired properties.
+            Data.ListTimeseriesRequest requestBody = new Data.ListTimeseriesRequest();
 
-            TimeseriesResource.ListRequest request = cloudMonitoringService.Timeseries.List(content, project, metric, youngest);
+            TimeseriesResource.ListRequest request = cloudMonitoringService.Timeseries.List(requestBody, project, metric, youngest);
+
             Data.ListTimeseriesResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace request.Execute() as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Timeseries == null)
                 {
                     continue;
                 }
-                foreach (Data.Timeseries item in response.Timeseries)
+                foreach (Data.Timeseries timeseries in response.Timeseries)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Use timeseries
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(timeseries));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.ListTimeseriesResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -281,7 +295,7 @@ namespace CloudMonitoringSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -290,22 +304,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudMonitoring.v2beta2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudMonitoring.v2beta2.Data;
 
+
 namespace CloudMonitoringSample
 {
-    public class Program
+    public class CloudMonitoringServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -316,20 +333,21 @@ namespace CloudMonitoringSample
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
-
-            // TODO: Change placeholders below to values for parameters to the Write() method:
 
             // The project ID. The value can be the numeric project ID or string-based project name.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.WriteTimeseriesRequest content = new Data.WriteTimeseriesRequest();
+            // TODO: Assign values to the desired properties.
+            Data.WriteTimeseriesRequest requestBody = new Data.WriteTimeseriesRequest();
 
-            TimeseriesResource.WriteRequest request = cloudMonitoringService.Timeseries.Write(content, project);
+            TimeseriesResource.WriteRequest request = cloudMonitoringService.Timeseries.Write(requestBody, project);
+
+            // To execute asynchronously in an async method, replace request.Execute() as shown:
             Data.WriteTimeseriesResponse response = request.Execute();
-
-            // To execute asynchronously in an async method, use
             // Data.WriteTimeseriesResponse response = await request.ExecuteAsync();
+
+            // TODO: Use response
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
@@ -341,7 +359,7 @@ namespace CloudMonitoringSample
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -350,22 +368,25 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudMonitoring.v2beta2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudMonitoring.v2beta2.Data;
 
+
 namespace CloudMonitoringSample
 {
-    public class Program
+    public class CloudMonitoringServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
+            // Authentication is provided by the `gcloud` tool when running locally
+            // and by built-in service accounts when running on GCE.
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
             // Running locally requires scopes to be passed in manually.
             // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            // For more information, see
+            // https://developers.google.com/identity/protocols/application-default-credentials
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -376,41 +397,41 @@ namespace CloudMonitoringSample
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
-
-            // TODO: Change placeholders below to values for parameters to the List() method:
 
             // The project ID to which this time series belongs. The value can be the numeric project ID or
             // string-based project name.
-            string project = "";
+            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
             // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
             // compute.googleapis.com/instance/disk/read_ops_count.
-            string metric = "";
+            string metric = "{MY-METRIC}"; // TODO: Update placeholder value(s).
 
             // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
-            string youngest = "";
+            string youngest = "{MY-YOUNGEST}"; // TODO: Update placeholder value(s).
 
-            // TODO Add code to assign values to properties of 'content'.
-            Data.ListTimeseriesDescriptorsRequest content = new Data.ListTimeseriesDescriptorsRequest();
+            // TODO: Assign values to the desired properties.
+            Data.ListTimeseriesDescriptorsRequest requestBody = new Data.ListTimeseriesDescriptorsRequest();
 
-            TimeseriesDescriptorsResource.ListRequest request = cloudMonitoringService.TimeseriesDescriptors.List(content, project, metric, youngest);
+            TimeseriesDescriptorsResource.ListRequest request = cloudMonitoringService.TimeseriesDescriptors.List(requestBody, project, metric, youngest);
+
             Data.ListTimeseriesDescriptorsResponse response;
             do
             {
+                // To execute asynchronously in an async method, replace request.Execute() as shown:
                 response = request.Execute();
+                // response = await request.ExecuteAsync();
+
                 if (response.Timeseries == null)
                 {
                     continue;
                 }
-                foreach (Data.TimeseriesDescriptor item in response.Timeseries)
+                foreach (Data.TimeseriesDescriptor timeseriesDescriptor in response.Timeseries)
                 {
-                    // TODO: Add code here to process each item.
+                    // TODO: Use timeseriesDescriptor
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(timeseriesDescriptor));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
-
-            // To execute asynchronously in an async method, use
-            // Data.ListTimeseriesDescriptorsResponse response = await request.ExecuteAsync();
         }
     }
 }

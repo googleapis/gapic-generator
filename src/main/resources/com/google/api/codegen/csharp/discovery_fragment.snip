@@ -1,3 +1,5 @@
+@extends "common.snip"
+
 @snippet generateFilename(method)
   {@method.getName}.frag.cs
 @end
@@ -15,7 +17,7 @@
         // 2. This sample uses Application Default Credentials for authentication.
         //    If not already done, install the gcloud CLI from
         //    https://cloud.google.com/sdk/ and run
-        //    'gcloud beta auth application-default login'
+        //    `gcloud beta auth application-default login`
         // 3. Install the C# client library by adding a dependency on the relevant NuGet
         //    package. Libraries published by Google are owned by google-apis-packages:
         //    https://www.nuget.org/profiles/google-apis-packages
@@ -35,28 +37,30 @@
 @end
 
 @snippet generateBody(method)
+
     @let sample = context.getSampleInfo(method)
         namespace {@sample.namespace}
         {
-            public class Program
+            public class {@sample.serviceTypeName}Example
             {
                 public static void Main(string[] args)
                 {
-                    {@mainMethod(sample)}
+                    {@mainMethod(sample, method)}
                 }
             }
         }
     @end
 @end
 
-@private mainMethod(sample)
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when runing on GCE.
+@private mainMethod(sample, method)
+    // Authentication is provided by the `gcloud` tool when running locally
+    // and by built-in service accounts when running on GCE.
     GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
     // Running locally requires scopes to be passed in manually.
     // GCE automatically pulls the scopes from the GCE metadata server.
-    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    // For more information, see
+    // https://developers.google.com/identity/protocols/application-default-credentials
     if (credential.IsCreateScopedRequired)
     {
         credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -67,53 +71,104 @@
         HttpClientInitializer = credential,
         ApplicationName = "Google Cloud Platform Sample",
     });
+
     @if sample.params
-
-        // TODO: Change placeholders below to values for parameters to the {@sample.methodName}() method:
         @join param : sample.params
+            {@description(param.description)}
+            {@param.typeName} {@param.name} = {@param.defaultValue}; // {@TODO()} Update placeholder value(s).
 
-            @join line : param.description
-                {@line}
-            @end
-            {@param.typeName} {@param.name} = {@param.defaultValue};
         @end
+
     @end
     @if sample.hasRequestField
+      @if context.isPatch(method)
+        // {@TODO()} Assign values to the desired properties to be changed.
+      @else
+        // {@TODO()} Assign values to the desired properties.
+      @end
 
-      // TODO Add code to assign values to properties of '{@sample.requestFieldName}'.
       {@sample.requestFieldTypeName} {@sample.requestFieldName} = new {@sample.requestFieldTypeName}();
-    @end
 
-    {@sample.requestTypeName} request = {@sample.serviceVarName}.{@sample.resourcePath}.{@sample.methodName}({@sample.paramList});
+    @end
+    {@sample.requestTypeName} {@requestName()} = {@sample.serviceVarName}.{@sample.resourcePath}.{@sample.methodName}({@sample.paramList});
+
     @if sample.responseTypeName == "void"
-        request.Execute();
+        // To execute asynchronously in an async method, replace {@requestName()}.Execute() as shown:
+        {@requestName()}.Execute();
+        // await {@requestName()}.ExecuteAsync();
     @else
         @if sample.isPageStreaming
-            @let ps = sample.pageStreaming
-                {@sample.responseTypeName} response;
+            @let ps = sample.pageStreaming, \
+                 responseTypeRef = context.getApiaryConfig.getType(method.getResponseTypeUrl), \
+                 resourceField = context.getFirstRepeatedField(responseTypeRef)
+                {@sample.responseTypeName} {@responseName()};
                 do
                 {
-                    response = request.Execute();
-                    if (response.{@ps.resourceFieldName} == null)
+                    // To execute asynchronously in an async method, replace {@requestName()}.Execute() as shown:
+                    {@responseName()} = {@requestName()}.Execute();
+                    // {@responseName()} = await {@requestName()}.ExecuteAsync();
+
+                    if ({@responseName()}.{@ps.resourceFieldName} == null)
                     {
                         continue;
                     }
-                    foreach ({@ps.resourceTypeName} item in response.{@ps.resourceFieldName})
-                    {
-                        // TODO: Add code here to process each item.
-                    }
-                    request.PageToken = response.NextPageToken;
-                } while (response.NextPageToken != null);
+                    @if context.isMapField(responseTypeRef, resourceField.getName)
+                        foreach ({@ps.resourceTypeName} {@itemName()} in {@responseName()}.{@ps.resourceFieldName})
+                        {
+                            // {@TODO()} Use {@itemName()}
+                            {@printEntry(itemName())}
+                        }
+                    @else
+                        @let resourceName = context.getSampleVarName(ps.resourceTypeName)
+                            foreach ({@ps.resourceTypeName} {@resourceName} in {@responseName()}.{@ps.resourceFieldName})
+                            {
+                                // {@TODO()} Use {@resourceName}
+                                {@print(resourceName)}
+                            }
+                        @end
+                    @end
+                    {@requestName()}.PageToken = {@responseName()}.NextPageToken;
+                } while ({@responseName()}.NextPageToken != null);
             @end
         @else
-            {@sample.responseTypeName} response = request.Execute();
+            // To execute asynchronously in an async method, replace {@requestName()}.Execute() as shown:
+            {@sample.responseTypeName} {@responseName()} = {@requestName()}.Execute();
+            // {@sample.responseTypeName} {@responseName()} = await {@requestName()}.ExecuteAsync();
+
+            // {@TODO()} Use {@responseName()}
+            {@print(responseName())}
         @end
     @end
+@end
 
-    // To execute asynchronously in an async method, use
-    @if sample.responseTypeName == "void"
-        // await request.ExecuteAsync();
-    @else
-        // {@sample.responseTypeName} response = await request.ExecuteAsync();
+@private itemName()
+    item
+@end
+
+@private requestName()
+    request
+@end
+
+@private responseName()
+    response
+@end
+
+@private description(description)
+  @join line : context.lineWrapDoc(description)
+    // {@line}
+  @end
+@end
+
+# Unlike placeholders for other languages, this placeholder does not pretty-print output.
+# This seems to require a third-party library like Json.NET: https://www.nuget.org/packages/newtonsoft.json/
+@private print(element)
+    @let JavaScriptSerializer = context.using("System.Web.Script.Serialization.JavaScriptSerializer")
+        Console.WriteLine(new {@JavaScriptSerializer}().Serialize({@element}));
+    @end
+@end
+
+@private printEntry(entry)
+    @let JavaScriptSerializer = context.using("System.Web.Script.Serialization.JavaScriptSerializer")
+        Console.WriteLine("[" + {@entry}.Key + "] = " + new {@JavaScriptSerializer}().Serialize({@entry}.Value));
     @end
 @end

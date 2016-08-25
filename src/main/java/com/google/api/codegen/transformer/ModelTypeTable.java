@@ -16,8 +16,6 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 
@@ -124,6 +122,9 @@ public class ModelTypeTable implements ModelTypeFormatter {
     return typeTable.getImports();
   }
 
+  /**
+   * Returns the imports accumulated so far as a map of full names to short names.
+   */
   public Map<String, String> getImportsMap() {
     return typeTable.getImportsMap();
   }

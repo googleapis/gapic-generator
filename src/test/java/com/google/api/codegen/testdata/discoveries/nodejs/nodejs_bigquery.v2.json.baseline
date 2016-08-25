@@ -7,15 +7,20 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var bigquery = google.bigquery('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -24,23 +29,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // Project ID of the dataset being deleted
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the dataset being deleted
-    projectId: "",
+    // Dataset ID of dataset being deleted
+    datasetId: "{MY-DATASET-ID}", // TODO: Update placeholder value(s).
 
-    // * Dataset ID of dataset being deleted
-    datasetId: "",
-
-    // Auth client
     auth: authClient
   };
 
-  bigquery.datasets.delete(request, function(err, result) {
+  bigquery.datasets.delete(request, function(err) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
     }
   });
 });
@@ -52,15 +52,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var bigquery = google.bigquery('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -69,23 +74,130 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // Project ID of the requested dataset
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the requested dataset
-    projectId: "",
+    // Dataset ID of the requested dataset
+    datasetId: "{MY-DATASET-ID}", // TODO: Update placeholder value(s).
 
-    // * Dataset ID of the requested dataset
-    datasetId: "",
-
-    // Auth client
     auth: authClient
   };
 
-  bigquery.datasets.get(request, function(err, result) {
+  bigquery.datasets.get(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the BigQuery API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var bigquery = google.bigquery('v2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the new dataset
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  bigquery.datasets.insert(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the BigQuery API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var bigquery = google.bigquery('v2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the datasets to be listed
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  bigquery.datasets.list(request, function handlePage(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var datasetsPage = response['datasets'];
+    if (!datasetsPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < datasetsPage.length; i++) {
+      // TODO: Use datasetsPage
+      console.log(JSON.stringify(datasetsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      bigquery.datasets.list(request, handlePage);
     }
   });
 });
@@ -97,15 +209,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var bigquery = google.bigquery('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -114,23 +231,27 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+    // Project ID of the dataset being updated
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the new dataset
-    projectId: "",
+    // Dataset ID of the dataset being updated
+    datasetId: "{MY-DATASET-ID}", // TODO: Update placeholder value(s).
 
-    resource: {},
+    resource: {
+      // TODO: Add the desired properties to be changed.
+    },
 
-    // Auth client
     auth: authClient
   };
 
-  bigquery.datasets.insert(request, function(err, result) {
+  bigquery.datasets.patch(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -141,15 +262,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var bigquery = google.bigquery('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -158,75 +284,27 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // Project ID of the dataset being updated
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the datasets to be listed
-    projectId: "",
+    // Dataset ID of the dataset being updated
+    datasetId: "{MY-DATASET-ID}", // TODO: Update placeholder value(s).
 
-    // Auth client
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
     auth: authClient
   };
 
-
-  var recur = function(err, result) {
+  bigquery.datasets.update(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        bigquery.datasets.list(request, recur);
-      }
+      return;
     }
-  };
 
-  bigquery.datasets.list(request, recur);
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the BigQuery API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var bigquery = google.bigquery('v2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
-
-    // * Project ID of the dataset being updated
-    projectId: "",
-
-    // * Dataset ID of the dataset being updated
-    datasetId: "",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  bigquery.datasets.patch(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -237,15 +315,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var bigquery = google.bigquery('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -254,26 +337,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+    // [Required] Project ID of the job to cancel
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the dataset being updated
-    projectId: "",
+    // [Required] Job ID of the job to cancel
+    jobId: "{MY-JOB-ID}", // TODO: Update placeholder value(s).
 
-    // * Dataset ID of the dataset being updated
-    datasetId: "",
-
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  bigquery.datasets.update(request, function(err, result) {
+  bigquery.jobs.cancel(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -284,15 +364,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var bigquery = google.bigquery('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -301,24 +386,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'cancel' method:
+    // [Required] Project ID of the requested job
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
 
-    // * [Required] Project ID of the job to cancel
-    projectId: "",
+    // [Required] Job ID of the requested job
+    jobId: "{MY-JOB-ID}", // TODO: Update placeholder value(s).
 
-    // * [Required] Job ID of the job to cancel
-    jobId: "",
-
-    // Auth client
     auth: authClient
   };
 
-  bigquery.jobs.cancel(request, function(err, result) {
+  bigquery.jobs.get(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -329,15 +413,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var bigquery = google.bigquery('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -346,24 +435,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // [Required] Project ID of the query job
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
 
-    // * [Required] Project ID of the requested job
-    projectId: "",
+    // [Required] Job ID of the query job
+    jobId: "{MY-JOB-ID}", // TODO: Update placeholder value(s).
 
-    // * [Required] Job ID of the requested job
-    jobId: "",
-
-    // Auth client
     auth: authClient
   };
 
-  bigquery.jobs.get(request, function(err, result) {
+  bigquery.jobs.getQueryResults(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -374,15 +462,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var bigquery = google.bigquery('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -391,72 +484,88 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'getQueryResults' method:
+    // Project ID of the project that will be billed for the job
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
 
-    // * [Required] Project ID of the query job
-    projectId: "",
-
-    // * [Required] Job ID of the query job
-    jobId: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-  bigquery.jobs.getQueryResults(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the BigQuery API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var bigquery = google.bigquery('v2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
-
-    // * Project ID of the project that will be billed for the job
-    projectId: "",
-
-    resource: {},
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
     media: {
-      // See https://github.com/google/google-api-nodejs-client#media-uploads
+      // TODO: Add desired media content for upload. See:
+      // https://github.com/google/google-api-nodejs-client#media-uploads
       mimeType: 'text/plain',
-      body: 'Hello World!'
+      body: ''
     },
-    // Auth client
+
     auth: authClient
   };
 
-  bigquery.jobs.insert(request, function(err, result) {
+  bigquery.jobs.insert(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the BigQuery API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var bigquery = google.bigquery('v2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the jobs to list
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  bigquery.jobs.list(request, function handlePage(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var jobsPage = response['jobs'];
+    if (!jobsPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < jobsPage.length; i++) {
+      // TODO: Use jobsPage
+      console.log(JSON.stringify(jobsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      bigquery.jobs.list(request, handlePage);
     }
   });
 });
@@ -468,15 +577,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var bigquery = google.bigquery('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -485,29 +599,25 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // Project ID of the project billed for the query
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the jobs to list
-    projectId: "",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    // Auth client
     auth: authClient
   };
 
-
-  var recur = function(err, result) {
+  bigquery.jobs.query(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        bigquery.jobs.list(request, recur);
-      }
+      return;
     }
-  };
 
-  bigquery.jobs.list(request, recur);
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
 });
 // BEFORE RUNNING:
 // ---------------
@@ -517,15 +627,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var bigquery = google.bigquery('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -534,22 +649,29 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'query' method:
 
-    // * Project ID of the project billed for the query
-    projectId: "",
-
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  bigquery.jobs.query(request, function(err, result) {
+  bigquery.projects.list(request, function handlePage(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    var projectsPage = response['projects'];
+    if (!projectsPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < projectsPage.length; i++) {
+      // TODO: Use projectsPage
+      console.log(JSON.stringify(projectsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      bigquery.projects.list(request, handlePage);
     }
   });
 });
@@ -561,15 +683,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var bigquery = google.bigquery('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -578,26 +705,31 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // Project ID of the destination table.
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
 
-    // Auth client
+    // Dataset ID of the destination table.
+    datasetId: "{MY-DATASET-ID}", // TODO: Update placeholder value(s).
+
+    // Table ID of the destination table.
+    tableId: "{MY-TABLE-ID}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
     auth: authClient
   };
 
-
-  var recur = function(err, result) {
+  bigquery.tabledata.insertAll(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        bigquery.projects.list(request, recur);
-      }
+      return;
     }
-  };
 
-  bigquery.projects.list(request, recur);
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
 });
 // BEFORE RUNNING:
 // ---------------
@@ -607,15 +739,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var bigquery = google.bigquery('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -624,28 +761,73 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'insertAll' method:
+    // Project ID of the table to read
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the destination table.
-    projectId: "",
+    // Dataset ID of the table to read
+    datasetId: "{MY-DATASET-ID}", // TODO: Update placeholder value(s).
 
-    // * Dataset ID of the destination table.
-    datasetId: "",
+    // Table ID of the table to read
+    tableId: "{MY-TABLE-ID}", // TODO: Update placeholder value(s).
 
-    // * Table ID of the destination table.
-    tableId: "",
-
-    resource: {},
-
-    // Auth client
     auth: authClient
   };
 
-  bigquery.tabledata.insertAll(request, function(err, result) {
+  bigquery.tabledata.list(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the BigQuery API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var bigquery = google.bigquery('v2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the table to delete
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+
+    // Dataset ID of the table to delete
+    datasetId: "{MY-DATASET-ID}", // TODO: Update placeholder value(s).
+
+    // Table ID of the table to delete
+    tableId: "{MY-TABLE-ID}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  bigquery.tables.delete(request, function(err) {
+    if (err) {
+      console.log(err);
     }
   });
 });
@@ -657,15 +839,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var bigquery = google.bigquery('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -674,26 +861,139 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+    // Project ID of the requested table
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the table to read
-    projectId: "",
+    // Dataset ID of the requested table
+    datasetId: "{MY-DATASET-ID}", // TODO: Update placeholder value(s).
 
-    // * Dataset ID of the table to read
-    datasetId: "",
+    // Table ID of the requested table
+    tableId: "{MY-TABLE-ID}", // TODO: Update placeholder value(s).
 
-    // * Table ID of the table to read
-    tableId: "",
-
-    // Auth client
     auth: authClient
   };
 
-  bigquery.tabledata.list(request, function(err, result) {
+  bigquery.tables.get(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the BigQuery API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var bigquery = google.bigquery('v2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the new table
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+
+    // Dataset ID of the new table
+    datasetId: "{MY-DATASET-ID}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add the desired properties.
+    },
+
+    auth: authClient
+  };
+
+  bigquery.tables.insert(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the BigQuery API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+
+var bigquery = google.bigquery('v2');
+
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // Project ID of the tables to list
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+
+    // Dataset ID of the tables to list
+    datasetId: "{MY-DATASET-ID}", // TODO: Update placeholder value(s).
+
+    auth: authClient
+  };
+
+  bigquery.tables.list(request, function handlePage(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var tablesPage = response['tables'];
+    if (!tablesPage) {
+      console.log('{}');
+      return;
+    }
+    for (var i = 0; i < tablesPage.length; i++) {
+      // TODO: Use tablesPage
+      console.log(JSON.stringify(tablesPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      bigquery.tables.list(request, handlePage);
     }
   });
 });
@@ -705,15 +1005,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var bigquery = google.bigquery('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -722,27 +1027,30 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+    // Project ID of the table to update
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the table to delete
-    projectId: "",
+    // Dataset ID of the table to update
+    datasetId: "{MY-DATASET-ID}", // TODO: Update placeholder value(s).
 
-    // * Dataset ID of the table to delete
-    datasetId: "",
+    // Table ID of the table to update
+    tableId: "{MY-TABLE-ID}", // TODO: Update placeholder value(s).
 
-    // * Table ID of the table to delete
-    tableId: "",
+    resource: {
+      // TODO: Add the desired properties to be changed.
+    },
 
-    // Auth client
     auth: authClient
   };
 
-  bigquery.tables.delete(request, function(err, result) {
+  bigquery.tables.patch(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
+
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 // BEFORE RUNNING:
@@ -753,15 +1061,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
+//    `gcloud beta auth application-default login`
 // 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
+//    library by running `npm install googleapis --save`
 var google = require('googleapis');
+
 var bigquery = google.bigquery('v2');
 
+// Authentication is provided by the `gcloud` tool when running locally
+// and by built-in service accounts when running on GAE, GCE, or GKE.
+// For more information, see
+// https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
-    console.log('Authentication failed because of ', err);
+    console.log(err);
     return;
   }
   if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -770,225 +1083,29 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+    // Project ID of the table to update
+    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
 
-    // * Project ID of the requested table
-    projectId: "",
+    // Dataset ID of the table to update
+    datasetId: "{MY-DATASET-ID}", // TODO: Update placeholder value(s).
 
-    // * Dataset ID of the requested table
-    datasetId: "",
+    // Table ID of the table to update
+    tableId: "{MY-TABLE-ID}", // TODO: Update placeholder value(s).
 
-    // * Table ID of the requested table
-    tableId: "",
+    resource: {
+      // TODO: Add the desired properties.
+    },
 
-    // Auth client
     auth: authClient
   };
 
-  bigquery.tables.get(request, function(err, result) {
+  bigquery.tables.update(request, function(err, response) {
     if (err) {
       console.log(err);
-    } else {
-      console.log(result);
+      return;
     }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the BigQuery API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var bigquery = google.bigquery('v2');
 
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
-
-    // * Project ID of the new table
-    projectId: "",
-
-    // * Dataset ID of the new table
-    datasetId: "",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  bigquery.tables.insert(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the BigQuery API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var bigquery = google.bigquery('v2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-
-    // * Project ID of the tables to list
-    projectId: "",
-
-    // * Dataset ID of the tables to list
-    datasetId: "",
-
-    // Auth client
-    auth: authClient
-  };
-
-
-  var recur = function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      if (result.nextPageToken) {
-        request.pageToken = result.nextPageToken;
-        bigquery.tables.list(request, recur);
-      }
-    }
-  };
-
-  bigquery.tables.list(request, recur);
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the BigQuery API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var bigquery = google.bigquery('v2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
-
-    // * Project ID of the table to update
-    projectId: "",
-
-    // * Dataset ID of the table to update
-    datasetId: "",
-
-    // * Table ID of the table to update
-    tableId: "",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  bigquery.tables.patch(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
-});
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the BigQuery API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running 'npm install googleapis --save'
-var google = require('googleapis');
-var bigquery = google.bigquery('v2');
-
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log('Authentication failed because of ', err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
-  var request = {
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
-
-    // * Project ID of the table to update
-    projectId: "",
-
-    // * Dataset ID of the table to update
-    datasetId: "",
-
-    // * Table ID of the table to update
-    tableId: "",
-
-    resource: {},
-
-    // Auth client
-    auth: authClient
-  };
-
-  bigquery.tables.update(request, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
+    // TODO: Use response
+    console.log(JSON.stringify(response, null, 2));
   });
 });

@@ -9,11 +9,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -22,24 +25,30 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "" // TODO: Update placeholder value.
+  entity := "{MY-ENTITY}" // TODO: Update placeholder value(s).
 
-  if err := c.BucketAccessControls.Delete(bucket, entity).Context(ctx).Do(); err != nil {
-    // TODO: Handle error.
+  if err := s.BucketAccessControls.Delete(bucket, entity).Context(ctx).Do(); err != nil {
+    log.Fatal(err)
   }
 }
 package main
@@ -52,11 +61,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -65,28 +77,35 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "" // TODO: Update placeholder value.
+  entity := "{MY-ENTITY}" // TODO: Update placeholder value(s).
 
-  resp, err := c.BucketAccessControls.Get(bucket, entity).Context(ctx).Do()
+  resp, err := s.BucketAccessControls.Get(bucket, entity).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -98,11 +117,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -111,26 +133,35 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
-  resp, err := c.BucketAccessControls.Insert(bucket, &storage.BucketAccessControl{
-                                               // TODO: Fill required fields.
-                                             }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  bucketAccessControl := &storage.BucketAccessControl{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.BucketAccessControls.Insert(bucket, &bucketAccessControl).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -142,11 +173,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -155,24 +189,31 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
-  resp, err := c.BucketAccessControls.List(bucket).Context(ctx).Do()
+  resp, err := s.BucketAccessControls.List(bucket).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -184,11 +225,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -197,30 +241,39 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "" // TODO: Update placeholder value.
+  entity := "{MY-ENTITY}" // TODO: Update placeholder value(s).
 
-  resp, err := c.BucketAccessControls.Patch(bucket, entity, &storage.BucketAccessControl{
-                                              // TODO: Fill required fields.
-                                            }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  bucketAccessControl := &storage.BucketAccessControl{
+    // TODO: Add the desired fields to be changed.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.BucketAccessControls.Patch(bucket, entity, &bucketAccessControl).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -232,11 +285,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -245,30 +301,39 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "" // TODO: Update placeholder value.
+  entity := "{MY-ENTITY}" // TODO: Update placeholder value(s).
 
-  resp, err := c.BucketAccessControls.Update(bucket, entity, &storage.BucketAccessControl{
-                                               // TODO: Fill required fields.
-                                             }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  bucketAccessControl := &storage.BucketAccessControl{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.BucketAccessControls.Update(bucket, entity, &bucketAccessControl).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -280,11 +345,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -293,20 +361,26 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
-  if err := c.Buckets.Delete(bucket).Context(ctx).Do(); err != nil {
-    // TODO: Handle error.
+  if err := s.Buckets.Delete(bucket).Context(ctx).Do(); err != nil {
+    log.Fatal(err)
   }
 }
 package main
@@ -319,11 +393,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -332,24 +409,31 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Buckets.Get(bucket).Context(ctx).Do()
+  resp, err := s.Buckets.Get(bucket).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -361,11 +445,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -374,26 +461,35 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // A valid API project identifier.
-  project := "" // TODO: Update placeholder value.
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Buckets.Insert(project, &storage.Bucket{
-                                  // TODO: Fill required fields.
-                                }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  bucket := &storage.Bucket{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Buckets.Insert(project, &bucket).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -405,11 +501,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -418,28 +517,33 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // A valid API project identifier.
-  project := "" // TODO: Update placeholder value.
+  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-
-  call := c.Buckets.List(project)
+  call := s.Buckets.List(project)
   if err := call.Pages(ctx, func(page *storage.Buckets) error {
-    for _, v := range page.Items {
-      // TODO: Use v.
-      _ = v
+    for _, bucket := range page.Items {
+      // TODO: Use bucket
+      fmt.Printf("%#v\n", bucket)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -452,11 +556,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -465,26 +572,35 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Buckets.Patch(bucket, &storage.Bucket{
-                                 // TODO: Fill required fields.
-                               }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  bucket := &storage.Bucket{
+    // TODO: Add the desired fields to be changed.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Buckets.Patch(bucket, &bucket).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -496,11 +612,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -509,26 +628,35 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Buckets.Update(bucket, &storage.Bucket{
-                                  // TODO: Fill required fields.
-                                }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  bucket := &storage.Bucket{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Buckets.Update(bucket, &bucket).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -540,11 +668,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -553,22 +684,27 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
+  channel := &storage.Channel{
+    // TODO: Add the desired fields.
+  }
 
-
-  call := c.Channels.Stop(&storage.Channel{
-                            // TODO: Fill required fields.
-                          }).Context(ctx)
-  if err := call.Do(); err != nil {
-    // TODO: Handle error.
+  if err := s.Channels.Stop(channel).Context(ctx).Do(); err != nil {
+    log.Fatal(err)
   }
 }
 package main
@@ -581,11 +717,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -594,24 +733,30 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "" // TODO: Update placeholder value.
+  entity := "{MY-ENTITY}" // TODO: Update placeholder value(s).
 
-  if err := c.DefaultObjectAccessControls.Delete(bucket, entity).Context(ctx).Do(); err != nil {
-    // TODO: Handle error.
+  if err := s.DefaultObjectAccessControls.Delete(bucket, entity).Context(ctx).Do(); err != nil {
+    log.Fatal(err)
   }
 }
 package main
@@ -624,11 +769,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -637,28 +785,35 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "" // TODO: Update placeholder value.
+  entity := "{MY-ENTITY}" // TODO: Update placeholder value(s).
 
-  resp, err := c.DefaultObjectAccessControls.Get(bucket, entity).Context(ctx).Do()
+  resp, err := s.DefaultObjectAccessControls.Get(bucket, entity).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -670,11 +825,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -683,26 +841,35 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
-  resp, err := c.DefaultObjectAccessControls.Insert(bucket, &storage.ObjectAccessControl{
-                                                      // TODO: Fill required fields.
-                                                    }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  objectAccessControl := &storage.ObjectAccessControl{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.DefaultObjectAccessControls.Insert(bucket, &objectAccessControl).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -714,11 +881,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -727,24 +897,31 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
-  resp, err := c.DefaultObjectAccessControls.List(bucket).Context(ctx).Do()
+  resp, err := s.DefaultObjectAccessControls.List(bucket).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -756,11 +933,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -769,30 +949,39 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "" // TODO: Update placeholder value.
+  entity := "{MY-ENTITY}" // TODO: Update placeholder value(s).
 
-  resp, err := c.DefaultObjectAccessControls.Patch(bucket, entity, &storage.ObjectAccessControl{
-                                                     // TODO: Fill required fields.
-                                                   }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  objectAccessControl := &storage.ObjectAccessControl{
+    // TODO: Add the desired fields to be changed.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.DefaultObjectAccessControls.Patch(bucket, entity, &objectAccessControl).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -804,11 +993,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -817,30 +1009,39 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "" // TODO: Update placeholder value.
+  entity := "{MY-ENTITY}" // TODO: Update placeholder value(s).
 
-  resp, err := c.DefaultObjectAccessControls.Update(bucket, entity, &storage.ObjectAccessControl{
-                                                      // TODO: Fill required fields.
-                                                    }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  objectAccessControl := &storage.ObjectAccessControl{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.DefaultObjectAccessControls.Update(bucket, entity, &objectAccessControl).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -852,11 +1053,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -865,28 +1069,34 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "" // TODO: Update placeholder value.
+  object := "{MY-OBJECT}" // TODO: Update placeholder value(s).
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "" // TODO: Update placeholder value.
+  entity := "{MY-ENTITY}" // TODO: Update placeholder value(s).
 
-  if err := c.ObjectAccessControls.Delete(bucket, object, entity).Context(ctx).Do(); err != nil {
-    // TODO: Handle error.
+  if err := s.ObjectAccessControls.Delete(bucket, object, entity).Context(ctx).Do(); err != nil {
+    log.Fatal(err)
   }
 }
 package main
@@ -899,11 +1109,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -912,32 +1125,39 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "" // TODO: Update placeholder value.
+  object := "{MY-OBJECT}" // TODO: Update placeholder value(s).
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "" // TODO: Update placeholder value.
+  entity := "{MY-ENTITY}" // TODO: Update placeholder value(s).
 
-  resp, err := c.ObjectAccessControls.Get(bucket, object, entity).Context(ctx).Do()
+  resp, err := s.ObjectAccessControls.Get(bucket, object, entity).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -949,11 +1169,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -962,30 +1185,39 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "" // TODO: Update placeholder value.
+  object := "{MY-OBJECT}" // TODO: Update placeholder value(s).
 
-  resp, err := c.ObjectAccessControls.Insert(bucket, object, &storage.ObjectAccessControl{
-                                               // TODO: Fill required fields.
-                                             }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  objectAccessControl := &storage.ObjectAccessControl{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.ObjectAccessControls.Insert(bucket, object, &objectAccessControl).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -997,11 +1229,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1010,28 +1245,35 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "" // TODO: Update placeholder value.
+  object := "{MY-OBJECT}" // TODO: Update placeholder value(s).
 
-  resp, err := c.ObjectAccessControls.List(bucket, object).Context(ctx).Do()
+  resp, err := s.ObjectAccessControls.List(bucket, object).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1043,11 +1285,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1056,34 +1301,43 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "" // TODO: Update placeholder value.
+  object := "{MY-OBJECT}" // TODO: Update placeholder value(s).
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "" // TODO: Update placeholder value.
+  entity := "{MY-ENTITY}" // TODO: Update placeholder value(s).
 
-  resp, err := c.ObjectAccessControls.Patch(bucket, object, entity, &storage.ObjectAccessControl{
-                                              // TODO: Fill required fields.
-                                            }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  objectAccessControl := &storage.ObjectAccessControl{
+    // TODO: Add the desired fields to be changed.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.ObjectAccessControls.Patch(bucket, object, entity, &objectAccessControl).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1095,11 +1349,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1108,34 +1365,43 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "" // TODO: Update placeholder value.
+  object := "{MY-OBJECT}" // TODO: Update placeholder value(s).
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "" // TODO: Update placeholder value.
+  entity := "{MY-ENTITY}" // TODO: Update placeholder value(s).
 
-  resp, err := c.ObjectAccessControls.Update(bucket, object, entity, &storage.ObjectAccessControl{
-                                               // TODO: Fill required fields.
-                                             }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  objectAccessControl := &storage.ObjectAccessControl{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.ObjectAccessControls.Update(bucket, object, entity, &objectAccessControl).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1147,11 +1413,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1160,30 +1429,39 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of the bucket in which to store the new object.
-  destinationBucket := "" // TODO: Update placeholder value.
+  destinationBucket := "{MY-DESTINATION-BUCKET}" // TODO: Update placeholder value(s).
 
   // Name of the new object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  destinationObject := "" // TODO: Update placeholder value.
+  destinationObject := "{MY-DESTINATION-OBJECT}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Objects.Compose(destinationBucket, destinationObject, &storage.ComposeRequest{
-                                   // TODO: Fill required fields.
-                                 }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  composeRequest := &storage.ComposeRequest{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Objects.Compose(destinationBucket, destinationObject, &composeRequest).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1195,11 +1473,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1208,39 +1489,48 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of the bucket in which to find the source object.
-  sourceBucket := "" // TODO: Update placeholder value.
+  sourceBucket := "{MY-SOURCE-BUCKET}" // TODO: Update placeholder value(s).
 
   // Name of the source object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  sourceObject := "" // TODO: Update placeholder value.
+  sourceObject := "{MY-SOURCE-OBJECT}" // TODO: Update placeholder value(s).
 
   // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
   // value, if any.For information about how to URL encode object names to be path safe, see Encoding URI
   // Path Parts.
-  destinationBucket := "" // TODO: Update placeholder value.
+  destinationBucket := "{MY-DESTINATION-BUCKET}" // TODO: Update placeholder value(s).
 
   // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
   // object metadata's name value, if any.
-  destinationObject := "" // TODO: Update placeholder value.
+  destinationObject := "{MY-DESTINATION-OBJECT}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Objects.Copy(sourceBucket, sourceObject, destinationBucket, destinationObject, &storage.Object{
-                                // TODO: Fill required fields.
-                              }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  object := &storage.Object{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Objects.Copy(sourceBucket, sourceObject, destinationBucket, destinationObject, &object).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1252,11 +1542,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1265,24 +1558,30 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of the bucket in which the object resides.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "" // TODO: Update placeholder value.
+  object := "{MY-OBJECT}" // TODO: Update placeholder value(s).
 
-  if err := c.Objects.Delete(bucket, object).Context(ctx).Do(); err != nil {
-    // TODO: Handle error.
+  if err := s.Objects.Delete(bucket, object).Context(ctx).Do(); err != nil {
+    log.Fatal(err)
   }
 }
 package main
@@ -1295,11 +1594,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1308,28 +1610,35 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of the bucket in which the object resides.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "" // TODO: Update placeholder value.
+  object := "{MY-OBJECT}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Objects.Get(bucket, object).Context(ctx).Do()
+  resp, err := s.Objects.Get(bucket, object).Context(ctx).Do()
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  // TODO: Use resp.
-  _ = resp
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1341,11 +1650,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1354,27 +1666,36 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
   // value, if any.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Objects.Insert(bucket, &storage.Object{
-                                  // TODO: Fill required fields.
-                                }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  object := &storage.Object{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Objects.Insert(bucket, &object).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1386,11 +1707,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1399,28 +1723,33 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of the bucket in which to look for objects.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
-
-  call := c.Objects.List(bucket)
+  call := s.Objects.List(bucket)
   if err := call.Pages(ctx, func(page *storage.Objects) error {
-    for _, v := range page.Items {
-      // TODO: Use v.
-      _ = v
+    for _, object := range page.Items {
+      // TODO: Use object
+      fmt.Printf("%#v\n", object)
     }
-    return nil // NOTE: returning a non-nil error stops pagination.
+    return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 }
 package main
@@ -1433,11 +1762,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1446,30 +1778,39 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of the bucket in which the object resides.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "" // TODO: Update placeholder value.
+  object := "{MY-OBJECT}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Objects.Patch(bucket, object, &storage.Object{
-                                 // TODO: Fill required fields.
-                               }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  object := &storage.Object{
+    // TODO: Add the desired fields to be changed.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Objects.Patch(bucket, object, &object).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1481,11 +1822,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1494,39 +1838,48 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of the bucket in which to find the source object.
-  sourceBucket := "" // TODO: Update placeholder value.
+  sourceBucket := "{MY-SOURCE-BUCKET}" // TODO: Update placeholder value(s).
 
   // Name of the source object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  sourceObject := "" // TODO: Update placeholder value.
+  sourceObject := "{MY-SOURCE-OBJECT}" // TODO: Update placeholder value(s).
 
   // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
   // value, if any.
-  destinationBucket := "" // TODO: Update placeholder value.
+  destinationBucket := "{MY-DESTINATION-BUCKET}" // TODO: Update placeholder value(s).
 
   // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
   // object metadata's name value, if any. For information about how to URL encode object names to be
   // path safe, see Encoding URI Path Parts.
-  destinationObject := "" // TODO: Update placeholder value.
+  destinationObject := "{MY-DESTINATION-OBJECT}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Objects.Rewrite(sourceBucket, sourceObject, destinationBucket, destinationObject, &storage.Object{
-                                   // TODO: Fill required fields.
-                                 }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  object := &storage.Object{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Objects.Rewrite(sourceBucket, sourceObject, destinationBucket, destinationObject, &object).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1538,11 +1891,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1551,30 +1907,39 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of the bucket in which the object resides.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "" // TODO: Update placeholder value.
+  object := "{MY-OBJECT}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Objects.Update(bucket, object, &storage.Object{
-                                  // TODO: Fill required fields.
-                                }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  object := &storage.Object{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Objects.Update(bucket, object, &object).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1586,11 +1951,14 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "fmt"
+  "log"
+
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1599,24 +1967,33 @@ import (
 
 func main() {
   ctx := context.Background()
+
+  // Authentication is provided by the `gcloud` tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
-  c, err := storage.New(hc)
+
+  s, err := storage.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    log.Fatal(err)
   }
 
   // Name of the bucket in which to look for objects.
-  bucket := "" // TODO: Update placeholder value.
+  bucket := "{MY-BUCKET}" // TODO: Update placeholder value(s).
 
-  resp, err := c.Objects.WatchAll(bucket, &storage.Channel{
-                                    // TODO: Fill required fields.
-                                  }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
+  channel := &storage.Channel{
+    // TODO: Add the desired fields.
   }
-  // TODO: Use resp.
-  _ = resp
+
+  resp, err := s.Objects.WatchAll(bucket, &channel).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Use resp
+  fmt.Printf("%#v\n", resp)
 }

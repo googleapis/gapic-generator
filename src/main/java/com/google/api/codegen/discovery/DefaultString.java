@@ -15,8 +15,13 @@
 package com.google.api.codegen.discovery;
 
 import com.google.api.codegen.Inflector;
+import com.google.api.codegen.LanguageUtil;
 import com.google.auto.value.AutoValue;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.protobuf.Field;
+import com.google.protobuf.Type;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,19 +33,80 @@ import javax.annotation.Nullable;
  */
 public class DefaultString {
 
+  @AutoValue
+  abstract static class SampleKey {
+    abstract String getApiName();
+
+    abstract String getFieldName();
+
+    abstract String getRegexp();
+
+    static SampleKey create(String apiName, String fieldName, String regexp) {
+      return new AutoValue_DefaultString_SampleKey(apiName, fieldName, regexp);
+    }
+  }
+
+  private final String declare;
+  private final String comment;
+
+  private DefaultString(String declare, String comment) {
+    this.declare = declare;
+    this.comment = comment;
+  }
+
+  public String getDeclare() {
+    return declare;
+  }
+
+  public String getComment() {
+    return comment;
+  }
+
+  private static final ImmutableMap<SampleKey, String> SAMPLE_STRINGS =
+      ImmutableMap.<SampleKey, String>builder()
+          .put(
+              SampleKey.create("compute", "zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"),
+              "us-central1-f")
+          .put(
+              SampleKey.create("autoscaler", "zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"),
+              "us-central1-f")
+          .put(
+              SampleKey.create("clouduseraccounts", "zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"),
+              "us-central1-f")
+          .build();
+
+  public static DefaultString of(String apiName, String fieldName, String pattern) {
+    String sample = null;
+
+    if (pattern != null) {
+      // If the pattern has a specially-recognized default, use the default. No sample.
+      String def = forPattern(pattern);
+      if (def != null) {
+        return new DefaultString(def, null);
+      }
+
+      // If the pattern has a specially-recognized sample, use the sample.
+      sample = SAMPLE_STRINGS.get(SampleKey.create(apiName, fieldName, pattern));
+    }
+
+    String def =
+        String.format(
+            "{MY-%s}", LanguageUtil.lowerCamelToUpperUnderscore(fieldName).replace('_', '-'));
+
+    return new DefaultString(def, sample);
+  }
+
   private static final String WILDCARD_PATTERN = "[^/]*";
 
   /**
    * Returns a default string from `pattern`, or null if the pattern is not supported.
    */
-  public static String forPattern(String pattern) {
-    // We only care about patterns that has alternating literal and wildcard like
+  @VisibleForTesting
+  static String forPattern(String pattern) {
+    // We only care about patterns that have alternating literal and wildcard like
     //  ^foo/[^/]*/bar/[^/]*$
     // Ignore if what we get looks nothing like this.
-    if (pattern == null
-        || !pattern.startsWith("^")
-        || !pattern.endsWith("$")
-        || substrCount(pattern, "/") != substrCount(pattern, WILDCARD_PATTERN) * 3 - 1) {
+    if (pattern == null || !pattern.startsWith("^") || !pattern.endsWith("$")) {
       return null;
     }
     pattern = pattern.substring(1, pattern.length() - 1);
@@ -59,22 +125,6 @@ public class DefaultString {
           .append('}');
     }
     return ret.substring(1);
-  }
-
-  /**
-   * Counts the number of non-overlapping instances of `needle` in `haystack`.
-   */
-  private static int substrCount(String haystack, String needle) {
-    int count = 0;
-    int fromIndex = 0;
-    for (; ; ) {
-      int index = haystack.indexOf(needle, fromIndex);
-      if (index < 0) {
-        return count;
-      }
-      fromIndex = index + needle.length();
-      count++;
-    }
   }
 
   /**

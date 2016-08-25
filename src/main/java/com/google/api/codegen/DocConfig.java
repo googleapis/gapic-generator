@@ -17,19 +17,18 @@ package com.google.api.codegen;
 import com.google.api.codegen.metacode.FieldStructureParser;
 import com.google.api.codegen.metacode.InitCode;
 import com.google.api.codegen.metacode.InitCodeGenerator;
+import com.google.api.codegen.metacode.InitCodeGeneratorContext;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.metacode.InputParameter;
+import com.google.api.codegen.util.SymbolTable;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.Map;
 
-/**
- * Represents the generic documentation settings for an Api method.
- */
+/** Represents the generic documentation settings for an Api method. */
 public abstract class DocConfig {
   public abstract String getApiName();
 
@@ -41,9 +40,7 @@ public abstract class DocConfig {
 
   public abstract ImmutableList<InputParameter> getParams();
 
-  /**
-   * DocConfig builder minimum functionality
-   */
+  /** DocConfig builder minimum functionality */
   public abstract static class Builder<BuilderType extends Builder<BuilderType>> {
     private static final String REQUEST_PARAM_DOC =
         "The request object containing all of the parameters for the API call.";
@@ -59,7 +56,13 @@ public abstract class DocConfig {
         GapicContext context, Interface service, Method method) {
       Map<String, Object> initFieldStructure = createInitFieldStructure(context, service, method);
       InitCodeGenerator generator = new InitCodeGenerator();
-      InitCode initCode = generator.generateRequestObjectInitCode(method, initFieldStructure);
+      InitCodeGeneratorContext initContext =
+          InitCodeGeneratorContext.newBuilder()
+              .symbolTable(new SymbolTable())
+              .initStructure(initFieldStructure)
+              .method(method)
+              .build();
+      InitCode initCode = generator.generateRequestObjectInitCode(initContext);
       setInitCodeProxy(initCode);
       return (BuilderType) this;
     }
@@ -69,8 +72,14 @@ public abstract class DocConfig {
         GapicContext context, Interface service, Method method, Iterable<Field> fields) {
       Map<String, Object> initFieldStructure = createInitFieldStructure(context, service, method);
       InitCodeGenerator generator = new InitCodeGenerator();
-      InitCode initCode =
-          generator.generateRequestFieldInitCode(method, initFieldStructure, fields);
+      InitCodeGeneratorContext initContext =
+          InitCodeGeneratorContext.newBuilder()
+              .symbolTable(new SymbolTable())
+              .initStructure(initFieldStructure)
+              .method(method)
+              .typeTable(null)
+              .build();
+      InitCode initCode = generator.generateRequestFieldInitCode(initContext, fields);
       setInitCodeProxy(initCode);
       return (BuilderType) this;
     }

@@ -7,21 +7,29 @@
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/vision_v1'
+require 'json'
 
 service = Google::Apis::VisionV1::VisionService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 
-
-batch_annotate_images_request_object = Google::Apis::VisionV1::BatchAnnotateImagesRequest.new
-
+# TODO: Assign values to the desired members.
+batch_annotate_images_request_body = Google::Apis::VisionV1::BatchAnnotateImagesRequest.new
 
 # Perform the call
-response = service.annotate_image(batch_annotate_images_request_object)
+response = service.annotate_image(batch_annotate_images_request_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)

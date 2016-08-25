@@ -70,4 +70,8 @@ public class LanguageUtil {
   public static String lowerCamelToLowerUnderscore(String name) {
     return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
   }
+
+  public static String lowerCamelToUpperUnderscore(String name) {
+    return CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, name);
+  }
 }

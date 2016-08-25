@@ -16,7 +16,10 @@ package com.google.api.codegen.util;
 
 import com.google.common.truth.Truth;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 

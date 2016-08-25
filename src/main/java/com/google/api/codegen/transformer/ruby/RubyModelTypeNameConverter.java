@@ -49,6 +49,9 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
           .put(Type.TYPE_BYTES, "\'\'")
           .build();
 
+  /**
+   * A map from primitive type to its corresponding ruby types
+   */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "true, false")

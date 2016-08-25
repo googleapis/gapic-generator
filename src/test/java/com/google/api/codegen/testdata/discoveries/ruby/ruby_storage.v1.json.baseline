@@ -7,25 +7,29 @@
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_bucket_access_control' method:
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of a bucket.
-bucket = ''
-
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-#   group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''
+# The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+# group-emailAddress, allUsers, or allAuthenticatedUsers.
+entity = '{MY-ENTITY}' # TODO: Change placeholder value(s).
 
 # Perform the call
 service.delete_bucket_access_control(bucket, entity)
@@ -37,28 +41,35 @@ service.delete_bucket_access_control(bucket, entity)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_bucket_access_control' method:
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of a bucket.
-bucket = ''
-
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-#   group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''
+# The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+# group-emailAddress, allUsers, or allAuthenticatedUsers.
+entity = '{MY-ENTITY}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_bucket_access_control(bucket, entity)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -67,27 +78,34 @@ response = service.get_bucket_access_control(bucket, entity)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert_bucket_access_control' method:
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of a bucket.
-bucket = ''
-
-bucket_access_control_object = Google::Apis::StorageV1::BucketAccessControl.new
-
+# TODO: Assign values to the desired members.
+bucket_access_control_body = Google::Apis::StorageV1::BucketAccessControl.new
 
 # Perform the call
-response = service.insert_bucket_access_control(bucket, bucket_access_control_object)
+response = service.insert_bucket_access_control(bucket, bucket_access_control_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -96,24 +114,31 @@ response = service.insert_bucket_access_control(bucket, bucket_access_control_ob
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_bucket_access_controls' method:
-
-# * Name of a bucket.
-bucket = ''
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.list_bucket_access_controls(bucket)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -122,31 +147,38 @@ response = service.list_bucket_access_controls(bucket)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch_bucket_access_control' method:
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of a bucket.
-bucket = ''
+# The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+# group-emailAddress, allUsers, or allAuthenticatedUsers.
+entity = '{MY-ENTITY}' # TODO: Change placeholder value(s).
 
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-#   group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''
-
-bucket_access_control_object = Google::Apis::StorageV1::BucketAccessControl.new
-
+# TODO: Assign values to the desired members to be changed.
+bucket_access_control_body = Google::Apis::StorageV1::BucketAccessControl.new
 
 # Perform the call
-response = service.patch_bucket_access_control(bucket, entity, bucket_access_control_object)
+response = service.patch_bucket_access_control(bucket, entity, bucket_access_control_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -155,31 +187,38 @@ response = service.patch_bucket_access_control(bucket, entity, bucket_access_con
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_bucket_access_control' method:
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of a bucket.
-bucket = ''
+# The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+# group-emailAddress, allUsers, or allAuthenticatedUsers.
+entity = '{MY-ENTITY}' # TODO: Change placeholder value(s).
 
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-#   group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''
-
-bucket_access_control_object = Google::Apis::StorageV1::BucketAccessControl.new
-
+# TODO: Assign values to the desired members.
+bucket_access_control_body = Google::Apis::StorageV1::BucketAccessControl.new
 
 # Perform the call
-response = service.update_bucket_access_control(bucket, entity, bucket_access_control_object)
+response = service.update_bucket_access_control(bucket, entity, bucket_access_control_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -188,21 +227,25 @@ response = service.update_bucket_access_control(bucket, entity, bucket_access_co
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_bucket' method:
-
-# * Name of a bucket.
-bucket = ''
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
 # Perform the call
 service.delete_bucket(bucket)
@@ -214,24 +257,31 @@ service.delete_bucket(bucket)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_bucket' method:
-
-# * Name of a bucket.
-bucket = ''
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_bucket(bucket)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -240,27 +290,34 @@ response = service.get_bucket(bucket)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert_bucket' method:
+# A valid API project identifier.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
-# * A valid API project identifier.
-project = ''
-
-bucket_object = Google::Apis::StorageV1::Bucket.new
-
+# TODO: Assign values to the desired members.
+bucket_body = Google::Apis::StorageV1::Bucket.new
 
 # Perform the call
-response = service.insert_bucket(project, bucket_object)
+response = service.insert_bucket(project, bucket_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -269,29 +326,35 @@ response = service.insert_bucket(project, bucket_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_buckets' method:
-
-# * A valid API project identifier.
-project = ''
+# A valid API project identifier.
+project = '{MY-PROJECT}' # TODO: Change placeholder value(s).
 
 # Perform the call
-result_list = service.fetch_all(items: :items) { |token|
+items = service.fetch_all(items: :items) do |token|
   service.list_buckets(project, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+items.each do |bucket|
+  # TODO: Use bucket
+  puts JSON.pretty_generate(bucket)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -300,27 +363,34 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch_bucket' method:
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of a bucket.
-bucket = ''
-
-bucket_object = Google::Apis::StorageV1::Bucket.new
-
+# TODO: Assign values to the desired members to be changed.
+bucket_body = Google::Apis::StorageV1::Bucket.new
 
 # Perform the call
-response = service.patch_bucket(bucket, bucket_object)
+response = service.patch_bucket(bucket, bucket_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -329,27 +399,34 @@ response = service.patch_bucket(bucket, bucket_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_bucket' method:
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of a bucket.
-bucket = ''
-
-bucket_object = Google::Apis::StorageV1::Bucket.new
-
+# TODO: Assign values to the desired members.
+bucket_body = Google::Apis::StorageV1::Bucket.new
 
 # Perform the call
-response = service.update_bucket(bucket, bucket_object)
+response = service.update_bucket(bucket, bucket_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -358,24 +435,29 @@ response = service.update_bucket(bucket, bucket_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 
-
-channel_object = Google::Apis::StorageV1::Channel.new
-
+# TODO: Assign values to the desired members.
+channel_body = Google::Apis::StorageV1::Channel.new
 
 # Perform the call
-service.stop_channel(channel_object)
+service.stop_channel(channel_body)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -384,25 +466,29 @@ service.stop_channel(channel_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_default_object_access_control' method:
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of a bucket.
-bucket = ''
-
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-#   group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''
+# The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+# group-emailAddress, allUsers, or allAuthenticatedUsers.
+entity = '{MY-ENTITY}' # TODO: Change placeholder value(s).
 
 # Perform the call
 service.delete_default_object_access_control(bucket, entity)
@@ -414,28 +500,35 @@ service.delete_default_object_access_control(bucket, entity)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_default_object_access_control' method:
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of a bucket.
-bucket = ''
-
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-#   group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''
+# The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+# group-emailAddress, allUsers, or allAuthenticatedUsers.
+entity = '{MY-ENTITY}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_default_object_access_control(bucket, entity)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -444,27 +537,34 @@ response = service.get_default_object_access_control(bucket, entity)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert_default_object_access_control' method:
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of a bucket.
-bucket = ''
-
-object_access_control_object = Google::Apis::StorageV1::ObjectAccessControl.new
-
+# TODO: Assign values to the desired members.
+object_access_control_body = Google::Apis::StorageV1::ObjectAccessControl.new
 
 # Perform the call
-response = service.insert_default_object_access_control(bucket, object_access_control_object)
+response = service.insert_default_object_access_control(bucket, object_access_control_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -473,24 +573,31 @@ response = service.insert_default_object_access_control(bucket, object_access_co
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_default_object_access_controls' method:
-
-# * Name of a bucket.
-bucket = ''
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.list_default_object_access_controls(bucket)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -499,31 +606,38 @@ response = service.list_default_object_access_controls(bucket)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch_default_object_access_control' method:
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of a bucket.
-bucket = ''
+# The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+# group-emailAddress, allUsers, or allAuthenticatedUsers.
+entity = '{MY-ENTITY}' # TODO: Change placeholder value(s).
 
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-#   group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''
-
-object_access_control_object = Google::Apis::StorageV1::ObjectAccessControl.new
-
+# TODO: Assign values to the desired members to be changed.
+object_access_control_body = Google::Apis::StorageV1::ObjectAccessControl.new
 
 # Perform the call
-response = service.patch_default_object_access_control(bucket, entity, object_access_control_object)
+response = service.patch_default_object_access_control(bucket, entity, object_access_control_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -532,31 +646,38 @@ response = service.patch_default_object_access_control(bucket, entity, object_ac
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_default_object_access_control' method:
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of a bucket.
-bucket = ''
+# The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+# group-emailAddress, allUsers, or allAuthenticatedUsers.
+entity = '{MY-ENTITY}' # TODO: Change placeholder value(s).
 
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-#   group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''
-
-object_access_control_object = Google::Apis::StorageV1::ObjectAccessControl.new
-
+# TODO: Assign values to the desired members.
+object_access_control_body = Google::Apis::StorageV1::ObjectAccessControl.new
 
 # Perform the call
-response = service.update_default_object_access_control(bucket, entity, object_access_control_object)
+response = service.update_default_object_access_control(bucket, entity, object_access_control_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -565,29 +686,33 @@ response = service.update_default_object_access_control(bucket, entity, object_a
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_object_access_control' method:
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of a bucket.
-bucket = ''
+# Name of the object. For information about how to URL encode object names to be path safe, see
+# Encoding URI Path Parts.
+object = '{MY-OBJECT}' # TODO: Change placeholder value(s).
 
-# * Name of the object. For information about how to URL encode object names to be path safe, see
-#   Encoding URI Path Parts.
-object = ''
-
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-#   group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''
+# The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+# group-emailAddress, allUsers, or allAuthenticatedUsers.
+entity = '{MY-ENTITY}' # TODO: Change placeholder value(s).
 
 # Perform the call
 service.delete_object_access_control(bucket, object, entity)
@@ -599,32 +724,39 @@ service.delete_object_access_control(bucket, object, entity)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_object_access_control' method:
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of a bucket.
-bucket = ''
+# Name of the object. For information about how to URL encode object names to be path safe, see
+# Encoding URI Path Parts.
+object = '{MY-OBJECT}' # TODO: Change placeholder value(s).
 
-# * Name of the object. For information about how to URL encode object names to be path safe, see
-#   Encoding URI Path Parts.
-object = ''
-
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-#   group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''
+# The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+# group-emailAddress, allUsers, or allAuthenticatedUsers.
+entity = '{MY-ENTITY}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_object_access_control(bucket, object, entity)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -633,31 +765,38 @@ response = service.get_object_access_control(bucket, object, entity)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert_object_access_control' method:
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of a bucket.
-bucket = ''
+# Name of the object. For information about how to URL encode object names to be path safe, see
+# Encoding URI Path Parts.
+object = '{MY-OBJECT}' # TODO: Change placeholder value(s).
 
-# * Name of the object. For information about how to URL encode object names to be path safe, see
-#   Encoding URI Path Parts.
-object = ''
-
-object_access_control_object = Google::Apis::StorageV1::ObjectAccessControl.new
-
+# TODO: Assign values to the desired members.
+object_access_control_body = Google::Apis::StorageV1::ObjectAccessControl.new
 
 # Perform the call
-response = service.insert_object_access_control(bucket, object, object_access_control_object)
+response = service.insert_object_access_control(bucket, object, object_access_control_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -666,28 +805,35 @@ response = service.insert_object_access_control(bucket, object, object_access_co
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_object_access_controls' method:
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of a bucket.
-bucket = ''
-
-# * Name of the object. For information about how to URL encode object names to be path safe, see
-#   Encoding URI Path Parts.
-object = ''
+# Name of the object. For information about how to URL encode object names to be path safe, see
+# Encoding URI Path Parts.
+object = '{MY-OBJECT}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.list_object_access_controls(bucket, object)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -696,35 +842,42 @@ response = service.list_object_access_controls(bucket, object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch_object_access_control' method:
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of a bucket.
-bucket = ''
+# Name of the object. For information about how to URL encode object names to be path safe, see
+# Encoding URI Path Parts.
+object = '{MY-OBJECT}' # TODO: Change placeholder value(s).
 
-# * Name of the object. For information about how to URL encode object names to be path safe, see
-#   Encoding URI Path Parts.
-object = ''
+# The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+# group-emailAddress, allUsers, or allAuthenticatedUsers.
+entity = '{MY-ENTITY}' # TODO: Change placeholder value(s).
 
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-#   group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''
-
-object_access_control_object = Google::Apis::StorageV1::ObjectAccessControl.new
-
+# TODO: Assign values to the desired members to be changed.
+object_access_control_body = Google::Apis::StorageV1::ObjectAccessControl.new
 
 # Perform the call
-response = service.patch_object_access_control(bucket, object, entity, object_access_control_object)
+response = service.patch_object_access_control(bucket, object, entity, object_access_control_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -733,35 +886,42 @@ response = service.patch_object_access_control(bucket, object, entity, object_ac
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_object_access_control' method:
+# Name of a bucket.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of a bucket.
-bucket = ''
+# Name of the object. For information about how to URL encode object names to be path safe, see
+# Encoding URI Path Parts.
+object = '{MY-OBJECT}' # TODO: Change placeholder value(s).
 
-# * Name of the object. For information about how to URL encode object names to be path safe, see
-#   Encoding URI Path Parts.
-object = ''
+# The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+# group-emailAddress, allUsers, or allAuthenticatedUsers.
+entity = '{MY-ENTITY}' # TODO: Change placeholder value(s).
 
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-#   group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''
-
-object_access_control_object = Google::Apis::StorageV1::ObjectAccessControl.new
-
+# TODO: Assign values to the desired members.
+object_access_control_body = Google::Apis::StorageV1::ObjectAccessControl.new
 
 # Perform the call
-response = service.update_object_access_control(bucket, object, entity, object_access_control_object)
+response = service.update_object_access_control(bucket, object, entity, object_access_control_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -770,31 +930,38 @@ response = service.update_object_access_control(bucket, object, entity, object_a
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'compose_object' method:
+# Name of the bucket in which to store the new object.
+destination_bucket = '{MY-DESTINATION-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of the bucket in which to store the new object.
-destination_bucket = ''
+# Name of the new object. For information about how to URL encode object names to be path safe, see
+# Encoding URI Path Parts.
+destination_object = '{MY-DESTINATION-OBJECT}' # TODO: Change placeholder value(s).
 
-# * Name of the new object. For information about how to URL encode object names to be path safe, see
-#   Encoding URI Path Parts.
-destination_object = ''
-
-compose_request_object = Google::Apis::StorageV1::ComposeRequest.new
-
+# TODO: Assign values to the desired members.
+compose_request_body = Google::Apis::StorageV1::ComposeRequest.new
 
 # Perform the call
-response = service.compose_object(destination_bucket, destination_object, compose_request_object)
+response = service.compose_object(destination_bucket, destination_object, compose_request_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -803,40 +970,47 @@ response = service.compose_object(destination_bucket, destination_object, compos
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'copy_object' method:
+# Name of the bucket in which to find the source object.
+source_bucket = '{MY-SOURCE-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of the bucket in which to find the source object.
-source_bucket = ''
+# Name of the source object. For information about how to URL encode object names to be path safe, see
+# Encoding URI Path Parts.
+source_object = '{MY-SOURCE-OBJECT}' # TODO: Change placeholder value(s).
 
-# * Name of the source object. For information about how to URL encode object names to be path safe,
-#   see Encoding URI Path Parts.
-source_object = ''
+# Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
+# value, if any.For information about how to URL encode object names to be path safe, see Encoding URI
+# Path Parts.
+destination_bucket = '{MY-DESTINATION-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of the bucket in which to store the new object. Overrides the provided object metadata's
-#   bucket value, if any.For information about how to URL encode object names to be path safe, see
-#   Encoding URI Path Parts.
-destination_bucket = ''
+# Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
+# object metadata's name value, if any.
+destination_object = '{MY-DESTINATION-OBJECT}' # TODO: Change placeholder value(s).
 
-# * Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
-#   object metadata's name value, if any.
-destination_object = ''
-
-object_object = Google::Apis::StorageV1::Object.new
-
+# TODO: Assign values to the desired members.
+object_body = Google::Apis::StorageV1::Object.new
 
 # Perform the call
-response = service.copy_object(source_bucket, source_object, destination_bucket, destination_object, object_object)
+response = service.copy_object(source_bucket, source_object, destination_bucket, destination_object, object_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -845,25 +1019,29 @@ response = service.copy_object(source_bucket, source_object, destination_bucket,
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'delete_object' method:
+# Name of the bucket in which the object resides.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of the bucket in which the object resides.
-bucket = ''
-
-# * Name of the object. For information about how to URL encode object names to be path safe, see
-#   Encoding URI Path Parts.
-object = ''
+# Name of the object. For information about how to URL encode object names to be path safe, see
+# Encoding URI Path Parts.
+object = '{MY-OBJECT}' # TODO: Change placeholder value(s).
 
 # Perform the call
 service.delete_object(bucket, object)
@@ -875,28 +1053,35 @@ service.delete_object(bucket, object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'get_object' method:
+# Name of the bucket in which the object resides.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of the bucket in which the object resides.
-bucket = ''
-
-# * Name of the object. For information about how to URL encode object names to be path safe, see
-#   Encoding URI Path Parts.
-object = ''
+# Name of the object. For information about how to URL encode object names to be path safe, see
+# Encoding URI Path Parts.
+object = '{MY-OBJECT}' # TODO: Change placeholder value(s).
 
 # Perform the call
 response = service.get_object(bucket, object)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -905,28 +1090,35 @@ response = service.get_object(bucket, object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'insert_object' method:
+# Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
+# value, if any.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of the bucket in which to store the new object. Overrides the provided object metadata's
-#   bucket value, if any.
-bucket = ''
-
-object_object = Google::Apis::StorageV1::Object.new
-
+# TODO: Assign values to the desired members.
+object_body = Google::Apis::StorageV1::Object.new
 
 # Perform the call
-response = service.insert_object(bucket, object_object)
+response = service.insert_object(bucket, object_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -935,29 +1127,35 @@ response = service.insert_object(bucket, object_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'list_objects' method:
-
-# * Name of the bucket in which to look for objects.
-bucket = ''
+# Name of the bucket in which to look for objects.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
 # Perform the call
-result_list = service.fetch_all(items: :items) { |token|
+items = service.fetch_all(items: :items) do |token|
   service.list_objects(bucket, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+end
+
+items.each do |object|
+  # TODO: Use object
+  puts JSON.pretty_generate(object)
+end
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -966,31 +1164,38 @@ result_list.each { |element|
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'patch_object' method:
+# Name of the bucket in which the object resides.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of the bucket in which the object resides.
-bucket = ''
+# Name of the object. For information about how to URL encode object names to be path safe, see
+# Encoding URI Path Parts.
+object = '{MY-OBJECT}' # TODO: Change placeholder value(s).
 
-# * Name of the object. For information about how to URL encode object names to be path safe, see
-#   Encoding URI Path Parts.
-object = ''
-
-object_object = Google::Apis::StorageV1::Object.new
-
+# TODO: Assign values to the desired members to be changed.
+object_body = Google::Apis::StorageV1::Object.new
 
 # Perform the call
-response = service.patch_object(bucket, object, object_object)
+response = service.patch_object(bucket, object, object_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -999,40 +1204,47 @@ response = service.patch_object(bucket, object, object_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'rewrite_object' method:
+# Name of the bucket in which to find the source object.
+source_bucket = '{MY-SOURCE-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of the bucket in which to find the source object.
-source_bucket = ''
+# Name of the source object. For information about how to URL encode object names to be path safe, see
+# Encoding URI Path Parts.
+source_object = '{MY-SOURCE-OBJECT}' # TODO: Change placeholder value(s).
 
-# * Name of the source object. For information about how to URL encode object names to be path safe,
-#   see Encoding URI Path Parts.
-source_object = ''
+# Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
+# value, if any.
+destination_bucket = '{MY-DESTINATION-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of the bucket in which to store the new object. Overrides the provided object metadata's
-#   bucket value, if any.
-destination_bucket = ''
+# Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
+# object metadata's name value, if any. For information about how to URL encode object names to be
+# path safe, see Encoding URI Path Parts.
+destination_object = '{MY-DESTINATION-OBJECT}' # TODO: Change placeholder value(s).
 
-# * Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
-#   object metadata's name value, if any. For information about how to URL encode object names to be
-#   path safe, see Encoding URI Path Parts.
-destination_object = ''
-
-object_object = Google::Apis::StorageV1::Object.new
-
+# TODO: Assign values to the desired members.
+object_body = Google::Apis::StorageV1::Object.new
 
 # Perform the call
-response = service.rewrite_object(source_bucket, source_object, destination_bucket, destination_object, object_object)
+response = service.rewrite_object(source_bucket, source_object, destination_bucket, destination_object, object_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -1041,31 +1253,38 @@ response = service.rewrite_object(source_bucket, source_object, destination_buck
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'update_object' method:
+# Name of the bucket in which the object resides.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of the bucket in which the object resides.
-bucket = ''
+# Name of the object. For information about how to URL encode object names to be path safe, see
+# Encoding URI Path Parts.
+object = '{MY-OBJECT}' # TODO: Change placeholder value(s).
 
-# * Name of the object. For information about how to URL encode object names to be path safe, see
-#   Encoding URI Path Parts.
-object = ''
-
-object_object = Google::Apis::StorageV1::Object.new
-
+# TODO: Assign values to the desired members.
+object_body = Google::Apis::StorageV1::Object.new
 
 # Perform the call
-response = service.update_object(bucket, object, object_object)
+response = service.update_object(bucket, object, object_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -1074,24 +1293,31 @@ response = service.update_object(bucket, object, object_object)
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
 #    https://cloud.google.com/sdk/ and run
-#    'gcloud beta auth application-default login'
+#    `gcloud beta auth application-default login`
 # 3. Install the Ruby client library and Application Default Credentials
-#    library by running 'gem install google-api-client' and
-#    'gem install googleauth'
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
 require 'googleauth'
 require 'google/apis/storage_v1'
+require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
+
+# Authentication is provided by the `gcloud` tool when running locally
+# and by built-in service accounts when running on GAE, GCE, or GKE.
+# For more information, see
+# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# TODO: Change placeholders below to appropriate parameter values for the 'watch_all_objects' method:
+# Name of the bucket in which to look for objects.
+bucket = '{MY-BUCKET}' # TODO: Change placeholder value(s).
 
-# * Name of the bucket in which to look for objects.
-bucket = ''
-
-channel_object = Google::Apis::StorageV1::Channel.new
-
+# TODO: Assign values to the desired members.
+channel_body = Google::Apis::StorageV1::Channel.new
 
 # Perform the call
-response = service.watch_all_objects(bucket, channel_object)
+response = service.watch_all_objects(bucket, channel_body)
+
+# TODO: Use response
+puts JSON.pretty_generate(response)

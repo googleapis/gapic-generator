@@ -68,8 +68,8 @@ class Any(object):
     The pack methods provided by protobuf library will by default use
     'type.googleapis.com/full.type.name' as the type URL and the unpack
     methods only use the fully qualified type name after the last '/'
-    in the type URL, for example "foo.bar.com/x/y.z" will yield type
-    name "y.z".
+    in the type URL, for example \"foo.bar.com/x/y.z\" will yield type
+    name \"y.z\".
 
 
     # JSON
@@ -85,9 +85,9 @@ class Any(object):
         }
 
         {
-          "@type": "type.googleapis.com/google.profile.Person",
-          "firstName": <string>,
-          "lastName": <string>
+          \"@type\": \"type.googleapis.com/google.profile.Person\",
+          \"firstName\": <string>,
+          \"lastName\": <string>
         }
 
     If the embedded message type is well-known and has a custom JSON
@@ -96,8 +96,8 @@ class Any(object):
     field. Example (for message ``google.protobuf.Duration``):
 
         {
-          "@type": "type.googleapis.com/google.protobuf.Duration",
-          "value": "1.212s"
+          \"@type\": \"type.googleapis.com/google.protobuf.Duration\",
+          \"value\": \"1.212s\"
         }
 
     Attributes:
@@ -110,7 +110,7 @@ class Any(object):
         * If no schema is provided, ``https`` is assumed.
         * The last segment of the URL's path must represent the fully
           qualified name of the type (as in ``path/google.protobuf.Duration``).
-          The name should be in a canonical form (e.g., leading "." is
+          The name should be in a canonical form (e.g., leading \".\" is
           not accepted).
         * An HTTP GET on the URL must yield a ``google.protobuf.Type``
           value in binary format, or produce an error.
@@ -147,8 +147,8 @@ class Duration(object):
     """
     A Duration represents a signed, fixed-length span of time represented
     as a count of seconds and fractions of seconds at nanosecond
-    resolution. It is independent of any calendar and concepts like "day"
-    or "month". It is related to Timestamp in that the difference between
+    resolution. It is independent of any calendar and concepts like \"day\"
+    or \"month\". It is related to Timestamp in that the difference between
     two Timestamp values is a Duration and it can be added or subtracted
     from a Timestamp. Range is approximately +-10,000 years.
 
@@ -219,8 +219,8 @@ class FieldMask(object):
     """
     ``FieldMask`` represents a set of symbolic field paths, for example:
 
-        paths: "f.a"
-        paths: "f.b.d"
+        paths: \"f.a\"
+        paths: \"f.b.d\"
 
     Here ``f`` represents a field in some root message, ``a`` and ``b``
     fields in the message found in ``f``, and ``d`` a field found in the
@@ -330,14 +330,14 @@ class FieldMask(object):
     In proto a field mask for ``Profile`` may look as such:
 
         mask {
-          paths: "user.display_name"
-          paths: "photo"
+          paths: \"user.display_name\"
+          paths: \"photo\"
         }
 
     In JSON, the same mask is represented as below:
 
         {
-          mask: "user.displayName,photo"
+          mask: \"user.displayName,photo\"
         }
 
     # Field Masks and Oneof Fields
@@ -355,16 +355,16 @@ class FieldMask(object):
     The field mask can be:
 
         mask {
-          paths: "name"
+          paths: \"name\"
         }
 
     Or:
 
         mask {
-          paths: "sub_message"
+          paths: \"sub_message\"
         }
 
-    Note that oneof type names ("test_oneof" in this case) cannot be used in
+    Note that oneof type names (\"test_oneof\" in this case) cannot be used in
     paths.
 
     Attributes:
@@ -396,7 +396,7 @@ class Timestamp(object):
     nanosecond resolution in UTC Epoch time. It is encoded using the
     Proleptic Gregorian Calendar which extends the Gregorian calendar
     backwards to year one. It is encoded assuming all minutes are 60
-    seconds long, i.e. leap seconds are "smeared" so that no leap second
+    seconds long, i.e. leap seconds are \"smeared\" so that no leap second
     table is needed for interpretation. Range is from
     0001-01-01T00:00:00Z to 9999-12-31T23:59:59.999999999Z.
     By restricting to that range, we ensure that we can convert to
@@ -926,6 +926,7 @@ class Comment(object):
     Attributes:
       user_name (string): won't be filled in by the sample generator
       comment (bytes): should be filled in by the sample generator
+      stage (:class:`google.example.library.v1.library_pb2.Comment.Stage`): should be filled in by the sample generator
 
     """
     pass

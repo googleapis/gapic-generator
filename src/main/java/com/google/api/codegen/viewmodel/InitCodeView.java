@@ -26,11 +26,19 @@ public abstract class InitCodeView {
 
   public abstract List<FieldSettingView> fieldSettings();
 
+  /**
+   * A ModelTypeTable used to hold information about the types used in method samples.
+   * This is commonly used for type aliasing.
+   */
   @Nullable
   public abstract ModelTypeTable typeTable();
 
+  /** The package name of the generated client library. This is used to alias the library object. */
   public abstract String packageName();
 
+  /**
+   * The file name of the client library generated. This is used for import statements in samples.
+   */
   public abstract String apiFileName();
 
   public static Builder newBuilder() {
