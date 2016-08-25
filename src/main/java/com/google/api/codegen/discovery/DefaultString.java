@@ -46,16 +46,16 @@ public class DefaultString {
     }
   }
 
-  private final String declare;
+  private final String define;
   private final String comment;
 
-  private DefaultString(String declare, String comment) {
-    this.declare = declare;
+  public DefaultString(String define, String comment) {
+    this.define = define;
     this.comment = comment;
   }
 
-  public String getDeclare() {
-    return declare;
+  public String getDefine() {
+    return define;
   }
 
   public String getComment() {
@@ -75,25 +75,25 @@ public class DefaultString {
               "us-central1-f")
           .build();
 
-  public static DefaultString of(String apiName, String fieldName, String pattern) {
+  public static String getSample(String apiName, String fieldName, String pattern) {
     String sample = null;
+    if (pattern != null) {
+      // If the pattern has a specially-recognized sample, use the sample.
+      sample = SAMPLE_STRINGS.get(SampleKey.create(apiName, fieldName, pattern));
+    }
+    return sample == null ? "" : sample;
+  }
 
+  public static String getPlaceholder(String fieldName, String pattern) {
     if (pattern != null) {
       // If the pattern has a specially-recognized default, use the default. No sample.
       String def = forPattern(pattern);
       if (def != null) {
-        return new DefaultString(def, null);
+        return def;
       }
-
-      // If the pattern has a specially-recognized sample, use the sample.
-      sample = SAMPLE_STRINGS.get(SampleKey.create(apiName, fieldName, pattern));
     }
-
-    String def =
-        String.format(
-            "{MY-%s}", LanguageUtil.lowerCamelToUpperUnderscore(fieldName).replace('_', '-'));
-
-    return new DefaultString(def, sample);
+    return String.format(
+        "{MY-%s}", LanguageUtil.lowerCamelToUpperUnderscore(fieldName).replace('_', '-'));
   }
 
   private static final String WILDCARD_PATTERN = "[^/]*";

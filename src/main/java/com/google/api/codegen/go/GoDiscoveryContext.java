@@ -64,15 +64,10 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
       return DEFAULT_VALUES.get(field.getKind());
     }
     if (field.getKind() == Field.Kind.TYPE_STRING || field.getKind() == Field.Kind.TYPE_ENUM) {
-      return getDefaultString(type, field);
+      return getDefaultString(type, field).getDefine();
     }
     throw new IllegalArgumentException(
         String.format("not implemented: typeDefaultValue(%s, %s)", type, field));
-  }
-
-  @Override
-  public String lineEnding(String value) {
-    return value;
   }
 
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_TYPE =

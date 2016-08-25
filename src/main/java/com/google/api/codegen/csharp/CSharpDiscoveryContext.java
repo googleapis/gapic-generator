@@ -236,9 +236,9 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
   @AutoValue
   public abstract static class ParamInfo {
     public static ParamInfo create(
-        String typeName, String name, String defaultValue, String description) {
+        String typeName, String name, String defaultValue, String description, String sample) {
       return new AutoValue_CSharpDiscoveryContext_ParamInfo(
-          typeName, name, defaultValue, description);
+          typeName, name, defaultValue, description, sample);
     }
 
     public abstract String typeName();
@@ -248,6 +248,8 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     public abstract String defaultValue();
 
     public abstract String description();
+
+    public abstract String sample();
   }
 
   @AutoValue
@@ -385,7 +387,8 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
                     String name =
                         fixReservedWordVar(CSharpContextCommon.s_underscoresToCamelCase(paramName));
                     String description = getDescription(methodType.getName(), paramName);
-                    return ParamInfo.create(typeName, name, defaultValue, description);
+                    String sample = getDefaultSample(methodType, field);
+                    return ParamInfo.create(typeName, name, defaultValue, description, sample);
                   }
                 })
             .toList();
@@ -456,8 +459,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     } else if (field.getKind() == Kind.TYPE_ENUM) {
       return "(" + typeName + ") 0";
     } else if (field.getKind() == Kind.TYPE_STRING) {
-      String defaultString = getDefaultString(parentType, field);
-      return defaultString.substring(0, defaultString.indexOf(";"));
+      return getDefaultString(parentType, field).getDefine();
     } else {
       return DEFAULTVALUE_MAP.get(field.getKind());
     }

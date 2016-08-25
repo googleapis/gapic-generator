@@ -58,7 +58,7 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
       return DEFAULT_VALUES.get(field.getKind());
     }
     if (field.getKind() == Field.Kind.TYPE_STRING || field.getKind() == Field.Kind.TYPE_ENUM) {
-      return getDefaultString(type, field);
+      return getDefaultString(type, field).getDefine();
     }
     return "nil";
   }
@@ -66,16 +66,6 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
   @Override
   public String stringLiteral(String value) {
     return "'" + value + "'";
-  }
-
-  @Override
-  public String lineEnding(String value) {
-    return value;
-  }
-
-  @Override
-  public String lineComment(String line, String comment) {
-    return line + "  # " + comment;
   }
 
   /**

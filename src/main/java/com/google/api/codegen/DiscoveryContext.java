@@ -271,54 +271,48 @@ public abstract class DiscoveryContext extends CodegenContext {
   }
 
   /*
-   * Returns language-specific syntax of line ending with given value.
+   * Returns DefaultString for a type's string field. If ApiaryConfig specifies a string format, it
+   * includes a default comment. Otherwise, the comment is empty.
    */
-  public String lineEnding(String value) {
-    return value + ";";
-  }
-
-  /*
-   * Returns language-specific syntax of line commented with given comment string.
-   */
-  public String lineComment(String line, String comment) {
-    return line + "  // " + comment;
-  }
-
-  /*
-   * Returns default string (to end of line) for a type's string field. If ApiaryConfig specifies a
-   * string format, returns corresponding default string with inline comment. Otherwise, if
-   * ApiaryConfig specifies a pattern, returns corresponding default string. Otherwise, returns
-   * empty string.
-   */
-  protected String getDefaultString(Type type, Field field) {
+  protected DefaultString getDefaultString(Type type, Field field) {
     String stringFormat = getApiaryConfig().getStringFormat(type.getName(), field.getName());
     if (stringFormat != null) {
       switch (stringFormat) {
         case "byte":
-          return lineComment(
-              lineEnding(stringLiteral("")),
+          return new DefaultString(
+              stringLiteral(""),
               "base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648");
         case "date":
-          return lineComment(
-              lineEnding(stringLiteral("1969-12-31")),
+          return new DefaultString(
+              stringLiteral("1969-12-31"),
               stringLiteral("YYYY-MM-DD") + ": see java.text.SimpleDateFormat");
         case "date-time":
-          return lineComment(
-              lineEnding(stringLiteral(new DateTime(0L).toStringRfc3339())),
+          return new DefaultString(
+              stringLiteral(new DateTime(0L).toStringRfc3339()),
               stringLiteral("YYYY-MM-DDThh:mm:ss.fffZ")
                   + " (UTC): see com.google.api.client.util.DateTime.toStringRfc3339()");
         default:
-          return lineEnding(stringLiteral(""));
+          return new DefaultString(stringLiteral(""), null);
       }
     }
     String stringPattern = getApiaryConfig().getFieldPattern().get(type.getName(), field.getName());
-    DefaultString defString = DefaultString.of(getApi().getName(), field.getName(), stringPattern);
-
-    String line = stringLiteral(defString.getDeclare());
-    if (defString.getComment() != null) {
-      line = lineComment(line, "eg. " + stringLiteral(defString.getComment()));
+    String def = DefaultString.getPlaceholder(field.getName(), stringPattern);
+    String sample = DefaultString.getSample(getApi().getName(), field.getName(), stringPattern);
+    if (!Strings.isNullOrEmpty(sample)) {
+      sample = stringLiteral(sample);
     }
-    return lineEnding(line);
+    return new DefaultString(stringLiteral(def), sample);
+  }
+
+  /**
+   * Returns the sample string for the given type and field.
+   */
+  public String getDefaultSample(Type type, Field field) {
+    String sample = getDefaultString(type, field).getComment();
+    if (Strings.isNullOrEmpty(sample)) {
+      return "";
+    }
+    return " eg. " + sample;
   }
 
   /**

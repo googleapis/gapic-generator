@@ -52,24 +52,19 @@ public class NodeJSDiscoveryContext extends DiscoveryContext implements NodeJSCo
     // API
     // remove if inconsistency is resolved in discovery docs
     if (isTranslateLanguageDetectionsOrTranslationsField(method, field)) {
-      return lineEnding(stringLiteral(""));
+      return stringLiteral("");
     }
 
     if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
-      return isMapField(type, field.getName()) ? "{}," : "[],";
+      return isMapField(type, field.getName()) ? "{}" : "[]";
     }
     if (DEFAULT_VALUES.containsKey(field.getKind())) {
-      return DEFAULT_VALUES.get(field.getKind()) + ",";
+      return DEFAULT_VALUES.get(field.getKind());
     }
     if (field.getKind() == Field.Kind.TYPE_STRING || field.getKind() == Field.Kind.TYPE_ENUM) {
-      return getDefaultString(type, field);
+      return getDefaultString(type, field).getDefine();
     }
-    return "null,";
-  }
-
-  @Override
-  public String lineEnding(String value) {
-    return value + ",";
+    return "null";
   }
 
   private static final ImmutableMap<String, String> MAP_PARAM_NAME =
