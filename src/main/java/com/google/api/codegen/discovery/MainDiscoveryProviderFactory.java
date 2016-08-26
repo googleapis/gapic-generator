@@ -49,9 +49,9 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
   public static final String PYTHON = "python";
   public static final String RUBY = "ruby";
 
-  private static final String ADC_SNIPPET_FILE = "discovery_fragment.snip";
-  private static final String OAUTH_3L_SNIPPET_FILE = "3lo_discovery_fragment.snip";
-  private static final String API_KEY_SNIPPET_FILE = "api_key_discovery_fragment.snip";
+  private static final String SNIPPET_FILE_ADC = "discovery_fragment.snip";
+  private static final String SNIPPET_FILE_3LO = "discovery_fragment_3lo.snip";
+  private static final String SNIPPET_FILE_API_KEY = "discovery_fragment_api_key.snip";
 
   public static DiscoveryProvider defaultCreate(
       Service service, ApiaryConfig apiaryConfig, String id) {
@@ -61,7 +61,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
       case APPLICATION_DEFAULT_CREDENTIALS:
       case OAUTH_3L:
       case API_KEY:
-        snippetFile = ADC_SNIPPET_FILE;
+        snippetFile = SNIPPET_FILE_ADC;
         break;
       default:
         throw new RuntimeException("unsupported auth type");

@@ -126,7 +126,7 @@ public class ApiaryConfig {
   public enum AuthType {
     APPLICATION_DEFAULT_CREDENTIALS,
     OAUTH_3L,
-    API_KEY
+    API_KEY,
   }
 
   /*
@@ -134,23 +134,17 @@ public class ApiaryConfig {
    */
   public AuthType getAuthType() {
     String key = getServiceCanonicalName();
-    if (authOverrides.containsKey(key)) {
+    if (!Strings.isNullOrEmpty(key) && authOverrides.containsKey(key)) {
       return authOverrides.get(key);
     }
-    // This statement is based on the assumption that every method in a service contains all the
-    // scopes necessary to determine the correct auth mechanism for the entire service.
-    // Therefore, we use the scopes of the first method in the auth scopes array.
-    key = getAuthScopes().keySet().iterator().next();
-    List<String> scopes = getAuthScopes().get(key);
-    if (scopes.isEmpty()) {
-      // If there are no scopes, it's api key based.
+    // If the API has no scopes, then we know it's API key-based.
+    if (getAuthScopes().isEmpty()) {
       return AuthType.API_KEY;
     } else {
-      // If there are scopes, but cloud platform is one of them, then we can use ADC.
-      if (scopes.contains(CLOUD_PLATFORM_SCOPE)) {
+      // If there are scopes and cloud platform is one of them, then we can use ADC.
+      if (getAuthScopes().containsValue(CLOUD_PLATFORM_SCOPE)) {
         return AuthType.APPLICATION_DEFAULT_CREDENTIALS;
       }
-      // Otherwise it's 3 legged OAuth.
       return AuthType.OAUTH_3L;
     }
   }
