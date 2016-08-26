@@ -42,7 +42,7 @@ public abstract class StaticLangXApiView implements ViewModel {
 
   public abstract List<StaticLangApiMethodView> apiMethods();
 
-  public abstract List<String> imports();
+  public abstract List<ImportTypeView> imports();
 
   @Override
   public abstract String outputPath();
@@ -78,7 +78,7 @@ public abstract class StaticLangXApiView implements ViewModel {
 
     public abstract Builder apiMethods(List<StaticLangApiMethodView> val);
 
-    public abstract Builder imports(List<String> val);
+    public abstract Builder imports(List<ImportTypeView> val);
 
     public abstract Builder outputPath(String val);
 

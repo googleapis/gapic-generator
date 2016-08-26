@@ -54,7 +54,7 @@ public class InitCodeGenerator {
             lastLine.getInitValueConfig());
     List<FieldSetting> outputFields = Arrays.asList(requestField);
     Map<String, String> typeAliasingMap =
-        context.typeTable() == null ? null : context.typeTable().getImportsMap();
+        (context.typeTable() == null) ? null : context.typeTable().getImports();
     return InitCode.create(initLineSpecs, outputFields, typeAliasingMap);
   }
 
@@ -80,7 +80,7 @@ public class InitCodeGenerator {
             lastLine.getInitValueConfig());
     List<FieldSetting> outputFields = Arrays.asList(responseField);
     Map<String, String> typeAliasingMap =
-        context.typeTable() == null ? null : context.typeTable().getImportsMap();
+        context.typeTable() == null ? null : context.typeTable().getImports();
     return InitCode.create(initLineSpecs, outputFields, typeAliasingMap);
   }
 
@@ -110,7 +110,7 @@ public class InitCodeGenerator {
     }
     StructureInitCodeLine requestInitCodeLine = (StructureInitCodeLine) lastLine;
     Map<String, String> typeAliasingMap =
-        context.typeTable() == null ? null : context.typeTable().getImportsMap();
+        context.typeTable() == null ? null : context.typeTable().getImports();
     return InitCode.create(initLineSpecs, requestInitCodeLine.getFieldSettings(), typeAliasingMap);
   }
 

@@ -19,6 +19,7 @@ import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.ImportTypeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
@@ -121,7 +122,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.apiMethods(methods);
 
     // must be done as the last step to catch all imports
-    xapiClass.imports(context.getTypeTable().getImports());
+    xapiClass.imports(ImportTypeTransformer.generateImports(context.getTypeTable().getImports()));
 
     xapiClass.outputPath(outputPath + "/" + name + ".php");
 

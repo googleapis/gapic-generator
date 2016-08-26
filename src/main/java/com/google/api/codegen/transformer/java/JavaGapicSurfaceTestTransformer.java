@@ -19,6 +19,7 @@ import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.transformer.ImportTypeTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -150,7 +151,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .outputPath(namer.getSourceFilePath(outputPath, name))
             .templateFileName(TEST_TEMPLATE_FILE)
             // Imports must be done as the last step to catch all imports.
-            .imports(context.getTypeTable().getImports())
+            .imports(ImportTypeTransformer.generateImports(context.getTypeTable().getImports()))
             .build();
     return testClass;
   }
@@ -256,7 +257,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .outputPath(namer.getSourceFilePath(outputPath, name))
         .templateFileName(MOCK_SERVICE_FILE)
         // Imports must be done as the last step to catch all imports.
-        .imports(context.getTypeTable().getImports())
+        .imports(ImportTypeTransformer.generateImports(context.getTypeTable().getImports()))
         .build();
   }
 
@@ -277,7 +278,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .outputPath(namer.getSourceFilePath(outputPath, name))
         .templateFileName(MOCK_SERVICE_IMPL_FILE)
         // Imports must be done as the last step to catch all imports.
-        .imports(context.getTypeTable().getImports())
+        .imports(ImportTypeTransformer.generateImports(context.getTypeTable().getImports()))
         .build();
   }
 

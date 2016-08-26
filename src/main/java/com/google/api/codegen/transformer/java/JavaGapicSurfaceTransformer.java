@@ -22,6 +22,7 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.BundlingTransformer;
+import com.google.api.codegen.transformer.ImportTypeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -33,6 +34,7 @@ import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
@@ -56,6 +58,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -145,7 +148,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.apiMethods(methods);
 
     // must be done as the last step to catch all imports
-    xapiClass.imports(context.getTypeTable().getImports());
+    xapiClass.imports(ImportTypeTransformer.generateImports(context.getTypeTable().getImports()));
 
     String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
     xapiClass.outputPath(outputPath + File.separator + name + ".java");
@@ -189,7 +192,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xsettingsClass.retryParamsDefinitions(generateRetryParamsDefinitions(context));
 
     // must be done as the last step to catch all imports
-    xsettingsClass.imports(context.getTypeTable().getImports());
+    xsettingsClass.imports(
+        ImportTypeTransformer.generateImports(context.getTypeTable().getImports()));
 
     String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
     xsettingsClass.outputPath(outputPath + "/" + name + ".java");

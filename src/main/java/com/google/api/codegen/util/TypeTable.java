@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.util;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -58,7 +57,5 @@ public interface TypeTable extends TypeNameConverter {
   /**
    * Returns the imports accumulated so far.
    */
-  List<String> getImports();
-
-  Map<String, String> getImportsMap();
+  Map<String, String> getImports();
 }

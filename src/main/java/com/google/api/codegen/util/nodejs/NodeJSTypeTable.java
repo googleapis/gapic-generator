@@ -22,9 +22,8 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableSet;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * The TypeTable for NodeJS.
@@ -89,14 +88,8 @@ public class NodeJSTypeTable implements TypeTable {
   }
 
   @Override
-  public List<String> getImports() {
-    // Clean up the imports.
-    List<String> cleanedImports = new ArrayList<>();
-    for (String imported : imports.keySet()) {
-      cleanedImports.add(imported);
-    }
-    Collections.sort(cleanedImports);
-    return cleanedImports;
+  public Map<String, String> getImports() {
+    return new TreeMap<>(imports);
   }
 
   public boolean hasImports() {

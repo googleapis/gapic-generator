@@ -57,7 +57,7 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract String grpcClientTypeName();
 
-  public abstract List<String> imports();
+  public abstract List<ImportTypeView> imports();
 
   public abstract String outputPath();
 
@@ -110,7 +110,7 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
     public abstract Builder grpcClientTypeName(String val);
 
-    public abstract Builder imports(List<String> val);
+    public abstract Builder imports(List<ImportTypeView> val);
 
     public abstract Builder outputPath(String val);
 

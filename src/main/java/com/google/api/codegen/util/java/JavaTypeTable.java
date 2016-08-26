@@ -24,11 +24,8 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * The TypeTable for Java.
@@ -128,23 +125,17 @@ public class JavaTypeTable implements TypeTable {
   }
 
   @Override
-  public List<String> getImports() {
+  public Map<String, String> getImports() {
     // Clean up the imports.
-    List<String> cleanedImports = new ArrayList<>();
+    Map<String, String> cleanedImports = new TreeMap<>();
     for (String imported : imports.keySet()) {
       if (imported.startsWith(JAVA_LANG_TYPE_PREFIX)) {
         // Imported type is in java.lang or in package, can be ignored.
         continue;
       }
-      cleanedImports.add(imported);
+      cleanedImports.put(imported, imports.get(imported));
     }
-    Collections.sort(cleanedImports);
     return cleanedImports;
-  }
-
-  @Override
-  public Map<String, String> getImportsMap() {
-    return new HashMap<>(imports);
   }
 
   /**
