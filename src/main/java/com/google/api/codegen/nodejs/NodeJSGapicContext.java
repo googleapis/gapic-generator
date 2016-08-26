@@ -231,7 +231,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
         comment += "\n";
       }
       comment +=
-          "\n  This object should be in the same structure as "
+          "\n  This object should have the same structure as "
               + linkForMessage(field.getType().getMessageType());
     } else if (field.getType().isEnum()) {
       if (!Strings.isNullOrEmpty(paramComment)) {

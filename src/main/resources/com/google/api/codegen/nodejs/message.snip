@@ -1,4 +1,4 @@
-@extends "common.snip"
+@extends "nodejs/common.snip"
 
 @snippet generateFilename(file)
   {@context.getDocFilename(file)}
@@ -20,19 +20,7 @@
 
 @private licenseSection()
   /*
-   * Copyright 2016 Google Inc. All rights reserved.
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
+   {@copyright()}
    */
 
   /*
@@ -62,16 +50,15 @@
      */
     {@header}
       // This is for documentation. Actual contents will be loaded by gRPC.
-      @if or(context.filterDocumentingMessages(message), message.getEnums())
-        @join subMessage : context.filterDocumentingMessages(message) on ",".add(BREAK)
+      @join subMessage : context.filterDocumentingMessages(message) on ",".add(BREAK)
 
-          {@messageDocument(subMessage, subHeader(subMessage))}
-        @end
-        @join subEnum : message.getEnums() on ",".add(BREAK)
-
-          {@enumDocument(subEnum, subHeader(subEnum))}
-        @end
+        {@messageDocument(subMessage, subHeader(subMessage))}
       @end
+      @join subEnum : message.getEnums() on ",".add(BREAK)
+
+        {@enumDocument(subEnum, subHeader(subEnum))}
+      @end
+    # Note that the opening brace should be included in the header.
     }
   @end
 @end
@@ -111,12 +98,6 @@
      {@properties(message)}
      * @@see [{@message.getFullName} definition in proto format]{@@link {@context.getFileURL(message.getFile())}}
      */
-  @end
-@end
-
-@private comments(lines)
-  @join line : lines
-    * {@line}
   @end
 @end
 
