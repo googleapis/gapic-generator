@@ -97,6 +97,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("org.junit.After");
     typeTable.saveNicknameFor("org.junit.AfterClass");
+    typeTable.saveNicknameFor("org.junit.Assert");
     typeTable.saveNicknameFor("org.junit.Before");
     typeTable.saveNicknameFor("org.junit.BeforeClass");
     typeTable.saveNicknameFor("org.junit.Test");
@@ -109,7 +110,6 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.core.PageAccessor");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
     typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessage");
-    typeTable.saveNicknameFor("junit.framework.Assert");
   }
 
   private void addMockServiceImplImports(SurfaceTransformerContext context) {
