@@ -549,9 +549,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return className(Name.upperCamel("Mock", service.getSimpleName()));
   }
 
-  /**
-   * The class name of the mock gRPC service implementation for the given API service.
-   */
+  /** The class name of a variable to hold the mock gRPC service for the given API service. */
+  public String getMockServiceVarName(Interface service) {
+    return varName(Name.upperCamel("Mock", service.getSimpleName()));
+  }
+
+  /** The class name of the mock gRPC service implementation for the given API service. */
   public String getMockGrpcServiceImplName(Interface service) {
     return className(Name.upperCamel("Mock", service.getSimpleName(), "Impl"));
   }
@@ -568,5 +571,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getFullyQualifiedApiWrapperClassName(Interface interfaze, String packageName) {
     return getNotImplementedString("SurfaceNamer.getFullyQuallifiedApiWrapperClassName");
+  }
+
+  public String getStubName(Interface service) {
+    return varName(Name.upperCamel(service.getSimpleName(), "Stub"));
+  }
+
+  public String getCreateStubFunctionName(Interface service) {
+    return varName(Name.upperCamel("Create", service.getSimpleName(), "Stub", "Function"));
   }
 }

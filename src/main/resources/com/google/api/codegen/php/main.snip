@@ -16,11 +16,11 @@
     {
         {@constants(xapiClass)}
         {@statics(xapiClass)}
-        {@members()}
+        {@members(xapiClass)}
         {@staticFunctions(xapiClass)}
         {@constructor(xapiClass)}
         {@apiMethods(xapiClass)}
-        {@cleanupSection()}
+        {@cleanupSection(xapiClass)}
     }
 @end
 
@@ -108,9 +108,11 @@
     {@BREAK}
 @end
 
-@private members()
+@private members(xapiClass)
     private $grpcCredentialsHelper;
-    private $stub;
+    @join stub : xapiClass.stubs
+        private ${@stub.name};
+    @end
     private $scopes;
     private $defaultCallSettings;
     private $descriptors;
@@ -296,20 +298,23 @@
 
         $this->scopes = $options['scopes'];
 
-        $generatedCreateStub = function ($hostname, $opts) {
-            return new {@xapiClass.grpcClientTypeName}($hostname, $opts);
-        };
         $createStubOptions = [];
         if (!empty($options['sslCreds'])) {
             $createStubOptions['sslCreds'] = $options['sslCreds'];
         }
         $grpcCredentialsHelperOptions = array_diff_key($options, $defaultOptions);
         $this->grpcCredentialsHelper = new GrpcCredentialsHelper($this->scopes, $grpcCredentialsHelperOptions);
-        $this->stub = $this->grpcCredentialsHelper->createStub(
-            $generatedCreateStub,
-            $options['serviceAddress'],
-            $options['port'],
-            $createStubOptions);
+
+        @join stub : xapiClass.stubs
+            ${@stub.createStubFunctionName} = function ($hostname, $opts) {
+                return new {@stub.grpcClientTypeName}($hostname, $opts);
+            };
+            $this->{@stub.name} = $this->grpcCredentialsHelper->createStub(
+                ${@stub.createStubFunctionName},
+                $options['serviceAddress'],
+                $options['port'],
+                $createStubOptions);
+        @end
     }
     {@""}
 @end
@@ -332,7 +337,7 @@
             $mergedSettings = $this->defaultCallSettings['{@apiMethod.key}']->merge(
                 new CallSettings($optionalArgs));
             $callable = ApiCallable::createApiCall(
-                $this->stub, '{@apiMethod.grpcMethodName}', $mergedSettings, $this->descriptors['{@apiMethod.key}']);
+                $this->{@apiMethod.stubName}, '{@apiMethod.grpcMethodName}', $mergedSettings, $this->descriptors['{@apiMethod.key}']);
 
             return $callable(
                 $request,
@@ -459,14 +464,16 @@
      * }
 @end
 
-@private cleanupSection()
+@private cleanupSection(xapiClass)
     /**
      * Initiates an orderly shutdown in which preexisting calls continue but new
      * calls are immediately cancelled.
      */
     public function close()
     {
-        $this->stub->close();
+        @join stub : xapiClass.stubs
+            $this->{@stub.name}->close();
+        @end
     }
 
     private function createCredentialsCallback()

@@ -185,8 +185,14 @@ public class InitCodeTransformer {
       }
     }
     if (context.getMethodConfig().isPageStreaming()) {
+      // Initialize one resource element if it is page-streaming.
       PageStreamingConfig config = context.getMethodConfig().getPageStreaming();
       fields.add(config.getResourcesField().getSimpleName() + "[0]");
+    }
+    if (context.getMethodConfig().isBundling()) {
+      // Initialize one bundling element if it is bundling.
+      fields.add(
+          context.getMethodConfig().getBundling().getSubresponseField().getSimpleName() + "[0]");
     }
     Map<String, Object> initFieldStructure =
         FieldStructureParser.parseFields(fields, createInitValueMap(context));

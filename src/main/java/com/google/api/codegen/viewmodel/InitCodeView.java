@@ -27,8 +27,7 @@ public abstract class InitCodeView {
   public abstract List<FieldSettingView> fieldSettings();
 
   /**
-   * A Map<String, String></String,> used to hold information about the types used in method samples.
-   * This is commonly used for type aliasing.
+   * Used to hold information about the types used in method samples.
    */
   @Nullable
   public abstract List<ImportTypeView> aliasingTypes();

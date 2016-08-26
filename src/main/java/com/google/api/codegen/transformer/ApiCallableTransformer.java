@@ -19,6 +19,7 @@ import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
+import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 
@@ -112,7 +113,8 @@ public class ApiCallableTransformer {
     settings.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     settings.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
     settings.grpcTypeName(
-        typeTable.getAndSaveNicknameFor(namer.getGrpcContainerTypeName(context.getInterface())));
+        typeTable.getAndSaveNicknameFor(
+            namer.getGrpcContainerTypeName(context.getTargetInterface())));
     settings.grpcMethodConstant(namer.getGrpcMethodConstant(method));
     settings.retryCodesName(methodConfig.getRetryCodesConfigName());
     settings.retryParamsName(methodConfig.getRetrySettingsConfigName());

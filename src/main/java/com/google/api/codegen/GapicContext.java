@@ -123,4 +123,24 @@ public class GapicContext extends CodegenContext {
     }
     return simples;
   }
+
+  /**
+   * Returns a list of simple RPC methods, taking into account GRPC interface rerouting.
+   * TODO replace getNonStreamingMethods with this when all languages are migrated.
+   */
+  public List<Method> getNonStreamingMethodsV2(Interface service) {
+    InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
+    if (interfaceConfig == null) {
+      throw new IllegalStateException(
+          "Service not configured in GAPIC config: " + service.getFullName());
+    }
+    List<Method> methods = new ArrayList<>(interfaceConfig.getMethodConfigs().size());
+    for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
+      Method method = methodConfig.getMethod();
+      if (!method.getRequestStreaming() && !method.getResponseStreaming()) {
+        methods.add(method);
+      }
+    }
+    return methods;
+  }
 }

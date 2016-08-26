@@ -44,6 +44,8 @@ public abstract class GapicSurfaceTestCaseView {
 
   public abstract List<GapicSurfaceTestAssertView> asserts();
 
+  public abstract String mockServiceVarName();
+
   public static Builder newBuilder() {
     return new AutoValue_GapicSurfaceTestCaseView.Builder();
   }
@@ -71,6 +73,8 @@ public abstract class GapicSurfaceTestCaseView {
     public abstract Builder asserts(List<GapicSurfaceTestAssertView> val);
 
     public abstract Builder mockResponse(MockGrpcResponseView val);
+
+    public abstract Builder mockServiceVarName(String val);
 
     public abstract GapicSurfaceTestCaseView build();
   }

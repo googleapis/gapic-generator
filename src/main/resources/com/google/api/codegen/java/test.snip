@@ -12,13 +12,18 @@
 
   @@javax.annotation.Generated("by GAPIC")
   public class {@xapiTest.name} {
+    @join mockService : xapiTest.mockServices
+      private static {@mockService.className} {@mockService.varName};
+    @end
     private static MockServiceHelper serviceHelper;
     private {@xapiTest.apiClassName} api;
 
     @@BeforeClass
     public static void startStaticServer() {
-      {@xapiTest.mockServiceClassName} mockService = new {@xapiTest.mockServiceClassName}();
-      serviceHelper = new MockServiceHelper("in-process-1", mockService);
+      @join mockService : xapiTest.mockServices
+        {@mockService.varName} = new {@mockService.className}();
+      @end
+      serviceHelper = new MockServiceHelper("in-process-1", Arrays.asList({@mockServiceArgs(xapiTest.mockServices)}));
       serviceHelper.start();
     }
 
@@ -48,17 +53,23 @@
   }
 @end
 
+@private mockServiceArgs(mockServices)
+  @join mockService : mockServices on ", "
+    {@mockService.varName}
+  @end
+@end
+
 @private testCase(test)
   @@Test
   @@SuppressWarnings("all")
   public void {@test.name}() {
-    {@setResponse(test.mockResponse)}
+    {@setResponse(test)}
 
     {@initCode(test.initCode)}
 
     {@methodCall(test)}
 
-    List<GeneratedMessage> actualRequests = serviceHelper.getService().getRequests();
+    List<GeneratedMessage> actualRequests = {@test.mockServiceVarName}.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     {@test.requestTypeName} actualRequest = ({@test.requestTypeName})actualRequests.get(0);
 
@@ -69,11 +80,11 @@
   }
 @end
 
-@private setResponse(response)
-  {@initCode(response.initCode)}
+@private setResponse(test)
+  {@initCode(test.mockResponse.initCode)}
   List<GeneratedMessage> expectedResponses = new ArrayList<>();
   expectedResponses.add(expectedResponse);
-  serviceHelper.getService().setResponses(expectedResponses);
+  {@test.mockServiceVarName}.setResponses(expectedResponses);
 @end
 
 @private methodCall(test)

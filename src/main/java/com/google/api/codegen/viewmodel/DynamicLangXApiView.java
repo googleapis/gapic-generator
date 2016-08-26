@@ -59,6 +59,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract List<ImportTypeView> imports();
 
+  public abstract List<GrpcStubView> stubs();
+
   public abstract String outputPath();
 
   public abstract List<ApiMethodView> apiMethods();
@@ -111,6 +113,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder grpcClientTypeName(String val);
 
     public abstract Builder imports(List<ImportTypeView> val);
+
+    public abstract Builder stubs(List<GrpcStubView> val);
 
     public abstract Builder outputPath(String val);
 
