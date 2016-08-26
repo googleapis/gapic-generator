@@ -12,20 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery;
+package com.google.api.codegen.transformer;
 
-import com.google.api.tools.framework.snippet.Doc;
+import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.protobuf.Method;
 
-import java.util.Map;
+import java.util.List;
 
 /**
- * A DiscoveryProvider performs fragment generation using discovery-based input.
+ * A MethodToViewTransformer transforms a Method into a list of
+ * ViewModel instances that can be rendered by a template engine.
  */
-public interface DiscoveryProvider<InputElementT> {
-  /**
-   * Runs code generation and returns a map from relative file paths to
-   * generated Doc.
-   */
-  Map<String, Doc> generate(Method method);
+public interface MethodToViewTransformer {
+  List<ViewModel> transform(Method method, ApiaryConfig apiaryConfig);
+
+  List<String> getTemplateFileNames();
 }
