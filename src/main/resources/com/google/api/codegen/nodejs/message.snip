@@ -1,0 +1,127 @@
+@extends "common.snip"
+
+@snippet generateFilename(file)
+  {@context.getDocFilename(file)}
+@end
+
+@snippet generateBody(file)
+  {@licenseSection()}
+
+  @if context.isExternalFile(file)
+    @join message : context.filterDocumentingMessages(file) on ";".add(BREAK).add(BREAK)
+      {@externalMessageDocument(message)}
+    @end
+  @else
+    @join message : context.filterDocumentingMessages(file) on ";".add(BREAK).add(BREAK)
+      {@messageDocument(message, toplevelHeader(message))}
+    @end
+  @end
+@end
+
+@private licenseSection()
+  /*
+   * Copyright 2016 Google Inc. All rights reserved.
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  /*
+   * Note: this file is purely for documentation. Any contents are not expected
+   * to be loaded as the JS file.
+   */
+@end
+
+@private toplevelHeader(message)
+  var {@message.getSimpleName} = {
+@end
+
+@private subHeader(message)
+  {@message.getSimpleName}: {
+@end
+
+@private messageDocument(message, header)
+  @let documentation = context.defaultComments(message)
+    /**
+     @if documentation
+       {@comments(documentation)}
+       *
+     @end
+     {@properties(message)}
+     * @@class
+     * @@see [{@message.getFullName} definition in proto format]{@@link {@context.getFileURL(message.getFile())}}
+     */
+    {@header}
+      // This is for documentation. Actual contents will be loaded by gRPC.
+      @if or(context.filterDocumentingMessages(message), message.getEnums())
+        @join subMessage : context.filterDocumentingMessages(message) on ",".add(BREAK)
+
+          {@messageDocument(subMessage, subHeader(subMessage))}
+        @end
+        @join subEnum : message.getEnums() on ",".add(BREAK)
+
+          {@enumDocument(subEnum, subHeader(subEnum))}
+        @end
+      @end
+    }
+  @end
+@end
+
+@private enumDocument(enum, header)
+  @let documentation = context.defaultComments(enum)
+    /**
+     @if documentation
+       {@comments(documentation)}
+       *
+     @end
+     * @@enum {number}
+     */
+    {@header}
+      @join value : enum.getValues() on ",".add(BREAK).add(BREAK)
+        @let valueDoc = context.defaultComments(value)
+          @if documentation
+            /**
+             {@comments(documentation)}
+             */
+          @end
+          {@value.getSimpleName}: {@value.getNumber}
+        @end
+      @end
+    }
+  @end
+@end
+
+@private externalMessageDocument(message)
+  @let documentation = context.defaultComments(message)
+    /**
+     @if documentation
+       {@comments(documentation)}
+       *
+     @end
+     * @@external "{@message.getFullName}"
+     {@properties(message)}
+     * @@see [{@message.getFullName} definition in proto format]{@@link {@context.getFileURL(message.getFile())}}
+     */
+  @end
+@end
+
+@private comments(lines)
+  @join line : lines
+    * {@line}
+  @end
+@end
+
+@private properties(message)
+  @join field : message.getFields()
+    {@comments(context.fieldPropertyComment(field))}
+  @end
+@end
