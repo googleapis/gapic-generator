@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.metacode;
 
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -27,8 +27,10 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class InitCode {
   public static InitCode create(
-      List<InitCodeLine> lines, List<FieldSetting> argFields, ModelTypeTable typeTable) {
-    return new AutoValue_InitCode(lines, argFields, typeTable);
+      List<InitCodeLine> lines,
+      List<FieldSetting> argFields,
+      Map<String, String> aliasingTypesMap) {
+    return new AutoValue_InitCode(lines, argFields, aliasingTypesMap);
   }
 
   public abstract List<InitCodeLine> getLines();
@@ -36,5 +38,5 @@ public abstract class InitCode {
   public abstract List<FieldSetting> getArgFields();
 
   @Nullable
-  public abstract ModelTypeTable getTypeTable();
+  public abstract Map<String, String> getAliasingTypesMap();
 }

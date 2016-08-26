@@ -14,7 +14,7 @@
 
     {@apiMethod.apiClassName} = {@apiMethod.initCode.packageName}\
         ::{@apiMethod.apiClassName}
-    @join aliasDef : context.entrySet(apiMethod.initCode.typeTable.getImportsMap)
+    @join aliasDef : context.entrySet(apiMethod.initCode.aliasingTypesMap)
         {@aliasDef.getValue} = {@aliasDef.getKey}
     @end
 
@@ -57,19 +57,19 @@
 @end
 
 @private methodCallSampleCode(apiMethod)
-    {@apiMethod.apiVariableName}.{@apiMethod.name}\
-        {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)}
+    @let fieldSettings = apiMethod.initCode.fieldSettings
+        @if fieldSettings
+            {@apiMethod.apiVariableName}.{@apiMethod.name}\
+                ({@sampleMethodCallArgList(fieldSettings)})
+        @else
+            {@apiMethod.apiVariableName}.{@apiMethod.name}
+        @end
+    @end
 @end
 
 @private sampleMethodCallArgList(fieldSettings)
-    @if fieldSettings
-        (
-    @end
     @join fieldSetting : fieldSettings on ", "
         {@fieldSetting.identifier}
-    @end
-    @if fieldSettings
-        )
     @end
 @end
 

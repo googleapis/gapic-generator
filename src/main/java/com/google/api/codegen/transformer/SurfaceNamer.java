@@ -47,25 +47,14 @@ import java.util.List;
 public class SurfaceNamer extends NameFormatterDelegator {
   private ModelTypeFormatter modelTypeFormatter;
   private TypeNameConverter typeNameConverter;
-  protected String packageName;
 
   public SurfaceNamer(
       NameFormatter languageNamer,
       ModelTypeFormatter modelTypeFormatter,
       TypeNameConverter typeNameConverter) {
-    this(languageNamer, modelTypeFormatter, typeNameConverter, null);
-  }
-
-  public SurfaceNamer(
-      NameFormatter languageNamer,
-      ModelTypeFormatter modelTypeFormatter,
-      TypeNameConverter typeNameConverter,
-      String packageName) {
     super(languageNamer);
     this.modelTypeFormatter = modelTypeFormatter;
     this.typeNameConverter = typeNameConverter;
-    this.packageName =
-        packageName == null ? getNotImplementedString("SurfaceNamer.packageName") : packageName;
   }
 
   public ModelTypeFormatter getModelTypeFormatter() {
@@ -481,7 +470,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The file name for an API service. */
-  public String getServiceFileName(Interface service) {
+  public String getServiceFileName(Interface service, String packageName) {
     return getNotImplementedString("SurfaceNamer.getApiName");
   }
 }

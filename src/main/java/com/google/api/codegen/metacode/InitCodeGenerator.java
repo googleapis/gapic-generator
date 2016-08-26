@@ -53,7 +53,9 @@ public class InitCodeGenerator {
             lastLine.getIdentifier(),
             lastLine.getInitValueConfig());
     List<FieldSetting> outputFields = Arrays.asList(requestField);
-    return InitCode.create(initLineSpecs, outputFields, context.typeTable());
+    Map<String, String> typeAliasingMap =
+        context.typeTable() == null ? null : context.typeTable().getImportsMap();
+    return InitCode.create(initLineSpecs, outputFields, typeAliasingMap);
   }
 
   /**
@@ -77,7 +79,9 @@ public class InitCodeGenerator {
             lastLine.getIdentifier(),
             lastLine.getInitValueConfig());
     List<FieldSetting> outputFields = Arrays.asList(responseField);
-    return InitCode.create(initLineSpecs, outputFields, context.typeTable());
+    Map<String, String> typeAliasingMap =
+        context.typeTable() == null ? null : context.typeTable().getImportsMap();
+    return InitCode.create(initLineSpecs, outputFields, typeAliasingMap);
   }
 
   /**
@@ -105,8 +109,9 @@ public class InitCodeGenerator {
           "Expected method request to be a message, found " + lastLine.getClass().getName());
     }
     StructureInitCodeLine requestInitCodeLine = (StructureInitCodeLine) lastLine;
-    return InitCode.create(
-        initLineSpecs, requestInitCodeLine.getFieldSettings(), context.typeTable());
+    Map<String, String> typeAliasingMap =
+        context.typeTable() == null ? null : context.typeTable().getImportsMap();
+    return InitCode.create(initLineSpecs, requestInitCodeLine.getFieldSettings(), typeAliasingMap);
   }
 
   private InitCodeLine generateCodeInitStructure(
@@ -223,6 +228,7 @@ public class InitCodeGenerator {
             initValueConfig.withInitialValue(
                 context.valueGenerator().getAndStoreValue(typeRef, identifier));
       } else if (initValueConfig.hasInitialValue()) {
+
         String validatedValue = validateValue(typeRef, initValueConfig.getInitialValue());
         if (validatedValue == null) {
           throw new IllegalArgumentException(
@@ -235,11 +241,11 @@ public class InitCodeGenerator {
                   + ", initFieldStructure = "
                   + initFieldStructure);
         }
+
         initValueConfig = initValueConfig.withInitialValue(validatedValue);
       }
-
       // This is used to make type aliases for samples.
-      if (typeRef.isMessage() && context.typeTable() != null) {
+      if (context.typeTable() != null) {
         context.typeTable().getAndSaveNicknameFor(typeRef);
       }
       return SimpleInitCodeLine.create(typeRef, identifier, initValueConfig);

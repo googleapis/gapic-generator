@@ -14,11 +14,11 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.auto.value.AutoValue;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 
 @AutoValue
 public abstract class InitCodeView {
@@ -27,11 +27,11 @@ public abstract class InitCodeView {
   public abstract List<FieldSettingView> fieldSettings();
 
   /**
-   * A ModelTypeTable used to hold information about the types used in method samples.
+   * A Map<String, String></String,> used to hold information about the types used in method samples.
    * This is commonly used for type aliasing.
    */
   @Nullable
-  public abstract ModelTypeTable typeTable();
+  public abstract Map<String, String> aliasingTypesMap();
 
   /** The package name of the generated client library. This is used to alias the library object. */
   public abstract String packageName();
@@ -51,7 +51,7 @@ public abstract class InitCodeView {
 
     public abstract Builder fieldSettings(List<FieldSettingView> val);
 
-    public abstract Builder typeTable(ModelTypeTable typeTable);
+    public abstract Builder aliasingTypesMap(Map<String, String> aliasingTypesMap);
 
     public abstract Builder packageName(String packageName);
 

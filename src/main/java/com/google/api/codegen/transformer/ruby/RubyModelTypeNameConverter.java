@@ -20,6 +20,7 @@ import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
+import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
@@ -131,6 +132,10 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
     }
     if (type.isMessage()) {
       return TypedValue.create(getTypeName(type), "%s.new");
+    }
+    if (type.isEnum()) {
+      EnumValue enumValue = type.getEnumType().getValues().get(0);
+      return TypedValue.create(getTypeName(type), "%s::" + enumValue.getSimpleName());
     }
     return TypedValue.create(new TypeName(""), "nil");
   }

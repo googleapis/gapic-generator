@@ -117,4 +117,8 @@ public class NamePath {
   public String toDoubleColoned() {
     return Joiner.on("::").join(pathPieces);
   }
+
+  public String toSlashed() {
+    return Joiner.on("/").join(pathPieces);
+  }
 }

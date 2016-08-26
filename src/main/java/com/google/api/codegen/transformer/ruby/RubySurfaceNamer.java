@@ -15,7 +15,6 @@
 package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.CollectionConfig;
-import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
@@ -35,8 +34,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
     super(
         new RubyNameFormatter(),
         new ModelTypeFormatterImpl(new RubyModelTypeNameConverter()),
-        new RubyTypeTable(),
-        packageName);
+        new RubyTypeTable());
   }
 
   /** The function name to set a field having the given type and name. */
@@ -51,21 +49,15 @@ public class RubySurfaceNamer extends SurfaceNamer {
     return staticFunctionName(Name.from(collectionConfig.getEntityName(), "path"));
   }
 
-  /** The name of the surface method which can call the given API method. */
-  @Override
-  public String getApiMethodName(Method method) {
-    return methodName(Name.upperCamel(method.getSimpleName()));
-  }
-
   /** The file name for an API service. */
   @Override
-  public String getServiceFileName(Interface service) {
+  public String getServiceFileName(Interface service, String packageName) {
     String[] names = packageName.split("::");
     List<String> newNames = new ArrayList<>();
     for (String name : names) {
-      newNames.add(LanguageUtil.upperCamelToLowerUnderscore(name));
+      newNames.add(Name.upperCamel(name).toLowerUnderscore());
     }
-    newNames.add(LanguageUtil.upperCamelToLowerUnderscore(getApiWrapperClassName(service)));
+    newNames.add(Name.upperCamel(getApiWrapperClassName(service)).toLowerUnderscore());
     return Joiner.on("/").join(newNames.toArray());
   }
 }

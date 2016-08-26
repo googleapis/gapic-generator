@@ -114,9 +114,13 @@ public class InitCodeTransformer {
     return InitCodeView.newBuilder()
         .lines(generateSurfaceInitCodeLines(context, initCode))
         .fieldSettings(getFieldSettings(context, initCode.getArgFields()))
-        .typeTable(initCode.getTypeTable())
+        .aliasingTypesMap(initCode.getAliasingTypesMap())
         .packageName(context.getApiConfig().getPackageName())
-        .apiFileName(context.getNamer().getServiceFileName(context.getInterface()))
+        .apiFileName(
+            context
+                .getNamer()
+                .getServiceFileName(
+                    context.getInterface(), context.getApiConfig().getPackageName()))
         .build();
   }
 
