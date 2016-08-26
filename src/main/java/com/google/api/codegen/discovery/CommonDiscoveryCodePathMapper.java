@@ -1,0 +1,70 @@
+/* Copyright 2016 Google Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.api.codegen.discovery;
+
+import com.google.api.codegen.ApiaryConfig;
+import com.google.api.tools.framework.model.ProtoElement;
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
+
+import java.util.ArrayList;
+
+/**
+ * An implementation of DiscoveryCodePathMapper that generates the output path from a prefix, and/or
+ * package name.
+ */
+public class CommonDiscoveryCodePathMapper implements DiscoveryCodePathMapper {
+  private final String prefix;
+  private final boolean shouldAppendPackage;
+
+  private static String PACKAGE_SPLIT_REGEX = "[.:\\\\]";
+
+  private CommonDiscoveryCodePathMapper(String prefix, boolean shouldAppendPackage) {
+    this.prefix = prefix;
+    this.shouldAppendPackage = shouldAppendPackage;
+  }
+
+  @Override
+  public String getOutputPath(ProtoElement element, ApiaryConfig config) {
+    return "discovery/output";
+  }
+
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  public static CommonDiscoveryCodePathMapper defaultInstance() {
+    return newBuilder().build();
+  }
+
+  public static class Builder {
+    private String prefix = "";
+    private boolean shouldAppendPackage = false;
+
+    public Builder setPrefix(String prefix) {
+      this.prefix = prefix;
+      return this;
+    }
+
+    public Builder setShouldAppendPackage(boolean shouldAppendPackage) {
+      this.shouldAppendPackage = shouldAppendPackage;
+      return this;
+    }
+
+    public CommonDiscoveryCodePathMapper build() {
+      return new CommonDiscoveryCodePathMapper(prefix, shouldAppendPackage);
+    }
+  }
+}

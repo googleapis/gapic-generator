@@ -14,18 +14,13 @@
  */
 package com.google.api.codegen.discovery;
 
-import com.google.api.tools.framework.snippet.Doc;
-import com.google.protobuf.Method;
-
-import java.util.Map;
+import com.google.api.codegen.ApiaryConfig;
+import com.google.api.tools.framework.model.ProtoElement;
 
 /**
- * A DiscoveryProvider performs fragment generation using discovery-based input.
+ * An implementation of CodePathMapper is a strategy object, encapsulating a strategy for
+ * constructing a path to the discovery output.
  */
-public interface DiscoveryProvider<InputElementT> {
-  /**
-   * Runs code generation and returns a map from relative file paths to
-   * generated Doc.
-   */
-  Map<String, Doc> generate(Method method);
+public interface DiscoveryCodePathMapper {
+  public String getOutputPath(ProtoElement element, ApiaryConfig config);
 }

@@ -30,14 +30,17 @@ import com.google.api.codegen.php.PhpSnippetSetRunner;
 import com.google.api.codegen.py.PythonDiscoveryContext;
 import com.google.api.codegen.py.PythonDiscoveryInitializer;
 import com.google.api.codegen.py.PythonSnippetSetRunner;
+import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.ruby.RubyDiscoveryContext;
 import com.google.api.codegen.ruby.RubySnippetSetRunner;
+import com.google.api.codegen.transformer.csharp.CSharpDiscoverySurfaceTransformer;
+import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.protobuf.Method;
 
 import org.apache.commons.lang3.NotImplementedException;
 
 /**
- * MainDiscoveryProviderFactory creates DiscoveryProvider instances based on an id.
+ * Creates DiscoveryProvider instances based on an ID.
  */
 public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
 
@@ -54,12 +57,15 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
   public static DiscoveryProvider defaultCreate(
       Service service, ApiaryConfig apiaryConfig, String id) {
     if (id.equals(CSHARP)) {
-      return CommonDiscoveryProvider.newBuilder()
-          .setContext(new CSharpDiscoveryContext(service, apiaryConfig))
-          .setSnippetSetRunner(
-              new CSharpSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
-          .build();
+      DiscoveryCodePathMapper cSharpPathMapper =
+          CommonDiscoveryCodePathMapper.newBuilder().setPrefix("src").build();
+      DiscoveryProvider<? extends Object> provider =
+          ViewModelDiscoveryProvider.newBuilder()
+              .setApiaryConfig(apiaryConfig)
+              .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+              .setMethodToViewTransformer(new CSharpDiscoverySurfaceTransformer(cSharpPathMapper))
+              .build();
+      return provider;
 
     } else if (id.equals(GO)) {
       return CommonDiscoveryProvider.newBuilder()
