@@ -14,7 +14,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -49,7 +48,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -66,7 +65,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -97,17 +95,17 @@ func main() {
   // this value is resource specific and is specified in the `getIamPolicy` documentation.
   resource := "{MY-RESOURCE}" // TODO: Update placeholder value(s).
 
-  getIamPolicyRequest := &cloudresourcemanager.GetIamPolicyRequest{
+  resource := &cloudresourcemanager.GetIamPolicyRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Organizations.GetIamPolicy(resource, &getIamPolicyRequest).Context(ctx).Do()
+  resp, err := s.Organizations.GetIamPolicy(resource, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -124,7 +122,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -154,7 +151,7 @@ func main() {
   if err := call.Pages(ctx, func(page *cloudresourcemanager.ListOrganizationsResponse) error {
     for _, organization := range page.Organizations {
       // TODO: Use organization
-      fmt.Printf("%#v\n", organization)
+      log.Printf("%#v\n", organization)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -176,7 +173,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -207,17 +203,17 @@ func main() {
   // this value is resource specific and is specified in the `setIamPolicy` documentation.
   resource := "{MY-RESOURCE}" // TODO: Update placeholder value(s).
 
-  setIamPolicyRequest := &cloudresourcemanager.SetIamPolicyRequest{
+  resource := &cloudresourcemanager.SetIamPolicyRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Organizations.SetIamPolicy(resource, &setIamPolicyRequest).Context(ctx).Do()
+  resp, err := s.Organizations.SetIamPolicy(resource, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -234,7 +230,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -266,17 +261,17 @@ func main() {
   // documentation.
   resource := "{MY-RESOURCE}" // TODO: Update placeholder value(s).
 
-  testIamPermissionsRequest := &cloudresourcemanager.TestIamPermissionsRequest{
+  resource := &cloudresourcemanager.TestIamPermissionsRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Organizations.TestIamPermissions(resource, &testIamPermissionsRequest).Context(ctx).Do()
+  resp, err := s.Organizations.TestIamPermissions(resource, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -293,7 +288,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -323,17 +317,17 @@ func main() {
   // creating a new Organization. This field is read-only.
   organizationId := "{MY-ORGANIZATION-ID}" // TODO: Update placeholder value(s).
 
-  organization := &cloudresourcemanager.Organization{
+  resource := &cloudresourcemanager.Organization{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Organizations.Update(organizationId, &organization).Context(ctx).Do()
+  resp, err := s.Organizations.Update(organizationId, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -350,7 +344,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -376,17 +369,17 @@ func main() {
     log.Fatal(err)
   }
 
-  project := &cloudresourcemanager.Project{
+  resource := &cloudresourcemanager.Project{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Create(project).Context(ctx).Do()
+  resp, err := s.Projects.Create(resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -403,7 +396,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -438,7 +430,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -455,7 +447,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -490,7 +481,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -507,7 +498,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -538,17 +528,17 @@ func main() {
   // this value is resource specific and is specified in the `getIamPolicy` documentation.
   resource := "{MY-RESOURCE}" // TODO: Update placeholder value(s).
 
-  getIamPolicyRequest := &cloudresourcemanager.GetIamPolicyRequest{
+  resource := &cloudresourcemanager.GetIamPolicyRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.GetIamPolicy(resource, &getIamPolicyRequest).Context(ctx).Do()
+  resp, err := s.Projects.GetIamPolicy(resource, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -565,7 +555,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -595,7 +584,7 @@ func main() {
   if err := call.Pages(ctx, func(page *cloudresourcemanager.ListProjectsResponse) error {
     for _, project := range page.Projects {
       // TODO: Use project
-      fmt.Printf("%#v\n", project)
+      log.Printf("%#v\n", project)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -617,7 +606,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -648,17 +636,17 @@ func main() {
   // this value is resource specific and is specified in the `setIamPolicy` documentation.
   resource := "{MY-RESOURCE}" // TODO: Update placeholder value(s).
 
-  setIamPolicyRequest := &cloudresourcemanager.SetIamPolicyRequest{
+  resource := &cloudresourcemanager.SetIamPolicyRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.SetIamPolicy(resource, &setIamPolicyRequest).Context(ctx).Do()
+  resp, err := s.Projects.SetIamPolicy(resource, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -675,7 +663,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -707,17 +694,17 @@ func main() {
   // documentation.
   resource := "{MY-RESOURCE}" // TODO: Update placeholder value(s).
 
-  testIamPermissionsRequest := &cloudresourcemanager.TestIamPermissionsRequest{
+  resource := &cloudresourcemanager.TestIamPermissionsRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.TestIamPermissions(resource, &testIamPermissionsRequest).Context(ctx).Do()
+  resp, err := s.Projects.TestIamPermissions(resource, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -734,7 +721,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -763,17 +749,17 @@ func main() {
   // The project ID (for example, `foo-bar-123`). Required.
   projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
-  undeleteProjectRequest := &cloudresourcemanager.UndeleteProjectRequest{
+  resource := &cloudresourcemanager.UndeleteProjectRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Undelete(projectId, &undeleteProjectRequest).Context(ctx).Do()
+  resp, err := s.Projects.Undelete(projectId, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -790,7 +776,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -819,15 +804,15 @@ func main() {
   // The project ID (for example, `my-project-123`). Required.
   projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
 
-  project := &cloudresourcemanager.Project{
+  resource := &cloudresourcemanager.Project{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Update(projectId, &project).Context(ctx).Do()
+  resp, err := s.Projects.Update(projectId, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }

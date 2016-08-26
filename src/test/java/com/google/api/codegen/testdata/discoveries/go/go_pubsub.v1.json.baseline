@@ -14,7 +14,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -43,17 +42,17 @@ func main() {
   // The subscription whose message is being acknowledged.
   subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value(s).
 
-  acknowledgeRequest := &pubsub.AcknowledgeRequest{
+  resource := &pubsub.AcknowledgeRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Subscriptions.Acknowledge(subscription, &acknowledgeRequest).Context(ctx).Do()
+  resp, err := s.Projects.Subscriptions.Acknowledge(subscription, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -70,7 +69,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -103,17 +101,17 @@ func main() {
   // length, and it must not start with `"goog"`.
   name := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value(s).
 
-  subscription := &pubsub.Subscription{
+  resource := &pubsub.Subscription{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Subscriptions.Create(name, &subscription).Context(ctx).Do()
+  resp, err := s.Projects.Subscriptions.Create(name, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -130,7 +128,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -165,7 +162,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -182,7 +179,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -217,7 +213,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -234,7 +230,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -272,7 +267,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -289,7 +284,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -322,7 +316,7 @@ func main() {
   if err := call.Pages(ctx, func(page *pubsub.ListSubscriptionsResponse) error {
     for _, subscription := range page.Subscriptions {
       // TODO: Use subscription
-      fmt.Printf("%#v\n", subscription)
+      log.Printf("%#v\n", subscription)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -344,7 +338,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -373,17 +366,17 @@ func main() {
   // The name of the subscription.
   subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value(s).
 
-  modifyAckDeadlineRequest := &pubsub.ModifyAckDeadlineRequest{
+  resource := &pubsub.ModifyAckDeadlineRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Subscriptions.ModifyAckDeadline(subscription, &modifyAckDeadlineRequest).Context(ctx).Do()
+  resp, err := s.Projects.Subscriptions.ModifyAckDeadline(subscription, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -400,7 +393,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -429,17 +421,17 @@ func main() {
   // The name of the subscription.
   subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value(s).
 
-  modifyPushConfigRequest := &pubsub.ModifyPushConfigRequest{
+  resource := &pubsub.ModifyPushConfigRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Subscriptions.ModifyPushConfig(subscription, &modifyPushConfigRequest).Context(ctx).Do()
+  resp, err := s.Projects.Subscriptions.ModifyPushConfig(subscription, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -456,7 +448,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -485,17 +476,17 @@ func main() {
   // The subscription from which messages should be pulled.
   subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value(s).
 
-  pullRequest := &pubsub.PullRequest{
+  resource := &pubsub.PullRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Subscriptions.Pull(subscription, &pullRequest).Context(ctx).Do()
+  resp, err := s.Projects.Subscriptions.Pull(subscription, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -512,7 +503,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -544,17 +534,17 @@ func main() {
   // SetIamPolicy rpc.
   resource := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value(s).
 
-  setIamPolicyRequest := &pubsub.SetIamPolicyRequest{
+  resource := &pubsub.SetIamPolicyRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Subscriptions.SetIamPolicy(resource, &setIamPolicyRequest).Context(ctx).Do()
+  resp, err := s.Projects.Subscriptions.SetIamPolicy(resource, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -571,7 +561,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -603,17 +592,17 @@ func main() {
   // respective TestIamPermissions rpc.
   resource := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value(s).
 
-  testIamPermissionsRequest := &pubsub.TestIamPermissionsRequest{
+  resource := &pubsub.TestIamPermissionsRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Subscriptions.TestIamPermissions(resource, &testIamPermissionsRequest).Context(ctx).Do()
+  resp, err := s.Projects.Subscriptions.TestIamPermissions(resource, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -630,7 +619,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -662,17 +650,17 @@ func main() {
   // between 3 and 255 characters in length, and it must not start with `"goog"`.
   name := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value(s).
 
-  topic := &pubsub.Topic{
+  resource := &pubsub.Topic{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Topics.Create(name, &topic).Context(ctx).Do()
+  resp, err := s.Projects.Topics.Create(name, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -689,7 +677,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -724,7 +711,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -741,7 +728,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -776,7 +762,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -793,7 +779,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -831,7 +816,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -848,7 +833,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -881,7 +865,7 @@ func main() {
   if err := call.Pages(ctx, func(page *pubsub.ListTopicsResponse) error {
     for _, topic := range page.Topics {
       // TODO: Use topic
-      fmt.Printf("%#v\n", topic)
+      log.Printf("%#v\n", topic)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -903,7 +887,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -932,17 +915,17 @@ func main() {
   // The messages in the request will be published on this topic.
   topic := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value(s).
 
-  publishRequest := &pubsub.PublishRequest{
+  resource := &pubsub.PublishRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Topics.Publish(topic, &publishRequest).Context(ctx).Do()
+  resp, err := s.Projects.Topics.Publish(topic, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -959,7 +942,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -991,17 +973,17 @@ func main() {
   // SetIamPolicy rpc.
   resource := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value(s).
 
-  setIamPolicyRequest := &pubsub.SetIamPolicyRequest{
+  resource := &pubsub.SetIamPolicyRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Topics.SetIamPolicy(resource, &setIamPolicyRequest).Context(ctx).Do()
+  resp, err := s.Projects.Topics.SetIamPolicy(resource, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1018,7 +1000,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1051,7 +1032,7 @@ func main() {
   if err := call.Pages(ctx, func(page *pubsub.ListTopicSubscriptionsResponse) error {
     for _, item := range page.Subscriptions {
       // TODO: Use item
-      fmt.Printf("%#v\n", item)
+      log.Printf("%#v\n", item)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -1073,7 +1054,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1105,15 +1085,15 @@ func main() {
   // respective TestIamPermissions rpc.
   resource := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value(s).
 
-  testIamPermissionsRequest := &pubsub.TestIamPermissionsRequest{
+  resource := &pubsub.TestIamPermissionsRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Topics.TestIamPermissions(resource, &testIamPermissionsRequest).Context(ctx).Do()
+  resp, err := s.Projects.Topics.TestIamPermissions(resource, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }

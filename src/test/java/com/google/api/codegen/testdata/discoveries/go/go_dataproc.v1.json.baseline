@@ -14,7 +14,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -46,17 +45,17 @@ func main() {
   // [Required] The Cloud Dataproc region in which to handle the request.
   region := "{MY-REGION}" // TODO: Update placeholder value(s).
 
-  cluster := &dataproc.Cluster{
+  resource := &dataproc.Cluster{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Regions.Clusters.Create(projectId, region, &cluster).Context(ctx).Do()
+  resp, err := s.Projects.Regions.Clusters.Create(projectId, region, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -73,7 +72,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -114,7 +112,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -131,7 +129,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -166,17 +163,17 @@ func main() {
   // [Required] The cluster name.
   clusterName := "{MY-CLUSTER-NAME}" // TODO: Update placeholder value(s).
 
-  diagnoseClusterRequest := &dataproc.DiagnoseClusterRequest{
+  resource := &dataproc.DiagnoseClusterRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Regions.Clusters.Diagnose(projectId, region, clusterName, &diagnoseClusterRequest).Context(ctx).Do()
+  resp, err := s.Projects.Regions.Clusters.Diagnose(projectId, region, clusterName, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -193,7 +190,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -234,7 +230,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -251,7 +247,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -287,7 +282,7 @@ func main() {
   if err := call.Pages(ctx, func(page *dataproc.ListClustersResponse) error {
     for _, cluster := range page.Clusters {
       // TODO: Use cluster
-      fmt.Printf("%#v\n", cluster)
+      log.Printf("%#v\n", cluster)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -309,7 +304,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -344,17 +338,17 @@ func main() {
   // [Required] The cluster name.
   clusterName := "{MY-CLUSTER-NAME}" // TODO: Update placeholder value(s).
 
-  cluster := &dataproc.Cluster{
+  resource := &dataproc.Cluster{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.Projects.Regions.Clusters.Patch(projectId, region, clusterName, &cluster).Context(ctx).Do()
+  resp, err := s.Projects.Regions.Clusters.Patch(projectId, region, clusterName, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -371,7 +365,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -406,17 +399,17 @@ func main() {
   // [Required] The job ID.
   jobId := "{MY-JOB-ID}" // TODO: Update placeholder value(s).
 
-  cancelJobRequest := &dataproc.CancelJobRequest{
+  resource := &dataproc.CancelJobRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Regions.Jobs.Cancel(projectId, region, jobId, &cancelJobRequest).Context(ctx).Do()
+  resp, err := s.Projects.Regions.Jobs.Cancel(projectId, region, jobId, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -433,7 +426,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -474,7 +466,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -491,7 +483,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -532,7 +523,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -549,7 +540,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -585,7 +575,7 @@ func main() {
   if err := call.Pages(ctx, func(page *dataproc.ListJobsResponse) error {
     for _, job := range page.Jobs {
       // TODO: Use job
-      fmt.Printf("%#v\n", job)
+      log.Printf("%#v\n", job)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -607,7 +597,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -639,17 +628,17 @@ func main() {
   // [Required] The Cloud Dataproc region in which to handle the request.
   region := "{MY-REGION}" // TODO: Update placeholder value(s).
 
-  submitJobRequest := &dataproc.SubmitJobRequest{
+  resource := &dataproc.SubmitJobRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Projects.Regions.Jobs.Submit(projectId, region, &submitJobRequest).Context(ctx).Do()
+  resp, err := s.Projects.Regions.Jobs.Submit(projectId, region, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -666,7 +655,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -701,7 +689,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -718,7 +706,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -753,7 +740,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -770,7 +757,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -805,7 +791,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -822,7 +808,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -855,7 +840,7 @@ func main() {
   if err := call.Pages(ctx, func(page *dataproc.ListOperationsResponse) error {
     for _, operation := range page.Operations {
       // TODO: Use operation
-      fmt.Printf("%#v\n", operation)
+      log.Printf("%#v\n", operation)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {

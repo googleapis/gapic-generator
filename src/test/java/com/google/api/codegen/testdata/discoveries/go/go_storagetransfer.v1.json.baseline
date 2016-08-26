@@ -14,7 +14,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -46,7 +45,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -63,7 +62,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -99,7 +97,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -116,7 +114,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -142,17 +139,17 @@ func main() {
     log.Fatal(err)
   }
 
-  transferJob := &storagetransfer.TransferJob{
+  resource := &storagetransfer.TransferJob{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.TransferJobs.Create(transferJob).Context(ctx).Do()
+  resp, err := s.TransferJobs.Create(resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -169,7 +166,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -204,7 +200,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -221,7 +217,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -251,7 +246,7 @@ func main() {
   if err := call.Pages(ctx, func(page *storagetransfer.ListTransferJobsResponse) error {
     for _, transferJob := range page.TransferJobs {
       // TODO: Use transferJob
-      fmt.Printf("%#v\n", transferJob)
+      log.Printf("%#v\n", transferJob)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -273,7 +268,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -302,17 +296,17 @@ func main() {
   // The name of job to update. Required.
   jobName := "{MY-JOB-NAME}" // TODO: Update placeholder value(s).
 
-  updateTransferJobRequest := &storagetransfer.UpdateTransferJobRequest{
+  resource := &storagetransfer.UpdateTransferJobRequest{
     // TODO: Add the desired fields to be changed.
   }
 
-  resp, err := s.TransferJobs.Patch(jobName, &updateTransferJobRequest).Context(ctx).Do()
+  resp, err := s.TransferJobs.Patch(jobName, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -329,7 +323,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -364,7 +357,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -381,7 +374,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -416,7 +408,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -433,7 +425,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -468,7 +459,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -485,7 +476,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -518,7 +508,7 @@ func main() {
   if err := call.Pages(ctx, func(page *storagetransfer.ListOperationsResponse) error {
     for _, operation := range page.Operations {
       // TODO: Use operation
-      fmt.Printf("%#v\n", operation)
+      log.Printf("%#v\n", operation)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -540,7 +530,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -569,17 +558,17 @@ func main() {
   // The name of the transfer operation. Required.
   name := "{MY-NAME}" // TODO: Update placeholder value(s).
 
-  pauseTransferOperationRequest := &storagetransfer.PauseTransferOperationRequest{
+  resource := &storagetransfer.PauseTransferOperationRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.TransferOperations.Pause(name, &pauseTransferOperationRequest).Context(ctx).Do()
+  resp, err := s.TransferOperations.Pause(name, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -596,7 +585,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -625,15 +613,15 @@ func main() {
   // The name of the transfer operation. Required.
   name := "{MY-NAME}" // TODO: Update placeholder value(s).
 
-  resumeTransferOperationRequest := &storagetransfer.ResumeTransferOperationRequest{
+  resource := &storagetransfer.ResumeTransferOperationRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.TransferOperations.Resume(name, &resumeTransferOperationRequest).Context(ctx).Do()
+  resp, err := s.TransferOperations.Resume(name, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }

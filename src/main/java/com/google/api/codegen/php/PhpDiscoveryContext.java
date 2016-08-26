@@ -170,7 +170,7 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
       if (defaultPrimitiveValue != null) {
         return defaultPrimitiveValue;
       } else if (kind.equals(Field.Kind.TYPE_STRING) || kind.equals(Field.Kind.TYPE_ENUM)) {
-        return getDefaultString(type, field);
+        return getDefaultString(type, field).getDefine();
       }
     }
     return "null";
@@ -179,10 +179,5 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
   @Override
   public String stringLiteral(String value) {
     return "'" + value + "'";
-  }
-
-  @Override
-  public String lineEnding(String value) {
-    return value;
   }
 }

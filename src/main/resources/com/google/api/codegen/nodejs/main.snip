@@ -1,3 +1,5 @@
+@extends "nodejs/method_sample.snip"
+
 @snippet generateFilename(service)
   {@context.upperCamelToLowerUnderscore(context.getApiWrapperName(service))}.js
 @end
@@ -306,7 +308,8 @@
    @end
    * @@returns {String}
    */
-  {@context.getApiWrapperName(service)}.{@collectionConfig.getEntityName}Path = function {@collectionConfig.getEntityName}Path({@createResourceFunctionParams(collectionConfig)}) {
+  {@context.getApiWrapperName(service)}.prototype.{@resourceFunctionName(collectionConfig)} = \
+  function {@resourceFunctionName(collectionConfig)}({@createResourceFunctionParams(collectionConfig)}) {
     return {@pathTemplateName(collectionConfig)}.render({
       {@createRenderDictionary(collectionConfig)}
     });
@@ -324,12 +327,16 @@
        *   A fully-qualified path representing a {@collectionConfig.getEntityName} resources.
        * @@returns {String} - A string representing the {@subField}.
        */
-      {@context.getApiWrapperName(service)}.match{@subFieldUpper}From{@fieldPath} =
+      {@context.getApiWrapperName(service)}.prototype.match{@subFieldUpper}From{@fieldPath} =
           function match{@subFieldUpper}From{@fieldPath}({@fieldParam}) {
         return {@pathTemplateName(collectionConfig)}.match({@fieldParam}).{@subField};
       };
     @end
   @end
+@end
+
+@private resourceFunctionName(collectionConfig)
+  {@context.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName)}Path
 @end
 
 @private resourceName(collectionConfig)
@@ -366,6 +373,16 @@
   {@context.upperCamelToLowerCamel(method.getSimpleName())}
 @end
 
+@private decorateSampleCodeSegment(service, method)
+  @let apiMethod = context.getApiMethodView(service, method), \
+       coreSampleCode = sampleCode(apiMethod), \
+       finalSampleCode = decorateSampleCode(apiMethod, coreSampleCode)
+       @if finalSampleCode
+         {@finalSampleCode}
+       @end
+  @end
+@end
+
 @private flattenedMethod(service, method)
   @let serviceName = context.getApiWrapperName(service), \
        documentation = comments(context.methodComments(method)), \
@@ -375,6 +392,12 @@
     @if documentation
       /**
        {@documentation}
+       *
+       * @@example
+       *
+       @join sampleLine : util.getDocLines({@decorateSampleCodeSegment(service, method)})
+         {@""}* {@sampleLine}
+       @end
        */
     @end
 

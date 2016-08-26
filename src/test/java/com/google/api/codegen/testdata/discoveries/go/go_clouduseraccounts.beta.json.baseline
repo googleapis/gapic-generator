@@ -14,7 +14,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -65,7 +64,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -103,7 +101,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -120,7 +118,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -153,7 +150,7 @@ func main() {
   if err := call.Pages(ctx, func(page *clouduseraccounts.OperationList) error {
     for _, operation := range page.Items {
       // TODO: Use operation
-      fmt.Printf("%#v\n", operation)
+      log.Printf("%#v\n", operation)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -175,7 +172,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -207,17 +203,17 @@ func main() {
   // Name of the group for this request.
   groupName := "{MY-GROUP-NAME}" // TODO: Update placeholder value(s).
 
-  groupsAddMemberRequest := &clouduseraccounts.GroupsAddMemberRequest{
+  resource := &clouduseraccounts.GroupsAddMemberRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Groups.AddMember(project, groupName, &groupsAddMemberRequest).Context(ctx).Do()
+  resp, err := s.Groups.AddMember(project, groupName, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -234,7 +230,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -272,7 +267,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -289,7 +284,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -327,7 +321,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -344,7 +338,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -373,17 +366,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  group := &clouduseraccounts.Group{
+  resource := &clouduseraccounts.Group{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Groups.Insert(project, &group).Context(ctx).Do()
+  resp, err := s.Groups.Insert(project, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -400,7 +393,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -433,7 +425,7 @@ func main() {
   if err := call.Pages(ctx, func(page *clouduseraccounts.GroupList) error {
     for _, group := range page.Items {
       // TODO: Use group
-      fmt.Printf("%#v\n", group)
+      log.Printf("%#v\n", group)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -455,7 +447,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -487,17 +478,17 @@ func main() {
   // Name of the group for this request.
   groupName := "{MY-GROUP-NAME}" // TODO: Update placeholder value(s).
 
-  groupsRemoveMemberRequest := &clouduseraccounts.GroupsRemoveMemberRequest{
+  resource := &clouduseraccounts.GroupsRemoveMemberRequest{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Groups.RemoveMember(project, groupName, &groupsRemoveMemberRequest).Context(ctx).Do()
+  resp, err := s.Groups.RemoveMember(project, groupName, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -514,7 +505,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -544,7 +534,7 @@ func main() {
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
   // Name of the zone for this request.
-  zone := "{MY-ZONE}"  // eg. "us-central1-f" // TODO: Update placeholder value(s).
+  zone := "{MY-ZONE}" // TODO: Update placeholder value(s). eg. "us-central1-f"
 
   // The user account for which you want to get a list of authorized public keys.
   user := "{MY-USER}" // TODO: Update placeholder value(s).
@@ -558,7 +548,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -575,7 +565,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -605,7 +594,7 @@ func main() {
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
   // Name of the zone for this request.
-  zone := "{MY-ZONE}"  // eg. "us-central1-f" // TODO: Update placeholder value(s).
+  zone := "{MY-ZONE}" // TODO: Update placeholder value(s). eg. "us-central1-f"
 
   // The fully-qualified URL of the virtual machine requesting the views.
   instance := "{MY-INSTANCE}" // TODO: Update placeholder value(s).
@@ -616,7 +605,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -633,7 +622,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -665,17 +653,17 @@ func main() {
   // Name of the user for this request.
   user := "{MY-USER}" // TODO: Update placeholder value(s).
 
-  publicKey := &clouduseraccounts.PublicKey{
+  resource := &clouduseraccounts.PublicKey{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Users.AddPublicKey(project, user, &publicKey).Context(ctx).Do()
+  resp, err := s.Users.AddPublicKey(project, user, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -692,7 +680,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -730,7 +717,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -747,7 +734,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -785,7 +771,7 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -802,7 +788,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -831,17 +816,17 @@ func main() {
   // Project ID for this request.
   project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
 
-  user := &clouduseraccounts.User{
+  resource := &clouduseraccounts.User{
     // TODO: Add the desired fields.
   }
 
-  resp, err := s.Users.Insert(project, &user).Context(ctx).Do()
+  resp, err := s.Users.Insert(project, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -858,7 +843,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -891,7 +875,7 @@ func main() {
   if err := call.Pages(ctx, func(page *clouduseraccounts.UserList) error {
     for _, user := range page.Items {
       // TODO: Use user
-      fmt.Printf("%#v\n", user)
+      log.Printf("%#v\n", user)
     }
     return nil // NOTE: Returning a non-nil error stops pagination.
   }); err != nil {
@@ -913,7 +897,6 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -955,5 +938,5 @@ func main() {
   }
 
   // TODO: Use resp
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
