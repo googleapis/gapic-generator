@@ -65,12 +65,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return "$ NOT IMPLEMENTED: " + feature + " $";
   }
 
-  /** The full path to the source file  */
+  /**
+   * The full path to the source file
+   */
   public String getSourceFilePath(String path, String className) {
     return getNotImplementedString("SurfaceNamer.getSourceFilePath");
   }
 
-  /** The name of the class that implements a particular proto interface. */
+  /**
+   * The name of the class that implements a particular proto interface.
+   */
   public String getApiWrapperClassName(Interface interfaze) {
     return className(Name.upperCamel(interfaze.getSimpleName(), "Api"));
   }
@@ -128,12 +132,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  /** The function name to set the given proto field. */
+  /**
+   * The function name to set the given proto field.
+   */
   public String getFieldSetFunctionName(Field field) {
     return getFieldSetFunctionName(field.getType(), Name.from(field.getSimpleName()));
   }
 
-  /** The function name to set a field having the given type and name. */
+  /**
+   * The function name to set a field having the given type and name.
+   */
   public String getFieldSetFunctionName(TypeRef type, Name identifier) {
     if (type.isMap()) {
       return methodName(Name.from("put", "all").join(identifier));
@@ -144,12 +152,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  /** The function name to get the given proto field. */
+  /**
+   * The function name to get the given proto field.
+   */
   public String getFieldGetFunctionName(Field field) {
     return getFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
   }
 
-  /** The function name to get a field having the given type and name. */
+  /**
+   * The function name to get a field having the given type and name.
+   */
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
     if (type.isRepeated() && !type.isMap()) {
       return methodName(Name.from("get").join(identifier).join("list"));
@@ -194,12 +206,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return inittedConstantName(Name.from(collectionConfig.getEntityName(), "path", "template"));
   }
 
-  /** The name of a getter function to get a particular path template for the given collection. */
+  /**
+   * The name of a getter function to get a particular path template for the given collection.
+   */
   public String getPathTemplateNameGetter(CollectionConfig collectionConfig) {
     return methodName(Name.from("get", collectionConfig.getEntityName(), "name", "template"));
   }
 
-  /** The function name to format the entity for the given collection. */
+  /**
+   * The function name to format the entity for the given collection.
+   */
   public String getFormatFunctionName(CollectionConfig collectionConfig) {
     return staticFunctionName(Name.from("format", collectionConfig.getEntityName(), "name"));
   }
@@ -213,62 +229,86 @@ public class SurfaceNamer extends NameFormatterDelegator {
         Name.from("parse", var, "from", collectionConfig.getEntityName(), "name"));
   }
 
-  /** The entity name for the given collection. */
+  /**
+   * The entity name for the given collection.
+   */
   public String getEntityName(CollectionConfig collectionConfig) {
     return varName(Name.from(collectionConfig.getEntityName()));
   }
 
-  /** The parameter name for the entity for the given collection config. */
+  /**
+   * The parameter name for the entity for the given collection config.
+   */
   public String getEntityNameParamName(CollectionConfig collectionConfig) {
     return varName(Name.from(collectionConfig.getEntityName(), "name"));
   }
 
-  /** The parameter name for the given lower-case field name. */
+  /**
+   * The parameter name for the given lower-case field name.
+   */
   public String getParamName(String var) {
     return varName(Name.from(var));
   }
 
-  /** The page streaming descriptor name for the given method. */
+  /**
+   * The page streaming descriptor name for the given method.
+   */
   public String getPageStreamingDescriptorName(Method method) {
     return varName(Name.upperCamel(method.getSimpleName(), "PageStreamingDescriptor"));
   }
 
-  /** The name of the constant to hold the page streaming descriptor for the given method. */
+  /**
+   * The name of the constant to hold the page streaming descriptor for the given method.
+   */
   public String getPageStreamingDescriptorConstName(Method method) {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("page_str_desc"));
   }
 
-  /** The name of the constant to hold the bundling descriptor for the given method. */
+  /**
+   * The name of the constant to hold the bundling descriptor for the given method.
+   */
   public String getBundlingDescriptorConstName(Method method) {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("bundling_desc"));
   }
 
-  /** Adds the imports used in the implementation of page streaming descriptors. */
+  /**
+   * Adds the imports used in the implementation of page streaming descriptors.
+   */
   public void addPageStreamingDescriptorImports(ModelTypeTable typeTable) {
     // do nothing
   }
 
-  /** Adds the imports used in the implementation of bundling descriptors. */
+  /**
+   * Adds the imports used in the implementation of bundling descriptors.
+   */
   public void addBundlingDescriptorImports(ModelTypeTable typeTable) {
     // do nothing
   }
 
-  /** Adds the imports used for page streaming call settings. */
+  /**
+   * Adds the imports used for page streaming call settings.
+   */
   public void addPageStreamingCallSettingsImports(ModelTypeTable typeTable) {
     // do nothing
   }
 
-  /** Adds the imports used for bundling call settings. */
+  /**
+   * Adds the imports used for bundling call settings.
+   */
   public void addBundlingCallSettingsImports(ModelTypeTable typeTable) {
     // do nothing
   }
 
-  /** The key to use in a dictionary for the given method. */
+  /**
+   * The key to use in a dictionary for the given method.
+   */
   public String getMethodKey(Method method) {
     return keyName(Name.upperCamel(method.getSimpleName()));
   }
 
-  /** The path to the client config for the given interface. */
+  /**
+   * The path to the client config for the given interface.
+   */
   public String getClientConfigPath(Interface service) {
     return getNotImplementedString("SurfaceNamer.getClientConfigPath");
   }
@@ -312,7 +352,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return inittedConstantName(Name.from("method").join(Name.upperCamel(method.getSimpleName())));
   }
 
-  /** The name of the surface method which can call the given API method. */
+  /**
+   * The name of the surface method which can call the given API method.
+   */
   public String getApiMethodName(Method method) {
     return methodName(Name.upperCamel(method.getSimpleName()));
   }
@@ -339,27 +381,37 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return true;
   }
 
-  /** Converts the given text to doc lines in the format of the current language. */
+  /**
+   * Converts the given text to doc lines in the format of the current language.
+   */
   public List<String> getDocLines(String text) {
     return CommonRenderingUtil.getDocLines(text);
   }
 
-  /** Provides the doc lines for the given proto element in the current language. */
+  /**
+   * Provides the doc lines for the given proto element in the current language.
+   */
   public List<String> getDocLines(ProtoElement element) {
     return getDocLines(DocumentationUtil.getDescription(element));
   }
 
-  /** The doc lines that declare what exception(s) are thrown for an API method. */
+  /**
+   * The doc lines that declare what exception(s) are thrown for an API method.
+   */
   public List<String> getThrowsDocLines() {
     return new ArrayList<>();
   }
 
-  /** The public access modifier for the current language. */
+  /**
+   * The public access modifier for the current language.
+   */
   public String getPublicAccessModifier() {
     return "public";
   }
 
-  /** The private access modifier for the current language. */
+  /**
+   * The private access modifier for the current language.
+   */
   public String getPrivateAccessModifier() {
     return "private";
   }
@@ -374,52 +426,72 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return Name.upperCamel(method.getSimpleName()).toUpperCamel();
   }
 
-  /** The type name for retry settings. */
+  /**
+   * The type name for retry settings.
+   */
   public String getRetrySettingsTypeName() {
     return getNotImplementedString("SurfaceNamer.getRetrySettingsClassName");
   }
 
-  /** The type name for an optional array argument; not used in most languages. */
+  /**
+   * The type name for an optional array argument; not used in most languages.
+   */
   public String getOptionalArrayTypeName() {
     return getNotImplementedString("SurfaceNamer.getOptionalArrayTypeName");
   }
 
-  /** The return type name in a dynamic language for the given method. */
+  /**
+   * The return type name in a dynamic language for the given method.
+   */
   public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getDynamicReturnTypeName");
   }
 
-  /** The return type name in a static language for the given method. */
+  /**
+   * The return type name in a static language for the given method.
+   */
   public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getStaticReturnTypeName");
   }
 
-  /** The name of the paged callable variant of the given method. */
+  /**
+   * The name of the paged callable variant of the given method.
+   */
   public String getPagedCallableMethodName(Method method) {
     return methodName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
   }
 
-  /** The name of the callable for the paged callable variant of the given method. */
+  /**
+   * The name of the callable for the paged callable variant of the given method.
+   */
   public String getPagedCallableName(Method method) {
     return varName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
   }
 
-  /** The name of the plain callable variant of the given method. */
+  /**
+   * The name of the plain callable variant of the given method.
+   */
   public String getCallableMethodName(Method method) {
     return methodName(Name.upperCamel(method.getSimpleName(), "Callable"));
   }
 
-  /** The name of the plain callable for the given method. */
+  /**
+   * The name of the plain callable for the given method.
+   */
   public String getCallableName(Method method) {
     return varName(Name.upperCamel(method.getSimpleName(), "Callable"));
   }
 
-  /** The name of the settings member name for the given method. */
+  /**
+   * The name of the settings member name for the given method.
+   */
   public String getSettingsMemberName(Method method) {
     return methodName(Name.upperCamel(method.getSimpleName(), "Settings"));
   }
 
-  /** The getter function name for the settings for the given method. */
+  /**
+   * The getter function name for the settings for the given method.
+   */
   public String getSettingsFunctionName(Method method) {
     return getSettingsMemberName(method);
   }
@@ -463,23 +535,38 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return methodName(Name.upperCamel(method.getSimpleName(), "Test"));
   }
 
-  /** The test class name for the given API service. */
+  /**
+   * The test class name for the given API service.
+   */
   public String getTestClassName(Interface service) {
     return className(Name.upperCamel(service.getSimpleName(), "Test"));
   }
 
-  /** The class name of the mock gRPC service for the given API service. */
+  /**
+   * The class name of the mock gRPC service for the given API service.
+   */
   public String getMockServiceClassName(Interface service) {
     return className(Name.upperCamel("Mock", service.getSimpleName()));
   }
 
-  /** The class name of the mock gRPC service implementation for the given API service. */
+  /**
+   * The class name of the mock gRPC service implementation for the given API service.
+   */
   public String getMockGrpcServiceImplName(Interface service) {
     return className(Name.upperCamel("Mock", service.getSimpleName(), "Impl"));
   }
 
-  /** The file name for an API service. */
+  /**
+   * The file name for an API service.
+   */
   public String getServiceFileName(Interface service, String packageName) {
     return getNotImplementedString("SurfaceNamer.getApiName");
+  }
+
+  /**
+   * The name of the class that implements a particular proto interface.
+   */
+  public String getFullyQualifiedApiWrapperClassName(Interface interfaze, String packageName) {
+    return getNotImplementedString("SurfaceNamer.getFullyQuallifiedApiWrapperClassName");
   }
 }

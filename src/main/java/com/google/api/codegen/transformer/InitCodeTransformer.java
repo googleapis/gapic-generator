@@ -46,6 +46,7 @@ import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +69,7 @@ public class InitCodeTransformer {
             .valueGenerator(valueGenerator)
             .initStructure(initFieldStructure)
             .method(context.getMethod())
-            .typeTable(context.getTypeTable().cloneEmpty())
+            .typeTable(generateInitCodeTypeTable(context))
             .build();
     InitCodeGenerator generator = new InitCodeGenerator();
     InitCode initCode = generator.generateRequestFieldInitCode(initCodeContext, fields);
@@ -85,7 +86,7 @@ public class InitCodeTransformer {
             .valueGenerator(valueGenerator)
             .initStructure(initFieldStructure)
             .method(context.getMethod())
-            .typeTable(context.getTypeTable().cloneEmpty())
+            .typeTable(generateInitCodeTypeTable(context))
             .build();
     InitCodeGenerator generator = new InitCodeGenerator();
     InitCode initCode = generator.generateRequestObjectInitCode(initCodeContext);
@@ -102,7 +103,7 @@ public class InitCodeTransformer {
             .valueGenerator(valueGenerator)
             .initStructure(initFieldStructure)
             .method(context.getMethod())
-            .typeTable(context.getTypeTable().cloneEmpty())
+            .typeTable(generateInitCodeTypeTable(context))
             .build();
     InitCodeGenerator generator = new InitCodeGenerator();
     InitCode initCode = generator.generateMockResponseObjectInitCode(initCodeContext);
@@ -114,8 +115,7 @@ public class InitCodeTransformer {
     return InitCodeView.newBuilder()
         .lines(generateSurfaceInitCodeLines(context, initCode))
         .fieldSettings(getFieldSettings(context, initCode.getArgFields()))
-        .aliasingTypesMap(initCode.getAliasingTypesMap())
-        .packageName(context.getApiConfig().getPackageName())
+        .aliasingTypes(ImportTypeTransformer.generateImports(initCode.getAliasingTypesMap()))
         .apiFileName(
             context
                 .getNamer()
@@ -133,7 +133,7 @@ public class InitCodeTransformer {
             .symbolTable(new SymbolTable())
             .initStructure(initFieldStructure)
             .method(context.getMethod())
-            .typeTable(context.getTypeTable())
+            .typeTable(generateInitCodeTypeTable(context))
             .build();
     InitCode initCode = generator.generateRequestFieldInitCode(initCodeContext, fields);
 
@@ -148,6 +148,18 @@ public class InitCodeTransformer {
       assertViews.add(createAssertView(expectedValueIdentifier, getterMethod));
     }
     return assertViews;
+  }
+
+  private ModelTypeTable generateInitCodeTypeTable(MethodTransformerContext context) {
+    ModelTypeTable typeTable = context.getTypeTable().cloneEmpty();
+    // Initialize the type table with the apiClassName since each sample will be using the
+    // apiClass.
+    typeTable.getAndSaveNicknameFor(
+        context
+            .getNamer()
+            .getFullyQualifiedApiWrapperClassName(
+                context.getInterface(), context.getApiConfig().getPackageName()));
+    return typeTable;
   }
 
   private GapicSurfaceTestAssertView createAssertView(String expected, String actual) {

@@ -88,7 +88,9 @@ public class RubyTypeTable implements TypeTable {
 
   @Override
   public Map<String, String> getImports() {
-    return new TreeMap<>(nameMap);
+    // Since the import map will be used for type aliasing in Ruby, use a TreeMap to sort by
+    // the value.
+    return HashBiMap.create(new TreeMap<>(nameMap.inverse())).inverse();
   }
 
   public boolean hasImports() {

@@ -90,4 +90,9 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     }
     return getModelTypeFormatter().getFullNameFor(method.getOutputType());
   }
+
+  @Override
+  public String getFullyQualifiedApiWrapperClassName(Interface service, String packageName) {
+    return packageName + "\\" + getApiWrapperClassName(service);
+  }
 }

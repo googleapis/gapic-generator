@@ -31,10 +31,7 @@ public abstract class InitCodeView {
    * This is commonly used for type aliasing.
    */
   @Nullable
-  public abstract Map<String, String> aliasingTypesMap();
-
-  /** The package name of the generated client library. This is used to alias the library object. */
-  public abstract String packageName();
+  public abstract List<ImportTypeView> aliasingTypes();
 
   /**
    * The file name of the client library generated. This is used for import statements in samples.
@@ -51,9 +48,7 @@ public abstract class InitCodeView {
 
     public abstract Builder fieldSettings(List<FieldSettingView> val);
 
-    public abstract Builder aliasingTypesMap(Map<String, String> aliasingTypesMap);
-
-    public abstract Builder packageName(String packageName);
+    public abstract Builder aliasingTypes(List<ImportTypeView> aliasingTypesMap);
 
     public abstract Builder apiFileName(String apiFileName);
 

@@ -54,7 +54,7 @@ public class InitCodeGenerator {
             lastLine.getInitValueConfig());
     List<FieldSetting> outputFields = Arrays.asList(requestField);
     Map<String, String> typeAliasingMap =
-        (context.typeTable() == null) ? null : context.typeTable().getImports();
+        context.typeTable() == null ? null : context.typeTable().getImports();
     return InitCode.create(initLineSpecs, outputFields, typeAliasingMap);
   }
 

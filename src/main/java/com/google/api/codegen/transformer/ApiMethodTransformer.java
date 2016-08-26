@@ -25,7 +25,6 @@ import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.CallableMethodDetailView;
 import com.google.api.codegen.viewmodel.DynamicLangApiMethodView;
 import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
-import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.ListMethodDetailView;
 import com.google.api.codegen.viewmodel.MapParamDocView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;

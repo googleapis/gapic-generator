@@ -60,4 +60,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
     newNames.add(Name.upperCamel(getApiWrapperClassName(service)).toLowerUnderscore());
     return Joiner.on("/").join(newNames.toArray());
   }
+
+  @Override
+  public String getFullyQualifiedApiWrapperClassName(Interface service, String packageName) {
+    return packageName + "::" + getApiWrapperClassName(service);
+  }
 }

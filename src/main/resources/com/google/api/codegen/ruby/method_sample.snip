@@ -1,104 +1,102 @@
 @extends "ruby/common.snip"
 
 @snippet sampleCode(apiMethod)
-    @@example
-    @let lines = util.getDocLines(sampleCode_(apiMethod))
-        @join line : lines
-            {@""}  {@line}
-        @end
+  @@example
+  @let lines = util.getDocLines(sampleCode_(apiMethod))
+    @join line : lines
+      {@""}  {@line}
     @end
+  @end
 @end
 
 @snippet sampleCode_(apiMethod)
-    require "{@apiMethod.initCode.apiFileName}"
+  require "{@apiMethod.initCode.apiFileName}"
 
-    {@apiMethod.apiClassName} = {@apiMethod.initCode.packageName}\
-        ::{@apiMethod.apiClassName}
-    @join aliasDef : context.entrySet(apiMethod.initCode.aliasingTypesMap)
-        {@aliasDef.getValue} = {@aliasDef.getKey}
-    @end
+  @join alias : apiMethod.initCode.aliasingTypes
+    {@alias.nickname} = {@alias.fullName}
+  @end
 
-    {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.new
-    @if apiMethod.initCode.lines
-        {@initCode(apiMethod.initCode)}
-    @end
-    @switch apiMethod.type.toString
-    @case "FlattenedMethod"
-        {@flattenedMethodSampleCode(apiMethod)}
-    @case "PagedFlattenedMethod"
-        {@pagedFlattenedMethodSampleCode(apiMethod)}
-    @default
-        $unhandledCase: {@apiMethod.type.toString}$
-    @end
+  {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.new
+  @if apiMethod.initCode.lines
+    {@initCode(apiMethod.initCode)}
+  @end
+  @switch apiMethod.type.toString
+  @case "FlattenedMethod"
+    {@flattenedMethodSampleCode(apiMethod)}
+  @case "PagedFlattenedMethod"
+    {@pagedFlattenedMethodSampleCode(apiMethod)}
+  @default
+    $unhandledCase: {@apiMethod.type.toString}$
+  @end
 @end
 
 @private flattenedMethodSampleCode(apiMethod)
-    @if apiMethod.hasReturnValue
-        response = {@methodCallSampleCode(apiMethod)}
-    @else
-        {@methodCallSampleCode(apiMethod)}
-    @end
+  @if apiMethod.hasReturnValue
+    response = {@methodCallSampleCode(apiMethod)}
+  @else
+    {@methodCallSampleCode(apiMethod)}
+  @end
 @end
 
 @private pagedFlattenedMethodSampleCode(apiMethod)
 
-    @# Iterate over all results.
-    {@methodCallSampleCode(apiMethod)}.each do |element|
-        @# Process element.
-    end
+  @# Iterate over all results.
+  {@methodCallSampleCode(apiMethod)}.each do |element|
+    @# Process element.
+  end
 
-    @# Or iterate over results one page at a time.
-    {@methodCallSampleCode(apiMethod)}.each_page do |page|
-      @# Process each page at a time.
-      page.each do |element|
-        @# Process element.
-      end
+  @# Or iterate over results one page at a time.
+  {@methodCallSampleCode(apiMethod)}.each_page do |page|
+    @# Process each page at a time.
+    page.each do |element|
+      @# Process element.
     end
+  end
 @end
 
 @private methodCallSampleCode(apiMethod)
-    @let fieldSettings = apiMethod.initCode.fieldSettings
-        @if fieldSettings
-            {@apiMethod.apiVariableName}.{@apiMethod.name}\
-                ({@sampleMethodCallArgList(fieldSettings)})
-        @else
-            {@apiMethod.apiVariableName}.{@apiMethod.name}
-        @end
+  @let fieldSettings = apiMethod.initCode.fieldSettings
+    @if fieldSettings
+      {@apiMethod.apiVariableName}.{@apiMethod.name}\
+        ({@sampleMethodCallArgList(fieldSettings)})
+    @else
+      {@apiMethod.apiVariableName}.{@apiMethod.name}
     @end
+  @end
 @end
 
 @private sampleMethodCallArgList(fieldSettings)
-    @join fieldSetting : fieldSettings on ", "
-        {@fieldSetting.identifier}
-    @end
+  @join fieldSetting : fieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
 @end
 
 @private initCode(initCodeSpec)
-    @join line : initCodeSpec.lines
-        @switch line.lineType.toString
-        @case "StructureInitLine"
-            {@initLineStructure(line)}
-        @case "ListInitLine"
-            {@initLineList(line)}
-        @case "MapInitLine"
-            {@initLineMap(line)}
-        @case "SimpleInitLine"
-            {@initLineSimple(line)}
-        @default
-            $unhandledCase: {@line.lineType.toString}$
-        @end
+  @join line : initCodeSpec.lines
+    @switch line.lineType.toString
+    @case "StructureInitLine"
+      {@initLineStructure(line)}
+    @case "ListInitLine"
+      {@initLineList(line)}
+    @case "MapInitLine"
+      {@initLineMap(line)}
+    @case "SimpleInitLine"
+      {@initLineSimple(line)}
+    @default
+      $unhandledCase: {@line.lineType.toString}$
     @end
+  @end
 @end
 
 @private initLineStructure(line)
-    {@line.identifier} = {@line.typeName}.new
-    @join fieldSetting : line.fieldSettings
-        {@line.identifier}.{@fieldSetting.fieldSetFunction} = {@fieldSetting.identifier}
-    @end
+  {@line.identifier} = {@line.typeName}.new
+  @join fieldSetting : line.fieldSettings
+    {@line.identifier}.{@fieldSetting.fieldSetFunction} = {@fieldSetting.identifier}
+  @end
 @end
 
 @private initLineList(line)
-    {@line.identifier} = [{@varList(line.elementIdentifiers)}]
+  {@line.identifier} = [{@varList(line.elementIdentifiers)}]
 @end
 
 @snippet varList(args)
@@ -108,7 +106,7 @@
 @end
 
 @private initLineMap(line)
-    {@line.identifier} = { {@keyVarList(line.initEntries)} }
+  {@line.identifier} = { {@keyVarList(line.initEntries)} }
 @end
 
 @private keyVarList(mapEntries)
@@ -118,17 +116,17 @@
 @end
 
 @private initLineSimple(line)
-    {@line.identifier} = {@renderInitValue(line.initValue)}
+  {@line.identifier} = {@renderInitValue(line.initValue)}
 @end
 
 @private renderInitValue(initValue)
-    @switch initValue.type
-    @case "SimpleInitValueView"
-        {@initValue.initialValue}
-    @case "FormattedInitValueView"
-        {@initValue.apiWrapperName}.{@initValue.formatFunctionName}\
-            ({@varList(initValue.formatArgs)})
-    @default
-        $unhandledCase: {@initValue.type}$
-    @end
+  @switch initValue.type
+  @case "SimpleInitValueView"
+    {@initValue.initialValue}
+  @case "FormattedInitValueView"
+    {@initValue.apiWrapperName}.{@initValue.formatFunctionName}\
+      ({@varList(initValue.formatArgs)})
+  @default
+    $unhandledCase: {@initValue.type}$
+  @end
 @end
