@@ -20,17 +20,18 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-
-import org.joda.time.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nullable;
+
+import org.joda.time.Duration;
 
 // TODO(garrettjones) consider using AutoValue in this class and related classes.
 /**
@@ -39,6 +40,7 @@ import javax.annotation.Nullable;
  */
 public class MethodConfig {
 
+  private final Method method;
   private final PageStreamingConfig pageStreaming;
   private final FlatteningConfig flattening;
   private final String retryCodesConfigName;
@@ -50,6 +52,7 @@ public class MethodConfig {
   private final boolean hasRequestObjectMethod;
   private final ImmutableMap<String, String> fieldNamePatterns;
   private final List<String> sampleCodeInitFields;
+  private final String rerouteToGrpcInterface;
 
   /**
    * Creates an instance of MethodConfig based on MethodConfigProto, linking it up with the provided
@@ -169,10 +172,16 @@ public class MethodConfig {
     sampleCodeInitFields.addAll(methodConfigProto.getRequiredFieldsList());
     sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
 
+    String rerouteToGrpcInterface = methodConfigProto.getRerouteToGrpcInterface();
+    if (Strings.isNullOrEmpty(rerouteToGrpcInterface)) {
+      rerouteToGrpcInterface = null;
+    }
+
     if (error) {
       return null;
     } else {
       return new MethodConfig(
+          method,
           pageStreaming,
           flattening,
           retryCodesName,
@@ -183,11 +192,13 @@ public class MethodConfig {
           requiredFields,
           optionalFields,
           fieldNamePatterns,
-          sampleCodeInitFields);
+          sampleCodeInitFields,
+          rerouteToGrpcInterface);
     }
   }
 
   private MethodConfig(
+      Method method,
       PageStreamingConfig pageStreaming,
       FlatteningConfig flattening,
       String retryCodesConfigName,
@@ -198,7 +209,9 @@ public class MethodConfig {
       Iterable<Field> requiredFields,
       Iterable<Field> optionalFields,
       ImmutableMap<String, String> fieldNamePatterns,
-      List<String> sampleCodeInitFields) {
+      List<String> sampleCodeInitFields,
+      String rerouteToGrpcInterface) {
+    this.method = method;
     this.pageStreaming = pageStreaming;
     this.flattening = flattening;
     this.retryCodesConfigName = retryCodesConfigName;
@@ -210,6 +223,12 @@ public class MethodConfig {
     this.optionalFields = optionalFields;
     this.fieldNamePatterns = fieldNamePatterns;
     this.sampleCodeInitFields = sampleCodeInitFields;
+    this.rerouteToGrpcInterface = rerouteToGrpcInterface;
+  }
+
+  /** Returns the method that this config corresponds to. */
+  public Method getMethod() {
+    return method;
   }
 
   /** Returns true if this method has page streaming configured. */
@@ -280,5 +299,13 @@ public class MethodConfig {
   /** Returns the field structure of fields that needs to be initialized in sample code. */
   public List<String> getSampleCodeInitFields() {
     return sampleCodeInitFields;
+  }
+
+  /**
+   * Returns the Interface that should be used for the GRPC call in place of the interface
+   * in which this method appears.
+   */
+  public String getRerouteToGrpcInterface() {
+    return rerouteToGrpcInterface;
   }
 }

@@ -337,3 +337,20 @@ interfaces:
     field_name_patterns:
       resource: book
     timeout_millis: 60000
+  - name: AddLabel
+    flattening:
+      groups:
+      - parameters:
+        - resource
+        - label
+    required_fields:
+    - resource
+    - label
+    request_object_method: true
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      resource: book
+    timeout_millis: 60000
+    reroute_to_grpc_interface: google.tagger.v1.Labeler
+

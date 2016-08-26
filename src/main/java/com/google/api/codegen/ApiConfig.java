@@ -112,11 +112,6 @@ public abstract class ApiConfig {
    * Returns the InterfaceConfig for the given API interface.
    */
   public InterfaceConfig getInterfaceConfig(Interface iface) {
-    InterfaceConfig interfaceConfig = getInterfaceConfigMap().get(iface.getFullName());
-    if (interfaceConfig == null) {
-      throw new IllegalArgumentException(
-          "no interface config for interface '" + iface.getFullName() + "'");
-    }
-    return interfaceConfig;
+    return getInterfaceConfigMap().get(iface.getFullName());
   }
 }
