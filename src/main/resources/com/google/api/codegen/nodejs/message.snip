@@ -1,0 +1,108 @@
+@extends "nodejs/common.snip"
+
+@snippet generateFilename(file)
+  {@context.getDocFilename(file)}
+@end
+
+@snippet generateBody(file)
+  {@licenseSection()}
+
+  @if context.isExternalFile(file)
+    @join message : context.filterDocumentingMessages(file) on ";".add(BREAK).add(BREAK)
+      {@externalMessageDocument(message)}
+    @end
+  @else
+    @join message : context.filterDocumentingMessages(file) on ";".add(BREAK).add(BREAK)
+      {@messageDocument(message, toplevelHeader(message))}
+    @end
+  @end
+@end
+
+@private licenseSection()
+  /*
+   {@copyright()}
+   */
+
+  /*
+   * Note: this file is purely for documentation. Any contents are not expected
+   * to be loaded as the JS file.
+   */
+@end
+
+@private toplevelHeader(message)
+  var {@message.getSimpleName} = {
+@end
+
+@private subHeader(message)
+  {@message.getSimpleName}: {
+@end
+
+@private messageDocument(message, header)
+  @let documentation = context.defaultComments(message)
+    /**
+     @if documentation
+       {@comments(documentation)}
+       *
+     @end
+     {@properties(message)}
+     * @@class
+     * @@see [{@message.getFullName} definition in proto format]{@@link {@context.getFileURL(message.getFile())}}
+     */
+    {@header}
+      // This is for documentation. Actual contents will be loaded by gRPC.
+      @join subMessage : context.filterDocumentingMessages(message) on ",".add(BREAK)
+
+        {@messageDocument(subMessage, subHeader(subMessage))}
+      @end
+      @join subEnum : message.getEnums() on ",".add(BREAK)
+
+        {@enumDocument(subEnum, subHeader(subEnum))}
+      @end
+    # Note that the opening brace should be included in the header.
+    }
+  @end
+@end
+
+@private enumDocument(enum, header)
+  @let documentation = context.defaultComments(enum)
+    /**
+     @if documentation
+       {@comments(documentation)}
+       *
+     @end
+     * @@enum {number}
+     */
+    {@header}
+      @join value : enum.getValues() on ",".add(BREAK).add(BREAK)
+        @let valueDoc = context.defaultComments(value)
+          @if documentation
+            /**
+             {@comments(documentation)}
+             */
+          @end
+          {@value.getSimpleName}: {@value.getNumber}
+        @end
+      @end
+    }
+  @end
+@end
+
+@private externalMessageDocument(message)
+  @let documentation = context.defaultComments(message)
+    /**
+     @if documentation
+       {@comments(documentation)}
+       *
+     @end
+     * @@external "{@message.getFullName}"
+     {@properties(message)}
+     * @@see [{@message.getFullName} definition in proto format]{@@link {@context.getFileURL(message.getFile())}}
+     */
+  @end
+@end
+
+@private properties(message)
+  @join field : message.getFields()
+    {@comments(context.fieldPropertyComment(field))}
+  @end
+@end
