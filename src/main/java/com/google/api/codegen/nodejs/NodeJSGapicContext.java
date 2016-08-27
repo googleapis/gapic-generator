@@ -258,12 +258,12 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       } else if (resourceType.isEnum()) {
         resourceTypeName = "a number of\n  " + linkForMessage(resourceType.getEnumType());
       } else {
-        resourceTypeName = jsTypeName(resourceType);
+        resourceTypeName = "a " + jsTypeName(resourceType);
       }
       return "@returns {Stream}\n"
           + "  An object stream. By default, this emits "
           + resourceTypeName
-          + " instances on 'data' event.\n"
+          + " on 'data' event.\n"
           + "  This object can also be configured to emit\n"
           + "  pages of the responses through the options parameter.";
     }
@@ -368,8 +368,6 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     if (returnType != null) {
       contentBuilder.append("\n" + returnType);
     }
-
-    contentBuilder.append("\n@throws an error if the RPC is aborted.");
     return convertToCommentedBlock(contentBuilder.toString());
   }
 
