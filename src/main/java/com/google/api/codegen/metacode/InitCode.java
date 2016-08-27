@@ -17,26 +17,17 @@ package com.google.api.codegen.metacode;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
 
 /**
  * InitCode represents the lines of code necessary to compose a structure.
  */
 @AutoValue
 public abstract class InitCode {
-  public static InitCode create(
-      List<InitCodeLine> lines,
-      List<FieldSetting> argFields,
-      Map<String, String> aliasingTypesMap) {
-    return new AutoValue_InitCode(lines, argFields, aliasingTypesMap);
+  public static InitCode create(List<InitCodeLine> lines, List<FieldSetting> argFields) {
+    return new AutoValue_InitCode(lines, argFields);
   }
 
   public abstract List<InitCodeLine> getLines();
 
   public abstract List<FieldSetting> getArgFields();
-
-  @Nullable
-  public abstract Map<String, String> getAliasingTypesMap();
 }

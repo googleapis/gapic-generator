@@ -69,7 +69,6 @@ public class InitCodeTransformer {
             .valueGenerator(valueGenerator)
             .initStructure(initFieldStructure)
             .method(context.getMethod())
-            .typeTable(generateInitCodeTypeTable(context))
             .build();
     InitCodeGenerator generator = new InitCodeGenerator();
     InitCode initCode = generator.generateRequestFieldInitCode(initCodeContext, fields);
@@ -86,7 +85,6 @@ public class InitCodeTransformer {
             .valueGenerator(valueGenerator)
             .initStructure(initFieldStructure)
             .method(context.getMethod())
-            .typeTable(generateInitCodeTypeTable(context))
             .build();
     InitCodeGenerator generator = new InitCodeGenerator();
     InitCode initCode = generator.generateRequestObjectInitCode(initCodeContext);
@@ -103,7 +101,6 @@ public class InitCodeTransformer {
             .valueGenerator(valueGenerator)
             .initStructure(initFieldStructure)
             .method(context.getMethod())
-            .typeTable(generateInitCodeTypeTable(context))
             .build();
     InitCodeGenerator generator = new InitCodeGenerator();
     InitCode initCode = generator.generateMockResponseObjectInitCode(initCodeContext);
@@ -112,10 +109,11 @@ public class InitCodeTransformer {
   }
 
   private InitCodeView buildInitCodeView(MethodTransformerContext context, InitCode initCode) {
+    ModelTypeTable sampleTypeTable = generateInitCodeTypeTable(context);
     return InitCodeView.newBuilder()
-        .lines(generateSurfaceInitCodeLines(context, initCode))
+        .lines(generateSurfaceInitCodeLines(context, initCode, sampleTypeTable))
         .fieldSettings(getFieldSettings(context, initCode.getArgFields()))
-        .aliasingTypes(ImportTypeTransformer.generateImports(initCode.getAliasingTypesMap()))
+        .aliasingTypes(ImportTypeTransformer.generateImports(sampleTypeTable.getImports()))
         .apiFileName(
             context
                 .getNamer()
@@ -133,7 +131,6 @@ public class InitCodeTransformer {
             .symbolTable(new SymbolTable())
             .initStructure(initFieldStructure)
             .method(context.getMethod())
-            .typeTable(generateInitCodeTypeTable(context))
             .build();
     InitCode initCode = generator.generateRequestFieldInitCode(initCodeContext, fields);
 
@@ -215,7 +212,7 @@ public class InitCodeTransformer {
   }
 
   private List<InitCodeLineView> generateSurfaceInitCodeLines(
-      MethodTransformerContext context, InitCode initCode) {
+      MethodTransformerContext context, InitCode initCode, ModelTypeTable sampleTypeTable) {
     List<InitCodeLineView> surfaceLines = new ArrayList<>();
     for (InitCodeLine line : initCode.getLines()) {
       switch (line.getLineType()) {
@@ -226,6 +223,7 @@ public class InitCodeTransformer {
           surfaceLines.add(generateListInitCodeLine(context, (ListInitCodeLine) line));
           continue;
         case SimpleInitLine:
+          sampleTypeTable.getAndSaveNicknameFor(((SimpleInitCodeLine) line).getType());
           surfaceLines.add(generateSimpleInitCodeLine(context, (SimpleInitCodeLine) line));
           continue;
         case MapInitLine:

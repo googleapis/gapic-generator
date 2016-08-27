@@ -77,7 +77,6 @@ public abstract class DocConfig {
               .symbolTable(new SymbolTable())
               .initStructure(initFieldStructure)
               .method(method)
-              .typeTable(null)
               .build();
       InitCode initCode = generator.generateRequestFieldInitCode(initContext, fields);
       setInitCodeProxy(initCode);

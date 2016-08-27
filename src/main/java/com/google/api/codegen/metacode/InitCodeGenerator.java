@@ -53,9 +53,7 @@ public class InitCodeGenerator {
             lastLine.getIdentifier(),
             lastLine.getInitValueConfig());
     List<FieldSetting> outputFields = Arrays.asList(requestField);
-    Map<String, String> typeAliasingMap =
-        context.typeTable() == null ? null : context.typeTable().getImports();
-    return InitCode.create(initLineSpecs, outputFields, typeAliasingMap);
+    return InitCode.create(initLineSpecs, outputFields);
   }
 
   /**
@@ -79,9 +77,7 @@ public class InitCodeGenerator {
             lastLine.getIdentifier(),
             lastLine.getInitValueConfig());
     List<FieldSetting> outputFields = Arrays.asList(responseField);
-    Map<String, String> typeAliasingMap =
-        context.typeTable() == null ? null : context.typeTable().getImports();
-    return InitCode.create(initLineSpecs, outputFields, typeAliasingMap);
+    return InitCode.create(initLineSpecs, outputFields);
   }
 
   /**
@@ -109,9 +105,7 @@ public class InitCodeGenerator {
           "Expected method request to be a message, found " + lastLine.getClass().getName());
     }
     StructureInitCodeLine requestInitCodeLine = (StructureInitCodeLine) lastLine;
-    Map<String, String> typeAliasingMap =
-        context.typeTable() == null ? null : context.typeTable().getImports();
-    return InitCode.create(initLineSpecs, requestInitCodeLine.getFieldSettings(), typeAliasingMap);
+    return InitCode.create(initLineSpecs, requestInitCodeLine.getFieldSettings());
   }
 
   private InitCodeLine generateCodeInitStructure(
@@ -243,10 +237,6 @@ public class InitCodeGenerator {
         }
 
         initValueConfig = initValueConfig.withInitialValue(validatedValue);
-      }
-      // This is used to make type aliases for samples.
-      if (context.typeTable() != null) {
-        context.typeTable().getAndSaveNicknameFor(typeRef);
       }
       return SimpleInitCodeLine.create(typeRef, identifier, initValueConfig);
     }

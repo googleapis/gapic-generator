@@ -14,15 +14,13 @@
  */
 package com.google.api.codegen.metacode;
 
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
 
-import java.util.Map;
-
 import javax.annotation.Nullable;
+import java.util.Map;
 
 /**
  * Context class used by InitCodeGenerator.
@@ -45,9 +43,6 @@ public abstract class InitCodeGeneratorContext {
 
   public abstract Method method();
 
-  @Nullable
-  public abstract ModelTypeTable typeTable();
-
   public boolean shouldGenerateTestValue() {
     return valueGenerator() != null;
   }
@@ -65,8 +60,6 @@ public abstract class InitCodeGeneratorContext {
     public abstract Builder initStructure(Map<String, Object> val);
 
     public abstract Builder method(Method val);
-
-    public abstract Builder typeTable(ModelTypeTable typeTable);
 
     public abstract InitCodeGeneratorContext build();
   }
