@@ -81,35 +81,35 @@
         }
     }
 
-    @join retryDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetrySettingsDefinition)
-        func {@context.lowerUnderscoreToLowerCamel(retryDef.getKey)}{@context.getClientPrefix(service)}RetryOptions() []gax.CallOption {
-            return []gax.CallOption{
-                gax.WithTimeout({@retryDef.getValue.getTotalTimeout.getMillis()}*time.Millisecond),
-                gax.WithDelayTimeoutSettings({@retryDef.getValue.getInitialRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getRetryDelayMultiplier}),
-                gax.WithRPCTimeoutSettings({@retryDef.getValue.getInitialRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getRpcTimeoutMultiplier}),
-            }
-        }
-    @end
-
     func default{@context.getClientPrefix(service)}CallOptions() *{@context.getClientPrefix(service)}CallOptions {
-        @join retryCodesDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetryCodesDefinition) if retryCodesDef.getValue
-            with{@context.lowerUnderscoreToUpperCamel(retryCodesDef.getKey)}RetryCodes := gax.WithRetryCodes([]codes.Code{
-                @join code : retryCodesDef.getValue
-                    codes.{@context.upperUnderscoreToUpperCamel(code.toString())},
+        retry := map[[2]string][]gax.CallOption{
+            @join retryName : context.getRetryConfigNames(service) if context.getApiConfig.getInterfaceConfig(service).getRetryCodesDefinition.get(retryName.getCodesName)
+                @let retryCodes = context.getApiConfig.getInterfaceConfig(service).getRetryCodesDefinition.get(retryName.getCodesName), \
+                        retrySettings = context.getApiConfig.getInterfaceConfig(service).getRetrySettingsDefinition.get(retryName.getSettingsName)
+                    {"{@retryName.getSettingsName}", "{@retryName.getCodesName}"}: {
+                        gax.WithRetry(func() gax.Retryer {
+                            return gax.OnCodes([]codes.Code{
+                                @join code : retryCodes
+                                    codes.{@context.upperUnderscoreToUpperCamel(code.toString())},
+                                @end
+                            }, gax.Backoff{
+                                Initial: {@retrySettings.getInitialRetryDelay.getMillis}*time.Millisecond,
+                                Max: {@retrySettings.getMaxRetryDelay.getMillis}*time.Millisecond,
+                                Multiplier: {@retrySettings.getRetryDelayMultiplier},
+                            })
+                        }),
+                    },
                 @end
-            })
-        @end
+            @end
+        }
+
         return &{@context.getClientPrefix(service)}CallOptions{
             @join method : context.getNonStreamingMethods(service)
                 @let methodName = method.getSimpleName, \
                      methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-                     retryParamsName = context.lowerUnderscoreToLowerCamel(methodConfig.getRetrySettingsConfigName), \
-                     retryCodesName = context.lowerUnderscoreToUpperCamel(methodConfig.getRetryCodesConfigName)
-                    @if {@context.hasEmptyRetryCodes(service, methodConfig)}
-                        {@methodName}: {@retryParamsName}{@context.getClientPrefix(service)}RetryOptions(),
-                    @else
-                        {@methodName}: append({@retryParamsName}{@context.getClientPrefix(service)}RetryOptions(), with{@retryCodesName}RetryCodes),
-                    @end
+                     retryParamsName = methodConfig.getRetrySettingsConfigName, \
+                     retryCodesName = methodConfig.getRetryCodesConfigName
+                        {@methodName}: retry[[2]string{"{@retryParamsName}", "{@retryCodesName}"}],
                 @end
             @end
         }
