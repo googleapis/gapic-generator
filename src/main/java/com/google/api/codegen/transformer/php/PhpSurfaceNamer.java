@@ -32,11 +32,11 @@ import com.google.api.tools.framework.model.TypeRef;
  * The SurfaceNamer for PHP.
  */
 public class PhpSurfaceNamer extends SurfaceNamer {
-  public PhpSurfaceNamer() {
+  public PhpSurfaceNamer(String implicitPackageName) {
     super(
         new PhpNameFormatter(),
-        new ModelTypeFormatterImpl(new PhpModelTypeNameConverter()),
-        new PhpTypeTable());
+        new ModelTypeFormatterImpl(new PhpModelTypeNameConverter(implicitPackageName)),
+        new PhpTypeTable(implicitPackageName));
   }
 
   @Override
@@ -89,5 +89,10 @@ public class PhpSurfaceNamer extends SurfaceNamer {
       return "Google\\GAX\\PagedListResponse";
     }
     return getModelTypeFormatter().getFullNameFor(method.getOutputType());
+  }
+
+  @Override
+  public String getFullyQualifiedApiWrapperClassName(Interface service, String packageName) {
+    return packageName + "\\" + getApiWrapperClassName(service);
   }
 }

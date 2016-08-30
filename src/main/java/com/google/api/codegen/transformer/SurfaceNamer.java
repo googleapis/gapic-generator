@@ -483,6 +483,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return className(Name.upperCamel("Mock", service.getSimpleName(), "Impl"));
   }
 
+  /** The file name for an API service. */
+  public String getServiceFileName(Interface service, String packageName) {
+    return getNotImplementedString("SurfaceNamer.getApiName");
+  }
+
+  /**
+   * The fully qualified class name of a an API service.
+   * TODO: Support the general pattern of package + class name in NameFormatter.
+   */
+  public String getFullyQualifiedApiWrapperClassName(Interface interfaze, String packageName) {
+    return getNotImplementedString("SurfaceNamer.getFullyQualifiedApiWrapperClassName");
+  }
+
   public String getStubName(Interface service) {
     return varName(Name.upperCamel(service.getSimpleName(), "Stub"));
   }

@@ -71,4 +71,14 @@ public abstract class MethodTransformerContext {
   public CollectionConfig getCollectionConfig(String entityName) {
     return getInterfaceConfig().getCollectionConfig(entityName);
   }
+
+  public MethodTransformerContext cloneWithEmptyTypeTable() {
+    return create(
+        getInterface(),
+        getApiConfig(),
+        getTypeTable().cloneEmpty(),
+        getNamer(),
+        getMethod(),
+        getMethodConfig());
+  }
 }

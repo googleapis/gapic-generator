@@ -24,6 +24,16 @@ public abstract class InitCodeView {
 
   public abstract List<FieldSettingView> fieldSettings();
 
+  /**
+   * Used to hold information about the types used in method samples.
+   */
+  public abstract List<ImportTypeView> imports();
+
+  /**
+   * The file name of the client library generated. This is used for import statements in samples.
+   */
+  public abstract String apiFileName();
+
   public static Builder newBuilder() {
     return new AutoValue_InitCodeView.Builder();
   }
@@ -33,6 +43,10 @@ public abstract class InitCodeView {
     public abstract Builder lines(List<InitCodeLineView> val);
 
     public abstract Builder fieldSettings(List<FieldSettingView> val);
+
+    public abstract Builder imports(List<ImportTypeView> aliasingTypesMap);
+
+    public abstract Builder apiFileName(String apiFileName);
 
     public abstract InitCodeView build();
   }

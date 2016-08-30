@@ -19,6 +19,7 @@ import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.ImportTypeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
@@ -72,10 +73,12 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     List<ViewModel> surfaceDocs = new ArrayList<>();
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       ModelTypeTable modelTypeTable =
-          new ModelTypeTable(new PhpTypeTable(), new PhpModelTypeNameConverter());
+          new ModelTypeTable(
+              new PhpTypeTable(apiConfig.getPackageName()),
+              new PhpModelTypeNameConverter(apiConfig.getPackageName()));
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(
-              service, apiConfig, modelTypeTable, new PhpSurfaceNamer());
+              service, apiConfig, modelTypeTable, new PhpSurfaceNamer(apiConfig.getPackageName()));
 
       surfaceDocs.addAll(transform(context));
     }
@@ -91,6 +94,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     addXApiImports(context);
 
     List<ApiMethodView> methods = generateApiMethods(context);
+
+    ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
 
     DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
 
@@ -127,7 +132,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.stubs(generateGrpcStubs(context));
 
     // must be done as the last step to catch all imports
-    xapiClass.imports(context.getTypeTable().getImports());
+    xapiClass.imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()));
 
     xapiClass.outputPath(outputPath + "/" + name + ".php");
 

@@ -15,6 +15,7 @@
 package com.google.api.codegen.viewmodel.testing;
 
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
 
@@ -32,7 +33,7 @@ public abstract class GapicSurfaceTestClassView implements ViewModel {
 
   public abstract List<MockServiceUsageView> mockServices();
 
-  public abstract List<String> imports();
+  public abstract List<ImportTypeView> imports();
 
   public abstract List<GapicSurfaceTestCaseView> testCases();
 
@@ -57,7 +58,7 @@ public abstract class GapicSurfaceTestClassView implements ViewModel {
 
     public abstract Builder name(String val);
 
-    public abstract Builder imports(List<String> val);
+    public abstract Builder imports(List<ImportTypeView> val);
 
     public abstract Builder apiClassName(String val);
 

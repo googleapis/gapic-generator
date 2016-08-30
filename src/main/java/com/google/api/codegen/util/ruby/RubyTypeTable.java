@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.util.php;
+package com.google.api.codegen.util.ruby;
 
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
@@ -25,39 +25,38 @@ import com.google.common.collect.ImmutableSet;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * The TypeTable for PHP.
- */
-public class PhpTypeTable implements TypeTable {
-  /**
-   * A bi-map from full names to short names indicating the import map.
+/** The TypeTable for Ruby. */
+public class RubyTypeTable implements TypeTable {
+  /*
+   * A bi-map from full names to short names. In other languages this would indicate imports, but
+   * in ruby this only indicates types to their fully qualified types.
    */
   private final BiMap<String, String> imports = HashBiMap.create();
 
   private final String implicitPackageName;
 
-  public PhpTypeTable(String implicitPackageName) {
+  public RubyTypeTable(String implicitPackageName) {
     this.implicitPackageName = implicitPackageName;
   }
 
   @Override
   public TypeTable cloneEmpty() {
-    return new PhpTypeTable(implicitPackageName);
+    return new RubyTypeTable(implicitPackageName);
   }
 
   @Override
   public TypeName getTypeName(String fullName) {
-    int lastBackslashIndex = fullName.lastIndexOf('\\');
-    if (lastBackslashIndex < 0) {
+    int lastColonedIndex = fullName.lastIndexOf("::");
+    if (lastColonedIndex < 0) {
       throw new IllegalArgumentException("expected fully qualified name");
     }
-    String nickname = fullName.substring(lastBackslashIndex + 1);
+    String nickname = fullName.substring(lastColonedIndex + 2);
     return new TypeName(fullName, nickname);
   }
 
   @Override
   public NamePath getNamePath(String fullName) {
-    return NamePath.backslashed(fullName);
+    return NamePath.dotted(fullName);
   }
 
   @Override
@@ -95,104 +94,63 @@ public class PhpTypeTable implements TypeTable {
 
   @Override
   public Map<String, String> getImports() {
-    // Clean up the imports.
-    Map<String, String> cleanedImports = new TreeMap<>();
-    // Imported type is in package, can be ignored.
-    for (String imported : imports.keySet()) {
-      if (!implicitPackageName.isEmpty() && imported.startsWith(implicitPackageName)) {
-        if (!imported.substring(implicitPackageName.length() + 1).contains("\\")) {
-          continue;
-        }
-      }
-      cleanedImports.put(imported, imports.get(imported));
-    }
-    return cleanedImports;
+    return HashBiMap.create(new TreeMap<>(imports.inverse())).inverse();
   }
 
   public boolean hasImports() {
     return !getImports().isEmpty();
   }
 
-  /**
-   * A set of PHP keywords and built-ins. keywords: http://php.net/manual/en/reserved.keywords.php
+  /**:
+   * A set of ruby keywords and built-ins. keywords:
+   * http://docs.ruby-lang.org/en/2.3.0/keywords_rdoc.html
    */
   private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
       ImmutableSet.<String>builder()
           .add(
-              "__halt_compiler",
-              "abstract",
-              "and",
-              "array",
-              "as",
-              "break",
-              "callable",
-              "case",
-              "catch",
-              "class",
-              "clone",
-              "const",
-              "continue",
-              "declare",
-              "default",
-              "die",
-              "do",
-              "echo",
-              "else",
-              "elseif",
-              "empty",
-              "enddeclare",
-              "endfor",
-              "endforeach",
-              "endif",
-              "endswitch",
-              "endwhile",
-              "eval",
-              "exit",
-              "extends",
-              "final",
-              "finally",
-              "for",
-              "foreach",
-              "function",
-              "global",
-              "goto",
-              "if",
-              "implements",
-              "include",
-              "include_once",
-              "instanceof",
-              "insteadof",
-              "interface",
-              "isset",
-              "list",
-              "namespace",
-              "new",
-              "or",
-              "print",
-              "private",
-              "protected",
-              "public",
-              "require",
-              "require_once",
-              "return",
-              "static",
-              "switch",
-              "throw",
-              "trait",
-              "try",
-              "unset",
-              "use",
-              "var",
-              "while",
-              "xor",
-              "yield",
-              "__CLASS__",
-              "__DIR__",
-              "__FILE__",
-              "__FUNCTION__",
+              "__ENCODING__",
               "__LINE__",
-              "__METHOD__",
-              "__NAMESPACE__",
-              "__TRAIT__")
+              "__FILE__",
+              "BEGIN",
+              "END",
+              "alias",
+              "and",
+              "begin",
+              "break",
+              "case",
+              "class",
+              "def",
+              "defined?",
+              "do",
+              "else",
+              "elsif",
+              "end",
+              "ensure",
+              "false",
+              "for",
+              "if",
+              "in",
+              "module",
+              "next",
+              "nil",
+              "not",
+              "or",
+              "redo",
+              "rescue",
+              "retry",
+              "return",
+              "self",
+              "super",
+              "then",
+              "true",
+              "undef",
+              "unless",
+              "until",
+              "when",
+              "while",
+              "yield",
+              // "options" is here because it's a common keyword argument to
+              // specify a CallOptions instance.
+              "options")
           .build();
 }

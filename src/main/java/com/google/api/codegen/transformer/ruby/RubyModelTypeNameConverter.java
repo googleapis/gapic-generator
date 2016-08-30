@@ -12,46 +12,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer.php;
+package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
+import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
-import com.google.api.codegen.util.php.PhpTypeTable;
+import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
+public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
 
   /**
-   * A map from primitive types in proto to PHP counterparts.
-   */
-  private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
-      ImmutableMap.<Type, String>builder()
-          .put(Type.TYPE_BOOL, "bool")
-          .put(Type.TYPE_DOUBLE, "float")
-          .put(Type.TYPE_FLOAT, "float")
-          .put(Type.TYPE_INT64, "int")
-          .put(Type.TYPE_UINT64, "int")
-          .put(Type.TYPE_SINT64, "int")
-          .put(Type.TYPE_FIXED64, "int")
-          .put(Type.TYPE_SFIXED64, "int")
-          .put(Type.TYPE_INT32, "int")
-          .put(Type.TYPE_UINT32, "int")
-          .put(Type.TYPE_SINT32, "int")
-          .put(Type.TYPE_FIXED32, "int")
-          .put(Type.TYPE_SFIXED32, "int")
-          .put(Type.TYPE_STRING, "string")
-          .put(Type.TYPE_BYTES, "string")
-          .build();
-
-  /**
-   * A map from primitive types in proto to zero value in PHP
+   * A map from primitive types to its default value.
    */
   private static final ImmutableMap<Type, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Type, String>builder()
@@ -68,43 +46,58 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
           .put(Type.TYPE_SINT32, "0")
           .put(Type.TYPE_FIXED32, "0")
           .put(Type.TYPE_SFIXED32, "0")
-          .put(Type.TYPE_STRING, "\"\"")
-          .put(Type.TYPE_BYTES, "\"\"")
+          .put(Type.TYPE_STRING, "\'\'")
+          .put(Type.TYPE_BYTES, "\'\'")
+          .build();
+
+  /**
+   * A map from primitive type to its corresponding ruby types
+   */
+  private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
+      ImmutableMap.<Type, String>builder()
+          .put(Type.TYPE_BOOL, "true, false")
+          .put(Type.TYPE_DOUBLE, "Float")
+          .put(Type.TYPE_FLOAT, "Float")
+          .put(Type.TYPE_INT64, "Integer")
+          .put(Type.TYPE_UINT64, "Integer")
+          .put(Type.TYPE_SINT64, "Integer")
+          .put(Type.TYPE_FIXED64, "Integer")
+          .put(Type.TYPE_SFIXED64, "Integer")
+          .put(Type.TYPE_INT32, "Integer")
+          .put(Type.TYPE_UINT32, "Integer")
+          .put(Type.TYPE_SINT32, "Integer")
+          .put(Type.TYPE_FIXED32, "Integer")
+          .put(Type.TYPE_SFIXED32, "Integer")
+          .put(Type.TYPE_STRING, "String")
+          .put(Type.TYPE_BYTES, "String")
           .build();
 
   private TypeNameConverter typeNameConverter;
 
-  public PhpModelTypeNameConverter(String implicitPackageName) {
-    this.typeNameConverter = new PhpTypeTable(implicitPackageName);
+  public RubyModelTypeNameConverter(String implicitPackageName) {
+    this.typeNameConverter = new RubyTypeTable(implicitPackageName);
   }
 
   @Override
   public TypeName getTypeName(TypeRef type) {
     if (type.isMap()) {
-      return new TypeName("array");
+      return new TypeName("Hash");
     } else if (type.isRepeated()) {
-      TypeName elementTypeName = getTypeNameForElementType(type);
-      return new TypeName("", "", "%i[]", elementTypeName);
+      return new TypeName("Array");
     } else {
       return getTypeNameForElementType(type);
     }
   }
 
   /**
-   * Returns the PHP representation of a type, without cardinality. If the type is a primitive,
+   * Returns the Ruby representation of a type. If the type is a primitive,
    * getTypeNameForElementType returns it in unboxed form.
    */
   @Override
   public TypeName getTypeNameForElementType(TypeRef type) {
     String primitiveTypeName = PRIMITIVE_TYPE_MAP.get(type.getKind());
     if (primitiveTypeName != null) {
-      if (primitiveTypeName.contains("\\")) {
-        // Fully qualified type name, use regular type name resolver. Can skip boxing logic
-        // because those types are already boxed.
-        return typeNameConverter.getTypeName(primitiveTypeName);
-      } else {
-        return new TypeName(primitiveTypeName);
-      }
+      return new TypeName(primitiveTypeName);
     }
     switch (type.getKind()) {
       case TYPE_MESSAGE:
@@ -118,32 +111,33 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeName(ProtoElement elem) {
-    return typeNameConverter.getTypeName(elem.getFullName().replaceAll("\\.", "\\\\"));
+    return typeNameConverter.getTypeName(
+        NamePath.dotted(elem.getFullName()).withUpperPieces().toDoubleColoned());
   }
 
   /**
-   * Returns the PHP representation of a zero value for that type, to be used in code sample doc.
+   * Returns the Ruby representation of a zero value for that type, to be used in code sample doc.
    */
   @Override
   public TypedValue getZeroValue(TypeRef type) {
     // Don't call getTypeName; we don't need to import these.
     if (type.isMap()) {
-      return TypedValue.create(new TypeName("array"), "[]");
+      return TypedValue.create(new TypeName("Hash"), "{}");
     }
     if (type.isRepeated()) {
-      return TypedValue.create(new TypeName("array"), "[]");
+      return TypedValue.create(new TypeName("Array"), "[]");
     }
     if (PRIMITIVE_ZERO_VALUE.containsKey(type.getKind())) {
       return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
     }
     if (type.isMessage()) {
-      return TypedValue.create(getTypeName(type), "new %s()");
+      return TypedValue.create(getTypeName(type), "%s.new");
     }
     if (type.isEnum()) {
       EnumValue enumValue = type.getEnumType().getValues().get(0);
       return TypedValue.create(getTypeName(type), "%s::" + enumValue.getSimpleName());
     }
-    return TypedValue.create(new TypeName(""), "null");
+    return TypedValue.create(new TypeName(""), "nil");
   }
 
   @Override
@@ -167,12 +161,5 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
         // here
         return value;
     }
-  }
-
-  /**
-   * Gets the PHP package for the given proto file.
-   */
-  private static String getPhpPackage(ProtoFile file) {
-    return file.getProto().getPackage().replaceAll("\\.", "\\\\");
   }
 }

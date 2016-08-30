@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.util;
 
+import com.google.common.base.Ascii;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
@@ -75,6 +76,24 @@ public class NamePath {
   }
 
   /**
+   * Create a new NamePath where each name piece now starts with an uppercase word.
+   */
+  public NamePath withUpperPieces() {
+    List<String> newPathPieces = new ArrayList<>();
+    for (String piece : pathPieces) {
+      String newPiece =
+          (piece.isEmpty())
+              ? piece
+              : new StringBuilder(piece.length())
+                  .append(Ascii.toUpperCase(piece.charAt(0)))
+                  .append(piece.substring(1))
+                  .toString();
+      newPathPieces.add(newPiece);
+    }
+    return new NamePath(newPathPieces);
+  }
+
+  /**
    * Returns the head (last piece) of the NamePath.
    */
   public String getHead() {
@@ -93,5 +112,13 @@ public class NamePath {
    */
   public String toBackslashed() {
     return Joiner.on("\\").join(pathPieces);
+  }
+
+  public String toDoubleColoned() {
+    return Joiner.on("::").join(pathPieces);
+  }
+
+  public String toSlashed() {
+    return Joiner.on("/").join(pathPieces);
   }
 }

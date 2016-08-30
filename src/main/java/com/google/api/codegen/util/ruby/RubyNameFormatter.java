@@ -12,16 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.util.nodejs;
+package com.google.api.codegen.util.ruby;
 
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NamePath;
 
 /**
- * The NameFormatter for NodeJS.
+ * The NameFormatter for Ruby.
  */
-public class NodeJSNameFormatter implements NameFormatter {
+public class RubyNameFormatter implements NameFormatter {
 
   @Override
   public String className(Name name) {
@@ -30,46 +30,46 @@ public class NodeJSNameFormatter implements NameFormatter {
 
   @Override
   public String varName(Name name) {
-    return name.toLowerCamel();
+    return name.toLowerUnderscore();
   }
 
   @Override
   public String varReference(Name name) {
-    return varName(name);
+    return "@" + name.toLowerUnderscore();
   }
 
   @Override
   public String methodName(Name name) {
-    return name.toLowerCamel();
+    return name.toLowerUnderscore();
   }
 
   @Override
   public String staticFunctionName(Name name) {
-    return name.toLowerCamel();
+    return name.toLowerUnderscore();
   }
 
   @Override
   public String inittedConstantName(Name name) {
-    return name.toUpperUnderscore();
+    return name.toUpperCamel();
   }
 
   @Override
   public String keyName(Name name) {
-    return name.toLowerCamel();
+    return name.toLowerUnderscore();
   }
 
   @Override
   public String qualifiedName(NamePath namePath) {
-    return namePath.toDotted();
+    return namePath.withUpperPieces().toDoubleColoned();
   }
 
   @Override
   public String packageFilePathPiece(Name name) {
-    return name.toOriginal();
+    return name.toLowerUnderscore();
   }
 
   @Override
   public String classFileNameBase(Name name) {
-    return name.toOriginal();
+    return name.toLowerUnderscore();
   }
 }

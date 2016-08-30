@@ -17,6 +17,7 @@ package com.google.api.codegen.ruby;
 import com.google.api.codegen.CodegenContext;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
@@ -37,7 +38,10 @@ public class RubySnippetSetRunner<ElementT> implements SnippetSetRunner.Generato
   public GeneratedResult generate(
       ElementT element, String snippetFileName, CodegenContext context) {
     ImmutableMap<String, Object> globalMap =
-        ImmutableMap.<String, Object>builder().put("context", context).build();
+        ImmutableMap.<String, Object>builder()
+            .put("context", context)
+            .put("util", new CommonRenderingUtil())
+            .build();
     RubySnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             RubySnippetSet.class, resourceRoot, snippetFileName, globalMap);

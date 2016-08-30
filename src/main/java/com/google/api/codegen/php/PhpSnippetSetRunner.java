@@ -22,6 +22,7 @@ import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,7 +50,7 @@ public class PhpSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator
             ImmutableMap.<String, Object>of("context", context));
 
     String outputFilename = snippets.generateFilename(element).prettyPrint();
-    PhpTypeTable phpTypeTable = new PhpTypeTable();
+    PhpTypeTable phpTypeTable = new PhpTypeTable("");
 
     // TODO don't depend on a cast here
     PhpContext phpContext = (PhpContext) context;
@@ -57,7 +58,7 @@ public class PhpSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator
 
     Doc body = snippets.generateBody(element);
 
-    List<String> cleanedImports = phpTypeTable.getImports();
+    List<String> cleanedImports = new ArrayList<>(phpTypeTable.getImports().keySet());
 
     Doc result = snippets.generateClass(element, body, cleanedImports);
     return GeneratedResult.create(result, outputFilename);

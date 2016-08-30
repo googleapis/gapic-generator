@@ -19,7 +19,7 @@ import com.google.api.codegen.util.TypeTable;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * A ModelTypeTable manages the imports for a set of fully-qualified type names, and
@@ -117,7 +117,7 @@ public class ModelTypeTable implements ModelTypeFormatter {
   /**
    * Returns the imports accumulated so far.
    */
-  public List<String> getImports() {
+  public Map<String, String> getImports() {
     return typeTable.getImports();
   }
 }

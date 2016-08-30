@@ -68,10 +68,15 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    */
   public ApiMethodView getApiMethodView(Interface service, Method method) {
     ModelTypeTable modelTypeTable =
-        new ModelTypeTable(new NodeJSTypeTable(), new NodeJSModelTypeNameConverter());
+        new ModelTypeTable(
+            new NodeJSTypeTable(getApiConfig().getPackageName()),
+            new NodeJSModelTypeNameConverter(getApiConfig().getPackageName()));
     SurfaceTransformerContext context =
         SurfaceTransformerContext.create(
-            service, getApiConfig(), modelTypeTable, new NodeJSSurfaceNamer());
+            service,
+            getApiConfig(),
+            modelTypeTable,
+            new NodeJSSurfaceNamer(getApiConfig().getPackageName()));
     MethodTransformerContext methodContext = context.asMethodContext(method);
     ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
 

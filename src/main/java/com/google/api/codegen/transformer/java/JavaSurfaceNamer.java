@@ -23,6 +23,7 @@ import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 
@@ -35,11 +36,11 @@ import java.util.List;
  */
 public class JavaSurfaceNamer extends SurfaceNamer {
 
-  public JavaSurfaceNamer() {
+  public JavaSurfaceNamer(String implicitPackageName) {
     super(
         new JavaNameFormatter(),
-        new ModelTypeFormatterImpl(new JavaModelTypeNameConverter()),
-        new JavaTypeTable());
+        new ModelTypeFormatterImpl(new JavaModelTypeNameConverter(implicitPackageName)),
+        new JavaTypeTable(implicitPackageName));
   }
 
   @Override
@@ -112,5 +113,10 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     String resourceTypeName = typeTable.getFullNameForElementType(resourceType);
     return typeTable.getAndSaveNicknameForContainer(
         "com.google.api.gax.core.PageAccessor", resourceTypeName);
+  }
+
+  @Override
+  public String getFullyQualifiedApiWrapperClassName(Interface service, String packageName) {
+    return packageName + "." + getApiWrapperClassName(service);
   }
 }

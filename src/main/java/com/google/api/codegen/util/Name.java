@@ -192,6 +192,15 @@ public class Name {
     return new Name(newPieceList);
   }
 
+  public String toOriginal() {
+    if (namePieces.size() != 1) {
+      throw new IllegalArgumentException(
+          "Name: toOriginal can only be called with a namePieces size of 1");
+    }
+
+    return namePieces.get(0).identifier;
+  }
+
   @Override
   public boolean equals(Object other) {
     if (other instanceof Name) {

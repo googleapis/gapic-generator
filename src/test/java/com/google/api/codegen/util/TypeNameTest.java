@@ -19,6 +19,7 @@ import com.google.common.truth.Truth;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -82,7 +83,7 @@ public class TypeNameTest {
     }
 
     @Override
-    public List<String> getImports() {
+    public Map<String, String> getImports() {
       return null;
     }
 

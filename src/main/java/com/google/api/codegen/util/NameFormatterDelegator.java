@@ -71,4 +71,14 @@ public abstract class NameFormatterDelegator implements NameFormatter {
   public String qualifiedName(NamePath namePath) {
     return formatter.qualifiedName(namePath);
   }
+
+  @Override
+  public String packageFilePathPiece(Name name) {
+    return formatter.packageFilePathPiece(name);
+  }
+
+  @Override
+  public String classFileNameBase(Name name) {
+    return formatter.classFileNameBase(name);
+  }
 }

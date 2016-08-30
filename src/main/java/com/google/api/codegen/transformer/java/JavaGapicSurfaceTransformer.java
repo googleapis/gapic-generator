@@ -22,6 +22,7 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.BundlingTransformer;
+import com.google.api.codegen.transformer.ImportTypeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -69,6 +70,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private ApiMethodTransformer apiMethodTransformer;
   private PageStreamingTransformer pageStreamingTransformer;
   private BundlingTransformer bundlingTransformer;
+  private ImportTypeTransformer importTypeTransformer;
 
   private static final String XAPI_TEMPLATE_FILENAME = "java/main.snip";
   private static final String XSETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
@@ -82,6 +84,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     this.apiMethodTransformer = new ApiMethodTransformer();
     this.pageStreamingTransformer = new PageStreamingTransformer();
     this.bundlingTransformer = new BundlingTransformer();
+    this.importTypeTransformer = new ImportTypeTransformer();
   }
 
   @Override
@@ -93,32 +96,38 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   @Override
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
-    SurfaceNamer namer = new JavaSurfaceNamer();
+    SurfaceNamer namer = new JavaSurfaceNamer(apiConfig.getPackageName());
 
     List<ServiceDocView> serviceDocs = new ArrayList<>();
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       SurfaceTransformerContext context =
-          SurfaceTransformerContext.create(service, apiConfig, createTypeTable(), namer);
+          SurfaceTransformerContext.create(
+              service, apiConfig, createTypeTable(apiConfig.getPackageName()), namer);
       StaticLangXApiView xapi = generateXApi(context);
       surfaceDocs.add(xapi);
 
       serviceDocs.add(xapi.doc());
 
-      context = SurfaceTransformerContext.create(service, apiConfig, createTypeTable(), namer);
+      context =
+          SurfaceTransformerContext.create(
+              service, apiConfig, createTypeTable(apiConfig.getPackageName()), namer);
       StaticLangApiMethodView exampleApiMethod = getExampleApiMethod(xapi.apiMethods());
       StaticLangXSettingsView xsettings = generateXSettings(context, exampleApiMethod);
       surfaceDocs.add(xsettings);
     }
 
     PackageInfoView packageInfo =
-        generatePackageInfo(model, apiConfig, createTypeTable(), namer, serviceDocs);
+        generatePackageInfo(
+            model, apiConfig, createTypeTable(apiConfig.getPackageName()), namer, serviceDocs);
     surfaceDocs.add(packageInfo);
 
     return surfaceDocs;
   }
 
-  private ModelTypeTable createTypeTable() {
-    return new ModelTypeTable(new JavaTypeTable(), new JavaModelTypeNameConverter());
+  private ModelTypeTable createTypeTable(String implicitPackageName) {
+    return new ModelTypeTable(
+        new JavaTypeTable(implicitPackageName),
+        new JavaModelTypeNameConverter(implicitPackageName));
   }
 
   private StaticLangXApiView generateXApi(SurfaceTransformerContext context) {
@@ -145,7 +154,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.apiMethods(methods);
 
     // must be done as the last step to catch all imports
-    xapiClass.imports(context.getTypeTable().getImports());
+    xapiClass.imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()));
 
     String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
     xapiClass.outputPath(outputPath + File.separator + name + ".java");
@@ -189,7 +198,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xsettingsClass.retryParamsDefinitions(generateRetryParamsDefinitions(context));
 
     // must be done as the last step to catch all imports
-    xsettingsClass.imports(context.getTypeTable().getImports());
+    xsettingsClass.imports(
+        importTypeTransformer.generateImports(context.getTypeTable().getImports()));
 
     String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
     xsettingsClass.outputPath(outputPath + "/" + name + ".java");
