@@ -84,7 +84,7 @@ public class NameTest {
   }
 
   @Test
-  public void testLowerWorkAndNumber() {
+  public void testLowerWordAndNumber() {
     Name name = Name.lowerCamel("dog", "v2");
     Truth.assertThat(name.toLowerUnderscore()).isEqualTo("dog_v2");
     Truth.assertThat(name.toUpperUnderscore()).isEqualTo("DOG_V2");

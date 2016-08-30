@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ImportTypeTransformer {
-  public static List<ImportTypeView> generateImports(Map<String, String> imports) {
+  public List<ImportTypeView> generateImports(Map<String, String> imports) {
     List<ImportTypeView> generatedImports = new ArrayList<>();
     for (String key : imports.keySet()) {
       generatedImports.add(

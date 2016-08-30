@@ -34,11 +34,11 @@ import java.util.List;
  * The SurfaceNamer for NodeJS.
  */
 public class NodeJSSurfaceNamer extends SurfaceNamer {
-  public NodeJSSurfaceNamer() {
+  public NodeJSSurfaceNamer(String implicitPackageName) {
     super(
         new NodeJSNameFormatter(),
-        new ModelTypeFormatterImpl(new NodeJSModelTypeNameConverter()),
-        new NodeJSTypeTable());
+        new ModelTypeFormatterImpl(new NodeJSModelTypeNameConverter(implicitPackageName)),
+        new NodeJSTypeTable(implicitPackageName));
   }
 
   /**

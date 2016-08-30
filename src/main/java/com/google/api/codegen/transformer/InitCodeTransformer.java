@@ -46,7 +46,6 @@ import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -109,11 +108,22 @@ public class InitCodeTransformer {
   }
 
   private InitCodeView buildInitCodeView(MethodTransformerContext context, InitCode initCode) {
-    ModelTypeTable sampleTypeTable = generateInitCodeTypeTable(context);
+    ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
+
+    // Initialize the type table with the apiClassName since each sample will be using the
+    // apiClass.
+    context
+        .getTypeTable()
+        .getAndSaveNicknameFor(
+            context
+                .getNamer()
+                .getFullyQualifiedApiWrapperClassName(
+                    context.getInterface(), context.getApiConfig().getPackageName()));
+
     return InitCodeView.newBuilder()
-        .lines(generateSurfaceInitCodeLines(context, initCode, sampleTypeTable))
+        .lines(generateSurfaceInitCodeLines(context, initCode))
         .fieldSettings(getFieldSettings(context, initCode.getArgFields()))
-        .aliasingTypes(ImportTypeTransformer.generateImports(sampleTypeTable.getImports()))
+        .imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()))
         .apiFileName(
             context
                 .getNamer()
@@ -145,18 +155,6 @@ public class InitCodeTransformer {
       assertViews.add(createAssertView(expectedValueIdentifier, getterMethod));
     }
     return assertViews;
-  }
-
-  private ModelTypeTable generateInitCodeTypeTable(MethodTransformerContext context) {
-    ModelTypeTable typeTable = context.getTypeTable().cloneEmpty();
-    // Initialize the type table with the apiClassName since each sample will be using the
-    // apiClass.
-    typeTable.getAndSaveNicknameFor(
-        context
-            .getNamer()
-            .getFullyQualifiedApiWrapperClassName(
-                context.getInterface(), context.getApiConfig().getPackageName()));
-    return typeTable;
   }
 
   private GapicSurfaceTestAssertView createAssertView(String expected, String actual) {
@@ -212,7 +210,7 @@ public class InitCodeTransformer {
   }
 
   private List<InitCodeLineView> generateSurfaceInitCodeLines(
-      MethodTransformerContext context, InitCode initCode, ModelTypeTable sampleTypeTable) {
+      MethodTransformerContext context, InitCode initCode) {
     List<InitCodeLineView> surfaceLines = new ArrayList<>();
     for (InitCodeLine line : initCode.getLines()) {
       switch (line.getLineType()) {
@@ -223,7 +221,6 @@ public class InitCodeTransformer {
           surfaceLines.add(generateListInitCodeLine(context, (ListInitCodeLine) line));
           continue;
         case SimpleInitLine:
-          sampleTypeTable.getAndSaveNicknameFor(((SimpleInitCodeLine) line).getType());
           surfaceLines.add(generateSimpleInitCodeLine(context, (SimpleInitCodeLine) line));
           continue;
         case MapInitLine:

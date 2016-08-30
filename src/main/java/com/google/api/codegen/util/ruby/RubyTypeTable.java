@@ -31,11 +31,17 @@ public class RubyTypeTable implements TypeTable {
    * A bi-map from full names to short names. In other languages this would indicate imports, but
    * in ruby this only indicates types to their fully qualified types.
    */
-  private final BiMap<String, String> nameMap = HashBiMap.create();
+  private final BiMap<String, String> imports = HashBiMap.create();
+
+  private final String implicitPackageName;
+
+  public RubyTypeTable(String implicitPackageName) {
+    this.implicitPackageName = implicitPackageName;
+  }
 
   @Override
   public TypeTable cloneEmpty() {
-    return new RubyTypeTable();
+    return new RubyTypeTable(implicitPackageName);
   }
 
   @Override
@@ -74,23 +80,21 @@ public class RubyTypeTable implements TypeTable {
       return alias.getNickname();
     }
     // Derive a short name if possible
-    if (nameMap.containsKey(alias.getFullName())) {
+    if (imports.containsKey(alias.getFullName())) {
       // Short name already there.
-      return nameMap.get(alias.getFullName());
+      return imports.get(alias.getFullName());
     }
-    if (nameMap.containsValue(alias.getNickname())) {
+    if (imports.containsValue(alias.getNickname())) {
       // Short name clashes, use long name.
       return alias.getFullName();
     }
-    nameMap.put(alias.getFullName(), alias.getNickname());
+    imports.put(alias.getFullName(), alias.getNickname());
     return alias.getNickname();
   }
 
   @Override
   public Map<String, String> getImports() {
-    // Since the import map will be used for type aliasing in Ruby, use a TreeMap to sort by
-    // the value.
-    return HashBiMap.create(new TreeMap<>(nameMap.inverse())).inverse();
+    return HashBiMap.create(new TreeMap<>(imports.inverse())).inverse();
   }
 
   public boolean hasImports() {

@@ -113,6 +113,7 @@ public class InitCodeGenerator {
       TypeRef typeRef,
       Map<String, Object> initFieldMap,
       InitCodeGeneratorContext context) {
+
     List<FieldSetting> fieldSettings = new ArrayList<>();
     for (Field field : typeRef.getMessageType().getFields()) {
       Object thisFieldInitStructure = initFieldMap.get(field.getSimpleName());
@@ -222,7 +223,6 @@ public class InitCodeGenerator {
             initValueConfig.withInitialValue(
                 context.valueGenerator().getAndStoreValue(typeRef, identifier));
       } else if (initValueConfig.hasInitialValue()) {
-
         String validatedValue = validateValue(typeRef, initValueConfig.getInitialValue());
         if (validatedValue == null) {
           throw new IllegalArgumentException(
@@ -235,7 +235,6 @@ public class InitCodeGenerator {
                   + ", initFieldStructure = "
                   + initFieldStructure);
         }
-
         initValueConfig = initValueConfig.withInitialValue(validatedValue);
       }
       return SimpleInitCodeLine.create(typeRef, identifier, initValueConfig);
@@ -273,6 +272,7 @@ public class InitCodeGenerator {
       @SuppressWarnings("unchecked")
       List<Object> thisFieldInitList = (List<Object>) initFieldStructure;
       return generateCodeInitList(suggestedName, typeRef, thisFieldInitList, context);
+
     } else if (typeRef.isMap()) {
       if (!(initFieldStructure instanceof Map)) {
         throw new IllegalArgumentException(

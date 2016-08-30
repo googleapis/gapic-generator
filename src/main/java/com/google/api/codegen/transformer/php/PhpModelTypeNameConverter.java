@@ -74,8 +74,8 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
 
   private TypeNameConverter typeNameConverter;
 
-  public PhpModelTypeNameConverter() {
-    this.typeNameConverter = new PhpTypeTable();
+  public PhpModelTypeNameConverter(String implicitPackageName) {
+    this.typeNameConverter = new PhpTypeTable(implicitPackageName);
   }
 
   @Override

@@ -62,4 +62,14 @@ public class PhpNameFormatter implements NameFormatter {
   public String qualifiedName(NamePath namePath) {
     return namePath.toBackslashed();
   }
+
+  @Override
+  public String packageFilePathPiece(Name name) {
+    return name.toOriginal();
+  }
+
+  @Override
+  public String classFileNameBase(Name name) {
+    return name.toOriginal();
+  }
 }

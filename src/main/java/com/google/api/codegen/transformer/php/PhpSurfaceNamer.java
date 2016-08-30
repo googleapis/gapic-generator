@@ -32,11 +32,11 @@ import com.google.api.tools.framework.model.TypeRef;
  * The SurfaceNamer for PHP.
  */
 public class PhpSurfaceNamer extends SurfaceNamer {
-  public PhpSurfaceNamer() {
+  public PhpSurfaceNamer(String implicitPackageName) {
     super(
         new PhpNameFormatter(),
-        new ModelTypeFormatterImpl(new PhpModelTypeNameConverter()),
-        new PhpTypeTable());
+        new ModelTypeFormatterImpl(new PhpModelTypeNameConverter(implicitPackageName)),
+        new PhpTypeTable(implicitPackageName));
   }
 
   @Override

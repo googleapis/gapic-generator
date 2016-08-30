@@ -56,9 +56,15 @@ public class JavaTypeTable implements TypeTable {
           .put("double", "Double")
           .build();
 
+  private final String implicitPackageName;
+
+  public JavaTypeTable(String implicitPackageName) {
+    this.implicitPackageName = implicitPackageName;
+  }
+
   @Override
   public TypeTable cloneEmpty() {
-    return new JavaTypeTable();
+    return new JavaTypeTable(implicitPackageName);
   }
 
   @Override
@@ -128,10 +134,15 @@ public class JavaTypeTable implements TypeTable {
   public Map<String, String> getImports() {
     // Clean up the imports.
     Map<String, String> cleanedImports = new TreeMap<>();
+    // Imported type is in java.lang or in package, can be ignored.
     for (String imported : imports.keySet()) {
       if (imported.startsWith(JAVA_LANG_TYPE_PREFIX)) {
-        // Imported type is in java.lang or in package, can be ignored.
         continue;
+      } else if (!implicitPackageName.isEmpty() && imported.startsWith(implicitPackageName)) {
+        // Imported type is in a subpackage must not be ignored.
+        if (imported.substring(implicitPackageName.length() + 1).split("\\.").length == 1) {
+          continue;
+        }
       }
       cleanedImports.put(imported, imports.get(imported));
     }

@@ -87,8 +87,8 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
 
   private TypeNameConverter typeNameConverter;
 
-  public JavaModelTypeNameConverter() {
-    this.typeNameConverter = new JavaTypeTable();
+  public JavaModelTypeNameConverter(String implicitPackageName) {
+    this.typeNameConverter = new JavaTypeTable(implicitPackageName);
   }
 
   @Override

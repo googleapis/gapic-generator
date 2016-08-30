@@ -35,11 +35,11 @@ import java.util.List;
  */
 public class JavaSurfaceNamer extends SurfaceNamer {
 
-  public JavaSurfaceNamer() {
+  public JavaSurfaceNamer(String implicitPackageName) {
     super(
         new JavaNameFormatter(),
-        new ModelTypeFormatterImpl(new JavaModelTypeNameConverter()),
-        new JavaTypeTable());
+        new ModelTypeFormatterImpl(new JavaModelTypeNameConverter(implicitPackageName)),
+        new JavaTypeTable(implicitPackageName));
   }
 
   @Override

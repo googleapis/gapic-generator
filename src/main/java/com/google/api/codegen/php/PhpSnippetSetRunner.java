@@ -50,7 +50,7 @@ public class PhpSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator
             ImmutableMap.<String, Object>of("context", context));
 
     String outputFilename = snippets.generateFilename(element).prettyPrint();
-    PhpTypeTable phpTypeTable = new PhpTypeTable();
+    PhpTypeTable phpTypeTable = new PhpTypeTable("");
 
     // TODO don't depend on a cast here
     PhpContext phpContext = (PhpContext) context;

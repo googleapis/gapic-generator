@@ -16,9 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 
-import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Map;
 
 @AutoValue
 public abstract class InitCodeView {
@@ -29,8 +27,7 @@ public abstract class InitCodeView {
   /**
    * Used to hold information about the types used in method samples.
    */
-  @Nullable
-  public abstract List<ImportTypeView> aliasingTypes();
+  public abstract List<ImportTypeView> imports();
 
   /**
    * The file name of the client library generated. This is used for import statements in samples.
@@ -47,7 +44,7 @@ public abstract class InitCodeView {
 
     public abstract Builder fieldSettings(List<FieldSettingView> val);
 
-    public abstract Builder aliasingTypes(List<ImportTypeView> aliasingTypesMap);
+    public abstract Builder imports(List<ImportTypeView> aliasingTypesMap);
 
     public abstract Builder apiFileName(String apiFileName);
 

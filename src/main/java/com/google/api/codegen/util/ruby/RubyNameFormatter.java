@@ -62,4 +62,14 @@ public class RubyNameFormatter implements NameFormatter {
   public String qualifiedName(NamePath namePath) {
     return namePath.withUpperPieces().toDoubleColoned();
   }
+
+  @Override
+  public String packageFilePathPiece(Name name) {
+    return name.toLowerUnderscore();
+  }
+
+  @Override
+  public String classFileNameBase(Name name) {
+    return name.toLowerUnderscore();
+  }
 }

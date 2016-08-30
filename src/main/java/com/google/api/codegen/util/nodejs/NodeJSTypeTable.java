@@ -34,9 +34,15 @@ public class NodeJSTypeTable implements TypeTable {
    */
   private final BiMap<String, String> imports = HashBiMap.create();
 
+  private final String implicitPackageName;
+
+  public NodeJSTypeTable(String implicitPackageName) {
+    this.implicitPackageName = implicitPackageName;
+  }
+
   @Override
   public TypeTable cloneEmpty() {
-    return new NodeJSTypeTable();
+    return new NodeJSTypeTable(implicitPackageName);
   }
 
   @Override

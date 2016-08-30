@@ -19,8 +19,9 @@ import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
 
-import javax.annotation.Nullable;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 /**
  * Context class used by InitCodeGenerator.
@@ -30,7 +31,6 @@ import java.util.Map;
  * 2. TestValueGenerator to populate unique values.
  * 3. Initialized fields structure configuration map.
  * 4. The method to generate.
- * 5. A ModelTypeTable to hold information about the types used for type aliasing in samples.
  */
 @AutoValue
 public abstract class InitCodeGeneratorContext {

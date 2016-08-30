@@ -74,8 +74,8 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
 
   private TypeNameConverter typeNameConverter;
 
-  public RubyModelTypeNameConverter() {
-    this.typeNameConverter = new RubyTypeTable();
+  public RubyModelTypeNameConverter(String implicitPackageName) {
+    this.typeNameConverter = new RubyTypeTable(implicitPackageName);
   }
 
   @Override

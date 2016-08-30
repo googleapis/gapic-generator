@@ -73,8 +73,8 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
 
   private TypeNameConverter typeNameConverter;
 
-  public NodeJSModelTypeNameConverter() {
-    this.typeNameConverter = new NodeJSTypeTable();
+  public NodeJSModelTypeNameConverter(String implicitPackageName) {
+    this.typeNameConverter = new NodeJSTypeTable(implicitPackageName);
   }
 
   @Override

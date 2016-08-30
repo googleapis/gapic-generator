@@ -21,7 +21,6 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 
@@ -30,11 +29,11 @@ import java.util.List;
 
 /** The SurfaceNamer for Ruby. */
 public class RubySurfaceNamer extends SurfaceNamer {
-  public RubySurfaceNamer(String packageName) {
+  public RubySurfaceNamer(String implicitPackageName) {
     super(
         new RubyNameFormatter(),
-        new ModelTypeFormatterImpl(new RubyModelTypeNameConverter()),
-        new RubyTypeTable());
+        new ModelTypeFormatterImpl(new RubyModelTypeNameConverter(implicitPackageName)),
+        new RubyTypeTable(implicitPackageName));
   }
 
   /** The function name to set a field having the given type and name. */
@@ -55,9 +54,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
     String[] names = packageName.split("::");
     List<String> newNames = new ArrayList<>();
     for (String name : names) {
-      newNames.add(Name.upperCamel(name).toLowerUnderscore());
+      newNames.add(packageFilePathPiece(Name.upperCamel(name)));
     }
-    newNames.add(Name.upperCamel(getApiWrapperClassName(service)).toLowerUnderscore());
+    newNames.add(classFileNameBase(Name.upperCamel(getApiWrapperClassName(service))));
     return Joiner.on("/").join(newNames.toArray());
   }
 

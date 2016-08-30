@@ -192,6 +192,25 @@ public class Name {
     return new Name(newPieceList);
   }
 
+  public String toOriginal() {
+    if (namePieces.size() != 1) {
+      throw new IllegalArgumentException(
+          "Name: toOriginal can only be called with a namePieces size of 1");
+    }
+
+    CaseFormat caseFormat = namePieces.get(0).caseFormat;
+    switch (namePieces.get(0).caseFormat) {
+      case LOWER_CAMEL:
+      case UPPER_CAMEL:
+        return toCamel(caseFormat);
+      case LOWER_UNDERSCORE:
+      case UPPER_UNDERSCORE:
+        return toUnderscore(caseFormat);
+      default:
+        throw new IllegalArgumentException("Name: CaseFormat.LOWER_HYPHEN not supported.");
+    }
+  }
+
   @Override
   public boolean equals(Object other) {
     if (other instanceof Name) {

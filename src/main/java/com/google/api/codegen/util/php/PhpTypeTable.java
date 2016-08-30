@@ -34,9 +34,15 @@ public class PhpTypeTable implements TypeTable {
    */
   private final BiMap<String, String> imports = HashBiMap.create();
 
+  private final String implicitPackageName;
+
+  public PhpTypeTable(String implicitPackageName) {
+    this.implicitPackageName = implicitPackageName;
+  }
+
   @Override
   public TypeTable cloneEmpty() {
-    return new PhpTypeTable();
+    return new PhpTypeTable(implicitPackageName);
   }
 
   @Override
@@ -89,7 +95,18 @@ public class PhpTypeTable implements TypeTable {
 
   @Override
   public Map<String, String> getImports() {
-    return new TreeMap<>(imports);
+    // Clean up the imports.
+    Map<String, String> cleanedImports = new TreeMap<>();
+    // Imported type is in package, can be ignored.
+    for (String imported : imports.keySet()) {
+      if (!implicitPackageName.isEmpty() && imported.startsWith(implicitPackageName)) {
+        if (imported.substring(implicitPackageName.length() + 1).split("\\\\").length != 1) {
+          continue;
+        }
+      }
+      cleanedImports.put(imported, imports.get(imported));
+    }
+    return cleanedImports;
   }
 
   public boolean hasImports() {

@@ -62,4 +62,14 @@ public class JavaNameFormatter implements NameFormatter {
   public String qualifiedName(NamePath namePath) {
     return namePath.toDotted();
   }
+
+  @Override
+  public String packageFilePathPiece(Name name) {
+    return name.toOriginal();
+  }
+
+  @Override
+  public String classFileNameBase(Name name) {
+    return name.toOriginal();
+  }
 }

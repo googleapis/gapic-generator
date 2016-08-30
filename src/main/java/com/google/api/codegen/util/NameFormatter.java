@@ -63,4 +63,14 @@ public interface NameFormatter {
    * Formats the name path as a qualified name.
    */
   String qualifiedName(NamePath namePath);
+
+  /**
+   * Formats the name of a package file path.
+   */
+  String packageFilePathPiece(Name name);
+
+  /**
+   *  Formats the base file name.
+   */
+  String classFileNameBase(Name name);
 }

@@ -344,7 +344,9 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
 
   public DynamicLangApiMethodView getMethodView(Interface service, Method method) {
     ModelTypeTable modelTypeTable =
-        new ModelTypeTable(new RubyTypeTable(), new RubyModelTypeNameConverter());
+        new ModelTypeTable(
+            new RubyTypeTable(getApiConfig().getPackageName()),
+            new RubyModelTypeNameConverter(getApiConfig().getPackageName()));
     SurfaceTransformerContext context =
         SurfaceTransformerContext.create(
             service,
