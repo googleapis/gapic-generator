@@ -70,6 +70,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private ApiMethodTransformer apiMethodTransformer;
   private PageStreamingTransformer pageStreamingTransformer;
   private BundlingTransformer bundlingTransformer;
+  private ImportTypeTransformer importTypeTransformer;
 
   private static final String XAPI_TEMPLATE_FILENAME = "java/main.snip";
   private static final String XSETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
@@ -83,6 +84,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     this.apiMethodTransformer = new ApiMethodTransformer();
     this.pageStreamingTransformer = new PageStreamingTransformer();
     this.bundlingTransformer = new BundlingTransformer();
+    this.importTypeTransformer = new ImportTypeTransformer();
   }
 
   @Override
@@ -135,8 +137,6 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
     StaticLangXApiView.Builder xapiClass = StaticLangXApiView.newBuilder();
 
-    ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
-
     ApiMethodView exampleApiMethod = getExampleApiMethod(methods);
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, exampleApiMethod));
 
@@ -179,8 +179,6 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private StaticLangXSettingsView generateXSettings(
       SurfaceTransformerContext context, StaticLangApiMethodView exampleApiMethod) {
     addXSettingsImports(context);
-
-    ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
 
     StaticLangXSettingsView.Builder xsettingsClass = StaticLangXSettingsView.newBuilder();
     xsettingsClass.templateFileName(XSETTINGS_TEMPLATE_FILENAME);

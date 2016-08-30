@@ -100,7 +100,7 @@ public class PhpTypeTable implements TypeTable {
     // Imported type is in package, can be ignored.
     for (String imported : imports.keySet()) {
       if (!implicitPackageName.isEmpty() && imported.startsWith(implicitPackageName)) {
-        if (imported.substring(implicitPackageName.length() + 1).split("\\\\").length != 1) {
+        if (!imported.substring(implicitPackageName.length() + 1).contains("\\\\")) {
           continue;
         }
       }

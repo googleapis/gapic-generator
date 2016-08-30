@@ -199,16 +199,8 @@ public class Name {
     }
 
     CaseFormat caseFormat = namePieces.get(0).caseFormat;
-    switch (namePieces.get(0).caseFormat) {
-      case LOWER_CAMEL:
-      case UPPER_CAMEL:
-        return toCamel(caseFormat);
-      case LOWER_UNDERSCORE:
-      case UPPER_UNDERSCORE:
-        return toUnderscore(caseFormat);
-      default:
-        throw new IllegalArgumentException("Name: CaseFormat.LOWER_HYPHEN not supported.");
-    }
+
+    return namePieces.get(0).identifier;
   }
 
   @Override

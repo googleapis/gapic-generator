@@ -56,6 +56,7 @@ import java.util.Map;
 
 /** A subclass of ModelToViewTransformer which translates model into API tests in Java. */
 public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
+  private ImportTypeTransformer importTypeTransformer;
 
   private static String TEST_TEMPLATE_FILE = "java/test.snip";
   private static String MOCK_SERVICE_FILE = "java/mock_service.snip";
@@ -66,6 +67,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   public JavaGapicSurfaceTestTransformer(GapicCodePathMapper javaPathMapper) {
     this.pathMapper = javaPathMapper;
+    this.importTypeTransformer = new ImportTypeTransformer();
   }
 
   @Override
@@ -169,7 +171,6 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     String outputPath = pathMapper.getOutputPath(service, context.getApiConfig());
     SurfaceNamer namer = context.getNamer();
     String name = namer.getTestClassName(service);
-    ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
 
     GapicSurfaceTestClassView testClass =
         GapicSurfaceTestClassView.newBuilder()
@@ -297,7 +298,6 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     String name = namer.getMockServiceClassName(context.getInterface());
     String grpcContainerName =
         context.getTypeTable().getAndSaveNicknameFor(namer.getGrpcContainerTypeName(service));
-    ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
     return MockServiceView.newBuilder()
         .name(name)
         .serviceImplClassName(namer.getMockGrpcServiceImplName(context.getInterface()))
@@ -319,7 +319,6 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     String name = namer.getMockGrpcServiceImplName(context.getInterface());
     String grpcClassName =
         context.getTypeTable().getAndSaveNicknameFor(namer.getGrpcServiceClassName(service));
-    ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
     return MockServiceImplView.newBuilder()
         .name(name)
         .packageName(context.getApiConfig().getPackageName())

@@ -488,9 +488,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getApiName");
   }
 
-  /** The name of the class that implements a particular proto interface. */
-  public String getFullyQualifiedApiWrapperClassName(Interface service, String packageName) {
-    return packageName + "." + getApiWrapperClassName(service);
+  public String getFullyQualifiedApiWrapperClassName(Interface interfaze, String packageName) {
+    return getNotImplementedString("SurfaceNamer.getFullyQuallifiedApiWrapperClassName");
   }
 
   public String getStubName(Interface service) {

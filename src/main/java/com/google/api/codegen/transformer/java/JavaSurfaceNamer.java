@@ -23,6 +23,7 @@ import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 
@@ -112,5 +113,10 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     String resourceTypeName = typeTable.getFullNameForElementType(resourceType);
     return typeTable.getAndSaveNicknameForContainer(
         "com.google.api.gax.core.PageAccessor", resourceTypeName);
+  }
+
+  @Override
+  public String getFullyQualifiedApiWrapperClassName(Interface service, String packageName) {
+    return packageName + "." + getApiWrapperClassName(service);
   }
 }

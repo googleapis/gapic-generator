@@ -46,6 +46,7 @@ import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -109,26 +110,22 @@ public class InitCodeTransformer {
 
   private InitCodeView buildInitCodeView(MethodTransformerContext context, InitCode initCode) {
     ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
+    ModelTypeTable typeTable = context.getTypeTable();
+    SurfaceNamer namer = context.getNamer();
 
     // Initialize the type table with the apiClassName since each sample will be using the
     // apiClass.
-    context
-        .getTypeTable()
-        .getAndSaveNicknameFor(
-            context
-                .getNamer()
-                .getFullyQualifiedApiWrapperClassName(
-                    context.getInterface(), context.getApiConfig().getPackageName()));
+    typeTable.getAndSaveNicknameFor(
+        namer.getFullyQualifiedApiWrapperClassName(
+            context.getInterface(), context.getApiConfig().getPackageName()));
 
     return InitCodeView.newBuilder()
         .lines(generateSurfaceInitCodeLines(context, initCode))
         .fieldSettings(getFieldSettings(context, initCode.getArgFields()))
-        .imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()))
+        .imports(importTypeTransformer.generateImports(typeTable.getImports()))
         .apiFileName(
-            context
-                .getNamer()
-                .getServiceFileName(
-                    context.getInterface(), context.getApiConfig().getPackageName()))
+            namer.getServiceFileName(
+                context.getInterface(), context.getApiConfig().getPackageName()))
         .build();
   }
 
