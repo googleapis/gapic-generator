@@ -28,6 +28,7 @@ import com.google.api.codegen.go.GoSnippetSetRunner;
 import com.google.api.codegen.nodejs.NodeJSCodePathMapper;
 import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
+import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.api.codegen.py.PythonGapicContext;
 import com.google.api.codegen.py.PythonInterfaceInitializer;
 import com.google.api.codegen.py.PythonProtoFileInitializer;
@@ -184,7 +185,7 @@ public class MainGapicProviderFactory
 
     } else if (id.equals(PHP)) {
       GapicCodePathMapper phpPathMapper =
-          CommonGapicCodePathMapper.newBuilder().setPrefix("src").build();
+          PhpGapicCodePathMapper.newBuilder().setPrefix("src").build();
       GapicProvider<? extends Object> provider =
           ViewModelGapicProvider.newBuilder()
               .setModel(model)
@@ -194,7 +195,7 @@ public class MainGapicProviderFactory
               .build();
 
       GapicCodePathMapper phpClientConfigPathMapper =
-          CommonGapicCodePathMapper.newBuilder().setPrefix("resources").build();
+          PhpGapicCodePathMapper.newBuilder().setPrefix("src").setSuffix("resources").build();
       GapicProvider<? extends Object> clientConfigProvider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
@@ -217,7 +218,7 @@ public class MainGapicProviderFactory
               .setView(new InterfaceView())
               .setContext(new PythonGapicContext(model, apiConfig))
               .setSnippetSetRunner(
-                  new PythonSnippetSetRunner<Interface>(
+                  new PythonSnippetSetRunner<>(
                       new PythonInterfaceInitializer(), SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
               .setSnippetFileNames(Arrays.asList("py/main.snip"))
               .setCodePathMapper(pythonPathMapper)
@@ -244,7 +245,7 @@ public class MainGapicProviderFactory
               .setView(new ProtoFileView())
               .setContext(new PythonGapicContext(model, apiConfig))
               .setSnippetSetRunner(
-                  new PythonSnippetSetRunner<ProtoFile>(
+                  new PythonSnippetSetRunner<>(
                       new PythonProtoFileInitializer(), SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
               .setSnippetFileNames(Arrays.asList("py/message.snip"))
               .setCodePathMapper(CommonGapicCodePathMapper.defaultInstance())

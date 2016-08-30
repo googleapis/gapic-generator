@@ -64,9 +64,19 @@ public abstract class ApiConfig {
   /**
    * Creates an ApiConfig with no content. Exposed for testing.
    */
-  public static ApiConfig createDummyApiConfig() {
+  static ApiConfig createDummyApiConfig() {
     return new AutoValue_ApiConfig(
         ImmutableMap.<String, InterfaceConfig>builder().build(), null, false);
+  }
+
+  /**
+   * Creates an ApiConfig with fixed content. Exposed for testing.
+   */
+  static ApiConfig createDummyApiConfig(
+      ImmutableMap<String, InterfaceConfig> interfaceConfigMap,
+      String packageName,
+      boolean generateSamples) {
+    return new AutoValue_ApiConfig(interfaceConfigMap, packageName, generateSamples);
   }
 
   private static String getPackageName(ConfigProto configProto) {
