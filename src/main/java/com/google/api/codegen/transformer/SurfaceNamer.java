@@ -488,6 +488,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getApiName");
   }
 
+  /**
+   * The fully qualified class name of a an API service.
+   * TODO: Support the general pattern of package + class name in NameFormatter.
+   */
   public String getFullyQualifiedApiWrapperClassName(Interface interfaze, String packageName) {
     return getNotImplementedString("SurfaceNamer.getFullyQuallifiedApiWrapperClassName");
   }
