@@ -16,7 +16,6 @@ package com.google.api.codegen.metacode;
 
 import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
@@ -29,83 +28,54 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * InitCodeGenerator generates an InitCode object for a given method and initialization field
+ * InitCodeGenerator generates an InitCode object for a given object and initialization field
  * structure (as constructed by FieldStructureParser).
  */
 public class InitCodeGenerator {
   private final List<InitCodeLine> initLineSpecs = new ArrayList<>();
 
   /**
-   * Generates the InitCode for a method, where the input of the function representing the method
-   * will take a request object.
+   * Generates the InitCode object based on the given context.
+   *
+   * If the generated fields are flattened, the last line (init line of the final object) will not
+   * be added. Otherwise the final generated object will be the object specified in the context.
    */
-  public InitCode generateRequestObjectInitCode(InitCodeGeneratorContext context) {
-    Method method = context.method();
-    Map<String, Object> requestFieldStructure = context.initStructure();
-    InitCodeLine lastLine =
-        generateCodeInit(
-            Name.from("request"), method.getInputType(), requestFieldStructure, context);
-    initLineSpecs.add(lastLine);
-    FieldSetting requestField =
-        FieldSetting.create(
-            method.getInputType(),
-            Name.from("request"),
-            lastLine.getIdentifier(),
-            lastLine.getInitValueConfig());
-    List<FieldSetting> outputFields = Arrays.asList(requestField);
+  public InitCode generate(InitCodeGeneratorContext context) {
+    Name suggestedName = context.initObjectName();
+    TypeRef type = context.initObjectType();
+    Map<String, Object> initStructure = context.initStructure();
+
+    if (context.isFlattened()) {
+      initStructure = getFlattenedInitStructure(context.flattenedFields(), initStructure);
+    }
+    InitCodeLine lastLine = generateCodeInit(suggestedName, type, initStructure, context);
+
+    List<FieldSetting> outputFields;
+    if (context.isFlattened()) {
+      outputFields = ((StructureInitCodeLine) lastLine).getFieldSettings();
+    } else {
+      FieldSetting objectField =
+          FieldSetting.create(
+              type, suggestedName, lastLine.getIdentifier(), lastLine.getInitValueConfig());
+      outputFields = Arrays.asList(objectField);
+      initLineSpecs.add(lastLine);
+    }
+
     return InitCode.create(initLineSpecs, outputFields);
   }
 
-  /**
-   * Generates the simple InitCode for a response object which matches the output type of the given
-   * method.
-   */
-  public InitCode generateMockResponseObjectInitCode(InitCodeGeneratorContext context) {
-    Method method = context.method();
-    Map<String, Object> responseFieldStructure = context.initStructure();
-    InitCodeLine lastLine =
-        generateCodeInit(
-            Name.from("expected_response"),
-            method.getOutputType(),
-            responseFieldStructure,
-            context);
-    initLineSpecs.add(lastLine);
-    FieldSetting responseField =
-        FieldSetting.create(
-            method.getOutputType(),
-            Name.from("response"),
-            lastLine.getIdentifier(),
-            lastLine.getInitValueConfig());
-    List<FieldSetting> outputFields = Arrays.asList(responseField);
-    return InitCode.create(initLineSpecs, outputFields);
-  }
-
-  /**
-   * Generates the InitCode for a method, where the input of the function representing the method
-   * will take the given set of fields.
-   */
-  public InitCode generateRequestFieldInitCode(
-      InitCodeGeneratorContext context, Iterable<Field> fields) {
-
+  private Map<String, Object> getFlattenedInitStructure(
+      List<Field> flattenedFields, Map<String, Object> initStructure) {
     Map<String, Object> filteredInit = new HashMap<>();
-    for (Field field : fields) {
-      Object subStructure = context.initStructure().get(field.getSimpleName());
+    for (Field field : flattenedFields) {
+      Object subStructure = initStructure.get(field.getSimpleName());
       if (subStructure != null) {
         filteredInit.put(field.getSimpleName(), subStructure);
       } else {
         filteredInit.put(field.getSimpleName(), InitValueConfig.create());
       }
     }
-
-    InitCodeLine lastLine =
-        generateCodeInit(
-            Name.from("request"), context.method().getInputType(), filteredInit, context);
-    if (!(lastLine instanceof StructureInitCodeLine)) {
-      throw new IllegalArgumentException(
-          "Expected method request to be a message, found " + lastLine.getClass().getName());
-    }
-    StructureInitCodeLine requestInitCodeLine = (StructureInitCodeLine) lastLine;
-    return InitCode.create(initLineSpecs, requestInitCodeLine.getFieldSettings());
+    return filteredInit;
   }
 
   private InitCodeLine generateCodeInitStructure(

@@ -46,6 +46,8 @@ import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -67,10 +69,12 @@ public class InitCodeTransformer {
             .symbolTable(table)
             .valueGenerator(valueGenerator)
             .initStructure(initFieldStructure)
-            .method(context.getMethod())
+            .initObjectName(Name.from("request"))
+            .initObjectType(context.getMethod().getInputType())
+            .flattenedFields(Lists.newArrayList(fields))
             .build();
     InitCodeGenerator generator = new InitCodeGenerator();
-    InitCode initCode = generator.generateRequestFieldInitCode(initCodeContext, fields);
+    InitCode initCode = generator.generate(initCodeContext);
 
     return buildInitCodeView(context, initCode);
   }
@@ -83,10 +87,11 @@ public class InitCodeTransformer {
             .symbolTable(table)
             .valueGenerator(valueGenerator)
             .initStructure(initFieldStructure)
-            .method(context.getMethod())
+            .initObjectName(Name.from("request"))
+            .initObjectType(context.getMethod().getInputType())
             .build();
     InitCodeGenerator generator = new InitCodeGenerator();
-    InitCode initCode = generator.generateRequestObjectInitCode(initCodeContext);
+    InitCode initCode = generator.generate(initCodeContext);
 
     return buildInitCodeView(context, initCode);
   }
@@ -99,10 +104,11 @@ public class InitCodeTransformer {
             .symbolTable(table)
             .valueGenerator(valueGenerator)
             .initStructure(initFieldStructure)
-            .method(context.getMethod())
+            .initObjectName(Name.from("expected_response"))
+            .initObjectType(context.getMethod().getOutputType())
             .build();
     InitCodeGenerator generator = new InitCodeGenerator();
-    InitCode initCode = generator.generateMockResponseObjectInitCode(initCodeContext);
+    InitCode initCode = generator.generate(initCodeContext);
 
     return buildInitCodeView(context, initCode);
   }
@@ -122,9 +128,11 @@ public class InitCodeTransformer {
         InitCodeGeneratorContext.newBuilder()
             .symbolTable(new SymbolTable())
             .initStructure(initFieldStructure)
-            .method(context.getMethod())
+            .flattenedFields(Lists.newArrayList(fields))
+            .initObjectName(Name.from("request"))
+            .initObjectType(context.getMethod().getInputType())
             .build();
-    InitCode initCode = generator.generateRequestFieldInitCode(initCodeContext, fields);
+    InitCode initCode = generator.generate(initCodeContext);
 
     List<GapicSurfaceTestAssertView> assertViews = new ArrayList<>();
     SurfaceNamer namer = context.getNamer();
