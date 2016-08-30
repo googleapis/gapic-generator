@@ -65,7 +65,6 @@ public abstract class DocConfig {
               .initStructure(initFieldStructure)
               .initObjectName(Name.from("request"))
               .initObjectType(method.getInputType())
-              .method(method)
               .build();
       InitCode initCode = generator.generate(initContext);
       setInitCodeProxy(initCode);
@@ -84,7 +83,6 @@ public abstract class DocConfig {
               .initObjectName(Name.from("request"))
               .initObjectType(method.getInputType())
               .flattenedFields(Lists.newArrayList(fields))
-              .method(method)
               .build();
       InitCode initCode = generator.generate(initContext);
       setInitCodeProxy(initCode);

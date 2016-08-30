@@ -18,6 +18,7 @@ import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,12 +28,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * InitCodeGenerator generates an InitCode object for a given method and initialization field
+ * InitCodeGenerator generates an InitCode object for a given object and initialization field
  * structure (as constructed by FieldStructureParser).
  */
 public class InitCodeGenerator {
   private final List<InitCodeLine> initLineSpecs = new ArrayList<>();
 
+  /**
+   * Generates the InitCode object based on the given context.
+   *
+   * If the generated fields are flattened, the last line (init line of the final object) will not
+   * be added. Otherwise the final generated object will be the object specified in the context.
+   */
   public InitCode generate(InitCodeGeneratorContext context) {
     Name suggestedName = context.initObjectName();
     TypeRef type = context.initObjectType();

@@ -72,7 +72,6 @@ public class InitCodeTransformer {
             .initObjectName(Name.from("request"))
             .initObjectType(context.getMethod().getInputType())
             .flattenedFields(Lists.newArrayList(fields))
-            .method(context.getMethod())
             .build();
     InitCodeGenerator generator = new InitCodeGenerator();
     InitCode initCode = generator.generate(initCodeContext);
@@ -88,9 +87,8 @@ public class InitCodeTransformer {
             .symbolTable(table)
             .valueGenerator(valueGenerator)
             .initStructure(initFieldStructure)
-            .method(context.getMethod())
-            .initObjectType(context.getMethod().getInputType())
             .initObjectName(Name.from("request"))
+            .initObjectType(context.getMethod().getInputType())
             .build();
     InitCodeGenerator generator = new InitCodeGenerator();
     InitCode initCode = generator.generate(initCodeContext);
@@ -108,7 +106,6 @@ public class InitCodeTransformer {
             .initStructure(initFieldStructure)
             .initObjectName(Name.from("expected_response"))
             .initObjectType(context.getMethod().getOutputType())
-            .method(context.getMethod())
             .build();
     InitCodeGenerator generator = new InitCodeGenerator();
     InitCode initCode = generator.generate(initCodeContext);
@@ -131,7 +128,6 @@ public class InitCodeTransformer {
         InitCodeGeneratorContext.newBuilder()
             .symbolTable(new SymbolTable())
             .initStructure(initFieldStructure)
-            .method(context.getMethod())
             .flattenedFields(Lists.newArrayList(fields))
             .initObjectName(Name.from("request"))
             .initObjectType(context.getMethod().getInputType())

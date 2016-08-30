@@ -18,7 +18,6 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 
@@ -34,10 +33,8 @@ import javax.annotation.Nullable;
  * 1. SymbolTable to produce unique variable names.
  * 2. TestValueGenerator to populate unique values.
  * 3. Initialized fields structure configuration map.
- * 4. Initialized object name and type
- * 5. The associated method of the initialized object since the object is usually a
- *    request/response.
- * 6. (Optional)Flattened fields. If the flattened fields is set, The object itself will not be
+ * 4. Initialized object name and type. The object is usually a request/response.
+ * 5. (Optional)Flattened fields. If the flattened fields is set, The object itself will not be
  *    created, instead only the fields of the object will be initialized. This is usually used
  *    to create init code for flattened methods.
  */
@@ -49,8 +46,6 @@ public abstract class InitCodeGeneratorContext {
   public abstract SymbolTable symbolTable();
 
   public abstract Map<String, Object> initStructure();
-
-  public abstract Method method();
 
   public boolean isFlattened() {
     return flattenedFields() != null;
@@ -78,8 +73,6 @@ public abstract class InitCodeGeneratorContext {
     public abstract Builder symbolTable(SymbolTable val);
 
     public abstract Builder initStructure(Map<String, Object> val);
-
-    public abstract Builder method(Method val);
 
     public abstract Builder initObjectName(Name val);
 
