@@ -56,17 +56,6 @@ var PAGE_DESCRIPTORS = {
       'strings')
 };
 
-var BUNDLE_DESCRIPTORS = {
-  'publishSeries': new gax.BundleDescriptor(
-      'books',
-      [
-        'edition',
-        'shelf.name'
-      ],
-      'book_names',
-      gax.createByteLengthFunction(grpcClient.google.example.library.v1.Book))
-};
-
 /**
  * The scopes needed to make gRPC calls to all of the methods defined in
  * this service.
@@ -92,7 +81,7 @@ var ALL_SCOPES = [
  *
  * This will be created through a builder function which can be obtained by the module.
  * See the following example of how to initialize the module and how to access to the builder.
- * @ee {@link LibraryServiceApiBuilder}
+ * @see {@link libraryServiceApi}
  *
  * @example
  * var libraryV1 = require('@google-cloud/library').v1({
@@ -117,13 +106,24 @@ function LibraryServiceApi(gaxGrpc, grpcClient, opts) {
     CODE_GEN_NAME_VERSION,
     'nodejs/' + process.version].join(' ');
 
+
+  var bundleDescriptors = {
+    'publishSeries': new gax.BundleDescriptor(
+        'books',
+        [
+          'edition',
+          'shelf.name'
+        ],
+        'book_names',
+        gax.createByteLengthFunction(grpcClient.google.example.library.v1.Book))
+  };
   var defaults = gaxGrpc.constructSettings(
       'google.example.library.v1.LibraryService',
       configData,
       clientConfig,
       timeout,
       PAGE_DESCRIPTORS,
-      BUNDLE_DESCRIPTORS,
+      bundleDescriptors,
       {'x-goog-api-client': googleApiClient});
 
   var stub = gaxGrpc.createStub(
