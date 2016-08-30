@@ -58,6 +58,7 @@ public class MainGapicProviderFactory
   public static final String GO = "go";
   public static final String JAVA = "java";
   public static final String NODEJS = "nodejs";
+  public static final String NODEJS_DOC = "nodejs_doc";
   public static final String PHP = "php";
   public static final String PYTHON = "python";
   public static final String PYTHON_DOC = "python_doc";
@@ -140,7 +141,7 @@ public class MainGapicProviderFactory
 
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, testProvider);
 
-    } else if (id.equals(NODEJS)) {
+    } else if (id.equals(NODEJS) || id.equals(NODEJS_DOC)) {
       GapicCodePathMapper nodeJSPathMapper = new NodeJSCodePathMapper();
       GapicProvider<? extends Object> mainProvider =
           CommonGapicProvider.<Interface>newBuilder()
@@ -164,7 +165,22 @@ public class MainGapicProviderFactory
               .setCodePathMapper(nodeJSPathMapper)
               .build();
 
-      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, clientConfigProvider);
+      if (id.equals(NODEJS)) {
+        return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, clientConfigProvider);
+      }
+
+      GapicProvider<? extends Object> messageProvider =
+          CommonGapicProvider.<ProtoFile>newBuilder()
+              .setModel(model)
+              .setView(new ProtoFileView())
+              .setContext(new NodeJSGapicContext(model, apiConfig))
+              .setSnippetSetRunner(
+                  new NodeJSSnippetSetRunner<ProtoFile>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
+              .setSnippetFileNames(Arrays.asList("nodejs/message.snip"))
+              .setCodePathMapper(nodeJSPathMapper)
+              .build();
+      return Arrays.<GapicProvider<? extends Object>>asList(
+          mainProvider, messageProvider, clientConfigProvider);
 
     } else if (id.equals(PHP)) {
       GapicCodePathMapper phpPathMapper =

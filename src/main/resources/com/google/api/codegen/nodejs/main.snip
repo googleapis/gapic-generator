@@ -17,23 +17,11 @@
 
 @private licenseSection(service)
   /*
-   * Copyright 2016 Google Inc. All rights reserved.
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
+   {@copyright()}
    *
    * EDITING INSTRUCTIONS
    * This file was generated from the file
-   * https://github.com/googleapis/googleapis/blob/master/library.proto,
+   * https://github.com/googleapis/googleapis/blob/master/{@service.getFile().getSimpleName()},
    * and updates to that file get reflected here through a refresh process.
    * For the short term, the refresh process will only be runnable by Google
    * engineers.
@@ -61,23 +49,6 @@
       // Path templates
       {@path_templates}
     @end
-
-    // Callback types
-
-    /**
-     * @@callback APICallback
-     * @@param {?Error} error - the error object if something goes wrong.
-     *   Null if API succeeds.
-     * @@param {?T} response
-     *   The response object when API succeeds.
-     * @@template T
-     */
-
-    /**
-     * @@callback EmptyCallback
-     * @@param {?Error} error - the error object if something goes wrong.
-     *   Null if API succeeds.
-     */
 
     {@serviceMethodsSection(service)}
 
@@ -229,16 +200,16 @@
      * @@example
      @let moduleName = context.getModuleName(service)
        @if context.isGcloud
-       *   var {@moduleName} = require('{@context.getApiConfig().getPackageName()}').{@context.getApiVersion(service)}({
-       *     // optional auth parameters.
-       *   });
+       * var {@moduleName} = require('{@context.getApiConfig().getPackageName()}').{@context.getApiVersion(service)}({
+       *   // optional auth parameters.
+       * });
        @else
-       *   var {@moduleName} = require('{@context.getApiConfig().getPackageName()}')({
-       *     // optional auth parameters.
-       *   });
+       * var {@moduleName} = require('{@context.getApiConfig().getPackageName()}')({
+       *   // optional auth parameters.
+       * });
        @end
 
-       *   var api = {@moduleName}.{@context.upperCamelToLowerCamel(serviceName)}();
+       * var api = {@moduleName}.{@context.upperCamelToLowerCamel(serviceName)}();
      @end
      *
      * @@class
@@ -352,12 +323,6 @@
 @private createRenderDictionary(collectionConfig)
   @join param: collectionConfig.getNameTemplate.vars() on {@","}.add(BREAK)
     '{@param}': {@param}
-  @end
-@end
-
-@private comments(commentLines)
-  @join comment : commentLines
-    * {@comment}
   @end
 @end
 

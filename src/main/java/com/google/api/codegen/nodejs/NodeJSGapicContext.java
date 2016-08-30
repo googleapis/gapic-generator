@@ -32,6 +32,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.ProtoContainerElement;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
@@ -139,6 +140,46 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   }
 
   /**
+   * Returns the filename for documenting messages.
+   */
+  public String getDocFilename(ProtoFile file) {
+    String filePath = file.getSimpleName().replace(".proto", ".js");
+    if (isExternalFile(file)) {
+      filePath = filePath.replaceAll("/", "_");
+    } else {
+      int lastSlash = filePath.lastIndexOf('/');
+      if (lastSlash >= 0) {
+        filePath = filePath.substring(lastSlash + 1);
+      }
+    }
+    return "doc_" + filePath;
+  }
+
+  /**
+   * Returns true if the proto file is external to the current package.
+   * Currently, it only checks the file path and thinks it is external if
+   * the file is well-known common protos.
+   */
+  public boolean isExternalFile(ProtoFile file) {
+    String filePath = file.getSimpleName();
+    for (String commonPath : COMMON_PROTO_PATHS) {
+      if (filePath.startsWith(commonPath)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public String getFileURL(ProtoFile file) {
+    String filePath = file.getSimpleName();
+    if (filePath.startsWith("google/protobuf")) {
+      return "https://github.com/google/protobuf/blob/master/src/" + filePath;
+    } else {
+      return "https://github.com/googleapis/googleapis/blob/master/" + filePath;
+    }
+  }
+
+  /**
    * Returns type information for a field in JSDoc style.
    */
   private String fieldTypeCardinalityComment(Field field) {
@@ -147,7 +188,9 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     String cardinalityComment = "";
     if (type.getCardinality() == Cardinality.REPEATED) {
       if (type.isMap()) {
-        return "Object";
+        String keyType = jsTypeName(type.getMapKeyField().getType());
+        String valueType = jsTypeName(type.getMapValueField().getType());
+        return String.format("Object.<%s, %s>", keyType, valueType);
       } else {
         cardinalityComment = "[]";
       }
@@ -173,10 +216,11 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   /**
    * Returns a JSDoc comment string for the field as an attribute of a message.
    */
-  private String fieldPropertyComment(Field field) {
+  public List<String> fieldPropertyComment(Field field) {
     String commentType = fieldTypeCardinalityComment(field);
     String fieldName = wrapIfKeywordOrBuiltIn(field.getSimpleName());
-    return fieldComment(String.format("@property {%s} %s", commentType, fieldName), null, field);
+    return convertToCommentedBlock(
+        fieldComment(String.format("@property {%s} %s", commentType, fieldName), null, field));
   }
 
   private String fieldComment(String comment, String paramComment, Field field) {
@@ -187,6 +231,21 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       paramComment = JSDocCommentFixer.jsdocify(paramComment);
       comment += "\n  " + paramComment.replaceAll("(\\r?\\n)", "\n  ");
     }
+    if (field.getType().isMessage() && !field.getType().isMap()) {
+      if (!Strings.isNullOrEmpty(paramComment)) {
+        comment += "\n";
+      }
+      comment +=
+          "\n  This object should have the same structure as "
+              + linkForMessage(field.getType().getMessageType());
+    } else if (field.getType().isEnum()) {
+      if (!Strings.isNullOrEmpty(paramComment)) {
+        comment += "\n";
+      }
+      comment +=
+          "\n  The number should be among the values of "
+              + linkForMessage(field.getType().getEnumType());
+    }
     return comment + "\n";
   }
 
@@ -196,13 +255,21 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   @Nullable
   private String returnTypeComment(Method method, MethodConfig config) {
     if (config.isPageStreaming()) {
-      String resourceType = jsTypeName(config.getPageStreaming().getResourcesField().getType());
-      return "@returns {Stream<"
-          + resourceType
-          + ">}\n"
+      TypeRef resourceType = config.getPageStreaming().getResourcesField().getType();
+      String resourceTypeName;
+      if (resourceType.isMessage()) {
+        resourceTypeName =
+            "an object representing\n  " + linkForMessage(resourceType.getMessageType());
+      } else if (resourceType.isEnum()) {
+        resourceTypeName = "a number of\n  " + linkForMessage(resourceType.getEnumType());
+      } else {
+        resourceTypeName = "a " + jsTypeName(resourceType);
+      }
+      return "@returns {Stream}\n"
           + "  An object stream. By default, this emits "
-          + resourceType
-          + "\n  instances on 'data' event. This object can also be configured to emit\n"
+          + resourceTypeName
+          + " on 'data' event.\n"
+          + "  This object can also be configured to emit\n"
           + "  pages of the responses through the options parameter.";
     }
 
@@ -211,7 +278,19 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
 
     String classInfo = jsTypeName(method.getOutputType());
 
-    String callbackType = isEmpty ? "EmptyCallback" : String.format("APICallback<%s>", classInfo);
+    String callbackType =
+        isEmpty ? "function(?Error)" : String.format("function(?Error, ?%s)", classInfo);
+    String callbackMessage =
+        "@param {"
+            + callbackType
+            + "=} callback\n"
+            + "  The function which will be called with the result of the API call.";
+    if (!isEmpty) {
+      callbackMessage +=
+          "\n\n  The second parameter to the callback is an object representing "
+              + linkForMessage(returnMessageType);
+    }
+
     String returnMessage =
         "@returns {"
             + (config.isBundling() ? "gax.BundleEventEmitter" : "gax.EventEmitter")
@@ -223,11 +302,21 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
               + "  a gax.BundleEventEmitter but the API is immediately invoked, so it behaves same\n"
               + "  as a gax.EventEmitter does.";
     }
-    return "@param {"
-        + callbackType
-        + "=} callback\n"
-        + "  The function which will be called with the result of the API call.\n"
-        + returnMessage;
+    return callbackMessage + "\n" + returnMessage;
+  }
+
+  /**
+   * Return the list of messages within element which should be documented in Node.JS.
+   */
+  public ImmutableList<MessageType> filterDocumentingMessages(ProtoContainerElement element) {
+    ImmutableList.Builder<MessageType> builder = ImmutableList.builder();
+    for (MessageType msg : element.getMessages()) {
+      // Doesn't have to document map entries in Node.JS because Object is used.
+      if (!msg.isMapEntry()) {
+        builder.add(msg);
+      }
+    }
+    return builder.build();
   }
 
   /**
@@ -284,28 +373,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     if (returnType != null) {
       contentBuilder.append("\n" + returnType);
     }
-
-    contentBuilder.append("\n@throws an error if the RPC is aborted.");
     return convertToCommentedBlock(contentBuilder.toString());
-  }
-
-  /**
-   * Return the doccomment for the message.
-   */
-  public List<String> methodDocComment(MessageType msg) {
-    StringBuilder attributesBuilder = new StringBuilder();
-    attributesBuilder.append("@typedef {Object} " + msg.getFullName() + "\n");
-    for (Field field : msg.getFields()) {
-      attributesBuilder.append(fieldPropertyComment(field));
-    }
-
-    String attributes = attributesBuilder.toString().trim();
-
-    List<String> content = defaultComments(msg);
-    return ImmutableList.<String>builder()
-        .addAll(content)
-        .addAll(convertToCommentedBlock(attributes))
-        .build();
   }
 
   /**
@@ -324,9 +392,9 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   public String jsTypeName(TypeRef typeRef) {
     switch (typeRef.getKind()) {
       case TYPE_MESSAGE:
-        return typeRef.getMessageType().getFullName();
+        return "Object";
       case TYPE_ENUM:
-        return typeRef.getEnumType().getFullName();
+        return "number";
       default:
         {
           String name = PRIMITIVE_TYPE_NAMES.get(typeRef.getKind());
@@ -360,6 +428,19 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       default:
         // Numeric types and enums.
         return "Number";
+    }
+  }
+
+  /**
+   * Returns the JSDoc format of link to the element.
+   */
+  public String linkForMessage(ProtoElement element) {
+    if (isExternalFile(element.getFile())) {
+      String fullName = element.getFullName();
+      return String.format("[%s]{@link external:\"%s\"}", fullName, fullName);
+    } else {
+      String simpleName = element.getSimpleName();
+      return String.format("[%s]{@link %s}", simpleName, simpleName);
     }
   }
 
@@ -438,8 +519,8 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
           .put(Type.TYPE_SINT32, "number")
           .put(Type.TYPE_FIXED32, "number")
           .put(Type.TYPE_SFIXED32, "number")
-          .put(Type.TYPE_STRING, "String")
-          .put(Type.TYPE_BYTES, "String")
+          .put(Type.TYPE_STRING, "string")
+          .put(Type.TYPE_BYTES, "string")
           .build();
 
   /**
@@ -499,5 +580,17 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
               "otherArgs",
               "options",
               "callback")
+          .build();
+
+  private static final ImmutableSet<String> COMMON_PROTO_PATHS =
+      ImmutableSet.<String>builder()
+          .add(
+              "google/api",
+              "google/bytestream",
+              "google/logging/type",
+              "google/longrunning",
+              "google/protobuf",
+              "google/rpc",
+              "google/type")
           .build();
 }
