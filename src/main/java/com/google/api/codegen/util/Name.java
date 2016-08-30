@@ -198,8 +198,6 @@ public class Name {
           "Name: toOriginal can only be called with a namePieces size of 1");
     }
 
-    CaseFormat caseFormat = namePieces.get(0).caseFormat;
-
     return namePieces.get(0).identifier;
   }
 
