@@ -19,6 +19,8 @@ import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.csharp.CSharpDiscoveryContext;
 import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
+import com.google.api.codegen.discovery.transformer.java.JavaSurfaceTransformer;
+import com.google.api.codegen.discovery.viewmodel.ViewModelProvider;
 import com.google.api.codegen.go.GoDiscoveryContext;
 import com.google.api.codegen.go.GoSnippetSetRunner;
 import com.google.api.codegen.java.JavaDiscoveryContext;
@@ -30,14 +32,16 @@ import com.google.api.codegen.php.PhpSnippetSetRunner;
 import com.google.api.codegen.py.PythonDiscoveryContext;
 import com.google.api.codegen.py.PythonDiscoveryInitializer;
 import com.google.api.codegen.py.PythonSnippetSetRunner;
+import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.ruby.RubyDiscoveryContext;
 import com.google.api.codegen.ruby.RubySnippetSetRunner;
+import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.protobuf.Method;
 
 import org.apache.commons.lang3.NotImplementedException;
 
-/**
- * MainDiscoveryProviderFactory creates DiscoveryProvider instances based on an id.
+/*
+ * Creates DiscoveryProvider instances based on an ID.
  */
 public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
 
@@ -70,13 +74,11 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
           .build();
 
     } else if (id.equals(JAVA)) {
-      return CommonDiscoveryProvider.newBuilder()
-          .setContext(new JavaDiscoveryContext(service, apiaryConfig))
-          .setSnippetSetRunner(
-              new JavaSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
+      return ViewModelProvider.newBuilder()
+          .setApiaryConfig(apiaryConfig)
+          .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+          .setMethodToViewTransformer(new JavaSurfaceTransformer())
           .build();
-
     } else if (id.equals(NODEJS)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new NodeJSDiscoveryContext(service, apiaryConfig))
