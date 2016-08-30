@@ -12,10 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery.viewmodel;
+package com.google.api.codegen.discovery;
 
 import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.discovery.DiscoveryProvider;
 import com.google.api.codegen.discovery.transformer.MethodToViewTransformer;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.viewmodel.ViewModel;

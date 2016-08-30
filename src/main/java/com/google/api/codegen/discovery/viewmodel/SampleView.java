@@ -19,19 +19,20 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class StaticLangXApiView implements ViewModel {
+public abstract class SampleView implements ViewModel {
   @Override
   public abstract String templateFileName();
 
   @Override
   public abstract String outputPath();
 
+  @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 
   public static Builder newBuilder() {
-    return new AutoValue_StaticLangXApiView.Builder();
+    return new AutoValue_SampleView.Builder();
   }
 
   @AutoValue.Builder
@@ -41,6 +42,6 @@ public abstract class StaticLangXApiView implements ViewModel {
 
     public abstract Builder outputPath(String val);
 
-    public abstract StaticLangXApiView build();
+    public abstract SampleView build();
   }
 }

@@ -19,8 +19,7 @@ import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.csharp.CSharpDiscoveryContext;
 import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
-import com.google.api.codegen.discovery.transformer.java.JavaSurfaceTransformer;
-import com.google.api.codegen.discovery.viewmodel.ViewModelProvider;
+import com.google.api.codegen.discovery.transformer.java.JavaMethodToViewTransformer;
 import com.google.api.codegen.go.GoDiscoveryContext;
 import com.google.api.codegen.go.GoSnippetSetRunner;
 import com.google.api.codegen.java.JavaDiscoveryContext;
@@ -77,7 +76,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
       return ViewModelProvider.newBuilder()
           .setApiaryConfig(apiaryConfig)
           .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-          .setMethodToViewTransformer(new JavaSurfaceTransformer())
+          .setMethodToViewTransformer(new JavaMethodToViewTransformer())
           .build();
     } else if (id.equals(NODEJS)) {
       return CommonDiscoveryProvider.newBuilder()

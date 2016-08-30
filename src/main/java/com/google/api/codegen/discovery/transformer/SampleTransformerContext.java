@@ -15,24 +15,24 @@
 package com.google.api.codegen.discovery.transformer;
 
 import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.discovery.transformer.MethodTypeTable;
-import com.google.api.codegen.discovery.transformer.SurfaceNamer;
+import com.google.api.codegen.discovery.transformer.SampleTypeTable;
+import com.google.api.codegen.discovery.transformer.SampleNamer;
 import com.google.auto.value.AutoValue;
 import com.google.protobuf.Method;
 
 @AutoValue
-public abstract class SurfaceTransformerContext {
+public abstract class SampleTransformerContext {
 
-  public static SurfaceTransformerContext create(
-      Method method, ApiaryConfig apiaryConfig, MethodTypeTable typeTable, SurfaceNamer namer) {
-    return new AutoValue_SurfaceTransformerContext(method, apiaryConfig, typeTable, namer);
+  public static SampleTransformerContext create(
+      Method method, ApiaryConfig apiaryConfig, SampleTypeTable typeTable, SampleNamer namer) {
+    return new AutoValue_SampleTransformerContext(method, apiaryConfig, typeTable, namer);
   }
 
   public abstract Method getMethod();
 
   public abstract ApiaryConfig getApiaryConfig();
 
-  public abstract MethodTypeTable getTypeTable();
+  public abstract SampleTypeTable getTypeTable();
 
-  public abstract SurfaceNamer getNamer();
+  public abstract SampleNamer getNamer();
 }

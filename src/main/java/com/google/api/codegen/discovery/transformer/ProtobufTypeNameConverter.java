@@ -14,18 +14,27 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
-import com.google.api.codegen.util.NameFormatter;
-import com.google.api.codegen.util.NameFormatterDelegator;
+import com.google.api.codegen.util.TypeName;
+import com.google.api.codegen.util.TypedValue;
+import com.google.protobuf.Field;
 
 /**
- * TODO(saicheems)
+ * Maps Type instances to TypeName instances.
  */
-public class SurfaceNamer extends NameFormatterDelegator {
+public interface ProtobufTypeNameConverter {
 
-  private MethodTypeFormatter typeFormatter;
+  /**
+   * Provides a TypeName for the given Field.Kind.
+   */
+  TypeName getTypeName(Field.Kind kind);
 
-  public SurfaceNamer(NameFormatter languageNamer, MethodTypeFormatter typeFormatter) {
-    super(languageNamer);
-    this.typeFormatter = typeFormatter;
-  }
+  /**
+   * Provides a TypedValue containing the zero value of the given Field.Kind.
+   */
+  TypedValue getZeroValue(Field.Kind kind);
+
+  /**
+   * Renders the given value if it is a primitive type.
+   */
+  String renderPrimitiveValue(Field.Kind kind, String value);
 }

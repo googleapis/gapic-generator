@@ -12,19 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery.transformer.java;
+package com.google.api.codegen.discovery.transformer;
 
-import com.google.api.codegen.discovery.transformer.MethodTypeFormatterImpl;
-import com.google.api.codegen.discovery.transformer.SurfaceNamer;
-import com.google.api.codegen.util.java.JavaNameFormatter;
-import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.api.codegen.util.NameFormatter;
+import com.google.api.codegen.util.NameFormatterDelegator;
 
 /**
  * TODO(saicheems)
  */
-class JavaSurfaceNamer extends SurfaceNamer {
+public class SampleNamer extends NameFormatterDelegator {
 
-  public JavaSurfaceNamer() {
-    super(new JavaNameFormatter(), new MethodTypeFormatterImpl(new JavaTypeNameConverter()));
+  private SampleTypeFormatter typeFormatter;
+
+  public SampleNamer(NameFormatter languageNamer, SampleTypeFormatter typeFormatter) {
+    super(languageNamer);
+    this.typeFormatter = typeFormatter;
   }
 }

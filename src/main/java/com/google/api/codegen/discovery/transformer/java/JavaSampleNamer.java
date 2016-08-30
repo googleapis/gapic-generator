@@ -12,28 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery.transformer;
+package com.google.api.codegen.discovery.transformer.java;
 
-import com.google.protobuf.Method;
+import com.google.api.codegen.discovery.transformer.SampleTypeFormatterImpl;
+import com.google.api.codegen.discovery.transformer.SampleNamer;
+import com.google.api.codegen.util.java.JavaNameFormatter;
+import com.google.api.codegen.util.java.JavaTypeTable;
 
 /**
- * A read-only interface for mapping types to a corresponding String representation for a particular
- * language.
+ * TODO(saicheems)
  */
-public interface MethodTypeFormatter {
+class JavaSampleNamer extends SampleNamer {
 
-  /**
-   * Returns method's name.
-   */
-  String getMethodName(Method method);
-
-  /**
-   * Takes a fully-qualified type name and returns its simple name.
-   */
-  String getTypeName(String typeName);
-
-  /**
-   * Renders the primitive value of the given type.
-   */
-  String renderPrimitiveValue(String typeName, String value);
+  public JavaSampleNamer() {
+    super(new JavaNameFormatter(), new SampleTypeFormatterImpl(new JavaProtobufTypeNameConverter()));
+  }
 }

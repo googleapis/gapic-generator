@@ -16,9 +16,9 @@ package com.google.api.codegen.discovery.transformer.java;
 
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.discovery.transformer.MethodToViewTransformer;
-import com.google.api.codegen.discovery.transformer.MethodTypeTable;
-import com.google.api.codegen.discovery.transformer.SurfaceTransformerContext;
-import com.google.api.codegen.discovery.viewmodel.StaticLangXApiView;
+import com.google.api.codegen.discovery.transformer.SampleTypeTable;
+import com.google.api.codegen.discovery.transformer.SampleTransformerContext;
+import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.protobuf.Method;
@@ -26,28 +26,25 @@ import com.google.protobuf.Method;
 /*
  * Transforms a Model into the standard discovery surface in Java.
  */
-public class JavaSurfaceTransformer implements MethodToViewTransformer {
+public class JavaMethodToViewTransformer implements MethodToViewTransformer {
 
   private final static String TEMPLATE_FILENAME = "java/discovery_fragment.snip";
 
-  public JavaSurfaceTransformer() {}
+  public JavaMethodToViewTransformer() {}
 
   @Override
   public ViewModel transform(Method method, ApiaryConfig apiaryConfig) {
-    JavaSurfaceNamer namer = new JavaSurfaceNamer();
-    SurfaceTransformerContext context =
-        SurfaceTransformerContext.create(method, apiaryConfig, createTypeTable(), namer);
+    JavaSampleNamer namer = new JavaSampleNamer();
+    SampleTransformerContext context =
+        SampleTransformerContext.create(method, apiaryConfig, createTypeTable(), namer);
 
-    return StaticLangXApiView.newBuilder()
-        .templateFileName(TEMPLATE_FILENAME)
-        .outputPath("output")
-        .build();
+    return SampleView.newBuilder().templateFileName(TEMPLATE_FILENAME).outputPath("output").build();
   }
 
   /*
    * Returns a new Java TypeTable.
    */
-  private MethodTypeTable createTypeTable() {
-    return new MethodTypeTable(new JavaTypeTable(), new JavaTypeNameConverter());
+  private SampleTypeTable createTypeTable() {
+    return new SampleTypeTable(new JavaTypeTable(), new JavaProtobufTypeNameConverter());
   }
 }

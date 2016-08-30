@@ -20,14 +20,14 @@ import com.google.protobuf.Method;
 /**
  * Manages the imports for a set of fully-qualified type names.
  */
-public class MethodTypeTable implements MethodTypeFormatter {
+public class SampleTypeTable implements SampleTypeFormatter {
 
-  private MethodTypeFormatterImpl typeFormatter;
+  private SampleTypeFormatterImpl typeFormatter;
   private TypeTable typeTable;
-  private TypeNameConverter typeNameConverter;
+  private ProtobufTypeNameConverter typeNameConverter;
 
-  public MethodTypeTable(TypeTable typeTable, TypeNameConverter typeNameConverter) {
-    this.typeFormatter = new MethodTypeFormatterImpl(typeNameConverter);
+  public SampleTypeTable(TypeTable typeTable, ProtobufTypeNameConverter typeNameConverter) {
+    this.typeFormatter = new SampleTypeFormatterImpl(typeNameConverter);
     this.typeTable = typeTable;
     this.typeNameConverter = typeNameConverter;
   }
@@ -42,6 +42,7 @@ public class MethodTypeTable implements MethodTypeFormatter {
     return typeFormatter.getTypeName(typeName);
   }
 
+  @Override
   public String renderPrimitiveValue(String typeName, String value) {
     return typeFormatter.renderPrimitiveValue(typeName, value);
   }

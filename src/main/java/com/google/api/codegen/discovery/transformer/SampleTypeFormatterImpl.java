@@ -14,27 +14,31 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
-import com.google.api.codegen.util.TypeName;
-import com.google.api.codegen.util.TypedValue;
-import com.google.protobuf.Field;
+import com.google.protobuf.Method;
 
 /**
- * Maps Type instances to TypeName instances.
+ * Default implementation of MethodTypeFormatter.
  */
-public interface TypeNameConverter {
+public class SampleTypeFormatterImpl implements SampleTypeFormatter {
 
-  /**
-   * Provides a TypeName for the given Field.Kind.
-   */
-  TypeName getTypeName(Field.Kind kind);
+  private ProtobufTypeNameConverter typeNameConverter;
 
-  /**
-   * Provides a TypedValue containing the zero value of the given Field.Kind.
-   */
-  TypedValue getZeroValue(Field.Kind kind);
+  public SampleTypeFormatterImpl(ProtobufTypeNameConverter typeNameConverter) {
+    this.typeNameConverter = typeNameConverter;
+  }
 
-  /**
-   * Renders the given value if it is a primitive type.
-   */
-  String renderPrimitiveValue(Field.Kind kind, String value);
+  @Override
+  public String getMethodName(Method method) {
+    return "";
+  }
+
+  @Override
+  public String getTypeName(String typeName) {
+    return "";
+  }
+
+  @Override
+  public String renderPrimitiveValue(String typeName, String value) {
+    return "";
+  }
 }

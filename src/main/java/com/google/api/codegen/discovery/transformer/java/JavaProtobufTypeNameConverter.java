@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.discovery.transformer.java;
 
-import com.google.api.codegen.discovery.transformer.TypeNameConverter;
+import com.google.api.codegen.discovery.transformer.ProtobufTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
 import com.google.common.collect.ImmutableMap;
@@ -23,7 +23,7 @@ import com.google.protobuf.Field;
 /**
  * Maps Field.Kind instances to Java specific TypeName instances.
  */
-class JavaTypeNameConverter implements TypeNameConverter {
+class JavaProtobufTypeNameConverter implements ProtobufTypeNameConverter {
 
   /**
    * A map from primitive types in proto to Java counterparts.

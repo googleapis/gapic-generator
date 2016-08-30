@@ -17,28 +17,23 @@ package com.google.api.codegen.discovery.transformer;
 import com.google.protobuf.Method;
 
 /**
- * Default implementation of MethodTypeFormatter.
+ * A read-only interface for mapping types to a corresponding String representation for a particular
+ * language.
  */
-public class MethodTypeFormatterImpl implements MethodTypeFormatter {
+public interface SampleTypeFormatter {
 
-  private TypeNameConverter typeNameConverter;
+  /**
+   * Returns method's name.
+   */
+  String getMethodName(Method method);
 
-  public MethodTypeFormatterImpl(TypeNameConverter typeNameConverter) {
-    this.typeNameConverter = typeNameConverter;
-  }
+  /**
+   * Takes a fully-qualified type name and returns its simple name.
+   */
+  String getTypeName(String typeName);
 
-  @Override
-  public String getMethodName(Method method) {
-    return "";
-  }
-
-  @Override
-  public String getTypeName(String typeName) {
-    return "";
-  }
-
-  @Override
-  public String renderPrimitiveValue(String typeName, String value) {
-    return "";
-  }
+  /**
+   * Renders the primitive value of the given type.
+   */
+  String renderPrimitiveValue(String typeName, String value);
 }
