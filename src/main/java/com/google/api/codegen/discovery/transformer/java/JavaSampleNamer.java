@@ -12,20 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery;
+package com.google.api.codegen.discovery.transformer.java;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.api.Service;
-import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.discovery.transformer.SampleNamer;
+import com.google.api.codegen.util.java.JavaNameFormatter;
 
-/**
- * A factory for DiscoveryProviders which perform code generation.
- */
-public interface DiscoveryProviderFactory {
-  /**
-   * Create the provider from the given service, apiaryConfig,
-   * sampleConfigOverrides, and id.
-   */
-  DiscoveryProvider create(
-      Service service, ApiaryConfig apiaryConfig, JsonNode sampleConfigOverrides, String id);
+class JavaSampleNamer extends SampleNamer {
+
+  public JavaSampleNamer() {
+    super(new JavaNameFormatter());
+  }
+
+  @Override
+  public String getMapEntryTypeFromMapType(String nickname) {
+    return nickname.replaceFirst("Map", "Map.Entry");
+  }
 }

@@ -17,6 +17,8 @@ package com.google.api.codegen.util;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.api.client.util.Strings;
+
 /**
  * A utility class used to get and store unique symbols.
  *
@@ -24,16 +26,50 @@ import java.util.Set;
  * The index will keep increasing until an unused symbol is found.
  */
 public class SymbolTable {
+
   private final Set<String> symbolTable = new HashSet<>();
 
+  /**
+   * Returns a unique name, with a numeric suffix in case of conflicts.
+   *
+   * Not guaranteed to work as expected if used in combination with {@link
+   * #getNewSymbol(String)}.
+   */
   public Name getNewSymbol(Name desiredName) {
-    Name actualName = desiredName;
+    String lower = desiredName.toLowerUnderscore();
+    String suffix = getSuffix(lower);
+    if (Strings.isNullOrEmpty(suffix)) {
+      return desiredName;
+    }
+    return desiredName.join(suffix);
+  }
+
+  /**
+   * Returns a unique name, with a numeric suffix in case of conflicts.
+   *
+   * Not guaranteed to work as expected if used in combination with {@link
+   * #getNewSymbol(String)}.
+   */
+  public String getNewSymbol(String desiredName) {
+    String suffix = getSuffix(desiredName);
+    return desiredName + suffix;
+  }
+
+  /**
+   *  Returns the next numeric suffix that makes desiredName unique.
+   *
+   *  Stores the joined desiredName/suffix in an internal map.
+   */
+  private String getSuffix(String desiredName) {
+    if (!symbolTable.contains(desiredName)) {
+      symbolTable.add(desiredName);
+      return "";
+    }
     int i = 2;
-    while (symbolTable.contains(actualName.toLowerUnderscore())) {
-      actualName = desiredName.join(Integer.toString(i));
+    while (symbolTable.contains(desiredName + Integer.toString(i))) {
       i++;
     }
-    symbolTable.add(actualName.toLowerUnderscore());
-    return actualName;
+    symbolTable.add(desiredName + Integer.toString(i));
+    return Integer.toString(i);
   }
 }

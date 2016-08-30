@@ -14,10 +14,9 @@
  */
 package com.google.api.codegen.java;
 
+import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryContext;
-import com.google.api.codegen.DiscoveryImporter;
-import com.google.api.Service;
 import com.google.common.base.Defaults;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -25,7 +24,6 @@ import com.google.protobuf.Api;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
-
 import java.util.List;
 
 /**
