@@ -140,7 +140,7 @@ public class JavaTypeTable implements TypeTable {
         continue;
       } else if (!implicitPackageName.isEmpty() && imported.startsWith(implicitPackageName)) {
         // Imported type is in a subpackage must not be ignored.
-        if (!imported.substring(implicitPackageName.length() + 1).contains("\\.")) {
+        if (!imported.substring(implicitPackageName.length() + 1).contains(".")) {
           continue;
         }
       }
