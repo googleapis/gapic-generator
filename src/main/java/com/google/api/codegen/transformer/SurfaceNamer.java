@@ -493,7 +493,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * TODO: Support the general pattern of package + class name in NameFormatter.
    */
   public String getFullyQualifiedApiWrapperClassName(Interface interfaze, String packageName) {
-    return getNotImplementedString("SurfaceNamer.getFullyQuallifiedApiWrapperClassName");
+    return getNotImplementedString("SurfaceNamer.getFullyQualifiedApiWrapperClassName");
   }
 
   public String getStubName(Interface service) {
