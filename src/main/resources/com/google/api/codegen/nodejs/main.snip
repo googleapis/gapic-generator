@@ -123,28 +123,6 @@
         @end
       };
     @end
-    @if context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service))
-
-      var BUNDLE_DESCRIPTORS = {
-        @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service)) on {@", "}.add(BREAK)
-          @let bundling = ifaceConfig.getMethodConfig(method).getBundling()
-            '{@methodName(method)}': new gax.BundleDescriptor(
-                '{@bundling.getBundledField().getSimpleName()}',
-                [
-                  @join fieldSelector : bundling.getDiscriminatorFields() on {@", "}.add(BREAK)
-                    '{@fieldSelector.getParamName}'
-                  @end
-                ],
-                @if bundling.hasSubresponseField()
-                  '{@bundling.getSubresponseField().getSimpleName()}',
-                @else
-                  null,
-                @end
-                {@context.getByteLengthFunction(bundling.getBundledField().getType())})
-          @end
-        @end
-      };
-    @end
 
     /**
      * The scopes needed to make gRPC calls to all of the methods defined in
@@ -171,7 +149,7 @@
           null,
         @end
         @if context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service))
-          BUNDLE_DESCRIPTORS,
+          bundleDescriptors,
         @else
           null,
         @end
@@ -195,7 +173,7 @@
      @end
      * This will be created through a builder function which can be obtained by the module.
      * See the following example of how to initialize the module and how to access to the builder.
-     * @see {@@link {@serviceName}Builder}
+     * @@see {@@link {@context.upperCamelToLowerCamel(serviceName)}}
      *
      * @@example
      @let moduleName = context.getModuleName(service)
@@ -229,6 +207,28 @@
         CODE_GEN_NAME_VERSION,
         'nodejs/' + process.version].join(' ');
 
+      @if context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service))
+
+        var bundleDescriptors = {
+          @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service)) on {@", "}.add(BREAK)
+            @let bundling = ifaceConfig.getMethodConfig(method).getBundling()
+              '{@methodName(method)}': new gax.BundleDescriptor(
+                  '{@bundling.getBundledField().getSimpleName()}',
+                  [
+                    @join fieldSelector : bundling.getDiscriminatorFields() on {@", "}.add(BREAK)
+                      '{@fieldSelector.getParamName}'
+                    @end
+                  ],
+                  @if bundling.hasSubresponseField()
+                    '{@bundling.getSubresponseField().getSimpleName()}',
+                  @else
+                    null,
+                  @end
+                  {@context.getByteLengthFunction(bundling.getBundledField().getType())})
+            @end
+          @end
+        };
+      @end
       {@constructDefaults(service)}
 
       var stub = gaxGrpc.createStub(
