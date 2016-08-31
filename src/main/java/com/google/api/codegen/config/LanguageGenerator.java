@@ -76,6 +76,16 @@ public class LanguageGenerator {
     return Character.toUpperCase(string.charAt(0)) + string.substring(1);
   }
 
+  /**
+   * Returns true if it is a Google Cloud API.
+   */
+  private static boolean IsApiGoogleCloud(List<String> nameComponents) {
+    int size = nameComponents.size();
+    return size >= 3
+        && nameComponents.get(0).equals("google")
+        && nameComponents.get(size - 1).startsWith("v");
+  }
+
   private interface LanguageFormatter {
     String getFormattedPackageName(String packageName);
   }
@@ -121,13 +131,11 @@ public class LanguageGenerator {
       // we reformat it into cloud.google.com.
       // google.logging.v2 => cloud.google.com/go/logging/apiv2
       // Otherwise, fall back to backup
-      int size = nameComponents.size();
-      if (size < 3
-          || !nameComponents.get(0).equals("google")
-          || !nameComponents.get(size - 1).startsWith("v")) {
+      if (!IsApiGoogleCloud(nameComponents)) {
         nameComponents.add(0, "google.golang.org");
         return Joiner.on("/").join(nameComponents);
       }
+      int size = nameComponents.size();
       return "cloud.google.com/go/"
           + Joiner.on("/").join(nameComponents.subList(1, size - 1))
           + "/api"
@@ -135,20 +143,15 @@ public class LanguageGenerator {
     }
   }
 
-  private static class NodeJSLanguageFormatter extends SimpleLanguageFormatter {
-    public NodeJSLanguageFormatter() {
-      super("-", null, false);
-    }
-
+  private static class NodeJSLanguageFormatter implements LanguageFormatter {
     public String getFormattedPackageName(String packageName) {
       List<String> nameComponents = Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName);
-      int size = nameComponents.size();
-      if (size < 3
-          || !nameComponents.get(0).equals("google")
-          || !nameComponents.get(size - 1).startsWith("v")) {
-        return "gax-" + super.getFormattedPackageName(packageName);
+      // NodeJS uses "@google-cloud/<APINAME>" for the package name of a Google Cloud API.
+      // Otherwise falls back to a pattern of "foo-bar" style with "gax-" prefix.
+      if (!IsApiGoogleCloud(nameComponents)) {
+        return "gax-" + Joiner.on("-").join(nameComponents);
       }
-      return "@google-cloud/" + nameComponents.get(size - 2);
+      return "@google-cloud/" + nameComponents.get(nameComponents.size() - 2);
     }
   }
 
