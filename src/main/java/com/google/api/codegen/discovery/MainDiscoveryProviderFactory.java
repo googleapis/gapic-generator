@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.discovery;
 
+import org.apache.commons.lang3.NotImplementedException;
+
 import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.SnippetSetRunner;
@@ -22,8 +24,6 @@ import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
 import com.google.api.codegen.discovery.transformer.java.JavaMethodToViewTransformer;
 import com.google.api.codegen.go.GoDiscoveryContext;
 import com.google.api.codegen.go.GoSnippetSetRunner;
-import com.google.api.codegen.java.JavaDiscoveryContext;
-import com.google.api.codegen.java.JavaSnippetSetRunner;
 import com.google.api.codegen.nodejs.NodeJSDiscoveryContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
 import com.google.api.codegen.php.PhpDiscoveryContext;
@@ -36,8 +36,6 @@ import com.google.api.codegen.ruby.RubyDiscoveryContext;
 import com.google.api.codegen.ruby.RubySnippetSetRunner;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.protobuf.Method;
-
-import org.apache.commons.lang3.NotImplementedException;
 
 /*
  * Creates DiscoveryProvider instances based on an ID.

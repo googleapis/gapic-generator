@@ -14,20 +14,19 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
-import com.google.api.codegen.discovery.SampleConfig;
-import com.google.auto.value.AutoValue;
+import java.util.ArrayList;
+import java.util.List;
 
-@AutoValue
-public abstract class SampleTransformerContext {
+import com.google.api.codegen.discovery.FieldInfo;
+import com.google.api.codegen.discovery.viewmodel.SampleParamView;
 
-  public static SampleTransformerContext create(
-      SampleConfig sampleConfig, SampleTypeTable typeTable, SampleNamer namer) {
-    return new AutoValue_SampleTransformerContext(sampleConfig, typeTable, namer);
+public class SampleParamTransformer {
+
+  public static List<SampleParamView> generateSampleParams(SampleTransformerContext context) {
+    ArrayList<SampleParamView> sampleParams = new ArrayList<>();
+    for (FieldInfo field : context.getSampleConfig().methodInfo().fields()) {
+      sampleParams.add(SampleParamView.newBuilder().name(field.name()).doc(field.doc()).build());
+    }
+    return sampleParams;
   }
-
-  public abstract SampleConfig getSampleConfig();
-
-  public abstract SampleTypeTable getTypeTable();
-
-  public abstract SampleNamer getNamer();
 }

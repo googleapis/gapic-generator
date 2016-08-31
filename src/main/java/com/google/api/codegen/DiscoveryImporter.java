@@ -118,12 +118,12 @@ public class DiscoveryImporter {
       docs.setDocumentationRootUrl(disco.get("documentationLink").asText());
     }
     String title = disco.get("title").asText();
-    builder.setTitle(title);
-    if (disco.get("canonicalName") != null) {
-      docs.setSummary(disco.get("canonicalName").asText());
-    } else {
-      docs.setSummary(title);
-    }
+    // TODO(saicheems): I'm setting this so it's caught during review - I
+    // think that we should use title in general as the name - I've noticed
+    // that canonicalName can be inconsistent (It's "Ad Exchange Buyer" in
+    // adexchangebuyer, and "reports" in adminreports)
+    importer.config.setServiceTitle(title);
+    docs.setSummary(title);
     // substitute Documentation overview field for lack of API revision field
     if (disco.get("revision") != null) {
       docs.setOverview(disco.get("revision").asText());
@@ -151,11 +151,8 @@ public class DiscoveryImporter {
         importer.config.getFields().put(type, field.getName(), field);
       }
     }
-    if (disco.get("canonicalName") != null) {
-      importer.config.setServiceCanonicalName(disco.get("canonicalName").asText());
-    } else {
-      importer.config.setServiceCanonicalName(disco.get("name").asText());
-    }
+
+    importer.config.setServiceCanonicalName(disco.get("name").asText());
     importer.config.setServiceVersion(disco.get("version").asText());
 
     return importer;

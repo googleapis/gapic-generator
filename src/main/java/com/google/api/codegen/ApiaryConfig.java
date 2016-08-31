@@ -102,14 +102,23 @@ public class ApiaryConfig {
   private final Table<Type, String, Field> fields = HashBasedTable.<Type, String, Field>create();
 
   /*
-   * The service canonical name, or name if no canonical name
+   * The service canonical name, or name if no canonical name.
    */
   private String serviceCanonicalName;
 
   /*
-   * The service version string
+   * The service version string.
    */
   private String serviceVersion;
+
+  /*
+   * The title of the service.
+   */
+  private String serviceTitle;
+
+  public String getServiceTitle() {
+    return serviceTitle;
+  }
 
   public ListMultimap<String, String> getMethodParams() {
     return methodParams;
@@ -165,6 +174,10 @@ public class ApiaryConfig {
 
   public void setServiceVersion(String serviceVersion) {
     this.serviceVersion = serviceVersion;
+  }
+
+  public void setServiceTitle(String serviceTitle) {
+    this.serviceTitle = serviceTitle;
   }
 
   /**

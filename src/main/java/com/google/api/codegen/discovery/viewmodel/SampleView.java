@@ -14,12 +14,15 @@
  */
 package com.google.api.codegen.discovery.viewmodel;
 
+import java.util.List;
+
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class SampleView implements ViewModel {
+
   @Override
   public abstract String templateFileName();
 
@@ -31,6 +34,16 @@ public abstract class SampleView implements ViewModel {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 
+  public abstract String apiTitle();
+
+  public abstract String apiName();
+
+  public abstract String apiVersion();
+
+  public abstract List<SampleParamView> params();
+
+  public abstract List<String> imports();
+
   public static Builder newBuilder() {
     return new AutoValue_SampleView.Builder();
   }
@@ -41,6 +54,16 @@ public abstract class SampleView implements ViewModel {
     public abstract Builder templateFileName(String val);
 
     public abstract Builder outputPath(String val);
+
+    public abstract Builder apiTitle(String val);
+
+    public abstract Builder apiName(String val);
+
+    public abstract Builder apiVersion(String val);
+
+    public abstract Builder params(List<SampleParamView> val);
+
+    public abstract Builder imports(List<String> val);
 
     public abstract SampleView build();
   }

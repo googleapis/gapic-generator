@@ -12,20 +12,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery.transformer.java;
+package com.google.api.codegen.discovery.viewmodel;
 
-import com.google.api.codegen.discovery.transformer.SampleTypeFormatterImpl;
-import com.google.api.codegen.discovery.transformer.SampleNamer;
-import com.google.api.codegen.util.java.JavaNameFormatter;
-import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.auto.value.AutoValue;
 
-/**
- * TODO(saicheems)
- */
-class JavaSampleNamer extends SampleNamer {
+@AutoValue
+public abstract class SampleParamView {
 
-  public JavaSampleNamer() {
-    super(
-        new JavaNameFormatter(), new SampleTypeFormatterImpl(new JavaProtobufTypeNameConverter()));
+  public abstract String name();
+
+  public abstract String doc();
+
+  public static Builder newBuilder() {
+    return new AutoValue_SampleParamView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+
+    public abstract Builder name(String name);
+
+    public abstract Builder doc(String val);
+
+    public abstract SampleParamView build();
   }
 }

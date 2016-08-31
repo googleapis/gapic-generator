@@ -15,7 +15,9 @@
 package com.google.api.codegen.discovery.transformer.java;
 
 import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.discovery.SampleConfig;
 import com.google.api.codegen.discovery.transformer.MethodToViewTransformer;
+import com.google.api.codegen.discovery.transformer.SampleParamTransformer;
 import com.google.api.codegen.discovery.transformer.SampleTypeTable;
 import com.google.api.codegen.discovery.transformer.SampleTransformerContext;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
@@ -34,11 +36,11 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
 
   @Override
   public ViewModel transform(Method method, ApiaryConfig apiaryConfig) {
+    SampleConfig sampleConfig = SampleConfig.createSampleConfig(method, apiaryConfig);
     JavaSampleNamer namer = new JavaSampleNamer();
     SampleTransformerContext context =
-        SampleTransformerContext.create(method, apiaryConfig, createTypeTable(), namer);
-
-    return SampleView.newBuilder().templateFileName(TEMPLATE_FILENAME).outputPath("output").build();
+        SampleTransformerContext.create(sampleConfig, createTypeTable(), namer);
+    return getSample(context);
   }
 
   /*
@@ -46,5 +48,24 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
    */
   private SampleTypeTable createTypeTable() {
     return new SampleTypeTable(new JavaTypeTable(), new JavaProtobufTypeNameConverter());
+  }
+
+  private SampleView getSample(SampleTransformerContext context) {
+    addSampleImports(context);
+    return SampleView.newBuilder()
+        .templateFileName(TEMPLATE_FILENAME)
+        .outputPath("output")
+        .apiTitle(context.getSampleConfig().apiTitle())
+        .apiName(context.getSampleConfig().apiName())
+        .apiVersion(context.getSampleConfig().apiVersion())
+        .params(SampleParamTransformer.generateSampleParams(context))
+        .imports(context.getTypeTable().getImports())
+        .build();
+  }
+
+  private void addSampleImports(SampleTransformerContext context) {
+    SampleTypeTable typeTable = context.getTypeTable();
+    typeTable.saveNicknameFor("com.google.api.codegen.Swag");
+    typeTable.saveNicknameFor("com.google.api.codegen.Dab");
   }
 }

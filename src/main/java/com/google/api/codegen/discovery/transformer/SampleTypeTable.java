@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
+import java.util.List;
+
 import com.google.api.codegen.util.TypeTable;
 import com.google.protobuf.Method;
 
@@ -45,5 +47,13 @@ public class SampleTypeTable implements SampleTypeFormatter {
   @Override
   public String renderPrimitiveValue(String typeName, String value) {
     return typeFormatter.renderPrimitiveValue(typeName, value);
+  }
+
+  public void saveNicknameFor(String fullName) {
+    typeTable.getAndSaveNicknameFor(fullName);
+  }
+
+  public List<String> getImports() {
+    return typeTable.getImports();
   }
 }

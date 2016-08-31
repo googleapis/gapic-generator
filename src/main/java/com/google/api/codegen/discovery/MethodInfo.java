@@ -12,22 +12,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery.transformer;
+package com.google.api.codegen.discovery;
 
-import com.google.api.codegen.discovery.SampleConfig;
+import java.util.List;
+
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class SampleTransformerContext {
+public abstract class MethodInfo {
 
-  public static SampleTransformerContext create(
-      SampleConfig sampleConfig, SampleTypeTable typeTable, SampleNamer namer) {
-    return new AutoValue_SampleTransformerContext(sampleConfig, typeTable, namer);
+  public abstract String methodName();
+
+  public abstract List<String> resources();
+
+  public abstract List<FieldInfo> fields();
+
+  public static Builder newBuilder() {
+    return new AutoValue_MethodInfo.Builder();
   }
 
-  public abstract SampleConfig getSampleConfig();
+  @AutoValue.Builder
+  public static abstract class Builder {
 
-  public abstract SampleTypeTable getTypeTable();
+    public abstract Builder methodName(String val);
 
-  public abstract SampleNamer getNamer();
+    public abstract Builder resources(List<String> val);
+
+    public abstract Builder fields(List<FieldInfo> val);
+
+    public abstract MethodInfo build();
+  }
 }
