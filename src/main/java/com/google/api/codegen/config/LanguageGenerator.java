@@ -15,6 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +29,7 @@ import java.util.Map;
  */
 public class LanguageGenerator {
 
-  private static final String DEFAULT_PACKAGE_SEPARATOR = "\\.";
+  private static final String DEFAULT_PACKAGE_SEPARATOR = ".";
 
   private static final String CONFIG_KEY_PACKAGE_NAME = "package_name";
 
@@ -43,14 +44,17 @@ public class LanguageGenerator {
         Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud"));
     List<RewriteRule> pythonRewriteRules =
         Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud"));
+    List<RewriteRule> rubyRewriteRules =
+        Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud"));
     LANGUAGE_FORMATTERS =
         ImmutableMap.<String, LanguageFormatter>builder()
             .put("java", new SimpleLanguageFormatter(".", javaRewriteRules, false))
             .put("python", new SimpleLanguageFormatter(".", pythonRewriteRules, false))
             .put("go", new GoLanguageFormatter())
             .put("csharp", new SimpleLanguageFormatter(".", null, true))
-            .put("ruby", new SimpleLanguageFormatter("::", null, true))
+            .put("ruby", new SimpleLanguageFormatter("::", rubyRewriteRules, true))
             .put("php", new SimpleLanguageFormatter("\\", phpRewriteRules, true))
+            .put("nodejs", new NodeJSLanguageFormatter())
             .build();
   }
 
@@ -98,7 +102,7 @@ public class LanguageGenerator {
         packageName = rewriteRule.rewrite(packageName);
       }
       List<String> elements = new LinkedList<>();
-      for (String component : packageName.split(DEFAULT_PACKAGE_SEPARATOR)) {
+      for (String component : Splitter.on(DEFAULT_PACKAGE_SEPARATOR).split(packageName)) {
         if (capitalize) {
           elements.add(firstCharToUpperCase(component));
         } else {
@@ -111,8 +115,7 @@ public class LanguageGenerator {
 
   private static class GoLanguageFormatter implements LanguageFormatter {
     public String getFormattedPackageName(String packageName) {
-      List<String> nameComponents = new ArrayList<>();
-      nameComponents.addAll(Arrays.asList(packageName.split(DEFAULT_PACKAGE_SEPARATOR)));
+      List<String> nameComponents = Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName);
 
       // If the name follows the pattern google.foo.bar.v1234,
       // we reformat it into cloud.google.com.
@@ -129,6 +132,23 @@ public class LanguageGenerator {
           + Joiner.on("/").join(nameComponents.subList(1, size - 1))
           + "/api"
           + nameComponents.get(size - 1);
+    }
+  }
+
+  private static class NodeJSLanguageFormatter extends SimpleLanguageFormatter {
+    public NodeJSLanguageFormatter() {
+      super("-", null, false);
+    }
+
+    public String getFormattedPackageName(String packageName) {
+      List<String> nameComponents = Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName);
+      int size = nameComponents.size();
+      if (size < 3
+          || !nameComponents.get(0).equals("google")
+          || !nameComponents.get(size - 1).startsWith("v")) {
+        return "gax-" + super.getFormattedPackageName(packageName);
+      }
+      return "@google-cloud/" + nameComponents.get(size - 2);
     }
   }
 
