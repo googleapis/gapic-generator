@@ -91,7 +91,7 @@
         return new {@apiName}(gaxGrpc, grpcClient, opts);
       };
       extend(this.{@context.upperCamelToLowerCamel(apiName)}, {@apiName});
-    };
+    }
     module.exports = {@apiName}Builder;
     module.exports.SERVICE_ADDRESS = SERVICE_ADDRESS;
     module.exports.ALL_SCOPES = ALL_SCOPES;
@@ -115,7 +115,7 @@
                requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
                responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
                resources = pageStreaming.getResourcesField().getSimpleName()
-              '{@methodName(method)}': new gax.PageDescriptor(
+              {@methodName(method)}: new gax.PageDescriptor(
                   '{@requestToken}',
                   '{@responseToken}',
                   '{@resources}')
@@ -212,7 +212,7 @@
         var bundleDescriptors = {
           @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service)) on {@", "}.add(BREAK)
             @let bundling = ifaceConfig.getMethodConfig(method).getBundling()
-              '{@methodName(method)}': new gax.BundleDescriptor(
+              {@methodName(method)}: new gax.BundleDescriptor(
                   '{@bundling.getBundledField().getSimpleName()}',
                   [
                     @join fieldSelector : bundling.getDiscriminatorFields() on {@", "}.add(BREAK)
@@ -322,7 +322,7 @@
 
 @private createRenderDictionary(collectionConfig)
   @join param: collectionConfig.getNameTemplate.vars() on {@","}.add(BREAK)
-    '{@param}': {@param}
+    {@param}: {@param}
   @end
 @end
 
