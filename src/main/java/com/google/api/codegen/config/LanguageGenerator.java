@@ -40,20 +40,16 @@ public class LanguageGenerator {
         Arrays.asList(
             new RewriteRule("^google", "com.google.cloud"),
             new RewriteRule("(.v[^.]+)$", ".spi$1"));
-    List<RewriteRule> phpRewriteRules =
-        Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud"));
-    List<RewriteRule> pythonRewriteRules =
-        Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud"));
-    List<RewriteRule> rubyRewriteRules =
+    List<RewriteRule> commonRewriteRules =
         Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud"));
     LANGUAGE_FORMATTERS =
         ImmutableMap.<String, LanguageFormatter>builder()
             .put("java", new SimpleLanguageFormatter(".", javaRewriteRules, false))
-            .put("python", new SimpleLanguageFormatter(".", pythonRewriteRules, false))
+            .put("python", new SimpleLanguageFormatter(".", commonRewriteRules, false))
             .put("go", new GoLanguageFormatter())
             .put("csharp", new SimpleLanguageFormatter(".", null, true))
-            .put("ruby", new SimpleLanguageFormatter("::", rubyRewriteRules, true))
-            .put("php", new SimpleLanguageFormatter("\\", phpRewriteRules, true))
+            .put("ruby", new SimpleLanguageFormatter("::", commonRewriteRules, true))
+            .put("php", new SimpleLanguageFormatter("\\", commonRewriteRules, true))
             .put("nodejs", new NodeJSLanguageFormatter())
             .build();
   }
