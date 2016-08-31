@@ -21,11 +21,11 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class MethodInfo {
 
-  public abstract String methodName();
+  public abstract String name();
 
   public abstract List<String> resources();
 
-  public abstract List<FieldInfo> fields();
+  public abstract List<TypeInfo> params();
 
   public static Builder newBuilder() {
     return new AutoValue_MethodInfo.Builder();
@@ -34,11 +34,11 @@ public abstract class MethodInfo {
   @AutoValue.Builder
   public static abstract class Builder {
 
-    public abstract Builder methodName(String val);
+    public abstract Builder name(String val);
 
     public abstract Builder resources(List<String> val);
 
-    public abstract Builder fields(List<FieldInfo> val);
+    public abstract Builder params(List<TypeInfo> val);
 
     public abstract MethodInfo build();
   }

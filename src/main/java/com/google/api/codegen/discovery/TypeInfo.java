@@ -15,25 +15,49 @@
 package com.google.api.codegen.discovery;
 
 import com.google.auto.value.AutoValue;
+import com.google.protobuf.Field;
+import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class FieldInfo {
-
-  public abstract String doc();
+public abstract class TypeInfo {
 
   public abstract String name();
 
+  public abstract Field.Kind kind();
+
+  public abstract String doc();
+
+  public abstract boolean isMap();
+
+  @Nullable
+  public abstract TypeInfo mapKey();
+
+  @Nullable
+  public abstract TypeInfo mapValue();
+
+  public abstract boolean isArray();
+
   public static Builder newBuilder() {
-    return new AutoValue_FieldInfo.Builder();
+    return new AutoValue_TypeInfo.Builder();
   }
 
   @AutoValue.Builder
   public static abstract class Builder {
 
-    public abstract Builder doc(String val);
-
     public abstract Builder name(String val);
 
-    public abstract FieldInfo build();
+    public abstract Builder kind(Field.Kind val);
+
+    public abstract Builder doc(String val);
+
+    public abstract Builder isMap(boolean val);
+
+    public abstract Builder mapKey(@Nullable TypeInfo val);
+
+    public abstract Builder mapValue(@Nullable TypeInfo val);
+
+    public abstract Builder isArray(boolean val);
+
+    public abstract TypeInfo build();
   }
 }

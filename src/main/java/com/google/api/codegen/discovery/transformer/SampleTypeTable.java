@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
-import java.util.List;
-
+import com.google.api.codegen.discovery.TypeInfo;
 import com.google.api.codegen.util.TypeTable;
 import com.google.protobuf.Method;
+import java.util.List;
 
 /**
  * Manages the imports for a set of fully-qualified type names.
@@ -35,13 +35,18 @@ public class SampleTypeTable implements SampleTypeFormatter {
   }
 
   @Override
+  public String getTypeName(String typeName) {
+    // TODO(saicheems): Auto-generated method stub
+    return "wtf";
+  }
+
+  @Override
   public String getMethodName(Method method) {
     return typeFormatter.getMethodName(method);
   }
 
-  @Override
-  public String getTypeName(String typeName) {
-    return typeFormatter.getTypeName(typeName);
+  public String getTypeName(TypeInfo typeInfo) {
+    return typeNameConverter.getTypeName(typeInfo);
   }
 
   @Override

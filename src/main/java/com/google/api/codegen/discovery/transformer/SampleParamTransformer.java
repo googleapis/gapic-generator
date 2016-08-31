@@ -17,15 +17,20 @@ package com.google.api.codegen.discovery.transformer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.api.codegen.discovery.FieldInfo;
+import com.google.api.codegen.discovery.TypeInfo;
 import com.google.api.codegen.discovery.viewmodel.SampleParamView;
 
 public class SampleParamTransformer {
 
   public static List<SampleParamView> generateSampleParams(SampleTransformerContext context) {
     ArrayList<SampleParamView> sampleParams = new ArrayList<>();
-    for (FieldInfo field : context.getSampleConfig().methodInfo().fields()) {
-      sampleParams.add(SampleParamView.newBuilder().name(field.name()).doc(field.doc()).build());
+    for (TypeInfo field : context.getSampleConfig().methodInfo().params()) {
+      sampleParams.add(
+          SampleParamView.newBuilder()
+              .name(field.name())
+              .doc(field.doc())
+              .type(context.getTypeTable().getTypeName(field))
+              .build());
     }
     return sampleParams;
   }

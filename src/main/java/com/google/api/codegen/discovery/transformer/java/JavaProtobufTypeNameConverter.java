@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discovery.transformer.java;
 
+import com.google.api.codegen.discovery.TypeInfo;
 import com.google.api.codegen.discovery.transformer.ProtobufTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
@@ -70,9 +71,9 @@ class JavaProtobufTypeNameConverter implements ProtobufTypeNameConverter {
           .build();
 
   @Override
-  public TypeName getTypeName(Field.Kind kind) {
+  public String getTypeName(TypeInfo type) {
     // TODO(saicheems)
-    return null;
+    return PRIMIVITVE_TYPE_MAP.get(type.kind());
   }
 
   @Override

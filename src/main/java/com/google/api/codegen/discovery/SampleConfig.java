@@ -14,12 +14,15 @@
  */
 package com.google.api.codegen.discovery;
 
+import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.DiscoveryImporter;
+import com.google.auto.value.AutoValue;
+import com.google.protobuf.Field;
+import com.google.protobuf.Field.Cardinality;
+import com.google.protobuf.Method;
+import com.google.protobuf.Type;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.api.codegen.ApiaryConfig;
-import com.google.auto.value.AutoValue;
-import com.google.protobuf.Method;
 
 @AutoValue
 public abstract class SampleConfig {
@@ -32,19 +35,35 @@ public abstract class SampleConfig {
 
     MethodInfo.Builder methodInfo = MethodInfo.newBuilder();
     String methodName = method.getName();
-    methodInfo.methodName(methodName);
+    String requestTypeUrl = method.getRequestTypeUrl();
+    Type methodType = apiaryConfig.getType(requestTypeUrl);
+    methodInfo.name(methodName);
     methodInfo.resources(apiaryConfig.getResources(methodName));
 
-    List<FieldInfo> fields = new ArrayList<>();
+    List<TypeInfo> params = new ArrayList<>();
     for (String param : apiaryConfig.getMethodParams(methodName)) {
-      fields.add(
-          FieldInfo.newBuilder()
-              .name(param)
-              .doc(apiaryConfig.getDescription(method.getRequestTypeUrl(), param))
-              .build());
-    }
+      if (param.equals(DiscoveryImporter.REQUEST_FIELD_NAME)) {
+        continue;
+      }
+      Field field = apiaryConfig.getField(methodType, param);
 
-    methodInfo.fields(fields);
+      TypeInfo.Builder typeInfo = TypeInfo.newBuilder();
+      typeInfo.name(param);
+      typeInfo.kind(field.getKind());
+      typeInfo.doc(apiaryConfig.getDescription(requestTypeUrl, param));
+
+      boolean isMap = apiaryConfig.getAdditionalProperties(requestTypeUrl, param) != null;
+      boolean isArray = !isMap && (field.getCardinality() == Cardinality.CARDINALITY_REPEATED);
+
+      typeInfo.isMap(isMap);
+      typeInfo.isArray(isArray);
+
+      typeInfo.mapKey(null);
+      typeInfo.mapValue(null);
+
+      params.add(typeInfo.build());
+    }
+    methodInfo.params(params);
 
     sampleConfig.methodInfo(methodInfo.build());
     return sampleConfig.build();

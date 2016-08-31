@@ -23,6 +23,8 @@ public abstract class SampleParamView {
 
   public abstract String doc();
 
+  public abstract String type();
+
   public static Builder newBuilder() {
     return new AutoValue_SampleParamView.Builder();
   }
@@ -33,6 +35,8 @@ public abstract class SampleParamView {
     public abstract Builder name(String name);
 
     public abstract Builder doc(String val);
+
+    public abstract Builder type(String val);
 
     public abstract SampleParamView build();
   }
