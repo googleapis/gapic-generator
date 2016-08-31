@@ -42,15 +42,15 @@ var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
 var DEFAULT_TIMEOUT = 30;
 
 var PAGE_DESCRIPTORS = {
-  'listShelves': new gax.PageDescriptor(
+  listShelves: new gax.PageDescriptor(
       'page_token',
       'next_page_token',
       'shelves'),
-  'listBooks': new gax.PageDescriptor(
+  listBooks: new gax.PageDescriptor(
       'page_token',
       'next_page_token',
       'books'),
-  'listStrings': new gax.PageDescriptor(
+  listStrings: new gax.PageDescriptor(
       'page_token',
       'next_page_token',
       'strings')
@@ -108,7 +108,7 @@ function LibraryServiceApi(gaxGrpc, grpcClient, opts) {
 
 
   var bundleDescriptors = {
-    'publishSeries': new gax.BundleDescriptor(
+    publishSeries: new gax.BundleDescriptor(
         'books',
         [
           'edition',
@@ -175,7 +175,7 @@ var ARCHIVED_BOOK_PATH_TEMPLATE = new gax.PathTemplate(
  */
 LibraryServiceApi.prototype.shelfPath = function shelfPath(shelf) {
   return SHELF_PATH_TEMPLATE.render({
-    'shelf': shelf
+    shelf: shelf
   });
 };
 
@@ -198,8 +198,8 @@ LibraryServiceApi.prototype.matchShelfFromShelfName =
  */
 LibraryServiceApi.prototype.bookPath = function bookPath(shelf, book) {
   return BOOK_PATH_TEMPLATE.render({
-    'shelf': shelf,
-    'book': book
+    shelf: shelf,
+    book: book
   });
 };
 
@@ -233,8 +233,8 @@ LibraryServiceApi.prototype.matchBookFromBookName =
  */
 LibraryServiceApi.prototype.archivedBookPath = function archivedBookPath(archive_path, book) {
   return ARCHIVED_BOOK_PATH_TEMPLATE.render({
-    'archive_path': archive_path,
-    'book': book
+    archive_path: archive_path,
+    book: book
   });
 };
 
@@ -1060,7 +1060,7 @@ function LibraryServiceApiBuilder(gaxGrpc) {
     return new LibraryServiceApi(gaxGrpc, grpcClient, opts);
   };
   extend(this.libraryServiceApi, LibraryServiceApi);
-};
+}
 module.exports = LibraryServiceApiBuilder;
 module.exports.SERVICE_ADDRESS = SERVICE_ADDRESS;
 module.exports.ALL_SCOPES = ALL_SCOPES;
