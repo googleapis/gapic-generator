@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.PageStreamingConfig;
+import com.google.api.codegen.SmokeTestConfig;
 import com.google.api.codegen.metacode.FieldSetting;
 import com.google.api.codegen.metacode.FieldStructureParser;
 import com.google.api.codegen.metacode.InitCode;
@@ -44,6 +45,7 @@ import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -111,6 +113,44 @@ public class InitCodeTransformer {
     InitCode initCode = generator.generate(initCodeContext);
 
     return buildInitCodeView(context, initCode);
+  }
+
+  public InitCodeView generateSmokeTestInitCode(
+      SurfaceTransformerContext context, SymbolTable table) {
+    SmokeTestConfig testConfig = context.getInterfaceConfig().getSmokeTestConfig();
+    Method method = testConfig.getMethod();
+    MethodTransformerContext methodContext =
+        context.asMethodContext(context.getInterfaceConfig().getSmokeTestConfig().getMethod());
+    Map<String, Object> initFieldStructure =
+        createSmokeTestInitMap(testConfig.getInitFields(), methodContext);
+
+    ArrayList<Field> fields = new ArrayList<>();
+    for (Field field : method.getInputMessage().getFields()) {
+      System.out.println(field.getSimpleName());
+      if (testConfig.getInitFields().contains(field.getSimpleName())) {
+        fields.add(field);
+      }
+    }
+
+    InitCodeGeneratorContext initCodeContext =
+        InitCodeGeneratorContext.newBuilder()
+            .symbolTable(table)
+            .flattenedFields(fields)
+            .initStructure(initFieldStructure)
+            .initObjectName(Name.from("request"))
+            .initObjectType(method.getInputType())
+            .build();
+    InitCodeGenerator generator = new InitCodeGenerator();
+    InitCode initCode = generator.generate(initCodeContext);
+
+    return buildInitCodeView(methodContext, initCode);
+  }
+
+  private Map<String, Object> createSmokeTestInitMap(
+      List<String> smokeTestInitFields, MethodTransformerContext context) {
+    Map<String, Object> initFieldStructure =
+        FieldStructureParser.parseFields(smokeTestInitFields, createInitValueMap(context));
+    return initFieldStructure;
   }
 
   private InitCodeView buildInitCodeView(MethodTransformerContext context, InitCode initCode) {

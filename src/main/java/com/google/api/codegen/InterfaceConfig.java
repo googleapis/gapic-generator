@@ -25,6 +25,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
+import org.joda.time.Duration;
+
 import io.grpc.Status;
 
 import java.util.ArrayList;
@@ -34,14 +36,13 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import org.joda.time.Duration;
-
 /**
  * InterfaceConfig represents the code-gen config for an API interface, and includes the
  * configuration for methods and resource names.
  */
 public class InterfaceConfig {
   private final List<MethodConfig> methodConfigs;
+  private final SmokeTestConfig smokeTestConfig;
   private final ImmutableMap<String, CollectionConfig> collectionConfigs;
   private final ImmutableMap<String, MethodConfig> methodConfigMap;
   private final ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition;
@@ -76,15 +77,27 @@ public class InterfaceConfig {
       methodConfigs = createMethodConfigs(methodConfigMap, interfaceConfigProto);
     }
 
+    SmokeTestConfig smokeTestConfig = createSmokeTestConfig(iface, interfaceConfigProto);
+
     if (collectionConfigs == null || methodConfigMap == null) {
       return null;
     } else {
       return new InterfaceConfig(
           methodConfigs,
+          smokeTestConfig,
           collectionConfigs,
           methodConfigMap,
           retryCodesDefinition,
           retrySettingsDefinition);
+    }
+  }
+
+  private static SmokeTestConfig createSmokeTestConfig(
+      Interface iface, InterfaceConfigProto proto) {
+    if (proto.hasSmokeTest()) {
+      return SmokeTestConfig.createSmokeTestConfig(iface, proto.getSmokeTest());
+    } else {
+      return null;
     }
   }
 
@@ -217,11 +230,13 @@ public class InterfaceConfig {
 
   private InterfaceConfig(
       List<MethodConfig> methodConfigs,
+      SmokeTestConfig smokeTestConfig,
       ImmutableMap<String, CollectionConfig> collectionConfigs,
       ImmutableMap<String, MethodConfig> methodConfigMap,
       ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition,
       ImmutableMap<String, RetrySettings> retryParamsDefinition) {
     this.methodConfigs = methodConfigs;
+    this.smokeTestConfig = smokeTestConfig;
     this.collectionConfigs = collectionConfigs;
     this.methodConfigMap = methodConfigMap;
     this.retryCodesDefinition = retryCodesDefinition;
@@ -233,6 +248,13 @@ public class InterfaceConfig {
    */
   public List<MethodConfig> getMethodConfigs() {
     return methodConfigs;
+  }
+
+  /**
+   * Returns the SmokeTestConfig.
+   */
+  public SmokeTestConfig getSmokeTestConfig() {
+    return smokeTestConfig;
   }
 
   public CollectionConfig getCollectionConfig(String entityName) {

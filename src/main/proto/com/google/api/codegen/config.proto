@@ -104,6 +104,9 @@ message InterfaceConfigProto {
   // The fully qualified name of the API interface.
   string name = 1;
 
+  // Configuration of smoke test.
+  SmokeTestConfigProto smoke_test = 2;
+
   // A list of resource collection configurations.
   repeated CollectionConfigProto collections = 10;
 
@@ -115,6 +118,14 @@ message InterfaceConfigProto {
 
   // Definition for retry/backoff parameters
   repeated RetryParamsDefinitionProto retry_params_def = 31;
+}
+
+message SmokeTestConfigProto {
+  // The name of the method used in the smoke test.
+  string method = 1;
+
+  // A list describing the name and the value of the init fields.
+  repeated string init_fields = 2;
 }
 
 message CollectionConfigProto {

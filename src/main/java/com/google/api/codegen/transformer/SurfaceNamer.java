@@ -463,9 +463,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return methodName(Name.upperCamel(method.getSimpleName(), "Test"));
   }
 
-  /** The test class name for the given API service. */
-  public String getTestClassName(Interface service) {
+  /** The unit test class name for the given API service. */
+  public String getUnitTestClassName(Interface service) {
     return className(Name.upperCamel(service.getSimpleName(), "Test"));
+  }
+
+  /** The smoke test class name for the given API service. */
+  public String getSmokeTestClassName(Interface service) {
+    return className(Name.upperCamel(service.getSimpleName(), "Smoke", "Test"));
   }
 
   /** The class name of the mock gRPC service for the given API service. */

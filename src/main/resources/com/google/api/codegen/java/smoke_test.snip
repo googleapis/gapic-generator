@@ -1,0 +1,59 @@
+@extends "java/common.snip"
+@extends "java/initcode.snip"
+
+
+@snippet generate(smokeTest)
+  {@license()}
+
+  package {@smokeTest.packageName};
+
+  @join import : smokeTest.imports
+    import {@import.fullName};
+  @end
+
+  @@javax.annotation.Generated("by GAPIC")
+  public class {@smokeTest.name} {
+    public static void main(String args[]) {
+      Logger.getLogger("").setLevel(Level.WARNING);
+      try {
+        executeNoCatch(args);
+        System.out.println("ok");
+      } catch (Exception e) {
+        System.err.println("Failed with exception:");
+        e.printStackTrace(System.err);
+        System.exit(1);
+      }
+    }
+
+    public static void executeNoCatch(String args[]) throws Exception {
+      @let method = smokeTest.method
+        try ({@smokeTest.apiClassName} api = {@smokeTest.apiClassName}.create()) {
+          {@initCode(method.initCode)}
+
+          @switch method.type
+          @case "PagedFlattenedMethod"
+            PageAccessor<{@method.responseTypeName}> pageAccessor =
+                api.{@method.name}(\
+                  {@sampleMethodCallArgList(method.initCode.fieldSettings)});
+            System.out.println(ReflectionToStringBuilder.toString(pageAccessor));
+          @case "FlattenedMethod"
+            @if method.hasReturnValue
+              {@method.responseTypeName} response = \
+                api.{@method.name}({@args(method.initCode.fieldSettings)});
+              System.out.println(ReflectionToStringBuilder.toString(response));
+            @else
+              api.{@method.name}(\
+                {@sampleMethodCallArgList(method.initCode.fieldSettings)});
+            @end
+          @end
+        }
+      @end
+    }
+  }
+@end
+
+@private args(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
+@end
