@@ -41,6 +41,7 @@
        params = apiaryConfig.getMethodParams(method.getName)
     public class {@ApiName}Example {
       public static void main(String[] args) throws IOException, GeneralSecurityException {
+
         @let authType = apiaryConfig.getAuthType.toString
           @switch authType
           @case "APPLICATION_DEFAULT_CREDENTIALS"
@@ -53,7 +54,7 @@
               @end
             @end
             @if apiaryConfig.hasAuthScopes(method.getName)
-              // Authorize using the following scopes in order to use this method:
+              // Authorize using one of the following scopes in order to use this method:
               @join scope : apiaryConfig.getAuthScopes.get(method.getName)
                 //   {@scope}
               @end

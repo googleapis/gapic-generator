@@ -73,8 +73,8 @@ public class DiscoveryFragmentGeneratorApi {
   public static final Option<String> AUTH_INSTRUCTIONS_URL =
       ToolOptions.createOption(
           String.class,
-          "auth_url",
-          "A comma delimited map of language to auth instructions URL.",
+          "auth_instructions",
+          "A comma-delimited map of language to auth instructions URL: lang:URL,lang:URL",
           "");
 
   private final ToolOptions options;
@@ -111,9 +111,9 @@ public class DiscoveryFragmentGeneratorApi {
     String factory = generator.getFactory();
     String id = generator.getId();
 
-    String authUrl = options.get(AUTH_INSTRUCTIONS_URL);
+    String authInstructions = options.get(AUTH_INSTRUCTIONS_URL);
     ApiaryConfig apiaryConfig = discovery.getConfig();
-    apiaryConfig.setAuthInstructionsUrl(parseAuthUrl(authUrl, id));
+    apiaryConfig.setAuthInstructionsUrl(parseAuthInstructionsUrl(authInstructions, id));
 
     DiscoveryProviderFactory providerFactory = createProviderFactory(factory);
     DiscoveryProvider provider = providerFactory.create(discovery.getService(), apiaryConfig, id);
@@ -131,12 +131,12 @@ public class DiscoveryFragmentGeneratorApi {
    * "go:https://www.hello.com,java:https://www.world.com" and returns the value
    * of the key corresponding to id.
    */
-  private String parseAuthUrl(String authUrl, String id) {
-    if (Strings.isNullOrEmpty(authUrl)) {
+  private String parseAuthInstructionsUrl(String authInstructionsUrl, String id) {
+    if (Strings.isNullOrEmpty(authInstructionsUrl)) {
       return "";
     }
     // Split on ','
-    Iterable<String> it = Splitter.on(',').split(authUrl);
+    Iterable<String> it = Splitter.on(',').split(authInstructionsUrl);
     for (String item : it) {
       // Split on only the first ':' and return if there are two values and the
       // language matches.
