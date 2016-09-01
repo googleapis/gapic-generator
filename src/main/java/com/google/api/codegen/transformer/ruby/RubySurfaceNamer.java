@@ -18,6 +18,7 @@ import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.Interface;
@@ -46,6 +47,13 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getFormatFunctionName(CollectionConfig collectionConfig) {
     return staticFunctionName(Name.from(collectionConfig.getEntityName(), "path"));
+  }
+  /**
+   * The type name of the Grpc client class.
+   * This needs to match what Grpc generates for the particular language.
+   */
+  public String getGrpcClientTypeName(Interface service) {
+    return getModelTypeFormatter().getFullNameFor(service) + "Client";
   }
 
   /** The file name for an API service. */
