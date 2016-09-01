@@ -55,16 +55,16 @@
 
 @private serviceClassBody(service)
   @let path_templates = {@pathTemplateSection(service)}, \
-       documentation = {@comments(context.defaultComments(service))}
+       documentation = {@comments(context.defaultComments(service))}, \
+       stubs = {@context.getStubs(service)}
     @if documentation
       {@documentation}
       @#
 
     @end
-    @# @@!attribute [r] stub
-    @#   @@return [{@context.rubyTypeNameForProtoElement(service)}::Stub]
+    {@stubComments(stubs)}
     class {@context.getApiWrapperName(service)}
-      attr_reader :stub
+      attr_reader {@listStubNames(stubs)}
 
       {@constantSection(service)}
       @if path_templates
@@ -75,6 +75,19 @@
 
       {@serviceMethodsSection(service)}
     end
+  @end
+@end
+
+@private stubComments(stubs)
+  @join stub : stubs
+    @# @@!attribute [r] {@stub.name}
+    @#   @@return [{@stub.grpcClientTypeName}::Stub]
+  @end
+@end
+
+@private listStubNames(stubs)
+  @join stub : stubs on ", "
+    :{@stub.name}
   @end
 @end
 
@@ -219,20 +232,22 @@
         "#{CODE_GEN_NAME_VERSION} ruby/#{RUBY_VERSION}".freeze
       headers = { :"x-goog-api-client" => google_api_client }
       {@constructDefaults(service)}
-      @@stub = Google::Gax::Grpc.create_stub(
-        service_path,
-        port,
-        chan_creds: chan_creds,
-        channel: channel,
-        scopes: scopes,
-        &{@context.rubyTypeNameForProtoElement(service)}::Stub.method(:new)
-      )
+      @join stubView : @context.getStubs(service)
+        @@{@stubView.name} = Google::Gax::Grpc.create_stub(
+          service_path,
+          port,
+          chan_creds: chan_creds,
+          channel: channel,
+          scopes: scopes,
+          &{@stubView.grpcClientTypeName}::Stub.method(:new)
+        )
+      @end
 
-      @join method : context.getNonStreamingMethods(service)
-        @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName())
-          @@{@methodName} = Google::Gax.create_api_call(
-            @@stub.method(:{@methodName}),
-            defaults["{@methodName}"]
+      @join method : context.getNonStreamingMethodsV2(service)
+        @let methodView = context.getMethodView(service, method)
+          @@{@methodView.name} = Google::Gax.create_api_call(
+            @@{@methodView.stubName}.method(:{@methodView.name}),
+            defaults["{@methodView.name}"]
           )
         @end
       @end

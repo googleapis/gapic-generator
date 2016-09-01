@@ -16,15 +16,18 @@ package com.google.api.codegen.ruby;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
+import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.ruby.RubyModelTypeNameConverter;
 import com.google.api.codegen.transformer.ruby.RubySurfaceNamer;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
-import com.google.api.codegen.viewmodel.DynamicLangApiMethodView;
+import com.google.api.codegen.viewmodel.GrpcStubView;
+import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.Field;
@@ -45,10 +48,15 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * A GapicContext specialized for Ruby.
@@ -342,7 +350,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     return Splitter.on("::").splitToList(getApiConfig().getPackageName());
   }
 
-  public DynamicLangApiMethodView getMethodView(Interface service, Method method) {
+  public OptionalArrayMethodView getMethodView(Interface service, Method method) {
     ModelTypeTable modelTypeTable =
         new ModelTypeTable(
             new RubyTypeTable(getApiConfig().getPackageName()),
@@ -355,7 +363,49 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
             new RubySurfaceNamer(getApiConfig().getPackageName()));
     MethodTransformerContext methodContext = context.asMethodContext(method);
     ApiMethodTransformer methodTransformer = new ApiMethodTransformer();
-    return methodTransformer.generateDynamicLangApiMethod(methodContext);
+    return methodTransformer.generateOptionalArrayMethod(methodContext);
+  }
+
+  public List<GrpcStubView> getStubs(Interface service) {
+    ModelTypeTable modelTypeTable =
+        new ModelTypeTable(
+            new RubyTypeTable(getApiConfig().getPackageName()),
+            new RubyModelTypeNameConverter(getApiConfig().getPackageName()));
+    SurfaceTransformerContext context =
+        SurfaceTransformerContext.create(
+            service,
+            getApiConfig(),
+            modelTypeTable,
+            new RubySurfaceNamer(getApiConfig().getPackageName()));
+    return generateGrpcStubs(context);
+  }
+
+  private List<GrpcStubView> generateGrpcStubs(SurfaceTransformerContext context) {
+    List<GrpcStubView> stubs = new ArrayList<>();
+    SurfaceNamer namer = context.getNamer();
+
+    Map<String, Interface> interfaces = new HashMap<>();
+    for (Method method : context.getNonStreamingMethods()) {
+      Interface targetInterface = context.asMethodContext(method).getTargetInterface();
+      interfaces.put(targetInterface.getFullName(), targetInterface);
+    }
+
+    List<String> interfaceNames = new ArrayList<>();
+    interfaceNames.addAll(interfaces.keySet());
+    Collections.sort(interfaceNames);
+
+    for (String interfaceName : interfaceNames) {
+      Interface interfaze = interfaces.get(interfaceName);
+      GrpcStubView.Builder stub = GrpcStubView.newBuilder();
+
+      stub.name(namer.getStubName(interfaze));
+      stub.createStubFunctionName(namer.getCreateStubFunctionName(interfaze));
+      stub.grpcClientTypeName(context.getTypeTable().getFullNameFor(interfaze));
+
+      stubs.add(stub.build());
+    }
+
+    return stubs;
   }
 
   // Constants
