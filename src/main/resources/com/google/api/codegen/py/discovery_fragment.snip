@@ -8,51 +8,99 @@
     @let api = context.getApi, \
          apiName = api.getName, \
          apiVersion = api.getVersion, \
-         serviceTitle = context.getService.getTitle
+         serviceTitle = context.getService.getTitle, \
+         authType = context.getApiaryConfig.getAuthType.toString
         """
         BEFORE RUNNING:
         ---------------
         1. If not already done, enable the {@serviceTitle}
            and check the quota for your project at
            https://console.developers.google.com/apis/api/{@apiName}
-        2. This sample uses Application Default Credentials for authentication.
-           If not already done, install the gcloud CLI from
-           https://cloud.google.com/sdk/ and run
-           'gcloud beta auth application-default login'
-        3. Install the Python client library for Google APIs by running
-           'pip install --upgrade google-api-python-client'
+        @if authType == "APPLICATION_DEFAULT_CREDENTIALS"
+          2. This sample uses Application Default Credentials for authentication.
+             If not already done, install the gcloud CLI from
+             https://cloud.google.com/sdk/ and run
+             'gcloud beta auth application-default login'
+          3. Install the Python client library for Google APIs by running
+             'pip install --upgrade google-api-python-client'
+        @else
+          2. Install the Python client library for Google APIs by running
+             'pip install --upgrade google-api-python-client'
+        @end
         """
 
         @join import : imports
             {@import}
         @end
+        @if context.getApiaryConfig.getAuthType == "OAUTH_3L"
 
-        @# Authentication is provided by the 'gcloud' tool when running locally
-        @# and by built-in service accounts when running on GAE, GCE, or GKE.
-        @# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
-        credentials = GoogleCredentials.get_application_default()
-
-        @# Construct the {@apiName} service object (version {@apiVersion}) for interacting
-        @# with the API. You can browse other available API services and versions at
-        @# https://developers.google.com/api-client-library/python/apis/
-        {@serviceName()} = discovery.build('{@apiName}', '{@apiVersion}', credentials=credentials)
+          def get_auth():
+            @# {@TODO()} Implement this function to get authentication credentials.
+            @let authInstructionsUrl = context.getApiaryConfig.getAuthInstructionsUrl
+              @if authInstructionsUrl
+                @# See {@authInstructionsUrl}
+              @end
+            @end
+            return None
+        @end
         {@body}
     @end
 @end
 
+@private adcBoilerplate()
+        @# Authentication is provided by the 'gcloud' tool when running locally
+        @# and by built-in service accounts when running on GAE, GCE, or GKE.
+        @# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+        credentials = GoogleCredentials.get_application_default()
+@end
+
 @snippet generateBody(method)
     {@alwaysImport()}
-    @let params = context.getApiaryConfig.getMethodParams(method.getName)
-        {@initialize(method, params)}
+    @let api = context.getApi, \
+         apiName = api.getName, \
+         apiVersion = api.getVersion, \
+         serviceTitle = context.getService.getTitle, \
+         apiaryConfig = context.getApiaryConfig, \
+         authType = apiaryConfig.getAuthType.toString
+      @switch authType
+      @case "APPLICATION_DEFAULT_CREDENTIALS"
+        {@importGoogleCredential()}{@adcBoilerplate()}
 
-        @if context.hasRequestField(method)
-            {@initializeRequest(method)}
+      @case "OAUTH_3L"
+        @if apiaryConfig.hasAuthScopes(method.getName)
+          @# Authorize using one of the following scopes in order to use this method:
+          @join scope : apiaryConfig.getAuthScopes.get(method.getName)
+            @#   {@scope}
+          @end
         @end
-        @if context.isPageStreaming(method)
-            {@iterableCall(method)}
-        @else
-            {@compactCall(method)}
-        @end
+
+        credentials = get_auth()
+
+        @default
+      @end
+
+      @# Construct the {@apiName} service object (version {@apiVersion}) for interacting
+      @# with the API. You can browse other available API services and versions at
+      @# https://developers.google.com/api-client-library/python/apis/
+      @if authType == "API_KEY"
+        @# {@TODO()} Replace api_key
+        {@serviceName()} = discovery.build('{@apiName}', '{@apiVersion}', developerKey="api_key")
+      @else
+        {@serviceName()} = discovery.build('{@apiName}', '{@apiVersion}', credentials=credentials)
+      @end
+
+      @let params = context.getApiaryConfig.getMethodParams(method.getName)
+          {@initialize(method, params)}
+
+          @if context.hasRequestField(method)
+              {@initializeRequest(method)}
+          @end
+          @if context.isPageStreaming(method)
+              {@iterableCall(method)}
+          @else
+              {@compactCall(method)}
+          @end
+      @end
     @end
 @end
 
@@ -103,8 +151,8 @@
             response = request.execute()
 
             @# {@TODO()} Change code below to process the 'response' dict:
-	    @let pprint = importHandler.addImportStandard("pprint", "pprint")
-	    	{@pprint}(response)
+        @let pprint = importHandler.addImportStandard("pprint", "pprint")
+            {@pprint}(response)
             @end
         @end
     @end
@@ -192,7 +240,10 @@
   @end
 @end
 
+@private importGoogleCredential() fill
+  {@context.silent(importHandler.addImportLocal("oauth2client.client", "GoogleCredentials"))}
+@end
+
 @private alwaysImport() fill
   {@context.silent(importHandler.addImportLocal("googleapiclient", "discovery"))}
-  {@context.silent(importHandler.addImportLocal("oauth2client.client", "GoogleCredentials"))}
 @end
