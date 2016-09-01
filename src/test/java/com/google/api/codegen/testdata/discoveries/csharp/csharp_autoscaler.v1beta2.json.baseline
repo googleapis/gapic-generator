@@ -4,7 +4,11 @@
 // 1. If not already done, enable the Google Compute Engine Autoscaler API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/autoscaler
-// 2. Install the C# client library by adding a dependency on the relevant NuGet
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    'gcloud beta auth application-default login'
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
 
@@ -21,7 +25,17 @@ namespace AutoscalerSample
     {
         public static void Main(string[] args)
         {
-            UserCredential credential = GetCredential();
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
 
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
@@ -46,14 +60,6 @@ namespace AutoscalerSample
             // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
         }
-
-        public static UserCredential getCredential() {
-            // TODO: Implement this function to get authentication credentials.
-            // See https://foo.com/bar
-            // Authorize using one of the following scopes in order to use this method:
-            //   https://www.googleapis.com/auth/compute
-            return null;
-        }
     }
 }
 // BEFORE RUNNING:
@@ -61,7 +67,11 @@ namespace AutoscalerSample
 // 1. If not already done, enable the Google Compute Engine Autoscaler API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/autoscaler
-// 2. Install the C# client library by adding a dependency on the relevant NuGet
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    'gcloud beta auth application-default login'
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
 
@@ -78,7 +88,17 @@ namespace AutoscalerSample
     {
         public static void Main(string[] args)
         {
-            UserCredential credential = GetCredential();
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
 
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
@@ -103,15 +123,6 @@ namespace AutoscalerSample
             // To execute asynchronously in an async method, use
             // Data.Autoscaler response = await request.ExecuteAsync();
         }
-
-        public static UserCredential getCredential() {
-            // TODO: Implement this function to get authentication credentials.
-            // See https://foo.com/bar
-            // Authorize using one of the following scopes in order to use this method:
-            //   https://www.googleapis.com/auth/compute
-            //   https://www.googleapis.com/auth/compute.readonly
-            return null;
-        }
     }
 }
 // BEFORE RUNNING:
@@ -119,7 +130,11 @@ namespace AutoscalerSample
 // 1. If not already done, enable the Google Compute Engine Autoscaler API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/autoscaler
-// 2. Install the C# client library by adding a dependency on the relevant NuGet
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    'gcloud beta auth application-default login'
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
 
@@ -136,7 +151,17 @@ namespace AutoscalerSample
     {
         public static void Main(string[] args)
         {
-            UserCredential credential = GetCredential();
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
 
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
@@ -152,7 +177,7 @@ namespace AutoscalerSample
             // Zone name of Autoscaler resource.
             string zone = "{MY-ZONE}";
 
-            // TODO: Add code to assign values to properties of 'content'.
+            // TODO Add code to assign values to properties of 'content'.
             Data.Autoscaler content = new Data.Autoscaler();
 
             AutoscalersResource.InsertRequest request = autoscalerService.Autoscalers.Insert(content, project, zone);
@@ -161,14 +186,6 @@ namespace AutoscalerSample
             // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
         }
-
-        public static UserCredential getCredential() {
-            // TODO: Implement this function to get authentication credentials.
-            // See https://foo.com/bar
-            // Authorize using one of the following scopes in order to use this method:
-            //   https://www.googleapis.com/auth/compute
-            return null;
-        }
     }
 }
 // BEFORE RUNNING:
@@ -176,7 +193,11 @@ namespace AutoscalerSample
 // 1. If not already done, enable the Google Compute Engine Autoscaler API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/autoscaler
-// 2. Install the C# client library by adding a dependency on the relevant NuGet
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    'gcloud beta auth application-default login'
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
 
@@ -193,7 +214,17 @@ namespace AutoscalerSample
     {
         public static void Main(string[] args)
         {
-            UserCredential credential = GetCredential();
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
 
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
@@ -228,15 +259,6 @@ namespace AutoscalerSample
             // To execute asynchronously in an async method, use
             // Data.AutoscalerListResponse response = await request.ExecuteAsync();
         }
-
-        public static UserCredential getCredential() {
-            // TODO: Implement this function to get authentication credentials.
-            // See https://foo.com/bar
-            // Authorize using one of the following scopes in order to use this method:
-            //   https://www.googleapis.com/auth/compute
-            //   https://www.googleapis.com/auth/compute.readonly
-            return null;
-        }
     }
 }
 // BEFORE RUNNING:
@@ -244,7 +266,11 @@ namespace AutoscalerSample
 // 1. If not already done, enable the Google Compute Engine Autoscaler API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/autoscaler
-// 2. Install the C# client library by adding a dependency on the relevant NuGet
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    'gcloud beta auth application-default login'
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
 
@@ -261,7 +287,17 @@ namespace AutoscalerSample
     {
         public static void Main(string[] args)
         {
-            UserCredential credential = GetCredential();
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
 
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
@@ -280,7 +316,7 @@ namespace AutoscalerSample
             // Name of the Autoscaler resource.
             string autoscaler = "{MY-AUTOSCALER}";
 
-            // TODO: Add code to assign values to properties of 'content'.
+            // TODO Add code to assign values to properties of 'content'.
             Data.Autoscaler content = new Data.Autoscaler();
 
             AutoscalersResource.PatchRequest request = autoscalerService.Autoscalers.Patch(content, project, zone, autoscaler);
@@ -289,14 +325,6 @@ namespace AutoscalerSample
             // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
         }
-
-        public static UserCredential getCredential() {
-            // TODO: Implement this function to get authentication credentials.
-            // See https://foo.com/bar
-            // Authorize using one of the following scopes in order to use this method:
-            //   https://www.googleapis.com/auth/compute
-            return null;
-        }
     }
 }
 // BEFORE RUNNING:
@@ -304,7 +332,11 @@ namespace AutoscalerSample
 // 1. If not already done, enable the Google Compute Engine Autoscaler API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/autoscaler
-// 2. Install the C# client library by adding a dependency on the relevant NuGet
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    'gcloud beta auth application-default login'
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
 
@@ -321,7 +353,17 @@ namespace AutoscalerSample
     {
         public static void Main(string[] args)
         {
-            UserCredential credential = GetCredential();
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
 
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
@@ -340,7 +382,7 @@ namespace AutoscalerSample
             // Name of the Autoscaler resource.
             string autoscaler = "{MY-AUTOSCALER}";
 
-            // TODO: Add code to assign values to properties of 'content'.
+            // TODO Add code to assign values to properties of 'content'.
             Data.Autoscaler content = new Data.Autoscaler();
 
             AutoscalersResource.UpdateRequest request = autoscalerService.Autoscalers.Update(content, project, zone, autoscaler);
@@ -349,14 +391,6 @@ namespace AutoscalerSample
             // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
         }
-
-        public static UserCredential getCredential() {
-            // TODO: Implement this function to get authentication credentials.
-            // See https://foo.com/bar
-            // Authorize using one of the following scopes in order to use this method:
-            //   https://www.googleapis.com/auth/compute
-            return null;
-        }
     }
 }
 // BEFORE RUNNING:
@@ -364,7 +398,11 @@ namespace AutoscalerSample
 // 1. If not already done, enable the Google Compute Engine Autoscaler API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/autoscaler
-// 2. Install the C# client library by adding a dependency on the relevant NuGet
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    'gcloud beta auth application-default login'
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
 
@@ -379,7 +417,17 @@ namespace AutoscalerSample
     {
         public static void Main(string[] args)
         {
-            UserCredential credential = GetCredential();
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
 
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
@@ -401,14 +449,6 @@ namespace AutoscalerSample
             // To execute asynchronously in an async method, use
             // await request.ExecuteAsync();
         }
-
-        public static UserCredential getCredential() {
-            // TODO: Implement this function to get authentication credentials.
-            // See https://foo.com/bar
-            // Authorize using one of the following scopes in order to use this method:
-            //   https://www.googleapis.com/auth/compute
-            return null;
-        }
     }
 }
 // BEFORE RUNNING:
@@ -416,7 +456,11 @@ namespace AutoscalerSample
 // 1. If not already done, enable the Google Compute Engine Autoscaler API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/autoscaler
-// 2. Install the C# client library by adding a dependency on the relevant NuGet
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    'gcloud beta auth application-default login'
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
 
@@ -433,7 +477,17 @@ namespace AutoscalerSample
     {
         public static void Main(string[] args)
         {
-            UserCredential credential = GetCredential();
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
 
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
@@ -455,15 +509,6 @@ namespace AutoscalerSample
             // To execute asynchronously in an async method, use
             // Data.Operation response = await request.ExecuteAsync();
         }
-
-        public static UserCredential getCredential() {
-            // TODO: Implement this function to get authentication credentials.
-            // See https://foo.com/bar
-            // Authorize using one of the following scopes in order to use this method:
-            //   https://www.googleapis.com/auth/compute
-            //   https://www.googleapis.com/auth/compute.readonly
-            return null;
-        }
     }
 }
 // BEFORE RUNNING:
@@ -471,7 +516,11 @@ namespace AutoscalerSample
 // 1. If not already done, enable the Google Compute Engine Autoscaler API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/autoscaler
-// 2. Install the C# client library by adding a dependency on the relevant NuGet
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    'gcloud beta auth application-default login'
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
 
@@ -488,7 +537,17 @@ namespace AutoscalerSample
     {
         public static void Main(string[] args)
         {
-            UserCredential credential = GetCredential();
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
 
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
@@ -521,15 +580,6 @@ namespace AutoscalerSample
             // To execute asynchronously in an async method, use
             // Data.OperationList response = await request.ExecuteAsync();
         }
-
-        public static UserCredential getCredential() {
-            // TODO: Implement this function to get authentication credentials.
-            // See https://foo.com/bar
-            // Authorize using one of the following scopes in order to use this method:
-            //   https://www.googleapis.com/auth/compute
-            //   https://www.googleapis.com/auth/compute.readonly
-            return null;
-        }
     }
 }
 // BEFORE RUNNING:
@@ -537,7 +587,11 @@ namespace AutoscalerSample
 // 1. If not already done, enable the Google Compute Engine Autoscaler API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/autoscaler
-// 2. Install the C# client library by adding a dependency on the relevant NuGet
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    'gcloud beta auth application-default login'
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
 
@@ -554,7 +608,17 @@ namespace AutoscalerSample
     {
         public static void Main(string[] args)
         {
-            UserCredential credential = GetCredential();
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
 
             AutoscalerService autoscalerService = new AutoscalerService(new BaseClientService.Initializer
             {
@@ -584,15 +648,6 @@ namespace AutoscalerSample
 
             // To execute asynchronously in an async method, use
             // Data.ZoneList response = await request.ExecuteAsync();
-        }
-
-        public static UserCredential getCredential() {
-            // TODO: Implement this function to get authentication credentials.
-            // See https://foo.com/bar
-            // Authorize using one of the following scopes in order to use this method:
-            //   https://www.googleapis.com/auth/compute
-            //   https://www.googleapis.com/auth/compute.readonly
-            return null;
         }
     }
 }
