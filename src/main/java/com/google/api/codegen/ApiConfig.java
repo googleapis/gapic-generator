@@ -40,11 +40,6 @@ public abstract class ApiConfig {
   public abstract String getPackageName();
 
   /**
-   * Whether or not we should generate code samples.
-   */
-  public abstract boolean generateSamples();
-
-  /**
    * Creates an instance of ApiConfig based on ConfigProto, linking up API interface configurations
    * with specified interfaces in interfaceConfigMap. On errors, null will be returned, and
    * diagnostics are reported to the model.
@@ -56,8 +51,7 @@ public abstract class ApiConfig {
     if (interfaceConfigMap == null) {
       return null;
     } else {
-      return new AutoValue_ApiConfig(
-          interfaceConfigMap, getPackageName(configProto), configProto.getGenerateSamples());
+      return new AutoValue_ApiConfig(interfaceConfigMap, getPackageName(configProto));
     }
   }
 
@@ -65,18 +59,13 @@ public abstract class ApiConfig {
    * Creates an ApiConfig with no content. Exposed for testing.
    */
   static ApiConfig createDummyApiConfig() {
-    return new AutoValue_ApiConfig(
-        ImmutableMap.<String, InterfaceConfig>builder().build(), null, false);
+    return new AutoValue_ApiConfig(ImmutableMap.<String, InterfaceConfig>builder().build(), null);
   }
 
-  /**
-   * Creates an ApiConfig with fixed content. Exposed for testing.
-   */
+  /** Creates an ApiConfig with fixed content. Exposed for testing. */
   static ApiConfig createDummyApiConfig(
-      ImmutableMap<String, InterfaceConfig> interfaceConfigMap,
-      String packageName,
-      boolean generateSamples) {
-    return new AutoValue_ApiConfig(interfaceConfigMap, packageName, generateSamples);
+      ImmutableMap<String, InterfaceConfig> interfaceConfigMap, String packageName) {
+    return new AutoValue_ApiConfig(interfaceConfigMap, packageName);
   }
 
   private static String getPackageName(ConfigProto configProto) {
