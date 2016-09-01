@@ -102,14 +102,63 @@ public class ApiaryConfig {
   private final Table<Type, String, Field> fields = HashBasedTable.<Type, String, Field>create();
 
   /*
-   * The service canonical name, or name if no canonical name
+   * The service canonical name, or name if no canonical name.
    */
   private String serviceCanonicalName;
 
   /*
-   * The service version string
+   * The service version string.
    */
   private String serviceVersion;
+
+  /*
+   * The auth instructions URL.
+   */
+  private String authInstructionsUrl;
+
+  /*
+   * Maps API names to an AuthType override.
+   */
+  private Map<String, AuthType> authOverrides = new HashMap<>();
+
+  /*
+   * If present in the scope list, indicates that the API supports application default credentials
+   * based auth.
+   */
+  private static final String CLOUD_PLATFORM_SCOPE =
+      "https://www.googleapis.com/auth/cloud-platform";
+
+  /*
+   * Possible auth types supported by discovery.
+   */
+  public enum AuthType {
+    APPLICATION_DEFAULT_CREDENTIALS,
+    OAUTH_3L,
+    API_KEY,
+  }
+
+  /*
+   * Returns the auth type supported by the service.
+   */
+  public AuthType getAuthType() {
+    String key = getServiceCanonicalName();
+    if (!Strings.isNullOrEmpty(key) && authOverrides.containsKey(key)) {
+      return authOverrides.get(key);
+    }
+    // If the API has no scopes, then we know it's API key-based.
+    if (getAuthScopes().isEmpty()) {
+      return AuthType.API_KEY;
+    }
+    // If there are scopes and cloud platform is one of them, then we can use ADC.
+    if (getAuthScopes().containsValue(CLOUD_PLATFORM_SCOPE)) {
+      return AuthType.APPLICATION_DEFAULT_CREDENTIALS;
+    }
+    return AuthType.OAUTH_3L;
+  }
+
+  public String getAuthInstructionsUrl() {
+    return Strings.nullToEmpty(authInstructionsUrl);
+  }
 
   public ListMultimap<String, String> getMethodParams() {
     return methodParams;
@@ -165,6 +214,10 @@ public class ApiaryConfig {
 
   public void setServiceVersion(String serviceVersion) {
     this.serviceVersion = serviceVersion;
+  }
+
+  public void setAuthInstructionsUrl(String authInstructionsUrl) {
+    this.authInstructionsUrl = authInstructionsUrl;
   }
 
   /**
@@ -229,5 +282,12 @@ public class ApiaryConfig {
    */
   public ListMultimap<String, String> getAuthScopes() {
     return authScopes;
+  }
+
+  /*
+   * @return true if method has any auth scopes.
+   */
+  public boolean hasAuthScopes(String methodName) {
+    return authScopes.containsKey(methodName);
   }
 }

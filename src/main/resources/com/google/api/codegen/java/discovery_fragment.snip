@@ -41,18 +41,26 @@
        params = apiaryConfig.getMethodParams(method.getName)
     public class {@ApiName}Example {
       public static void main(String[] args) throws IOException, GeneralSecurityException {
-        // Authentication is provided by the 'gcloud' tool when running locally
-        // and by built-in service accounts when running on GAE, GCE, or GKE.
-        GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-        // The createScopedRequired method returns true when running on GAE or a local developer
-        // machine. In that case, the desired scopes must be passed in manually. When the code is
-        // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-        // For more information, see
-        // https://developers.google.com/identity/protocols/application-default-credentials
-        if (credential.createScopedRequired()) {
-          credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-        }
+        @let authType = apiaryConfig.getAuthType.toString
+          @switch authType
+          @case "APPLICATION_DEFAULT_CREDENTIALS"
+            {@importGoogleCredential()}{@adcBoilerplate()}
+          @default
+            // {@TODO()} Implement this function to get authentication credentials.
+            @let authInstructionsUrl = apiaryConfig.getAuthInstructionsUrl
+              @if authInstructionsUrl
+                // See {@authInstructionsUrl}
+              @end
+            @end
+            @if apiaryConfig.hasAuthScopes(method.getName)
+              // Authorize using the following scopes in order to use this method:
+              @join scope : apiaryConfig.getAuthScopes.get(method.getName)
+                //   {@scope}
+              @end
+            @end
+            {@importCredential()}Credential credential = getAuth();
+          @end
+        @end
 
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
@@ -70,6 +78,21 @@
       }
     }
   @end
+@end
+
+@private adcBoilerplate()
+  // Authentication is provided by the 'gcloud' tool when running locally
+  // and by built-in service accounts when running on GAE, GCE, or GKE.
+  GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+  // The createScopedRequired method returns true when running on GAE or a local developer
+  // machine. In that case, the desired scopes must be passed in manually. When the code is
+  // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+  // For more information, see
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  if (credential.createScopedRequired()) {
+    credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+  }
 @end
 
 # TODO(tcoffee): check if resource field is always first repeated field of response type
@@ -226,11 +249,18 @@
   @end
 @end
 
+@private importCredential()
+  {@context.addImport("com.google.api.client.auth.oauth2.Credential")}
+@end
+
+@private importGoogleCredential()
+  {@context.addImport("com.google.api.client.googleapis.auth.oauth2.GoogleCredential")}
+@end
+
 @private alwaysImport() fill
   {@context.addImport("java.io.IOException")}
   {@context.addImport("java.security.GeneralSecurityException")}
   {@context.addImport("java.util.Collections")}
-  {@context.addImport("com.google.api.client.googleapis.auth.oauth2.GoogleCredential")}
   {@context.addImport("com.google.api.client.googleapis.javanet.GoogleNetHttpTransport")}
   {@context.addImport("com.google.api.client.http.HttpTransport")}
   {@context.addImport("com.google.api.client.json.JsonFactory")}
