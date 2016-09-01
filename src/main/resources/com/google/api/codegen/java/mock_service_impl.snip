@@ -41,11 +41,19 @@
 
 @private grpcMethod(method)
   @@Override
-  public void {@method.name}({@method.requestTypeName} request,
-    StreamObserver<{@method.responseTypeName}> responseObserver) {
-    {@method.responseTypeName} response = ({@method.responseTypeName}) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
-  }
+  @if method.isStreaming
+    public StreamObserver<{@method.requestTypeName}> {@method.name}(
+        StreamObserver<{@method.responseTypeName}> responseObserver) {
+      System.err.println("Streaming method is not supported.");
+      return null;
+    }
+  @else
+    public void {@method.name}({@method.requestTypeName} request,
+      StreamObserver<{@method.responseTypeName}> responseObserver) {
+      {@method.responseTypeName} response = ({@method.responseTypeName}) responses.remove();
+      requests.add(request);
+      responseObserver.onNext(response);
+      responseObserver.onCompleted();
+    }
+  @end
 @end
