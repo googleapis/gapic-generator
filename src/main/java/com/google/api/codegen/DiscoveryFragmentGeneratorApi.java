@@ -74,7 +74,7 @@ public class DiscoveryFragmentGeneratorApi {
       ToolOptions.createOption(
           String.class,
           "auth_instructions",
-          "A comma-delimited map of language to auth instructions URL: lang:URL,lang:URL,...",
+          "An @-delimited map of language to auth instructions URL: lang:URL@lang:URL@...",
           "");
 
   private final ToolOptions options;
@@ -128,15 +128,15 @@ public class DiscoveryFragmentGeneratorApi {
 
   /*
    * Parses strings of the format
-   * "go:https://www.hello.com,java:https://www.world.com" and returns the value
+   * "go:https://www.hello.com@java:https://www.world.com" and returns the value
    * of the key corresponding to the key id.
    */
   private String parseAuthInstructionsUrl(String authInstructionsUrl, String id) {
     if (Strings.isNullOrEmpty(authInstructionsUrl)) {
       return "";
     }
-    // Split on ','
-    Iterable<String> it = Splitter.on(',').split(authInstructionsUrl);
+    // Split on '@'
+    Iterable<String> it = Splitter.on('@').split(authInstructionsUrl);
     for (String item : it) {
       // Split on only the first ':' and return if there are two values and the
       // language matches.

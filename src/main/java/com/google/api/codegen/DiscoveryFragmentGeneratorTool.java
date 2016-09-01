@@ -60,8 +60,7 @@ public class DiscoveryFragmentGeneratorTool {
     options.addOption(
         Option.builder()
             .longOpt("auth_instructions")
-            .desc(
-                "A comma-delimited map of language to auth instructions URL: lang:URL,lang:URL,...")
+            .desc("An @-delimited map of language to auth instructions URL: lang:URL@lang:URL@...")
             .hasArg()
             .argName("AUTH-INSTRUCTIONS")
             .build());
