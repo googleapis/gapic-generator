@@ -55,7 +55,12 @@ public class ClientConfigGapicContext extends GapicContext {
   }
 
   @Override
-  public List<Method> getNonStreamingMethods(Interface service) {
-    return getNonStreamingMethodsV2(service);
+  protected boolean shouldMethodAppear(Method method) {
+    return true;
+  }
+
+  @Override
+  public List<Method> getMethods(Interface service) {
+    return getMethodsV2(service);
   }
 }

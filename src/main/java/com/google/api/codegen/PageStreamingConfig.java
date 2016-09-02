@@ -44,7 +44,7 @@ public class PageStreamingConfig {
     String requestTokenFieldName = pageStreaming.getRequest().getTokenField();
     Field requestTokenField =
         method.getInputType().getMessageType().lookupField(requestTokenFieldName);
-    if (requestTokenField == null) {
+    if (requestTokenField == null && !method.getResponseStreaming()) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
@@ -72,7 +72,7 @@ public class PageStreamingConfig {
     String responseTokenFieldName = pageStreaming.getResponse().getTokenField();
     Field responseTokenField =
         method.getOutputType().getMessageType().lookupField(responseTokenFieldName);
-    if (responseTokenField == null) {
+    if (responseTokenField == null && !method.getResponseStreaming()) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
@@ -94,7 +94,7 @@ public class PageStreamingConfig {
               resourcesFieldName));
     }
 
-    if (requestTokenField == null || responseTokenField == null || resourcesField == null) {
+    if (requestTokenField == null && responseTokenField == null && resourcesField == null) {
       return null;
     }
     return new PageStreamingConfig(

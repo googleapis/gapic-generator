@@ -40,7 +40,7 @@ public class ImportTypeTransformer {
 
     fullNames.add(namer.getProtoFileImportFromService(context.getInterface()));
 
-    for (Method method : context.getNonStreamingMethods()) {
+    for (Method method : context.getSupportedMethods()) {
       Interface targetInterface = context.asMethodContext(method).getTargetInterface();
       fullNames.add(namer.getProtoFileImportFromService(targetInterface));
     }

@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.CollectionConfig;
+import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.tools.framework.model.Interface;
@@ -31,13 +32,15 @@ import java.util.List;
 @AutoValue
 public abstract class SurfaceTransformerContext {
   public static SurfaceTransformerContext create(
-      Interface interfaze, ApiConfig apiConfig, ModelTypeTable typeTable, SurfaceNamer namer) {
-    return new AutoValue_SurfaceTransformerContext(interfaze, apiConfig, typeTable, namer);
+      GapicContext gapicContext, Interface interfaze, ApiConfig apiConfig, ModelTypeTable typeTable, SurfaceNamer namer) {
+    return new AutoValue_SurfaceTransformerContext(gapicContext, interfaze, apiConfig, typeTable, namer);
   }
 
   public Model getModel() {
     return getInterface().getModel();
   }
+
+  public abstract GapicContext getGapicContext();
 
   public abstract Interface getInterface();
 
@@ -84,11 +87,11 @@ public abstract class SurfaceTransformerContext {
   /**
    * Returns a list of simple RPC methods.
    */
-  public List<Method> getNonStreamingMethods() {
+  public List<Method> getSupportedMethods() {
     List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
     for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
       Method method = methodConfig.getMethod();
-      if (!method.getRequestStreaming() && !method.getResponseStreaming()) {
+      if (!getGapicContext().isSupported(method)) {
         methods.add(method);
       }
     }
@@ -97,7 +100,7 @@ public abstract class SurfaceTransformerContext {
 
   public List<Method> getPageStreamingMethods() {
     List<Method> methods = new ArrayList<>();
-    for (Method method : getNonStreamingMethods()) {
+    for (Method method : getSupportedMethods()) {
       if (getMethodConfig(method).isPageStreaming()) {
         methods.add(method);
       }

@@ -31,7 +31,7 @@ public class GrpcStubTransformer {
 
     Map<String, Interface> interfaces = new TreeMap<>();
     Map<String, List<String>> methods = new TreeMap<>();
-    for (Method method : context.getNonStreamingMethods()) {
+    for (Method method : context.getSupportedMethods()) {
       Interface targetInterface = context.asMethodContext(method).getTargetInterface();
       interfaces.put(targetInterface.getFullName(), targetInterface);
       if (methods.containsKey(targetInterface.getFullName())) {

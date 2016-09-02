@@ -58,11 +58,25 @@ abstract class PythonDocConfig extends DocConfig {
   /**
    * Does this method return an iterable response?
    */
-  public boolean isIterableResponse() {
+  public boolean isPageStreaming() {
     Method method = getMethod();
     MethodConfig methodConfig =
         getApiConfig().getInterfaceConfig(getInterface()).getMethodConfig(method);
     return methodConfig.isPageStreaming();
+  }
+
+  /**
+   * Does this method is a gRPC-response streaming?
+   */
+  public boolean isResponseGrpcStreaming() {
+    return getMethod().getResponseStreaming();
+  }
+
+  /**
+   * Does this method is a gRPC-request streaming?
+   */
+  public boolean isRequestGrpcStreaming() {
+    return getMethod().getRequestStreaming();
   }
 
   /**
