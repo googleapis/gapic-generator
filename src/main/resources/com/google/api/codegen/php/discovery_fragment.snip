@@ -13,12 +13,17 @@
      * 1. If not already done, enable the {@serviceTitle}
      *    and check the quota for your project at
      *    https://console.developers.google.com/apis/api/{@apiName}
+     @if context.getApiaryConfig.getAuthType.toString == "APPLICATION_DEFAULT_CREDENTIALS"
      * 2. This sample uses Application Default Credentials for authentication.
      *    If not already done, install the gcloud CLI from
      *    https://cloud.google.com/sdk/ and run
      *    'gcloud beta auth application-default login'
      * 3. Install the PHP client library with Composer. Check installation
      *    instructions at https://github.com/google/google-api-php-client.
+     @else 
+     * 2. Install the PHP client library with Composer. Check installation
+     *    instructions at https://github.com/google/google-api-php-client.
+     @end
      */
 
     // Autoload Composer.
@@ -28,6 +33,24 @@
       @join import : imports
         use {@import};
       @end
+    @end
+    @if context.getApiaryConfig.getAuthType.toString == "OAUTH_3L"
+
+      function getClient() {
+        // TODO: Implement this function to get authentication credentials.
+        @let authInstructionsUrl = context.getApiaryConfig.getAuthInstructionsUrl
+          @if authInstructionsUrl
+            // See {@authInstructionsUrl}
+          @end
+        @end
+        @if context.getApiaryConfig.hasAuthScopes(method.getName)
+          // Authorize using one of the following scopes in order to use this method:
+          @join scope : context.getApiaryConfig.getAuthScopes.get(method.getName)
+            //   {@scope}
+          @end
+        @end
+        return null;
+      }
     @end
 
     {@body}
@@ -40,10 +63,20 @@
        serviceName = context.getServiceClassName, \
        params = context.getFlatMethodParams(method)
     // Create a new client.
-    $client = new Google_Client();
-    $client->setApplicationName('Client Sample Application');
-    $client->useApplicationDefaultCredentials();
-    $client->addScope('https://www.googleapis.com/auth/cloud-platform');
+    @switch context.getApiaryConfig.getAuthType.toString
+    @case "APPLICATION_DEFAULT_CREDENTIALS"
+      $client = new Google_Client();
+      $client->setApplicationName('Client Sample Application');
+      $client->useApplicationDefaultCredentials();
+      $client->addScope('https://www.googleapis.com/auth/cloud-platform');
+    @case "OAUTH_3L"
+      $client = getClient();
+    @default
+      $client = new Google_Client();
+      $client->setApplicationName('Client Sample Application');
+      // TODO: Replace '{MY-API-KEY}'
+      $client->setDeveloperKey('{MY-API-KEY}')
+    @end
 
     // Create a new {@apiName} service.
     $service = new {@serviceName}($client);
