@@ -9,7 +9,7 @@
        apiName = api.getName, \
        apiVersion = api.getVersion, \
        serviceTitle = context.getService.getTitle, \
-       authType = context.getApiaryConfig.getAuthType.toString
+       authType = context.getApiaryConfig.getAuthType
     /**
      * BEFORE RUNNING:
      * ---------------
@@ -17,56 +17,49 @@
      *    and check the quota for your project at
      *    https://console.developers.google.com/apis/api/{@apiName}
      @if authType == "APPLICATION_DEFAULT_CREDENTIALS"
-     * 2. This sample uses Application Default Credentials for authentication.
-     *    If not already done, install the gcloud CLI from
-     *    https://cloud.google.com/sdk/ and run
-     *    `gcloud beta auth application-default login`
-     * 3. Install the Java client library on Maven or Gradle. Check installation
-     *    instructions at https://github.com/google/google-api-java-client.
-     *    On other build systems, you can add the jar files to your project from
-     *    https://developers.google.com/resources/api-libraries/download/{@apiName}/{@apiVersion}/java
+       * 2. This sample uses Application Default Credentials for authentication.
+       *    If not already done, install the gcloud CLI from
+       *    https://cloud.google.com/sdk/ and run
+       *    `gcloud beta auth application-default login`
+       * 3. Install the Java client library on Maven or Gradle. Check installation
+       *    instructions at https://github.com/google/google-api-java-client.
+       *    On other build systems, you can add the jar files to your project from
+       *    https://developers.google.com/resources/api-libraries/download/{@apiName}/{@apiVersion}/java
      @else
-     * 2. Install the Java client library on Maven or Gradle. Check installation
-     *    instructions at https://github.com/google/google-api-java-client.
-     *    On other build systems, you can add the jar files to your project from
-     *    https://developers.google.com/resources/api-libraries/download/{@apiName}/{@apiVersion}/java
+       * 2. Install the Java client library on Maven or Gradle. Check installation
+       *    instructions at https://github.com/google/google-api-java-client.
+       *    On other build systems, you can add the jar files to your project from
+       *    https://developers.google.com/resources/api-libraries/download/{@apiName}/{@apiVersion}/java
      @end
      */
 
     @join import : imports
       import {@import};
     @end
+
     {@body}
   @end
 @end
 
 @snippet generateBody(method)
   {@alwaysImport()}
-
   @let apiName = context.getApi.getName, \
        ApiName = context.getApiPackage, \
-       apiaryConfig = context.getApiaryConfig
+       apiaryConfig = context.getApiaryConfig, \
+       authType = apiaryConfig.getAuthType
     public class {@ApiName}Example {
       public static void main(String[] args) throws IOException, GeneralSecurityException {
-        @let authType = apiaryConfig.getAuthType.toString
-          @switch authType
-          @case "APPLICATION_DEFAULT_CREDENTIALS"
-            {@importGoogleCredential()}{@adcBoilerplate()}
-          @default
-            // {@TODO()} Implement this function to get authentication credentials.
-            @let authInstructionsUrl = apiaryConfig.getAuthInstructionsUrl
-              @if authInstructionsUrl
-                // See {@authInstructionsUrl}
-              @end
-            @end
-            @if apiaryConfig.hasAuthScopes(method.getName)
-              // Authorize using one of the following scopes in order to use this method:
-              @join scope : apiaryConfig.getAuthScopes.get(method.getName)
-                //   {@scope}
-              @end
-            @end
-            {@importCredential()}Credential credential = getAuth();
-          @end
+        @switch authType
+        @case "APPLICATION_DEFAULT_CREDENTIALS"
+          // Use Application Default Credentials for authentication when running locally.
+          // For more information, see:
+          // https://developers.google.com/identity/protocols/application-default-credentials
+          {@importGoogleCredential()}GoogleCredential credential = GoogleCredential.getApplicationDefault();
+          if (credential.createScopedRequired()) {
+            credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+          }
+        @default
+          {@importCredential()}Credential credential = getAuth();
         @end
 
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
@@ -84,18 +77,29 @@
           {@compactCall(method)}
         @end
       }
+      @if apiaryConfig.getAuthType != "APPLICATION_DEFAULT_CREDENTIALS"
+
+        public static Credential getAuth() {
+          // {@TODO()} Change placeholder below to get authentication credentials.
+          @let authInstructionsUrl = apiaryConfig.getAuthInstructionsUrl
+            @if authInstructionsUrl
+              // See: {@authInstructionsUrl}
+            @end
+          @end
+          @if context.hasAuthScopes(method)
+            @let methodName = context.getMethodName(method)
+              //
+              // To use the `{@methodName}` method, authorize using one of the following scopes:
+              @join scope : context.getAuthScopes(method)
+                //   {@scope}
+              @end
+            @end
+          @end
+          return null;
+        }
+      @end
     }
   @end
-@end
-
-@private adcBoilerplate()
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
-  GoogleCredential credential = GoogleCredential.getApplicationDefault();
-  if (credential.createScopedRequired()) {
-    credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-  }
 @end
 
 # TODO(tcoffee): check if resource field is always first repeated field of response type

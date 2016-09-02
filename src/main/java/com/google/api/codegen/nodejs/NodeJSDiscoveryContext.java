@@ -82,6 +82,11 @@ public class NodeJSDiscoveryContext extends DiscoveryContext implements NodeJSCo
     return "null";
   }
 
+  @Override
+  public String stringLiteral(String value) {
+    return "'" + value + "'";
+  }
+
   private static final ImmutableMap<String, String> MAP_PARAM_NAME =
       ImmutableMap.<String, String>builder().put("resource", "resource_").build();
 

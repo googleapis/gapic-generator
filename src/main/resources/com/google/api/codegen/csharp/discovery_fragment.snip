@@ -8,19 +8,26 @@
     @let api = context.getApi, \
          apiName = api.getName, \
          apiVersion = api.getVersion, \
-         serviceTitle = context.getService.getTitle
+         serviceTitle = context.getService.getTitle, \
+         authType = context.getApiaryConfig.getAuthType
         // BEFORE RUNNING:
         // ---------------
         // 1. If not already done, enable the {@serviceTitle}
         //    and check the quota for your project at
         //    https://console.developers.google.com/apis/api/{@apiName}
-        // 2. This sample uses Application Default Credentials for authentication.
-        //    If not already done, install the gcloud CLI from
-        //    https://cloud.google.com/sdk/ and run
-        //    `gcloud beta auth application-default login`
-        // 3. Install the C# client library by adding a dependency on the relevant NuGet
-        //    package. Libraries published by Google are owned by google-apis-packages:
-        //    https://www.nuget.org/profiles/google-apis-packages
+        @if authType == "APPLICATION_DEFAULT_CREDENTIALS"
+            // 2. This sample uses Application Default Credentials for authentication.
+            //    If not already done, install the gcloud CLI from
+            //    https://cloud.google.com/sdk/ and run
+            //    `gcloud beta auth application-default login`
+            // 3. Install the C# client library by adding a dependency on the relevant NuGet
+            //    package. Libraries published by Google are owned by google-apis-packages:
+            //    https://www.nuget.org/profiles/google-apis-packages
+        @else
+            // 2. Install the C# client library by adding a dependency on the relevant NuGet
+            //    package. Libraries published by Google are owned by google-apis-packages:
+            //    https://www.nuget.org/profiles/google-apis-packages
+        @end
         {@imports()}
         @join import : context.sortUsings(imports)
             {@import}
@@ -38,7 +45,9 @@
 
 @snippet generateBody(method)
 
-    @let sample = context.getSampleInfo(method)
+    @let sample = context.getSampleInfo(method), \
+         apiaryConfig = context.getApiaryConfig, \
+         authType = apiaryConfig.getAuthType
         namespace {@sample.namespace}
         {
             public class {@sample.serviceTypeName}Example
@@ -47,27 +56,65 @@
                 {
                     {@mainMethod(sample, method)}
                 }
+                @if authType == "OAUTH_3L"
+
+                    public static UserCredential GetCredential() {
+                        // {@TODO()} Change placeholder below to get authentication credentials.
+                        @let authInstructionsUrl = apiaryConfig.getAuthInstructionsUrl
+                            @if authInstructionsUrl
+                                // See: {@authInstructionsUrl}
+                            @end
+                        @end
+                        @if context.hasAuthScopes(method)
+                            //
+                            // To use the `{@sample.methodName}` method, authorize using one of the following scopes:
+                            @join scope : context.getAuthScopes(method)
+                                //   {@scope}
+                            @end
+                        @end
+                        return null;
+                    }
+                @end
             }
         }
     @end
 @end
 
 @private mainMethod(sample, method)
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-    if (credential.IsCreateScopedRequired)
-    {
-        credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-    }
+    @switch context.getApiaryConfig.getAuthType
+    @case "APPLICATION_DEFAULT_CREDENTIALS"
+        // Use Application Default Credentials for authentication when running locally.
+        // For more information, see:
+        // https://developers.google.com/identity/protocols/application-default-credentials
+        GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+        if (credential.IsCreateScopedRequired)
+        {
+            credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+        }
 
-    {@sample.serviceTypeName} {@sample.serviceVarName} = new {@sample.serviceTypeName}(new BaseClientService.Initializer
-    {
-        HttpClientInitializer = credential,
-        ApplicationName = "Google Cloud Platform Sample",
-    });
+        {@sample.serviceTypeName} {@sample.serviceVarName} = new {@sample.serviceTypeName}(new BaseClientService.Initializer
+        {
+            HttpClientInitializer = credential,
+            ApplicationName = "Google Cloud Platform Sample",
+        });
+    @case "OAUTH_3L"
+        UserCredential credential = GetCredential();
 
+        {@sample.serviceTypeName} {@sample.serviceVarName} = new {@sample.serviceTypeName}(new BaseClientService.Initializer
+        {
+            HttpClientInitializer = credential,
+            ApplicationName = "Google Cloud Platform Sample",
+        });
+    @default
+        {@sample.serviceTypeName} {@sample.serviceVarName} = new {@sample.serviceTypeName}(new BaseClientService.Initializer
+        {
+            ApplicationName = "Google Cloud Platform Sample",
+
+            // {@TODO()} Change placeholder below to desired API key:
+            ApiKey = "{MY-API-KEY}",
+        });
+    @end
+    {@BREAK}
     @if sample.params
 
         // {@TODO()} Change placeholders below to desired parameter values for the `{@sample.methodName}` method:
@@ -84,12 +131,12 @@
 
     @end
     @if sample.hasRequestField
-      {@sample.requestFieldTypeName} {@sample.requestFieldName} = new {@sample.requestFieldTypeName}();
-      @if context.isPatch(method)
-        // {@TODO()} Assign values to desired properties of the `{@sample.requestFieldName}` object to be changed.
-      @else
-        // {@TODO()} Assign values to desired properties of the `{@sample.requestFieldName}` object.
-      @end
+        {@sample.requestFieldTypeName} {@sample.requestFieldName} = new {@sample.requestFieldTypeName}();
+        @if context.isPatch(method)
+            // {@TODO()} Assign values to desired properties of the `{@sample.requestFieldName}` object to be changed.
+        @else
+            // {@TODO()} Assign values to desired properties of the `{@sample.requestFieldName}` object.
+        @end
 
 
     @end

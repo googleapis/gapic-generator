@@ -12,7 +12,9 @@
   @let api = context.getApi, \
        apiName = api.getName, \
        apiVersion = api.getVersion, \
-       serviceTitle = context.getService.getTitle
+       serviceTitle = context.getService.getTitle, \
+       apiaryConfig = context.getApiaryConfig, \
+       authType = apiaryConfig.getAuthType
     package main
 
     // BEFORE RUNNING:
@@ -20,19 +22,32 @@
     // 1. If not already done, enable the {@serviceTitle}
     //    and check the quota for your project at
     //    https://console.developers.google.com/apis/api/{@apiName}
-    // 2. This sample uses Application Default Credentials for authentication.
-    //    If not already done, install the gcloud CLI from
-    //    https://cloud.google.com/sdk/ and run
-    //    `gcloud beta auth application-default login`
-    // 3. Install and update the Go dependencies by running `go get -u` in the
-    //    project directory.
+    @if authType == "APPLICATION_DEFAULT_CREDENTIALS"
+      // 2. This sample uses Application Default Credentials for authentication.
+      //    If not already done, install the gcloud CLI from
+      //    https://cloud.google.com/sdk/ and run
+      //    `gcloud beta auth application-default login`
+      // 3. Install and update the Go dependencies by running `go get -u` in the
+      //    project directory.
+    @else
+      // 2. Install and update the Go dependencies by running `go get -u` in the
+      //    project directory.
+    @end
 
     import (
+      @if authType != "APPLICATION_DEFAULT_CREDENTIALS"
+        "errors"
+      @end
       "fmt"
       "log"
+      @if authType != "APPLICATION_DEFAULT_CREDENTIALS"
+        "net/http"
+      @end
 
       "golang.org/x/net/context"
-      "golang.org/x/oauth2/google"
+      @if authType == "APPLICATION_DEFAULT_CREDENTIALS"
+        "golang.org/x/oauth2/google"
+      @end
 
       "google.golang.org/api/{@apiName}/{@apiVersion}"
     )
@@ -41,13 +56,21 @@
       ctx := context.Background()
       # TODO(pongad): Every API except autoscaler has the string as API.CloudPlatformScope, find out why
 
-      // Use Application Default Credentials for authentication when running locally.
-      // For more information, see:
-      // https://developers.google.com/identity/protocols/application-default-credentials
-      {@clientName()}, err := google.DefaultClient(ctx{@scopeArg(method)})
-      if err != nil {
-        log.Fatal(err)
-      }
+      @switch authType
+      @case "APPLICATION_DEFAULT_CREDENTIALS"
+        // Use Application Default Credentials for authentication when running locally.
+        // For more information, see:
+        // https://developers.google.com/identity/protocols/application-default-credentials
+        {@clientName()}, err := google.DefaultClient(ctx{@scopeArg(method)})
+        if err != nil {
+          log.Fatal(err)
+        }
+      @default
+        {@clientName()}, err := getClient(ctx)
+        if err != nil {
+          log.Fatal(err)
+        }
+      @end
 
       {@serviceName()}, err := {@apiName}.New({@clientName()})
       if err != nil {
@@ -61,6 +84,27 @@
         {@compactCall(method)}
       @end
     }
+    @if authType != "APPLICATION_DEFAULT_CREDENTIALS"
+
+      func getClient(ctx Context) (*http.Client, error) {
+        // {@TODO()} Change placeholder below to get authentication credentials.
+        @let authInstructionsUrl = apiaryConfig.getAuthInstructionsUrl
+          @if authInstructionsUrl
+            // See: {@authInstructionsUrl}
+          @end
+        @end
+        @if context.hasAuthScopes(method)
+          @let methodName = context.getMethodName(method)
+            //
+            // To use the `{@methodName}` method, authorize using one of the following scopes:
+            @join scope : context.getAuthScopes(method)
+              //   {@scope}
+            @end
+          @end
+        @end
+        return nil, errors.New("Not implemented")
+      }
+    @end
   @end
 @end
 
@@ -119,7 +163,7 @@
 @end
 
 @private methodCall(method)
-  @let methodName = context.lowerCamelToUpperCamel(context.getMethodName(method))
+  @let methodName = context.getMethodName(method)
     {@serviceName()}.{@resourcePath(method)}.{@methodName}({@arguments(method)})
   @end
 @end
@@ -131,7 +175,7 @@
 @end
 
 @private initialize(method)
-  @let methodName = context.lowerCamelToUpperCamel(context.getMethodName(method)), \
+  @let methodName = context.getMethodName(method), \
        signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
        params = context.getFlatMethodParams(method)
     @if params

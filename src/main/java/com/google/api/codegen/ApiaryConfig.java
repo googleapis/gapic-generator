@@ -85,18 +85,12 @@ public class ApiaryConfig {
    */
   private final Set<String> mediaUpload = new HashSet<>();
 
-  /*
+  /**
    * Maps type name to type (from {@link DiscoveryImporter}).
    */
   private final Map<String, Type> types = new HashMap<>();
 
-  /*
-   * Maps method name to set of auth scope URLs, eg https://www.googleapis.com/auth/cloud-platform.
-   */
-  private final ListMultimap<String, String> authScopes =
-      ArrayListMultimap.<String, String>create();
-
-  /*
+  /**
    * Maps (type, field name) to field.
    */
   private final Table<Type, String, Field> fields = HashBasedTable.<Type, String, Field>create();
@@ -116,34 +110,40 @@ public class ApiaryConfig {
    */
   private String apiVersion;
 
-  /*
+  /**
+   * Maps method name to set of auth scope URLs, e.g., https://www.googleapis.com/auth/cloud-platform.
+   */
+  private final ListMultimap<String, String> authScopes =
+      ArrayListMultimap.<String, String>create();
+
+  /**
    * The service canonical name, or name if no canonical name.
    */
   private String serviceCanonicalName;
 
-  /*
+  /**
    * The service version string.
    */
   private String serviceVersion;
 
-  /*
+  /**
    * The auth instructions URL.
    */
   private String authInstructionsUrl;
 
-  /*
+  /**
    * Maps API names to an AuthType override.
    */
   private Map<String, AuthType> authOverrides = new HashMap<>();
 
-  /*
+  /**
    * If present in the scope list, indicates that the API supports application default credentials
    * based auth.
    */
   private static final String CLOUD_PLATFORM_SCOPE =
       "https://www.googleapis.com/auth/cloud-platform";
 
-  /*
+  /**
    * Possible auth types supported by discovery.
    */
   public enum AuthType {
@@ -152,7 +152,7 @@ public class ApiaryConfig {
     API_KEY,
   }
 
-  /*
+  /**
    * Returns the auth type supported by the service.
    */
   public AuthType getAuthType() {
@@ -209,6 +209,10 @@ public class ApiaryConfig {
 
   public Table<Type, String, Field> getFields() {
     return fields;
+  }
+
+  public ListMultimap<String, String> getAuthScopes() {
+    return authScopes;
   }
 
   public Set<String> getMediaUpload() {
@@ -309,24 +313,24 @@ public class ApiaryConfig {
     return types.get(typeName);
   }
 
-  /*
+  /**
    * @return field of given type with given field name
    */
   public Field getField(Type type, String fieldName) {
     return fields.get(type, fieldName);
   }
 
-  /*
-   * @return set of auth scopes
-   */
-  public ListMultimap<String, String> getAuthScopes() {
-    return authScopes;
-  }
-
-  /*
-   * @return true if method has any auth scopes.
+  /**
+   * @return true if method has any auth scopes
    */
   public boolean hasAuthScopes(String methodName) {
     return authScopes.containsKey(methodName);
+  }
+
+  /**
+   * @return list of auth scopes for method of given name
+   */
+  public List<String> getAuthScopes(String methodName) {
+    return authScopes.get(methodName);
   }
 }

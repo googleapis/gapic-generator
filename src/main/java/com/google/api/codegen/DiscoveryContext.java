@@ -84,6 +84,11 @@ public abstract class DiscoveryContext extends CodegenContext {
     return name.substring(name.lastIndexOf('.') + 1);
   }
 
+  /**
+   * Returns a sample identifier name for a variable of the given type name.
+   *
+   * May be overridden by individual language contexts.
+   */
   public String getSampleVarName(String typeName) {
     return upperCamelToLowerCamel(getSimpleName(typeName));
   }
@@ -109,6 +114,8 @@ public abstract class DiscoveryContext extends CodegenContext {
 
   /**
    * Returns a name for an array field's type.
+   *
+   * May be overridden by individual language contexts.
    */
   protected String arrayTypeName(Field field) {
     return arrayTypeName(elementTypeName(field));
@@ -120,6 +127,8 @@ public abstract class DiscoveryContext extends CodegenContext {
 
   /**
    * Returns a name for a map field's type.
+   *
+   * May be overridden by individual language contexts.
    */
   protected String mapTypeName(Field field) {
     return mapTypeName(keyTypeName(field), valueTypeName(field));
@@ -131,6 +140,8 @@ public abstract class DiscoveryContext extends CodegenContext {
 
   /**
    * Returns a name for an object field's type.
+   *
+   * May be overridden by individual language contexts.
    */
   public String objectTypeName(Field field) {
     return objectTypeName(field.getTypeUrl());
@@ -142,6 +153,8 @@ public abstract class DiscoveryContext extends CodegenContext {
 
   /**
    * Returns a name for a natively-typed field's type.
+   *
+   * May be overridden by individual language contexts.
    */
   protected String nativeTypeName(Type type, Field field, String name) {
     return name;
@@ -165,6 +178,8 @@ public abstract class DiscoveryContext extends CodegenContext {
 
   /**
    * Returns a name for a natively-typed array field element's type.
+   *
+   * May be overridden by individual language contexts.
    */
   protected String nativeElementTypeName(Field field) {
     return "item";
@@ -222,6 +237,14 @@ public abstract class DiscoveryContext extends CodegenContext {
 
   public boolean hasMediaUpload(Method method) {
     return apiaryConfig.getMediaUpload().contains(method.getName());
+  }
+
+  public boolean hasAuthScopes(Method method) {
+    return apiaryConfig.hasAuthScopes(method.getName());
+  }
+
+  public List<String> getAuthScopes(Method method) {
+    return apiaryConfig.getAuthScopes(method.getName());
   }
 
   public List<String> getMethodParams(Method method) {
