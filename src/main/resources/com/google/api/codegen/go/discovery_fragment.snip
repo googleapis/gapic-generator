@@ -31,8 +31,13 @@ package main
 @end
 
 import (
+  @if context.getApiaryConfig.getAuthType.toString != "APPLICATION_DEFAULT_CREDENTIALS"
+    "errors"
+    "net/http"
+
+  @end
   "golang.org/x/net/context"
-  @if context.getApiaryConfig.getAuthType == "APPLICATION_DEFAULT_CREDENTIALS"
+  @if context.getApiaryConfig.getAuthType.toString == "APPLICATION_DEFAULT_CREDENTIALS"
     "golang.org/x/oauth2/google"
   @end
 
@@ -41,25 +46,13 @@ import (
 
 func main() {
   ctx := context.Background()
-  @switch context.getApiaryConfig.getAuthType
+  @switch context.getApiaryConfig.getAuthType.toString
   @case "APPLICATION_DEFAULT_CREDENTIALS"
     hc, err := google.DefaultClient(ctx{@scopeArg(method)})
     if err != nil {
       // {@TODO()} Handle error.
     }
   @default
-    // {@TODO()} Implement this function to get authentication credentials.
-    @let authInstructionsUrl = context.getApiaryConfig.getAuthInstructionsUrl
-      @if authInstructionsUrl
-        // See {@authInstructionsUrl}
-      @end
-    @end
-    @if context.getApiaryConfig.hasAuthScopes(method.getName)
-      // Authorize using one of the following scopes in order to use this method:
-      @join scope : context.getApiaryConfig.getAuthScopes.get(method.getName)
-        //   {@scope}
-      @end
-    @end
     hc, err := getClient(ctx)
     if err != nil {
       // {@TODO()} Handle error.
@@ -78,6 +71,24 @@ func main() {
     {@compactCall(method)}
   @end
 }
+@if context.getApiaryConfig.getAuthType.toString != "APPLICATION_DEFAULT_CREDENTIALS"
+
+func getClient(ctx Context) (*http.Client, error) {
+  // {@TODO()} Implement this function to get authentication credentials.
+  @let authInstructionsUrl = context.getApiaryConfig.getAuthInstructionsUrl
+    @if authInstructionsUrl
+      // See {@authInstructionsUrl}
+    @end
+  @end
+  @if context.getApiaryConfig.hasAuthScopes(method.getName)
+    // Authorize using one of the following scopes in order to use this method:
+    @join scope : context.getApiaryConfig.getAuthScopes.get(method.getName)
+      //   {@scope}
+    @end
+  @end
+  return nil, errors.New("Not implemented")
+}
+@end
 @end
 
 @private scopeArg(method)
