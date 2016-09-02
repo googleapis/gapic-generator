@@ -1,11 +1,19 @@
 
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataproc
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataproc/v1/java
@@ -23,7 +31,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataprocExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Cluster requestBody = new Cluster();
@@ -44,6 +54,12 @@ public class DataprocExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -53,6 +69,7 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dataproc.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
@@ -67,15 +84,44 @@ public class DataprocExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+
+    // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+    String projectId = "{MY-PROJECT-ID}";
+
+    // * [Required] The Cloud Dataproc region in which to handle the request.
+    String region = "{MY-REGION}";
+
+    Cluster content = new Cluster();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    Dataproc.Projects.Regions.Clusters.Create request = dataprocService.projects().regions().clusters().create(projectId, region, content);
+    Operation response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataproc
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataproc/v1/java
@@ -92,7 +138,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataprocExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
     String projectId = ""; // TODO: Update field(s).
@@ -113,6 +161,12 @@ public class DataprocExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -122,6 +176,7 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dataproc.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
@@ -136,15 +191,44 @@ public class DataprocExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
+    // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+    String projectId = "{MY-PROJECT-ID}";
+
+    // * [Required] The Cloud Dataproc region in which to handle the request.
+    String region = "{MY-REGION}";
+
+    // * [Required] The cluster name.
+    String clusterName = "{MY-CLUSTER-NAME}";
+
+    Dataproc.Projects.Regions.Clusters.Delete request = dataprocService.projects().regions().clusters().delete(projectId, region, clusterName);
+    Operation response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataproc
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataproc/v1/java
@@ -162,7 +246,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataprocExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     DiagnoseClusterRequest requestBody = new DiagnoseClusterRequest();
@@ -209,15 +295,64 @@ public class DataprocExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // For more information, see
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'diagnose' method:
+
+    // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+    String projectId = "{MY-PROJECT-ID}";
+
+    // * [Required] The Cloud Dataproc region in which to handle the request.
+    String region = "{MY-REGION}";
+
+    // * [Required] The cluster name.
+    String clusterName = "{MY-CLUSTER-NAME}";
+
+    DiagnoseClusterRequest content = new DiagnoseClusterRequest();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    Dataproc.Projects.Regions.Clusters.Diagnose request = dataprocService.projects().regions().clusters().diagnose(projectId, region, clusterName, content);
+    Operation response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataproc
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataproc/v1/java
@@ -234,7 +369,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataprocExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
     String projectId = ""; // TODO: Update field(s).
@@ -255,6 +392,12 @@ public class DataprocExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -264,6 +407,7 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dataproc.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
@@ -278,15 +422,44 @@ public class DataprocExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+    String projectId = "{MY-PROJECT-ID}";
+
+    // * [Required] The Cloud Dataproc region in which to handle the request.
+    String region = "{MY-REGION}";
+
+    // * [Required] The cluster name.
+    String clusterName = "{MY-CLUSTER-NAME}";
+
+    Dataproc.Projects.Regions.Clusters.Get request = dataprocService.projects().regions().clusters().get(projectId, region, clusterName);
+    Cluster response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataproc
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataproc/v1/java
@@ -304,7 +477,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataprocExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
     String projectId = ""; // TODO: Update field(s).
@@ -314,11 +489,49 @@ public class DataprocExample {
 
     Dataproc service = createService();
     List request = service.projects().regions().clusters().list(projectId, region);
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // For more information, see
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // * [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+    String projectId = "{MY-PROJECT-ID}";
+
+    // * [Required] The Cloud Dataproc region in which to handle the request.
+    String region = "{MY-REGION}";
+
+    Dataproc.Projects.Regions.Clusters.List request = dataprocService.projects().regions().clusters().list(projectId, region);
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     ListClustersResponse response;
     do {
       response = request.execute();
       if (response.getClusters() == null) {
         continue;
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
+=======
+
+      for (Cluster cluster : response.getClusters()) {
+        // TODO: Add code here to process each 'cluster' resource
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
       }
       for (Cluster item : response.getClusters()) {
         System.out.println(item);
@@ -355,13 +568,21 @@ public class DataprocExample {
     }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataproc
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataproc/v1/java
@@ -379,7 +600,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataprocExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Cluster requestBody = new Cluster();
@@ -426,15 +649,64 @@ public class DataprocExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // For more information, see
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
+    // * [Required] The ID of the Google Cloud Platform project the cluster belongs to.
+    String projectId = "{MY-PROJECT-ID}";
+
+    // * [Required] The Cloud Dataproc region in which to handle the request.
+    String region = "{MY-REGION}";
+
+    // * [Required] The cluster name.
+    String clusterName = "{MY-CLUSTER-NAME}";
+
+    Cluster content = new Cluster();
+    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
+
+    Dataproc.Projects.Regions.Clusters.Patch request = dataprocService.projects().regions().clusters().patch(projectId, region, clusterName, content);
+    Operation response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataproc
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataproc/v1/java
@@ -452,7 +724,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataprocExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     CancelJobRequest requestBody = new CancelJobRequest();
@@ -499,15 +773,64 @@ public class DataprocExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // For more information, see
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'cancel' method:
+
+    // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
+    String projectId = "{MY-PROJECT-ID}";
+
+    // * [Required] The Cloud Dataproc region in which to handle the request.
+    String region = "{MY-REGION}";
+
+    // * [Required] The job ID.
+    String jobId = "{MY-JOB-ID}";
+
+    CancelJobRequest content = new CancelJobRequest();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    Dataproc.Projects.Regions.Jobs.Cancel request = dataprocService.projects().regions().jobs().cancel(projectId, region, jobId, content);
+    Job response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataproc
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataproc/v1/java
@@ -523,7 +846,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataprocExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // [Required] The ID of the Google Cloud Platform project that the job belongs to.
     String projectId = ""; // TODO: Update field(s).
@@ -543,6 +868,12 @@ public class DataprocExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -552,11 +883,28 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dataproc.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
+=======
+    Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
+    // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
+    String projectId = "{MY-PROJECT-ID}";
+
+    // * [Required] The Cloud Dataproc region in which to handle the request.
+    String region = "{MY-REGION}";
+
+    // * [Required] The job ID.
+    String jobId = "{MY-JOB-ID}";
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
@@ -568,13 +916,21 @@ public class DataprocExample {
     }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataproc
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataproc/v1/java
@@ -591,7 +947,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataprocExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // [Required] The ID of the Google Cloud Platform project that the job belongs to.
     String projectId = ""; // TODO: Update field(s).
@@ -612,6 +970,12 @@ public class DataprocExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -621,6 +985,7 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dataproc.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
@@ -635,15 +1000,44 @@ public class DataprocExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
+    String projectId = "{MY-PROJECT-ID}";
+
+    // * [Required] The Cloud Dataproc region in which to handle the request.
+    String region = "{MY-REGION}";
+
+    // * [Required] The job ID.
+    String jobId = "{MY-JOB-ID}";
+
+    Dataproc.Projects.Regions.Jobs.Get request = dataprocService.projects().regions().jobs().get(projectId, region, jobId);
+    Job response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataproc
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataproc/v1/java
@@ -661,7 +1055,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataprocExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // [Required] The ID of the Google Cloud Platform project that the job belongs to.
     String projectId = ""; // TODO: Update field(s).
@@ -671,11 +1067,49 @@ public class DataprocExample {
 
     Dataproc service = createService();
     List request = service.projects().regions().jobs().list(projectId, region);
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // For more information, see
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
+    String projectId = "{MY-PROJECT-ID}";
+
+    // * [Required] The Cloud Dataproc region in which to handle the request.
+    String region = "{MY-REGION}";
+
+    Dataproc.Projects.Regions.Jobs.List request = dataprocService.projects().regions().jobs().list(projectId, region);
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     ListJobsResponse response;
     do {
       response = request.execute();
       if (response.getJobs() == null) {
         continue;
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
+=======
+
+      for (Job job : response.getJobs()) {
+        // TODO: Add code here to process each 'job' resource
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
       }
       for (Job item : response.getJobs()) {
         System.out.println(item);
@@ -712,13 +1146,21 @@ public class DataprocExample {
     }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataproc
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataproc/v1/java
@@ -736,7 +1178,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataprocExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     SubmitJobRequest requestBody = new SubmitJobRequest();
@@ -757,6 +1201,12 @@ public class DataprocExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -766,6 +1216,7 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dataproc.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
@@ -780,15 +1231,44 @@ public class DataprocExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'submit' method:
+
+    // * [Required] The ID of the Google Cloud Platform project that the job belongs to.
+    String projectId = "{MY-PROJECT-ID}";
+
+    // * [Required] The Cloud Dataproc region in which to handle the request.
+    String region = "{MY-REGION}";
+
+    SubmitJobRequest content = new SubmitJobRequest();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    Dataproc.Projects.Regions.Jobs.Submit request = dataprocService.projects().regions().jobs().submit(projectId, region, content);
+    Job response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataproc
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataproc/v1/java
@@ -804,7 +1284,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataprocExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // The name of the operation resource to be cancelled.
     String name = ""; // TODO: Update field(s).
@@ -818,6 +1300,12 @@ public class DataprocExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -827,11 +1315,22 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dataproc.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
+=======
+    Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'cancel' method:
+
+    // * The name of the operation resource to be cancelled.
+    String name = "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}";
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
@@ -843,13 +1342,21 @@ public class DataprocExample {
     }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataproc
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataproc/v1/java
@@ -865,7 +1372,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataprocExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // The name of the operation resource to be deleted.
     String name = ""; // TODO: Update field(s).
@@ -879,6 +1388,12 @@ public class DataprocExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -888,11 +1403,22 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dataproc.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
+=======
+    Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
+    // * The name of the operation resource to be deleted.
+    String name = "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}";
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
@@ -904,13 +1430,21 @@ public class DataprocExample {
     }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataproc
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataproc/v1/java
@@ -927,7 +1461,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataprocExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // The name of the operation resource.
     String name = ""; // TODO: Update field(s).
@@ -942,6 +1478,12 @@ public class DataprocExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -951,6 +1493,7 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dataproc.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
@@ -965,15 +1508,38 @@ public class DataprocExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // * The name of the operation resource.
+    String name = "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}";
+
+    Dataproc.Projects.Regions.Operations.Get request = dataprocService.projects().regions().operations().get(name);
+    Operation response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Dataproc API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataproc
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataproc/v1/java
@@ -991,7 +1557,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataprocExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // The name of the operation collection.
     String name = ""; // TODO: Update field(s).
@@ -1014,6 +1582,12 @@ public class DataprocExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -1023,11 +1597,33 @@ public class DataprocExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dataproc.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
+=======
+    Dataproc dataprocService = new Dataproc.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // * The name of the operation collection.
+    String name = "{MY-NAME}";
+
+    Dataproc.Projects.Regions.Operations.List request = dataprocService.projects().regions().operations().list(name);
+    ListOperationsResponse response;
+    do {
+      response = request.execute();
+      if (response.getOperations() == null)
+        continue;
+
+      for (Operation operation : response.getOperations()) {
+        // TODO: Add code here to process each 'operation' resource
+      }
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {

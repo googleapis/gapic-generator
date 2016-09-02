@@ -20,12 +20,10 @@
     // 3. Install the Node.js client library and Application Default Credentials
     //    library by running `npm install googleapis --save`
     var google = require('googleapis');
-
     var {@apiName} = google.{@apiName}('{@apiVersion}');
 
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     google.auth.getApplicationDefault(function({@errorName()}, authClient) {
       {@handleError(errorName(), @TRUE)}
@@ -53,13 +51,19 @@
         signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
         params = context.getFlatMethodParams(method)
     @if params
+      // {@TODO()} Change placeholders below to desired parameter values for the `{@methodName}` method:
+
       @join param : params
         @let paramField = context.getField(signatureType, param), \
              paramValue = context.typeDefaultValue(signatureType, paramField, method), \
              paramSample = context.getDefaultSample(signatureType, paramField), \
              paramDescription = context.getDescription(signatureType.getName, param)
           {@description(paramDescription)}
-          {@context.mapParamName(param)}: {@paramValue}, // {@TODO()} Update placeholder value(s).{@paramSample}
+          @if paramSample
+            {@context.mapParamName(param)}: {@paramValue},  // {@paramSample}
+          @else
+            {@context.mapParamName(param)}: {@paramValue},
+          @end
 
         @end
       @end
@@ -69,9 +73,9 @@
 
       resource: {
         @if context.isPatch(method)
-          // {@TODO()} Add the desired properties to be changed.
+          // {@TODO()} Add desired properties of the request body to be changed.
         @else
-          // {@TODO()} Add the desired properties.
+          // {@TODO()} Add desired properties of the request body.
         @end
       },
 
@@ -91,14 +95,14 @@
 
 @private compactCall(method)
   @if context.isResponseEmpty(method)
-    {@request(method)}({@requestName()}, function({@errorName()}) {
+    {@methodCall(method)}({@requestName()}, function({@errorName()}) {
       {@handleError(errorName(), @FALSE)}
     });
   @else
-    {@request(method)}({@requestName()}, function({@errorName()}, {@responseName()}) {
+    {@methodCall(method)}({@requestName()}, function({@errorName()}, {@responseName()}) {
       {@handleError(errorName(), @TRUE)}
 
-      // {@TODO()} Use {@responseName()}
+      // {@TODO()} Change code below to process the `{@responseName()}` object:
       {@print(responseName())}
     });
   @end
@@ -113,24 +117,23 @@
        resourceField = context.getFirstRepeatedField(responseTypeRef), \
        resources = resourceField.getName, \
        resourcesPage = pageName(resources)
-    {@apiName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, function {@handlePageName()}({@errorName()}, {@responseName()}) {
+    var {@handlePageName()} = function({@errorName()}, {@responseName()}) {
       {@handleError(errorName(), @TRUE)}
 
       var {@resourcesPage} = {@responseName()}['{@resources}'];
       if (!{@resourcesPage}) {
-        console.log('{}');
         return;
       }
       @if context.isMapField(responseTypeRef, resourceField.getName)
         @let keyName = context.keyTypeName(resourceField)
           Object.keys({@resourcesPage}).forEach(function ({@keyName}) {
-            // {@TODO()} Use {@keyName}
+            // {@TODO()} Change code below to process each `{@keyName}` property:
             {@printEntry(resourcesPage, keyName)}
           });
         @end
       @else
         for (var {@indexName()} = 0; {@indexName()} < {@resourcesPage}.length; {@indexName()}++) {
-          // {@TODO()} Use {@resourcesPage}
+          // {@TODO()} Change code below to process each resource in `{@resourcesPage}`:
           {@print(index(resourcesPage, indexName()))}
         }
       @end
@@ -139,11 +142,13 @@
         {@requestName()}.pageToken = {@responseName()}.nextPageToken;
         {@apiName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, {@handlePageName()});
       }
-    });
+    };
+
+    {@apiName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, {@handlePageName()});
   @end
 @end
 
-@private request(method)
+@private methodCall(method)
   @let apiName = context.getApi.getName, \
        methodName = context.getMethodName(method), \
        resourcesPath = context.getApiaryConfig.getResources(method.getName)

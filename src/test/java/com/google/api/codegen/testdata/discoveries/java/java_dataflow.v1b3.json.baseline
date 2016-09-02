@@ -1,11 +1,19 @@
 
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Dataflow API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataflow
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataflow/v1b3/java
@@ -22,7 +30,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataflowExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Job requestBody = new Job();
@@ -40,6 +50,12 @@ public class DataflowExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -49,6 +65,7 @@ public class DataflowExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dataflow.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
@@ -63,15 +80,41 @@ public class DataflowExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    Dataflow dataflowService = new Dataflow.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+
+    // * The project which owns the job.
+    String projectId = "{MY-PROJECT-ID}";
+
+    Job content = new Job();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    Dataflow.Projects.Jobs.Create request = dataflowService.projects().jobs().create(projectId, content);
+    Job response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Dataflow API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataflow
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataflow/v1b3/java
@@ -88,7 +131,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataflowExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // The project which owns the job.
     String projectId = ""; // TODO: Update field(s).
@@ -106,6 +151,12 @@ public class DataflowExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -115,6 +166,7 @@ public class DataflowExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dataflow.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
@@ -129,15 +181,41 @@ public class DataflowExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    Dataflow dataflowService = new Dataflow.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // * The project which owns the job.
+    String projectId = "{MY-PROJECT-ID}";
+
+    // * Identifies a single job.
+    String jobId = "{MY-JOB-ID}";
+
+    Dataflow.Projects.Jobs.Get request = dataflowService.projects().jobs().get(projectId, jobId);
+    Job response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Dataflow API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataflow
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataflow/v1b3/java
@@ -154,7 +232,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataflowExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // A project id.
     String projectId = ""; // TODO: Update field(s).
@@ -172,6 +252,12 @@ public class DataflowExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -181,6 +267,7 @@ public class DataflowExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dataflow.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
@@ -195,15 +282,41 @@ public class DataflowExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    Dataflow dataflowService = new Dataflow.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'getMetrics' method:
+
+    // * A project id.
+    String projectId = "{MY-PROJECT-ID}";
+
+    // * The job to get messages for.
+    String jobId = "{MY-JOB-ID}";
+
+    Dataflow.Projects.Jobs.GetMetrics request = dataflowService.projects().jobs().getMetrics(projectId, jobId);
+    JobMetrics response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Dataflow API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataflow
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataflow/v1b3/java
@@ -221,7 +334,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataflowExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // The project which owns the jobs.
     String projectId = ""; // TODO: Update field(s).
@@ -244,6 +359,12 @@ public class DataflowExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -253,11 +374,33 @@ public class DataflowExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dataflow.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
+=======
+    Dataflow dataflowService = new Dataflow.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // * The project which owns the jobs.
+    String projectId = "{MY-PROJECT-ID}";
+
+    Dataflow.Projects.Jobs.List request = dataflowService.projects().jobs().list(projectId);
+    ListJobsResponse response;
+    do {
+      response = request.execute();
+      if (response.getJobs() == null)
+        continue;
+
+      for (Job job : response.getJobs()) {
+        // TODO: Add code here to process each 'job' resource
+      }
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
@@ -269,13 +412,21 @@ public class DataflowExample {
     }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Dataflow API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataflow
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataflow/v1b3/java
@@ -293,7 +444,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataflowExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // A project id.
     String projectId = ""; // TODO: Update field(s).
@@ -303,11 +456,49 @@ public class DataflowExample {
 
     Dataflow service = createService();
     List request = service.projects().jobs().messages().list(projectId, jobId);
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // For more information, see
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Dataflow dataflowService = new Dataflow.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // * A project id.
+    String projectId = "{MY-PROJECT-ID}";
+
+    // * The job to get messages about.
+    String jobId = "{MY-JOB-ID}";
+
+    Dataflow.Projects.Jobs.Messages.List request = dataflowService.projects().jobs().messages().list(projectId, jobId);
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     ListJobMessagesResponse response;
     do {
       response = request.execute();
       if (response.getJobMessages() == null) {
         continue;
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
+=======
+
+      for (JobMessage jobMessage : response.getJobMessages()) {
+        // TODO: Add code here to process each 'jobMessage' resource
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
       }
       for (JobMessage item : response.getJobMessages()) {
         System.out.println(item);
@@ -344,13 +535,21 @@ public class DataflowExample {
     }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Dataflow API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataflow
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataflow/v1b3/java
@@ -367,7 +566,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataflowExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Job requestBody = new Job();
@@ -388,6 +589,12 @@ public class DataflowExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -397,6 +604,7 @@ public class DataflowExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dataflow.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
@@ -411,15 +619,44 @@ public class DataflowExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    Dataflow dataflowService = new Dataflow.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
+    // * The project which owns the job.
+    String projectId = "{MY-PROJECT-ID}";
+
+    // * Identifies a single job.
+    String jobId = "{MY-JOB-ID}";
+
+    Job content = new Job();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    Dataflow.Projects.Jobs.Update request = dataflowService.projects().jobs().update(projectId, jobId, content);
+    Job response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Dataflow API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataflow
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataflow/v1b3/java
@@ -437,7 +674,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataflowExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     LeaseWorkItemRequest requestBody = new LeaseWorkItemRequest();
@@ -458,6 +697,12 @@ public class DataflowExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -467,6 +712,7 @@ public class DataflowExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dataflow.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
@@ -481,15 +727,44 @@ public class DataflowExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    Dataflow dataflowService = new Dataflow.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'lease' method:
+
+    // * Identifies the project this worker belongs to.
+    String projectId = "{MY-PROJECT-ID}";
+
+    // * Identifies the workflow job this worker belongs to.
+    String jobId = "{MY-JOB-ID}";
+
+    LeaseWorkItemRequest content = new LeaseWorkItemRequest();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    Dataflow.Projects.Jobs.WorkItems.Lease request = dataflowService.projects().jobs().workItems().lease(projectId, jobId, content);
+    LeaseWorkItemResponse response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Dataflow API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataflow
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataflow/v1b3/java
@@ -507,7 +782,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataflowExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     ReportWorkItemStatusRequest requestBody = new ReportWorkItemStatusRequest();
@@ -528,6 +805,12 @@ public class DataflowExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -537,6 +820,7 @@ public class DataflowExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dataflow.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
@@ -551,15 +835,44 @@ public class DataflowExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    Dataflow dataflowService = new Dataflow.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'reportStatus' method:
+
+    // * The project which owns the WorkItem's job.
+    String projectId = "{MY-PROJECT-ID}";
+
+    // * The job which the WorkItem is part of.
+    String jobId = "{MY-JOB-ID}";
+
+    ReportWorkItemStatusRequest content = new ReportWorkItemStatusRequest();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    Dataflow.Projects.Jobs.WorkItems.ReportStatus request = dataflowService.projects().jobs().workItems().reportStatus(projectId, jobId, content);
+    ReportWorkItemStatusResponse response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Dataflow API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/dataflow
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dataflow/v1b3/java
@@ -577,7 +890,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class DataflowExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     SendWorkerMessagesRequest requestBody = new SendWorkerMessagesRequest();
@@ -595,6 +910,12 @@ public class DataflowExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -604,6 +925,7 @@ public class DataflowExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dataflow.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
@@ -618,5 +940,23 @@ public class DataflowExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    Dataflow dataflowService = new Dataflow.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'workerMessages' method:
+
+    // * The project to send the WorkerMessages to.
+    String projectId = "{MY-PROJECT-ID}";
+
+    SendWorkerMessagesRequest content = new SendWorkerMessagesRequest();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    Dataflow.Projects.WorkerMessages request = dataflowService.projects().workerMessages(projectId, content);
+    SendWorkerMessagesResponse response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }

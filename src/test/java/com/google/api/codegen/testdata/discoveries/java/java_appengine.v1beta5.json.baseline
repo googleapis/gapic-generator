@@ -1,11 +1,19 @@
 
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google App Engine Admin API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/appengine
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
@@ -22,7 +30,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class AppengineExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // Part of `name`. Name of the application to get. For example: "apps/myapp".
     String appsId = ""; // TODO: Update field(s).
@@ -37,6 +47,12 @@ public class AppengineExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -46,6 +62,7 @@ public class AppengineExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Appengine.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
@@ -60,15 +77,38 @@ public class AppengineExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // * Part of `name`. Name of the application to get. For example: "apps/myapp".
+    String appsId = "{MY-APPS-ID}";
+
+    Appengine.Apps.Get request = appengineService.apps().get(appsId);
+    Application response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google App Engine Admin API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/appengine
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
@@ -85,7 +125,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class AppengineExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // Part of `name`. The name of the operation resource.
     String appsId = ""; // TODO: Update field(s).
@@ -103,6 +145,12 @@ public class AppengineExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -112,6 +160,7 @@ public class AppengineExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Appengine.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
@@ -126,15 +175,41 @@ public class AppengineExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // * Part of `name`. The name of the operation resource.
+    String appsId = "{MY-APPS-ID}";
+
+    // * Part of `name`. See documentation of `appsId`.
+    String operationsId = "{MY-OPERATIONS-ID}";
+
+    Appengine.Apps.Operations.Get request = appengineService.apps().operations().get(appsId, operationsId);
+    Operation response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google App Engine Admin API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/appengine
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
@@ -152,7 +227,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class AppengineExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // Part of `name`. The name of the operation collection.
     String appsId = ""; // TODO: Update field(s).
@@ -175,6 +252,12 @@ public class AppengineExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -184,11 +267,33 @@ public class AppengineExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Appengine.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
+=======
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // * Part of `name`. The name of the operation collection.
+    String appsId = "{MY-APPS-ID}";
+
+    Appengine.Apps.Operations.List request = appengineService.apps().operations().list(appsId);
+    ListOperationsResponse response;
+    do {
+      response = request.execute();
+      if (response.getOperations() == null)
+        continue;
+
+      for (Operation operation : response.getOperations()) {
+        // TODO: Add code here to process each 'operation' resource
+      }
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
@@ -200,13 +305,21 @@ public class AppengineExample {
     }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google App Engine Admin API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/appengine
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
@@ -223,7 +336,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class AppengineExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
     String appsId = ""; // TODO: Update field(s).
@@ -241,6 +356,12 @@ public class AppengineExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -250,6 +371,7 @@ public class AppengineExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Appengine.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
@@ -264,15 +386,41 @@ public class AppengineExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
+    // * Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
+    String appsId = "{MY-APPS-ID}";
+
+    // * Part of `name`. See documentation of `appsId`.
+    String servicesId = "{MY-SERVICES-ID}";
+
+    Appengine.Apps.Services.Delete request = appengineService.apps().services().delete(appsId, servicesId);
+    Operation response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google App Engine Admin API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/appengine
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
@@ -289,7 +437,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class AppengineExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
     String appsId = ""; // TODO: Update field(s).
@@ -307,6 +457,12 @@ public class AppengineExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -316,6 +472,7 @@ public class AppengineExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Appengine.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
@@ -330,15 +487,41 @@ public class AppengineExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // * Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
+    String appsId = "{MY-APPS-ID}";
+
+    // * Part of `name`. See documentation of `appsId`.
+    String servicesId = "{MY-SERVICES-ID}";
+
+    Appengine.Apps.Services.Get request = appengineService.apps().services().get(appsId, servicesId);
+    Service response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google App Engine Admin API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/appengine
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
@@ -356,7 +539,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class AppengineExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // Part of `name`. Name of the resource requested. For example: "apps/myapp".
     String appsId = ""; // TODO: Update field(s).
@@ -379,6 +564,12 @@ public class AppengineExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -388,11 +579,33 @@ public class AppengineExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Appengine.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
+=======
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // * Part of `name`. Name of the resource requested. For example: "apps/myapp".
+    String appsId = "{MY-APPS-ID}";
+
+    Appengine.Apps.Services.List request = appengineService.apps().services().list(appsId);
+    ListServicesResponse response;
+    do {
+      response = request.execute();
+      if (response.getServices() == null)
+        continue;
+
+      for (Service service : response.getServices()) {
+        // TODO: Add code here to process each 'service' resource
+      }
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
@@ -404,13 +617,21 @@ public class AppengineExample {
     }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google App Engine Admin API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/appengine
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
@@ -428,7 +649,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class AppengineExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Service requestBody = new Service();
@@ -449,6 +672,12 @@ public class AppengineExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -458,6 +687,7 @@ public class AppengineExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Appengine.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
@@ -472,15 +702,44 @@ public class AppengineExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
+    // * Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
+    String appsId = "{MY-APPS-ID}";
+
+    // * Part of `name`. See documentation of `appsId`.
+    String servicesId = "{MY-SERVICES-ID}";
+
+    Service content = new Service();
+    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
+
+    Appengine.Apps.Services.Patch request = appengineService.apps().services().patch(appsId, servicesId, content);
+    Operation response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google App Engine Admin API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/appengine
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
@@ -498,7 +757,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class AppengineExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Version requestBody = new Version();
@@ -519,6 +780,12 @@ public class AppengineExample {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
@@ -528,6 +795,7 @@ public class AppengineExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Appengine.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
@@ -542,15 +810,44 @@ public class AppengineExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+
+    // * Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
+    String appsId = "{MY-APPS-ID}";
+
+    // * Part of `name`. See documentation of `appsId`.
+    String servicesId = "{MY-SERVICES-ID}";
+
+    Version content = new Version();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    Appengine.Apps.Services.Versions.Create request = appengineService.apps().services().versions().create(appsId, servicesId, content);
+    Operation response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google App Engine Admin API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/appengine
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
@@ -567,7 +864,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class AppengineExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // Part of `name`. Name of the resource requested. For example:
     // "apps/myapp/services/default/versions/v1".
@@ -578,6 +877,40 @@ public class AppengineExample {
 
     // Part of `name`. See documentation of `appsId`.
     String versionsId = ""; // TODO: Update field(s).
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // For more information, see
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
+    // * Part of `name`. Name of the resource requested. For example:
+    //   "apps/myapp/services/default/versions/v1".
+    String appsId = "{MY-APPS-ID}";
+
+    // * Part of `name`. See documentation of `appsId`.
+    String servicesId = "{MY-SERVICES-ID}";
+
+    // * Part of `name`. See documentation of `appsId`.
+    String versionsId = "{MY-VERSIONS-ID}";
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
     Appengine service = createService();
     Delete request = service.apps().services().versions().delete(appsId, servicesId, versionsId);
@@ -591,6 +924,7 @@ public class AppengineExample {
     // `gcloud beta auth application-default login`
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -612,15 +946,26 @@ public class AppengineExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google App Engine Admin API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/appengine
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
@@ -637,7 +982,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class AppengineExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // Part of `name`. Name of the resource requested. For example:
     // "apps/myapp/services/default/versions/v1".
@@ -648,6 +995,40 @@ public class AppengineExample {
 
     // Part of `name`. See documentation of `appsId`.
     String versionsId = ""; // TODO: Update field(s).
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // For more information, see
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
+    // * Part of `name`. Name of the resource requested. For example:
+    //   "apps/myapp/services/default/versions/v1".
+    String appsId = "{MY-APPS-ID}";
+
+    // * Part of `name`. See documentation of `appsId`.
+    String servicesId = "{MY-SERVICES-ID}";
+
+    // * Part of `name`. See documentation of `appsId`.
+    String versionsId = "{MY-VERSIONS-ID}";
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
     Appengine service = createService();
     Get request = service.apps().services().versions().get(appsId, servicesId, versionsId);
@@ -661,6 +1042,7 @@ public class AppengineExample {
     // `gcloud beta auth application-default login`
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -682,15 +1064,26 @@ public class AppengineExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google App Engine Admin API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/appengine
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
@@ -708,7 +1101,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class AppengineExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // Part of `name`. Name of the resource requested. For example:
     // "apps/myapp/services/default/versions/v1".
@@ -722,11 +1117,53 @@ public class AppengineExample {
 
     Appengine service = createService();
     List request = service.apps().services().versions().instances().list(appsId, servicesId, versionsId);
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // For more information, see
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // * Part of `name`. Name of the resource requested. For example:
+    //   "apps/myapp/services/default/versions/v1".
+    String appsId = "{MY-APPS-ID}";
+
+    // * Part of `name`. See documentation of `appsId`.
+    String servicesId = "{MY-SERVICES-ID}";
+
+    // * Part of `name`. See documentation of `appsId`.
+    String versionsId = "{MY-VERSIONS-ID}";
+
+    Appengine.Apps.Services.Versions.Instances.List request = appengineService.apps().services().versions().instances().list(appsId, servicesId, versionsId);
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     ListInstancesResponse response;
     do {
       response = request.execute();
       if (response.getInstances() == null) {
         continue;
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
+=======
+
+      for (Instance instance : response.getInstances()) {
+        // TODO: Add code here to process each 'instance' resource
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
       }
       for (Instance item : response.getInstances()) {
         System.out.println(item);
@@ -763,13 +1200,21 @@ public class AppengineExample {
     }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google App Engine Admin API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/appengine
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
@@ -787,7 +1232,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class AppengineExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
     String appsId = ""; // TODO: Update field(s).
@@ -797,11 +1244,49 @@ public class AppengineExample {
 
     Appengine service = createService();
     List request = service.apps().services().versions().list(appsId, servicesId);
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // For more information, see
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
+    // * Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
+    String appsId = "{MY-APPS-ID}";
+
+    // * Part of `name`. See documentation of `appsId`.
+    String servicesId = "{MY-SERVICES-ID}";
+
+    Appengine.Apps.Services.Versions.List request = appengineService.apps().services().versions().list(appsId, servicesId);
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     ListVersionsResponse response;
     do {
       response = request.execute();
       if (response.getVersions() == null) {
         continue;
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
+=======
+
+      for (Version version : response.getVersions()) {
+        // TODO: Add code here to process each 'version' resource
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
       }
       for (Version item : response.getVersions()) {
         System.out.println(item);
@@ -838,13 +1323,21 @@ public class AppengineExample {
     }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google App Engine Admin API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/appengine
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
@@ -862,7 +1355,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+
 public class AppengineExample {
+<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Version requestBody = new Version();
@@ -910,5 +1405,47 @@ public class AppengineExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+
+    // Authentication is provided by the 'gcloud' tool when running locally
+    // and by built-in service accounts when running on GAE, GCE, or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // For more information, see
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
+    // * Part of `name`. Name of the resource to update. For example:
+    //   "apps/myapp/services/default/versions/1".
+    String appsId = "{MY-APPS-ID}";
+
+    // * Part of `name`. See documentation of `appsId`.
+    String servicesId = "{MY-SERVICES-ID}";
+
+    // * Part of `name`. See documentation of `appsId`.
+    String versionsId = "{MY-VERSIONS-ID}";
+
+    Version content = new Version();
+    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
+
+    Appengine.Apps.Services.Versions.Patch request = appengineService.apps().services().versions().patch(appsId, servicesId, versionsId, content);
+    Operation response = request.execute();
+
+    // TODO: Add code here to process the 'response' object
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }

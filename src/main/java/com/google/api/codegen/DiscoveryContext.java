@@ -312,7 +312,7 @@ public abstract class DiscoveryContext extends CodegenContext {
     if (Strings.isNullOrEmpty(sample)) {
       return "";
     }
-    return " eg. " + sample;
+    return "e.g., " + sample;
   }
 
   /**
@@ -330,8 +330,8 @@ public abstract class DiscoveryContext extends CodegenContext {
 
   /**
    * Line wrap `str`, returning a list of lines. Each line in the returned list is guaranteed to not
-   * have new line characters. The first line begins with `firstLinePrefix` (defaults to list
-   * bullet: "* "), while subsequent lines begin with a hanging indent of equal width.
+   * have new line characters. The first line begins with `firstLinePrefix` (defaults to empty),
+   * while subsequent lines begin with a hanging indent of equal width.
    */
   public List<String> lineWrapDoc(String str, int maxWidth, String firstLinePrefix) {
     return s_lineWrapDoc(str, maxWidth, firstLinePrefix);

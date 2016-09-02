@@ -39,9 +39,8 @@
 @snippet generateBody(method)
   @let apiName = context.getSimpleApiName, \
        serviceName = context.getServiceClassName
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     $client = new Google_Client();
     $client->setApplicationName('Google Cloud Platform Sample');
@@ -64,13 +63,20 @@
        signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
        params = context.getFlatMethodParams(method)
     @if params
+
+      // {@TODO()} Change placeholders below to desired parameter values for the `{@methodName}` method:
+
       @join param : params
         @let paramField = context.getField(signatureType, param), \
              paramValue = context.typeDefaultValue(signatureType, paramField), \
              paramSample = context.getDefaultSample(signatureType, paramField), \
              paramDescription = context.getDescription(signatureType.getName, param)
           {@description(paramDescription)}
-          ${@param} = {@paramValue}; // {@TODO()} Update placeholder value(s).{@paramSample}
+          @if paramSample
+            ${@param} = {@paramValue};  // {@paramSample}
+          @else
+            ${@param} = {@paramValue};
+          @end
 
         @end
       @end
@@ -79,12 +85,13 @@
   @end
   @if context.hasRequestField(method)
 
-    @if context.isPatch(method)
-      // {@TODO()} Assign values to the desired properties to be changed.
-    @else
-      // {@TODO()} Assign values to the desired properties.
-    @end
     ${@requestBodyName(method)} = new {@context.getRequestClassName(method)}($client);
+    @if context.isPatch(method)
+      // {@TODO()} Assign values to desired properties of the `${@requestBodyName()}` object to be changed.
+    @else
+      // {@TODO()} Assign values to desired properties of the `${@requestBodyName()}` object.
+    @end
+
 
   @end
 @end
@@ -95,20 +102,20 @@
        resources = resourceField.getName
     ${@optParamsName()} = array();
     do {
-      ${@responseName()} = {@request(method)};
+      ${@responseName()} = {@methodCall(method)};
 
       @if context.isMapField(responseTypeRef, resourceField.getName)
         @let keyName = context.keyTypeName(resourceField), \
              valueName = context.valueTypeName(resourceField)
           foreach (${@responseName()}['{@resources}'] as ${@keyName} => ${@valueName}) {
-            // {@TODO()} Use ${@keyName}, ${@valueName}
+            // {@TODO()} Change code below to process each (${@keyName} => ${@valueName}) element:
             {@printEntry(keyName, valueName)}
           }
         @end
       @else
         @let resourceName = context.elementTypeName(resourceField)
           foreach (${@responseName()}['{@resources}'] as ${@resourceName}) {
-            // {@TODO()} Use {@resourceName}
+            // {@TODO()} Change code below to process each `{@resourceName}` resource:
             {@print(resourceName)}
           }
         @end
@@ -121,16 +128,16 @@
 
 @private compactCall(method)
   @if context.isResponseEmpty(method)
-    {@request(method)};
+    {@methodCall(method)};
   @else
-    ${@responseName()} = {@request(method)};
+    ${@responseName()} = {@methodCall(method)};
 
-    // {@TODO()} Use ${@responseName()}
+    // {@TODO()} Change code below to process the `${@responseName()}` object:
     {@print(responseName())}
   @end
 @end
 
-@private request(method)
+@private methodCall(method)
   @let methodName = context.getMethodName(method), \
        resourcesPath = context.getApiaryConfig.getResources(method.getName)
     $service->{@methodPath(resourcesPath)}->{@methodName}({@arguments(method)})
@@ -169,8 +176,8 @@
   optParams
 @end
 
-@private requestBodyName(method)
-  postBody
+@private requestBodyName()
+  requestBody
 @end
 
 @private responseName()

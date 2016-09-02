@@ -27,9 +27,8 @@
             {@import}
         @end
 
-        @# Authentication is provided by the `gcloud` tool when running locally
-        @# and by built-in service accounts when running on GAE, GCE, or GKE.
-        @# For more information, see
+        @# Use Application Default Credentials for authentication when running locally.
+        @# For more information, see:
         @# https://developers.google.com/identity/protocols/application-default-credentials
         credentials = GoogleCredentials.get_application_default()
 
@@ -69,13 +68,13 @@
                 @let keyName = context.keyTypeName(resourceField), \
                      valueName = context.valueTypeName(resourceField)
                     for {@keyName}, {@valueName} in {@responseName()}['{@resources}'].items():
-                        @# {@TODO()} Use {@keyName}, {@valueName}
+                        @# {@TODO()} Change code below to process each ({@keyName}, {@valueName}) item:
                         {@printEntry(keyName, valueName)}
                 @end
             @else
                 @let resourceName = context.elementTypeName(resourceField)
                     for {@resourceName} in {@responseName()}['{@resources}']:
-                        @# {@TODO()} Use {@resourceName}
+                        @# {@TODO()} Change code below to process each `{@resourceName}` resource:
                         {@print(resourceName)}
                 @end
             @end
@@ -99,7 +98,7 @@
         @else
             {@responseName()} = {@requestName()}.execute()
 
-            @# {@TODO()} Use {@responseName()}
+            @# {@TODO()} Change code below to process the `{@responseName()}` dict:
             {@print(responseName())}
         @end
     @end
@@ -125,14 +124,20 @@
          signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
          params = context.getFlatMethodParams(method)
         @if params
+
+            @# {@TODO()} Change placeholders below to desired parameter values for the `{@methodName}` method:
+
             @join param : params
                 @let paramField = context.getField(signatureType, param), \
                      paramValue = context.typeDefaultValue(signatureType, paramField, method), \
                      paramSample = context.getDefaultSample(signatureType, paramField), \
                      paramDescription = context.getDescription(signatureType.getName, param)
                     {@description(paramDescription)}
-                    {@param} = {@paramValue}  @# {@TODO()} Update placeholder value(s).{@paramSample}
-
+                    @if paramSample
+                      {@param} = {@paramValue}  @# {@paramSample}
+                    @else
+                      {@param} = {@paramValue}
+                    @end
                 @end
             @end
 
@@ -142,9 +147,9 @@
 
         {@requestBodyName(method)} = {
             @if context.isPatch(method)
-                @# {@TODO()} Add the desired entries to be changed.
+                @# {@TODO()} Add desired entries of the request body to be changed.
             @else
-                @# {@TODO()} Add the desired entries.
+                @# {@TODO()} Add desired entries of the request body.
             @end
         }
 

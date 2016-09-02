@@ -27,9 +27,8 @@
 
     service = Google::Apis::{@ApiName}{@ApiVersion}::{@context.getServiceName}.new
 
-    @# Authentication is provided by the `gcloud` tool when running locally
-    @# and by built-in service accounts when running on GAE, GCE, or GKE.
-    @# For more information, see
+    @# Use Application Default Credentials for authentication when running locally.
+    @# For more information, see:
     @# https://developers.google.com/identity/protocols/application-default-credentials
     service.authorization = {@"\"}
         Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
@@ -54,13 +53,20 @@
        apiVersion = context.getApiVersion, \
        ApiVersion = context.lowerCamelToUpperCamel(apiVersion)
     @if params
+
+      @# {@TODO()} Change placeholders below to desired parameter values for the `{@methodName}` method:
+
       @join param : params
         @let paramField = context.getField(signatureType, param), \
              paramValue = context.typeDefaultValue(signatureType, paramField), \
              paramSample = context.getDefaultSample(signatureType, paramField), \
              paramDescription = context.getDescription(signatureType.getName, param)
           {@description(paramDescription)}
-          {@context.getParamName(method, param)} = {@paramValue}  @# {@TODO()} Update placeholder value(s).{@paramSample}
+          @if paramSample
+            {@context.getParamName(method, param)} = {@paramValue}  @# {@paramSample}
+          @else
+            {@context.getParamName(method, param)} = {@paramValue}
+          @end
 
         @end
       @end
@@ -69,14 +75,14 @@
     @if context.hasRequestField(method)
 
       @let requestBodyType = context.lowerUnderscoreToUpperCamel(context.getRequestTypeName(method))
-        @if context.isPatch(method)
-          @# {@TODO()} Assign values to the desired members to be changed.
-        @else
-          @# {@TODO()} Assign values to the desired members.
-        @end
-
         {@requestBodyName(method)} = \
             Google::Apis::{@ApiName}{@ApiVersion}::{@requestBodyType}.new
+        @if context.isPatch(method)
+          @# {@TODO()} Assign values to desired members of the `{@requestBodyName()}` object to be changed.
+        @else
+          @# {@TODO()} Assign values to desired members of the `{@requestBodyName()}` object.
+        @end
+
       @end
 
     @end
@@ -85,11 +91,11 @@
 
 @private compactCall(method)
   @if context.isResponseEmpty(method)
-    {@request(method)}
+    {@methodCall(method)}
   @else
-    {@responseName()} = {@request(method)}
+    {@responseName()} = {@methodCall(method)}
 
-    @# {@TODO()} Use {@responseName()}
+    @# {@TODO()} Change code below to process the `{@responseName()}` object:
     {@print(responseName())}
   @end
 @end
@@ -108,14 +114,14 @@
       @let keyName = context.keyTypeName(resourceField), \
            valueName = context.valueTypeName(resourceField)
         {@resources}.each do |{@keyName}, {@valueName}|
-          @# {@TODO()} Use {@keyName}, {@valueName}
+          @# {@TODO()} Change code below to process each ({@keyName}, {@valueName}) pair:
           {@printEntry(keyName, valueName)}
         end
       @end
     @else
       @let resourceName = context.elementTypeName(resourceField)
         {@resources}.each do |{@resourceName}|
-          @# {@TODO()} Use {@resourceName}
+          @# {@TODO()} Change code below to process each `{@resourceName}` resource:
           {@print(resourceName)}
         end
       @end
@@ -123,7 +129,7 @@
   @end
 @end
 
-@private request(method)
+@private methodCall(method)
   service.{@context.getMethodName(method)}({@arguments(method)})
 @end
 
@@ -147,8 +153,8 @@
   @end
 @end
 
-@private requestBodyName(method)
-  {@context.getRequestTypeName(method)}_body
+@private requestBodyName()
+  request_body
 @end
 
 @private responseName()
