@@ -47,13 +47,12 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Nullable;
+import java.util.TreeMap;
 
 /**
  * A GapicContext specialized for Ruby.
@@ -380,17 +379,13 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     List<GrpcStubView> stubs = new ArrayList<>();
     SurfaceNamer namer = context.getNamer();
 
-    Map<String, Interface> interfaces = new HashMap<>();
+    Map<String, Interface> interfaces = new TreeMap<>();
     for (Method method : context.getNonStreamingMethods()) {
       Interface targetInterface = context.asMethodContext(method).getTargetInterface();
       interfaces.put(targetInterface.getFullName(), targetInterface);
     }
 
-    List<String> interfaceNames = new ArrayList<>();
-    interfaceNames.addAll(interfaces.keySet());
-    Collections.sort(interfaceNames);
-
-    for (String interfaceName : interfaceNames) {
+    for (String interfaceName : interfaces.keySet()) {
       Interface interfaze = interfaces.get(interfaceName);
       GrpcStubView.Builder stub = GrpcStubView.newBuilder();
 
