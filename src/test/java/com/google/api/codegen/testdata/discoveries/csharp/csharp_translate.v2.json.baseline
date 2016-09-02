@@ -26,24 +26,12 @@ namespace TranslateSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
+            // TODO: Replace "{API-KEY}"
             TranslateService translateService = new TranslateService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
+                ApiKey = "{API-KEY}",
             });
-
             // TODO: Change placeholders below to values for parameters to the List() method:
 
             // The text to detect
@@ -54,6 +42,12 @@ namespace TranslateSample
 
             // To execute asynchronously in an async method, use
             // Data.DetectionsListResponse response = await request.ExecuteAsync();
+        }
+
+        public static UserCredential getCredential() {
+            // TODO: Implement this function to get authentication credentials.
+            // See https://foo.com/bar
+            return null;
         }
     }
 }
@@ -83,22 +77,11 @@ namespace TranslateSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
+            // TODO: Replace "{API-KEY}"
             TranslateService translateService = new TranslateService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
+                ApiKey = "{API-KEY}",
             });
 
             LanguagesResource.ListRequest request = translateService.Languages.List();
@@ -106,6 +89,12 @@ namespace TranslateSample
 
             // To execute asynchronously in an async method, use
             // Data.LanguagesListResponse response = await request.ExecuteAsync();
+        }
+
+        public static UserCredential getCredential() {
+            // TODO: Implement this function to get authentication credentials.
+            // See https://foo.com/bar
+            return null;
         }
     }
 }
@@ -136,24 +125,12 @@ namespace TranslateSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the 'gcloud' tool when running locally
-            // and by built-in service accounts when runing on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
+            // TODO: Replace "{API-KEY}"
             TranslateService translateService = new TranslateService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
+                ApiKey = "{API-KEY}",
             });
-
             // TODO: Change placeholders below to values for parameters to the List() method:
 
             // The text to translate
@@ -167,6 +144,12 @@ namespace TranslateSample
 
             // To execute asynchronously in an async method, use
             // Data.TranslationsListResponse response = await request.ExecuteAsync();
+        }
+
+        public static UserCredential getCredential() {
+            // TODO: Implement this function to get authentication credentials.
+            // See https://foo.com/bar
+            return null;
         }
     }
 }

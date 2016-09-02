@@ -44,31 +44,66 @@
                 {
                     {@mainMethod(sample)}
                 }
+                @if context.getApiaryConfig.getAuthType != "APPLICATION_DEFAULT_CREDENTIALS"
+
+                    public static UserCredential getCredential() {
+                        // TODO: Implement this function to get authentication credentials.
+                        @let authInstructionsUrl = context.getApiaryConfig.getAuthInstructionsUrl
+                            @if authInstructionsUrl
+                                // See {@authInstructionsUrl}
+                            @end
+                        @end
+                        return null;
+                    }
+                @end
             }
         }
     @end
 @end
 
 @private mainMethod(sample)
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when runing on GCE.
-    GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+    @switch context.getApiaryConfig.getAuthType
+    @case "APPLICATION_DEFAULT_CREDENTIALS"
+        // Authentication is provided by the 'gcloud' tool when running locally
+        // and by built-in service accounts when runing on GCE.
+        GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
 
-    // Running locally requires scopes to be passed in manually.
-    // GCE automatically pulls the scopes from the GCE metadata server.
-    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
-    if (credential.IsCreateScopedRequired)
-    {
-        credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-    }
+        // Running locally requires scopes to be passed in manually.
+        // GCE automatically pulls the scopes from the GCE metadata server.
+        // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+        if (credential.IsCreateScopedRequired)
+        {
+            credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+        }
 
-    {@sample.serviceTypeName} {@sample.serviceVarName} = new {@sample.serviceTypeName}(new BaseClientService.Initializer
-    {
-        HttpClientInitializer = credential,
-        ApplicationName = "Google Cloud Platform Sample",
-    });
+        {@sample.serviceTypeName} {@sample.serviceVarName} = new {@sample.serviceTypeName}(new BaseClientService.Initializer
+        {
+            HttpClientInitializer = credential,
+            ApplicationName = "Google Cloud Platform Sample",
+        });
+    @case "OAUTH_3L"
+        @if context.getApiaryConfig.hasAuthScopes(sample.methodName)
+            // Authorize using one of the following scopes in order to use this method:
+            @join scope : context.getApiaryConfig.getAuthScopes.get(sample.methodName)
+                //   {@scope}
+            @end
+        @end
+        UserCredential credential = GetCredential();
+        {@sample.serviceTypeName} {@sample.serviceVarName} = new {@sample.serviceTypeName}(new BaseClientService.Initializer
+        {
+            HttpClientInitializer = credential,
+            ApplicationName = "Google Cloud Platform Sample",
+        });
+    @default
+        // TODO: Replace "{API-KEY}"
+        {@sample.serviceTypeName} {@sample.serviceVarName} = new {@sample.serviceTypeName}(new BaseClientService.Initializer
+        {
+            ApplicationName = "Google Cloud Platform Sample",
+            ApiKey = "{API-KEY}",
+        });
+    @end
+    
     @if sample.params
-
         // TODO: Change placeholders below to values for parameters to the {@sample.methodName}() method:
         @join param : sample.params
 
@@ -80,8 +115,8 @@
     @end
     @if sample.hasRequestField
 
-      // TODO Add code to assign values to properties of '{@sample.requestFieldName}'.
-      {@sample.requestFieldTypeName} {@sample.requestFieldName} = new {@sample.requestFieldTypeName}();
+        // TODO: Add code to assign values to properties of '{@sample.requestFieldName}'.
+        {@sample.requestFieldTypeName} {@sample.requestFieldName} = new {@sample.requestFieldTypeName}();
     @end
 
     {@sample.requestTypeName} request = {@sample.serviceVarName}.{@sample.resourcePath}.{@sample.methodName}({@sample.paramList});
