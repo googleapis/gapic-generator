@@ -83,22 +83,24 @@
 
     func default{@context.getClientPrefix(service)}CallOptions() *{@context.getClientPrefix(service)}CallOptions {
         retry := map[[2]string][]gax.CallOption{
-            @join retryName : context.getRetryConfigNames(service) if context.getApiConfig.getInterfaceConfig(service).getRetryCodesDefinition.get(retryName.getCodesName)
-                @let retryCodes = context.getApiConfig.getInterfaceConfig(service).getRetryCodesDefinition.get(retryName.getCodesName), \
-                        retrySettings = context.getApiConfig.getInterfaceConfig(service).getRetrySettingsDefinition.get(retryName.getSettingsName)
-                    {"{@retryName.getSettingsName}", "{@retryName.getCodesName}"}: {
-                        gax.WithRetry(func() gax.Retryer {
-                            return gax.OnCodes([]codes.Code{
-                                @join code : retryCodes
-                                    codes.{@context.upperUnderscoreToUpperCamel(code.toString())},
-                                @end
-                            }, gax.Backoff{
-                                Initial: {@retrySettings.getInitialRetryDelay.getMillis}*time.Millisecond,
-                                Max: {@retrySettings.getMaxRetryDelay.getMillis}*time.Millisecond,
-                                Multiplier: {@retrySettings.getRetryDelayMultiplier},
-                            })
-                        }),
-                    },
+            @let interfaceConf = context.getApiConfig.getInterfaceConfig(service)
+                @join retryName : context.getRetryConfigNames(service) if interfaceConf.getRetryCodesDefinition.get(retryName.getCodesName)
+                    @let retryCodes = interfaceConf.getRetryCodesDefinition.get(retryName.getCodesName), \
+                         retrySettings = interfaceConf.getRetrySettingsDefinition.get(retryName.getSettingsName)
+                        {"{@retryName.getSettingsName}", "{@retryName.getCodesName}"}: {
+                            gax.WithRetry(func() gax.Retryer {
+                                return gax.OnCodes([]codes.Code{
+                                    @join code : retryCodes
+                                        codes.{@context.upperUnderscoreToUpperCamel(code.toString())},
+                                    @end
+                                }, gax.Backoff{
+                                    Initial: {@retrySettings.getInitialRetryDelay.getMillis}*time.Millisecond,
+                                    Max: {@retrySettings.getMaxRetryDelay.getMillis}*time.Millisecond,
+                                    Multiplier: {@retrySettings.getRetryDelayMultiplier},
+                                })
+                            }),
+                        },
+                    @end
                 @end
             @end
         }
@@ -109,7 +111,7 @@
                      methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
                      retryParamsName = methodConfig.getRetrySettingsConfigName, \
                      retryCodesName = methodConfig.getRetryCodesConfigName
-                        {@methodName}: retry[[2]string{"{@retryParamsName}", "{@retryCodesName}"}],
+                    {@methodName}: retry[[2]string{"{@retryParamsName}", "{@retryCodesName}"}],
                 @end
             @end
         }
