@@ -14,14 +14,10 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.client.util.Lists;
 import com.google.api.codegen.ConfigProto;
-import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.stages.Merged;
-import com.google.api.tools.framework.processors.merger.Merger;
-import com.google.api.tools.framework.processors.resolver.Resolver;
 import com.google.api.tools.framework.tools.ToolDriverBase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
@@ -30,11 +26,13 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import com.google.protobuf.Api;
 
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -42,9 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
 
 /** Main class for the config generator. */
 public class ConfigGeneratorApi extends ToolDriverBase {
@@ -54,7 +49,6 @@ public class ConfigGeneratorApi extends ToolDriverBase {
           String.class, "output_file", "The path of the output file to put generated config.", "");
 
   private static final String CONFIG_KEY_TYPE = "type";
-  private static final String CONFIG_KEY_GENERATE_SAMPLES = "generate_samples";
   private static final String CONFIG_KEY_LANGUAGE_SETTINGS = "language_settings";
   private static final String CONFIG_KEY_INTERFACES = "interfaces";
 
@@ -82,7 +76,6 @@ public class ConfigGeneratorApi extends ToolDriverBase {
 
     Map<String, Object> output = new LinkedHashMap<String, Object>();
     output.put(CONFIG_KEY_TYPE, CONFIG_PROTO_TYPE);
-    output.put(CONFIG_KEY_GENERATE_SAMPLES, true);
     output.put(CONFIG_KEY_LANGUAGE_SETTINGS, generateLanguageSettings());
     output.put(CONFIG_KEY_INTERFACES, generateInterfacesConfig());
     dump(output);

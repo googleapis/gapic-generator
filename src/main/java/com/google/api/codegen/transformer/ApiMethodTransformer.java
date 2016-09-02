@@ -23,6 +23,7 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.CallableMethodDetailView;
+import com.google.api.codegen.viewmodel.DynamicLangApiMethodView;
 import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
 import com.google.api.codegen.viewmodel.ListMethodDetailView;
 import com.google.api.codegen.viewmodel.MapParamDocView;
@@ -305,6 +306,33 @@ public class ApiMethodTransformer {
       }
     }
     return true;
+  }
+
+  public DynamicLangApiMethodView generateDynamicLangApiMethod(MethodTransformerContext context) {
+    // This is an incomplete method that only generates views that pertain to sample
+    // code generation for a dynamic language.
+    SurfaceNamer namer = context.getNamer();
+    DynamicLangApiMethodView.Builder apiMethod = DynamicLangApiMethodView.newBuilder();
+
+    if (context.getMethodConfig().isPageStreaming()) {
+      apiMethod.type(ApiMethodType.PagedFlattenedMethod);
+    } else {
+      apiMethod.type(ApiMethodType.FlattenedMethod);
+    }
+    apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
+    apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
+    apiMethod.initCode(
+        initCodeTransformer.generateInitCode(
+            context.cloneWithEmptyTypeTable(),
+            context.getMethodConfig().getRequiredFields(),
+            new SymbolTable(),
+            null));
+
+    apiMethod.stubName(namer.getStubName(context.getTargetInterface()));
+    apiMethod.name(namer.getApiMethodName(context.getMethod()));
+    apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
+
+    return apiMethod.build();
   }
 
   public OptionalArrayMethodView generateOptionalArrayMethod(MethodTransformerContext context) {

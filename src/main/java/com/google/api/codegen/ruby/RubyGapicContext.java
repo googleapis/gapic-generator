@@ -25,8 +25,8 @@ import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.ruby.RubyModelTypeNameConverter;
 import com.google.api.codegen.transformer.ruby.RubySurfaceNamer;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
+import com.google.api.codegen.viewmodel.DynamicLangApiMethodView;
 import com.google.api.codegen.viewmodel.GrpcStubView;
-import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.Field;
@@ -47,12 +47,13 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 /**
  * A GapicContext specialized for Ruby.
@@ -345,7 +346,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     return Splitter.on("::").splitToList(getApiConfig().getPackageName());
   }
 
-  public OptionalArrayMethodView getMethodView(Interface service, Method method) {
+  public DynamicLangApiMethodView getMethodView(Interface service, Method method) {
     ModelTypeTable modelTypeTable =
         new ModelTypeTable(
             new RubyTypeTable(getApiConfig().getPackageName()),
@@ -358,7 +359,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
             new RubySurfaceNamer(getApiConfig().getPackageName()));
     MethodTransformerContext methodContext = context.asMethodContext(method);
     ApiMethodTransformer methodTransformer = new ApiMethodTransformer();
-    return methodTransformer.generateOptionalArrayMethod(methodContext);
+    return methodTransformer.generateDynamicLangApiMethod(methodContext);
   }
 
   public List<GrpcStubView> getStubs(Interface service) {
