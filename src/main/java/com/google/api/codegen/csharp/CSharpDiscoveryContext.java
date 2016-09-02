@@ -307,6 +307,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
         String namespace,
         String serviceTypeName,
         String serviceVarName,
+        String rawMethodName,
         String methodName,
         List<ParamInfo> params,
         String paramList,
@@ -322,6 +323,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
           namespace,
           serviceTypeName,
           serviceVarName,
+          rawMethodName,
           methodName,
           params,
           paramList,
@@ -340,6 +342,8 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     public abstract String serviceTypeName();
 
     public abstract String serviceVarName();
+
+    public abstract String rawMethodName();
 
     public abstract String methodName();
 
@@ -472,6 +476,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
         namespace,
         serviceTypeName,
         serviceVarName,
+        rawMethodName,
         methodName,
         params,
         paramList,

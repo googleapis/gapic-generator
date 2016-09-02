@@ -12,13 +12,19 @@
         // 1. If not already done, enable the {@serviceTitle}
         //    and check the quota for your project at
         //    https://console.developers.google.com/apis/api/{@apiName}
-        // 2. This sample uses Application Default Credentials for authentication.
-        //    If not already done, install the gcloud CLI from
-        //    https://cloud.google.com/sdk/ and run
-        //    'gcloud beta auth application-default login'
-        // 3. Install the C# client library by adding a dependency on the relevant NuGet
-        //    package. Libraries published by Google are owned by google-apis-packages:
-        //    https://www.nuget.org/profiles/google-apis-packages
+        @if context.getApiaryConfig.getAuthType.toString == "APPLICATION_DEFAULT_CREDENTIALS"
+          // 2. This sample uses Application Default Credentials for authentication.
+          //    If not already done, install the gcloud CLI from
+          //    https://cloud.google.com/sdk/ and run
+          //    'gcloud beta auth application-default login'
+          // 3. Install the C# client library by adding a dependency on the relevant NuGet
+          //    package. Libraries published by Google are owned by google-apis-packages:
+          //    https://www.nuget.org/profiles/google-apis-packages
+        @else
+          // 2. Install the C# client library by adding a dependency on the relevant NuGet
+          //    package. Libraries published by Google are owned by google-apis-packages:
+          //    https://www.nuget.org/profiles/google-apis-packages
+        @end
         {@imports()}
         @join import : context.sortUsings(imports)
             {@import}
@@ -44,13 +50,19 @@
                 {
                     {@mainMethod(sample)}
                 }
-                @if context.getApiaryConfig.getAuthType != "APPLICATION_DEFAULT_CREDENTIALS"
+                @if context.getApiaryConfig.getAuthType.toString != "APPLICATION_DEFAULT_CREDENTIALS"
 
                     public static UserCredential getCredential() {
                         // TODO: Implement this function to get authentication credentials.
                         @let authInstructionsUrl = context.getApiaryConfig.getAuthInstructionsUrl
                             @if authInstructionsUrl
                                 // See {@authInstructionsUrl}
+                            @end
+                        @end
+                        @if context.getApiaryConfig.hasAuthScopes(sample.rawMethodName)
+                            // Authorize using one of the following scopes in order to use this method:
+                            @join scope : context.getApiaryConfig.getAuthScopes.get(sample.rawMethodName)
+                                //   {@scope}
                             @end
                         @end
                         return null;
@@ -62,7 +74,7 @@
 @end
 
 @private mainMethod(sample)
-    @switch context.getApiaryConfig.getAuthType
+    @switch context.getApiaryConfig.getAuthType.toString
     @case "APPLICATION_DEFAULT_CREDENTIALS"
         // Authentication is provided by the 'gcloud' tool when running locally
         // and by built-in service accounts when runing on GCE.
@@ -82,28 +94,24 @@
             ApplicationName = "Google Cloud Platform Sample",
         });
     @case "OAUTH_3L"
-        @if context.getApiaryConfig.hasAuthScopes(sample.methodName)
-            // Authorize using one of the following scopes in order to use this method:
-            @join scope : context.getApiaryConfig.getAuthScopes.get(sample.methodName)
-                //   {@scope}
-            @end
-        @end
         UserCredential credential = GetCredential();
+
         {@sample.serviceTypeName} {@sample.serviceVarName} = new {@sample.serviceTypeName}(new BaseClientService.Initializer
         {
             HttpClientInitializer = credential,
             ApplicationName = "Google Cloud Platform Sample",
         });
     @default
-        // TODO: Replace "{API-KEY}"
+        // TODO: Replace "{MY-API-KEY}"
         {@sample.serviceTypeName} {@sample.serviceVarName} = new {@sample.serviceTypeName}(new BaseClientService.Initializer
         {
             ApplicationName = "Google Cloud Platform Sample",
-            ApiKey = "{API-KEY}",
+            ApiKey = "{MY-API-KEY}",
         });
     @end
-    
+
     @if sample.params
+
         // TODO: Change placeholders below to values for parameters to the {@sample.methodName}() method:
         @join param : sample.params
 
