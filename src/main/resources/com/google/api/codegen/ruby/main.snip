@@ -352,7 +352,7 @@
 
 @private serviceMethodsSection(service)
   @# Service calls
-  @join method : context.getNonStreamingMethods(service)
+  @join method : context.getNonStreamingMethodsV2(service)
 
     {@flattenedMethod(service, method)}
   @end
@@ -361,7 +361,7 @@
 @private flattenedMethod(service, method)
   @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
        inputTypeName = context.rubyTypeName(method.getInputType()), \
-       documentation = comments(context.methodComments(method)), \
+       documentation = comments(context.methodComments(service, method)), \
        methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        requiredParams = methodConfig.getRequiredFields(), \
        optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig), \
