@@ -14,6 +14,18 @@
  */
 package com.google.api.codegen;
 
+import java.io.File;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Nullable;
+
 import com.google.api.codegen.discovery.DiscoveryProvider;
 import com.google.api.codegen.discovery.DiscoveryProviderFactory;
 import com.google.api.codegen.util.ClassInstantiator;
@@ -32,17 +44,6 @@ import com.google.inject.TypeLiteral;
 import com.google.protobuf.Api;
 import com.google.protobuf.Message;
 import com.google.protobuf.Method;
-
-import java.io.File;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
 
 /**
  * Main class for the discovery doc fragment generator.
@@ -68,6 +69,13 @@ public class DiscoveryFragmentGeneratorApi {
           "config_files",
           "The list of YAML configuration files for the fragment generator.",
           ImmutableList.<String>of());
+
+  public static final Option<String> AUTH_INSTRUCTIONS_URL =
+      ToolOptions.createOption(
+          String.class,
+          "auth_instructions",
+          "An @-delimited map of language to auth instructions URL: lang:URL@lang:URL@...",
+          "");
 
   private final ToolOptions options;
   private final String dataPath;
@@ -103,9 +111,12 @@ public class DiscoveryFragmentGeneratorApi {
     String factory = generator.getFactory();
     String id = generator.getId();
 
+    String authInstructions = options.get(AUTH_INSTRUCTIONS_URL);
+    ApiaryConfig apiaryConfig = discovery.getConfig();
+    apiaryConfig.setAuthInstructionsUrl(parseAuthInstructionsUrl(authInstructions, id));
+
     DiscoveryProviderFactory providerFactory = createProviderFactory(factory);
-    DiscoveryProvider provider =
-        providerFactory.create(discovery.getService(), discovery.getConfig(), id);
+    DiscoveryProvider provider = providerFactory.create(discovery.getService(), apiaryConfig, id);
 
     for (Api api : discovery.getService().getApisList()) {
       for (Method method : api.getMethodsList()) {
@@ -113,6 +124,28 @@ public class DiscoveryFragmentGeneratorApi {
         ToolUtil.writeFiles(files, options.get(OUTPUT_FILE));
       }
     }
+  }
+
+  /*
+   * Parses strings of the format
+   * "go:https://www.hello.com@java:https://www.world.com" and returns the value
+   * of the key corresponding to the key id.
+   */
+  private String parseAuthInstructionsUrl(String authInstructionsUrl, String id) {
+    if (Strings.isNullOrEmpty(authInstructionsUrl)) {
+      return "";
+    }
+    // Split on '@'
+    Iterable<String> it = Splitter.on('@').split(authInstructionsUrl);
+    for (String item : it) {
+      // Split on only the first ':' and return if there are two values and the
+      // language matches.
+      String[] pair = item.split(":", 2);
+      if (pair[0].equals(id) && pair.length == 2) {
+        return pair[1];
+      }
+    }
+    return "";
   }
 
   private static DiscoveryProviderFactory createProviderFactory(String factory) {
