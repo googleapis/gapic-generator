@@ -16,7 +16,6 @@ package com.google.api.codegen.ruby;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
-import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
@@ -52,11 +51,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 
 /**
  * A GapicContext specialized for Ruby.
@@ -185,9 +181,8 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
    * Return comments lines for a given method, consisting of proto doc and parameter type
    * documentation.
    */
-  public List<String> methodComments(Method method) {
-    MethodConfig config =
-        getApiConfig().getInterfaceConfig((Interface) method.getParent()).getMethodConfig(method);
+  public List<String> methodComments(Interface service, Method method) {
+    MethodConfig config = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
 
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
