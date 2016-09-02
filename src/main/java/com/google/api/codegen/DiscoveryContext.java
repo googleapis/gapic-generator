@@ -213,9 +213,10 @@ public abstract class DiscoveryContext extends CodegenContext {
     DefaultString defString = DefaultString.of(getApi().getName(), field.getName(), stringPattern);
 
     String line = stringLiteral(defString.getDeclare());
-    if (defString.getComment() != null) {
-      line = lineComment(line, "eg. " + stringLiteral(defString.getComment()));
-    }
+    // TODO(saicheems): This is a temporary fix for this branch to resolve compilation errors.
+    //if (defString.getComment() != null) {
+    //  line = lineComment(line, "eg. " + stringLiteral(defString.getComment()));
+    //}
     return lineEnding(line);
   }
 

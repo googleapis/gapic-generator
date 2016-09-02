@@ -11,31 +11,60 @@
 @snippet generateClass(method, body)
 package main
 
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the {@context.getService.getTitle}
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/{@context.getApi.getName}
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    'gcloud beta auth application-default login'
-// 3. Install and update the Go dependencies by running 'go get -u' in the
-//    project directory.
+@let authType = context.getApiaryConfig.getAuthType.toString
+  // BEFORE RUNNING:
+  // ---------------
+  // 1. If not already done, enable the {@context.getService.getTitle}
+  //    and check the quota for your project at
+  //    https://console.developers.google.com/apis/api/{@context.getApi.getName}
+  @if authType == "APPLICATION_DEFAULT_CREDENTIALS"
+    // 2. This sample uses Application Default Credentials for authentication.
+    //    If not already done, install the gcloud CLI from
+    //    https://cloud.google.com/sdk/ and run
+    //    'gcloud beta auth application-default login'
+    // 3. Install and update the Go dependencies by running 'go get -u' in the
+    //    project directory.
+  @else
+    // 2. Install and update the Go dependencies by running 'go get -u' in the
+    //    project directory.
+  @end
+@end
 
 import (
   "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
+  @if context.getApiaryConfig.getAuthType == "APPLICATION_DEFAULT_CREDENTIALS"
+    "golang.org/x/oauth2/google"
+  @end
 
   "google.golang.org/api/{@context.getApi.getName}/{@context.getApiVersion}"
 )
 
 func main() {
   ctx := context.Background()
-  hc, err := google.DefaultClient(ctx{@scopeArg(method)})
-  if err != nil {
-    // {@TODO()} Handle error.
-  }
+  @switch context.getApiaryConfig.getAuthType
+  @case "APPLICATION_DEFAULT_CREDENTIALS"
+    hc, err := google.DefaultClient(ctx{@scopeArg(method)})
+    if err != nil {
+      // {@TODO()} Handle error.
+    }
+  @default
+    // {@TODO()} Implement this function to get authentication credentials.
+    @let authInstructionsUrl = context.getApiaryConfig.getAuthInstructionsUrl
+      @if authInstructionsUrl
+        // See {@authInstructionsUrl}
+      @end
+    @end
+    @if context.getApiaryConfig.hasAuthScopes(method.getName)
+      // Authorize using one of the following scopes in order to use this method:
+      @join scope : context.getApiaryConfig.getAuthScopes.get(method.getName)
+        //   {@scope}
+      @end
+    @end
+    hc, err := getClient(ctx)
+    if err != nil {
+      // {@TODO()} Handle error.
+    }
+  @end
   c, err := {@context.getApi.getName}.New(hc)
   if err != nil {
     // {@TODO()} Handle error.
