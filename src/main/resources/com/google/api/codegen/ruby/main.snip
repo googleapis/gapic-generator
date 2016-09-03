@@ -232,23 +232,26 @@
         "#{CODE_GEN_NAME_VERSION} ruby/#{RUBY_VERSION}".freeze
       headers = { :"x-goog-api-client" => google_api_client }
       {@constructDefaults(service)}
-      @join stubView : @context.getStubs(service)
-        @@{@stubView.name} = Google::Gax::Grpc.create_stub(
-          service_path,
-          port,
-          chan_creds: chan_creds,
-          channel: channel,
-          scopes: scopes,
-          &{@stubView.grpcClientTypeName}::Stub.method(:new)
-        )
-      @end
-
-      @join method : context.getNonStreamingMethodsV2(service)
-        @let methodView = context.getMethodView(service, method)
-          @@{@methodView.name} = Google::Gax.create_api_call(
-            @@{@methodView.stubName}.method(:{@methodView.name}),
-            defaults["{@methodView.name}"]
+      @let stubs = @context.getStubs(service)
+        @join stubView : stubs
+          @@{@stubView.name} = Google::Gax::Grpc.create_stub(
+            service_path,
+            port,
+            chan_creds: chan_creds,
+            channel: channel,
+            scopes: scopes,
+            &{@stubView.grpcClientTypeName}::Stub.method(:new)
           )
+        @end
+
+
+        @join stubView : stubs
+          @join methodName : stubView.methods
+            @@{@methodName} = Google::Gax.create_api_call(
+              @@{@stubView.name}.method(:{@methodName}),
+              defaults["{@methodName}"]
+            )
+          @end
         @end
       @end
     end

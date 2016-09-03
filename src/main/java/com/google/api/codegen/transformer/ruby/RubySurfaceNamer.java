@@ -21,6 +21,7 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 
@@ -46,6 +47,12 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getFormatFunctionName(CollectionConfig collectionConfig) {
     return staticFunctionName(Name.from(collectionConfig.getEntityName(), "path"));
+  }
+
+  public String getGrpcMethodName(Method method) {
+    // This might seem silly, but it makes clear what we're dealing with (upper camel).
+    // This is language-independent because of gRPC conventions.
+    return Name.upperCamel(method.getSimpleName()).toLowerUnderscore();
   }
 
   /** The file name for an API service. */
