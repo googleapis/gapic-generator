@@ -85,18 +85,20 @@ function NoTemplatesServiceApi(gaxGrpc, grpcClient, opts) {
       null,
       {'x-goog-api-client': googleApiClient});
 
-  var stub = gaxGrpc.createStub(
-      servicePath,
-      port,
-      grpcClient.google.cloud.example.v1.NoTemplatesService,
-      {sslCreds: sslCreds});
-  var methods = [
-    'increment'
+  var noTemplatesServiceStub = gaxGrpc.createStub(
+    servicePath,
+    port,
+    grpcClient.google.cloud.example.v1.NoTemplatesService,
+    {sslCreds: sslCreds});
+  var noTemplatesServiceStubMethods = [
+    'Increment'
   ];
-  methods.forEach(function(methodName) {
+  noTemplatesServiceStubMethods.forEach(function(methodName) {
     this['_' + methodName] = gax.createApiCall(
-        stub.then(function(stub) { return stub[methodName].bind(stub); }),
-        defaults[methodName]);
+      noTemplatesServiceStub.then(function(noTemplatesServiceStub) {
+        return noTemplatesServiceStub[methodName].bind(noTemplatesServiceStub);
+      }),
+      defaults[methodName]);
   }.bind(this));
 }
 

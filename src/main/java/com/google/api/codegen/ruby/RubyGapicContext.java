@@ -392,6 +392,12 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
       stub.createStubFunctionName(namer.getCreateStubFunctionName(interfaze));
       stub.grpcClientTypeName(context.getTypeTable().getFullNameFor(interfaze));
 
+      List<String> methodNames = new ArrayList<>();
+      for (Method method : interfaze.getMethods()) {
+        methodNames.add(namer.getGrpcMethodName(method));
+      }
+      stub.methods(methodNames);
+
       stubs.add(stub.build());
     }
 

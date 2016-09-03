@@ -20,11 +20,13 @@ import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.nodejs.NodeJSModelTypeNameConverter;
 import com.google.api.codegen.transformer.nodejs.NodeJSSurfaceNamer;
 import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.Field;
@@ -44,9 +46,11 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-import java.util.List;
-
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * A GapicContext specialized for NodeJS.
@@ -81,6 +85,55 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
 
     return apiMethodTransformer.generateOptionalArrayMethod(methodContext);
+  }
+
+  /**
+   * Return GrpcStubViews for mixins.
+   *
+   * NOTE: Temporary solution to use MVVM with just sample gen. This class
+   *       will eventually go away when code gen also converts to MVVM.
+   */
+  public List<GrpcStubView> getStubs(Interface service) {
+    ModelTypeTable modelTypeTable =
+        new ModelTypeTable(
+            new NodeJSTypeTable(getApiConfig().getPackageName()),
+            new NodeJSModelTypeNameConverter(getApiConfig().getPackageName()));
+    SurfaceTransformerContext context =
+        SurfaceTransformerContext.create(
+            service,
+            getApiConfig(),
+            modelTypeTable,
+            new NodeJSSurfaceNamer(getApiConfig().getPackageName()));
+    return generateGrpcStubs(context);
+  }
+
+  private List<GrpcStubView> generateGrpcStubs(SurfaceTransformerContext context) {
+    List<GrpcStubView> stubs = new ArrayList<>();
+    SurfaceNamer namer = context.getNamer();
+
+    Map<String, Interface> interfaces = new TreeMap<>();
+    for (Method method : context.getNonStreamingMethods()) {
+      Interface targetInterface = context.asMethodContext(method).getTargetInterface();
+      interfaces.put(targetInterface.getFullName(), targetInterface);
+    }
+
+    for (String interfaceName : interfaces.keySet()) {
+      Interface interfaze = interfaces.get(interfaceName);
+      GrpcStubView.Builder stub = GrpcStubView.newBuilder();
+
+      stub.name(namer.getStubName(interfaze));
+      stub.createStubFunctionName(namer.getCreateStubFunctionName(interfaze));
+      stub.grpcClientTypeName(context.getTypeTable().getFullNameFor(interfaze));
+
+      List<String> methodNames = new ArrayList<>();
+      for (Method method : interfaze.getMethods()) {
+        methodNames.add(namer.getGrpcMethodName(method));
+      }
+      stub.methods(methodNames);
+
+      stubs.add(stub.build());
+    }
+    return stubs;
   }
 
   public String filePath(ProtoFile file) {
@@ -323,9 +376,8 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    * Return comments lines for a given method, consisting of proto doc and parameter type
    * documentation.
    */
-  public List<String> methodComments(Method msg) {
-    MethodConfig config =
-        getApiConfig().getInterfaceConfig((Interface) msg.getParent()).getMethodConfig(msg);
+  public List<String> methodComments(Interface service, Method msg) {
+    MethodConfig config = getApiConfig().getInterfaceConfig(service).getMethodConfig(msg);
 
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();

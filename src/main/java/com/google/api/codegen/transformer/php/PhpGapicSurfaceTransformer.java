@@ -195,6 +195,12 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
       String grpcClientTypeName = namer.getGrpcClientTypeName(interfaze);
       stub.grpcClientTypeName(context.getTypeTable().getAndSaveNicknameFor(grpcClientTypeName));
 
+      List<String> methodNames = new ArrayList<>();
+      for (Method method : interfaze.getMethods()) {
+        methodNames.add(namer.getGrpcMethodName(method));
+      }
+      stub.methods(methodNames);
+
       stubs.add(stub.build());
     }
 
