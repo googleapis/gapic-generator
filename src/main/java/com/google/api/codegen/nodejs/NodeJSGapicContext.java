@@ -48,6 +48,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -112,9 +113,17 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     SurfaceNamer namer = context.getNamer();
 
     Map<String, Interface> interfaces = new TreeMap<>();
+    Map<String, List<String>> functions = new TreeMap<>();
     for (Method method : context.getNonStreamingMethods()) {
       Interface targetInterface = context.asMethodContext(method).getTargetInterface();
       interfaces.put(targetInterface.getFullName(), targetInterface);
+      if (functions.containsKey(targetInterface.getFullName())) {
+        functions.get(targetInterface.getFullName()).add(namer.getGrpcMethodName(method));
+      } else {
+        functions.put(
+            targetInterface.getFullName(),
+            new ArrayList<String>(Arrays.asList(namer.getGrpcMethodName(method))));
+      }
     }
 
     for (String interfaceName : interfaces.keySet()) {
@@ -125,11 +134,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       stub.createStubFunctionName(namer.getCreateStubFunctionName(interfaze));
       stub.grpcClientTypeName(context.getTypeTable().getFullNameFor(interfaze));
 
-      List<String> methodNames = new ArrayList<>();
-      for (Method method : interfaze.getMethods()) {
-        methodNames.add(namer.getGrpcMethodName(method));
-      }
-      stub.methods(methodNames);
+      stub.methods(functions.get(interfaceName));
 
       stubs.add(stub.build());
     }
