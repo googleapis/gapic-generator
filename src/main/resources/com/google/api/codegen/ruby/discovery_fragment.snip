@@ -14,21 +14,51 @@
     @# 1. If not already done, enable the {@context.getService.getTitle}
     @#    and check the quota for your project at
     @#    https://console.developers.google.com/apis/api/{@context.getApi.getName}
-    @# 2. This sample uses Application Default Credentials for authentication.
-    @#    If not already done, install the gcloud CLI from
-    @#    https://cloud.google.com/sdk/ and run
-    @#    'gcloud beta auth application-default login'
-    @# 3. Install the Ruby client library and Application Default Credentials
-    @#    library by running 'gem install google-api-client' and
-    @#    'gem install googleauth'
+    @if context.getApiaryConfig.getAuthType.toString == "APPLICATION_DEFAULT_CREDENTIALS"
+      @# 2. This sample uses Application Default Credentials for authentication.
+      @#    If not already done, install the gcloud CLI from
+      @#    https://cloud.google.com/sdk/ and run
+      @#    'gcloud beta auth application-default login'
+      @# 3. Install the Ruby client library and Application Default Credentials
+      @#    library by running 'gem install google-api-client' and
+      @#    'gem install googleauth'
+    @else
+      @# 2. Install the Ruby client library by running 'gem install google-api-client'
+    @end
     require 'googleauth'
     require 'google/apis/{@apiName}_{@apiVersion}'
+    @if context.getApiaryConfig.getAuthType.toString == "OAUTH_3L"
+
+      def authorize
+        @# {@TODO()} Implement this function to get authentication credentials.
+        @let authInstructionsUrl = context.getApiaryConfig.getAuthInstructionsUrl
+          @if authInstructionsUrl
+            @# See {@authInstructionsUrl}
+          @end
+        @end
+        @if context.getApiaryConfig.hasAuthScopes(method.getName)
+          @# Authorize using one of the following scopes in order to use this method:
+          @join scope : context.getApiaryConfig.getAuthScopes.get(method.getName)
+            @#   {@scope}
+          @end
+        @end
+        return nil
+      end
+    @end
 
     service = Google::Apis::{@ApiName}{@ApiVersion}::{@context.getServiceName}.new
-    service.authorization = {@"\"}
-        Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
-  @end
+    @switch context.getApiaryConfig.getAuthType.toString
+    @case "APPLICATION_DEFAULT_CREDENTIALS"
+      service.authorization = {@"\"}
+          Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+    @case "OAUTH_3L"
+      service.authorization = authorize
+    @case "API_KEY"
+      @# {@TODO()} Replace '{MY-API-KEY}'
+      service.key = '{MY-API-KEY}'
+    @end
 
+  @end
 
   {@initialize(method)}
 
