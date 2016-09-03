@@ -26,6 +26,8 @@ public abstract class GrpcStubView {
 
   public abstract String grpcClientTypeName();
 
+  public abstract List<String> methods();
+
   public static Builder newBuilder() {
     return new AutoValue_GrpcStubView.Builder();
   }
@@ -37,6 +39,8 @@ public abstract class GrpcStubView {
     public abstract Builder createStubFunctionName(String val);
 
     public abstract Builder grpcClientTypeName(String val);
+
+    public abstract Builder methods(List<String> val);
 
     public abstract GrpcStubView build();
   }

@@ -49,7 +49,6 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -392,6 +391,12 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
       stub.name(namer.getStubName(interfaze));
       stub.createStubFunctionName(namer.getCreateStubFunctionName(interfaze));
       stub.grpcClientTypeName(context.getTypeTable().getFullNameFor(interfaze));
+
+      List<String> methodNames = new ArrayList<>();
+      for (Method method : interfaze.getMethods()) {
+        methodNames.add(namer.getGrpcMethodName(method));
+      }
+      stub.methods(methodNames);
 
       stubs.add(stub.build());
     }

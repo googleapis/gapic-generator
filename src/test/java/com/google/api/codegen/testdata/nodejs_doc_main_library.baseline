@@ -126,34 +126,53 @@ function LibraryServiceApi(gaxGrpc, grpcClient, opts) {
       bundleDescriptors,
       {'x-goog-api-client': googleApiClient});
 
-  var stub = gaxGrpc.createStub(
-      servicePath,
-      port,
-      grpcClient.google.example.library.v1.LibraryService,
-      {sslCreds: sslCreds});
-  var methods = [
-    'createShelf',
-    'getShelf',
-    'listShelves',
-    'deleteShelf',
-    'mergeShelves',
-    'createBook',
-    'publishSeries',
-    'getBook',
-    'listBooks',
-    'deleteBook',
-    'updateBook',
-    'moveBook',
-    'listStrings',
-    'addComments',
-    'getBookFromArchive',
-    'updateBookIndex',
-    'addTag'
+  var libraryServiceStub = gaxGrpc.createStub(
+    servicePath,
+    port,
+    grpcClient.google.example.library.v1.LibraryService,
+    {sslCreds: sslCreds});
+  var libraryServiceStubMethods = [
+    'CreateShelf',
+    'GetShelf',
+    'ListShelves',
+    'DeleteShelf',
+    'MergeShelves',
+    'CreateBook',
+    'PublishSeries',
+    'GetBook',
+    'ListBooks',
+    'DeleteBook',
+    'UpdateBook',
+    'MoveBook',
+    'ListStrings',
+    'AddComments',
+    'GetBookFromArchive',
+    'UpdateBookIndex',
+    'StreamShelves',
+    'AddTag'
   ];
-  methods.forEach(function(methodName) {
+  libraryServiceStubMethods.forEach(function(methodName) {
     this['_' + methodName] = gax.createApiCall(
-        stub.then(function(stub) { return stub[methodName].bind(stub); }),
-        defaults[methodName]);
+      libraryServiceStub.then(function(libraryServiceStub) {
+        return libraryServiceStub[methodName].bind(libraryServiceStub);
+      }),
+      defaults[methodName]);
+  }.bind(this));
+
+  var labelerStub = gaxGrpc.createStub(
+    servicePath,
+    port,
+    grpcClient.google.tagger.v1.Labeler,
+    {sslCreds: sslCreds});
+  var labelerStubMethods = [
+    'AddLabel'
+  ];
+  labelerStubMethods.forEach(function(methodName) {
+    this['_' + methodName] = gax.createApiCall(
+      labelerStub.then(function(labelerStub) {
+        return labelerStub[methodName].bind(labelerStub);
+      }),
+      defaults[methodName]);
   }.bind(this));
 }
 
@@ -1023,6 +1042,52 @@ LibraryServiceApi.prototype.addTag = function addTag() {
     tag: args.tag
   };
   return this._addTag(req, args.options, args.callback);
+};
+
+/**
+ * Adds a label to the entity.
+ *
+ * @param {string} resource
+ *   REQUIRED: The resource which the label is being added to.
+ *   Resource is usually specified as a path, such as,
+ *   projects/{project}/zones/{zone}/disks/{disk}.
+ * @param {string} label
+ *   REQUIRED: The label to add.
+ * @param {gax.CallOptions=} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @param {function(?Error, ?Object)=} callback
+ *   The function which will be called with the result of the API call.
+ *
+ *   The second parameter to the callback is an object representing [AddLabelResponse]{@link AddLabelResponse}
+ * @returns {gax.EventEmitter} - the event emitter to handle the call
+ *   status.
+ *
+ * @example
+ *
+ * var api = libraryV1.libraryServiceApi();
+ * var formattedResource = api.bookPath("[SHELF]", "[BOOK]");
+ * var label = '';
+ * api.addLabel(formattedResource, label, function(err, response) {
+ *     if (err) {
+ *         console.error(err);
+ *         return;
+ *     }
+ *     // doThingsWith(response)
+ * });
+ */
+LibraryServiceApi.prototype.addLabel = function addLabel() {
+  var args = arguejs({
+    resource: String,
+    label: String,
+    options: [gax.CallOptions],
+    callback: [Function]
+  }, arguments);
+  var req = {
+    resource: args.resource,
+    label: args.label
+  };
+  return this._addLabel(req, args.options, args.callback);
 };
 
 function LibraryServiceApiBuilder(gaxGrpc) {

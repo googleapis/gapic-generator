@@ -231,21 +231,27 @@
       @end
       {@constructDefaults(service)}
 
-      var stub = gaxGrpc.createStub(
-          servicePath,
-          port,
-          grpcClient.{@service.getFullName},
-          {sslCreds: sslCreds});
-      var methods = [
-        @join method : context.getNonStreamingMethods(service) on {@","}.add(BREAK)
-          '{@methodName(method)}'
+      @let stubs = {@context.getStubs(service)}
+        @join stub : stubs on BREAK.add(BREAK)
+          var {@stub.name} = gaxGrpc.createStub(
+            servicePath,
+            port,
+            grpcClient.{@stub.grpcClientTypeName},
+            {sslCreds: sslCreds});
+          var {@stub.name}Methods = [
+            @join method : {@stub.methods} on {@","}.add(BREAK)
+                '{@method}'
+            @end
+          ];
+          {@stub.name}Methods.forEach(function(methodName) {
+            this['_' + methodName] = gax.createApiCall(
+              {@stub.name}.then(function({@stub.name}) {
+                return {@stub.name}[methodName].bind({@stub.name});
+              }),
+              defaults[methodName]);
+          }.bind(this));
         @end
-      ];
-      methods.forEach(function(methodName) {
-        this['_' + methodName] = gax.createApiCall(
-            stub.then(function(stub) { return stub[methodName].bind(stub); }),
-            defaults[methodName]);
-      }.bind(this));
+      @end
     }
   @end
 @end
@@ -328,7 +334,7 @@
 
 @private serviceMethodsSection(service)
   // Service calls
-  @join method : context.getNonStreamingMethods(service)
+  @join method : context.getNonStreamingMethodsV2(service)
 
     {@flattenedMethod(service, method)}
   @end
@@ -350,7 +356,7 @@
 
 @private flattenedMethod(service, method)
   @let serviceName = context.getApiWrapperName(service), \
-       documentation = comments(context.methodComments(method)), \
+       documentation = comments(context.methodComments(service, method)), \
        methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        requiredParams = methodConfig.getRequiredFields(), \
        optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig)
