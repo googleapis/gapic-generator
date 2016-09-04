@@ -14,12 +14,16 @@
  */
 package com.google.api.codegen.discovery.transformer.java;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.discovery.SampleConfig;
+import com.google.api.codegen.discovery.TypeInfo;
 import com.google.api.codegen.discovery.transformer.MethodToViewTransformer;
-import com.google.api.codegen.discovery.transformer.SampleParamTransformer;
-import com.google.api.codegen.discovery.transformer.SampleTypeTable;
+import com.google.api.codegen.discovery.transformer.SampleNamer;
 import com.google.api.codegen.discovery.transformer.SampleTransformerContext;
+import com.google.api.codegen.discovery.transformer.SampleTypeTable;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -51,21 +55,48 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
   }
 
   private SampleView getSample(SampleTransformerContext context) {
-    addSampleImports(context);
-    return SampleView.newBuilder()
-        .templateFileName(TEMPLATE_FILENAME)
-        .outputPath("output")
-        .apiTitle(context.getSampleConfig().apiTitle())
-        .apiName(context.getSampleConfig().apiName())
-        .apiVersion(context.getSampleConfig().apiVersion())
-        .params(SampleParamTransformer.generateSampleParams(context))
-        .imports(context.getTypeTable().getImports())
-        .build();
+    addStaticImports(context);
+    SampleConfig sampleConfig = context.getSampleConfig();
+    SampleTypeTable typeTable = context.getTypeTable();
+    SampleNamer namer = context.getNamer();
+
+    SampleView.Builder sampleView = SampleView.newBuilder();
+    sampleView.templateFileName(TEMPLATE_FILENAME);
+    sampleView.outputPath("output");
+    sampleView.apiTitle(sampleConfig.apiTitle());
+    sampleView.apiName(sampleConfig.apiName());
+    sampleView.apiVersion(sampleConfig.apiVersion());
+    sampleView.clientClassName(namer.getClientClassName(sampleConfig));
+    // Defaults...
+    sampleView.requestClassName("");
+    sampleView.responseClassName("");
+    sampleView.hasRequest(sampleConfig.methodInfo().hasRequest());
+    if (sampleConfig.methodInfo().hasRequest()) {
+      sampleView.requestClassName(
+          typeTable.getAndSaveNicknameFor(sampleConfig.methodInfo().requestType()));
+    }
+    sampleView.hasResponse(sampleConfig.methodInfo().hasResponse());
+    if (sampleConfig.methodInfo().hasResponse()) {
+      sampleView.responseClassName(
+          typeTable.getAndSaveNicknameFor(sampleConfig.methodInfo().responseType()));
+    }
+    List<TypeInfo> fields = sampleConfig.methodInfo().paramTypes();
+    List<String> paramVarNames = new ArrayList<String>();
+    for (TypeInfo field : fields) {
+      paramVarNames.add(namer.getParamVarName(field));
+    }
+    sampleView.paramVarNames(paramVarNames);
+    sampleView.imports(typeTable.getImports());
+
+    return sampleView.build();
   }
 
-  private void addSampleImports(SampleTransformerContext context) {
+  private void addStaticImports(SampleTransformerContext context) {
     SampleTypeTable typeTable = context.getTypeTable();
-    typeTable.saveNicknameFor("com.google.api.codegen.Swag");
-    typeTable.saveNicknameFor("com.google.api.codegen.Dab");
+    typeTable.saveNicknameFor("com.google.api.client.http.HttpTransport");
+    typeTable.saveNicknameFor("com.google.api.client.json.jackson2.JacksonFactory");
+    typeTable.saveNicknameFor("java.io.IOException");
+    typeTable.saveNicknameFor("java.security.GeneralSecurityException");
+    typeTable.saveNicknameFor("java.util.Collections");
   }
 }

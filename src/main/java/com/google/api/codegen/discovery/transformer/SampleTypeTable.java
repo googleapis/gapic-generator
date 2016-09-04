@@ -14,10 +14,12 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
-import com.google.api.codegen.discovery.TypeInfo;
+import java.util.List;
+
+import com.google.api.codegen.discovery.MessageTypeInfo;
+import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.protobuf.Method;
-import java.util.List;
 
 /**
  * Manages the imports for a set of fully-qualified type names.
@@ -37,7 +39,11 @@ public class SampleTypeTable implements SampleTypeFormatter {
   @Override
   public String getTypeName(String typeName) {
     // TODO(saicheems): Auto-generated method stub
-    return "wtf";
+    return "TODO";
+  }
+
+  public TypeName getMessageTypeName(MessageTypeInfo messageTypeInfo) {
+    return typeNameConverter.getMessageTypeName(messageTypeInfo);
   }
 
   @Override
@@ -45,13 +51,13 @@ public class SampleTypeTable implements SampleTypeFormatter {
     return typeFormatter.getMethodName(method);
   }
 
-  public String getTypeName(TypeInfo typeInfo) {
-    return typeNameConverter.getTypeName(typeInfo);
-  }
-
   @Override
   public String renderPrimitiveValue(String typeName, String value) {
     return typeFormatter.renderPrimitiveValue(typeName, value);
+  }
+
+  public String getAndSaveNicknameFor(MessageTypeInfo messageTypeInfo) {
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getMessageTypeName(messageTypeInfo));
   }
 
   public void saveNicknameFor(String fullName) {

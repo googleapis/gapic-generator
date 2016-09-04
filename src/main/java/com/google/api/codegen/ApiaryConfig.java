@@ -14,14 +14,6 @@
  */
 package com.google.api.codegen;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Table;
-import com.google.protobuf.Field;
-import com.google.protobuf.Type;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -30,11 +22,24 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Table;
+import com.google.protobuf.Field;
+import com.google.protobuf.Type;
+
 /**
  * ApiaryConfig contains additional information about discovery docs parsed by
  * {@link DiscoveryImporter} that do not easily fit into {@link com.google.api.Service} itself.
  */
 public class ApiaryConfig {
+  /**
+   * Maps synthetic names in DiscoveryImporter to real names.
+   */
+  private final Map<String, String> syntheticNameMapping = new HashMap<>();
+
   /**
    * Maps method name to an ordered list of parameters that the method takes.
    */
@@ -102,22 +107,32 @@ public class ApiaryConfig {
   private final Table<Type, String, Field> fields = HashBasedTable.<Type, String, Field>create();
 
   /*
-   * The service canonical name, or name if no canonical name.
+   * The API title.
+   */
+  private String apiTitle;
+
+  /*
+   * The API name.
+   */
+  private String apiName;
+
+  /*
+   * The API version.
+   */
+  private String apiVersion;
+
+  /*
+   * The service canonical name, or name if no canonical name
    */
   private String serviceCanonicalName;
 
   /*
-   * The service version string.
+   * The service version string
    */
   private String serviceVersion;
 
-  /*
-   * The title of the service.
-   */
-  private String serviceTitle;
-
-  public String getServiceTitle() {
-    return serviceTitle;
+  public Map<String, String> getSyntheticNameMapping() {
+    return syntheticNameMapping;
   }
 
   public ListMultimap<String, String> getMethodParams() {
@@ -160,6 +175,30 @@ public class ApiaryConfig {
     return mediaUpload;
   }
 
+  public String getApiTitle() {
+    return apiTitle;
+  }
+
+  public void setApiTitle(String apiTitle) {
+    this.apiTitle = apiTitle;
+  }
+
+  public String getApiName() {
+    return apiName;
+  }
+
+  public void setApiName(String apiName) {
+    this.apiName = apiName;
+  }
+
+  public String getApiVersion() {
+    return apiVersion;
+  }
+
+  public void setApiVersion(String apiVersion) {
+    this.apiVersion = apiVersion;
+  }
+
   public String getServiceCanonicalName() {
     return serviceCanonicalName;
   }
@@ -174,10 +213,6 @@ public class ApiaryConfig {
 
   public void setServiceVersion(String serviceVersion) {
     this.serviceVersion = serviceVersion;
-  }
-
-  public void setServiceTitle(String serviceTitle) {
-    this.serviceTitle = serviceTitle;
   }
 
   /**

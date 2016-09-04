@@ -14,6 +14,9 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
+import com.google.api.codegen.discovery.SampleConfig;
+import com.google.api.codegen.discovery.TypeInfo;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NameFormatterDelegator;
 
@@ -22,10 +25,28 @@ import com.google.api.codegen.util.NameFormatterDelegator;
  */
 public class SampleNamer extends NameFormatterDelegator {
 
-  private SampleTypeFormatter typeFormatter;
+  private NameFormatter nameFormatter;
+  private SampleTypeFormatter sampleTypeFormatter;
 
-  public SampleNamer(NameFormatter languageNamer, SampleTypeFormatter typeFormatter) {
-    super(languageNamer);
-    this.typeFormatter = typeFormatter;
+  public SampleNamer(NameFormatter nameFormatter, SampleTypeFormatter sampleTypeFormatter) {
+    super(nameFormatter);
+    this.nameFormatter = nameFormatter;
+    this.sampleTypeFormatter = sampleTypeFormatter;
+  }
+
+  private String getNotImplementedString(String feature) {
+    return "$ NOT IMPLEMENTED: " + feature + " $";
+  }
+
+  public String getClientClassName(SampleConfig sampleConfig) {
+    String name = sampleConfig.apiName();
+    // TODO(saicheems): WTF is this for?? Why convert to class name here...
+    // Converts name to a lower camel format Name (b/c name is lower camel) which is then converted
+    // to upper camel in util.java.NameFormatter...
+    return className(Name.lowerCamel(name));
+  }
+
+  public String getParamVarName(TypeInfo typeInfo) {
+    return typeInfo.name();
   }
 }

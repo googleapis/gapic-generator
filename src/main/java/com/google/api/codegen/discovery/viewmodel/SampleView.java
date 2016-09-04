@@ -31,6 +31,7 @@ public abstract class SampleView implements ViewModel {
 
   @Override
   public String resourceRoot() {
+    // TODO(saicheems): Needed?
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 
@@ -40,9 +41,19 @@ public abstract class SampleView implements ViewModel {
 
   public abstract String apiVersion();
 
-  public abstract List<SampleParamView> params();
-
   public abstract List<String> imports();
+
+  public abstract String clientClassName();
+
+  public abstract boolean hasRequest();
+
+  public abstract String requestClassName();
+
+  public abstract boolean hasResponse();
+
+  public abstract String responseClassName();
+
+  public abstract List<String> paramVarNames();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleView.Builder();
@@ -61,9 +72,19 @@ public abstract class SampleView implements ViewModel {
 
     public abstract Builder apiVersion(String val);
 
-    public abstract Builder params(List<SampleParamView> val);
-
     public abstract Builder imports(List<String> val);
+
+    public abstract Builder clientClassName(String val);
+
+    public abstract Builder requestClassName(String val);
+
+    public abstract Builder hasRequest(boolean val);
+
+    public abstract Builder responseClassName(String val);
+
+    public abstract Builder hasResponse(boolean val);
+
+    public abstract Builder paramVarNames(List<String> val);
 
     public abstract SampleView build();
   }

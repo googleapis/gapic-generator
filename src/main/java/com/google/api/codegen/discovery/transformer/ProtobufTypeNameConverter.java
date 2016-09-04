@@ -14,7 +14,9 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
+import com.google.api.codegen.discovery.MessageTypeInfo;
 import com.google.api.codegen.discovery.TypeInfo;
+import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
 import com.google.protobuf.Field;
 
@@ -26,7 +28,9 @@ public interface ProtobufTypeNameConverter {
   /**
    * Provides a TypeName for the given TypeInfo.
    */
-  String getTypeName(TypeInfo kind);
+  TypeName getTypeName(TypeInfo typeInfo);
+
+  TypeName getMessageTypeName(MessageTypeInfo messageTypeInfo);
 
   /**
    * Provides a TypedValue containing the zero value of the given Field.Kind.

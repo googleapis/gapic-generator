@@ -14,10 +14,15 @@
  */
 package com.google.api.codegen.discovery.transformer.java;
 
-import com.google.api.codegen.discovery.transformer.SampleTypeFormatterImpl;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.api.codegen.discovery.SampleConfig;
 import com.google.api.codegen.discovery.transformer.SampleNamer;
+import com.google.api.codegen.discovery.transformer.SampleTypeFormatterImpl;
+import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.java.JavaNameFormatter;
-import com.google.api.codegen.util.java.JavaTypeTable;
 
 /**
  * TODO(saicheems)

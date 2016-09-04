@@ -18,21 +18,46 @@
   @join import : sampleClass.imports
     import {@import};
   @end
-  
+
   class Main {
-    public static void main(String[] args) {
-      {@sampleParams(sampleClass)}
+    public static void main(String[] args) throws IOException, GeneralSecurityException {
+      // TODO: ...
+      GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+      // TODO: ...
+      if (credential.createScopedRequired()) {
+        credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+      }
+
+      HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+      JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+      {@sampleClass.clientClassName} service = new {@sampleClass.clientClassName}.Builder(httpTransport, jsonFactory, credential)
+          .setApplicationName("Sample")
+          .build();
+
+      @if sampleClass.hasRequest
+        {@sampleClass.requestClassName} request = {@sampleClass.clientClassName}.method({@paramList(sampleClass.paramVarNames)})
+      @else
+        {@sampleClass.clientClassName}.method({@paramList(sampleClass.paramVarNames)})
+      @end
     }
   }
 @end
 
-@private sampleParams(sampleClass)
-  @join param : sampleClass.params
-    @join line : util.getDocLines(param.doc, 100)
-      // {@line}
-    @end
-    
-    {@param.type} {@param.name} = 0;
-    
+@private paramList(params)
+  @join param : params on ", "
+    {@param}
   @end
 @end
+
+#@private sampleParams(sampleClass)
+#  @join param : sampleClass.params
+#    @join line : util.getDocLines(param.doc, 100)
+#      // {@line}
+#    @end
+#    
+#    {@param.type} {@param.name} = 0;
+#    
+#  @end
+#@end

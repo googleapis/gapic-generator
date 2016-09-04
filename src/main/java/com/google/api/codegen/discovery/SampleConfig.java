@@ -29,43 +29,10 @@ public abstract class SampleConfig {
 
   public static SampleConfig createSampleConfig(Method method, ApiaryConfig apiaryConfig) {
     Builder sampleConfig = newBuilder();
-    sampleConfig.apiTitle(apiaryConfig.getServiceTitle());
-    sampleConfig.apiName(apiaryConfig.getServiceCanonicalName());
-    sampleConfig.apiVersion(apiaryConfig.getServiceVersion());
-
-    MethodInfo.Builder methodInfo = MethodInfo.newBuilder();
-    String methodName = method.getName();
-    String requestTypeUrl = method.getRequestTypeUrl();
-    Type methodType = apiaryConfig.getType(requestTypeUrl);
-    methodInfo.name(methodName);
-    methodInfo.resources(apiaryConfig.getResources(methodName));
-
-    List<TypeInfo> params = new ArrayList<>();
-    for (String param : apiaryConfig.getMethodParams(methodName)) {
-      if (param.equals(DiscoveryImporter.REQUEST_FIELD_NAME)) {
-        continue;
-      }
-      Field field = apiaryConfig.getField(methodType, param);
-
-      TypeInfo.Builder typeInfo = TypeInfo.newBuilder();
-      typeInfo.name(param);
-      typeInfo.kind(field.getKind());
-      typeInfo.doc(apiaryConfig.getDescription(requestTypeUrl, param));
-
-      boolean isMap = apiaryConfig.getAdditionalProperties(requestTypeUrl, param) != null;
-      boolean isArray = !isMap && (field.getCardinality() == Cardinality.CARDINALITY_REPEATED);
-
-      typeInfo.isMap(isMap);
-      typeInfo.isArray(isArray);
-
-      typeInfo.mapKey(null);
-      typeInfo.mapValue(null);
-
-      params.add(typeInfo.build());
-    }
-    methodInfo.params(params);
-
-    sampleConfig.methodInfo(methodInfo.build());
+    sampleConfig.apiTitle(apiaryConfig.getApiTitle());
+    sampleConfig.apiName(apiaryConfig.getApiName());
+    sampleConfig.apiVersion(apiaryConfig.getApiVersion());
+    sampleConfig.methodInfo(MethodInfo.createMethodInfo(method, apiaryConfig));
     return sampleConfig.build();
   }
 

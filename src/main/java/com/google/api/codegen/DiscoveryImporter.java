@@ -118,12 +118,12 @@ public class DiscoveryImporter {
       docs.setDocumentationRootUrl(disco.get("documentationLink").asText());
     }
     String title = disco.get("title").asText();
-    // TODO(saicheems): I'm setting this so it's caught during review - I
-    // think that we should use title in general as the name - I've noticed
-    // that canonicalName can be inconsistent (It's "Ad Exchange Buyer" in
-    // adexchangebuyer, and "reports" in adminreports)
-    importer.config.setServiceTitle(title);
-    docs.setSummary(title);
+    builder.setTitle(title);
+    if (disco.get("canonicalName") != null) {
+      docs.setSummary(disco.get("canonicalName").asText());
+    } else {
+      docs.setSummary(title);
+    }
     // substitute Documentation overview field for lack of API revision field
     if (disco.get("revision") != null) {
       docs.setOverview(disco.get("revision").asText());
@@ -145,14 +145,21 @@ public class DiscoveryImporter {
     Service serv = builder.addApis(apiBuilder).build();
     importer.service = serv;
 
+    importer.config.setApiTitle(serv.getTitle());
+    importer.config.setApiName(serv.getApis(0).getName());
+    importer.config.setApiVersion(serv.getApis(0).getVersion());
+
     importer.config.getTypes().putAll(importer.types);
     for (Type type : importer.types.values()) {
       for (Field field : type.getFieldsList()) {
         importer.config.getFields().put(type, field.getName(), field);
       }
     }
-
-    importer.config.setServiceCanonicalName(disco.get("name").asText());
+    if (disco.get("canonicalName") != null) {
+      importer.config.setServiceCanonicalName(disco.get("canonicalName").asText());
+    } else {
+      importer.config.setServiceCanonicalName(disco.get("name").asText());
+    }
     importer.config.setServiceVersion(disco.get("version").asText());
 
     return importer;
@@ -400,6 +407,7 @@ public class DiscoveryImporter {
 
     if (root.get("request") != null) {
       typeBuilder.addFields(fieldFrom(synthetic, REQUEST_FIELD_NAME, root.get("request")));
+      config.getSyntheticNameMapping().put(synthetic, root.get("request").get("$ref").asText());
       config.getMethodParams().put(methodName, REQUEST_FIELD_NAME);
     }
 
