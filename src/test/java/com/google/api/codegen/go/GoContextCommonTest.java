@@ -17,7 +17,6 @@ package com.google.api.codegen.go;
 import com.google.common.truth.Truth;
 import com.google.common.base.Joiner;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

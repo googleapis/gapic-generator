@@ -16,9 +16,6 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.gax.core.RetrySettings.Builder;
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableSet;
-
-import io.grpc.Status.Code;
 
 import org.joda.time.Duration;
 
