@@ -14,12 +14,13 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
-import java.util.List;
-
 import com.google.api.codegen.discovery.MessageTypeInfo;
+import com.google.api.codegen.discovery.TypeInfo;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
+import com.google.api.codegen.util.TypedValue;
 import com.google.protobuf.Method;
+import java.util.List;
 
 /**
  * Manages the imports for a set of fully-qualified type names.
@@ -40,6 +41,14 @@ public class SampleTypeTable implements SampleTypeFormatter {
   public String getTypeName(String typeName) {
     // TODO(saicheems): Auto-generated method stub
     return "TODO";
+  }
+
+  public TypeName getTypeName(TypeInfo typeInfo) {
+    return typeNameConverter.getTypeName(typeInfo);
+  }
+
+  public TypedValue getZeroValue(TypeInfo typeInfo) {
+    return typeNameConverter.getZeroValue(typeInfo);
   }
 
   public TypeName getMessageTypeName(MessageTypeInfo messageTypeInfo) {

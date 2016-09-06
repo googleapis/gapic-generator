@@ -33,9 +33,9 @@ public interface ProtobufTypeNameConverter {
   TypeName getMessageTypeName(MessageTypeInfo messageTypeInfo);
 
   /**
-   * Provides a TypedValue containing the zero value of the given Field.Kind.
+   * Provides a TypedValue containing the zero value of the given TypeInfo.
    */
-  TypedValue getZeroValue(Field.Kind kind);
+  TypedValue getZeroValue(TypeInfo typeInfo);
 
   /**
    * Renders the given value if it is a primitive type.

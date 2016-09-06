@@ -36,13 +36,28 @@
           .setApplicationName("Sample")
           .build();
 
-      @if sampleClass.hasRequest
-        {@sampleClass.requestClassName} request = {@sampleClass.clientClassName}.method({@paramList(sampleClass.paramVarNames)})
-      @else
-        {@sampleClass.clientClassName}.method({@paramList(sampleClass.paramVarNames)})
+      @if sampleClass.params
+        @join param : sampleClass.params
+          @join line : util.getDocLines(param.doc, 100)
+            // {@line}
+          @end
+
+          {@param.type} {@param.name} = {@param.defaultValue};
+
+        @end
+      @end
+      {@sampleClass.requestClassName} request = {@sampleClass.clientClassName}.{@resourcesCalls(sampleClass.resources)}({@paramList(sampleClass.paramVarNames)})
+      @if sampleClass.hasResponse
+        {@sampleClass.responseClassName} response = request.execute();
       @end
     }
   }
+@end
+
+@private resourcesCalls(resources)
+  @join resource : resources on "()."
+    {@resource}
+  @end
 @end
 
 @private paramList(params)
@@ -51,13 +66,12 @@
   @end
 @end
 
-#@private sampleParams(sampleClass)
-#  @join param : sampleClass.params
-#    @join line : util.getDocLines(param.doc, 100)
-#      // {@line}
-#    @end
-#    
-#    {@param.type} {@param.name} = 0;
-#    
-#  @end
-#@end
+@private sampleParams(sampleClass)
+  @join param : sampleClass.params on @BREAK
+    @join line : util.getDocLines(param.doc, 100)
+      // {@line}
+    @end
+
+    {@param.type} {@param.name} = 0;
+  @end
+@end

@@ -123,9 +123,18 @@ class JavaProtobufTypeNameConverter implements ProtobufTypeNameConverter {
   }
 
   @Override
-  public TypedValue getZeroValue(Field.Kind kind) {
+  public TypedValue getZeroValue(TypeInfo typeInfo) {
     // TODO(saicheems)
-    return null;
+    if (typeInfo.isMap()) {
+      return TypedValue.create(typeNameConverter.getTypeName("java.util.HashMap"), "new %s<>()");
+    }
+    if (typeInfo.isArray()) {
+      return TypedValue.create(typeNameConverter.getTypeName("java.util.ArrayList"), "new %s<>()");
+    }
+    if (PRIMITIVE_ZERO_VALUE.containsKey(typeInfo.kind())) {
+      return TypedValue.create(getTypeName(typeInfo), PRIMITIVE_ZERO_VALUE.get(typeInfo.kind()));
+    }
+    throw new IllegalArgumentException("unknown type kind: " + typeInfo.kind());
   }
 
   @Override

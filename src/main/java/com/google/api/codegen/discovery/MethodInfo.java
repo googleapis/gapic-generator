@@ -14,17 +14,16 @@
  */
 package com.google.api.codegen.discovery;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.auto.value.AutoValue;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class MethodInfo {
@@ -36,8 +35,9 @@ public abstract class MethodInfo {
     String methodName = method.getName();
     methodInfo.name(methodName);
     // Initialize...
-    methodInfo.hasRequest(false);
-    methodInfo.requestType(null);
+    methodInfo.requestType(MessageTypeInfo.createMessageTypeInfo(methodName));
+    methodInfo.hasRequestBody(false);
+    methodInfo.requestBodyType(null);
     methodInfo.hasResponse(true);
     methodInfo.responseType(null);
 
@@ -45,8 +45,8 @@ public abstract class MethodInfo {
     for (String paramName : apiaryConfig.getMethodParams(methodName)) {
       Type type = apiaryConfig.getType(method.getRequestTypeUrl());
       if (paramName == DiscoveryImporter.REQUEST_FIELD_NAME) {
-        methodInfo.hasRequest(true);
-        methodInfo.requestType(
+        methodInfo.hasRequestBody(true);
+        methodInfo.requestBodyType(
             MessageTypeInfo.createMessageTypeInfo(type, method, apiaryConfig, true));
         continue;
       }
@@ -73,10 +73,12 @@ public abstract class MethodInfo {
 
   public abstract List<TypeInfo> paramTypes();
 
-  public abstract boolean hasRequest();
+  public abstract MessageTypeInfo requestType();
+
+  public abstract boolean hasRequestBody();
 
   @Nullable
-  public abstract MessageTypeInfo requestType();
+  public abstract MessageTypeInfo requestBodyType();
 
   public abstract boolean hasResponse();
 
@@ -94,9 +96,11 @@ public abstract class MethodInfo {
 
     public abstract Builder paramTypes(List<TypeInfo> val);
 
-    public abstract Builder hasRequest(boolean val);
-
     public abstract Builder requestType(MessageTypeInfo val);
+
+    public abstract Builder hasRequestBody(boolean val);
+
+    public abstract Builder requestBodyType(MessageTypeInfo val);
 
     public abstract Builder hasResponse(boolean val);
 

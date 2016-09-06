@@ -15,9 +15,11 @@
 package com.google.api.codegen.discovery;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.util.Name;
 import com.google.auto.value.AutoValue;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
@@ -25,6 +27,26 @@ import com.google.protobuf.Type;
 
 @AutoValue
 public abstract class MessageTypeInfo {
+
+  public static MessageTypeInfo createMessageTypeInfo(String fullName) {
+    ArrayList<String> resources = new ArrayList<>(Arrays.asList(fullName.split("\\.")));
+
+    String shortName = resources.remove(resources.size() - 1);
+    // This method should only be used to create a MessageTypeInfo from a
+    // method's name, and so the final segment of the name should always be in
+    // lower-camel format. Regardless, we enforce via try-catch just in case.
+    try {
+      shortName = Name.lowerCamel(shortName).toUpperCamel();
+    } catch (IllegalArgumentException e) {
+    }
+    String packagePath = String.join(".", resources);
+
+    return MessageTypeInfo.newBuilder()
+        .name(shortName)
+        .packagePath(packagePath)
+        .fields(new ArrayList<TypeInfo>())
+        .build();
+  }
 
   public static MessageTypeInfo createMessageTypeInfo(
       Type type, Method method, ApiaryConfig apiaryConfig, boolean isRequestType) {
@@ -37,7 +59,6 @@ public abstract class MessageTypeInfo {
     } else {
       messageTypeInfo.name(method.getResponseTypeUrl());
     }
-    System.out.println(method.getName() + ": " + apiaryConfig.getResources(method.getName()));
     messageTypeInfo.packagePath(method.getName());
     List<TypeInfo> fields = new ArrayList<>();
     for (Field field : type.getFieldsList()) {

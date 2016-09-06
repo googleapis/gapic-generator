@@ -67,13 +67,16 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
     sampleView.apiName(sampleConfig.apiName());
     sampleView.apiVersion(sampleConfig.apiVersion());
     sampleView.clientClassName(namer.getClientClassName(sampleConfig));
+    sampleView.resources(sampleConfig.resources());
     // Defaults...
-    sampleView.requestClassName("");
+    sampleView.requestClassName(
+        typeTable.getAndSaveNicknameFor(sampleConfig.methodInfo().requestType()));
+    sampleView.requestBodyClassName("");
     sampleView.responseClassName("");
-    sampleView.hasRequest(sampleConfig.methodInfo().hasRequest());
-    if (sampleConfig.methodInfo().hasRequest()) {
-      sampleView.requestClassName(
-          typeTable.getAndSaveNicknameFor(sampleConfig.methodInfo().requestType()));
+    sampleView.hasRequestBody(sampleConfig.methodInfo().hasRequestBody());
+    if (sampleConfig.methodInfo().hasRequestBody()) {
+      sampleView.requestBodyClassName(
+          typeTable.getAndSaveNicknameFor(sampleConfig.methodInfo().requestBodyType()));
     }
     sampleView.hasResponse(sampleConfig.methodInfo().hasResponse());
     if (sampleConfig.methodInfo().hasResponse()) {
@@ -86,9 +89,50 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
       paramVarNames.add(namer.getParamVarName(field));
     }
     sampleView.paramVarNames(paramVarNames);
+
+    ArrayList<Param> params = new ArrayList<>();
+    for (TypeInfo field : sampleConfig.methodInfo().paramTypes()) {
+      params.add(
+          new Param(
+              typeTable.getTypeName(field).getNickname(),
+              field.name(),
+              field.doc(),
+              typeTable.getZeroValue(field).getValuePattern()));
+    }
+    sampleView.params(params);
     sampleView.imports(typeTable.getImports());
 
     return sampleView.build();
+  }
+
+  public class Param {
+    private String type;
+    private String name;
+    private String doc;
+    private String defaultValue;
+
+    public Param(String type, String name, String doc, String defaultValue) {
+      this.type = type;
+      this.name = name;
+      this.doc = doc;
+      this.defaultValue = defaultValue;
+    }
+
+    public String type() {
+      return this.type;
+    }
+
+    public String name() {
+      return this.name;
+    }
+
+    public String doc() {
+      return this.doc;
+    }
+
+    public String defaultValue() {
+      return this.defaultValue;
+    }
   }
 
   private void addStaticImports(SampleTransformerContext context) {
