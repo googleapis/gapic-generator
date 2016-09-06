@@ -80,7 +80,7 @@ public class InterfaceConfig {
     SmokeTestConfig smokeTestConfig =
         createSmokeTestConfig(diagCollector, iface, interfaceConfigProto);
 
-    if (collectionConfigs == null || methodConfigMap == null || diagCollector.hasErrors()) {
+    if (diagCollector.hasErrors()) {
       return null;
     } else {
       return new InterfaceConfig(
