@@ -15,6 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +29,7 @@ import java.util.Map;
  */
 public class LanguageGenerator {
 
-  private static final String DEFAULT_PACKAGE_SEPARATOR = "\\.";
+  private static final String DEFAULT_PACKAGE_SEPARATOR = ".";
 
   private static final String CONFIG_KEY_PACKAGE_NAME = "package_name";
 
@@ -39,18 +40,17 @@ public class LanguageGenerator {
         Arrays.asList(
             new RewriteRule("^google", "com.google.cloud"),
             new RewriteRule("(.v[^.]+)$", ".spi$1"));
-    List<RewriteRule> phpRewriteRules =
-        Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud"));
-    List<RewriteRule> pythonRewriteRules =
+    List<RewriteRule> commonRewriteRules =
         Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud"));
     LANGUAGE_FORMATTERS =
         ImmutableMap.<String, LanguageFormatter>builder()
             .put("java", new SimpleLanguageFormatter(".", javaRewriteRules, false))
-            .put("python", new SimpleLanguageFormatter(".", pythonRewriteRules, false))
+            .put("python", new SimpleLanguageFormatter(".", commonRewriteRules, false))
             .put("go", new GoLanguageFormatter())
             .put("csharp", new SimpleLanguageFormatter(".", null, true))
-            .put("ruby", new SimpleLanguageFormatter("::", null, true))
-            .put("php", new SimpleLanguageFormatter("\\", phpRewriteRules, true))
+            .put("ruby", new SimpleLanguageFormatter("::", commonRewriteRules, true))
+            .put("php", new SimpleLanguageFormatter("\\", commonRewriteRules, true))
+            .put("nodejs", new NodeJSLanguageFormatter())
             .build();
   }
 
@@ -70,6 +70,16 @@ public class LanguageGenerator {
 
   private static String firstCharToUpperCase(String string) {
     return Character.toUpperCase(string.charAt(0)) + string.substring(1);
+  }
+
+  /**
+   * Returns true if it is a Google Cloud API.
+   */
+  private static boolean isApiGoogleCloud(List<String> nameComponents) {
+    int size = nameComponents.size();
+    return size >= 3
+        && nameComponents.get(0).equals("google")
+        && nameComponents.get(size - 1).startsWith("v");
   }
 
   private interface LanguageFormatter {
@@ -98,7 +108,7 @@ public class LanguageGenerator {
         packageName = rewriteRule.rewrite(packageName);
       }
       List<String> elements = new LinkedList<>();
-      for (String component : packageName.split(DEFAULT_PACKAGE_SEPARATOR)) {
+      for (String component : Splitter.on(DEFAULT_PACKAGE_SEPARATOR).split(packageName)) {
         if (capitalize) {
           elements.add(firstCharToUpperCase(component));
         } else {
@@ -111,24 +121,33 @@ public class LanguageGenerator {
 
   private static class GoLanguageFormatter implements LanguageFormatter {
     public String getFormattedPackageName(String packageName) {
-      List<String> nameComponents = new ArrayList<>();
-      nameComponents.addAll(Arrays.asList(packageName.split(DEFAULT_PACKAGE_SEPARATOR)));
+      List<String> nameComponents = Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName);
 
       // If the name follows the pattern google.foo.bar.v1234,
       // we reformat it into cloud.google.com.
       // google.logging.v2 => cloud.google.com/go/logging/apiv2
       // Otherwise, fall back to backup
-      int size = nameComponents.size();
-      if (size < 3
-          || !nameComponents.get(0).equals("google")
-          || !nameComponents.get(size - 1).startsWith("v")) {
+      if (!isApiGoogleCloud(nameComponents)) {
         nameComponents.add(0, "google.golang.org");
         return Joiner.on("/").join(nameComponents);
       }
+      int size = nameComponents.size();
       return "cloud.google.com/go/"
           + Joiner.on("/").join(nameComponents.subList(1, size - 1))
           + "/api"
           + nameComponents.get(size - 1);
+    }
+  }
+
+  private static class NodeJSLanguageFormatter implements LanguageFormatter {
+    public String getFormattedPackageName(String packageName) {
+      List<String> nameComponents = Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName);
+      // NodeJS uses "@google-cloud/<APINAME>" for the package name of a Google Cloud API.
+      // Otherwise falls back to a pattern of "foo-bar" style with "gax-" prefix.
+      if (!isApiGoogleCloud(nameComponents)) {
+        return "gax-" + Joiner.on("-").join(nameComponents);
+      }
+      return "@google-cloud/" + nameComponents.get(nameComponents.size() - 2);
     }
   }
 
