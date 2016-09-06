@@ -27,7 +27,6 @@ import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
-import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.util.testing.JavaValueProducer;
@@ -89,6 +88,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
       SurfaceTransformerContext context = createContext(service, apiConfig);
       views.add(createUnitTestClassView(context));
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
+        context = createContext(service, apiConfig);
         views.add(createSmokeTestClassView(context));
       }
     }
@@ -105,13 +105,14 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   ///////////////////////////////////// Smoke Test ///////////////////////////////////////
 
   private SmokeTestClassView createSmokeTestClassView(SurfaceTransformerContext context) {
-    context = context.withNewTypeTable();
     addSmokeTestImports(context);
 
     Interface service = context.getInterface();
     String outputPath = pathMapper.getOutputPath(service, context.getApiConfig());
     SurfaceNamer namer = context.getNamer();
     String name = namer.getSmokeTestClassName(service);
+    MethodTransformerContext methodContext =
+        context.asMethodContext(context.getInterfaceConfig().getSmokeTestConfig().getMethod());
 
     SmokeTestClassView testClass =
         SmokeTestClassView.newBuilder()
@@ -121,19 +122,19 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .name(name)
             .outputPath(namer.getSourceFilePath(outputPath, name))
             .templateFileName(SMOKE_TEST_TEMPLATE_FILE)
-            .method(createSmokeTestMethodView(context))
+            .method(createSmokeTestMethodView(methodContext))
             // Imports must be done as the last step to catch all imports.
             .imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()))
             .build();
     return testClass;
   }
 
-  private TestMethodView createSmokeTestMethodView(SurfaceTransformerContext context) {
+  private TestMethodView createSmokeTestMethodView(MethodTransformerContext context) {
     Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
     SurfaceNamer namer = context.getNamer();
 
     ApiMethodType methodType = ApiMethodType.FlattenedMethod;
-    if (context.asMethodContext(method).getMethodConfig().isPageStreaming()) {
+    if (context.getMethodConfig().isPageStreaming()) {
       methodType = ApiMethodType.PagedFlattenedMethod;
     }
 
@@ -234,7 +235,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         initCodeTransformer.generateRequestAssertViews(methodContext, paramFields);
 
     return GapicSurfaceTestCaseView.newBuilder()
-        .name(getTestName(testNameTable, namer, method))
+        .name(namer.getTestCaseName(testNameTable, method))
         .surfaceMethodName(namer.getApiMethodName(method))
         .hasReturnValue(!ServiceMessages.s_isEmptyType(method.getOutputType()))
         .requestTypeName(requestTypeName)
@@ -261,11 +262,6 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .getTypeTable()
             .getAndSaveNicknameFor(methodContext.getMethod().getOutputType());
     return MockGrpcResponseView.newBuilder().typeName(typeName).initCode(initCodeView).build();
-  }
-
-  private String getTestName(SymbolTable symbolTable, SurfaceNamer namer, Method method) {
-    Name name = symbolTable.getNewSymbol(Name.lowerCamel(namer.getTestCaseName(method)));
-    return namer.methodName(name);
   }
 
   ///////////////////////////////////// Mock Service /////////////////////////////////////////

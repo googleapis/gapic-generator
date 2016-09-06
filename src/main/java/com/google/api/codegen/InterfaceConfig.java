@@ -77,7 +77,8 @@ public class InterfaceConfig {
       methodConfigs = createMethodConfigs(methodConfigMap, interfaceConfigProto);
     }
 
-    SmokeTestConfig smokeTestConfig = createSmokeTestConfig(iface, interfaceConfigProto);
+    SmokeTestConfig smokeTestConfig =
+        createSmokeTestConfig(diagCollector, iface, interfaceConfigProto);
 
     if (collectionConfigs == null || methodConfigMap == null) {
       return null;
@@ -93,9 +94,10 @@ public class InterfaceConfig {
   }
 
   private static SmokeTestConfig createSmokeTestConfig(
-      Interface iface, InterfaceConfigProto proto) {
-    if (proto.hasSmokeTest()) {
-      return SmokeTestConfig.createSmokeTestConfig(iface, proto.getSmokeTest());
+      DiagCollector diagCollector, Interface iface, InterfaceConfigProto interfaceConfigProto) {
+    if (interfaceConfigProto.hasSmokeTest()) {
+      return SmokeTestConfig.createSmokeTestConfig(
+          iface, interfaceConfigProto.getSmokeTest(), diagCollector);
     } else {
       return null;
     }

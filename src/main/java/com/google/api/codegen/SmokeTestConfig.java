@@ -14,14 +14,14 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.tools.framework.model.Diag;
+import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
-
+import com.google.api.tools.framework.model.SimpleLocation;
 import java.util.List;
 
-/**
- * SmokeTestConfig represents the smoke test configuration for a method.
- */
+/** SmokeTestConfig represents the smoke test configuration for a method. */
 public class SmokeTestConfig {
   private final Method method;
   private final List<String> initFields;
@@ -32,32 +32,30 @@ public class SmokeTestConfig {
   }
 
   public static SmokeTestConfig createSmokeTestConfig(
-      Interface service, SmokeTestConfigProto proto) {
+      Interface service, SmokeTestConfigProto smokeTestConfigProto, DiagCollector diagCollector) {
     Method testedMethod = null;
     for (Method method : service.getMethods()) {
-      if (method.getSimpleName().equals(proto.getMethod())) {
+      if (method.getSimpleName().equals(smokeTestConfigProto.getMethod())) {
         testedMethod = method;
         break;
       }
     }
 
     if (testedMethod != null) {
-      return new SmokeTestConfig(testedMethod, proto.getInitFieldsList());
+      return new SmokeTestConfig(testedMethod, smokeTestConfigProto.getInitFieldsList());
     } else {
-      throw new RuntimeException("The configured smoke test method does not exist.");
+      diagCollector.addDiag(
+          Diag.error(SimpleLocation.TOPLEVEL, "The configured smoke test method does not exist."));
+      return null;
     }
   }
 
-  /**
-   * Returns a list of initialized fields configuration.
-   */
+  /** Returns a list of initialized fields configuration. */
   public List<String> getInitFields() {
     return initFields;
   }
 
-  /**
-   * Returns the method that is used in the smoke test.
-   */
+  /** Returns the method that is used in the smoke test. */
   public Method getMethod() {
     return method;
   }

@@ -116,17 +116,14 @@ public class InitCodeTransformer {
   }
 
   public InitCodeView generateSmokeTestInitCode(
-      SurfaceTransformerContext context, SymbolTable table) {
-    SmokeTestConfig testConfig = context.getInterfaceConfig().getSmokeTestConfig();
+      MethodTransformerContext methodContext, SymbolTable table) {
+    SmokeTestConfig testConfig = methodContext.getInterfaceConfig().getSmokeTestConfig();
     Method method = testConfig.getMethod();
-    MethodTransformerContext methodContext =
-        context.asMethodContext(context.getInterfaceConfig().getSmokeTestConfig().getMethod());
     Map<String, Object> initFieldStructure =
         createSmokeTestInitMap(testConfig.getInitFields(), methodContext);
 
     ArrayList<Field> fields = new ArrayList<>();
     for (Field field : method.getInputMessage().getFields()) {
-      System.out.println(field.getSimpleName());
       if (testConfig.getInitFields().contains(field.getSimpleName())) {
         fields.add(field);
       }

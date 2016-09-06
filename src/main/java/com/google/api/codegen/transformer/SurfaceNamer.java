@@ -22,6 +22,7 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NameFormatterDelegator;
 import com.google.api.codegen.util.NamePath;
+import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
@@ -459,8 +460,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /**
    * The test case name for the given method.
    */
-  public String getTestCaseName(Method method) {
-    return methodName(Name.upperCamel(method.getSimpleName(), "Test"));
+  public String getTestCaseName(SymbolTable symbolTable, Method method) {
+    Name testCaseName = symbolTable.getNewSymbol(Name.upperCamel(method.getSimpleName(), "Test"));
+    return methodName(testCaseName);
   }
 
   /** The unit test class name for the given API service. */
