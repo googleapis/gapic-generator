@@ -75,7 +75,7 @@ public class LanguageGenerator {
   /**
    * Returns true if it is a Google Cloud API.
    */
-  private static boolean IsApiGoogleCloud(List<String> nameComponents) {
+  private static boolean isApiGoogleCloud(List<String> nameComponents) {
     int size = nameComponents.size();
     return size >= 3
         && nameComponents.get(0).equals("google")
@@ -127,7 +127,7 @@ public class LanguageGenerator {
       // we reformat it into cloud.google.com.
       // google.logging.v2 => cloud.google.com/go/logging/apiv2
       // Otherwise, fall back to backup
-      if (!IsApiGoogleCloud(nameComponents)) {
+      if (!isApiGoogleCloud(nameComponents)) {
         nameComponents.add(0, "google.golang.org");
         return Joiner.on("/").join(nameComponents);
       }
@@ -144,7 +144,7 @@ public class LanguageGenerator {
       List<String> nameComponents = Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName);
       // NodeJS uses "@google-cloud/<APINAME>" for the package name of a Google Cloud API.
       // Otherwise falls back to a pattern of "foo-bar" style with "gax-" prefix.
-      if (!IsApiGoogleCloud(nameComponents)) {
+      if (!isApiGoogleCloud(nameComponents)) {
         return "gax-" + Joiner.on("-").join(nameComponents);
       }
       return "@google-cloud/" + nameComponents.get(nameComponents.size() - 2);
