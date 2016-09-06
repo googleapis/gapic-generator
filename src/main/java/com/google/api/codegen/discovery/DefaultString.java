@@ -20,8 +20,6 @@ import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.protobuf.Field;
-import com.google.protobuf.Type;
 
 import java.util.ArrayList;
 import java.util.List;
