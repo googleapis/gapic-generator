@@ -94,7 +94,9 @@ public class PageStreamingConfig {
               resourcesFieldName));
     }
 
-    if (requestTokenField == null && responseTokenField == null && resourcesField == null) {
+    if ((!method.getResponseStreaming()
+            && (requestTokenField == null || responseTokenField == null))
+        || resourcesField == null) {
       return null;
     }
     return new PageStreamingConfig(
