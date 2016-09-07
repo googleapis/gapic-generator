@@ -39,6 +39,10 @@ public class NamePath {
     return parse("\\\\", pieces);
   }
 
+  public static NamePath doubleColoned(String... pieces) {
+    return parse("::", pieces);
+  }
+
   private static NamePath parse(String separatorRegex, String... pieces) {
     List<String> namePieces = new ArrayList<>();
     for (String piece : pieces) {
@@ -64,6 +68,19 @@ public class NamePath {
     List<String> newPathPieces = new ArrayList<>();
     newPathPieces.addAll(pathPieces);
     newPathPieces.set(pathPieces.size() - 1, newHead);
+    return new NamePath(newPathPieces);
+  }
+
+  /**
+   * Create a new NamePath where the head (the last piece) is removed. If there is no last piece
+   * this will return a new empty NamePath.
+   */
+  public NamePath withoutHead() {
+    List<String> newPathPieces = new ArrayList<>();
+    newPathPieces.addAll(pathPieces);
+    if (!newPathPieces.isEmpty()) {
+      newPathPieces.remove(newPathPieces.size() - 1);
+    }
     return new NamePath(newPathPieces);
   }
 
@@ -120,5 +137,9 @@ public class NamePath {
 
   public String toSlashed() {
     return Joiner.on("/").join(pathPieces);
+  }
+
+  public String toDashed() {
+    return Joiner.on("-").join(pathPieces);
   }
 }

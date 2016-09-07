@@ -18,9 +18,9 @@ import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.ruby.RubyModelTypeNameConverter;
 import com.google.api.codegen.transformer.ruby.RubySurfaceNamer;
@@ -49,10 +49,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * A GapicContext specialized for Ruby.
@@ -346,67 +343,28 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   }
 
   public DynamicLangApiMethodView getMethodView(Interface service, Method method) {
-    ModelTypeTable modelTypeTable =
-        new ModelTypeTable(
-            new RubyTypeTable(getApiConfig().getPackageName()),
-            new RubyModelTypeNameConverter(getApiConfig().getPackageName()));
-    SurfaceTransformerContext context =
-        SurfaceTransformerContext.create(
-            service,
-            getApiConfig(),
-            modelTypeTable,
-            new RubySurfaceNamer(getApiConfig().getPackageName()));
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     MethodTransformerContext methodContext = context.asMethodContext(method);
     ApiMethodTransformer methodTransformer = new ApiMethodTransformer();
     return methodTransformer.generateDynamicLangApiMethod(methodContext);
   }
 
   public List<GrpcStubView> getStubs(Interface service) {
+    GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    return grpcStubTransformer.generateGrpcStubs(context);
+  }
+
+  private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {
     ModelTypeTable modelTypeTable =
         new ModelTypeTable(
             new RubyTypeTable(getApiConfig().getPackageName()),
             new RubyModelTypeNameConverter(getApiConfig().getPackageName()));
-    SurfaceTransformerContext context =
-        SurfaceTransformerContext.create(
-            service,
-            getApiConfig(),
-            modelTypeTable,
-            new RubySurfaceNamer(getApiConfig().getPackageName()));
-    return generateGrpcStubs(context);
-  }
-
-  private List<GrpcStubView> generateGrpcStubs(SurfaceTransformerContext context) {
-    List<GrpcStubView> stubs = new ArrayList<>();
-    SurfaceNamer namer = context.getNamer();
-
-    Map<String, Interface> interfaces = new TreeMap<>();
-    Map<String, List<String>> functions = new TreeMap<>();
-    for (Method method : context.getNonStreamingMethods()) {
-      Interface targetInterface = context.asMethodContext(method).getTargetInterface();
-      interfaces.put(targetInterface.getFullName(), targetInterface);
-      if (functions.containsKey(targetInterface.getFullName())) {
-        functions.get(targetInterface.getFullName()).add(namer.getGrpcMethodName(method));
-      } else {
-        functions.put(
-            targetInterface.getFullName(),
-            new ArrayList<String>(Arrays.asList(namer.getGrpcMethodName(method))));
-      }
-    }
-
-    for (String interfaceName : interfaces.keySet()) {
-      Interface interfaze = interfaces.get(interfaceName);
-      GrpcStubView.Builder stub = GrpcStubView.newBuilder();
-
-      stub.name(namer.getStubName(interfaze));
-      stub.createStubFunctionName(namer.getCreateStubFunctionName(interfaze));
-      stub.grpcClientTypeName(context.getTypeTable().getFullNameFor(interfaze));
-
-      stub.methods(functions.get(interfaceName));
-
-      stubs.add(stub.build());
-    }
-
-    return stubs;
+    return SurfaceTransformerContext.create(
+        service,
+        getApiConfig(),
+        modelTypeTable,
+        new RubySurfaceNamer(getApiConfig().getPackageName()));
   }
 
   // Constants

@@ -61,6 +61,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return modelTypeFormatter;
   }
 
+  public TypeNameConverter getTypeNameConverter() {
+    return typeNameConverter;
+  }
+
   public String getNotImplementedString(String feature) {
     return "$ NOT IMPLEMENTED: " + feature + " $";
   }
@@ -496,11 +500,39 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getFullyQualifiedApiWrapperClassName");
   }
 
+  /** The name of the variable that will hold the stub for a service. */
   public String getStubName(Interface service) {
     return varName(Name.upperCamel(service.getSimpleName(), "Stub"));
   }
 
+  /** The name of the function that will create a stub. */
   public String getCreateStubFunctionName(Interface service) {
     return varName(Name.upperCamel("Create", service.getSimpleName(), "Stub", "Function"));
+  }
+
+  /** The name of the array which will hold the methods for a given stub. */
+  public String getStubMethodsArrayName(Interface service) {
+    return varName(Name.upperCamel(service.getSimpleName(), "Stub", "Methods"));
+  }
+
+  /** The name of the import for a specific grpcClient */
+  public String getGrpcClientImportName(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getGrpcClientImportName");
+  }
+
+  /** The fully qualified type name for the stub of a service. */
+  public String getFullyQualifiedStubType(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getFullyQualifiedStubType");
+  }
+
+  /** The name of the variable to hold the grpc client of a service. */
+  public String getGrpcClientVariableName(Interface service) {
+    return varName(Name.upperCamel(service.getSimpleName(), "Client"));
+  }
+
+  /** The qualified namespace of a service. */
+  public String getNamespace(Interface service) {
+    NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
+    return qualifiedName(namePath.withoutHead());
   }
 }
