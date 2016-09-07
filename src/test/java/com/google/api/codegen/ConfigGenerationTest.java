@@ -20,7 +20,6 @@ import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.Lists;
 
 import java.io.File;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;

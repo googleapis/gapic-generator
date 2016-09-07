@@ -15,11 +15,9 @@
 package com.google.api.codegen.py;
 
 import com.google.api.Service;
-import com.google.api.client.util.DateTime;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryContext;
 import com.google.api.codegen.DiscoveryImporter;
-import com.google.api.codegen.discovery.DefaultString;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;

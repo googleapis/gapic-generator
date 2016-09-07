@@ -23,7 +23,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.google.common.base.Splitter;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -33,7 +32,6 @@ import com.google.protobuf.Field.Kind;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
