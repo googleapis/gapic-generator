@@ -15,7 +15,7 @@
 
 package com.google.gcloud.pubsub.spi;
 
-import com.google.api.gax.core.PageAccessor;
+import com.google.api.gax.core.PagedListResponse;
 import com.google.api.gax.testing.MockGrpcService;
 import com.google.api.gax.testing.MockServiceHelper;
 import com.google.common.collect.Lists;
@@ -220,7 +220,7 @@ public class LibraryServiceTest {
   public void listShelvesTest() {
     Shelf shelvesElement = Shelf.newBuilder().build();
     List<Shelf> shelves = Arrays.asList(shelvesElement);
-    String nextPageToken = "nextPageToken-1530815211";
+    String nextPageToken = "";
     ListShelvesResponse expectedResponse = ListShelvesResponse.newBuilder()
       .addAllShelves(shelves)
       .setNextPageToken(nextPageToken)
@@ -231,11 +231,9 @@ public class LibraryServiceTest {
 
 
 
-    PageAccessor<Shelf> pageAccessor = api.listShelves();
+    PagedListResponse<ListShelvesRequest, ListShelvesResponse, Shelf> pagedListResponse = api.listShelves();
 
-    // PageAccessor will not make actual request until it is being used.
-    // Add all the pages here in order to make grpc requests.
-    List<Shelf> resources = Lists.newArrayList(pageAccessor.getPageValues());
+    List<Shelf> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getShelvesList().get(0), resources.get(0));
 
@@ -391,7 +389,7 @@ public class LibraryServiceTest {
   public void listBooksTest() {
     Book booksElement = Book.newBuilder().build();
     List<Book> books = Arrays.asList(booksElement);
-    String nextPageToken = "nextPageToken-1530815211";
+    String nextPageToken = "";
     ListBooksResponse expectedResponse = ListBooksResponse.newBuilder()
       .addAllBooks(books)
       .setNextPageToken(nextPageToken)
@@ -403,11 +401,9 @@ public class LibraryServiceTest {
     String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
     String filter = "filter-1274492040";
 
-    PageAccessor<Book> pageAccessor = api.listBooks(formattedName, filter);
+    PagedListResponse<ListBooksRequest, ListBooksResponse, Book> pagedListResponse = api.listBooks(formattedName, filter);
 
-    // PageAccessor will not make actual request until it is being used.
-    // Add all the pages here in order to make grpc requests.
-    List<Book> resources = Lists.newArrayList(pageAccessor.getPageValues());
+    List<Book> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getBooksList().get(0), resources.get(0));
 
@@ -544,7 +540,7 @@ public class LibraryServiceTest {
   public void listStringsTest() {
     String stringsElement = "stringsElement474465855";
     List<String> strings = Arrays.asList(stringsElement);
-    String nextPageToken = "nextPageToken-1530815211";
+    String nextPageToken = "";
     ListStringsResponse expectedResponse = ListStringsResponse.newBuilder()
       .addAllStrings(strings)
       .setNextPageToken(nextPageToken)
@@ -555,11 +551,9 @@ public class LibraryServiceTest {
 
 
 
-    PageAccessor<String> pageAccessor = api.listStrings();
+    PagedListResponse<ListStringsRequest, ListStringsResponse, String> pagedListResponse = api.listStrings();
 
-    // PageAccessor will not make actual request until it is being used.
-    // Add all the pages here in order to make grpc requests.
-    List<String> resources = Lists.newArrayList(pageAccessor.getPageValues());
+    List<String> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getStringsList().get(0), resources.get(0));
 
@@ -637,7 +631,7 @@ public class LibraryServiceTest {
     mockLibraryService.setResponses(expectedResponses);
 
     String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
-    String indexName = "indexName746962392";
+    String indexName = "default index";
     String indexMapItem = "indexMapItem1918721251";
     Map<String, String> indexMap = new HashMap<>();
     indexMap.put("default_key", indexMapItem);
