@@ -1,19 +1,15 @@
 @snippet generate(sampleClass)
-/**
- * BEFORE RUNNING:
- * ---------------
- * 1. If not already done, enable the {@sampleClass.apiTitle}
- *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/{@sampleClass.apiName}
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
- *    instructions at https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/{@sampleClass.apiName}/{@sampleClass.apiVersion}/java
- */
+  /**
+   * BEFORE RUNNING:
+   * ---------------
+   * 1. If not already done, enable the {@sampleClass.apiTitle}
+   *    and check the quota for your project at
+   *    https://console.developers.google.com/apis/api/{@sampleClass.apiName}
+   * 2. Install the Java client library on Maven or Gradle. Check installation
+   *    instructions at https://github.com/google/google-api-java-client.
+   *    On other build systems, you can add the jar files to your project from
+   *    https://developers.google.com/resources/api-libraries/download/{@sampleClass.apiName}/{@sampleClass.apiVersion}/java
+   */
 
   @join import : sampleClass.imports
     import {@import};
@@ -21,7 +17,9 @@
 
   class Main {
     public static void main(String[] args) throws IOException, GeneralSecurityException {
-      // TODO: ...
+      // TODO: This sample uses ADC...
+      // Install the gcloud CLI from https://cloud.google.com/sdk and run
+      // `gcloud beta auth application-default login`
       GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
       // TODO: ...
@@ -36,6 +34,11 @@
           .setApplicationName("Sample")
           .build();
 
+      @if sampleClass.hasRequestBody
+        // TODO: ...
+        {@sampleClass.requestBodyClassName} requestBody = new {@sampleClass.requestBodyClassName}();
+
+      @end
       @if sampleClass.params
         @join param : sampleClass.params
           @join line : util.getDocLines(param.doc, 100)
@@ -46,9 +49,17 @@
 
         @end
       @end
-      {@sampleClass.requestClassName} request = {@sampleClass.clientClassName}.{@resourcesCalls(sampleClass.resources)}({@paramList(sampleClass.paramVarNames)})
-      @if sampleClass.hasResponse
-        {@sampleClass.responseClassName} response = request.execute();
+      @if sampleClass.isPageStreaming
+        for (...) {
+          ...
+        }
+      @else
+        {@sampleClass.requestClassName} request = {@sampleClass.clientClassName}.{@resourcesCalls(sampleClass.resources)}({@paramList(sampleClass.paramVarNames)})
+        @if sampleClass.hasResponse
+          {@sampleClass.responseClassName} response = request.execute();
+        @else
+          request.execute();
+        @end
       @end
     }
   }

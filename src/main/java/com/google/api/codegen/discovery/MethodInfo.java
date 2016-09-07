@@ -46,8 +46,14 @@ public abstract class MethodInfo {
       Type type = apiaryConfig.getType(method.getRequestTypeUrl());
       if (paramName == DiscoveryImporter.REQUEST_FIELD_NAME) {
         methodInfo.hasRequestBody(true);
-        methodInfo.requestBodyType(
-            MessageTypeInfo.createMessageTypeInfo(type, method, apiaryConfig, true));
+        MessageTypeInfo requestBodyType = MessageTypeInfo.createMessageTypeInfo(type, method, apiaryConfig, true);
+        methodInfo.requestBodyType(requestBodyType);
+        methodInfo.isPageStreaming(false);
+        for(TypeInfo field : requestBodyType.fields()) {
+          if (field.name().equals("pageToken")) {
+            methodInfo.isPageStreaming(true);
+          }
+        }
         continue;
       }
       Field field = apiaryConfig.getField(type, paramName);
@@ -85,6 +91,8 @@ public abstract class MethodInfo {
   @Nullable
   public abstract MessageTypeInfo responseType();
 
+  public abstract boolean isPageStreaming();
+
   public static Builder newBuilder() {
     return new AutoValue_MethodInfo.Builder();
   }
@@ -105,6 +113,8 @@ public abstract class MethodInfo {
     public abstract Builder hasResponse(boolean val);
 
     public abstract Builder responseType(MessageTypeInfo val);
+
+    public abstract Builder isPageStreaming(boolean val);
 
     public abstract MethodInfo build();
   }

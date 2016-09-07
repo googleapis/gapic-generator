@@ -62,6 +62,10 @@ public abstract class SampleView implements ViewModel {
 
   public abstract List<JavaMethodToViewTransformer.Param> params();
 
+  public abstract boolean isPageStreaming();
+
+  public abstract String pageStreamingResourceName();
+
   public static Builder newBuilder() {
     return new AutoValue_SampleView.Builder();
   }
@@ -98,6 +102,10 @@ public abstract class SampleView implements ViewModel {
     public abstract Builder paramVarNames(List<String> val);
 
     public abstract Builder params(List<JavaMethodToViewTransformer.Param> val);
+
+    public abstract Builder isPageStreaming(boolean val);
+
+    public abstract String pageStreamingResourceName(String val);
 
     public abstract SampleView build();
   }

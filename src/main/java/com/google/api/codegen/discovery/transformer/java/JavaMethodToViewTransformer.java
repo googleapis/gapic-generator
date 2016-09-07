@@ -69,6 +69,7 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
     sampleView.clientClassName(namer.getClientClassName(sampleConfig));
     sampleView.resources(sampleConfig.resources());
     // Defaults...
+    sampleView.isPageStreaming(sampleConfig.methodInfo().isPageStreaming());
     sampleView.requestClassName(
         typeTable.getAndSaveNicknameFor(sampleConfig.methodInfo().requestType()));
     sampleView.requestBodyClassName("");
