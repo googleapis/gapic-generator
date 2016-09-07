@@ -65,7 +65,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
         getTypeNameConverter().getNamePath(getModelTypeFormatter().getFullNameFor(service));
     return qualifiedName(namePath.append("Stub"));
   }
-  
+
   @Override
   public String getGrpcMethodName(Method method) {
     return Name.upperCamel(method.getSimpleName()).toLowerUnderscore();
