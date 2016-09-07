@@ -226,7 +226,9 @@
       @# the gRPC module only when it's required.
       @# See https://github.com/googleapis/toolkit/issues/446
       require "google/gax/grpc"
-      require "{@context.getGrpcFilename(service)}"
+      @join import : {@context.getServiceImports(service)}
+        require "{@import.fullName}"
+      @end
 
       google_api_client = "#{app_name}/#{app_version} " @\
         "#{CODE_GEN_NAME_VERSION} ruby/#{RUBY_VERSION}".freeze

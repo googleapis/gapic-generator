@@ -19,6 +19,7 @@ import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
+import com.google.api.codegen.transformer.ImportTypeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
@@ -26,6 +27,7 @@ import com.google.api.codegen.transformer.ruby.RubyModelTypeNameConverter;
 import com.google.api.codegen.transformer.ruby.RubySurfaceNamer;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.GrpcStubView;
+import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
@@ -353,6 +355,12 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     return grpcStubTransformer.generateGrpcStubs(context);
+  }
+
+  public List<ImportTypeView> getServiceImports(Interface service) {
+    ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    return importTypeTransformer.generateImports(context);
   }
 
   private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {

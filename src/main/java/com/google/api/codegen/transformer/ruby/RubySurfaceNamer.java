@@ -23,6 +23,7 @@ import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 
@@ -81,5 +82,10 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getFullyQualifiedApiWrapperClassName(Interface service, String packageName) {
     return packageName + "::" + getApiWrapperClassName(service);
+  }
+
+  @Override
+  public String getImportFileFromService(Interface service) {
+    return service.getFile().getSimpleName().replace(".proto", "_services_pb");
   }
 }

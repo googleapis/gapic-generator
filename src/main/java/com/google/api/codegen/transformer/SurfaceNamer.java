@@ -542,4 +542,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
     NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
     return qualifiedName(namePath.withoutHead());
   }
+
+  public String getImportFileFromService(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getImportFileFromService");
+  }
 }

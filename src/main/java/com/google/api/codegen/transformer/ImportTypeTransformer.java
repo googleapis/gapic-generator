@@ -15,10 +15,14 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.viewmodel.ImportTypeView;
+import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class ImportTypeTransformer {
   public List<ImportTypeView> generateImports(Map<String, String> imports) {
@@ -28,5 +32,27 @@ public class ImportTypeTransformer {
           ImportTypeView.newBuilder().fullName(key).nickname(imports.get(key)).build());
     }
     return generatedImports;
+  }
+
+  public List<ImportTypeView> generateImports(SurfaceTransformerContext context) {
+    SurfaceNamer namer = context.getNamer();
+    Set<String> fullNames = new TreeSet<>();
+
+    fullNames.add(namer.getImportFileFromService(context.getInterface()));
+
+    for (Method method : context.getNonStreamingMethods()) {
+      Interface targetInterface = context.asMethodContext(method).getTargetInterface();
+      fullNames.add(namer.getImportFileFromService(targetInterface));
+    }
+
+    List<ImportTypeView> imports = new ArrayList<>();
+    for (String name : fullNames) {
+      ImportTypeView.Builder builder = ImportTypeView.newBuilder();
+      builder.fullName(name);
+      builder.nickname("");
+      imports.add(builder.build());
+    }
+
+    return imports;
   }
 }
