@@ -16,7 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 
-import java.util.List;
+import java.util.Listasldkjalskjd;
 
 @AutoValue
 public abstract class GrpcStubView {
