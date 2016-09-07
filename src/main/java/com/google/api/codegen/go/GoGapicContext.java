@@ -413,7 +413,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
   private GoImport createMessageImport(MessageType messageType) {
     String pkgName = messageType.getFile().getProto().getOptions().getGoPackage();
     if (Strings.isNullOrEmpty(pkgName)) {
-      throw new IllegalArgumentException("go_package attribute must be defined");
+      throw new IllegalArgumentException("go_package attribute must be defined: " + messageType);
     }
     String localName = localPackageName(messageType);
     return GoImport.create(pkgName, localName);
@@ -531,16 +531,17 @@ public class GoGapicContext extends GapicContext implements GoContext {
   }
 
   /**
-   * Returns true if the methodConfig's retry codes name refers to an empty list of retry codes.
+   * Returns all used (retry param name, retry codes name) pairs.
    */
-  public boolean hasEmptyRetryCodes(Interface service, MethodConfig methodConfig) {
-    InterfaceConfig config = getApiConfig().getInterfaceConfig(service);
-    for (String name : config.getRetryCodesDefinition().keySet()) {
-      if (name.equals(methodConfig.getRetryCodesConfigName())) {
-        return config.getRetryCodesDefinition().get(name).size() == 0;
-      }
+  public TreeSet<RetryConfigName> getRetryConfigNames(Interface service) {
+    TreeSet<RetryConfigName> set = new TreeSet<>();
+    for (Method method : getNonStreamingMethods(service)) {
+      MethodConfig conf = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+      set.add(
+          RetryConfigName.create(
+              conf.getRetrySettingsConfigName(), conf.getRetryCodesConfigName()));
     }
-    return false;
+    return set;
   }
 
   /**
@@ -567,5 +568,24 @@ public class GoGapicContext extends GapicContext implements GoContext {
       }
     }
     return false;
+  }
+
+  @com.google.auto.value.AutoValue
+  public static abstract class RetryConfigName implements Comparable<RetryConfigName> {
+    public abstract String getSettingsName();
+
+    public abstract String getCodesName();
+
+    public int compareTo(RetryConfigName other) {
+      int c = getSettingsName().compareTo(other.getSettingsName());
+      if (c != 0) {
+        return c;
+      }
+      return getCodesName().compareTo(other.getCodesName());
+    }
+
+    public static RetryConfigName create(String param, String codes) {
+      return new AutoValue_GoGapicContext_RetryConfigName(param, codes);
+    }
   }
 }
