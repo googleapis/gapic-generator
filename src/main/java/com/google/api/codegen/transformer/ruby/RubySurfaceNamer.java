@@ -22,6 +22,7 @@ import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 
@@ -63,6 +64,11 @@ public class RubySurfaceNamer extends SurfaceNamer {
     NamePath namePath =
         getTypeNameConverter().getNamePath(getModelTypeFormatter().getFullNameFor(service));
     return qualifiedName(namePath.append("Stub"));
+  }
+  
+  @Override
+  public String getGrpcMethodName(Method method) {
+    return Name.upperCamel(method.getSimpleName()).toLowerUnderscore();
   }
 
   /** The file name for an API service. */
