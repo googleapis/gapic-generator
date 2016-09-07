@@ -66,11 +66,6 @@ public class RubySurfaceNamer extends SurfaceNamer {
     return qualifiedName(namePath.append("Stub"));
   }
 
-  @Override
-  public String getGrpcMethodName(Method method) {
-    return Name.upperCamel(method.getSimpleName()).toLowerUnderscore();
-  }
-
   /** The file name for an API service. */
   @Override
   public String getServiceFileName(Interface service, String packageName) {
