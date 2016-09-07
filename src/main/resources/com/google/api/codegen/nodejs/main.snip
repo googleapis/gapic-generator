@@ -57,15 +57,27 @@
         return new {@apiName}Builder(gaxGrpc);
       }
 
-      @if context.isGcloud
-        var grpcClient = gaxGrpc.load([{
-          root: require('google-proto-files')('..'),
-          file: '{@service.getFile.getLocation.getDisplayString}'
-        }]);
-      @else
-        var grpcClient = require('{@context.grpcClientName(service)}').client;
+      @let stubs = {@context.getStubs(service)}
+        @join stub : stubs on BREAK.add(BREAK)
+          @if context.isGcloud
+            var {@stub.grpcClientVariableName} = gaxGrpc.load([{
+              root: require('google-proto-files')('..'),
+              file: '{@stub.protoFileName}'
+            }]);
+          @else
+            var {@stub.grpcClientVariableName} = require('{@stub.grpcClientImportName()}').client;
+          @end
+
+          extend(this, {@stub.grpcClientVariableName}.{@stub.namespace});
+        @end
+
+
+        var grpcClients = {
+        @join stub : stubs on ",".add(BREAK)
+          {@""}  {@stub.grpcClientVariableName}: {@stub.grpcClientVariableName}
+        @end
+        }
       @end
-      extend(this, grpcClient.{@context.getNamespace(service)});
 
       /**
        * Build a new instance of {@@link {@apiName}}.
@@ -88,7 +100,7 @@
        *   The version of the calling service.
        */
       this.{@context.upperCamelToLowerCamel(apiName)} = function(opts) {
-        return new {@apiName}(gaxGrpc, grpcClient, opts);
+        return new {@apiName}(gaxGrpc, grpcClients, opts);
       };
       extend(this.{@context.upperCamelToLowerCamel(apiName)}, {@apiName});
     }
@@ -192,7 +204,7 @@
      *
      * @@class
      */
-    function {@serviceName}(gaxGrpc, grpcClient, opts) {
+    function {@serviceName}(gaxGrpc, grpcClients, opts) {
       opts = opts || {};
       var servicePath = opts.servicePath || SERVICE_ADDRESS;
       var port = opts.port || DEFAULT_SERVICE_PORT;
@@ -236,14 +248,14 @@
           var {@stub.name} = gaxGrpc.createStub(
             servicePath,
             port,
-            grpcClient.{@stub.grpcClientTypeName},
+            grpcClients.{@stub.grpcClientVariableName}.{@stub.fullyQualifiedType},
             {sslCreds: sslCreds});
-          var {@stub.name}Methods = [
-            @join method : {@stub.methods} on {@","}.add(BREAK)
+          var {@stub.stubMethodsArrayName} = [
+            @join method : {@stub.methodNames} on {@","}.add(BREAK)
                 '{@method}'
             @end
           ];
-          {@stub.name}Methods.forEach(function(methodName) {
+          {@stub.stubMethodsArrayName}.forEach(function(methodName) {
             this['_' + methodName] = gax.createApiCall(
               {@stub.name}.then(function({@stub.name}) {
                 return {@stub.name}[methodName].bind({@stub.name});

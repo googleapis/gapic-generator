@@ -91,7 +91,7 @@ var ALL_SCOPES = [
  *
  * @class
  */
-function LibraryServiceApi(gaxGrpc, grpcClient, opts) {
+function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
   opts = opts || {};
   var servicePath = opts.servicePath || SERVICE_ADDRESS;
   var port = opts.port || DEFAULT_SERVICE_PORT;
@@ -129,26 +129,26 @@ function LibraryServiceApi(gaxGrpc, grpcClient, opts) {
   var libraryServiceStub = gaxGrpc.createStub(
     servicePath,
     port,
-    grpcClient.google.example.library.v1.LibraryService,
+    grpcClients.libraryServiceClient.google.example.library.v1.LibraryService,
     {sslCreds: sslCreds});
   var libraryServiceStubMethods = [
-    'CreateShelf',
-    'GetShelf',
-    'ListShelves',
-    'DeleteShelf',
-    'MergeShelves',
-    'CreateBook',
-    'PublishSeries',
-    'GetBook',
-    'ListBooks',
-    'DeleteBook',
-    'UpdateBook',
-    'MoveBook',
-    'ListStrings',
-    'AddComments',
-    'GetBookFromArchive',
-    'UpdateBookIndex',
-    'AddTag'
+    'createShelf',
+    'getShelf',
+    'listShelves',
+    'deleteShelf',
+    'mergeShelves',
+    'createBook',
+    'publishSeries',
+    'getBook',
+    'listBooks',
+    'deleteBook',
+    'updateBook',
+    'moveBook',
+    'listStrings',
+    'addComments',
+    'getBookFromArchive',
+    'updateBookIndex',
+    'addTag'
   ];
   libraryServiceStubMethods.forEach(function(methodName) {
     this['_' + methodName] = gax.createApiCall(
@@ -161,10 +161,10 @@ function LibraryServiceApi(gaxGrpc, grpcClient, opts) {
   var labelerStub = gaxGrpc.createStub(
     servicePath,
     port,
-    grpcClient.google.tagger.v1.Labeler,
+    grpcClients.labelerClient.google.tagger.v1.Labeler,
     {sslCreds: sslCreds});
   var labelerStubMethods = [
-    'AddLabel'
+    'addLabel'
   ];
   labelerStubMethods.forEach(function(methodName) {
     this['_' + methodName] = gax.createApiCall(
@@ -1094,11 +1094,22 @@ function LibraryServiceApiBuilder(gaxGrpc) {
     return new LibraryServiceApiBuilder(gaxGrpc);
   }
 
-  var grpcClient = gaxGrpc.load([{
+  var libraryServiceClient = gaxGrpc.load([{
     root: require('google-proto-files')('..'),
     file: 'library.proto'
   }]);
-  extend(this, grpcClient.google.example.library.v1);
+  extend(this, libraryServiceClient.google.example.library.v1);
+
+  var labelerClient = gaxGrpc.load([{
+    root: require('google-proto-files')('..'),
+    file: 'tagger.proto'
+  }]);
+  extend(this, labelerClient.google.tagger.v1);
+
+  var grpcClients = {
+    libraryServiceClient: libraryServiceClient,
+    labelerClient: labelerClient
+  }
 
   /**
    * Build a new instance of {@link LibraryServiceApi}.
@@ -1121,7 +1132,7 @@ function LibraryServiceApiBuilder(gaxGrpc) {
    *   The version of the calling service.
    */
   this.libraryServiceApi = function(opts) {
-    return new LibraryServiceApi(gaxGrpc, grpcClient, opts);
+    return new LibraryServiceApi(gaxGrpc, grpcClients, opts);
   };
   extend(this.libraryServiceApi, LibraryServiceApi);
 }
