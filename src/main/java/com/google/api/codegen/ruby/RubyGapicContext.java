@@ -18,6 +18,7 @@ import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
@@ -25,6 +26,7 @@ import com.google.api.codegen.transformer.ruby.RubyModelTypeNameConverter;
 import com.google.api.codegen.transformer.ruby.RubySurfaceNamer;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.DynamicLangApiMethodView;
+import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.Field;
@@ -177,9 +179,8 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
    * Return comments lines for a given method, consisting of proto doc and parameter type
    * documentation.
    */
-  public List<String> methodComments(Method method) {
-    MethodConfig config =
-        getApiConfig().getInterfaceConfig((Interface) method.getParent()).getMethodConfig(method);
+  public List<String> methodComments(Interface service, Method method) {
+    MethodConfig config = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
 
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
@@ -343,19 +344,28 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   }
 
   public DynamicLangApiMethodView getMethodView(Interface service, Method method) {
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    MethodTransformerContext methodContext = context.asMethodContext(method);
+    ApiMethodTransformer methodTransformer = new ApiMethodTransformer();
+    return methodTransformer.generateDynamicLangApiMethod(methodContext);
+  }
+
+  public List<GrpcStubView> getStubs(Interface service) {
+    GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    return grpcStubTransformer.generateGrpcStubs(context);
+  }
+
+  private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {
     ModelTypeTable modelTypeTable =
         new ModelTypeTable(
             new RubyTypeTable(getApiConfig().getPackageName()),
             new RubyModelTypeNameConverter(getApiConfig().getPackageName()));
-    SurfaceTransformerContext context =
-        SurfaceTransformerContext.create(
-            service,
-            getApiConfig(),
-            modelTypeTable,
-            new RubySurfaceNamer(getApiConfig().getPackageName()));
-    MethodTransformerContext methodContext = context.asMethodContext(method);
-    ApiMethodTransformer methodTransformer = new ApiMethodTransformer();
-    return methodTransformer.generateDynamicLangApiMethod(methodContext);
+    return SurfaceTransformerContext.create(
+        service,
+        getApiConfig(),
+        modelTypeTable,
+        new RubySurfaceNamer(getApiConfig().getPackageName()));
   }
 
   // Constants

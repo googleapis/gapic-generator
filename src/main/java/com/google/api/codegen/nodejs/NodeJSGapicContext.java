@@ -18,6 +18,7 @@ import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
@@ -25,6 +26,7 @@ import com.google.api.codegen.transformer.nodejs.NodeJSModelTypeNameConverter;
 import com.google.api.codegen.transformer.nodejs.NodeJSSurfaceNamer;
 import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.Field;
@@ -67,20 +69,35 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    *       will eventually go away when code gen also converts to MVVM.
    */
   public ApiMethodView getApiMethodView(Interface service, Method method) {
-    ModelTypeTable modelTypeTable =
-        new ModelTypeTable(
-            new NodeJSTypeTable(getApiConfig().getPackageName()),
-            new NodeJSModelTypeNameConverter(getApiConfig().getPackageName()));
-    SurfaceTransformerContext context =
-        SurfaceTransformerContext.create(
-            service,
-            getApiConfig(),
-            modelTypeTable,
-            new NodeJSSurfaceNamer(getApiConfig().getPackageName()));
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     MethodTransformerContext methodContext = context.asMethodContext(method);
     ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
 
     return apiMethodTransformer.generateOptionalArrayMethod(methodContext);
+  }
+
+  /**
+   * Return GrpcStubViews for mixins.
+   *
+   * NOTE: Temporary solution to use MVVM with just sample gen. This class
+   *       will eventually go away when code gen also converts to MVVM.
+   */
+  public List<GrpcStubView> getStubs(Interface service) {
+    GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    return grpcStubTransformer.generateGrpcStubs(context);
+  }
+
+  private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {
+    ModelTypeTable modelTypeTable =
+        new ModelTypeTable(
+            new NodeJSTypeTable(getApiConfig().getPackageName()),
+            new NodeJSModelTypeNameConverter(getApiConfig().getPackageName()));
+    return SurfaceTransformerContext.create(
+        service,
+        getApiConfig(),
+        modelTypeTable,
+        new NodeJSSurfaceNamer(getApiConfig().getPackageName()));
   }
 
   public String filePath(ProtoFile file) {
@@ -323,9 +340,8 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    * Return comments lines for a given method, consisting of proto doc and parameter type
    * documentation.
    */
-  public List<String> methodComments(Method msg) {
-    MethodConfig config =
-        getApiConfig().getInterfaceConfig((Interface) msg.getParent()).getMethodConfig(msg);
+  public List<String> methodComments(Interface service, Method msg) {
+    MethodConfig config = getApiConfig().getInterfaceConfig(service).getMethodConfig(msg);
 
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
