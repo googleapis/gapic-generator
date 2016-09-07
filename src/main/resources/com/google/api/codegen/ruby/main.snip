@@ -81,7 +81,7 @@
 @private stubComments(stubs)
   @join stub : stubs
     @# @@!attribute [r] {@stub.name}
-    @#   @@return [{@stub.grpcClientTypeName}::Stub]
+    @#   @@return [{@stub.fullyQualifiedType}]
   @end
 @end
 
@@ -240,13 +240,13 @@
             chan_creds: chan_creds,
             channel: channel,
             scopes: scopes,
-            &{@stubView.grpcClientTypeName}::Stub.method(:new)
+            &{@stubView.fullyQualifiedType}.method(:new)
           )
         @end
 
 
         @join stubView : stubs
-          @join methodName : stubView.methods
+          @join methodName : stubView.methodNames
             @@{@methodName} = Google::Gax.create_api_call(
               @@{@stubView.name}.method(:{@methodName}),
               defaults["{@methodName}"]

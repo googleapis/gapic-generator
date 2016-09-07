@@ -18,10 +18,10 @@ import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 
@@ -49,8 +49,20 @@ public class RubySurfaceNamer extends SurfaceNamer {
     return staticFunctionName(Name.from(collectionConfig.getEntityName(), "path"));
   }
 
-  public String getGrpcMethodName(Method method) {
-    return Name.upperCamel(method.getSimpleName()).toLowerUnderscore();
+  /**
+   * The type name of the Grpc client class.
+   * This needs to match what Grpc generates for the particular language.
+   */
+  @Override
+  public String getGrpcClientTypeName(Interface service) {
+    return getModelTypeFormatter().getFullNameFor(service);
+  }
+
+  @Override
+  public String getFullyQualifiedStubType(Interface service) {
+    NamePath namePath =
+        getTypeNameConverter().getNamePath(getModelTypeFormatter().getFullNameFor(service));
+    return qualifiedName(namePath.append("Stub"));
   }
 
   /** The file name for an API service. */

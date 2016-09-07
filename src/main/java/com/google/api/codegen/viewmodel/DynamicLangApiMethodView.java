@@ -31,8 +31,6 @@ public abstract class DynamicLangApiMethodView implements ApiMethodView {
 
   public abstract boolean hasReturnValue();
 
-  public abstract String stubName();
-
   public static Builder newBuilder() {
     return new AutoValue_DynamicLangApiMethodView.Builder();
   }
@@ -50,8 +48,6 @@ public abstract class DynamicLangApiMethodView implements ApiMethodView {
     public abstract Builder name(String val);
 
     public abstract Builder hasReturnValue(boolean val);
-
-    public abstract Builder stubName(String val);
 
     public abstract DynamicLangApiMethodView build();
   }
