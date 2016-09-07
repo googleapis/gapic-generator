@@ -328,7 +328,6 @@ public class ApiMethodTransformer {
             new SymbolTable(),
             null));
 
-    apiMethod.stubName(namer.getStubName(context.getTargetInterface()));
     apiMethod.name(namer.getApiMethodName(context.getMethod()));
     apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
 
