@@ -65,7 +65,7 @@
               file: '{@stub.protoFileName}'
             }]);
           @else
-            var {@stub.grpcClientVariableName} = require('{@stub.grpcClientImportName()}').client;
+            var {@stub.grpcClientVariableName} = require('{@stub.grpcClientImportName}').client;
           @end
 
           extend(this, {@stub.grpcClientVariableName}.{@stub.namespace});
@@ -76,7 +76,7 @@
         @join stub : stubs on ",".add(BREAK)
           {@""}  {@stub.grpcClientVariableName}: {@stub.grpcClientVariableName}
         @end
-        }
+        };
       @end
 
       /**
