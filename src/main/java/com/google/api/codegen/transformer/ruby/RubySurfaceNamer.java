@@ -50,8 +50,6 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   public String getGrpcMethodName(Method method) {
-    // This might seem silly, but it makes clear what we're dealing with (upper camel).
-    // This is language-independent because of gRPC conventions.
     return Name.upperCamel(method.getSimpleName()).toLowerUnderscore();
   }
 
