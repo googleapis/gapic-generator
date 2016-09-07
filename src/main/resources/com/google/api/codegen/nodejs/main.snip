@@ -246,10 +246,10 @@
       @let stubs = {@context.getStubs(service)}
         @join stub : stubs on BREAK.add(BREAK)
           var {@stub.name} = gaxGrpc.createStub(
-            servicePath,
-            port,
-            grpcClients.{@stub.grpcClientVariableName}.{@stub.fullyQualifiedType},
-            {sslCreds: sslCreds});
+              servicePath,
+              port,
+              grpcClients.{@stub.grpcClientVariableName}.{@stub.fullyQualifiedType},
+              {sslCreds: sslCreds});
           var {@stub.stubMethodsArrayName} = [
             @join method : {@stub.methodNames} on {@","}.add(BREAK)
                 '{@method}'

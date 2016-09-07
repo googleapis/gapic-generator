@@ -47,9 +47,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 /**
  * A GapicContext specialized for Ruby.
@@ -341,7 +342,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   public Iterable<String> getApiModules() {
     return Splitter.on("::").splitToList(getApiConfig().getPackageName());
   }
-  
+
   public OptionalArrayMethodView getMethodView(Interface service, Method method) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     MethodTransformerContext methodContext = context.asMethodContext(method);
