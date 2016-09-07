@@ -56,7 +56,7 @@ public class RubyTypeTable implements TypeTable {
 
   @Override
   public NamePath getNamePath(String fullName) {
-    return NamePath.dotted(fullName);
+    return NamePath.doubleColoned(fullName);
   }
 
   @Override
