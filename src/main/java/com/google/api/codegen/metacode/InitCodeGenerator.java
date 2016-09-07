@@ -188,11 +188,7 @@ public class InitCodeGenerator {
     if (initFieldStructure instanceof InitValueConfig) {
       InitValueConfig initValueConfig = (InitValueConfig) initFieldStructure;
       Name identifier = context.symbolTable().getNewSymbol(suggestedName);
-      if (typeRef.isPrimitive() && !typeRef.isRepeated() && context.shouldGenerateTestValue()) {
-        initValueConfig =
-            initValueConfig.withInitialValue(
-                context.valueGenerator().getAndStoreValue(typeRef, identifier));
-      } else if (initValueConfig.hasInitialValue()) {
+      if (initValueConfig.hasInitialValue()) {
         String validatedValue = validateValue(typeRef, initValueConfig.getInitialValue());
         if (validatedValue == null) {
           throw new IllegalArgumentException(
@@ -206,6 +202,12 @@ public class InitCodeGenerator {
                   + initFieldStructure);
         }
         initValueConfig = initValueConfig.withInitialValue(validatedValue);
+      } else if (typeRef.isPrimitive()
+          && !typeRef.isRepeated()
+          && context.shouldGenerateTestValue()) {
+        initValueConfig =
+            initValueConfig.withInitialValue(
+                context.valueGenerator().getAndStoreValue(typeRef, identifier));
       }
       return SimpleInitCodeLine.create(typeRef, identifier, initValueConfig);
     }
@@ -301,7 +303,7 @@ public class InitCodeGenerator {
         break;
       case TYPE_STRING:
       case TYPE_BYTES:
-        Matcher matcher = Pattern.compile("\"([^\\\"]+)\"").matcher(value);
+        Matcher matcher = Pattern.compile("\"([^\\\"]*)\"").matcher(value);
         if (matcher.matches()) {
           return matcher.group(1);
         }

@@ -221,9 +221,11 @@ public class InitCodeTransformer {
       }
     }
     if (context.getMethodConfig().isPageStreaming()) {
-      // Initialize one resource element if it is page-streaming.
+      // Initialize one resource element if it is page-streaming, and set the initial value of the
+      // page token to empty, in order to indicate that no more pages are available.
       PageStreamingConfig config = context.getMethodConfig().getPageStreaming();
       fields.add(config.getResourcesField().getSimpleName() + "[0]");
+      fields.add(config.getResponseTokenField().getSimpleName() + "=\"\"");
     }
     if (context.getMethodConfig().isBundling()) {
       // Initialize one bundling element if it is bundling.
