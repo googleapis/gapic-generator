@@ -14,9 +14,6 @@
  */
 package com.google.api.codegen.discovery.transformer.java;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.api.codegen.discovery.MessageTypeInfo;
 import com.google.api.codegen.discovery.SampleConfig;
 import com.google.api.codegen.discovery.TypeInfo;
@@ -26,6 +23,7 @@ import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
 
@@ -75,7 +73,12 @@ class JavaProtobufTypeNameConverter implements ProtobufTypeNameConverter {
   @Override
   public TypeName getServiceTypeName(SampleConfig sampleConfig) {
     return typeNameConverter.getTypeName(
-        "com.google.api.services." + Name.lowerCamel(sampleConfig.apiName()).toUpperCamel());
+        "com.google.api.services."
+            + sampleConfig.apiName()
+            + "."
+            + sampleConfig.apiVersion()
+            + "."
+            + Name.lowerCamel(sampleConfig.apiName()).toUpperCamel());
   }
 
   @Override
@@ -83,13 +86,23 @@ class JavaProtobufTypeNameConverter implements ProtobufTypeNameConverter {
     if (typeInfo.isMessage()) {
       // {apiName}.{resource1}.{resource2}...{messageTypeName}
       MessageTypeInfo messageTypeInfo = typeInfo.message();
+      System.out.println("\tname: " + messageTypeInfo.name());
       String resources[] = messageTypeInfo.packagePath().split("\\.");
       for (int i = 0; i < resources.length; i++) {
         // TODO(garrettjones): Should I do this differently?
         resources[i] = Name.lowerCamel(resources[i]).toUpperCamel();
       }
-      return typeNameConverter.getTypeName(
-          "com.google.api.services." + String.join(".", resources) + "." + messageTypeInfo.name());
+      String typeName = "com.google.api.services.";
+      if (!Strings.isNullOrEmpty(messageTypeInfo.packagePrefix())) {
+        typeName += messageTypeInfo.packagePrefix() + ".";
+      }
+      if (!Strings.isNullOrEmpty(messageTypeInfo.packagePath())) {
+        typeName += String.join(".", resources) + ".";
+      } else {
+        typeName += "model.";
+      }
+      System.out.println("\t" + typeName + messageTypeInfo.name());
+      return typeNameConverter.getTypeName(typeName + messageTypeInfo.name());
     }
     if (typeInfo.isMap()) {
       TypeName mapTypeName = typeNameConverter.getTypeName("java.util.Map");

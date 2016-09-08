@@ -20,7 +20,6 @@ import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.protobuf.Method;
-
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -32,14 +31,17 @@ public class ViewModelProvider implements DiscoveryProvider {
   private final ApiaryConfig apiaryConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
   private final MethodToViewTransformer methodToViewTransformer;
+  private final String outputRoot;
 
   private ViewModelProvider(
       ApiaryConfig apiaryConfig,
       CommonSnippetSetRunner snippetSetRunner,
-      MethodToViewTransformer methodToViewTransformer) {
+      MethodToViewTransformer methodToViewTransformer,
+      String outputRoot) {
     this.apiaryConfig = apiaryConfig;
     this.snippetSetRunner = snippetSetRunner;
     this.methodToViewTransformer = methodToViewTransformer;
+    this.outputRoot = outputRoot;
   }
 
   @Override
@@ -50,7 +52,7 @@ public class ViewModelProvider implements DiscoveryProvider {
     if (doc == null) {
       return docs;
     }
-    docs.put(surfaceDoc.outputPath(), doc);
+    docs.put(outputRoot + "/" + surfaceDoc.outputPath(), doc);
     return docs;
   }
 
@@ -62,6 +64,7 @@ public class ViewModelProvider implements DiscoveryProvider {
     private ApiaryConfig apiaryConfig;
     private CommonSnippetSetRunner snippetSetRunner;
     private MethodToViewTransformer methodToViewTransformer;
+    private String outputRoot;
 
     private Builder() {}
 
@@ -80,8 +83,14 @@ public class ViewModelProvider implements DiscoveryProvider {
       return this;
     }
 
+    public Builder setOutputRoot(String outputRoot) {
+      this.outputRoot = outputRoot;
+      return this;
+    }
+
     public ViewModelProvider build() {
-      return new ViewModelProvider(apiaryConfig, snippetSetRunner, methodToViewTransformer);
+      return new ViewModelProvider(
+          apiaryConfig, snippetSetRunner, methodToViewTransformer, outputRoot);
     }
   }
 }

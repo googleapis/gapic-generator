@@ -14,9 +14,6 @@
  */
 package com.google.api.codegen.discovery.transformer.java;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.discovery.ApiaryConfigToSampleConfigConverter;
 import com.google.api.codegen.discovery.FieldInfo;
@@ -29,12 +26,12 @@ import com.google.api.codegen.discovery.viewmodel.SampleBodyView;
 import com.google.api.codegen.discovery.viewmodel.SampleFieldView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.SymbolTable;
-import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.protobuf.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * Transforms a Model into the standard discovery surface in Java.
@@ -68,7 +65,7 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
 
     SampleView.Builder sampleView = SampleView.newBuilder();
     sampleView.templateFileName(TEMPLATE_FILENAME);
-    sampleView.outputPath("output");
+    sampleView.outputPath(sampleConfig.methodInfo().name() + ".frag.java");
     sampleView.apiTitle(sampleConfig.apiTitle());
     sampleView.apiName(sampleConfig.apiName());
     sampleView.apiVersion(sampleConfig.apiVersion());
@@ -84,11 +81,8 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
     SampleTypeTable sampleTypeTable = context.getTypeTable();
     SymbolTable symbolTable = new SymbolTable();
 
-    NameFormatter nameFormatter = new JavaNameFormatter();
-
     SampleBodyView.Builder sampleBodyView = SampleBodyView.newBuilder();
-    sampleBodyView.serviceVarName(
-        symbolTable.getNewSymbol(sampleNamer.getServiceVarName(sampleConfig.apiName())));
+    sampleBodyView.serviceVarName(symbolTable.getNewSymbol(sampleNamer.getServiceVarName()));
     sampleBodyView.serviceTypeName(sampleTypeTable.getAndSaveNicknameFor(sampleConfig));
     sampleBodyView.resources(sampleConfig.methodInfo().resources());
     sampleBodyView.inputVarName(symbolTable.getNewSymbol("request"));
@@ -100,18 +94,11 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
     sampleBodyView.resourceGetterName("");
     sampleBodyView.resourceTypeName("");
     sampleBodyView.isResourceMap(false);
-    sampleBodyView.hasInputRequest(sampleConfig.methodInfo().inputRequestType() != null);
-    if (sampleConfig.methodInfo().inputRequestType() != null) {
-      sampleBodyView.inputRequestVarName(symbolTable.getNewSymbol("requestBody"));
-      System.out.println(sampleConfig.methodInfo().name());
-      sampleBodyView.inputRequestTypeName(
-          sampleTypeTable.getAndSaveNicknameFor(sampleConfig.methodInfo().inputRequestType()));
-    }
 
     if (sampleConfig.methodInfo().isPageStreaming()) {
       FieldInfo fieldInfo = sampleConfig.methodInfo().pageStreamingResourceField();
       // TODO(garrettjones): Should I form this name this way?
-      sampleBodyView.resourceGetterName(Name.from("get", fieldInfo.name()).toLowerCamel());
+      sampleBodyView.resourceGetterName(Name.lowerCamel("get", fieldInfo.name()).toLowerCamel());
       String nickname = sampleTypeTable.getAndSaveNicknameFor(fieldInfo.type());
       sampleBodyView.resourceTypeName(nickname);
       // Rename the type from Map<K, V> to Map.Entry<K, V> to match what we
@@ -132,10 +119,25 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
     }
 
     List<SampleFieldView> fields = new ArrayList<>();
+    List<String> fieldVarNames = new ArrayList<>();
     for (FieldInfo fieldInfo : sampleConfig.methodInfo().fields()) {
-      fields.add(generateSampleField(fieldInfo, sampleTypeTable, symbolTable));
+      SampleFieldView sampleFieldView =
+          generateSampleField(fieldInfo, sampleTypeTable, symbolTable);
+      fields.add(sampleFieldView);
+      fieldVarNames.add(sampleFieldView.name());
     }
     sampleBodyView.fields(fields);
+
+    sampleBodyView.hasInputRequest(sampleConfig.methodInfo().inputRequestType() != null);
+    if (sampleConfig.methodInfo().inputRequestType() != null) {
+      String inputRequestVarName = symbolTable.getNewSymbol("requestBody");
+      sampleBodyView.inputRequestVarName(inputRequestVarName);
+      System.out.println(sampleConfig.methodInfo().name());
+      sampleBodyView.inputRequestTypeName(
+          sampleTypeTable.getAndSaveNicknameFor(sampleConfig.methodInfo().inputRequestType()));
+      fieldVarNames.add(inputRequestVarName);
+    }
+    sampleBodyView.fieldVarNames(fieldVarNames);
     sampleBodyView.isPageStreaming(sampleConfig.methodInfo().isPageStreaming());
 
     return sampleBodyView.build();
@@ -151,42 +153,15 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
         .build();
   }
 
-  public class Param {
-    private String type;
-    private String name;
-    private String doc;
-    private String defaultValue;
-
-    public Param(String type, String name, String doc, String defaultValue) {
-      this.type = type;
-      this.name = name;
-      this.doc = doc;
-      this.defaultValue = defaultValue;
-    }
-
-    public String type() {
-      return this.type;
-    }
-
-    public String name() {
-      return this.name;
-    }
-
-    public String doc() {
-      return this.doc;
-    }
-
-    public String defaultValue() {
-      return this.defaultValue;
-    }
-  }
-
   private void addStaticImports(SampleTransformerContext context) {
     SampleTypeTable typeTable = context.getTypeTable();
+    typeTable.saveNicknameFor("com.google.api.client.googleapis.auth.oauth2.GoogleCredential");
+    typeTable.saveNicknameFor("com.google.api.client.googleapis.javanet.GoogleNetHttpTransport");
     typeTable.saveNicknameFor("com.google.api.client.http.HttpTransport");
     typeTable.saveNicknameFor("com.google.api.client.json.jackson2.JacksonFactory");
+    typeTable.saveNicknameFor("com.google.api.client.json.JsonFactory");
     typeTable.saveNicknameFor("java.io.IOException");
     typeTable.saveNicknameFor("java.security.GeneralSecurityException");
-    typeTable.saveNicknameFor("java.util.Collections");
+    typeTable.saveNicknameFor("java.util.Arrays");
   }
 }

@@ -14,15 +14,7 @@
  */
 package com.google.api.codegen.discovery;
 
-import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.DiscoveryImporter;
 import com.google.auto.value.AutoValue;
-import com.google.protobuf.Field;
-import com.google.protobuf.Field.Cardinality;
-import com.google.protobuf.Method;
-import com.google.protobuf.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 @AutoValue
 public abstract class SampleConfig {

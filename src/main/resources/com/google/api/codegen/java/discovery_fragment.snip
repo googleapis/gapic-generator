@@ -21,15 +21,15 @@
 @end
 
 @private body(sampleBody)
-  public {@sampleBody.serviceTypeName} createService() {
-    // TODO: This sample uses ADC...
+  public {@sampleBody.serviceTypeName} createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
-    // TODO: ...
     if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
@@ -42,7 +42,7 @@
     
   public void run() throws IOException, GeneralSecurityException {
     @if sampleBody.hasInputRequest
-      // TODO: ...
+      // TODO: Assign desired fields.
       {@sampleBody.inputRequestTypeName} {@sampleBody.inputRequestVarName} = new {@sampleBody.inputRequestTypeName}();
 
     @end
@@ -51,10 +51,11 @@
         // {@line}
       @end
 
-      {@field.typeName} {@field.name} = {@field.defaultValue};
+      {@field.typeName} {@field.name} = {@field.defaultValue}; // TODO: Update field(s).
 
     @end
-    {@sampleBody.inputTypeName} {@sampleBody.inputVarName} = {@sampleBody.serviceVarName}.{@callChain(sampleBody.resources)}({@paramList(sampleBody.fields)});
+    {@sampleBody.serviceTypeName} {@sampleBody.serviceVarName} = createService();
+    {@sampleBody.inputTypeName} {@sampleBody.inputVarName} = {@sampleBody.serviceVarName}.{@callChain(sampleBody.resources)}({@paramList(sampleBody.fieldVarNames)});
     @if {@sampleBody.isPageStreaming}
       {@sampleBody.outputTypeName} {@sampleBody.outputVarName};
       do {
@@ -99,8 +100,8 @@
   @end
 @end
 
-@private paramList(fields)
-  @join field : fields on ", "
-    {@field.name}
+@private paramList(fieldVarNames)
+  @join fieldVarName : fieldVarNames on ", "
+    {@fieldVarName}
   @end
 @end

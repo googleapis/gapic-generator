@@ -14,9 +14,7 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
-import com.google.api.codegen.discovery.FieldInfo;
 import com.google.api.codegen.discovery.SampleConfig;
-import com.google.api.codegen.discovery.TypeInfo;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NameFormatterDelegator;
@@ -26,20 +24,15 @@ import com.google.api.codegen.util.NameFormatterDelegator;
  */
 public class SampleNamer extends NameFormatterDelegator {
 
-  private NameFormatter nameFormatter;
-  private SampleTypeFormatter sampleTypeFormatter;
-
-  public SampleNamer(NameFormatter nameFormatter, SampleTypeFormatter sampleTypeFormatter) {
+  public SampleNamer(NameFormatter nameFormatter) {
     super(nameFormatter);
-    this.nameFormatter = nameFormatter;
-    this.sampleTypeFormatter = sampleTypeFormatter;
   }
 
   private String getNotImplementedString(String feature) {
     return "$ NOT IMPLEMENTED: " + feature + " $";
   }
 
-  public String getServiceVarName(String apiName) {
+  public String getServiceVarName() {
     return "service";
   }
 
@@ -52,7 +45,7 @@ public class SampleNamer extends NameFormatterDelegator {
   }
 
   public String getFieldVarName(String fieldName) {
-    return fieldName;
+    return varName(Name.lowerCamel(fieldName));
   }
 
   public String getMapEntryTypeFromMapType(String nickname) {

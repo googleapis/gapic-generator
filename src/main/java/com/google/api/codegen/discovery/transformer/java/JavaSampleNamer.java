@@ -14,14 +14,7 @@
  */
 package com.google.api.codegen.discovery.transformer.java;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.api.codegen.discovery.SampleConfig;
 import com.google.api.codegen.discovery.transformer.SampleNamer;
-import com.google.api.codegen.discovery.transformer.SampleTypeFormatterImpl;
-import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 
 /**
@@ -30,8 +23,7 @@ import com.google.api.codegen.util.java.JavaNameFormatter;
 class JavaSampleNamer extends SampleNamer {
 
   public JavaSampleNamer() {
-    super(
-        new JavaNameFormatter(), new SampleTypeFormatterImpl(new JavaProtobufTypeNameConverter()));
+    super(new JavaNameFormatter());
   }
 
   @Override

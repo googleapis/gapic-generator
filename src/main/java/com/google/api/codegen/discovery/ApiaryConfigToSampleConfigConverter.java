@@ -14,11 +14,6 @@
  */
 package com.google.api.codegen.discovery;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.codegen.util.Name;
@@ -26,13 +21,17 @@ import com.google.protobuf.Field;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ApiaryConfigToSampleConfigConverter {
 
   private static final String EMPTY_TYPE_URL = "Empty";
   private static final String KEY_FIELD_NAME = "key";
   private static final String VALUE_FIELD_NAME = "value";
-  private static final String PAGE_TOKEN_FIELD_NAME = "pageToken";
+  private static final String PAGE_TOKEN_FIELD_NAME = "nextPageToken";
 
   public static SampleConfig convert(Method method, ApiaryConfig apiaryConfig) {
     return SampleConfig.newBuilder()
@@ -43,39 +42,13 @@ public class ApiaryConfigToSampleConfigConverter {
         .build();
   }
 
-  private static TypeInfo createTypeInfoFromMethodName(String methodName) {
-    TypeInfo.Builder typeInfo = TypeInfo.newBuilder();
-
-    LinkedList<String> resources = new LinkedList<>(Arrays.asList(methodName.split("\\.")));
-
-    String shortName = resources.removeLast();
-    // This method should only be used to create a MessageTypeInfo from a
-    // method's name, and so the final segment of the name should always be in
-    // lower-camel format. Regardless, we enforce via try-catch just in case.
-    try {
-      shortName = Name.lowerCamel(shortName).toUpperCamel();
-    } catch (IllegalArgumentException e) {
-    }
-    String packagePath = String.join(".", resources);
-
-    typeInfo.kind(Field.Kind.TYPE_MESSAGE);
-    typeInfo.isMap(false);
-    typeInfo.mapKey(null);
-    typeInfo.mapValue(null);
-    typeInfo.isArray(false);
-    typeInfo.isMessage(false);
-    typeInfo.message(
-        MessageTypeInfo.newBuilder()
-            .name(shortName)
-            .packagePath(packagePath)
-            .fields(new ArrayList<FieldInfo>())
-            .build());
-
-    return typeInfo.build();
-  }
-
   private static boolean isPageStreaming(Method method, ApiaryConfig apiaryConfig) {
-    for (Field field : apiaryConfig.getType(method.getRequestTypeUrl()).getFieldsList()) {
+    Type type = apiaryConfig.getType(method.getResponseTypeUrl());
+    if (type == null) {
+      return false;
+    }
+    for (Field field : type.getFieldsList()) {
+      System.out.println("\tfieldName: " + field.getName());
       if (field.getName().equals(PAGE_TOKEN_FIELD_NAME)) {
         return true;
       }
@@ -102,7 +75,6 @@ public class ApiaryConfigToSampleConfigConverter {
 
     Type type = apiaryConfig.getType(field.getTypeUrl());
     if (isMap) {
-      System.out.println("isMap :/");
       typeInfo.mapKey(
           createTypeInfoFromField(
               apiaryConfig.getField(type, KEY_FIELD_NAME), method, apiaryConfig));
@@ -117,6 +89,10 @@ public class ApiaryConfigToSampleConfigConverter {
     return typeInfo.build();
   }
 
+  private static String getPackagePrefix(ApiaryConfig apiaryConfig) {
+    return String.join(".", Arrays.asList(apiaryConfig.getApiName(), apiaryConfig.getApiVersion()));
+  }
+
   private static TypeInfo createTypeInfoFromType(
       Method method, ApiaryConfig apiaryConfig, boolean isRequest) {
     TypeInfo.Builder typeInfo = TypeInfo.newBuilder();
@@ -127,13 +103,15 @@ public class ApiaryConfigToSampleConfigConverter {
 
     MessageTypeInfo.Builder messageTypeInfo = MessageTypeInfo.newBuilder();
     if (isRequest) {
-      String pieces[] = method.getName().split("\\.");
+      LinkedList<String> pieces = new LinkedList<>(Arrays.asList(method.getName().split("\\.")));
       // TODO(garrettjones): Should I do this differently?
-      messageTypeInfo.name(Name.lowerCamel(pieces[pieces.length - 1]).toUpperCamel());
+      messageTypeInfo.name(Name.lowerCamel(pieces.removeLast()).toUpperCamel());
+      messageTypeInfo.packagePath(String.join(".", pieces));
     } else {
       messageTypeInfo.name(method.getResponseTypeUrl());
+      messageTypeInfo.packagePath("");
     }
-    messageTypeInfo.packagePath(method.getName());
+    messageTypeInfo.packagePrefix(getPackagePrefix(apiaryConfig));
     messageTypeInfo.fields(new ArrayList<FieldInfo>());
     typeInfo.message(messageTypeInfo.build());
     return typeInfo.build();
@@ -143,7 +121,8 @@ public class ApiaryConfigToSampleConfigConverter {
       Type type, Field field, Method method, ApiaryConfig apiaryConfig, boolean deep) {
     MessageTypeInfo.Builder messageTypeInfo = MessageTypeInfo.newBuilder();
     messageTypeInfo.name(field.getTypeUrl());
-    messageTypeInfo.packagePath(method.getName());
+    messageTypeInfo.packagePrefix(getPackagePrefix(apiaryConfig));
+    messageTypeInfo.packagePath("");
     List<FieldInfo> fields = new ArrayList<>();
     if (deep) {
       for (Field field2 : type.getFieldsList()) {
@@ -196,7 +175,6 @@ public class ApiaryConfigToSampleConfigConverter {
     methodInfo.fields(fields);
 
     if (isPageStreaming) {
-      System.out.println("Looking for page streaming resource field...");
       Field pageStreamingResourceField =
           getPageStreamingResouceField(apiaryConfig.getType(method.getResponseTypeUrl()));
       FieldInfo fieldInfo = createFieldInfo(pageStreamingResourceField, method, apiaryConfig);

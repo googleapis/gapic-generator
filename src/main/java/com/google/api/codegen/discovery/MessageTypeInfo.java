@@ -14,21 +14,15 @@
  */
 package com.google.api.codegen.discovery;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.util.Name;
 import com.google.auto.value.AutoValue;
-import com.google.protobuf.Field;
-import com.google.protobuf.Method;
-import com.google.protobuf.Type;
+import java.util.List;
 
 @AutoValue
 public abstract class MessageTypeInfo {
 
   public abstract String name();
+
+  public abstract String packagePrefix();
 
   /*
    * Always equivalent to the parent method's name. Serves as a utility for an easy way to construct
@@ -46,6 +40,8 @@ public abstract class MessageTypeInfo {
   public static abstract class Builder {
 
     public abstract Builder name(String val);
+
+    public abstract Builder packagePrefix(String val);
 
     public abstract Builder packagePath(String val);
 

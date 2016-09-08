@@ -45,6 +45,8 @@ public abstract class SampleBodyView {
 
   public abstract List<SampleFieldView> fields();
 
+  public abstract List<String> fieldVarNames();
+
   public abstract boolean isPageStreaming();
 
   public abstract String resourceGetterName();
@@ -83,6 +85,8 @@ public abstract class SampleBodyView {
     public abstract Builder outputTypeName(String val);
 
     public abstract Builder fields(List<SampleFieldView> val);
+
+    public abstract Builder fieldVarNames(List<String> val);
 
     public abstract Builder isPageStreaming(boolean val);
 
