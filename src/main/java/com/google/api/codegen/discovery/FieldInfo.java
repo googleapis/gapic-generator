@@ -14,32 +14,19 @@
  */
 package com.google.api.codegen.discovery;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.util.Name;
 import com.google.auto.value.AutoValue;
-import com.google.protobuf.Field;
-import com.google.protobuf.Method;
-import com.google.protobuf.Type;
 
 @AutoValue
-public abstract class MessageTypeInfo {
+public abstract class FieldInfo {
 
   public abstract String name();
 
-  /*
-   * Always equivalent to the parent method's name. Serves as a utility for an easy way to construct
-   * a full resource name.
-   */
-  public abstract String packagePath();
+  public abstract TypeInfo type();
 
-  public abstract List<FieldInfo> fields();
+  public abstract String description();
 
   public static Builder newBuilder() {
-    return new AutoValue_MessageTypeInfo.Builder();
+    return new AutoValue_FieldInfo.Builder();
   }
 
   @AutoValue.Builder
@@ -47,10 +34,10 @@ public abstract class MessageTypeInfo {
 
     public abstract Builder name(String val);
 
-    public abstract Builder packagePath(String val);
+    public abstract Builder type(TypeInfo val);
 
-    public abstract Builder fields(List<FieldInfo> val);
+    public abstract Builder description(String val);
 
-    public abstract MessageTypeInfo build();
+    public abstract FieldInfo build();
   }
 }

@@ -17,27 +17,31 @@ package com.google.api.codegen.discovery.viewmodel;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class SampleParamView {
+public abstract class SampleFieldView {
 
   public abstract String name();
 
-  public abstract String doc();
+  public abstract String typeName();
 
-  public abstract String type();
+  public abstract String defaultValue();
+
+  public abstract String description();
 
   public static Builder newBuilder() {
-    return new AutoValue_SampleParamView.Builder();
+    return new AutoValue_SampleFieldView.Builder();
   }
 
   @AutoValue.Builder
   public static abstract class Builder {
 
-    public abstract Builder name(String name);
+    public abstract Builder name(String val);
 
-    public abstract Builder doc(String val);
+    public abstract Builder typeName(String val);
 
-    public abstract Builder type(String val);
+    public abstract Builder defaultValue(String val);
 
-    public abstract SampleParamView build();
+    public abstract Builder description(String val);
+
+    public abstract SampleFieldView build();
   }
 }

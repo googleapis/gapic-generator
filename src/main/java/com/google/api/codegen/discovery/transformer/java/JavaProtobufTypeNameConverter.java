@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.api.codegen.discovery.MessageTypeInfo;
+import com.google.api.codegen.discovery.SampleConfig;
 import com.google.api.codegen.discovery.TypeInfo;
 import com.google.api.codegen.discovery.transformer.ProtobufTypeNameConverter;
 import com.google.api.codegen.util.Name;
@@ -72,7 +73,24 @@ class JavaProtobufTypeNameConverter implements ProtobufTypeNameConverter {
   }
 
   @Override
+  public TypeName getServiceTypeName(SampleConfig sampleConfig) {
+    return typeNameConverter.getTypeName(
+        "com.google.api.services" + Name.lowerCamel(sampleConfig.apiName()).toUpperCamel());
+  }
+
+  @Override
   public TypeName getTypeName(TypeInfo typeInfo) {
+    if (typeInfo.isMessage()) {
+      // {apiName}.{resource1}.{resource2}...{messageTypeName}
+      MessageTypeInfo messageTypeInfo = typeInfo.message();
+      String resources[] = messageTypeInfo.packagePath().split("\\.");
+      for (int i = 0; i < resources.length; i++) {
+        // TODO(garrettjones): Should I do this differently?
+        resources[i] = Name.lowerCamel(resources[i]).toUpperCamel();
+      }
+      return typeNameConverter.getTypeName(
+          "com.google.api.services." + String.join(".", resources) + "." + messageTypeInfo.name());
+    }
     if (typeInfo.isMap()) {
       TypeName mapTypeName = typeNameConverter.getTypeName("java.util.Map");
       TypeName keyTypeName = getTypeNameForElementType(typeInfo.mapKey(), true);
@@ -107,19 +125,6 @@ class JavaProtobufTypeNameConverter implements ProtobufTypeNameConverter {
       return new TypeName(primitiveTypeName);
     }
     throw new IllegalArgumentException("unknown type kind: " + type.kind());
-  }
-
-  @Override
-  public TypeName getMessageTypeName(MessageTypeInfo messageTypeInfo) {
-    // {apiName}.{resource1}.{resource2}...{messageTypeName}
-    String resources[] = messageTypeInfo.packagePath().split("\\.");
-    List<String> pieces = new ArrayList<String>();
-    for (int i = 0; i < resources.length; i++) {
-      // TODO(garrettjones): Should I do this differently?
-      resources[i] = Name.lowerCamel(resources[i]).toUpperCamel();
-    }
-    return typeNameConverter.getTypeName(
-        "com.google.api.services." + String.join(".", resources) + "." + messageTypeInfo.name());
   }
 
   @Override

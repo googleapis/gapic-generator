@@ -14,13 +14,15 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
-import com.google.api.codegen.discovery.MessageTypeInfo;
+import java.util.List;
+
+import com.google.api.codegen.discovery.SampleConfig;
 import com.google.api.codegen.discovery.TypeInfo;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.api.codegen.util.TypedValue;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.protobuf.Method;
-import java.util.List;
 
 /**
  * Manages the imports for a set of fully-qualified type names.
@@ -37,6 +39,14 @@ public class SampleTypeTable implements SampleTypeFormatter {
     this.typeNameConverter = typeNameConverter;
   }
 
+  public String getZeroValueAndSaveNicknameFor(TypeInfo type) {
+    return typeNameConverter.getZeroValue(type).getValueAndSaveTypeNicknameIn(typeTable);
+  }
+
+  public String getAndSaveNicknameFor(SampleConfig sampleConfig) {
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getServiceTypeName(sampleConfig));
+  }
+
   @Override
   public String getTypeName(String typeName) {
     // TODO(saicheems): Auto-generated method stub
@@ -51,10 +61,6 @@ public class SampleTypeTable implements SampleTypeFormatter {
     return typeNameConverter.getZeroValue(typeInfo);
   }
 
-  public TypeName getMessageTypeName(MessageTypeInfo messageTypeInfo) {
-    return typeNameConverter.getMessageTypeName(messageTypeInfo);
-  }
-
   @Override
   public String getMethodName(Method method) {
     return typeFormatter.getMethodName(method);
@@ -65,8 +71,8 @@ public class SampleTypeTable implements SampleTypeFormatter {
     return typeFormatter.renderPrimitiveValue(typeName, value);
   }
 
-  public String getAndSaveNicknameFor(MessageTypeInfo messageTypeInfo) {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getMessageTypeName(messageTypeInfo));
+  public String getAndSaveNicknameFor(TypeInfo typeInfo) {
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(typeInfo));
   }
 
   public void saveNicknameFor(String fullName) {

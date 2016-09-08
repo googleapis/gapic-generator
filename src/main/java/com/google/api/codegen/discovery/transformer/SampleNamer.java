@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
+import com.google.api.codegen.discovery.FieldInfo;
 import com.google.api.codegen.discovery.SampleConfig;
 import com.google.api.codegen.discovery.TypeInfo;
 import com.google.api.codegen.util.Name;
@@ -38,7 +39,11 @@ public class SampleNamer extends NameFormatterDelegator {
     return "$ NOT IMPLEMENTED: " + feature + " $";
   }
 
-  public String getClientClassName(SampleConfig sampleConfig) {
+  public String getServiceVarName(String apiName) {
+    return "service";
+  }
+
+  public String getServiceClassName(SampleConfig sampleConfig) {
     String name = sampleConfig.apiName();
     // TODO(saicheems): WTF is this for?? Why convert to class name here...
     // Converts name to a lower camel format Name (b/c name is lower camel) which is then converted
@@ -46,7 +51,7 @@ public class SampleNamer extends NameFormatterDelegator {
     return className(Name.lowerCamel(name));
   }
 
-  public String getParamVarName(TypeInfo typeInfo) {
-    return typeInfo.name();
+  public String getFieldVarName(String fieldName) {
+    return fieldName;
   }
 }

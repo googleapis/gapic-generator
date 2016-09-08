@@ -27,23 +27,11 @@ import java.util.List;
 @AutoValue
 public abstract class SampleConfig {
 
-  public static SampleConfig createSampleConfig(Method method, ApiaryConfig apiaryConfig) {
-    Builder sampleConfig = newBuilder();
-    sampleConfig.apiTitle(apiaryConfig.getApiTitle());
-    sampleConfig.apiName(apiaryConfig.getApiName());
-    sampleConfig.apiVersion(apiaryConfig.getApiVersion());
-    sampleConfig.resources(apiaryConfig.getResources(method.getName()));
-    sampleConfig.methodInfo(MethodInfo.createMethodInfo(method, apiaryConfig));
-    return sampleConfig.build();
-  }
-
   public abstract String apiTitle();
 
   public abstract String apiName();
 
   public abstract String apiVersion();
-
-  public abstract List<String> resources();
 
   public abstract MethodInfo methodInfo();
 
@@ -59,8 +47,6 @@ public abstract class SampleConfig {
     public abstract Builder apiName(String val);
 
     public abstract Builder apiVersion(String val);
-
-    public abstract Builder resources(List<String> val);
 
     public abstract Builder methodInfo(MethodInfo val);
 

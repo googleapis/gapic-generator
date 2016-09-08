@@ -14,12 +14,13 @@
  */
 package com.google.api.codegen.discovery.viewmodel;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.google.api.codegen.SnippetSetRunner;
-import com.google.api.codegen.discovery.TypeInfo;
-import com.google.api.codegen.discovery.transformer.java.JavaMethodToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
-import java.util.List;
 
 @AutoValue
 public abstract class SampleView implements ViewModel {
@@ -44,27 +45,7 @@ public abstract class SampleView implements ViewModel {
 
   public abstract List<String> imports();
 
-  public abstract String clientClassName();
-
-  public abstract List<String> resources();
-
-  public abstract String requestClassName();
-
-  public abstract boolean hasRequestBody();
-
-  public abstract String requestBodyClassName();
-
-  public abstract boolean hasResponse();
-
-  public abstract String responseClassName();
-
-  public abstract List<String> paramVarNames();
-
-  public abstract List<JavaMethodToViewTransformer.Param> params();
-
-  public abstract boolean isPageStreaming();
-
-  public abstract String pageStreamingResourceName();
+  public abstract SampleBodyView body();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleView.Builder();
@@ -85,27 +66,7 @@ public abstract class SampleView implements ViewModel {
 
     public abstract Builder imports(List<String> val);
 
-    public abstract Builder clientClassName(String val);
-
-    public abstract Builder resources(List<String> val);
-
-    public abstract Builder requestBodyClassName(String val);
-
-    public abstract Builder requestClassName(String val);
-
-    public abstract Builder hasRequestBody(boolean val);
-
-    public abstract Builder responseClassName(String val);
-
-    public abstract Builder hasResponse(boolean val);
-
-    public abstract Builder paramVarNames(List<String> val);
-
-    public abstract Builder params(List<JavaMethodToViewTransformer.Param> val);
-
-    public abstract Builder isPageStreaming(boolean val);
-
-    public abstract String pageStreamingResourceName(String val);
+    public abstract Builder body(SampleBodyView val);
 
     public abstract SampleView build();
   }

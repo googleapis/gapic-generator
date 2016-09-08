@@ -17,12 +17,12 @@ package com.google.api.codegen.discovery.transformer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.api.codegen.discovery.viewmodel.SampleParamView;
+import com.google.api.codegen.discovery.viewmodel.SampleFieldView;
 
 public class SampleParamTransformer {
 
-  public static List<SampleParamView> generateSampleParams(SampleTransformerContext context) {
-    ArrayList<SampleParamView> sampleParams = new ArrayList<>();
+  public static List<SampleFieldView> generateSampleParams(SampleTransformerContext context) {
+    ArrayList<SampleFieldView> sampleParams = new ArrayList<>();
     return sampleParams;
   }
 }

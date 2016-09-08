@@ -28,70 +28,25 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class MethodInfo {
 
-  public static final String EMPTY_TYPE_URL = "Empty";
-
-  public static MethodInfo createMethodInfo(Method method, ApiaryConfig apiaryConfig) {
-    Builder methodInfo = newBuilder();
-    String methodName = method.getName();
-    methodInfo.name(methodName);
-    // Initialize...
-    methodInfo.requestType(MessageTypeInfo.createMessageTypeInfo(methodName));
-    methodInfo.hasRequestBody(false);
-    methodInfo.requestBodyType(null);
-    methodInfo.hasResponse(true);
-    methodInfo.responseType(null);
-
-    List<TypeInfo> paramTypes = new ArrayList<>();
-    for (String paramName : apiaryConfig.getMethodParams(methodName)) {
-      Type type = apiaryConfig.getType(method.getRequestTypeUrl());
-      if (paramName == DiscoveryImporter.REQUEST_FIELD_NAME) {
-        methodInfo.hasRequestBody(true);
-        MessageTypeInfo requestBodyType = MessageTypeInfo.createMessageTypeInfo(type, method, apiaryConfig, true);
-        methodInfo.requestBodyType(requestBodyType);
-        methodInfo.isPageStreaming(false);
-        for(TypeInfo field : requestBodyType.fields()) {
-          if (field.name().equals("pageToken")) {
-            methodInfo.isPageStreaming(true);
-          }
-        }
-        continue;
-      }
-      Field field = apiaryConfig.getField(type, paramName);
-      TypeInfo paramTypeInfo = TypeInfo.createTypeInfo(field, method, apiaryConfig);
-      paramTypes.add(paramTypeInfo);
-    }
-    methodInfo.paramTypes(paramTypes);
-
-    String responseTypeUrl = method.getResponseTypeUrl();
-    boolean responseEmpty =
-        responseTypeUrl.equals(DiscoveryImporter.EMPTY_TYPE_NAME)
-            || responseTypeUrl.equals(EMPTY_TYPE_URL);
-    methodInfo.hasResponse(!responseEmpty);
-    if (!responseEmpty) {
-      methodInfo.responseType(
-          MessageTypeInfo.createMessageTypeInfo(
-              apiaryConfig.getType(method.getResponseTypeUrl()), method, apiaryConfig, false));
-    }
-    return methodInfo.build();
-  }
+  public abstract List<String> resources();
 
   public abstract String name();
 
-  public abstract List<TypeInfo> paramTypes();
-
-  public abstract MessageTypeInfo requestType();
-
-  public abstract boolean hasRequestBody();
+  public abstract List<FieldInfo> fields();
 
   @Nullable
-  public abstract MessageTypeInfo requestBodyType();
-
-  public abstract boolean hasResponse();
+  public abstract TypeInfo inputType();
 
   @Nullable
-  public abstract MessageTypeInfo responseType();
+  public abstract TypeInfo inputRequestType();
+
+  @Nullable
+  public abstract TypeInfo outputType();
 
   public abstract boolean isPageStreaming();
+
+  @Nullable
+  public abstract FieldInfo pageStreamingResourceField();
 
   public static Builder newBuilder() {
     return new AutoValue_MethodInfo.Builder();
@@ -100,21 +55,21 @@ public abstract class MethodInfo {
   @AutoValue.Builder
   public static abstract class Builder {
 
+    public abstract Builder resources(List<String> val);
+
     public abstract Builder name(String val);
 
-    public abstract Builder paramTypes(List<TypeInfo> val);
+    public abstract Builder fields(List<FieldInfo> val);
 
-    public abstract Builder requestType(MessageTypeInfo val);
+    public abstract Builder inputType(TypeInfo val);
 
-    public abstract Builder hasRequestBody(boolean val);
+    public abstract Builder inputRequestType(TypeInfo val);
 
-    public abstract Builder requestBodyType(MessageTypeInfo val);
-
-    public abstract Builder hasResponse(boolean val);
-
-    public abstract Builder responseType(MessageTypeInfo val);
+    public abstract Builder outputType(TypeInfo val);
 
     public abstract Builder isPageStreaming(boolean val);
+
+    public abstract Builder pageStreamingResourceField(FieldInfo val);
 
     public abstract MethodInfo build();
   }

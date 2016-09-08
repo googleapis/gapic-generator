@@ -19,6 +19,7 @@ import javax.annotation.Nullable;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.auto.value.AutoValue;
+import com.google.gson.FieldNamingPolicy;
 import com.google.protobuf.Field;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
@@ -27,39 +28,7 @@ import com.google.protobuf.Type;
 @AutoValue
 public abstract class TypeInfo {
 
-  private static final String KEY_FIELD_NAME = "key";
-  private static final String VALUE_FIELD_NAME = "value";
-
-  public static TypeInfo createTypeInfo(Field field, Method method, ApiaryConfig apiaryConfig) {
-    TypeInfo.Builder typeInfo = newBuilder();
-    String fieldName = field.getName();
-    String requestTypeUrl = method.getRequestTypeUrl();
-    typeInfo.name(fieldName);
-    typeInfo.kind(field.getKind());
-    typeInfo.doc(apiaryConfig.getDescription(requestTypeUrl, fieldName));
-
-    boolean isMap = apiaryConfig.getAdditionalProperties(requestTypeUrl, fieldName) != null;
-    boolean isArray = !isMap && (field.getCardinality() == Cardinality.CARDINALITY_REPEATED);
-    typeInfo.isMap(isMap);
-
-    if (isMap) {
-      Type items = apiaryConfig.getType(field.getTypeUrl());
-      typeInfo.mapKey(
-          TypeInfo.createTypeInfo(
-              apiaryConfig.getField(items, KEY_FIELD_NAME), method, apiaryConfig));
-      typeInfo.mapValue(
-          TypeInfo.createTypeInfo(
-              apiaryConfig.getField(items, VALUE_FIELD_NAME), method, apiaryConfig));
-    }
-    typeInfo.isArray(isArray);
-    return typeInfo.build();
-  }
-
-  public abstract String name();
-
   public abstract Field.Kind kind();
-
-  public abstract String doc();
 
   public abstract boolean isMap();
 
@@ -71,6 +40,11 @@ public abstract class TypeInfo {
 
   public abstract boolean isArray();
 
+  public abstract boolean isMessage();
+
+  @Nullable
+  public abstract MessageTypeInfo message();
+
   public static Builder newBuilder() {
     return new AutoValue_TypeInfo.Builder();
   }
@@ -78,19 +52,19 @@ public abstract class TypeInfo {
   @AutoValue.Builder
   public static abstract class Builder {
 
-    public abstract Builder name(String val);
-
     public abstract Builder kind(Field.Kind val);
-
-    public abstract Builder doc(String val);
 
     public abstract Builder isMap(boolean val);
 
-    public abstract Builder mapKey(@Nullable TypeInfo val);
+    public abstract Builder mapKey(TypeInfo val);
 
-    public abstract Builder mapValue(@Nullable TypeInfo val);
+    public abstract Builder mapValue(TypeInfo val);
 
     public abstract Builder isArray(boolean val);
+
+    public abstract Builder isMessage(boolean val);
+
+    public abstract Builder message(MessageTypeInfo val);
 
     public abstract TypeInfo build();
   }

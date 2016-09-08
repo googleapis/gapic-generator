@@ -16,73 +16,84 @@
   @end
 
   class Main {
-    public static void main(String[] args) throws IOException, GeneralSecurityException {
-      // TODO: This sample uses ADC...
-      // Install the gcloud CLI from https://cloud.google.com/sdk and run
-      // `gcloud beta auth application-default login`
-      GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    {@body(sampleClass.body)}
+  }
+@end
 
+@private body(sampleBody)
+  public {@sampleBody.serviceTypeName} createService() {
+    // TODO: This sample uses ADC...
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // TODO: ...
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new {@sampleBody.serviceTypeName}.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+    
+  public void run() throws IOException, GeneralSecurityException {
+    @if sampleBody.hasInputRequest
       // TODO: ...
-      if (credential.createScopedRequired()) {
-        credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-      }
+      {@sampleBody.inputRequestTypeName} {@sampleBody.inputRequestVarName} = new {@sampleBody.inputRequestTypeName}();
 
-      HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-      JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-      {@sampleClass.clientClassName} service = new {@sampleClass.clientClassName}.Builder(httpTransport, jsonFactory, credential)
-          .setApplicationName("Sample")
-          .build();
-
-      @if sampleClass.hasRequestBody
-        // TODO: ...
-        {@sampleClass.requestBodyClassName} requestBody = new {@sampleClass.requestBodyClassName}();
-
+    @end
+    @join field : sampleBody.fields if sampleBody.fields
+      @join line : util.getDocLines(field.description, 100)
+        // {@line}
       @end
-      @if sampleClass.params
-        @join param : sampleClass.params
-          @join line : util.getDocLines(param.doc, 100)
-            // {@line}
-          @end
 
-          {@param.type} {@param.name} = {@param.defaultValue};
+      {@field.typeName} {@field.name} = {@field.defaultValue};
 
-        @end
-      @end
-      @if sampleClass.isPageStreaming
-        for (...) {
-          ...
+    @end
+    {@sampleBody.inputTypeName} {@sampleBody.inputVarName} = {@sampleBody.serviceVarName}.{@callChain(sampleBody.resources)}({@paramList(sampleBody.fields)});
+    @if {@sampleBody.isPageStreaming}
+      {@sampleBody.outputTypeName} {@sampleBody.outputVarName};
+      do {
+        {@sampleBody.outputVarName} = {@sampleBody.inputVarName}.execute();
+        if ({@sampleBody.outputVarName}.{@sampleBody.resourceGetterName}() == null) {
+          continue;
         }
-      @else
-        {@sampleClass.requestClassName} request = {@sampleClass.clientClassName}.{@resourcesCalls(sampleClass.resources)}({@paramList(sampleClass.paramVarNames)})
-        @if sampleClass.hasResponse
-          {@sampleClass.responseClassName} response = request.execute();
+        @if {@sampleBody.isResourceMap}
+          for ({@sampleBody.resourceTypeName} item : response.{@sampleBody.resourceGetterName}().entrySet()) {
+            System.out.println(item.getKey() + ": " + item.getValue());
+          }
         @else
-          request.execute();
+          for ({@sampleBody.resourceTypeName} item : response.{@sampleBody.resourceGetterName}()) {
+            System.out.println(item);
+          }
         @end
-      @end
+      } while ({@sampleBody.outputVarName}.getNextPageToken() != null);
+    @end
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
     }
   }
 @end
 
-@private resourcesCalls(resources)
+@private callChain(resources)
   @join resource : resources on "()."
     {@resource}
   @end
 @end
 
-@private paramList(params)
-  @join param : params on ", "
-    {@param}
-  @end
-@end
-
-@private sampleParams(sampleClass)
-  @join param : sampleClass.params on @BREAK
-    @join line : util.getDocLines(param.doc, 100)
-      // {@line}
-    @end
-
-    {@param.type} {@param.name} = 0;
+@private paramList(fields)
+  @join field : fields on ", "
+    {@field.name}
   @end
 @end
