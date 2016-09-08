@@ -307,7 +307,7 @@ public class ApiMethodTransformer {
     return true;
   }
 
-  public OptionalArrayMethodView generateOptionalArrayMethod(MethodTransformerContext context) {
+  public OptionalArrayMethodView generateDynamicLangApiMethod(MethodTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
     OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
 

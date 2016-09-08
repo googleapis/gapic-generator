@@ -34,15 +34,15 @@ public class ImportTypeTransformer {
     return generatedImports;
   }
 
-  public List<ImportTypeView> generateImports(SurfaceTransformerContext context) {
+  public List<ImportTypeView> generateProtoFileImports(SurfaceTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
     Set<String> fullNames = new TreeSet<>();
 
-    fullNames.add(namer.getImportFileFromService(context.getInterface()));
+    fullNames.add(namer.getProtoFileImportFromService(context.getInterface()));
 
     for (Method method : context.getNonStreamingMethods()) {
       Interface targetInterface = context.asMethodContext(method).getTargetInterface();
-      fullNames.add(namer.getImportFileFromService(targetInterface));
+      fullNames.add(namer.getProtoFileImportFromService(targetInterface));
     }
 
     List<ImportTypeView> imports = new ArrayList<>();

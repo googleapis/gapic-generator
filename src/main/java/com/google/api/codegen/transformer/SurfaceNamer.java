@@ -543,7 +543,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return qualifiedName(namePath.withoutHead());
   }
 
-  public String getImportFileFromService(Interface service) {
-    return getNotImplementedString("SurfaceNamer.getImportFileFromService");
+  public String getProtoFileImportFromService(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getProtoFileImportFromService");
   }
 }

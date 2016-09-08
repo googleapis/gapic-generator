@@ -165,7 +165,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     for (Method method : context.getNonStreamingMethods()) {
       apiMethods.add(
-          apiMethodTransformer.generateOptionalArrayMethod(context.asMethodContext(method)));
+          apiMethodTransformer.generateDynamicLangApiMethod(context.asMethodContext(method)));
     }
 
     return apiMethods;

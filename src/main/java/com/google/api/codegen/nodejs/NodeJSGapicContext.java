@@ -73,7 +73,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     MethodTransformerContext methodContext = context.asMethodContext(method);
     ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
 
-    return apiMethodTransformer.generateOptionalArrayMethod(methodContext);
+    return apiMethodTransformer.generateDynamicLangApiMethod(methodContext);
   }
 
   /**

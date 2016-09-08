@@ -349,7 +349,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     MethodTransformerContext methodContext = context.asMethodContext(method);
     ApiMethodTransformer methodTransformer = new ApiMethodTransformer();
-    return methodTransformer.generateOptionalArrayMethod(methodContext);
+    return methodTransformer.generateDynamicLangApiMethod(methodContext);
   }
 
   public List<GrpcStubView> getStubs(Interface service) {
@@ -361,7 +361,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   public List<ImportTypeView> getServiceImports(Interface service) {
     ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
-    return importTypeTransformer.generateImports(context);
+    return importTypeTransformer.generateProtoFileImports(context);
   }
 
   private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {
