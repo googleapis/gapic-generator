@@ -65,37 +65,28 @@ public class InitCodeTransformer {
       Iterable<Field> fields,
       SymbolTable table,
       TestValueGenerator valueGenerator) {
-    Map<String, Object> initFieldStructure = createSampleInitFieldStructure(context);
-    InitCodeGeneratorContext initCodeContext =
-        InitCodeGeneratorContext.newBuilder()
-            .symbolTable(table)
-            .valueGenerator(valueGenerator)
-            .initStructure(initFieldStructure)
-            .initObjectName(Name.from("request"))
-            .initObjectType(context.getMethod().getInputType())
-            .flattenedFields(Lists.newArrayList(fields))
-            .build();
-    InitCodeGenerator generator = new InitCodeGenerator();
-    InitCode initCode = generator.generate(initCodeContext);
-
-    return buildInitCodeView(context, initCode);
+    return buildInitCodeView(
+        context,
+        generateInitCodeHelper(
+            Lists.newArrayList(fields),
+            table,
+            valueGenerator,
+            createSampleInitFieldStructure(context),
+            Name.from("request"),
+            context.getMethod().getInputType()));
   }
 
   public InitCodeView generateRequestObjectInitCode(
       MethodTransformerContext context, SymbolTable table, TestValueGenerator valueGenerator) {
-    Map<String, Object> initFieldStructure = createSampleInitFieldStructure(context);
-    InitCodeGeneratorContext initCodeContext =
-        InitCodeGeneratorContext.newBuilder()
-            .symbolTable(table)
-            .valueGenerator(valueGenerator)
-            .initStructure(initFieldStructure)
-            .initObjectName(Name.from("request"))
-            .initObjectType(context.getMethod().getInputType())
-            .build();
-    InitCodeGenerator generator = new InitCodeGenerator();
-    InitCode initCode = generator.generate(initCodeContext);
-
-    return buildInitCodeView(context, initCode);
+    return buildInitCodeView(
+        context,
+        generateInitCodeHelper(
+            null,
+            table,
+            valueGenerator,
+            createSampleInitFieldStructure(context),
+            Name.from("request"),
+            context.getMethod().getInputType()));
   }
 
   public InitCodeView generateTestMethodInitCode(
@@ -103,45 +94,34 @@ public class InitCodeTransformer {
       Iterable<Field> fields,
       SymbolTable table,
       TestValueGenerator valueGenerator) {
-    Map<String, Object> initFieldStructure = createTestRequestInitFieldStructure(context, fields);
-    InitCodeGeneratorContext initCodeContext =
-        InitCodeGeneratorContext.newBuilder()
-            .symbolTable(table)
-            .valueGenerator(valueGenerator)
-            .initStructure(initFieldStructure)
-            .initObjectName(Name.from("request"))
-            .initObjectType(context.getMethod().getInputType())
-            .flattenedFields(Lists.newArrayList(fields))
-            .build();
-    InitCodeGenerator generator = new InitCodeGenerator();
-    InitCode initCode = generator.generate(initCodeContext);
-
-    return buildInitCodeView(context, initCode);
+    return buildInitCodeView(
+        context,
+        generateInitCodeHelper(
+            Lists.newArrayList(fields),
+            table,
+            valueGenerator,
+            createTestRequestInitFieldStructure(context, fields),
+            Name.from("request"),
+            context.getMethod().getInputType()));
   }
 
   public InitCodeView generateMockResponseObjectInitCode(
       MethodTransformerContext context, SymbolTable table, TestValueGenerator valueGenerator) {
-    Map<String, Object> initFieldStructure = createMockResponseInitFieldStructure(context);
-    InitCodeGeneratorContext initCodeContext =
-        InitCodeGeneratorContext.newBuilder()
-            .symbolTable(table)
-            .valueGenerator(valueGenerator)
-            .initStructure(initFieldStructure)
-            .initObjectName(Name.from("expected_response"))
-            .initObjectType(context.getMethod().getOutputType())
-            .build();
-    InitCodeGenerator generator = new InitCodeGenerator();
-    InitCode initCode = generator.generate(initCodeContext);
-
-    return buildInitCodeView(context, initCode);
+    return buildInitCodeView(
+        context,
+        generateInitCodeHelper(
+            null,
+            table,
+            valueGenerator,
+            createMockResponseInitFieldStructure(context),
+            Name.from("expected_response"),
+            context.getMethod().getOutputType()));
   }
 
   public InitCodeView generateSmokeTestInitCode(
       MethodTransformerContext methodContext, SymbolTable table) {
     SmokeTestConfig testConfig = methodContext.getInterfaceConfig().getSmokeTestConfig();
     Method method = testConfig.getMethod();
-    Map<String, Object> initFieldStructure =
-        createSmokeTestInitMap(testConfig.getInitFields(), methodContext);
 
     ArrayList<Field> fields = new ArrayList<>();
     for (Field field : method.getInputMessage().getFields()) {
@@ -150,18 +130,15 @@ public class InitCodeTransformer {
       }
     }
 
-    InitCodeGeneratorContext initCodeContext =
-        InitCodeGeneratorContext.newBuilder()
-            .symbolTable(table)
-            .flattenedFields(fields)
-            .initStructure(initFieldStructure)
-            .initObjectName(Name.from("request"))
-            .initObjectType(method.getInputType())
-            .build();
-    InitCodeGenerator generator = new InitCodeGenerator();
-    InitCode initCode = generator.generate(initCodeContext);
-
-    return buildInitCodeView(methodContext, initCode);
+    return buildInitCodeView(
+        methodContext,
+        generateInitCodeHelper(
+            fields,
+            table,
+            null,
+            createSmokeTestInitMap(testConfig.getInitFields(), methodContext),
+            Name.from("request"),
+            method.getInputType()));
   }
 
   private Map<String, Object> createSmokeTestInitMap(
@@ -169,6 +146,26 @@ public class InitCodeTransformer {
     Map<String, Object> initFieldStructure =
         FieldStructureParser.parseFields(smokeTestInitFields, createInitValueMap(context));
     return initFieldStructure;
+  }
+
+  private InitCode generateInitCodeHelper(
+      ArrayList<Field> fields,
+      SymbolTable table,
+      TestValueGenerator valueGenerator,
+      Map<String, Object> initFieldStructure,
+      Name initObjectName,
+      TypeRef initObjectType) {
+    InitCodeGeneratorContext initCodeContextBuilder =
+        InitCodeGeneratorContext.newBuilder()
+            .symbolTable(table)
+            .valueGenerator(valueGenerator)
+            .initStructure(initFieldStructure)
+            .initObjectName(initObjectName)
+            .initObjectType(initObjectType)
+            .flattenedFields(fields)
+            .build();
+    InitCodeGenerator generator = new InitCodeGenerator();
+    return generator.generate(initCodeContextBuilder);
   }
 
   private InitCodeView buildInitCodeView(MethodTransformerContext context, InitCode initCode) {
@@ -194,17 +191,14 @@ public class InitCodeTransformer {
 
   public List<GapicSurfaceTestAssertView> generateRequestAssertViews(
       MethodTransformerContext context, Iterable<Field> fields) {
-    Map<String, Object> initFieldStructure = createSampleInitFieldStructure(context);
-    InitCodeGenerator generator = new InitCodeGenerator();
-    InitCodeGeneratorContext initCodeContext =
-        InitCodeGeneratorContext.newBuilder()
-            .symbolTable(new SymbolTable())
-            .initStructure(initFieldStructure)
-            .flattenedFields(Lists.newArrayList(fields))
-            .initObjectName(Name.from("request"))
-            .initObjectType(context.getMethod().getInputType())
-            .build();
-    InitCode initCode = generator.generate(initCodeContext);
+    InitCode initCode =
+        generateInitCodeHelper(
+            Lists.newArrayList(fields),
+            new SymbolTable(),
+            null,
+            createSampleInitFieldStructure(context),
+            Name.from("request"),
+            context.getMethod().getInputType());
 
     List<GapicSurfaceTestAssertView> assertViews = new ArrayList<>();
     SurfaceNamer namer = context.getNamer();
