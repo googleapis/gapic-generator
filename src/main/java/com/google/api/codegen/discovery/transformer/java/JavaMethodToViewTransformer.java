@@ -103,17 +103,22 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
     sampleBodyView.hasInputRequest(sampleConfig.methodInfo().inputRequestType() != null);
     if (sampleConfig.methodInfo().inputRequestType() != null) {
       sampleBodyView.inputRequestVarName(symbolTable.getNewSymbol("requestBody"));
+      System.out.println(sampleConfig.methodInfo().name());
       sampleBodyView.inputRequestTypeName(
           sampleTypeTable.getAndSaveNicknameFor(sampleConfig.methodInfo().inputRequestType()));
     }
 
     if (sampleConfig.methodInfo().isPageStreaming()) {
-      System.out.println(sampleConfig.methodInfo().name() + ": isPageStreaming");
       FieldInfo fieldInfo = sampleConfig.methodInfo().pageStreamingResourceField();
       // TODO(garrettjones): Should I form this name this way?
       sampleBodyView.resourceGetterName(Name.from("get", fieldInfo.name()).toLowerCamel());
-      System.out.println(fieldInfo.name() + ": " + fieldInfo.type().kind());
-      sampleBodyView.resourceTypeName(sampleTypeTable.getAndSaveNicknameFor(fieldInfo.type()));
+      String nickname = sampleTypeTable.getAndSaveNicknameFor(fieldInfo.type());
+      sampleBodyView.resourceTypeName(nickname);
+      // Rename the type from Map<K, V> to Map.Entry<K, V> to match what we
+      // expect in the iterating for-loop.
+      if (fieldInfo.type().isMap()) {
+        sampleBodyView.resourceTypeName(sampleNamer.getMapEntryTypeFromMapType(nickname));
+      }
       sampleBodyView.isResourceMap(fieldInfo.type().isMap());
     }
 

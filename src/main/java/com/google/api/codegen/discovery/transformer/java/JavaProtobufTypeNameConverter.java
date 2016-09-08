@@ -75,7 +75,7 @@ class JavaProtobufTypeNameConverter implements ProtobufTypeNameConverter {
   @Override
   public TypeName getServiceTypeName(SampleConfig sampleConfig) {
     return typeNameConverter.getTypeName(
-        "com.google.api.services" + Name.lowerCamel(sampleConfig.apiName()).toUpperCamel());
+        "com.google.api.services." + Name.lowerCamel(sampleConfig.apiName()).toUpperCamel());
   }
 
   @Override
@@ -124,7 +124,12 @@ class JavaProtobufTypeNameConverter implements ProtobufTypeNameConverter {
       }
       return new TypeName(primitiveTypeName);
     }
-    throw new IllegalArgumentException("unknown type kind: " + type.kind());
+    switch (type.kind()) {
+      case TYPE_MESSAGE:
+        return getTypeName(type);
+      default:
+        throw new IllegalArgumentException("unknown type kind: " + type.kind());
+    }
   }
 
   @Override

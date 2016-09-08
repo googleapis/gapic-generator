@@ -54,4 +54,8 @@ public class SampleNamer extends NameFormatterDelegator {
   public String getFieldVarName(String fieldName) {
     return fieldName;
   }
+
+  public String getMapEntryTypeFromMapType(String nickname) {
+    return getNotImplementedString("getMapEntryTypeFromMapType");
+  }
 }

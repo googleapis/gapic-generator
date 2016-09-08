@@ -72,6 +72,13 @@
           }
         @end
       } while ({@sampleBody.outputVarName}.getNextPageToken() != null);
+    @else
+      @if {@sampleBody.hasOutput}
+        {@sampleBody.outputTypeName} {@sampleBody.outputVarName} = {@sampleBody.inputVarName}.execute();
+        System.out.println({@sampleBody.outputVarName});
+      @else
+        {@sampleBody.inputVarName}.execute();
+      @end
     @end
   }
 
