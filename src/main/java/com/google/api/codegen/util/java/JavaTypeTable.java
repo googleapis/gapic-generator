@@ -89,11 +89,8 @@ public class JavaTypeTable implements TypeTable {
     StringBuilder patternBuilder = new StringBuilder("%s<");
     for (int i = 0; i < elementTypeNames.length; i++) {
       elementTypeNames[i] = getTypeName(elementFullNames[i]);
-      if (i == 0) {
-        patternBuilder.append("%i");
-      } else {
-        patternBuilder.append(",%i");
-      }
+      String pattern = i == 0 ? "%i" : ",%i";
+      patternBuilder.append(pattern);
     }
     patternBuilder.append(">");
     return new TypeName(

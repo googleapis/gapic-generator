@@ -41,10 +41,9 @@ public class PageStreamingTransformer {
       PageStreamingDescriptorView.Builder descriptor = PageStreamingDescriptorView.newBuilder();
       descriptor.varName(context.getNamer().getPageStreamingDescriptorName(method));
       descriptor.requestTokenFieldName(pageStreaming.getRequestTokenField().getSimpleName());
-      descriptor.requestPageSizeFieldName(
-          pageStreaming.hasPageSizeField()
-              ? pageStreaming.getPageSizeField().getSimpleName()
-              : null);
+      if (pageStreaming.hasPageSizeField()) {
+        descriptor.requestPageSizeFieldName(pageStreaming.getPageSizeField().getSimpleName());
+      }
       descriptor.responseTokenFieldName(pageStreaming.getResponseTokenField().getSimpleName());
       descriptor.resourcesFieldName(pageStreaming.getResourcesField().getSimpleName());
       descriptor.methodName(Name.upperCamel(method.getSimpleName()).toLowerCamel());
@@ -90,14 +89,12 @@ public class PageStreamingTransformer {
 
     desc.requestTokenSetFunction(
         namer.getFieldSetFunctionName(pageStreaming.getRequestTokenField()));
-    desc.requestPageSizeSetFunction(
-        pageStreaming.hasPageSizeField()
-            ? namer.getFieldSetFunctionName(pageStreaming.getPageSizeField())
-            : null);
-    desc.requestPageSizeGetFunction(
-        pageStreaming.hasPageSizeField()
-            ? namer.getFieldGetFunctionName(pageStreaming.getPageSizeField())
-            : null);
+    if (pageStreaming.hasPageSizeField()) {
+      desc.requestPageSizeSetFunction(
+          namer.getFieldSetFunctionName(pageStreaming.getPageSizeField()));
+      desc.requestPageSizeGetFunction(
+          namer.getFieldGetFunctionName(pageStreaming.getPageSizeField()));
+    }
     desc.responseTokenGetFunction(
         namer.getFieldGetFunctionName(pageStreaming.getResponseTokenField()));
     desc.resourcesFieldGetFunction(

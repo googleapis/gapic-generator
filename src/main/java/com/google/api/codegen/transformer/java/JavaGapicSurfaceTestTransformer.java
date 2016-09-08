@@ -211,7 +211,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     SymbolTable initSymbolTable = new SymbolTable();
 
     InitCodeView initCodeView =
-        initCodeTransformer.generateInitCode(
+        initCodeTransformer.generateTestMethodInitCode(
             methodContext, paramFields, initSymbolTable, valueGenerator);
 
     String resourceTypeName = "";

@@ -98,6 +98,27 @@ public class InitCodeTransformer {
     return buildInitCodeView(context, initCode);
   }
 
+  public InitCodeView generateTestMethodInitCode(
+      MethodTransformerContext context,
+      Iterable<Field> fields,
+      SymbolTable table,
+      TestValueGenerator valueGenerator) {
+    Map<String, Object> initFieldStructure = createTestRequestInitFieldStructure(context, fields);
+    InitCodeGeneratorContext initCodeContext =
+        InitCodeGeneratorContext.newBuilder()
+            .symbolTable(table)
+            .valueGenerator(valueGenerator)
+            .initStructure(initFieldStructure)
+            .initObjectName(Name.from("request"))
+            .initObjectType(context.getMethod().getInputType())
+            .flattenedFields(Lists.newArrayList(fields))
+            .build();
+    InitCodeGenerator generator = new InitCodeGenerator();
+    InitCode initCode = generator.generate(initCodeContext);
+
+    return buildInitCodeView(context, initCode);
+  }
+
   public InitCodeView generateMockResponseObjectInitCode(
       MethodTransformerContext context, SymbolTable table, TestValueGenerator valueGenerator) {
     Map<String, Object> initFieldStructure = createMockResponseInitFieldStructure(context);
@@ -210,6 +231,42 @@ public class InitCodeTransformer {
         FieldStructureParser.parseFields(
             context.getMethodConfig().getSampleCodeInitFields(), createInitValueMap(context));
     return initFieldStructure;
+  }
+
+  private Map<String, Object> createTestRequestInitFieldStructure(
+      MethodTransformerContext context, Iterable<Field> fields) {
+    ArrayList<String> fieldStrings = new ArrayList<>();
+    createTestRequestInitFieldStructure(context, fieldStrings, fields, "", 0);
+    return FieldStructureParser.parseFields(fieldStrings, createInitValueMap(context));
+  }
+
+  private void createTestRequestInitFieldStructure(
+      MethodTransformerContext context,
+      ArrayList<String> fieldStrings,
+      Iterable<Field> fields,
+      String prefix,
+      int depth) {
+    for (Field field : fields) {
+      String initString = prefix + field.getSimpleName();
+
+      if (field.getType().isMap()) {
+        // TODO(michaelbausor) support recursive map initialization
+        fieldStrings.add(initString);
+      } else {
+        if (field.getType().isRepeated()) {
+          initString += "[0]";
+        }
+        fieldStrings.add(initString);
+        if (field.getType().isMessage() && depth > 0) {
+          createTestRequestInitFieldStructure(
+              context,
+              fieldStrings,
+              field.getType().getMessageType().getFields(),
+              initString + ".",
+              depth - 1);
+        }
+      }
+    }
   }
 
   private Map<String, Object> createMockResponseInitFieldStructure(
