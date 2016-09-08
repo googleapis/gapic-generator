@@ -236,7 +236,7 @@ public class InitCodeTransformer {
   private Map<String, Object> createTestRequestInitFieldStructure(
       MethodTransformerContext context, Iterable<Field> fields) {
     ArrayList<String> fieldStrings = new ArrayList<>();
-    createTestRequestInitFieldStructure(context, fieldStrings, fields, "", 0);
+    createTestRequestInitFieldStructure(context, fieldStrings, fields, "", 1);
     return FieldStructureParser.parseFields(fieldStrings, createInitValueMap(context));
   }
 
