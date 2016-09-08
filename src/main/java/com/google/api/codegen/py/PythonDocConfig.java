@@ -46,6 +46,8 @@ abstract class PythonDocConfig extends DocConfig {
 
   public abstract Method getMethod();
 
+  public abstract Interface getInterface();
+
   @Override
   public String getMethodName() {
     return LanguageUtil.upperCamelToLowerUnderscore(getMethod().getSimpleName());
@@ -56,8 +58,8 @@ abstract class PythonDocConfig extends DocConfig {
    */
   public boolean isIterableResponse() {
     Method method = getMethod();
-    Interface service = (Interface) method.getParent();
-    MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+    MethodConfig methodConfig =
+        getApiConfig().getInterfaceConfig(getInterface()).getMethodConfig(method);
     return methodConfig.isPageStreaming();
   }
 
@@ -108,6 +110,8 @@ abstract class PythonDocConfig extends DocConfig {
     public abstract Builder setApiName(String serviceName);
 
     public abstract Builder setMethod(Method method);
+
+    public abstract Builder setInterface(Interface iface);
 
     public abstract Builder setReturnType(String returnType);
 

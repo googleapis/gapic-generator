@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.py;
 
+import com.google.api.codegen.ApiConfig;
+import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.py.PythonImport.ImportType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -45,7 +47,7 @@ public class PythonImportHandler {
    */
   private final BiMap<ProtoFile, String> fileImports = HashBiMap.create();
 
-  public PythonImportHandler(Interface service) {
+  public PythonImportHandler(Interface service, ApiConfig apiConfig) {
     // Add non-service-specific imports.
     addImportStandard("json");
     addImportStandard("os");
@@ -58,13 +60,25 @@ public class PythonImportHandler {
     addImportExternal("google.gax", "path_template");
 
     // Add method request-type imports.
-    for (Method method : service.getMethods()) {
+    for (MethodConfig methodConfig : apiConfig.getInterfaceConfig(service).getMethodConfigs()) {
+      Method method = methodConfig.getMethod();
       addImport(
           method.getFile(),
           PythonImport.create(
               ImportType.APP,
               method.getFile().getProto().getPackage(),
               PythonProtoElements.getPbFileName(method.getInputMessage())));
+      System.out.println(method);
+      for (ProtoFile file : fileImports.keySet()) {
+        System.out.println(file);
+        System.out.println(fileImports.get(file));
+        System.out.println();
+      }
+      for (String shorts : stringImports.keySet()) {
+        System.out.println(shorts);
+        System.out.println(stringImports.get(shorts));
+        System.out.println();
+      }
       for (Field field : method.getInputType().getMessageType().getMessageFields()) {
         MessageType messageType = field.getType().getMessageType();
         addImport(
@@ -244,5 +258,14 @@ public class PythonImportHandler {
     } else {
       return "";
     }
+  }
+
+  public PythonImport getImport(String moduleName, String attributeName) {
+    for (PythonImport pyImport : stringImports.inverse().keySet()) {
+      if (pyImport.attributeName() == attributeName && pyImport.moduleName() == moduleName) {
+        return PythonImport.create(pyImport.type(), pyImport.moduleName(), pyImport.attributeName(), pyImport.localName());
+      }
+    }
+    return PythonImport.create(null, moduleName, attributeName);
   }
 }

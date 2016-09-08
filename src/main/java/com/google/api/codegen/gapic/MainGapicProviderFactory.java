@@ -219,7 +219,8 @@ public class MainGapicProviderFactory
               .setContext(new PythonGapicContext(model, apiConfig))
               .setSnippetSetRunner(
                   new PythonSnippetSetRunner<>(
-                      new PythonInterfaceInitializer(), SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
+                      new PythonInterfaceInitializer(apiConfig),
+                      SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
               .setSnippetFileNames(Arrays.asList("py/main.snip"))
               .setCodePathMapper(pythonPathMapper)
               .build();

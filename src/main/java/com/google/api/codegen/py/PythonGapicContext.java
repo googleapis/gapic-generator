@@ -16,6 +16,7 @@ package com.google.api.codegen.py;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
+import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
@@ -242,9 +243,9 @@ public class PythonGapicContext extends GapicContext {
    * Generate comments lines for a given method's signature, consisting of proto doc and parameter
    * type documentation.
    */
-  public List<String> methodSignatureComments(Method method, PythonImportHandler importHandler) {
-    MethodConfig config =
-        getApiConfig().getInterfaceConfig((Interface) method.getParent()).getMethodConfig(method);
+  public List<String> methodSignatureComments(
+      Interface service, Method method, PythonImportHandler importHandler) {
+    MethodConfig config = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
 
     StringBuilder contentBuilder = new StringBuilder();
 
@@ -287,8 +288,7 @@ public class PythonGapicContext extends GapicContext {
   }
 
   /** Get required (non-optional) fields. */
-  public List<Field> getRequiredFields(Method method) {
-    Interface service = (Interface) method.getParent();
+  public List<Field> getRequiredFields(Interface service, Method method) {
     MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
     return Lists.newArrayList(methodConfig.getRequiredFields());
   }
@@ -371,5 +371,11 @@ public class PythonGapicContext extends GapicContext {
         // Types that do not need to be modified (e.g. TYPE_INT32) are handled here
         return value;
     }
+  }
+
+  public String getMethodInputModule(
+      Interface service, Method method, PythonImportHandler importHandler) {
+
+    return importHandler.fileToModule(method.getFile());
   }
 }
