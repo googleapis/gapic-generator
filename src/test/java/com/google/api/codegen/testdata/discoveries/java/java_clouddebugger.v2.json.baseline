@@ -5,89 +5,41 @@
  * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouddebugger/v2/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.clouddebugger.v2.CloudDebugger;
-import com.google.api.services.clouddebugger.v2.CloudDebugger.Controller.Debuggees.Breakpoints.List;
 import com.google.api.services.clouddebugger.v2.model.ListActiveBreakpointsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudDebuggerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // Identifies the debuggee.
-    String debuggeeId = ""; // TODO: Update field(s).
-
-    CloudDebugger service = createService();
-    List request = service.controller().debuggees().breakpoints().list(debuggeeId);
-    ListActiveBreakpointsResponse response = request.execute();
-    System.out.println(response);
-  }
-
-  public CloudDebugger createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudDebuggerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudDebugger clouddebuggerService = new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -102,13 +54,8 @@ public class CloudDebuggerExample {
     CloudDebugger.Controller.Debuggees.Breakpoints.List request = clouddebuggerService.controller().debuggees().breakpoints().list(debuggeeId);
     ListActiveBreakpointsResponse response = request.execute();
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-    // TODO: Add code here to process the 'response' object
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-=======
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
->>>>>>> Update discovery sample gen across languages.
   }
 }
 /**
@@ -117,96 +64,42 @@ public class CloudDebuggerExample {
  * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouddebugger/v2/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.clouddebugger.v2.CloudDebugger;
-import com.google.api.services.clouddebugger.v2.CloudDebugger.Controller.Debuggees.Breakpoints.Update;
 import com.google.api.services.clouddebugger.v2.model.UpdateActiveBreakpointRequest;
 import com.google.api.services.clouddebugger.v2.model.UpdateActiveBreakpointResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudDebuggerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    UpdateActiveBreakpointRequest requestBody = new UpdateActiveBreakpointRequest();
-
-    // Identifies the debuggee being debugged.
-    String debuggeeId = ""; // TODO: Update field(s).
-
-    // Breakpoint identifier, unique in the scope of the debuggee.
-    String id = ""; // TODO: Update field(s).
-
-    CloudDebugger service = createService();
-    Update request = service.controller().debuggees().breakpoints().update(debuggeeId, id, requestBody);
-    UpdateActiveBreakpointResponse response = request.execute();
-    System.out.println(response);
-  }
-
-  public CloudDebugger createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudDebuggerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudDebugger clouddebuggerService = new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -228,13 +121,8 @@ public class CloudDebuggerExample {
     CloudDebugger.Controller.Debuggees.Breakpoints.Update request = clouddebuggerService.controller().debuggees().breakpoints().update(debuggeeId, id, requestBody);
     UpdateActiveBreakpointResponse response = request.execute();
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-    // TODO: Add code here to process the 'response' object
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-=======
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
->>>>>>> Update discovery sample gen across languages.
   }
 }
 /**
@@ -243,90 +131,42 @@ public class CloudDebuggerExample {
  * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouddebugger/v2/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.clouddebugger.v2.CloudDebugger;
-import com.google.api.services.clouddebugger.v2.CloudDebugger.Controller.Debuggees.Register;
 import com.google.api.services.clouddebugger.v2.model.RegisterDebuggeeRequest;
 import com.google.api.services.clouddebugger.v2.model.RegisterDebuggeeResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudDebuggerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    RegisterDebuggeeRequest requestBody = new RegisterDebuggeeRequest();
-
-    CloudDebugger service = createService();
-    Register request = service.controller().debuggees().register(requestBody);
-    RegisterDebuggeeResponse response = request.execute();
-    System.out.println(response);
-  }
-
-  public CloudDebugger createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudDebuggerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudDebugger clouddebuggerService = new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -339,13 +179,8 @@ public class CloudDebuggerExample {
     CloudDebugger.Controller.Debuggees.Register request = clouddebuggerService.controller().debuggees().register(requestBody);
     RegisterDebuggeeResponse response = request.execute();
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-    // TODO: Add code here to process the 'response' object
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-=======
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
->>>>>>> Update discovery sample gen across languages.
   }
 }
 /**
@@ -354,81 +189,40 @@ public class CloudDebuggerExample {
  * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouddebugger/v2/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.clouddebugger.v2.CloudDebugger;
-import com.google.api.services.clouddebugger.v2.CloudDebugger.Debugger.Debuggees.Breakpoints.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudDebuggerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // ID of the debuggee whose breakpoint to delete.
-    String debuggeeId = ""; // TODO: Update field(s).
-
-    // ID of the breakpoint to delete.
-    String breakpointId = ""; // TODO: Update field(s).
-
-    CloudDebugger service = createService();
-    Delete request = service.debugger().debuggees().breakpoints().delete(debuggeeId, breakpointId);
-    request.execute();
-  }
-
-  public CloudDebugger createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudDebugger clouddebuggerService = new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -441,22 +235,10 @@ public class CloudDebuggerExample {
 
     // ID of the breakpoint to delete.
     String breakpointId = "{MY-BREAKPOINT-ID}";
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudDebuggerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
 
     CloudDebugger.Debugger.Debuggees.Breakpoints.Delete request = clouddebuggerService.debugger().debuggees().breakpoints().delete(debuggeeId, breakpointId);
     request.execute();
->>>>>>> Update discovery sample gen across languages.
   }
 }
 /**
@@ -465,92 +247,41 @@ public class CloudDebuggerExample {
  * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouddebugger/v2/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.clouddebugger.v2.CloudDebugger;
-import com.google.api.services.clouddebugger.v2.CloudDebugger.Debugger.Debuggees.Breakpoints.Get;
 import com.google.api.services.clouddebugger.v2.model.GetBreakpointResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudDebuggerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // ID of the debuggee whose breakpoint to get.
-    String debuggeeId = ""; // TODO: Update field(s).
-
-    // ID of the breakpoint to get.
-    String breakpointId = ""; // TODO: Update field(s).
-
-    CloudDebugger service = createService();
-    Get request = service.debugger().debuggees().breakpoints().get(debuggeeId, breakpointId);
-    GetBreakpointResponse response = request.execute();
-    System.out.println(response);
-  }
-
-  public CloudDebugger createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudDebuggerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudDebugger clouddebuggerService = new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -568,13 +299,8 @@ public class CloudDebuggerExample {
     CloudDebugger.Debugger.Debuggees.Breakpoints.Get request = clouddebuggerService.debugger().debuggees().breakpoints().get(debuggeeId, breakpointId);
     GetBreakpointResponse response = request.execute();
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-    // TODO: Add code here to process the 'response' object
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-=======
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
->>>>>>> Update discovery sample gen across languages.
   }
 }
 /**
@@ -583,89 +309,41 @@ public class CloudDebuggerExample {
  * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouddebugger/v2/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.clouddebugger.v2.CloudDebugger;
-import com.google.api.services.clouddebugger.v2.CloudDebugger.Debugger.Debuggees.Breakpoints.List;
 import com.google.api.services.clouddebugger.v2.model.ListBreakpointsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudDebuggerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // ID of the debuggee whose breakpoints to list.
-    String debuggeeId = ""; // TODO: Update field(s).
-
-    CloudDebugger service = createService();
-    List request = service.debugger().debuggees().breakpoints().list(debuggeeId);
-    ListBreakpointsResponse response = request.execute();
-    System.out.println(response);
-  }
-
-  public CloudDebugger createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudDebuggerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudDebugger clouddebuggerService = new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -680,13 +358,8 @@ public class CloudDebuggerExample {
     CloudDebugger.Debugger.Debuggees.Breakpoints.List request = clouddebuggerService.debugger().debuggees().breakpoints().list(debuggeeId);
     ListBreakpointsResponse response = request.execute();
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-    // TODO: Add code here to process the 'response' object
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-=======
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
->>>>>>> Update discovery sample gen across languages.
   }
 }
 /**
@@ -695,93 +368,42 @@ public class CloudDebuggerExample {
  * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouddebugger/v2/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.clouddebugger.v2.CloudDebugger;
-import com.google.api.services.clouddebugger.v2.CloudDebugger.Debugger.Debuggees.Breakpoints.Set;
 import com.google.api.services.clouddebugger.v2.model.Breakpoint;
 import com.google.api.services.clouddebugger.v2.model.SetBreakpointResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudDebuggerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    Breakpoint requestBody = new Breakpoint();
-
-    // ID of the debuggee where the breakpoint is to be set.
-    String debuggeeId = ""; // TODO: Update field(s).
-
-    CloudDebugger service = createService();
-    Set request = service.debugger().debuggees().breakpoints().set(debuggeeId, requestBody);
-    SetBreakpointResponse response = request.execute();
-    System.out.println(response);
-  }
-
-  public CloudDebugger createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudDebuggerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudDebugger clouddebuggerService = new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -800,13 +422,8 @@ public class CloudDebuggerExample {
     CloudDebugger.Debugger.Debuggees.Breakpoints.Set request = clouddebuggerService.debugger().debuggees().breakpoints().set(debuggeeId, requestBody);
     SetBreakpointResponse response = request.execute();
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-    // TODO: Add code here to process the 'response' object
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-=======
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
->>>>>>> Update discovery sample gen across languages.
   }
 }
 /**
@@ -815,86 +432,41 @@ public class CloudDebuggerExample {
  * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouddebugger/v2/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.clouddebugger.v2.CloudDebugger;
-import com.google.api.services.clouddebugger.v2.CloudDebugger.Debugger.Debuggees.List;
 import com.google.api.services.clouddebugger.v2.model.ListDebuggeesResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudDebuggerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    CloudDebugger service = createService();
-    List request = service.debugger().debuggees().list();
-    ListDebuggeesResponse response = request.execute();
-    System.out.println(response);
-  }
-
-  public CloudDebugger createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudDebuggerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudDebugger clouddebuggerService = new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -903,12 +475,7 @@ public class CloudDebuggerExample {
     CloudDebugger.Debugger.Debuggees.List request = clouddebuggerService.debugger().debuggees().list();
     ListDebuggeesResponse response = request.execute();
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-    // TODO: Add code here to process the 'response' object
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-=======
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
->>>>>>> Update discovery sample gen across languages.
   }
 }

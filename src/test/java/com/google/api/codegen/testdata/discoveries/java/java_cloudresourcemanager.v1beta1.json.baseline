@@ -5,89 +5,41 @@
  * 1. If not already done, enable the Google Cloud Resource Manager API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager.Organizations.Get;
 import com.google.api.services.cloudresourcemanager.model.Organization;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudResourceManagerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // The id of the Organization resource to fetch.
-    String organizationId = ""; // TODO: Update field(s).
-
-    CloudResourceManager service = createService();
-    Get request = service.organizations().get(organizationId);
-    Organization response = request.execute();
-    System.out.println(response);
-  }
-
-  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudResourceManagerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -103,13 +55,8 @@ public class CloudResourceManagerExample {
     CloudResourceManager.Organizations.Get request = cloudresourcemanagerService.organizations().get(name);
     Organization response = request.execute();
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-    // TODO: Add code here to process the 'response' object
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-=======
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
->>>>>>> Update discovery sample gen across languages.
   }
 }
 /**
@@ -118,95 +65,42 @@ public class CloudResourceManagerExample {
  * 1. If not already done, enable the Google Cloud Resource Manager API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager.Organizations.GetIamPolicy;
 import com.google.api.services.cloudresourcemanager.model.GetIamPolicyRequest;
 import com.google.api.services.cloudresourcemanager.model.Policy;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudResourceManagerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    GetIamPolicyRequest requestBody = new GetIamPolicyRequest();
-
-    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
-    // a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
-    // in this value is resource specific and is specified in the `getIamPolicy` documentation.
-    String resource = ""; // TODO: Update field(s).
-
-    CloudResourceManager service = createService();
-    GetIamPolicy request = service.organizations().getIamPolicy(resource, requestBody);
-    Policy response = request.execute();
-    System.out.println(response);
-  }
-
-  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudResourceManagerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -227,13 +121,8 @@ public class CloudResourceManagerExample {
     CloudResourceManager.Organizations.GetIamPolicy request = cloudresourcemanagerService.organizations().getIamPolicy(resource, requestBody);
     Policy response = request.execute();
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-    // TODO: Add code here to process the 'response' object
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-=======
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
->>>>>>> Update discovery sample gen across languages.
   }
 }
 /**
@@ -242,86 +131,42 @@ public class CloudResourceManagerExample {
  * 1. If not already done, enable the Google Cloud Resource Manager API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager.Organizations.List;
 import com.google.api.services.cloudresourcemanager.model.ListOrganizationsResponse;
 import com.google.api.services.cloudresourcemanager.model.Organization;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudResourceManagerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    CloudResourceManager service = createService();
-    List request = service.organizations().list();
-    ListOrganizationsResponse response;
-    do {
-      response = request.execute();
-      if (response.getOrganizations() == null) {
-        continue;
-      }
-      for (Organization item : response.getOrganizations()) {
-        System.out.println(item);
-      }
-    } while (response.getNextPageToken() != null);
-  }
-
-  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -338,16 +183,9 @@ public class CloudResourceManagerExample {
         // TODO: Change code below to process each `organization` resource:
         System.out.println(organization);
       }
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudResourceManagerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
   }
 }
 /**
@@ -356,95 +194,42 @@ public class CloudResourceManagerExample {
  * 1. If not already done, enable the Google Cloud Resource Manager API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager.Organizations.SetIamPolicy;
 import com.google.api.services.cloudresourcemanager.model.Policy;
 import com.google.api.services.cloudresourcemanager.model.SetIamPolicyRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudResourceManagerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    SetIamPolicyRequest requestBody = new SetIamPolicyRequest();
-
-    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
-    // a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
-    // in this value is resource specific and is specified in the `setIamPolicy` documentation.
-    String resource = ""; // TODO: Update field(s).
-
-    CloudResourceManager service = createService();
-    SetIamPolicy request = service.organizations().setIamPolicy(resource, requestBody);
-    Policy response = request.execute();
-    System.out.println(response);
-  }
-
-  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudResourceManagerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -465,13 +250,8 @@ public class CloudResourceManagerExample {
     CloudResourceManager.Organizations.SetIamPolicy request = cloudresourcemanagerService.organizations().setIamPolicy(resource, requestBody);
     Policy response = request.execute();
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-    // TODO: Add code here to process the 'response' object
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-=======
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
->>>>>>> Update discovery sample gen across languages.
   }
 }
 /**
@@ -480,96 +260,42 @@ public class CloudResourceManagerExample {
  * 1. If not already done, enable the Google Cloud Resource Manager API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager.Organizations.TestIamPermissions;
 import com.google.api.services.cloudresourcemanager.model.TestIamPermissionsRequest;
 import com.google.api.services.cloudresourcemanager.model.TestIamPermissionsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudResourceManagerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    TestIamPermissionsRequest requestBody = new TestIamPermissionsRequest();
-
-    // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
-    // specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the
-    // path specified in this value is resource specific and is specified in the `testIamPermissions`
-    // documentation.
-    String resource = ""; // TODO: Update field(s).
-
-    CloudResourceManager service = createService();
-    TestIamPermissions request = service.organizations().testIamPermissions(resource, requestBody);
-    TestIamPermissionsResponse response = request.execute();
-    System.out.println(response);
-  }
-
-  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudResourceManagerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -591,13 +317,8 @@ public class CloudResourceManagerExample {
     CloudResourceManager.Organizations.TestIamPermissions request = cloudresourcemanagerService.organizations().testIamPermissions(resource, requestBody);
     TestIamPermissionsResponse response = request.execute();
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-    // TODO: Add code here to process the 'response' object
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-=======
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
->>>>>>> Update discovery sample gen across languages.
   }
 }
 /**
@@ -606,93 +327,41 @@ public class CloudResourceManagerExample {
  * 1. If not already done, enable the Google Cloud Resource Manager API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager.Organizations.Update;
 import com.google.api.services.cloudresourcemanager.model.Organization;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudResourceManagerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    Organization requestBody = new Organization();
-
-    // An immutable id for the Organization that is assigned on creation. This should be omitted when
-    // creating a new Organization. This field is read-only.
-    String organizationId = ""; // TODO: Update field(s).
-
-    CloudResourceManager service = createService();
-    Update request = service.organizations().update(organizationId, requestBody);
-    Organization response = request.execute();
-    System.out.println(response);
-  }
-
-  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudResourceManagerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -712,13 +381,8 @@ public class CloudResourceManagerExample {
     CloudResourceManager.Organizations.Update request = cloudresourcemanagerService.organizations().update(name, requestBody);
     Organization response = request.execute();
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-    // TODO: Add code here to process the 'response' object
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-=======
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
->>>>>>> Update discovery sample gen across languages.
   }
 }
 /**
@@ -727,89 +391,41 @@ public class CloudResourceManagerExample {
  * 1. If not already done, enable the Google Cloud Resource Manager API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager.Projects.Create;
 import com.google.api.services.cloudresourcemanager.model.Project;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudResourceManagerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    Project requestBody = new Project();
-
-    CloudResourceManager service = createService();
-    Create request = service.projects().create(requestBody);
-    Project response = request.execute();
-    System.out.println(response);
-  }
-
-  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudResourceManagerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -822,13 +438,8 @@ public class CloudResourceManagerExample {
     CloudResourceManager.Projects.Create request = cloudresourcemanagerService.projects().create(requestBody);
     Project response = request.execute();
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-    // TODO: Add code here to process the 'response' object
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-=======
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
->>>>>>> Update discovery sample gen across languages.
   }
 }
 /**
@@ -837,78 +448,40 @@ public class CloudResourceManagerExample {
  * 1. If not already done, enable the Google Cloud Resource Manager API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager.Projects.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudResourceManagerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // The Project ID (for example, `foo-bar-123`). Required.
-    String projectId = ""; // TODO: Update field(s).
-
-    CloudResourceManager service = createService();
-    Delete request = service.projects().delete(projectId);
-    request.execute();
-  }
-
-  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -918,22 +491,10 @@ public class CloudResourceManagerExample {
 
     // The Project ID (for example, `foo-bar-123`). Required.
     String projectId = "{MY-PROJECT-ID}";
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudResourceManagerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
 
     CloudResourceManager.Projects.Delete request = cloudresourcemanagerService.projects().delete(projectId);
     request.execute();
->>>>>>> Update discovery sample gen across languages.
   }
 }
 /**
@@ -942,89 +503,41 @@ public class CloudResourceManagerExample {
  * 1. If not already done, enable the Google Cloud Resource Manager API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager.Projects.Get;
 import com.google.api.services.cloudresourcemanager.model.Project;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudResourceManagerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // The Project ID (for example, `my-project-123`). Required.
-    String projectId = ""; // TODO: Update field(s).
-
-    CloudResourceManager service = createService();
-    Get request = service.projects().get(projectId);
-    Project response = request.execute();
-    System.out.println(response);
-  }
-
-  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudResourceManagerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -1039,13 +552,8 @@ public class CloudResourceManagerExample {
     CloudResourceManager.Projects.Get request = cloudresourcemanagerService.projects().get(projectId);
     Project response = request.execute();
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-    // TODO: Add code here to process the 'response' object
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-=======
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
->>>>>>> Update discovery sample gen across languages.
   }
 }
 /**
@@ -1054,77 +562,39 @@ public class CloudResourceManagerExample {
  * 1. If not already done, enable the Google Cloud Resource Manager API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-import com.google.api.services.cloudresourcemanager.CloudResourceManager.Projects.GetIamPolicy;
-import com.google.api.services.cloudresourcemanager.model.GetIamPolicyRequest;
-import com.google.api.services.cloudresourcemanager.model.Policy;
-=======
 import com.google.api.services.cloudresourcemanager.model.GetAncestryRequest;
 import com.google.api.services.cloudresourcemanager.model.GetAncestryResponse;
->>>>>>> Update discovery sample gen across languages.
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudResourceManagerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    GetIamPolicyRequest requestBody = new GetIamPolicyRequest();
-
-    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
-    // a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
-    // in this value is resource specific and is specified in the `getIamPolicy` documentation.
-    String resource = ""; // TODO: Update field(s).
-
-    CloudResourceManager service = createService();
-    GetIamPolicy request = service.projects().getIamPolicy(resource, requestBody);
-    Policy response = request.execute();
-    System.out.println(response);
-  }
-
-  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
->>>>>>> Update discovery sample gen across languages.
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-=======
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
@@ -1185,34 +655,13 @@ public class CloudResourceManagerExample {
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudResourceManagerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -1233,13 +682,8 @@ public class CloudResourceManagerExample {
     CloudResourceManager.Projects.GetIamPolicy request = cloudresourcemanagerService.projects().getIamPolicy(resource, requestBody);
     Policy response = request.execute();
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-    // TODO: Add code here to process the 'response' object
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-=======
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
->>>>>>> Update discovery sample gen across languages.
   }
 }
 /**
@@ -1248,86 +692,42 @@ public class CloudResourceManagerExample {
  * 1. If not already done, enable the Google Cloud Resource Manager API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager.Projects.List;
 import com.google.api.services.cloudresourcemanager.model.ListProjectsResponse;
 import com.google.api.services.cloudresourcemanager.model.Project;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudResourceManagerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    CloudResourceManager service = createService();
-    List request = service.projects().list();
-    ListProjectsResponse response;
-    do {
-      response = request.execute();
-      if (response.getProjects() == null) {
-        continue;
-      }
-      for (Project item : response.getProjects()) {
-        System.out.println(item);
-      }
-    } while (response.getNextPageToken() != null);
-  }
-
-  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -1344,16 +744,9 @@ public class CloudResourceManagerExample {
         // TODO: Change code below to process each `project` resource:
         System.out.println(project);
       }
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudResourceManagerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
   }
 }
 /**
@@ -1362,95 +755,42 @@ public class CloudResourceManagerExample {
  * 1. If not already done, enable the Google Cloud Resource Manager API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager.Projects.SetIamPolicy;
 import com.google.api.services.cloudresourcemanager.model.Policy;
 import com.google.api.services.cloudresourcemanager.model.SetIamPolicyRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudResourceManagerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    SetIamPolicyRequest requestBody = new SetIamPolicyRequest();
-
-    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
-    // a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
-    // in this value is resource specific and is specified in the `setIamPolicy` documentation.
-    String resource = ""; // TODO: Update field(s).
-
-    CloudResourceManager service = createService();
-    SetIamPolicy request = service.projects().setIamPolicy(resource, requestBody);
-    Policy response = request.execute();
-    System.out.println(response);
-  }
-
-  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudResourceManagerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -1471,13 +811,8 @@ public class CloudResourceManagerExample {
     CloudResourceManager.Projects.SetIamPolicy request = cloudresourcemanagerService.projects().setIamPolicy(resource, requestBody);
     Policy response = request.execute();
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-    // TODO: Add code here to process the 'response' object
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-=======
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
->>>>>>> Update discovery sample gen across languages.
   }
 }
 /**
@@ -1486,96 +821,42 @@ public class CloudResourceManagerExample {
  * 1. If not already done, enable the Google Cloud Resource Manager API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager.Projects.TestIamPermissions;
 import com.google.api.services.cloudresourcemanager.model.TestIamPermissionsRequest;
 import com.google.api.services.cloudresourcemanager.model.TestIamPermissionsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudResourceManagerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    TestIamPermissionsRequest requestBody = new TestIamPermissionsRequest();
-
-    // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
-    // specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the
-    // path specified in this value is resource specific and is specified in the `testIamPermissions`
-    // documentation.
-    String resource = ""; // TODO: Update field(s).
-
-    CloudResourceManager service = createService();
-    TestIamPermissions request = service.projects().testIamPermissions(resource, requestBody);
-    TestIamPermissionsResponse response = request.execute();
-    System.out.println(response);
-  }
-
-  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudResourceManagerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -1597,13 +878,8 @@ public class CloudResourceManagerExample {
     CloudResourceManager.Projects.TestIamPermissions request = cloudresourcemanagerService.projects().testIamPermissions(resource, requestBody);
     TestIamPermissionsResponse response = request.execute();
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-    // TODO: Add code here to process the 'response' object
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-=======
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
->>>>>>> Update discovery sample gen across languages.
   }
 }
 /**
@@ -1612,91 +888,41 @@ public class CloudResourceManagerExample {
  * 1. If not already done, enable the Google Cloud Resource Manager API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager.Projects.Undelete;
 import com.google.api.services.cloudresourcemanager.model.UndeleteProjectRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudResourceManagerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    UndeleteProjectRequest requestBody = new UndeleteProjectRequest();
-
-    // The project ID (for example, `foo-bar-123`). Required.
-    String projectId = ""; // TODO: Update field(s).
-
-    CloudResourceManager service = createService();
-    Undelete request = service.projects().undelete(projectId, requestBody);
-    request.execute();
-  }
-
-  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudResourceManagerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -1714,7 +940,6 @@ public class CloudResourceManagerExample {
 
     CloudResourceManager.Projects.Undelete request = cloudresourcemanagerService.projects().undelete(projectId, requestBody);
     request.execute();
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
 /**
@@ -1723,92 +948,41 @@ public class CloudResourceManagerExample {
  * 1. If not already done, enable the Google Cloud Resource Manager API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
- * 2. Install the Java client library on Maven or Gradle. Check installation
-=======
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager.Projects.Update;
 import com.google.api.services.cloudresourcemanager.model.Project;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class CloudResourceManagerExample {
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
-  public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    Project requestBody = new Project();
-
-    // The project ID (for example, `my-project-123`). Required.
-    String projectId = ""; // TODO: Update field(s).
-
-    CloudResourceManager service = createService();
-    Update request = service.projects().update(projectId, requestBody);
-    Project response = request.execute();
-    System.out.println(response);
-  }
-
-  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-=======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-=======
     // Use Application Default Credentials for authentication when running locally.
     // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
->>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-<<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
-    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new CloudResourceManagerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-=======
-=======
-
->>>>>>> Update discovery sample gen across languages.
     CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -1827,12 +1001,7 @@ public class CloudResourceManagerExample {
     CloudResourceManager.Projects.Update request = cloudresourcemanagerService.projects().update(projectId, requestBody);
     Project response = request.execute();
 
-<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
-    // TODO: Add code here to process the 'response' object
->>>>>>> Add basic 3LO and API key auth support in discovery (#445)
-=======
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
->>>>>>> Update discovery sample gen across languages.
   }
 }
