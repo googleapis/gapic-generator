@@ -250,11 +250,10 @@ public class PythonImportHandler {
   }
 
   /**
-   * This is needed for situations where a ProtoFile might not be enough to determine the module
-   * name. For instance, if a the same ProtoFile was imported indirectly and directly. This occurs
-   * if an api config both declares some mixin methods in the service proto and some in the
-   * gapic yaml using the reroute_to_grpc_interface tag. In practice this case shouldn't occur, but
-   * in either case, this method will return the correct module.
+   * This is needed for situations where a ProtoFile is not enough to determine the module
+   * name. This occurs if an api config both declares some mixin methods in the service proto and
+   * some mixin methods in the gapic yaml using the reroute_to_grpc_interface tag. In practice
+   * this case shouldn't occur, but in either case, this method will return the correct module.
    */
   public String getModule(String module, String attribute) {
     String localName = "";

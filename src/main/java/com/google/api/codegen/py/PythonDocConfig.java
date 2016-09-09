@@ -48,6 +48,8 @@ abstract class PythonDocConfig extends DocConfig {
 
   public abstract Interface getInterface();
 
+  public abstract PythonImportHandler getImportHandler();
+
   @Override
   public String getMethodName() {
     return LanguageUtil.upperCamelToLowerUnderscore(getMethod().getSimpleName());
@@ -94,7 +96,7 @@ abstract class PythonDocConfig extends DocConfig {
       }
 
       if (lineType != null && lineType.isMessage()) {
-        importStrings.addAll(new PythonImportHandler(getMethod()).calculateImports());
+        importStrings.addAll(getImportHandler().calculateImports());
         break;
       }
     }
@@ -103,7 +105,16 @@ abstract class PythonDocConfig extends DocConfig {
 
   @AutoValue.Builder
   abstract static class Builder extends DocConfig.Builder<Builder> {
-    public abstract PythonDocConfig build();
+    abstract PythonDocConfig autoBuild();
+
+    abstract Method getMethod();
+
+    abstract Builder setImportHandler(PythonImportHandler importHandler);
+
+    public PythonDocConfig build() {
+      setImportHandler(new PythonImportHandler(getMethod()));
+      return autoBuild();
+    }
 
     public abstract Builder setApiConfig(ApiConfig apiConfig);
 
