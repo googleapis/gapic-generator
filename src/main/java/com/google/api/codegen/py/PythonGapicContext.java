@@ -37,8 +37,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
@@ -373,9 +375,37 @@ public class PythonGapicContext extends GapicContext {
     }
   }
 
-  public String getMethodInputModule(
-      Interface service, Method method, PythonImportHandler importHandler) {
+  public List<Interface> getStubInterfaces(Interface service) {
+    Map<String, Interface> interfaces = new TreeMap<>();
+    for (MethodConfig methodConfig :
+        getApiConfig().getInterfaceConfig(service).getMethodConfigs()) {
+      String rerouteToGrpcInterface = methodConfig.getRerouteToGrpcInterface();
+      Interface target = InterfaceConfig.getTargetInterface(service, rerouteToGrpcInterface);
+      interfaces.put(target.getFullName(), target);
+    }
+    return new ArrayList<>(interfaces.values());
+  }
 
-    return importHandler.fileToModule(method.getFile());
+  public String stubName(Interface service) {
+    return upperCamelToLowerUnderscore(service.getSimpleName()) + "_stub";
+  }
+
+  public String methodInputModule(Method method, PythonImportHandler importHandler) {
+    String module = method.getFile().getProto().getPackage();
+    String attribute = PythonProtoElements.getPbFileName(method.getInputType().getMessageType());
+    return importHandler.getModule(module, attribute);
+  }
+
+  public String elementModule(ProtoElement elem, PythonImportHandler importHandler) {
+    String module = elem.getFile().getProto().getPackage();
+    String attribute = PythonProtoElements.getPbFileName(elem);
+    return importHandler.getModule(module, attribute);
+  }
+
+  public String stubNameForMethod(Interface service, Method method) {
+    MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+    String rerouteToGrpcInterface = methodConfig.getRerouteToGrpcInterface();
+    Interface target = InterfaceConfig.getTargetInterface(service, rerouteToGrpcInterface);
+    return stubName(target);
   }
 }

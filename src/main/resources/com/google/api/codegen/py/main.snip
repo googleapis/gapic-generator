@@ -186,9 +186,7 @@
 @end
 
 @private initMethodSection(service)
-    @let stubModule = pyproto.getPbFileName(service), \
-             stubService = service.getSimpleName(), \
-             ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
+    @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
         def __init__(
                 self,
                 service_path=SERVICE_ADDRESS,
@@ -235,17 +233,24 @@
             )
             metadata = [('x-goog-api-client', goog_api_client)]
             {@constructDefaults(service)}
-            self.stub = config.create_stub(
-                {@stubModule}.beta_create_{@stubService}_stub,
-                service_path,
-                port,
-                ssl_creds=ssl_creds,
-                channel=channel,
-                metadata_transformer=metadata_transformer,
-                scopes=scopes)
+            @join stubInterface : context.getStubInterfaces(service)
+                @let stubName = context.stubName(stubInterface), \
+                        stubModule = context.elementModule(stubInterface, importHandler), \
+                        stubService = stubInterface.getSimpleName
+                    self.{@stubName} = config.create_stub(
+                        {@stubModule}.beta_create_{@stubService}_stub,
+                        service_path,
+                        port,
+                        ssl_creds=ssl_creds,
+                        channel=channel,
+                        metadata_transformer=metadata_transformer,
+                        scopes=scopes)
+                @end
+            @end
+
             @join method : context.getNonStreamingMethodsV2(service)
                 self._{@methodName(method)} = api_callable.create_api_call(
-                    self.stub.{@method.getSimpleName()},
+                    self.{@context.stubNameForMethod(service, method)}.{@method.getSimpleName()},
                     settings=defaults['{@methodName(method)}'])
             @end
     @end
@@ -407,7 +412,7 @@
 @end
 
 @private flattenedMethod(service, method)
-    @let methodInputModule = context.getMethodInputModule(service, method, importHandler), \
+    @let methodInputModule = context.methodInputModule(method, importHandler), \
              inputTypeName = method.getInputMessage().getSimpleName(), \
              documentation = methodComments(service, method), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \

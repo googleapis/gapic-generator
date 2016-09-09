@@ -106,7 +106,7 @@ class NoTemplatesServiceApi(object):
             client_config,
             config.STATUS_CODE_NAMES,
             kwargs={'metadata': metadata})
-        self.stub = config.create_stub(
+        self.no_templates_service_stub = config.create_stub(
             no_path_templates_pb2.beta_create_NoTemplatesService_stub,
             service_path,
             port,
@@ -114,8 +114,9 @@ class NoTemplatesServiceApi(object):
             channel=channel,
             metadata_transformer=metadata_transformer,
             scopes=scopes)
+
         self._increment = api_callable.create_api_call(
-            self.stub.Increment,
+            self.no_templates_service_stub.Increment,
             settings=defaults['increment'])
 
     # Service calls

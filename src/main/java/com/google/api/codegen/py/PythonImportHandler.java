@@ -68,17 +68,6 @@ public class PythonImportHandler {
               ImportType.APP,
               method.getFile().getProto().getPackage(),
               PythonProtoElements.getPbFileName(method.getInputMessage())));
-      System.out.println(method);
-      for (ProtoFile file : fileImports.keySet()) {
-        System.out.println(file);
-        System.out.println(fileImports.get(file));
-        System.out.println();
-      }
-      for (String shorts : stringImports.keySet()) {
-        System.out.println(shorts);
-        System.out.println(stringImports.get(shorts));
-        System.out.println();
-      }
       for (Field field : method.getInputType().getMessageType().getMessageFields()) {
         MessageType messageType = field.getType().getMessageType();
         addImport(
@@ -260,12 +249,21 @@ public class PythonImportHandler {
     }
   }
 
-  public PythonImport getImport(String moduleName, String attributeName) {
+  /**
+   * This is needed for situations where a ProtoFile might not be enough to determine the module
+   * name. For instance, if a the same ProtoFile was imported indirectly and directly. This occurs
+   * if an api config both declares some mixin methods in the service proto and some in the
+   * gapic yaml using the reroute_to_grpc_interface tag. In practice this case shouldn't occur, but
+   * in either case, this method will return the correct module.
+   */
+  public String getModule(String module, String attribute) {
+    String localName = "";
     for (PythonImport pyImport : stringImports.inverse().keySet()) {
-      if (pyImport.attributeName() == attributeName && pyImport.moduleName() == moduleName) {
-        return PythonImport.create(pyImport.type(), pyImport.moduleName(), pyImport.attributeName(), pyImport.localName());
+      if (pyImport.attributeName().equals(attribute) && pyImport.moduleName().equals(module)) {
+        localName = pyImport.localName();
+        break;
       }
     }
-    return PythonImport.create(null, moduleName, attributeName);
+    return Strings.isNullOrEmpty(localName) ? attribute : localName;
   }
 }
