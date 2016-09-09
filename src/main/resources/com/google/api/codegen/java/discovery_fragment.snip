@@ -49,24 +49,11 @@
        params = apiaryConfig.getMethodParams(method.getName)
     public class {@ApiName}Example {
       public static void main(String[] args) throws IOException, GeneralSecurityException {
-
         @let authType = apiaryConfig.getAuthType.toString
           @switch authType
           @case "APPLICATION_DEFAULT_CREDENTIALS"
             {@importGoogleCredential()}{@adcBoilerplate()}
           @default
-            // {@TODO()} Implement this function to get authentication credentials.
-            @let authInstructionsUrl = apiaryConfig.getAuthInstructionsUrl
-              @if authInstructionsUrl
-                // See {@authInstructionsUrl}
-              @end
-            @end
-            @if apiaryConfig.hasAuthScopes(method.getName)
-              // Authorize using one of the following scopes in order to use this method:
-              @join scope : apiaryConfig.getAuthScopes.get(method.getName)
-                //   {@scope}
-              @end
-            @end
             {@importCredential()}Credential credential = getAuth();
           @end
         @end
@@ -85,6 +72,24 @@
           {@compactCall(method)}
         @end
       }
+      @if apiaryConfig.getAuthType.toString != "APPLICATION_DEFAULT_CREDENTIALS"
+      
+        public static Credential getAuth() {
+          // {@TODO()} Implement this function to get authentication credentials.
+          @let authInstructionsUrl = apiaryConfig.getAuthInstructionsUrl
+            @if authInstructionsUrl
+              // See {@authInstructionsUrl}
+            @end
+          @end
+          @if apiaryConfig.hasAuthScopes(method.getName)
+            // Authorize using one of the following scopes in order to use this method:
+            @join scope : apiaryConfig.getAuthScopes.get(method.getName)
+              //   {@scope}
+            @end
+          @end
+          return null;
+        }
+      @end
     }
   @end
 @end
