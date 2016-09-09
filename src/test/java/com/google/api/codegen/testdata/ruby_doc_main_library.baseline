@@ -214,7 +214,8 @@ module Library
         require "library_services_pb"
 
         google_api_client = "#{app_name}/#{app_version} " \
-          "#{CODE_GEN_NAME_VERSION} ruby/#{RUBY_VERSION}".freeze
+          "#{CODE_GEN_NAME_VERSION} gax/#{Google::Gax::Version} " \
+          "ruby/#{RUBY_VERSION}".freeze
         headers = { :"x-goog-api-client" => google_api_client }
         client_config_file = Pathname.new(__dir__).join(
           "library_service_client_config.json"

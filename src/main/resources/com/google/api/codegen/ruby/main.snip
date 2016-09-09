@@ -216,7 +216,8 @@
       require "{@context.getGrpcFilename(service)}"
 
       google_api_client = "#{app_name}/#{app_version} " @\
-        "#{CODE_GEN_NAME_VERSION} ruby/#{RUBY_VERSION}".freeze
+        "#{CODE_GEN_NAME_VERSION} gax/#{Google::Gax::Version} " @\
+        "ruby/#{RUBY_VERSION}".freeze
       headers = { :"x-goog-api-client" => google_api_client }
       {@constructDefaults(service)}
       @@stub = Google::Gax::Grpc.create_stub(
