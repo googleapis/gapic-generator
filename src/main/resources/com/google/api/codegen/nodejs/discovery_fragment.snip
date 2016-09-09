@@ -13,29 +13,86 @@
     // 1. If not already done, enable the {@context.getService.getTitle}
     //    and check the quota for your project at
     //    https://console.developers.google.com/apis/api/{@context.getApi.getName}
-    // 2. This sample uses Application Default Credentials for authentication.
-    //    If not already done, install the gcloud CLI from
-    //    https://cloud.google.com/sdk/ and run
-    //    'gcloud beta auth application-default login'
-    // 3. Install the Node.js client library and Application Default Credentials
-    //    library by running 'npm install googleapis --save'
+    @if context.getApiaryConfig.getAuthType.toString == "APPLICATION_DEFAULT_CREDENTIALS"
+      // 2. This sample uses Application Default Credentials for authentication.
+      //    If not already done, install the gcloud CLI from
+      //    https://cloud.google.com/sdk/ and run
+      //    'gcloud beta auth application-default login'
+      // 3. Install the Node.js client library and Application Default Credentials
+      //    library by running 'npm install googleapis --save'
+    @else
+      // 2. Install the Node.js client library by running
+      //    'npm install googleapis --save'
+    @end
     var google = require('googleapis');
     var {@apiName} = google.{@apiName}('{@apiVersion}');
+    @if context.getApiaryConfig.getAuthType.toString == "OAUTH_3L"
 
-    google.auth.getApplicationDefault(function(err, authClient) {
-      if (err) {
-        console.log('Authentication failed because of ', err);
-        return;
-      }
-      if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-        var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-        authClient = authClient.createScoped(scopes);
-      }
+      function getAuth(callback) {
+        // {@TODO()} Implement this function to get authentication credentials.
+        @let authInstructionsUrl = context.getApiaryConfig.getAuthInstructionsUrl
+          @if authInstructionsUrl
+            // See {@authInstructionsUrl}
+          @end
+        @end
+        @if context.getApiaryConfig.hasAuthScopes(method.getName)
+          // Authorize using one of the following scopes in order to use this method:
+          @join scope : context.getApiaryConfig.getAuthScopes.get(method.getName)
+            //   {@scope}
+          @end
+        @end
+        return callback(new Error("Not implemented"), null);
+      };
+    @end
 
+    @switch context.getApiaryConfig.getAuthType.toString
+    @case "APPLICATION_DEFAULT_CREDENTIALS"
+      google.auth.getApplicationDefault(function(err, authClient) {
+        if (err) {
+          console.log('Authentication failed because of ', err);
+          return;
+        }
+        if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+          var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+          authClient = authClient.createScoped(scopes);
+        }
+
+        var {@requestName()} = {
+          {@initialize(method)}
+          // Auth client
+          auth: authClient
+        };
+
+        @if context.isPageStreaming(method)
+          {@iterableCall(method)}
+        @else
+          {@compactCall(method)}
+        @end
+      });
+    @case "OAUTH_3L"
+      getAuth(function(err, authClient)) {
+        if (err) {
+          console.log('Authentication failed because of ', err);
+          return;
+        }
+
+        var {@requestName()} = {
+          {@initialize(method)}
+          // Auth client
+          auth: authClient
+        };
+
+        @if context.isPageStreaming(method)
+          {@iterableCall(method)}
+        @else
+          {@compactCall(method)}
+        @end
+      });
+    @case "API_KEY"
       var {@requestName()} = {
         {@initialize(method)}
-        // Auth client
-        auth: authClient
+        // {@TODO()} Replace '{MY-API-KEY}'
+        auth: '{MY-API-KEY}'
       };
 
       @if context.isPageStreaming(method)
@@ -43,7 +100,7 @@
       @else
         {@compactCall(method)}
       @end
-    });
+    @end
   @end
 @end
 
