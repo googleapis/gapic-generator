@@ -49,16 +49,29 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
   public static final String PYTHON = "python";
   public static final String RUBY = "ruby";
 
-  private static final String DEFAULT_SNIPPET_FILE = "discovery_fragment.snip";
+  private static final String SNIPPET_FILE_ADC = "discovery_fragment.snip";
+  private static final String SNIPPET_FILE_3LO = "discovery_fragment_3lo.snip";
+  private static final String SNIPPET_FILE_API_KEY = "discovery_fragment_api_key.snip";
 
   public static DiscoveryProvider defaultCreate(
       Service service, ApiaryConfig apiaryConfig, String id) {
+    String snippetFile;
+    // TODO(saicheems): Update this as new auth types are supported.
+    switch (apiaryConfig.getAuthType()) {
+      case APPLICATION_DEFAULT_CREDENTIALS:
+      case OAUTH_3L:
+      case API_KEY:
+        snippetFile = SNIPPET_FILE_ADC;
+        break;
+      default:
+        throw new RuntimeException("unsupported auth type");
+    }
     if (id.equals(CSHARP)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new CSharpDiscoveryContext(service, apiaryConfig))
           .setSnippetSetRunner(
               new CSharpSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
+          .setSnippetFileName(id + "/" + snippetFile)
           .build();
 
     } else if (id.equals(GO)) {
@@ -66,7 +79,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
           .setContext(new GoDiscoveryContext(service, apiaryConfig))
           .setSnippetSetRunner(
               new GoSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
+          .setSnippetFileName(id + "/" + snippetFile)
           .build();
 
     } else if (id.equals(JAVA)) {
@@ -74,7 +87,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
           .setContext(new JavaDiscoveryContext(service, apiaryConfig))
           .setSnippetSetRunner(
               new JavaSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
+          .setSnippetFileName(id + "/" + snippetFile)
           .build();
 
     } else if (id.equals(NODEJS)) {
@@ -82,7 +95,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
           .setContext(new NodeJSDiscoveryContext(service, apiaryConfig))
           .setSnippetSetRunner(
               new NodeJSSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
+          .setSnippetFileName(id + "/" + snippetFile)
           .build();
 
     } else if (id.equals(PHP)) {
@@ -90,7 +103,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
           .setContext(new PhpDiscoveryContext(service, apiaryConfig))
           .setSnippetSetRunner(
               new PhpSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
+          .setSnippetFileName(id + "/" + snippetFile)
           .build();
 
     } else if (id.equals(PYTHON)) {
@@ -99,7 +112,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
           .setSnippetSetRunner(
               new PythonSnippetSetRunner<Method>(
                   new PythonDiscoveryInitializer(), SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-          .setSnippetFileName("py/" + DEFAULT_SNIPPET_FILE)
+          .setSnippetFileName("py/" + snippetFile)
           .build();
 
     } else if (id.equals(RUBY)) {
@@ -107,7 +120,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
           .setContext(new RubyDiscoveryContext(service, apiaryConfig))
           .setSnippetSetRunner(
               new RubySnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
+          .setSnippetFileName(id + "/" + snippetFile)
           .build();
 
     } else {
