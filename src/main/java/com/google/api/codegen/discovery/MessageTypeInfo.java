@@ -20,16 +20,17 @@ import java.util.List;
 @AutoValue
 public abstract class MessageTypeInfo {
 
-  public abstract String name();
-
-  public abstract String packagePrefix();
-
-  /*
-   * Always equivalent to the parent method's name. Serves as a utility for an easy way to construct
-   * a full resource name.
+  /**
+   * Returns the message's type name.
+   *
+   * If the message is a method's request type, the type name will be
+   * "request$".
    */
-  public abstract String packagePath();
+  public abstract String typeName();
 
+  /**
+   * Returns a list the message's fields.
+   */
   public abstract List<FieldInfo> fields();
 
   public static Builder newBuilder() {
@@ -39,11 +40,7 @@ public abstract class MessageTypeInfo {
   @AutoValue.Builder
   public static abstract class Builder {
 
-    public abstract Builder name(String val);
-
-    public abstract Builder packagePrefix(String val);
-
-    public abstract Builder packagePath(String val);
+    public abstract Builder typeName(String val);
 
     public abstract Builder fields(List<FieldInfo> val);
 

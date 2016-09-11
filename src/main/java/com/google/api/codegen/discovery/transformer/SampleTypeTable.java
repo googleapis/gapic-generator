@@ -21,7 +21,6 @@ import com.google.api.codegen.discovery.TypeInfo;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.api.codegen.util.TypedValue;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.protobuf.Method;
 
 /**
@@ -44,7 +43,7 @@ public class SampleTypeTable implements SampleTypeFormatter {
   }
 
   public String getAndSaveNicknameFor(SampleConfig sampleConfig) {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getServiceTypeName(sampleConfig));
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getServiceTypeName());
   }
 
   @Override

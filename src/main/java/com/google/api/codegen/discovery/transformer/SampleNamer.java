@@ -37,7 +37,7 @@ public class SampleNamer extends NameFormatterDelegator {
   }
 
   public String getServiceClassName(SampleConfig sampleConfig) {
-    String name = sampleConfig.apiName();
+    String name = sampleConfig.apiTypeName();
     // TODO(saicheems): WTF is this for?? Why convert to class name here...
     // Converts name to a lower camel format Name (b/c name is lower camel) which is then converted
     // to upper camel in util.java.NameFormatter...

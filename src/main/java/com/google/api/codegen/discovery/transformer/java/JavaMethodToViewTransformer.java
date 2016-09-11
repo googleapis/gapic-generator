@@ -45,37 +45,38 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
   @Override
   public ViewModel transform(Method method, ApiaryConfig apiaryConfig) {
     SampleConfig sampleConfig = ApiaryConfigToSampleConfigConverter.convert(method, apiaryConfig);
+    SampleTypeTable sampleTypeTable =
+        new SampleTypeTable(
+            new JavaTypeTable(),
+            new JavaProtobufTypeNameConverter(
+                sampleConfig.apiNameVersion(),
+                sampleConfig.apiTypeName(),
+                sampleConfig.methodInfo().nameComponents()));
     JavaSampleNamer namer = new JavaSampleNamer();
     SampleTransformerContext context =
-        SampleTransformerContext.create(sampleConfig, createTypeTable(), namer);
-    return getSample(context);
+        SampleTransformerContext.create(sampleConfig, sampleTypeTable, namer);
+    return createSampleView(context, method.getName());
   }
 
-  /*
-   * Returns a new Java TypeTable.
-   */
-  private SampleTypeTable createTypeTable() {
-    return new SampleTypeTable(new JavaTypeTable(), new JavaProtobufTypeNameConverter());
-  }
-
-  private SampleView getSample(SampleTransformerContext context) {
+  private SampleView createSampleView(SampleTransformerContext context, String methodName) {
     addStaticImports(context);
     SampleConfig sampleConfig = context.getSampleConfig();
     SampleTypeTable typeTable = context.getTypeTable();
 
-    SampleView.Builder sampleView = SampleView.newBuilder();
-    sampleView.templateFileName(TEMPLATE_FILENAME);
-    sampleView.outputPath(sampleConfig.methodInfo().name() + ".frag.java");
-    sampleView.apiTitle(sampleConfig.apiTitle());
-    sampleView.apiName(sampleConfig.apiName());
-    sampleView.apiVersion(sampleConfig.apiVersion());
-    sampleView.body(generateSampleBody(context));
-    sampleView.imports(typeTable.getImports());
+    String apiNameVersion[] = sampleConfig.apiNameVersion().split("\\.", 2);
 
-    return sampleView.build();
+    return SampleView.newBuilder()
+        .templateFileName(TEMPLATE_FILENAME)
+        .outputPath(methodName + ".frag.java")
+        .apiTitle(sampleConfig.apiTitle())
+        .apiName(apiNameVersion[0])
+        .apiVersion(apiNameVersion[1])
+        .body(createSampleBody(context))
+        .imports(typeTable.getImports())
+        .build();
   }
 
-  public SampleBodyView generateSampleBody(SampleTransformerContext context) {
+  public SampleBodyView createSampleBody(SampleTransformerContext context) {
     SampleConfig sampleConfig = context.getSampleConfig();
     SampleNamer sampleNamer = context.getNamer();
     SampleTypeTable sampleTypeTable = context.getTypeTable();
@@ -84,13 +85,13 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
     SampleBodyView.Builder sampleBodyView = SampleBodyView.newBuilder();
     sampleBodyView.serviceVarName(symbolTable.getNewSymbol(sampleNamer.getServiceVarName()));
     sampleBodyView.serviceTypeName(sampleTypeTable.getAndSaveNicknameFor(sampleConfig));
-    sampleBodyView.resources(sampleConfig.methodInfo().resources());
-    sampleBodyView.inputVarName(symbolTable.getNewSymbol("request"));
-    sampleBodyView.inputTypeName(
-        sampleTypeTable.getAndSaveNicknameFor(sampleConfig.methodInfo().inputType()));
+    sampleBodyView.methodNameComponents(sampleConfig.methodInfo().nameComponents());
+    sampleBodyView.requestVarName(symbolTable.getNewSymbol("request"));
+    sampleBodyView.requestTypeName(
+        sampleTypeTable.getAndSaveNicknameFor(sampleConfig.methodInfo().requestType()));
 
-    sampleBodyView.inputRequestVarName("");
-    sampleBodyView.inputRequestTypeName("");
+    sampleBodyView.requestBodyVarName("");
+    sampleBodyView.requestBodyTypeName("");
     sampleBodyView.resourceGetterName("");
     sampleBodyView.resourceTypeName("");
     sampleBodyView.isResourceMap(false);
@@ -109,13 +110,13 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
       sampleBodyView.isResourceMap(fieldInfo.type().isMap());
     }
 
-    sampleBodyView.outputVarName("");
-    sampleBodyView.outputTypeName("");
-    sampleBodyView.hasOutput(sampleConfig.methodInfo().outputType() != null);
-    if (sampleConfig.methodInfo().outputType() != null) {
-      sampleBodyView.outputVarName(symbolTable.getNewSymbol("response"));
-      sampleBodyView.outputTypeName(
-          sampleTypeTable.getAndSaveNicknameFor(sampleConfig.methodInfo().outputType()));
+    sampleBodyView.responseVarName("");
+    sampleBodyView.responseTypeName("");
+    sampleBodyView.hasOutput(sampleConfig.methodInfo().responseType() != null);
+    if (sampleConfig.methodInfo().responseType() != null) {
+      sampleBodyView.responseVarName(symbolTable.getNewSymbol("response"));
+      sampleBodyView.responseTypeName(
+          sampleTypeTable.getAndSaveNicknameFor(sampleConfig.methodInfo().responseType()));
     }
 
     List<SampleFieldView> fields = new ArrayList<>();
@@ -128,14 +129,13 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
     }
     sampleBodyView.fields(fields);
 
-    sampleBodyView.hasInputRequest(sampleConfig.methodInfo().inputRequestType() != null);
-    if (sampleConfig.methodInfo().inputRequestType() != null) {
-      String inputRequestVarName = symbolTable.getNewSymbol("requestBody");
-      sampleBodyView.inputRequestVarName(inputRequestVarName);
-      System.out.println(sampleConfig.methodInfo().name());
-      sampleBodyView.inputRequestTypeName(
-          sampleTypeTable.getAndSaveNicknameFor(sampleConfig.methodInfo().inputRequestType()));
-      fieldVarNames.add(inputRequestVarName);
+    sampleBodyView.hasInputRequest(sampleConfig.methodInfo().requestBodyType() != null);
+    if (sampleConfig.methodInfo().requestBodyType() != null) {
+      String requestBodyVarName = symbolTable.getNewSymbol("requestBody");
+      sampleBodyView.requestBodyVarName(requestBodyVarName);
+      sampleBodyView.requestBodyTypeName(
+          sampleTypeTable.getAndSaveNicknameFor(sampleConfig.methodInfo().requestBodyType()));
+      fieldVarNames.add(requestBodyVarName);
     }
     sampleBodyView.fieldVarNames(fieldVarNames);
     sampleBodyView.isPageStreaming(sampleConfig.methodInfo().isPageStreaming());

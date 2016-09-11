@@ -19,10 +19,19 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class FieldInfo {
 
+  /**
+   * Returns the field's name.
+   */
   public abstract String name();
 
+  /**
+   * Returns the configuration of the field's type.
+   */
   public abstract TypeInfo type();
 
+  /**
+   * Returns the description of the field.
+   */
   public abstract String description();
 
   public static Builder newBuilder() {

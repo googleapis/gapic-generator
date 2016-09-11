@@ -25,23 +25,23 @@ public abstract class SampleBodyView {
 
   public abstract String serviceTypeName();
 
-  public abstract List<String> resources();
+  public abstract List<String> methodNameComponents();
 
-  public abstract String inputVarName();
+  public abstract String requestVarName();
 
-  public abstract String inputTypeName();
+  public abstract String requestTypeName();
 
   public abstract boolean hasInputRequest();
 
-  public abstract String inputRequestVarName();
+  public abstract String requestBodyVarName();
 
-  public abstract String inputRequestTypeName();
+  public abstract String requestBodyTypeName();
 
   public abstract boolean hasOutput();
 
-  public abstract String outputVarName();
+  public abstract String responseVarName();
 
-  public abstract String outputTypeName();
+  public abstract String responseTypeName();
 
   public abstract List<SampleFieldView> fields();
 
@@ -66,23 +66,23 @@ public abstract class SampleBodyView {
 
     public abstract Builder serviceTypeName(String val);
 
-    public abstract Builder resources(List<String> val);
+    public abstract Builder methodNameComponents(List<String> val);
 
-    public abstract Builder inputVarName(String val);
+    public abstract Builder requestVarName(String val);
 
-    public abstract Builder inputTypeName(String val);
+    public abstract Builder requestTypeName(String val);
 
     public abstract Builder hasInputRequest(boolean val);
 
-    public abstract Builder inputRequestVarName(String val);
+    public abstract Builder requestBodyVarName(String val);
 
-    public abstract Builder inputRequestTypeName(String val);
+    public abstract Builder requestBodyTypeName(String val);
 
     public abstract Builder hasOutput(boolean val);
 
-    public abstract Builder outputVarName(String val);
+    public abstract Builder responseVarName(String val);
 
-    public abstract Builder outputTypeName(String val);
+    public abstract Builder responseTypeName(String val);
 
     public abstract Builder fields(List<SampleFieldView> val);
 

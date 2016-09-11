@@ -28,20 +28,42 @@ import com.google.protobuf.Type;
 @AutoValue
 public abstract class TypeInfo {
 
+  /**
+   * Returns this type's kind.
+   */
   public abstract Field.Kind kind();
 
+  /**
+   * Returns true if this type is a map.
+   */
   public abstract boolean isMap();
 
+  /**
+   * Returns the type for the key of a map type, and null if this type is not a map.
+   */
   @Nullable
   public abstract TypeInfo mapKey();
 
+  /**
+   * Returns the type for the value of a map type, and null if this type is not a
+   * map.
+   */
   @Nullable
   public abstract TypeInfo mapValue();
 
+  /**
+   * Returns true if this type is an array.
+   */
   public abstract boolean isArray();
 
+  /**
+   * Returns true if this type is a message.
+   */
   public abstract boolean isMessage();
 
+  /**
+   * Returns the type for a message, and null if this type is not a message.
+   */
   @Nullable
   public abstract MessageTypeInfo message();
 

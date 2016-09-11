@@ -28,23 +28,67 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class MethodInfo {
 
-  public abstract List<String> resources();
+  /**
+   * Returns a list of the method-name's components.
+   *
+   * The method ID parsed from discovery is of the format
+   * "adexchangebuyer.creatives.insert", where the API name is followed be a
+   * list of resource names, and ends with the method's name.
+   * To accommodate easy overrides, the returned list contains the
+   * period-separated components of the method ID with the first component
+   * removed.
+   * For example: ["creatives", "insert"]
+   */
+  public abstract List<String> nameComponents();
 
-  public abstract String name();
-
+  /**
+   * Returns a list of this method's fields.
+   *
+   * The list doesn't include the request body type, see {@link
+   * #requestBodyType()}.
+   */
   public abstract List<FieldInfo> fields();
 
+  /**
+   * Returns the type for this method's request.
+   *
+   * Apiary clients return a request type that's executed to produce a response.
+   * This value contains the properties of that type.
+   */
   @Nullable
-  public abstract TypeInfo inputType();
+  public abstract TypeInfo requestType();
 
+  /**
+   * Returns the type for method's request body, and null if it has none.
+   *
+   * Methods may contain any number of fields with one of them being an optional
+   * message with additional properties. For convenience, that type is returned
+   * here because it lacks a proper name.
+   * @return
+   */
   @Nullable
-  public abstract TypeInfo inputRequestType();
+  public abstract TypeInfo requestBodyType();
 
+  /**
+   * Returns the type for this method's response, and null if it has none.
+   */
   @Nullable
-  public abstract TypeInfo outputType();
+  public abstract TypeInfo responseType();
 
+  /**
+   * Returns true if the method is page streaming.
+   *
+   * True if the method's response type contains the field "nextPageToken".
+   */
   public abstract boolean isPageStreaming();
 
+  /**
+   * Returns the response type's page streaming resource field, and null if it
+   * has none.
+   *
+   * Always the first type within the response message that has a repeated
+   * cardinality.
+   */
   @Nullable
   public abstract FieldInfo pageStreamingResourceField();
 
@@ -55,17 +99,15 @@ public abstract class MethodInfo {
   @AutoValue.Builder
   public static abstract class Builder {
 
-    public abstract Builder resources(List<String> val);
-
-    public abstract Builder name(String val);
+    public abstract Builder nameComponents(List<String> val);
 
     public abstract Builder fields(List<FieldInfo> val);
 
-    public abstract Builder inputType(TypeInfo val);
+    public abstract Builder requestType(TypeInfo val);
 
-    public abstract Builder inputRequestType(TypeInfo val);
+    public abstract Builder requestBodyType(TypeInfo val);
 
-    public abstract Builder outputType(TypeInfo val);
+    public abstract Builder responseType(TypeInfo val);
 
     public abstract Builder isPageStreaming(boolean val);
 

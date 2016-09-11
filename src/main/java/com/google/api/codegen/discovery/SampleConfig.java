@@ -14,17 +14,46 @@
  */
 package com.google.api.codegen.discovery;
 
+import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.DiscoveryImporter;
 import com.google.auto.value.AutoValue;
+import com.google.protobuf.Field;
+import com.google.protobuf.Field.Cardinality;
+import com.google.protobuf.Method;
+import com.google.protobuf.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 @AutoValue
 public abstract class SampleConfig {
 
+  /**
+   * Returns the API's title.
+   *
+   * A printable representation of the API's title.
+   * For example: "Ad Exchange Buyer API"
+   */
   public abstract String apiTitle();
 
-  public abstract String apiName();
+  /**
+   * Returns a period joined concatenation of the API's name and version.
+   *
+   * For example: "adexchangebuyer.v1.4"
+   */
+  public abstract String apiNameVersion();
 
-  public abstract String apiVersion();
+  /**
+   * Returns the API's type name.
+   *
+   * This value will always be lower-case and contain only alphanumeric
+   * characters.
+   * For example: "adexchangebuyer"
+   */
+  public abstract String apiTypeName();
 
+  /**
+   * Returns the sample's method.
+   */
   public abstract MethodInfo methodInfo();
 
   public static Builder newBuilder() {
@@ -36,9 +65,9 @@ public abstract class SampleConfig {
 
     public abstract Builder apiTitle(String val);
 
-    public abstract Builder apiName(String val);
+    public abstract Builder apiNameVersion(String val);
 
-    public abstract Builder apiVersion(String val);
+    public abstract Builder apiTypeName(String val);
 
     public abstract Builder methodInfo(MethodInfo val);
 

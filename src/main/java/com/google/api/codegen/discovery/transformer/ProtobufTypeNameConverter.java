@@ -25,7 +25,11 @@ import com.google.protobuf.Field;
  */
 public interface ProtobufTypeNameConverter {
 
-  TypeName getServiceTypeName(SampleConfig sampleConfig);
+  /**
+   * Provides a TypeName for the service.
+   * @return
+   */
+  TypeName getServiceTypeName();
 
   /**
    * Provides a TypeName for the given TypeInfo.
@@ -36,9 +40,4 @@ public interface ProtobufTypeNameConverter {
    * Provides a TypedValue containing the zero value of the given TypeInfo.
    */
   TypedValue getZeroValue(TypeInfo typeInfo);
-
-  /**
-   * Renders the given value if it is a primitive type.
-   */
-  String renderPrimitiveValue(Field.Kind kind, String value);
 }

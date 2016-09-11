@@ -14,6 +14,10 @@
  */
 package com.google.api.codegen.discovery.transformer.java;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.codegen.discovery.MessageTypeInfo;
 import com.google.api.codegen.discovery.SampleConfig;
 import com.google.api.codegen.discovery.TypeInfo;
@@ -23,7 +27,6 @@ import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.java.JavaTypeTable;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
 
@@ -66,19 +69,28 @@ class JavaProtobufTypeNameConverter implements ProtobufTypeNameConverter {
 
   private TypeNameConverter typeNameConverter;
 
-  public JavaProtobufTypeNameConverter() {
+  private final String apiNameVersion;
+  private final String apiTypeName;
+  private final List<String> methodNameComponents;
+
+  public JavaProtobufTypeNameConverter(
+      String apiNameVersion, String apiTypeName, List<String> methodNameComponents) {
     this.typeNameConverter = new JavaTypeTable();
+    this.apiTypeName = Name.lowerCamel(apiTypeName).toUpperCamel();
+    this.apiNameVersion = apiNameVersion;
+    List<String> copy = new ArrayList<String>(methodNameComponents);
+    // Convert the method name components to upper camel case.
+    for (int i = 0; i < copy.size(); i++) {
+      // TODO(garrettjones): Should I do this differently? Specifically, using the Name class.
+      copy.set(i, Name.lowerCamel(copy.get(i)).toUpperCamel());
+    }
+    this.methodNameComponents = copy;
   }
 
   @Override
-  public TypeName getServiceTypeName(SampleConfig sampleConfig) {
+  public TypeName getServiceTypeName() {
     return typeNameConverter.getTypeName(
-        "com.google.api.services."
-            + sampleConfig.apiName()
-            + "."
-            + sampleConfig.apiVersion()
-            + "."
-            + Name.lowerCamel(sampleConfig.apiName()).toUpperCamel());
+        String.join(".", "com.google.api.services", apiNameVersion, apiTypeName));
   }
 
   @Override
@@ -86,23 +98,15 @@ class JavaProtobufTypeNameConverter implements ProtobufTypeNameConverter {
     if (typeInfo.isMessage()) {
       // {apiName}.{resource1}.{resource2}...{messageTypeName}
       MessageTypeInfo messageTypeInfo = typeInfo.message();
-      System.out.println("\tname: " + messageTypeInfo.name());
-      String resources[] = messageTypeInfo.packagePath().split("\\.");
-      for (int i = 0; i < resources.length; i++) {
-        // TODO(garrettjones): Should I do this differently?
-        resources[i] = Name.lowerCamel(resources[i]).toUpperCamel();
-      }
+
       String typeName = "com.google.api.services.";
-      if (!Strings.isNullOrEmpty(messageTypeInfo.packagePrefix())) {
-        typeName += messageTypeInfo.packagePrefix() + ".";
-      }
-      if (!Strings.isNullOrEmpty(messageTypeInfo.packagePath())) {
-        typeName += String.join(".", resources) + ".";
+      typeName += apiNameVersion + ".";
+      if (messageTypeInfo.typeName().equals(DiscoveryImporter.REQUEST_FIELD_NAME)) {
+        typeName += apiTypeName + "." + String.join(".", methodNameComponents);
       } else {
-        typeName += "model.";
+        typeName += "model." + messageTypeInfo.typeName();
       }
-      System.out.println("\t" + typeName + messageTypeInfo.name());
-      return typeNameConverter.getTypeName(typeName + messageTypeInfo.name());
+      return typeNameConverter.getTypeName(typeName);
     }
     if (typeInfo.isMap()) {
       TypeName mapTypeName = typeNameConverter.getTypeName("java.util.Map");
@@ -147,7 +151,6 @@ class JavaProtobufTypeNameConverter implements ProtobufTypeNameConverter {
 
   @Override
   public TypedValue getZeroValue(TypeInfo typeInfo) {
-    // TODO(saicheems)
     if (typeInfo.isMap()) {
       return TypedValue.create(typeNameConverter.getTypeName("java.util.HashMap"), "new %s<>()");
     }
@@ -158,11 +161,5 @@ class JavaProtobufTypeNameConverter implements ProtobufTypeNameConverter {
       return TypedValue.create(getTypeName(typeInfo), PRIMITIVE_ZERO_VALUE.get(typeInfo.kind()));
     }
     throw new IllegalArgumentException("unknown type kind: " + typeInfo.kind());
-  }
-
-  @Override
-  public String renderPrimitiveValue(Field.Kind kind, String value) {
-    // TODO(saicheems)
-    return null;
   }
 }
