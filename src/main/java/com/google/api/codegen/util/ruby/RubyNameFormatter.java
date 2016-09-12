@@ -72,4 +72,9 @@ public class RubyNameFormatter implements NameFormatter {
   public String classFileNameBase(Name name) {
     return name.toLowerUnderscore();
   }
+
+  @Override
+  public String humanName(Name name) {
+    throw new UnsupportedOperationException();
+  }
 }

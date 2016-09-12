@@ -20,10 +20,14 @@ import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class GoTypeTable implements TypeTable {
+
+  private static final String EMPTY_PROTO_PKG = "github.com/golang/protobuf/ptypes/empty";
+  private final TreeMap<String, String> imports = new TreeMap<>();
+
   @Override
   public TypeTable cloneEmpty() {
     return new GoTypeTable();
@@ -31,7 +35,11 @@ public class GoTypeTable implements TypeTable {
 
   @Override
   public TypeName getTypeName(String fullName) {
-    return new TypeName(fullName);
+    String[] parts = fullName.split(";");
+    if (parts.length != 3) {
+      return new TypeName(fullName);
+    }
+    return new TypeName(fullName, "*" + parts[1] + "." + parts[2]);
   }
 
   @Override
@@ -56,11 +64,17 @@ public class GoTypeTable implements TypeTable {
 
   @Override
   public String getAndSaveNicknameFor(TypeAlias alias) {
-    return alias.getFullName();
+    String[] parts = alias.getFullName().split(";");
+    // We don't have to save import of empty proto.
+    // Instead of return the empty, we return nothing.
+    if (parts.length == 3 && !parts[0].equals(EMPTY_PROTO_PKG)) {
+      imports.put(parts[0], parts[1]);
+    }
+    return alias.getNickname();
   }
 
   @Override
   public Map<String, String> getImports() {
-    return Collections.<String, String>emptyMap();
+    return imports;
   }
 }

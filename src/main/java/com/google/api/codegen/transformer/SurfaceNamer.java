@@ -204,6 +204,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return methodName(Name.from("get", collectionConfig.getEntityName(), "name", "template"));
   }
 
+  /** The name of the path template resource, in human format. */
+  public String getPathTemplateResourceName(CollectionConfig collectionConfig) {
+    return humanName(Name.from(collectionConfig.getEntityName()));
+  }
+
   /** The function name to format the entity for the given collection. */
   public String getFormatFunctionName(CollectionConfig collectionConfig) {
     return staticFunctionName(Name.from("format", collectionConfig.getEntityName(), "name"));

@@ -72,4 +72,9 @@ public class NodeJSNameFormatter implements NameFormatter {
   public String classFileNameBase(Name name) {
     return name.toOriginal();
   }
+
+  @Override
+  public String humanName(Name name) {
+    throw new UnsupportedOperationException();
+  }
 }

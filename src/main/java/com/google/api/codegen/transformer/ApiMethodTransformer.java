@@ -184,6 +184,8 @@ public class ApiMethodTransformer {
         ListMethodDetailView.newBuilder()
             .resourceTypeName(resourceTypeName)
             .resourceFieldName(resourceFieldName)
+            .responseObjectTypeName(
+                context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType()))
             .build());
     methodViewBuilder.responseTypeName(
         context

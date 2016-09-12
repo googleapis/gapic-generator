@@ -22,11 +22,15 @@ import javax.annotation.Nullable;
 public abstract class PageStreamingDescriptorClassView {
   public abstract String name();
 
+  public abstract String typeName();
+
   public abstract String requestTypeName();
 
   public abstract String responseTypeName();
 
   public abstract String resourceTypeName();
+
+  public abstract String resourceZeroValue();
 
   public abstract String tokenTypeName();
 
@@ -57,11 +61,15 @@ public abstract class PageStreamingDescriptorClassView {
 
     public abstract Builder name(String val);
 
+    public abstract Builder typeName(String val);
+
     public abstract Builder requestTypeName(String val);
 
     public abstract Builder responseTypeName(String val);
 
     public abstract Builder resourceTypeName(String val);
+
+    public abstract Builder resourceZeroValue(String val);
 
     public abstract Builder tokenTypeName(String val);
 

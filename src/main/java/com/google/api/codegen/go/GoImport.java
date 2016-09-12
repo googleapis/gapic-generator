@@ -21,7 +21,7 @@ import com.google.common.base.Strings;
  * Represents one Go import.
  */
 @AutoValue
-abstract class GoImport implements Comparable<GoImport> {
+public abstract class GoImport implements Comparable<GoImport> {
 
   public abstract String moduleName();
 

@@ -23,8 +23,6 @@ import com.google.api.codegen.clientconfig.ClientConfigSnippetSetRunner;
 import com.google.api.codegen.csharp.CSharpCodePathMapper;
 import com.google.api.codegen.csharp.CSharpGapicContext;
 import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
-import com.google.api.codegen.go.GoGapicContext;
-import com.google.api.codegen.go.GoSnippetSetRunner;
 import com.google.api.codegen.nodejs.NodeJSCodePathMapper;
 import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
@@ -100,17 +98,12 @@ public class MainGapicProviderFactory
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
     } else if (id.equals(GO)) {
-      GapicCodePathMapper goPathMapper =
-          CommonGapicCodePathMapper.newBuilder()
-              .setPrefix("src/main/go")
-              .setShouldAppendPackage(true)
-              .build();
       GapicProvider<? extends Object> provider =
           ViewModelGapicProvider.newBuilder()
               .setModel(model)
               .setApiConfig(apiConfig)
               .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-              .setModelToViewTransformer(new GoGapicSurfaceTransformer(goPathMapper))
+              .setModelToViewTransformer(new GoGapicSurfaceTransformer())
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 

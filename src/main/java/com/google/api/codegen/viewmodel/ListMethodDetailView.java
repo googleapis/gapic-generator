@@ -22,6 +22,14 @@ public abstract class ListMethodDetailView {
 
   public abstract String resourceFieldName();
 
+  /**
+   * Distict from resourceTypeName().
+   * Eg,
+   *   resourceTypeName -> "Shelf"
+   *   responseObjectTypeName -> "ListShelvesResponse"
+   */
+  public abstract String responseObjectTypeName();
+
   public static Builder newBuilder() {
     return new AutoValue_ListMethodDetailView.Builder();
   }
@@ -31,6 +39,8 @@ public abstract class ListMethodDetailView {
     public abstract Builder resourceTypeName(String name);
 
     public abstract Builder resourceFieldName(String name);
+
+    public abstract Builder responseObjectTypeName(String name);
 
     public abstract ListMethodDetailView build();
   }

@@ -98,7 +98,7 @@ public class PathTemplateTransformer {
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
       PathTemplateGetterFunctionView.Builder function = PathTemplateGetterFunctionView.newBuilder();
       function.name(namer.getPathTemplateNameGetter(collectionConfig));
-      function.resourceName(collectionConfig.getEntityName().replaceAll("_", " "));
+      function.resourceName(namer.getPathTemplateResourceName(collectionConfig));
       function.pathTemplateName(namer.getPathTemplateName(collectionConfig));
       function.pattern(collectionConfig.getNamePattern());
 

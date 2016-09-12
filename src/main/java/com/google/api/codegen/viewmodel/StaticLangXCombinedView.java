@@ -17,6 +17,7 @@ package com.google.api.codegen.viewmodel;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 
+import java.util.Collection;
 import java.util.List;
 
 @AutoValue
@@ -34,23 +35,33 @@ public abstract class StaticLangXCombinedView implements ViewModel {
 
   public abstract Integer servicePort();
 
+  public abstract List<String> imports();
+
   public abstract Iterable<String> authScopes();
 
   public abstract List<PathTemplateView> pathTemplates();
 
   public abstract List<PathTemplateGetterFunctionView> pathTemplateGetters();
 
-  public abstract List<RetryCodesDefinitionView> retryCodesDefinitions();
-
-  public abstract List<RetryParamsDefinitionView> retryParamsDefinitions();
+  public abstract Collection<RetryPairDefinitionView> retryPairDefinitions();
 
   public abstract List<StaticLangApiMethodView> apiMethods();
 
-  public abstract String name();
+  public abstract String clientName();
+
+  public abstract String clientConstructorName();
+
+  public abstract String callOptionsName();
+
+  public abstract String defaultClientOptionFunc();
+
+  public abstract String defaultCallOptionFunc();
 
   public abstract String serviceName();
 
-  public abstract String servicePackageName();
+  public abstract String grpcClientTypeName();
+
+  public abstract String grpcClientConstructorName();
 
   public abstract List<ApiCallSettingsView> callSettings();
 
@@ -59,6 +70,8 @@ public abstract class StaticLangXCombinedView implements ViewModel {
   public abstract String packageName();
 
   public abstract String serviceAddress();
+
+  public abstract List<PageStreamingDescriptorClassView> pageStreamingDescriptorClasses();
 
   public static Builder newBuilder() {
     return new AutoValue_StaticLangXCombinedView.Builder();
@@ -69,13 +82,25 @@ public abstract class StaticLangXCombinedView implements ViewModel {
 
     public abstract Builder apiMethods(List<StaticLangApiMethodView> val);
 
+    public abstract Builder imports(List<String> val);
+
     public abstract Builder authScopes(Iterable<String> val);
 
-    public abstract Builder name(String val);
+    public abstract Builder clientName(String val);
+
+    public abstract Builder clientConstructorName(String val);
+
+    public abstract Builder callOptionsName(String val);
+
+    public abstract Builder defaultClientOptionFunc(String val);
+
+    public abstract Builder defaultCallOptionFunc(String val);
 
     public abstract Builder serviceName(String val);
 
-    public abstract Builder servicePackageName(String val);
+    public abstract Builder grpcClientTypeName(String val);
+
+    public abstract Builder grpcClientConstructorName(String val);
 
     public abstract Builder outputPath(String val);
 
@@ -85,9 +110,7 @@ public abstract class StaticLangXCombinedView implements ViewModel {
 
     public abstract Builder pathTemplates(List<PathTemplateView> val);
 
-    public abstract Builder retryCodesDefinitions(List<RetryCodesDefinitionView> val);
-
-    public abstract Builder retryParamsDefinitions(List<RetryParamsDefinitionView> val);
+    public abstract Builder retryPairDefinitions(Collection<RetryPairDefinitionView> val);
 
     public abstract Builder serviceDoc(List<String> val);
 
@@ -98,6 +121,9 @@ public abstract class StaticLangXCombinedView implements ViewModel {
     public abstract Builder servicePort(Integer val);
 
     public abstract Builder templateFileName(String val);
+
+    public abstract Builder pageStreamingDescriptorClasses(
+        List<PageStreamingDescriptorClassView> val);
 
     public abstract StaticLangXCombinedView build();
   }

@@ -72,4 +72,9 @@ public class GoNameFormatter implements NameFormatter {
   public String classFileNameBase(Name name) {
     return name.toOriginal();
   }
+
+  @Override
+  public String humanName(Name name) {
+    return name.toLowerCamel().replace('_', ' ');
+  }
 }

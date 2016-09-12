@@ -8,17 +8,9 @@
     package {@view.packageName}
 
     import (
-        "fmt"
-        "runtime"
-        "time"
-
-        "github.com/googleapis/gax-go"
-        "golang.org/x/net/context"
-        "google.golang.org/api/option"
-        "google.golang.org/api/transport"
-        "google.golang.org/grpc"
-        "google.golang.org/grpc/codes"
-        "google.golang.org/grpc/metadata"
+    @join imp : view.imports
+    {@imp}
+    @end
     )
 
     var (
@@ -28,13 +20,13 @@
     )
 
     // CallOptions contains the retry settings for each method of this client.
-    type {@view.name}CallOptions struct {
+    type {@view.callOptionsName} struct {
         @join apiMethod : view.apiMethods
             {@apiMethod.name} []gax.CallOption
         @end
     }
 
-    func default{@view.name}ClientOptions() []option.ClientOption {
+    func {@view.defaultClientOptionFunc}() []option.ClientOption {
         return []option.ClientOption{
             option.WithEndpoint("{@view.serviceAddress}:{@view.servicePort}"),
             option.WithScopes(
@@ -45,70 +37,80 @@
         }
     }
 
-    func default{@view.name}CallOptions() *{@view.name}CallOptions {
-        @join retryCodesDef : view.retryCodesDefinitions
-            {@retryCodesDef.key} := gax.WithRetryCodes([]codes.Code{
-                    @join code : retryCodesDef.codes
-                        codes.{@code},
-                    @end
-            })
-        @end
-        return &{@view.name}CallOptions{
+    func {@view.defaultCallOptionFunc}() *{@view.callOptionsName} {
+        retry := map[[2]string][]gax.CallOption{
+            @join def : view.retryPairDefinitions
+              {"{@def.name.params}", "{@def.name.codes}"}: {
+                  gax.WithRetry(func() gax.Retryer {
+                      return gax.OnCodes([]codes.Code{
+                          @join code : def.retryCodes
+                              codes.{@code},
+                          @end
+                      }, gax.Backoff{
+                          Initial: {@def.params.getInitialRetryDelay.getMillis}*time.Millisecond,
+                          Max: {@def.params.getMaxRetryDelay.getMillis}*time.Millisecond,
+                          Multiplier: {@def.params.getRetryDelayMultiplier},
+                      })
+                  }),
+              },
+            @end
+        }
+        return &{@view.callOptionsName}{
             @join settings : view.callSettings
                 {@settings.methodName}: retry[[2]string{"{@settings.retryParamsName}", "{@settings.retryCodesName}"}],
             @end
         }
     }
 
-    // {@view.name}Client is a client for interacting with {@view.serviceName}.
-    type {@view.name}Client struct {
+    // {@view.clientName} is a client for interacting with {@view.serviceName}.
+    type {@view.clientName} struct {
         // The connection to the service.
         conn *grpc.ClientConn
 
         // The gRPC API client.
-        client {@view.servicePackageName}.{@view.serviceName}Client
+        client {@view.grpcClientTypeName}
 
         // The call options for this service.
-        CallOptions *{@view.name}CallOptions
+        CallOptions *{@view.callOptionsName}
 
         // The metadata to be sent with each request.
         metadata map[string][]string
     }
 
-    // New{@view.name}Client creates a new {@view.serviceName} client.
+    // {@view.clientConstructorName} creates a new {@view.serviceName} client.
     //
     @join line : view.serviceDoc
         {@line}
     @end
-    func New{@view.name}Client(ctx context.Context, opts ...option.ClientOption) (*{@view.name}Client, error) {
-        conn, err := transport.DialGRPC(ctx, append(default{@view.name}ClientOptions(), opts...)...)
+    func {@view.clientConstructorName}(ctx context.Context, opts ...option.ClientOption) (*{@view.clientName}, error) {
+        conn, err := transport.DialGRPC(ctx, append({@view.defaultClientOptionFunc}(), opts...)...)
         if err != nil {
             return nil, err
         }
-        c := &{@view.name}Client {
+        c := &{@view.clientName} {
             conn: conn,
-            client: {@view.servicePackageName}.New{@view.serviceName}Client(conn),
-            CallOptions: default{@view.name}CallOptions(),
+            client: {@view.grpcClientConstructorName}(conn),
+            CallOptions: {@view.defaultCallOptionFunc}(),
         }
         c.SetGoogleClientInfo("gax", gax.Version)
         return c, nil
     }
 
     // Connection returns the client's connection to the API service.
-    func (c *{@view.name}Client) Connection() *grpc.ClientConn {
+    func (c *{@view.clientName}) Connection() *grpc.ClientConn {
         return c.conn
     }
 
     // Close closes the connection to the API service. The user should invoke this when
     // the client is no longer required.
-    func (c *{@view.name}Client) Close() error {
+    func (c *{@view.clientName}) Close() error {
         return c.conn.Close()
     }
 
     // SetGoogleClientInfo sets the name and version of the application in
     // the `x-goog-api-client` header passed on each request. Intended for
     // use by Google-written clients.
-    func (c *{@view.name}Client) SetGoogleClientInfo(name, version string) {
+    func (c *{@view.clientName}) SetGoogleClientInfo(name, version string) {
         c.metadata = map[string][]string{
             "x-goog-api-client": {fmt.Sprintf("%s/%s %s gax/%s go/%s", name, version, gapicNameVersion, gax.Version, runtime.Version())},
         }
@@ -146,12 +148,16 @@
         @end
 
     @end
+
+    @join iter : view.pageStreamingDescriptorClasses
+        {@iterator(iter)}
+    @end
 @end
 
 @private simpleMethod(view, method)
-    func (c *{@view.name}Client) {@method.name}(ctx context.Context, req *{@method.apiRequestTypeName}) (*{@method.responseTypeName}, error) {
+    func (c *{@view.clientName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) ({@method.responseTypeName}, error) {
         ctx = metadata.NewContext(ctx, c.metadata)
-        var resp *{@method.responseTypeName}
+        var resp {@method.responseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
             resp, err = c.client.{@method.name}(ctx, req)
@@ -165,7 +171,7 @@
 @end
 
 @private emptyReturnMethod(view, method)
-    func (c *{@view.name}Client) {@method.name}(ctx context.Context, req *{@method.apiRequestTypeName}) error {
+    func (c *{@view.clientName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) error {
         ctx = metadata.NewContext(ctx, c.metadata)
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
@@ -177,28 +183,63 @@
 @end
 
 @private pageStreamingMethod(view, method)
-    func (c *{@view.name}Client) {@method.name}(ctx context.Context, req *{@method.apiRequestTypeName}) *{@method.responseTypeName} {
+    func (c *{@view.clientName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) *{@method.responseTypeName} {
         ctx = metadata.NewContext(ctx, c.metadata)
         it := &{@method.responseTypeName}{}
-        it.apiCall = func() error {
-            var resp *{@method.listResponseObjectTypeName}
+
+        fetch := func(pageSize int, pageToken string) (string, err) {
+            var resp {@method.listMethod.responseObjectTypeName}
+            req.PageToken = pageToken
+            if pageSize > math.MaxInt32 {
+                req.PageSize = math.MaxInt32
+            } else {
+                req.PageSize = int32(pageSize)
+            }
             err := gax.Invoke(ctx, func(ctx context.Context) error {
                 var err error
-                req.PageToken = it.nextPageToken
                 resp, err = c.client.{@method.name}(ctx, req)
                 return err
             }, c.CallOptions.{@method.name}...)
             if err != nil {
-                return err
+                return "", err
             }
-            if resp.NextPageToken == "" {
-                it.atLastPage = true
-            }
-            it.nextPageToken = resp.NextPageToken
             it.items = resp.{@method.listMethod.resourceFieldName}
-            return nil
+            return resp.NextPageToken, nil
         }
+        bufLen := func() int { return len(it.items) }
+        takeBuf := func() interface{} {
+            b := it.items
+            it.items = nil
+            return b
+        }
+
+        it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, bufLen, takeBuf)
         return it
+    }
+@end
+
+@private iterator(iter)
+    // {@iter.typeName} manages a stream of {@iter.resourceTypeName}.
+    type {@iter.typeName} struct {
+        items    []{@iter.resourceTypeName}
+        pageInfo *iterator.PageInfo
+        nextFunc func() error
+    }
+
+    // PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
+    func (it *{@iter.typeName}) PageInfo() *iterator.PageInfo {
+        return it.pageInfo
+    }
+
+    // Next returns the next result. Its second return value is iterator.Done if there are no more
+    // results. Once Next returns Done, all subsequent calls will return Done.
+    func (it *{@iter.typeName}) Next() ({@iter.resourceTypeName}, error) {
+        if err := it.nextFunc(); err != nil {
+            return {@iter.resourceZeroValue}, err
+        }
+        item := it.items[0]
+        it.items = it.items[1:]
+        return item, nil
     }
 @end
 

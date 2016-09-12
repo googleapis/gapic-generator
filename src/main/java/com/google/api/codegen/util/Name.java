@@ -42,6 +42,39 @@ public class Name {
   }
 
   /**
+   * Creates a Name from a sequence of upper-underscore strings.
+   *
+   * @throws IllegalArgumentException if any of the strings contain any characters that are not
+   * upper case or underscores.
+   */
+  public static Name upperUnderScore(String... pieces) {
+    List<NamePiece> namePieces = new ArrayList<>();
+    for (String piece : pieces) {
+      validateUpperUnderscore(piece);
+      namePieces.add(new NamePiece(piece, CaseFormat.UPPER_UNDERSCORE));
+    }
+    return new Name(namePieces);
+  }
+
+  /**
+   * Creates a Name from a sequence of camel strings.
+   *
+   * @throws IllegalArgumentException if any of the strings do not follow the camel format.
+   */
+  public static Name anyCamel(String... pieces) {
+    List<NamePiece> namePieces = new ArrayList<>();
+    for (String piece : pieces) {
+      validateCamel(piece, CheckCase.NO_CHECK);
+      CaseFormat format = CaseFormat.LOWER_CAMEL;
+      if (Character.isUpperCase(piece.charAt(0))) {
+        format = CaseFormat.UPPER_CAMEL;
+      }
+      namePieces.add(new NamePiece(piece, format));
+    }
+    return new Name(namePieces);
+  }
+
+  /**
    * Creates a Name from a sequence of lower-camel strings.
    *
    * @throws IllegalArgumentException if any of the strings do not follow the lower-camel format.
@@ -49,7 +82,7 @@ public class Name {
   public static Name lowerCamel(String... pieces) {
     List<NamePiece> namePieces = new ArrayList<>();
     for (String piece : pieces) {
-      validateCamel(piece, false);
+      validateCamel(piece, CheckCase.LOWER);
       namePieces.add(new NamePiece(piece, CaseFormat.LOWER_CAMEL));
     }
     return new Name(namePieces);
@@ -63,7 +96,7 @@ public class Name {
   public static Name upperCamel(String... pieces) {
     List<NamePiece> namePieces = new ArrayList<>();
     for (String piece : pieces) {
-      validateCamel(piece, true);
+      validateCamel(piece, CheckCase.UPPER);
       namePieces.add(new NamePiece(piece, CaseFormat.UPPER_CAMEL));
     }
     return new Name(namePieces);
@@ -76,6 +109,23 @@ public class Name {
     }
   }
 
+  private static void validateUpperUnderscore(String identifier) {
+    if (!isUpperUnderscore(identifier)) {
+      throw new IllegalArgumentException(
+          "Name: identifier not in upper-underscore: '" + identifier + "'");
+    }
+  }
+
+  private static boolean isUpperUnderscore(String identifier) {
+    Character underscore = Character.valueOf('_');
+    for (Character ch : identifier.toCharArray()) {
+      if (!Character.isUpperCase(ch) && !ch.equals(underscore) && !Character.isDigit(ch)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   private static boolean isLowerUnderscore(String identifier) {
     Character underscore = Character.valueOf('_');
     for (Character ch : identifier.toCharArray()) {
@@ -86,25 +136,19 @@ public class Name {
     return true;
   }
 
-  private static void validateCamel(String identifier, boolean upper) {
-    if (!isCamel(identifier, upper)) {
-      String casingDescription = "lower camel";
-      if (upper) {
-        casingDescription = "upper camel";
-      }
+  private static void validateCamel(String identifier, CheckCase check) {
+    if (!isCamel(identifier, check)) {
+      String casingDescription = check + " camel";
       throw new IllegalArgumentException(
           "Name: identifier not in " + casingDescription + ": '" + identifier + "'");
     }
   }
 
-  private static boolean isCamel(String identifier, boolean upper) {
+  private static boolean isCamel(String identifier, CheckCase check) {
     if (identifier.length() == 0) {
       return true;
     }
-    if (upper && !Character.isUpperCase(identifier.charAt(0))) {
-      return false;
-    }
-    if (!upper && !Character.isLowerCase(identifier.charAt(0))) {
+    if (!check.valid(identifier.charAt(0))) {
       return false;
     }
     for (Character ch : identifier.toCharArray()) {
@@ -221,6 +265,24 @@ public class Name {
     private NamePiece(String identifier, CaseFormat caseFormat) {
       this.identifier = identifier;
       this.caseFormat = caseFormat;
+    }
+  }
+
+  private enum CheckCase {
+    NO_CHECK,
+    LOWER,
+    UPPER;
+
+    boolean valid(char c) {
+      switch (this) {
+        case NO_CHECK:
+          return true;
+        case UPPER:
+          return Character.isUpperCase(c);
+        case LOWER:
+          return Character.isLowerCase(c);
+      }
+      throw new IllegalStateException("unreachable");
     }
   }
 }
