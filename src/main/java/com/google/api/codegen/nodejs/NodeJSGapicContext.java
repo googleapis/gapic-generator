@@ -365,7 +365,8 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     paramTypesBuilder.append(
         "@param {Object=} options\n"
             + "  Optional parameters. You can override the default settings for this call, e.g, timeout,\n"
-            + "  retries, paginations, etc, See {@link external:\"gax.CallOptions\"} for the details.");
+            + "  retries, paginations, etc. See [gax.CallOptions]{@link "
+            + "https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.");
     Iterable<Field> optionalParams = removePageTokenFromFields(config.getOptionalFields(), config);
     if (optionalParams.iterator().hasNext()) {
       paramTypesBuilder.append(
