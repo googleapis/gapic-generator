@@ -76,7 +76,7 @@ class JavaProtobufTypeNameConverter implements ProtobufTypeNameConverter {
   public JavaProtobufTypeNameConverter(
       String apiNameVersion, String apiTypeName, List<String> methodNameComponents) {
     this.typeNameConverter = new JavaTypeTable();
-    this.apiTypeName = Name.lowerCamel(apiTypeName).toUpperCamel();
+    this.apiTypeName = apiTypeName; // TODO(saicheems): Explain why we don't do case conversion.
     this.apiNameVersion = apiNameVersion;
     List<String> copy = new ArrayList<String>(methodNameComponents);
     // Convert the method name components to upper camel case.
