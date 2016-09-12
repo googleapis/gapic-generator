@@ -93,19 +93,31 @@ class JavaProtobufTypeNameConverter implements ProtobufTypeNameConverter {
         String.join(".", "com.google.api.services", apiNameVersion, apiTypeName));
   }
 
+  // TODO(saicheems): Document and override, same for below.
+  @Override
+  public TypeName getRequestTypeName(TypeInfo typeInfo) {
+    return getTypeName(
+        typeInfo,
+        String.join(
+            ".",
+            "com.google.api.services",
+            apiNameVersion,
+            apiTypeName,
+            String.join(".", methodNameComponents)));
+  }
+
   @Override
   public TypeName getTypeName(TypeInfo typeInfo) {
+    String typeName = "";
+    if (typeInfo.isMessage()) {
+      typeName = "com.google.api.services.model." + typeInfo.message().typeName();
+    }
+    return getTypeName(typeInfo, typeName);
+  }
+
+  private TypeName getTypeName(TypeInfo typeInfo, String typeName) {
     if (typeInfo.isMessage()) {
       // {apiName}.{resource1}.{resource2}...{messageTypeName}
-      MessageTypeInfo messageTypeInfo = typeInfo.message();
-
-      String typeName = "com.google.api.services.";
-      typeName += apiNameVersion + ".";
-      if (messageTypeInfo.typeName().equals(DiscoveryImporter.REQUEST_FIELD_NAME)) {
-        typeName += apiTypeName + "." + String.join(".", methodNameComponents);
-      } else {
-        typeName += "model." + messageTypeInfo.typeName();
-      }
       return typeNameConverter.getTypeName(typeName);
     }
     if (typeInfo.isMap()) {

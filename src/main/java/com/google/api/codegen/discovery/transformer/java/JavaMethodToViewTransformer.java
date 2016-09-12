@@ -88,7 +88,8 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
     sampleBodyView.serviceTypeName(sampleTypeTable.getAndSaveNicknameFor(sampleConfig));
     sampleBodyView.methodNameComponents(methodInfo.nameComponents());
     sampleBodyView.requestVarName(symbolTable.getNewSymbol("request"));
-    sampleBodyView.requestTypeName(sampleTypeTable.getAndSaveNicknameFor(methodInfo.requestType()));
+    sampleBodyView.requestTypeName(
+        sampleTypeTable.getAndSaveNicknameFor(methodInfo.requestType(), true));
 
     sampleBodyView.requestBodyVarName("");
     sampleBodyView.requestBodyTypeName("");
@@ -100,7 +101,7 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
       FieldInfo fieldInfo = methodInfo.pageStreamingResourceField();
       // TODO(garrettjones): Should I form this name this way?
       sampleBodyView.resourceGetterName(Name.lowerCamel("get", fieldInfo.name()).toLowerCamel());
-      String nickname = sampleTypeTable.getAndSaveNicknameFor(fieldInfo.type());
+      String nickname = sampleTypeTable.getAndSaveNicknameFor(fieldInfo.type(), false);
       sampleBodyView.resourceTypeName(nickname);
       // Rename the type from Map<K, V> to Map.Entry<K, V> to match what we
       // expect in the iterating for-loop.
@@ -116,7 +117,7 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
     if (methodInfo.responseType() != null) {
       sampleBodyView.responseVarName(symbolTable.getNewSymbol("response"));
       sampleBodyView.responseTypeName(
-          sampleTypeTable.getAndSaveNicknameFor(methodInfo.responseType()));
+          sampleTypeTable.getAndSaveNicknameFor(methodInfo.responseType(), false));
     }
 
     List<SampleFieldView> fields = new ArrayList<>();
@@ -133,7 +134,7 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
       String requestBodyVarName = symbolTable.getNewSymbol("requestBody");
       sampleBodyView.requestBodyVarName(requestBodyVarName);
       sampleBodyView.requestBodyTypeName(
-          sampleTypeTable.getAndSaveNicknameFor(methodInfo.requestBodyType()));
+          sampleTypeTable.getAndSaveNicknameFor(methodInfo.requestBodyType(), false));
       fieldVarNames.add(requestBodyVarName);
     }
     sampleBodyView.fieldVarNames(fieldVarNames);
@@ -147,7 +148,7 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
     TypeInfo typeInfo = field.getValue().type();
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.getKey()))
-        .typeName(sampleTypeTable.getAndSaveNicknameFor(typeInfo))
+        .typeName(sampleTypeTable.getAndSaveNicknameFor(typeInfo, false))
         .defaultValue(sampleTypeTable.getZeroValueAndSaveNicknameFor(typeInfo))
         .description(field.getValue().description())
         .build();

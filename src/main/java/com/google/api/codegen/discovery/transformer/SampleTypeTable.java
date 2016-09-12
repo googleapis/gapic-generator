@@ -52,6 +52,10 @@ public class SampleTypeTable implements SampleTypeFormatter {
     return "TODO";
   }
 
+  public TypeName getRequestTypeName(TypeInfo typeInfo) {
+    return typeNameConverter.getRequestTypeName(typeInfo);
+  }
+
   public TypeName getTypeName(TypeInfo typeInfo) {
     return typeNameConverter.getTypeName(typeInfo);
   }
@@ -70,7 +74,10 @@ public class SampleTypeTable implements SampleTypeFormatter {
     return typeFormatter.renderPrimitiveValue(typeName, value);
   }
 
-  public String getAndSaveNicknameFor(TypeInfo typeInfo) {
+  public String getAndSaveNicknameFor(TypeInfo typeInfo, boolean isRequestType) {
+    if (isRequestType) {
+      return typeTable.getAndSaveNicknameFor(typeNameConverter.getRequestTypeName(typeInfo));
+    }
     return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(typeInfo));
   }
 

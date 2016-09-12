@@ -27,9 +27,11 @@ public interface ProtobufTypeNameConverter {
 
   /**
    * Provides a TypeName for the service.
-   * @return
    */
   TypeName getServiceTypeName();
+
+  // TODO(saicheems): Document!
+  TypeName getRequestTypeName(TypeInfo typeInfo);
 
   /**
    * Provides a TypeName for the given TypeInfo.
