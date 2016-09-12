@@ -110,7 +110,13 @@ class JavaProtobufTypeNameConverter implements ProtobufTypeNameConverter {
   public TypeName getTypeName(TypeInfo typeInfo) {
     String typeName = "";
     if (typeInfo.isMessage()) {
-      typeName = "com.google.api.services.model." + typeInfo.message().typeName();
+      typeName =
+          String.join(
+              ".",
+              "com.google.api.services",
+              apiNameVersion,
+              "model",
+              typeInfo.message().typeName());
     }
     return getTypeName(typeInfo, typeName);
   }
