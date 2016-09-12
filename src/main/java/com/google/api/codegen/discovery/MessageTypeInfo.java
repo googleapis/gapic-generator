@@ -14,10 +14,14 @@
  */
 package com.google.api.codegen.discovery;
 
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
-import java.util.List;
 
 @AutoValue
+@JsonDeserialize(builder = AutoValue_MessageTypeInfo.Builder.class)
 public abstract class MessageTypeInfo {
 
   /**
@@ -26,12 +30,14 @@ public abstract class MessageTypeInfo {
    * If the message is a method's request type, the type name will be
    * "request$".
    */
+  @JsonProperty("typeName")
   public abstract String typeName();
 
   /**
-   * Returns a list the message's fields.
+   * Returns a map of message field names to fields.
    */
-  public abstract List<FieldInfo> fields();
+  @JsonProperty("fields")
+  public abstract Map<String, FieldInfo> fields();
 
   public static Builder newBuilder() {
     return new AutoValue_MessageTypeInfo.Builder();
@@ -40,9 +46,11 @@ public abstract class MessageTypeInfo {
   @AutoValue.Builder
   public static abstract class Builder {
 
+    @JsonProperty("typeName")
     public abstract Builder typeName(String val);
 
-    public abstract Builder fields(List<FieldInfo> val);
+    @JsonProperty("fields")
+    public abstract Builder fields(Map<String, FieldInfo> val);
 
     public abstract MessageTypeInfo build();
   }

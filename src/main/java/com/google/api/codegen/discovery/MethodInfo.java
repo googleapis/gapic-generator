@@ -14,18 +14,17 @@
  */
 package com.google.api.codegen.discovery;
 
-import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.DiscoveryImporter;
-import com.google.auto.value.AutoValue;
-import com.google.protobuf.Field;
-import com.google.protobuf.Method;
-import com.google.protobuf.Type;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
+
 @AutoValue
+@JsonDeserialize(builder = AutoValue_MethodInfo.Builder.class)
 public abstract class MethodInfo {
 
   /**
@@ -39,15 +38,17 @@ public abstract class MethodInfo {
    * removed.
    * For example: ["creatives", "insert"]
    */
+  @JsonProperty("nameComponents")
   public abstract List<String> nameComponents();
 
   /**
-   * Returns a list of this method's fields.
+   * Returns a map of method field names to fields.
    *
-   * The list doesn't include the request body type, see {@link
+   * The map doesn't include the request body type, see {@link
    * #requestBodyType()}.
    */
-  public abstract List<FieldInfo> fields();
+  @JsonProperty("fields")
+  public abstract Map<String, FieldInfo> fields();
 
   /**
    * Returns the type for this method's request.
@@ -55,6 +56,7 @@ public abstract class MethodInfo {
    * Apiary clients return a request type that's executed to produce a response.
    * This value contains the properties of that type.
    */
+  @JsonProperty("requestType")
   @Nullable
   public abstract TypeInfo requestType();
 
@@ -66,12 +68,14 @@ public abstract class MethodInfo {
    * here because it lacks a proper name.
    * @return
    */
+  @JsonProperty("requestBodyType")
   @Nullable
   public abstract TypeInfo requestBodyType();
 
   /**
    * Returns the type for this method's response, and null if it has none.
    */
+  @JsonProperty("responseType")
   @Nullable
   public abstract TypeInfo responseType();
 
@@ -80,6 +84,7 @@ public abstract class MethodInfo {
    *
    * True if the method's response type contains the field "nextPageToken".
    */
+  @JsonProperty("isPageStreaming")
   public abstract boolean isPageStreaming();
 
   /**
@@ -89,6 +94,7 @@ public abstract class MethodInfo {
    * Always the first type within the response message that has a repeated
    * cardinality.
    */
+  @JsonProperty("pageStreamingResourceField")
   @Nullable
   public abstract FieldInfo pageStreamingResourceField();
 
@@ -99,18 +105,25 @@ public abstract class MethodInfo {
   @AutoValue.Builder
   public static abstract class Builder {
 
+    @JsonProperty("nameComponents")
     public abstract Builder nameComponents(List<String> val);
 
-    public abstract Builder fields(List<FieldInfo> val);
+    @JsonProperty("fields")
+    public abstract Builder fields(Map<String, FieldInfo> val);
 
+    @JsonProperty("requestType")
     public abstract Builder requestType(TypeInfo val);
 
+    @JsonProperty("requestBodyType")
     public abstract Builder requestBodyType(TypeInfo val);
 
+    @JsonProperty("responseType")
     public abstract Builder responseType(TypeInfo val);
 
+    @JsonProperty("isPageStreaming")
     public abstract Builder isPageStreaming(boolean val);
 
+    @JsonProperty("pageStreamingResourceField")
     public abstract Builder pageStreamingResourceField(FieldInfo val);
 
     public abstract MethodInfo build();

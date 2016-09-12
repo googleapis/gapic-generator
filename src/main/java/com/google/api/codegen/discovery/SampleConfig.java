@@ -14,17 +14,12 @@
  */
 package com.google.api.codegen.discovery;
 
-import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.DiscoveryImporter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
-import com.google.protobuf.Field;
-import com.google.protobuf.Field.Cardinality;
-import com.google.protobuf.Method;
-import com.google.protobuf.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 @AutoValue
+@JsonDeserialize(builder = AutoValue_SampleConfig.Builder.class)
 public abstract class SampleConfig {
 
   /**
@@ -33,6 +28,7 @@ public abstract class SampleConfig {
    * A printable representation of the API's title.
    * For example: "Ad Exchange Buyer API"
    */
+  @JsonProperty("apiTitle")
   public abstract String apiTitle();
 
   /**
@@ -40,6 +36,7 @@ public abstract class SampleConfig {
    *
    * For example: "adexchangebuyer.v1.4"
    */
+  @JsonProperty("apiNameVersion")
   public abstract String apiNameVersion();
 
   /**
@@ -49,11 +46,13 @@ public abstract class SampleConfig {
    * characters.
    * For example: "adexchangebuyer"
    */
+  @JsonProperty("apiTypeName")
   public abstract String apiTypeName();
 
   /**
    * Returns the sample's method.
    */
+  @JsonProperty("methodInfo")
   public abstract MethodInfo methodInfo();
 
   public static Builder newBuilder() {
@@ -63,12 +62,16 @@ public abstract class SampleConfig {
   @AutoValue.Builder
   public static abstract class Builder {
 
+    @JsonProperty("apiTitle")
     public abstract Builder apiTitle(String val);
 
+    @JsonProperty("apiNameVersion")
     public abstract Builder apiNameVersion(String val);
 
+    @JsonProperty("apiTypeName")
     public abstract Builder apiTypeName(String val);
 
+    @JsonProperty("methodInfo")
     public abstract Builder methodInfo(MethodInfo val);
 
     public abstract SampleConfig build();

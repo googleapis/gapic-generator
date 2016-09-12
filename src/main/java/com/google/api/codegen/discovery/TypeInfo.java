@@ -16,6 +16,8 @@ package com.google.api.codegen.discovery;
 
 import javax.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.auto.value.AutoValue;
@@ -26,21 +28,25 @@ import com.google.protobuf.Method;
 import com.google.protobuf.Type;
 
 @AutoValue
+@JsonDeserialize(builder = AutoValue_TypeInfo.Builder.class)
 public abstract class TypeInfo {
 
   /**
    * Returns this type's kind.
    */
+  @JsonProperty("kind")
   public abstract Field.Kind kind();
 
   /**
    * Returns true if this type is a map.
    */
+  @JsonProperty("isMap")
   public abstract boolean isMap();
 
   /**
    * Returns the type for the key of a map type, and null if this type is not a map.
    */
+  @JsonProperty("mapKey")
   @Nullable
   public abstract TypeInfo mapKey();
 
@@ -49,21 +55,25 @@ public abstract class TypeInfo {
    * map.
    */
   @Nullable
+  @JsonProperty("mapValue")
   public abstract TypeInfo mapValue();
 
   /**
    * Returns true if this type is an array.
    */
+  @JsonProperty("isArray")
   public abstract boolean isArray();
 
   /**
    * Returns true if this type is a message.
    */
+  @JsonProperty("isMessage")
   public abstract boolean isMessage();
 
   /**
    * Returns the type for a message, and null if this type is not a message.
    */
+  @JsonProperty("message")
   @Nullable
   public abstract MessageTypeInfo message();
 
@@ -74,18 +84,25 @@ public abstract class TypeInfo {
   @AutoValue.Builder
   public static abstract class Builder {
 
+    @JsonProperty("kind")
     public abstract Builder kind(Field.Kind val);
 
+    @JsonProperty("isMap")
     public abstract Builder isMap(boolean val);
 
+    @JsonProperty("mapKey")
     public abstract Builder mapKey(TypeInfo val);
 
+    @JsonProperty("mapValue")
     public abstract Builder mapValue(TypeInfo val);
 
+    @JsonProperty("isArray")
     public abstract Builder isArray(boolean val);
 
+    @JsonProperty("isMessage")
     public abstract Builder isMessage(boolean val);
 
+    @JsonProperty("message")
     public abstract Builder message(MessageTypeInfo val);
 
     public abstract TypeInfo build();

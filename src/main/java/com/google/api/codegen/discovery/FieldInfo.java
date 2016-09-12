@@ -14,24 +14,30 @@
  */
 package com.google.api.codegen.discovery;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
+@JsonDeserialize(builder = AutoValue_FieldInfo.Builder.class)
 public abstract class FieldInfo {
 
   /**
    * Returns the field's name.
    */
+  @JsonProperty("name")
   public abstract String name();
 
   /**
    * Returns the configuration of the field's type.
    */
+  @JsonProperty("type")
   public abstract TypeInfo type();
 
   /**
    * Returns the description of the field.
    */
+  @JsonProperty("description")
   public abstract String description();
 
   public static Builder newBuilder() {
@@ -41,10 +47,13 @@ public abstract class FieldInfo {
   @AutoValue.Builder
   public static abstract class Builder {
 
-    public abstract Builder name(String val);
+    @JsonProperty("name")
+    public abstract Builder name(String name);
 
+    @JsonProperty("type")
     public abstract Builder type(TypeInfo val);
 
+    @JsonProperty("description")
     public abstract Builder description(String val);
 
     public abstract FieldInfo build();

@@ -14,10 +14,23 @@
  */
 package com.google.api.codegen.discovery.transformer.java;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.discovery.ApiaryConfigToSampleConfigConverter;
 import com.google.api.codegen.discovery.FieldInfo;
 import com.google.api.codegen.discovery.SampleConfig;
+import com.google.api.codegen.discovery.TypeInfo;
 import com.google.api.codegen.discovery.transformer.MethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.SampleNamer;
 import com.google.api.codegen.discovery.transformer.SampleTransformerContext;
@@ -29,9 +42,8 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.io.Files;
 import com.google.protobuf.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 /*
  * Transforms a Model into the standard discovery surface in Java.
@@ -43,8 +55,7 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
   public JavaMethodToViewTransformer() {}
 
   @Override
-  public ViewModel transform(Method method, ApiaryConfig apiaryConfig) {
-    SampleConfig sampleConfig = ApiaryConfigToSampleConfigConverter.convert(method, apiaryConfig);
+  public ViewModel transform(Method method, SampleConfig sampleConfig) {
     SampleTypeTable sampleTypeTable =
         new SampleTypeTable(
             new JavaTypeTable(),
@@ -121,9 +132,8 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
 
     List<SampleFieldView> fields = new ArrayList<>();
     List<String> fieldVarNames = new ArrayList<>();
-    for (FieldInfo fieldInfo : sampleConfig.methodInfo().fields()) {
-      SampleFieldView sampleFieldView =
-          generateSampleField(fieldInfo, sampleTypeTable, symbolTable);
+    for (Entry<String, FieldInfo> field : sampleConfig.methodInfo().fields().entrySet()) {
+      SampleFieldView sampleFieldView = generateSampleField(field, sampleTypeTable, symbolTable);
       fields.add(sampleFieldView);
       fieldVarNames.add(sampleFieldView.name());
     }
@@ -144,12 +154,13 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
   }
 
   public SampleFieldView generateSampleField(
-      FieldInfo fieldInfo, SampleTypeTable sampleTypeTable, SymbolTable symbolTable) {
+      Entry<String, FieldInfo> field, SampleTypeTable sampleTypeTable, SymbolTable symbolTable) {
+    TypeInfo typeInfo = field.getValue().type();
     return SampleFieldView.newBuilder()
-        .name(symbolTable.getNewSymbol(fieldInfo.name()))
-        .typeName(sampleTypeTable.getAndSaveNicknameFor(fieldInfo.type()))
-        .defaultValue(sampleTypeTable.getZeroValueAndSaveNicknameFor(fieldInfo.type()))
-        .description(fieldInfo.description())
+        .name(symbolTable.getNewSymbol(field.getKey()))
+        .typeName(sampleTypeTable.getAndSaveNicknameFor(typeInfo))
+        .defaultValue(sampleTypeTable.getZeroValueAndSaveNicknameFor(typeInfo))
+        .description(field.getValue().description())
         .build();
   }
 

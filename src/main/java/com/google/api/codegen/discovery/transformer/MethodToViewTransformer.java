@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
-import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.discovery.SampleConfig;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.protobuf.Method;
 
@@ -23,5 +23,5 @@ import com.google.protobuf.Method;
  */
 public interface MethodToViewTransformer {
 
-  ViewModel transform(Method method, ApiaryConfig apiaryConfig);
+  ViewModel transform(Method method, SampleConfig sampleConfig);
 }

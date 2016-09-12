@@ -16,8 +16,10 @@ package com.google.api.codegen.discovery;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryImporter;
@@ -55,7 +57,7 @@ public class ApiaryConfigToSampleConfigConverter {
     LinkedList<String> nameComponents = new LinkedList<>(Arrays.asList(methodName.split("\\.")));
     nameComponents.removeFirst(); // Removes the API name.
 
-    List<FieldInfo> fields = new ArrayList<>();
+    Map<String, FieldInfo> fields = new HashMap<>();
     TypeInfo requestBodyType = null;
     for (String fieldName : apiaryConfig.getMethodParams(methodName)) {
       Field field =
@@ -66,7 +68,7 @@ public class ApiaryConfigToSampleConfigConverter {
         requestBodyType = createTypeInfo(field, method, apiaryConfig);
         continue;
       }
-      fields.add(createFieldInfo(field, method, apiaryConfig));
+      fields.put(field.getName(), createFieldInfo(field, method, apiaryConfig));
     }
 
     TypeInfo requestType = createTypeInfo(method, apiaryConfig, true);
@@ -101,10 +103,9 @@ public class ApiaryConfigToSampleConfigConverter {
    * Creates a field.
    */
   private static FieldInfo createFieldInfo(Field field, Method method, ApiaryConfig apiaryConfig) {
-    String fieldName = field.getName();
     return FieldInfo.newBuilder()
-        .name(fieldName)
-        .description(apiaryConfig.getDescription(method.getRequestTypeUrl(), fieldName))
+        .name(field.getName())
+        .description(apiaryConfig.getDescription(method.getRequestTypeUrl(), field.getName()))
         .type(createTypeInfo(field, method, apiaryConfig))
         .build();
   }
@@ -154,7 +155,10 @@ public class ApiaryConfigToSampleConfigConverter {
     String typeName =
         isRequest ? DiscoveryImporter.REQUEST_FIELD_NAME : method.getResponseTypeUrl();
     MessageTypeInfo messageTypeInfo =
-        MessageTypeInfo.newBuilder().typeName(typeName).fields(new ArrayList<FieldInfo>()).build();
+        MessageTypeInfo.newBuilder()
+            .typeName(typeName)
+            .fields(new HashMap<String, FieldInfo>())
+            .build();
     return TypeInfo.newBuilder()
         .kind(Field.Kind.TYPE_MESSAGE)
         .isMap(false)
@@ -176,10 +180,10 @@ public class ApiaryConfigToSampleConfigConverter {
       Field field, Method method, ApiaryConfig apiaryConfig, boolean deep) {
     String typeName = field.getTypeUrl();
     Type type = apiaryConfig.getType(typeName);
-    List<FieldInfo> fields = new ArrayList<>();
+    Map<String, FieldInfo> fields = new HashMap<>();
     if (deep) {
       for (Field field2 : type.getFieldsList()) {
-        fields.add(createFieldInfo(field2, method, apiaryConfig));
+        fields.put(field2.getName(), createFieldInfo(field2, method, apiaryConfig));
       }
     }
     return MessageTypeInfo.newBuilder().typeName(typeName).fields(fields).build();
