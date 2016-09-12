@@ -96,14 +96,15 @@ class JavaProtobufTypeNameConverter implements ProtobufTypeNameConverter {
   // TODO(saicheems): Document and override, same for below.
   @Override
   public TypeName getRequestTypeName(TypeInfo typeInfo) {
+    // By default, use the concatenation of the method name components. If the
+    // default type name is overridden, use that value instead.
+    String typeName = typeInfo.message().typeName();
+    if (typeName.equals(DiscoveryImporter.REQUEST_FIELD_NAME)) {
+      typeName = String.join(".", methodNameComponents);
+    }
     return getTypeName(
         typeInfo,
-        String.join(
-            ".",
-            "com.google.api.services",
-            apiNameVersion,
-            apiTypeName,
-            String.join(".", methodNameComponents)));
+        String.join(".", "com.google.api.services", apiNameVersion, apiTypeName, typeName));
   }
 
   @Override
