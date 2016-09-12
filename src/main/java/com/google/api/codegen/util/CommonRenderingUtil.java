@@ -15,6 +15,7 @@
 package com.google.api.codegen.util;
 
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,5 +33,43 @@ public class CommonRenderingUtil {
       result.add(line);
     }
     return result;
+  }
+
+  public static List<String> getDocLines(String str, int maxWidth) {
+    maxWidth = maxWidth - 1;
+
+    List<String> lines = new ArrayList<>();
+
+    for (String line : str.trim().split("\n")) {
+      line = line.trim();
+
+      while (line.length() > maxWidth) {
+        int split = lineWrapIndex(line, maxWidth);
+        lines.add(line.substring(0, split).trim());
+        line = line.substring(split).trim();
+      }
+      if (!line.isEmpty()) {
+        lines.add(line);
+      }
+    }
+    return lines;
+  }
+
+  private static int lineWrapIndex(String line, int maxWidth) {
+    for (int i = maxWidth; i > 0; i--) {
+      if (isLineWrapChar(line.charAt(i))) {
+        return i;
+      }
+    }
+    for (int i = maxWidth + 1; i < line.length(); i++) {
+      if (isLineWrapChar(line.charAt(i))) {
+        return i;
+      }
+    }
+    return line.length();
+  }
+
+  private static boolean isLineWrapChar(char c) {
+    return Character.isWhitespace(c) || "([".indexOf(c) >= 0;
   }
 }

@@ -14,14 +14,6 @@
  */
 package com.google.api.codegen;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Table;
-import com.google.protobuf.Field;
-import com.google.protobuf.Type;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +21,14 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Table;
+import com.google.protobuf.Field;
+import com.google.protobuf.Type;
 
 /**
  * ApiaryConfig contains additional information about discovery docs parsed by
@@ -102,6 +102,21 @@ public class ApiaryConfig {
   private final Table<Type, String, Field> fields = HashBasedTable.<Type, String, Field>create();
 
   /*
+   * The API title.
+   */
+  private String apiTitle;
+
+  /*
+   * The API name.
+   */
+  private String apiName;
+
+  /*
+   * The API version.
+   */
+  private String apiVersion;
+
+  /*
    * The service canonical name, or name if no canonical name
    */
   private String serviceCanonicalName;
@@ -149,6 +164,30 @@ public class ApiaryConfig {
 
   public Set<String> getMediaUpload() {
     return mediaUpload;
+  }
+
+  public String getApiTitle() {
+    return apiTitle;
+  }
+
+  public void setApiTitle(String apiTitle) {
+    this.apiTitle = apiTitle;
+  }
+
+  public String getApiName() {
+    return apiName;
+  }
+
+  public void setApiName(String apiName) {
+    this.apiName = apiName;
+  }
+
+  public String getApiVersion() {
+    return apiVersion;
+  }
+
+  public void setApiVersion(String apiVersion) {
+    this.apiVersion = apiVersion;
   }
 
   public String getServiceCanonicalName() {

@@ -12,19 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery;
+package com.google.api.codegen.discovery.transformer;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.api.Service;
-import com.google.api.codegen.ApiaryConfig;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * A factory for DiscoveryProviders which perform code generation.
- */
-public interface DiscoveryProviderFactory {
-  /**
-   * Create the provider from the given service, apiaryConfig, overridesJson, and id.
-   */
-  DiscoveryProvider create(
-      Service service, ApiaryConfig apiaryConfig, JsonNode sampleConfigOverrides, String id);
+import com.google.api.codegen.discovery.viewmodel.SampleFieldView;
+
+public class SampleParamTransformer {
+
+  public static List<SampleFieldView> generateSampleParams(SampleTransformerContext context) {
+    ArrayList<SampleFieldView> sampleParams = new ArrayList<>();
+    return sampleParams;
+  }
 }

@@ -1,274 +1,114 @@
-@extends "common.snip"
-
-@snippet generateFilename(method)
-  {@method.getName}.frag.java
-@end
-
-@snippet generateClass(method, body, imports)
-  @let api = context.getApi, \
-       apiName = api.getName, \
-       apiVersion = api.getVersion, \
-       serviceTitle = context.getService.getTitle
-    /**
-     * BEFORE RUNNING:
-     * ---------------
-     * 1. If not already done, enable the {@serviceTitle}
-     *    and check the quota for your project at
-     *    https://console.developers.google.com/apis/api/{@apiName}
-     * 2. This sample uses Application Default Credentials for authentication.
-     *    If not already done, install the gcloud CLI from
-     *    https://cloud.google.com/sdk/ and run
-     *    `gcloud beta auth application-default login`
-     * 3. Install the Java client library on maven or gradle. Check installation
-     *    instructions at https://github.com/google/google-api-java-client.
-     *    On other build systems, you can add the jar files to your project from
-     *    https://developers.google.com/resources/api-libraries/download/{@apiName}/{@apiVersion}/java
-     */
-
-    @join import : imports
-      import {@import};
-    @end
-    {@body}
+@snippet generate(sampleClass)
+  /**
+   * BEFORE RUNNING:
+   * ---------------
+   * 1. If not already done, enable the {@sampleClass.apiTitle}
+   *    and check the quota for your project at
+   *    https://console.developers.google.com/apis/api/{@sampleClass.apiName}
+   * 2. Install the Java client library on Maven or Gradle. Check installation
+   *    instructions at https://github.com/google/google-api-java-client.
+   *    On other build systems, you can add the jar files to your project from
+   *    https://developers.google.com/resources/api-libraries/download/{@sampleClass.apiName}/{@sampleClass.apiVersion}/java
+   */
+  @join import : sampleClass.imports
+    import {@import};
   @end
+
+  class Main {
+    {@runFunc(sampleClass.body)}
+
+    {@createServiceFunc(sampleClass.body)}
+
+    {@mainFunc()}
+  }
 @end
 
-@snippet generateBody(method)
-  {@alwaysImport()}
+@private runFunc(sampleBody)
+  public void run() throws IOException, GeneralSecurityException {
+    @if sampleBody.hasInputRequest
+      // TODO: Assign desired fields.
+      {@sampleBody.requestBodyTypeName} {@sampleBody.requestBodyVarName} = new {@sampleBody.requestBodyTypeName}();
 
-  @let apiName = context.getApi.getName, \
-       ApiName = context.getApiPackage
-    public class {@ApiName}Example {
-      public static void main(String[] args) throws IOException, GeneralSecurityException {
-        // Authentication is provided by the `gcloud` tool when running locally
-        // and by built-in service accounts when running on GAE, GCE, or GKE.
-        GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    @end
+    @join field : sampleBody.fields if sampleBody.fields
+      @join line : util.getDocLines(field.description, 100)
+        // {@line}
+      @end
 
-        // The createScopedRequired method returns true when running on GAE or a local developer
-        // machine. In that case, the desired scopes must be passed in manually. When the code is
-        // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-        // For more information, see
-        // https://developers.google.com/identity/protocols/application-default-credentials
-        if (credential.createScopedRequired()) {
-          credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+      {@field.typeName} {@field.name} = {@field.defaultValue}; // TODO: Update field(s).
+
+    @end
+    {@sampleBody.serviceTypeName} {@sampleBody.serviceVarName} = createService();
+    {@sampleBody.requestTypeName} {@sampleBody.requestVarName} = {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}({@paramList(sampleBody.fieldVarNames)});
+    @if {@sampleBody.isPageStreaming}
+      {@sampleBody.responseTypeName} {@sampleBody.responseVarName};
+      do {
+        {@sampleBody.responseVarName} = {@sampleBody.requestVarName}.execute();
+        if ({@sampleBody.responseVarName}.{@sampleBody.resourceGetterName}() == null) {
+          continue;
         }
-
-        HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-        {@ApiName} {@serviceName()} = new {@ApiName}.Builder(httpTransport, jsonFactory, credential)
-          .setApplicationName("Google Cloud Platform Sample")
-          .build();
-
-        {@initialize(method)}
-        {@request(method)}
-        @if context.isPageStreaming(method)
-          {@iterableCall(method)}
+        @if {@sampleBody.isResourceMap}
+          for ({@sampleBody.resourceTypeName} item : response.{@sampleBody.resourceGetterName}().entrySet()) {
+            System.out.println(item.getKey() + ": " + item.getValue());
+          }
         @else
-          {@compactCall(method)}
-        @end
-      }
-    }
-  @end
-@end
-
-# TODO(tcoffee): check if resource field is always first repeated field of response type
-# TODO(tcoffee): customize placeholder printing based on element type
-@private iterableCall(method)
-  @let responseType = context.objectTypeName(method.getResponseTypeUrl), \
-       responseTypeRef = context.getApiaryConfig.getType(responseType), \
-       resourceField = context.getFirstRepeatedField(responseTypeRef), \
-       resources = context.lowerCamelToUpperCamel(resourceField.getName)
-
-    {@printer()}
-
-    {@responseType} {@responseName()};
-    do {
-      {@responseName()} = {@requestName()}.execute();
-      if ({@responseName()}.get{@resources}() == null)
-        continue;
-
-      @if context.isMapField(responseTypeRef, resourceField.getName)
-        @let resourceType = context.entryTypeName(resourceField)
-          for ({@resourceType} {@itemName()} : {@responseName()}.get{@resources}().entrySet()) {
-            // {@TODO()} Use {@itemName()}
-            {@printEntry(itemName())}
+          for ({@sampleBody.resourceTypeName} item : response.{@sampleBody.resourceGetterName}()) {
+            System.out.println(item);
           }
         @end
-      @else
-        @let resourceType = context.elementTypeName(resourceField), \
-             resourceName = context.getSampleVarName(resourceType)
-          for ({@resourceType} {@resourceName} : {@responseName()}.get{@resources}()) {
-            // {@TODO()} Use {@resourceName}
-            {@print(resourceName)}
-          }
-        @end
-      @end
-
-      # used to handle inconsistency in log entries list method for Logging API
-      # remove exceptional case if inconsistency is resolved
-      @if context.isLogEntriesListMethod(method)
-        {@requestBodyName()}.setPageToken({@responseName()}.getNextPageToken());
-      @else
-        {@requestName()}.setPageToken({@responseName()}.getNextPageToken());
-      @end
-    } while ({@responseName()}.getNextPageToken() != null);
-  @end
-@end
-
-@private compactCall(method)
-  @if context.isResponseEmpty(method)
-    {@requestName()}.execute();
-  @else
-    @let responseType = context.objectTypeName(method.getResponseTypeUrl)
-      {@responseType} {@responseName()} = {@requestName()}.execute();
-
-      // {@TODO()} Use {@responseName()}
-      {@printer()}
-      {@print(responseName())}
-    @end
-  @end
-@end
-
-@private request(method)
-  @let methodName = context.getMethodName(method), \
-       requestType = context.getClientRequestType(method), \
-       resourcesPath = context.getApiaryConfig.getResources(method.getName)
-    {@requestType} {@requestName()} = \
-        {@serviceName()}.{@elementPath(resourcesPath)}.{@methodName}({@arguments(method)});
-  @end
-@end
-
-# TODO(tcoffee): configure snippet grouping to handle long argument lists
-@private arguments(method)
-  @let params = context.getFlatMethodParams(method)
-    @if context.hasRequestField(method)
-      @if params
-        {@argumentList(params)}, {@requestBodyName()}
-      @else
-        {@requestBodyName()}
-      @end
+      } while ({@sampleBody.responseVarName}.getNextPageToken() != null);
     @else
-      {@argumentList(params)}
-    @end
-  @end
-@end
-
-@private initialize(method)
-  @let methodName = context.getMethodName(method), \
-       signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
-       params = context.getFlatMethodParams(method)
-    @if params
-      @join param : params
-        @let paramField = context.getField(signatureType, param), \
-             paramType = context.typeName(signatureType, paramField), \
-             paramValue = context.typeDefaultValue(signatureType, paramField), \
-             paramSample = context.getDefaultSample(signatureType, paramField), \
-             paramDescription = context.getDescription(signatureType.getName, param)
-          {@description(paramDescription)}
-          {@paramType} {@param} = {@paramValue}; // {@TODO()} Update placeholder value(s).{@paramSample}
-
-        @end
-      @end
-
-    @end
-  @end
-  @if context.hasRequestField(method)
-
-    @let requestBodyType = context.objectTypeName(context.getRequestField(method))
-      @if context.isPatch(method)
-        // {@TODO()} Assign values to the desired fields to be changed.
+      @if {@sampleBody.hasOutput}
+        {@sampleBody.responseTypeName} {@sampleBody.responseVarName} = {@sampleBody.requestVarName}.execute();
+        System.out.println({@sampleBody.responseVarName});
       @else
-        // {@TODO()} Assign values to the desired fields.
+        {@sampleBody.requestVarName}.execute();
       @end
-
-      {@requestBodyType} {@requestBodyName()} = new {@requestBodyType}();
     @end
+  }
+@end
 
+@private createServiceFunc(sampleBody)
+  public {@sampleBody.serviceTypeName} createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new {@sampleBody.serviceTypeName}.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+@end
+
+@private mainFunc()
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+@end
+
+@private callChain(methodNameComponents)
+  @join resource : methodNameComponents on "()."
+    {@resource}
   @end
 @end
 
-@private serviceName()
-  @let apiName = context.getApi.getName
-    {@apiName}Service
+@private paramList(fieldVarNames)
+  @join fieldVarName : fieldVarNames on ", "
+    {@fieldVarName}
   @end
-@end
-
-@private itemName()
-  item
-@end
-
-@private requestName()
-  request
-@end
-
-@private requestBodyName()
-  requestBody
-@end
-
-@private responseName()
-  response
-@end
-
-@private gsonName()
-  gson
-@end
-
-@private typePath(types)
-  @join type : types on "."
-    @let Type = context.lowerCamelToUpperCamel(type)
-      {@Type}
-    @end
-  @end
-@end
-
-@private elementPath(elements)
-  @join element : elements on "."
-    {@element}()
-  @end
-@end
-
-@private argumentList(arguments)
-  @join argument : arguments on ", "
-    {@argument}
-  @end
-@end
-
-@private description(description)
-  @join line : context.lineWrapDoc(description)
-    // {@line}
-  @end
-@end
-
-@private printer()
-  @let Gson = context.getTypeName("com.google.gson.Gson")
-    {@Gson} {@gsonName()} = new GsonBuilder().setPrettyPrinting().create();
-  @end
-@end
-
-# Assumes element type string form parses as valid JSON: http://www.rfc-editor.org/rfc/rfc7159.txt
-@private print(element)
-  @let JsonParser = context.getTypeName("com.google.gson.JsonParser")
-    System.out.println({@gsonName()}.toJson(new {@JsonParser}().parse({@element}.toString())));
-  @end
-@end
-
-@private printEntry(entry)
-  @let JsonParser = context.getTypeName("com.google.gson.JsonParser")
-    System.out.println({@entry}.getKey() + ": " + {@gsonName()}.toJson(new {@JsonParser}().parse({@entry}.getValue().toString())));
-  @end
-@end
-
-@private alwaysImport() fill
-  {@context.addImport("java.io.IOException")}
-  {@context.addImport("java.security.GeneralSecurityException")}
-  {@context.addImport("java.util.Collections")}
-  {@context.addImport("com.google.api.client.googleapis.auth.oauth2.GoogleCredential")}
-  {@context.addImport("com.google.api.client.googleapis.javanet.GoogleNetHttpTransport")}
-  {@context.addImport("com.google.api.client.http.HttpTransport")}
-  {@context.addImport("com.google.api.client.json.JsonFactory")}
-  {@context.addImport("com.google.api.client.json.jackson2.JacksonFactory")}
-@end
-
-@snippet generateMethodSampleCode(docConfig)
 @end

@@ -12,19 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery;
+package com.google.api.codegen.discovery.transformer;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.api.Service;
-import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.discovery.SampleConfig;
+import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.protobuf.Method;
 
-/**
- * A factory for DiscoveryProviders which perform code generation.
+/*
+ * Transforms a Method into a ViewModel instance that can be rendered by a template engine.
  */
-public interface DiscoveryProviderFactory {
-  /**
-   * Create the provider from the given service, apiaryConfig, overridesJson, and id.
-   */
-  DiscoveryProvider create(
-      Service service, ApiaryConfig apiaryConfig, JsonNode sampleConfigOverrides, String id);
+public interface MethodToViewTransformer {
+
+  ViewModel transform(Method method, SampleConfig sampleConfig);
 }

@@ -12,19 +12,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery;
+package com.google.api.codegen.discovery.transformer;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.api.Service;
-import com.google.api.codegen.ApiaryConfig;
+import com.google.protobuf.Method;
 
 /**
- * A factory for DiscoveryProviders which perform code generation.
+ * A read-only interface for mapping types to a corresponding String representation for a particular
+ * language.
  */
-public interface DiscoveryProviderFactory {
+public interface SampleTypeFormatter {
+
   /**
-   * Create the provider from the given service, apiaryConfig, overridesJson, and id.
+   * Returns method's name.
    */
-  DiscoveryProvider create(
-      Service service, ApiaryConfig apiaryConfig, JsonNode sampleConfigOverrides, String id);
+  String getMethodName(Method method);
+
+  /**
+   * Takes a fully-qualified type name and returns its simple name.
+   */
+  String getTypeName(String typeName);
+
+  /**
+   * Renders the primitive value of the given type.
+   */
+  String renderPrimitiveValue(String typeName, String value);
 }
