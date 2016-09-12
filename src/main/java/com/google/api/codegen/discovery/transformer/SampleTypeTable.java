@@ -14,49 +14,66 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
+import com.google.api.codegen.discovery.SampleConfig;
 import com.google.api.codegen.discovery.TypeInfo;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.api.codegen.util.TypedValue;
+import com.google.common.base.Strings;
 import java.util.List;
 
 /**
  * Manages the imports for a set of fully-qualified type names.
  */
-public class SampleTypeTable implements ProtobufTypeNameConverter {
+public class SampleTypeTable implements SampleTypeNameConverter {
 
   private TypeTable typeTable;
-  private ProtobufTypeNameConverter typeNameConverter;
+  private SampleTypeNameConverter typeNameConverter;
 
-  public SampleTypeTable(TypeTable typeTable, ProtobufTypeNameConverter typeNameConverter) {
+  public SampleTypeTable(TypeTable typeTable, SampleTypeNameConverter typeNameConverter) {
     this.typeTable = typeTable;
     this.typeNameConverter = typeNameConverter;
   }
 
   @Override
-  public TypeName getServiceTypeName() {
-    return typeNameConverter.getServiceTypeName();
+  public TypeName getServiceTypeName(SampleConfig sampleConfig) {
+    String apiTypeNameOverride = sampleConfig.apiTypeNameOverride();
+    if (!Strings.isNullOrEmpty(apiTypeNameOverride)) {
+      return typeTable.getTypeName(apiTypeNameOverride);
+    }
+    return typeNameConverter.getServiceTypeName(sampleConfig);
   }
 
-  public String getAndSaveNicknameForServiceTypeName() {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getServiceTypeName());
+  public String getAndSaveNicknameFor(SampleConfig sampleConfig) {
+    return typeTable.getAndSaveNicknameFor(getServiceTypeName(sampleConfig));
   }
 
   @Override
   public TypeName getRequestTypeName(TypeInfo typeInfo) {
+    String typeNameOverride = typeInfo.message().typeNameOverride();
+    if (!Strings.isNullOrEmpty(typeNameOverride)) {
+      return typeTable.getTypeName(typeNameOverride);
+    }
     return typeNameConverter.getRequestTypeName(typeInfo);
   }
 
   @Override
   public TypeName getTypeName(TypeInfo typeInfo) {
+    String typeNameOverride = "";
+    if (typeInfo.isMessage()) {
+      typeNameOverride = typeInfo.message().typeNameOverride();
+    }
+    if (!Strings.isNullOrEmpty(typeNameOverride)) {
+      return typeTable.getTypeName(typeNameOverride);
+    }
     return typeNameConverter.getTypeName(typeInfo);
   }
 
   public String getAndSaveNicknameFor(TypeInfo typeInfo, boolean isRequestType) {
     if (isRequestType) {
-      return typeTable.getAndSaveNicknameFor(typeNameConverter.getRequestTypeName(typeInfo));
+      return typeTable.getAndSaveNicknameFor(getRequestTypeName(typeInfo));
     }
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(typeInfo));
+    return typeTable.getAndSaveNicknameFor(getTypeName(typeInfo));
   }
 
   @Override

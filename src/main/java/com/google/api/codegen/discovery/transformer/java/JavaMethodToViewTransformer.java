@@ -47,14 +47,9 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
 
   @Override
   public ViewModel transform(Method method, SampleConfig sampleConfig) {
-    MethodInfo methodInfo = sampleConfig.methods().get(method.getName());
     SampleTypeTable sampleTypeTable =
         new SampleTypeTable(
-            new JavaTypeTable(),
-            new JavaProtobufTypeNameConverter(
-                sampleConfig.apiNameVersion(),
-                sampleConfig.apiTypeName(),
-                methodInfo.nameComponents()));
+            new JavaTypeTable(), new JavaSampleTypeNameConverter(sampleConfig, method.getName()));
     JavaSampleNamer namer = new JavaSampleNamer();
     SampleTransformerContext context =
         SampleTransformerContext.create(sampleConfig, sampleTypeTable, namer, method.getName());
@@ -86,7 +81,7 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
 
     SampleBodyView.Builder sampleBodyView = SampleBodyView.newBuilder();
     sampleBodyView.serviceVarName(symbolTable.getNewSymbol(sampleNamer.getServiceVarName()));
-    sampleBodyView.serviceTypeName(sampleTypeTable.getAndSaveNicknameForServiceTypeName());
+    sampleBodyView.serviceTypeName(sampleTypeTable.getAndSaveNicknameFor(sampleConfig));
     sampleBodyView.methodNameComponents(methodInfo.nameComponents());
     sampleBodyView.requestVarName(symbolTable.getNewSymbol("request"));
     sampleBodyView.requestTypeName(

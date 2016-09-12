@@ -34,6 +34,17 @@ public abstract class MessageTypeInfo {
   public abstract String typeName();
 
   /**
+   * Returns an empty string.
+   *
+   * This value is intended only for overrides. If not empty, it should be
+   * specified as the fully qualified type name of the message type and be used
+   * in place of any heuristic to determine the import path and nickname of the
+   * message type.
+   */
+  @JsonProperty("typeNameOverride")
+  public abstract String typeNameOverride();
+
+  /**
    * Returns a map of message field names to fields.
    */
   @JsonProperty("fields")
@@ -48,6 +59,9 @@ public abstract class MessageTypeInfo {
 
     @JsonProperty("typeName")
     public abstract Builder typeName(String val);
+
+    @JsonProperty("typeNameOverride")
+    public abstract Builder typeNameOverride(String val);
 
     @JsonProperty("fields")
     public abstract Builder fields(Map<String, FieldInfo> val);

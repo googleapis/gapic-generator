@@ -47,6 +47,7 @@ public class ApiaryConfigToSampleConfigConverter {
         .apiVersion(apiVersion)
         .apiNameVersion(apiNameVersion)
         .apiTypeName(apiName)
+        .apiTypeNameOverride("")
         .methods(createMethods(method, apiaryConfig))
         .build();
   }
@@ -73,12 +74,12 @@ public class ApiaryConfigToSampleConfigConverter {
       fields.put(field.getName(), createFieldInfo(field, method, apiaryConfig));
     }
 
-    TypeInfo requestType = createTypeInfo(method, apiaryConfig, true);
+    TypeInfo requestType = createTypeInfo(method, true);
     TypeInfo responseType = null;
     String responseTypeUrl = method.getResponseTypeUrl();
     if (!responseTypeUrl.equals(DiscoveryImporter.EMPTY_TYPE_NAME)
         && !responseTypeUrl.equals(EMPTY_TYPE_URL)) {
-      responseType = createTypeInfo(method, apiaryConfig, false);
+      responseType = createTypeInfo(method, false);
     }
 
     boolean isPageStreaming = isPageStreaming(method, apiaryConfig);
@@ -154,13 +155,13 @@ public class ApiaryConfigToSampleConfigConverter {
    * which contains only the type's name. If isRequest is true, the type name
    * will be "request$", and the correct upper-camel type name otherwise.
    */
-  private static TypeInfo createTypeInfo(
-      Method method, ApiaryConfig apiaryConfig, boolean isRequest) {
+  private static TypeInfo createTypeInfo(Method method, boolean isRequest) {
     String typeName =
         isRequest ? DiscoveryImporter.REQUEST_FIELD_NAME : method.getResponseTypeUrl();
     MessageTypeInfo messageTypeInfo =
         MessageTypeInfo.newBuilder()
             .typeName(typeName)
+            .typeNameOverride("")
             .fields(new HashMap<String, FieldInfo>())
             .build();
     return TypeInfo.newBuilder()
@@ -190,7 +191,11 @@ public class ApiaryConfigToSampleConfigConverter {
         fields.put(field2.getName(), createFieldInfo(field2, method, apiaryConfig));
       }
     }
-    return MessageTypeInfo.newBuilder().typeName(typeName).fields(fields).build();
+    return MessageTypeInfo.newBuilder()
+        .typeName(typeName)
+        .typeNameOverride("")
+        .fields(fields)
+        .build();
   }
 
   /**

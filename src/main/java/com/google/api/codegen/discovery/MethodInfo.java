@@ -66,7 +66,6 @@ public abstract class MethodInfo {
    * Methods may contain any number of fields with one of them being an optional
    * message with additional properties. For convenience, that type is returned
    * here because it lacks a proper name.
-   * @return
    */
   @JsonProperty("requestBodyType")
   @Nullable

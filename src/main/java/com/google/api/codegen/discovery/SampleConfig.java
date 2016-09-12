@@ -66,6 +66,17 @@ public abstract class SampleConfig {
   public abstract String apiTypeName();
 
   /**
+   * Returns an empty string.
+   *
+   * This value is intended only for overrides. If not empty, it should be
+   * specified as the fully qualified type name of the API type and be used in
+   * place of any heuristic to determine the import path and nickname of the API
+   * type.
+   */
+  @JsonProperty("apiTypeNameOverride")
+  public abstract String apiTypeNameOverride();
+
+  /**
    * Returns a map of method names to methods.
    */
   @JsonProperty("methodInfo")
@@ -92,6 +103,9 @@ public abstract class SampleConfig {
 
     @JsonProperty("apiTypeName")
     public abstract Builder apiTypeName(String val);
+
+    @JsonProperty("apiTypeNameOverride")
+    public abstract Builder apiTypeNameOverride(String val);
 
     @JsonProperty("methodInfo")
     public abstract Builder methods(Map<String, MethodInfo> val);
