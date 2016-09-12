@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.discovery;
 
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
@@ -42,18 +44,17 @@ public abstract class SampleConfig {
   /**
    * Returns the API's type name.
    *
-   * This value will always be lower-case and contain only alphanumeric
-   * characters.
    * For example: "adexchangebuyer"
+   * The casing of this value is not guaranteed.
    */
   @JsonProperty("apiTypeName")
   public abstract String apiTypeName();
 
   /**
-   * Returns the sample's method.
+   * Returns a map of method names to methods.
    */
   @JsonProperty("methodInfo")
-  public abstract MethodInfo methodInfo();
+  public abstract Map<String, MethodInfo> methods();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleConfig.Builder();
@@ -72,7 +73,7 @@ public abstract class SampleConfig {
     public abstract Builder apiTypeName(String val);
 
     @JsonProperty("methodInfo")
-    public abstract Builder methodInfo(MethodInfo val);
+    public abstract Builder methods(Map<String, MethodInfo> val);
 
     public abstract SampleConfig build();
   }

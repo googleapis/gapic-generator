@@ -407,7 +407,6 @@ public class DiscoveryImporter {
 
     if (root.get("request") != null) {
       typeBuilder.addFields(fieldFrom(synthetic, REQUEST_FIELD_NAME, root.get("request")));
-      config.getSyntheticNameMapping().put(synthetic, root.get("request").get("$ref").asText());
       config.getMethodParams().put(methodName, REQUEST_FIELD_NAME);
     }
 

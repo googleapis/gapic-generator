@@ -14,11 +14,10 @@
  */
 package com.google.api.codegen.discovery;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import com.google.api.codegen.ApiaryConfig;
@@ -45,14 +44,14 @@ public class ApiaryConfigToSampleConfigConverter {
         .apiTitle(apiaryConfig.getApiTitle())
         .apiNameVersion(apiNameVersion)
         .apiTypeName(apiName)
-        .methodInfo(createMethodInfo(method, apiaryConfig))
+        .methods(createMethods(method, apiaryConfig))
         .build();
   }
 
   /**
    * Creates a method.
    */
-  private static MethodInfo createMethodInfo(Method method, ApiaryConfig apiaryConfig) {
+  private static Map<String, MethodInfo> createMethods(Method method, ApiaryConfig apiaryConfig) {
     String methodName = method.getName();
     LinkedList<String> nameComponents = new LinkedList<>(Arrays.asList(methodName.split("\\.")));
     nameComponents.removeFirst(); // Removes the API name.
@@ -88,15 +87,17 @@ public class ApiaryConfigToSampleConfigConverter {
               method,
               apiaryConfig);
     }
-    return MethodInfo.newBuilder()
-        .nameComponents(nameComponents)
-        .fields(fields)
-        .requestType(requestType)
-        .requestBodyType(requestBodyType)
-        .responseType(responseType)
-        .isPageStreaming(isPageStreaming)
-        .pageStreamingResourceField(pageStreamingResourceField)
-        .build();
+    MethodInfo methodInfo =
+        MethodInfo.newBuilder()
+            .nameComponents(nameComponents)
+            .fields(fields)
+            .requestType(requestType)
+            .requestBodyType(requestBodyType)
+            .responseType(responseType)
+            .isPageStreaming(isPageStreaming)
+            .pageStreamingResourceField(pageStreamingResourceField)
+            .build();
+    return Collections.singletonMap(method.getName(), methodInfo);
   }
 
   /**

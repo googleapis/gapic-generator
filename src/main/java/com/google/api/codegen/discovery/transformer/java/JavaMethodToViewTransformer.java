@@ -14,21 +14,12 @@
  */
 package com.google.api.codegen.discovery.transformer.java;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.discovery.ApiaryConfigToSampleConfigConverter;
 import com.google.api.codegen.discovery.FieldInfo;
+import com.google.api.codegen.discovery.MethodInfo;
 import com.google.api.codegen.discovery.SampleConfig;
 import com.google.api.codegen.discovery.TypeInfo;
 import com.google.api.codegen.discovery.transformer.MethodToViewTransformer;
@@ -42,7 +33,6 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.common.io.Files;
 import com.google.protobuf.Method;
 
 /*
@@ -56,20 +46,21 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
 
   @Override
   public ViewModel transform(Method method, SampleConfig sampleConfig) {
+    MethodInfo methodInfo = sampleConfig.methods().get(method.getName());
     SampleTypeTable sampleTypeTable =
         new SampleTypeTable(
             new JavaTypeTable(),
             new JavaProtobufTypeNameConverter(
                 sampleConfig.apiNameVersion(),
                 sampleConfig.apiTypeName(),
-                sampleConfig.methodInfo().nameComponents()));
+                methodInfo.nameComponents()));
     JavaSampleNamer namer = new JavaSampleNamer();
     SampleTransformerContext context =
-        SampleTransformerContext.create(sampleConfig, sampleTypeTable, namer);
-    return createSampleView(context, method.getName());
+        SampleTransformerContext.create(sampleConfig, sampleTypeTable, namer, method.getName());
+    return createSampleView(context);
   }
 
-  private SampleView createSampleView(SampleTransformerContext context, String methodName) {
+  private SampleView createSampleView(SampleTransformerContext context) {
     addStaticImports(context);
     SampleConfig sampleConfig = context.getSampleConfig();
     SampleTypeTable typeTable = context.getTypeTable();
@@ -78,7 +69,7 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
 
     return SampleView.newBuilder()
         .templateFileName(TEMPLATE_FILENAME)
-        .outputPath(methodName + ".frag.java")
+        .outputPath(context.getMethodName() + ".frag.java")
         .apiTitle(sampleConfig.apiTitle())
         .apiName(apiNameVersion[0])
         .apiVersion(apiNameVersion[1])
@@ -89,6 +80,7 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
 
   public SampleBodyView createSampleBody(SampleTransformerContext context) {
     SampleConfig sampleConfig = context.getSampleConfig();
+    MethodInfo methodInfo = sampleConfig.methods().get(context.getMethodName());
     SampleNamer sampleNamer = context.getNamer();
     SampleTypeTable sampleTypeTable = context.getTypeTable();
     SymbolTable symbolTable = new SymbolTable();
@@ -96,10 +88,9 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
     SampleBodyView.Builder sampleBodyView = SampleBodyView.newBuilder();
     sampleBodyView.serviceVarName(symbolTable.getNewSymbol(sampleNamer.getServiceVarName()));
     sampleBodyView.serviceTypeName(sampleTypeTable.getAndSaveNicknameFor(sampleConfig));
-    sampleBodyView.methodNameComponents(sampleConfig.methodInfo().nameComponents());
+    sampleBodyView.methodNameComponents(methodInfo.nameComponents());
     sampleBodyView.requestVarName(symbolTable.getNewSymbol("request"));
-    sampleBodyView.requestTypeName(
-        sampleTypeTable.getAndSaveNicknameFor(sampleConfig.methodInfo().requestType()));
+    sampleBodyView.requestTypeName(sampleTypeTable.getAndSaveNicknameFor(methodInfo.requestType()));
 
     sampleBodyView.requestBodyVarName("");
     sampleBodyView.requestBodyTypeName("");
@@ -107,8 +98,8 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
     sampleBodyView.resourceTypeName("");
     sampleBodyView.isResourceMap(false);
 
-    if (sampleConfig.methodInfo().isPageStreaming()) {
-      FieldInfo fieldInfo = sampleConfig.methodInfo().pageStreamingResourceField();
+    if (methodInfo.isPageStreaming()) {
+      FieldInfo fieldInfo = methodInfo.pageStreamingResourceField();
       // TODO(garrettjones): Should I form this name this way?
       sampleBodyView.resourceGetterName(Name.lowerCamel("get", fieldInfo.name()).toLowerCamel());
       String nickname = sampleTypeTable.getAndSaveNicknameFor(fieldInfo.type());
@@ -123,32 +114,32 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
 
     sampleBodyView.responseVarName("");
     sampleBodyView.responseTypeName("");
-    sampleBodyView.hasOutput(sampleConfig.methodInfo().responseType() != null);
-    if (sampleConfig.methodInfo().responseType() != null) {
+    sampleBodyView.hasOutput(methodInfo.responseType() != null);
+    if (methodInfo.responseType() != null) {
       sampleBodyView.responseVarName(symbolTable.getNewSymbol("response"));
       sampleBodyView.responseTypeName(
-          sampleTypeTable.getAndSaveNicknameFor(sampleConfig.methodInfo().responseType()));
+          sampleTypeTable.getAndSaveNicknameFor(methodInfo.responseType()));
     }
 
     List<SampleFieldView> fields = new ArrayList<>();
     List<String> fieldVarNames = new ArrayList<>();
-    for (Entry<String, FieldInfo> field : sampleConfig.methodInfo().fields().entrySet()) {
+    for (Entry<String, FieldInfo> field : methodInfo.fields().entrySet()) {
       SampleFieldView sampleFieldView = generateSampleField(field, sampleTypeTable, symbolTable);
       fields.add(sampleFieldView);
       fieldVarNames.add(sampleFieldView.name());
     }
     sampleBodyView.fields(fields);
 
-    sampleBodyView.hasInputRequest(sampleConfig.methodInfo().requestBodyType() != null);
-    if (sampleConfig.methodInfo().requestBodyType() != null) {
+    sampleBodyView.hasInputRequest(methodInfo.requestBodyType() != null);
+    if (methodInfo.requestBodyType() != null) {
       String requestBodyVarName = symbolTable.getNewSymbol("requestBody");
       sampleBodyView.requestBodyVarName(requestBodyVarName);
       sampleBodyView.requestBodyTypeName(
-          sampleTypeTable.getAndSaveNicknameFor(sampleConfig.methodInfo().requestBodyType()));
+          sampleTypeTable.getAndSaveNicknameFor(methodInfo.requestBodyType()));
       fieldVarNames.add(requestBodyVarName);
     }
     sampleBodyView.fieldVarNames(fieldVarNames);
-    sampleBodyView.isPageStreaming(sampleConfig.methodInfo().isPageStreaming());
+    sampleBodyView.isPageStreaming(methodInfo.isPageStreaming());
 
     return sampleBodyView.build();
   }

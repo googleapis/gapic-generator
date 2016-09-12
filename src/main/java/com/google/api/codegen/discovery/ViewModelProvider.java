@@ -55,15 +55,11 @@ public class ViewModelProvider implements DiscoveryProvider {
   @Override
   public Map<String, Doc> generate(Method method) {
     // TODO(saicheems): Explain what's going on here!
-    JsonNode overridesTree = null;
-    if (sampleConfigOverrides != null) {
-      overridesTree = sampleConfigOverrides.get(method.getName());
-    }
     SampleConfig sampleConfig = ApiaryConfigToSampleConfigConverter.convert(method, apiaryConfig);
-    if (overridesTree != null) {
+    if (sampleConfigOverrides != null) {
       ObjectMapper mapper = new ObjectMapper();
       JsonNode tree = mapper.valueToTree(sampleConfig);
-      merge((ObjectNode) tree, (ObjectNode) overridesTree);
+      merge((ObjectNode) tree, (ObjectNode) sampleConfigOverrides);
       try {
         sampleConfig = mapper.treeToValue(tree, SampleConfig.class);
       } catch (Exception e) {
@@ -83,6 +79,7 @@ public class ViewModelProvider implements DiscoveryProvider {
   /**
    * Overwrites the fields of tree that intersect with those of overrideTree.
    *
+   * Values of overrideTree are not modified.
    * The merge process loops through the fields of tree and replaces non-object
    * values with the corresponding value from overrideTree if present. Object
    * values are traversed recursively to replace sub-properties.
@@ -148,7 +145,11 @@ public class ViewModelProvider implements DiscoveryProvider {
 
     public ViewModelProvider build() {
       return new ViewModelProvider(
-          apiaryConfig, snippetSetRunner, methodToViewTransformer, sampleConfigOverrides, outputRoot);
+          apiaryConfig,
+          snippetSetRunner,
+          methodToViewTransformer,
+          sampleConfigOverrides,
+          outputRoot);
     }
   }
 }

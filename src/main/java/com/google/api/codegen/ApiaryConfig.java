@@ -36,11 +36,6 @@ import com.google.protobuf.Type;
  */
 public class ApiaryConfig {
   /**
-   * Maps synthetic names in DiscoveryImporter to real names.
-   */
-  private final Map<String, String> syntheticNameMapping = new HashMap<>();
-
-  /**
    * Maps method name to an ordered list of parameters that the method takes.
    */
   private final ListMultimap<String, String> methodParams =
@@ -130,10 +125,6 @@ public class ApiaryConfig {
    * The service version string
    */
   private String serviceVersion;
-
-  public Map<String, String> getSyntheticNameMapping() {
-    return syntheticNameMapping;
-  }
 
   public ListMultimap<String, String> getMethodParams() {
     return methodParams;

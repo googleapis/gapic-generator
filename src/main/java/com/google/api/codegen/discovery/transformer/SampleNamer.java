@@ -41,11 +41,11 @@ public class SampleNamer extends NameFormatterDelegator {
     // TODO(saicheems): WTF is this for?? Why convert to class name here...
     // Converts name to a lower camel format Name (b/c name is lower camel) which is then converted
     // to upper camel in util.java.NameFormatter...
-    return className(Name.lowerCamel(name));
+    return name;
   }
 
   public String getFieldVarName(String fieldName) {
-    return varName(Name.lowerCamel(fieldName));
+    return fieldName;
   }
 
   public String getMapEntryTypeFromMapType(String nickname) {
