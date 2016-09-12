@@ -39,9 +39,12 @@ public class ApiaryConfigToSampleConfigConverter {
    */
   public static SampleConfig convert(Method method, ApiaryConfig apiaryConfig) {
     String apiName = apiaryConfig.getApiName();
-    String apiNameVersion = String.join(".", apiName, apiaryConfig.getApiVersion());
+    String apiVersion = apiaryConfig.getApiVersion();
+    String apiNameVersion = String.join(".", apiName, apiVersion);
     return SampleConfig.newBuilder()
         .apiTitle(apiaryConfig.getApiTitle())
+        .apiName(apiName)
+        .apiVersion(apiVersion)
         .apiNameVersion(apiNameVersion)
         .apiTypeName(apiName)
         .methods(createMethods(method, apiaryConfig))

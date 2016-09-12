@@ -34,8 +34,23 @@ public abstract class SampleConfig {
   public abstract String apiTitle();
 
   /**
+   * Returns the API's name.
+   *
+   * For example: "adexchangebuyer"
+   */
+  @JsonProperty("apiName")
+  public abstract String apiName();
+
+  /**
+   * Returns the API's version.
+   */
+  @JsonProperty("apiVersion")
+  public abstract String apiVersion();
+
+  /**
    * Returns a period joined concatenation of the API's name and version.
    *
+   * TODO(saicheems): Explain why this is different than apiName and apiVersion.
    * For example: "adexchangebuyer.v1.4"
    */
   @JsonProperty("apiNameVersion")
@@ -65,6 +80,12 @@ public abstract class SampleConfig {
 
     @JsonProperty("apiTitle")
     public abstract Builder apiTitle(String val);
+
+    @JsonProperty("apiName")
+    public abstract Builder apiName(String val);
+
+    @JsonProperty("apiVersion")
+    public abstract Builder apiVersion(String val);
 
     @JsonProperty("apiNameVersion")
     public abstract Builder apiNameVersion(String val);

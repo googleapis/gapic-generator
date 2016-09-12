@@ -65,14 +65,12 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
     SampleConfig sampleConfig = context.getSampleConfig();
     SampleTypeTable typeTable = context.getTypeTable();
 
-    String apiNameVersion[] = sampleConfig.apiNameVersion().split("\\.", 2);
-
     return SampleView.newBuilder()
         .templateFileName(TEMPLATE_FILENAME)
         .outputPath(context.getMethodName() + ".frag.java")
         .apiTitle(sampleConfig.apiTitle())
-        .apiName(apiNameVersion[0])
-        .apiVersion(apiNameVersion[1])
+        .apiName(sampleConfig.apiName())
+        .apiVersion(sampleConfig.apiVersion())
         .body(createSampleBody(context))
         .imports(typeTable.getImports())
         .build();
