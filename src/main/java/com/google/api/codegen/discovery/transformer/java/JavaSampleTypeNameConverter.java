@@ -69,73 +69,18 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
 
   private TypeNameConverter typeNameConverter;
 
-  private final String apiNameVersion;
-  /**
-   * Upper-case conversion of apiTypeName from SampleConfig.
-   */
-  private final String apiTypeName;
-  /**
-   * Upper-case conversion of methodNameComponents from SampleConfig.
-   */
-  private final List<String> methodNameComponents;
-
-  public JavaSampleTypeNameConverter(SampleConfig sampleConfig, String methodName) {
-    // We store these values to facilitate import path generation.
-    this.typeNameConverter = new JavaTypeTable();
-    String apiTypeNameOverride = sampleConfig.apiTypeNameOverride();
-    if (!Strings.isNullOrEmpty(apiTypeNameOverride)) {
-      this.apiTypeName = typeNameConverter.getTypeName(apiTypeNameOverride).getNickname();
-    } else {
-      this.apiTypeName = Name.lowerCamel(sampleConfig.apiName()).toUpperCamel();
-    }
-    this.apiNameVersion = sampleConfig.apiNameVersion();
-    List<String> copy = new ArrayList<>(sampleConfig.methods().get(methodName).nameComponents());
-    // Convert the method name components to upper camel case.
-    for (int i = 0; i < copy.size(); i++) {
-      copy.set(i, Name.lowerCamel(copy.get(i)).toUpperCamel());
-    }
-    this.methodNameComponents = copy;
-  }
+  public JavaSampleTypeNameConverter() {}
 
   @Override
   public TypeName getServiceTypeName(SampleConfig sampleConfig) {
-    return typeNameConverter.getTypeName(
-        String.join(".", "com.google.api.services", apiNameVersion, apiTypeName));
+    return typeNameConverter.getTypeName(sampleConfig.apiTypeName());
   }
 
-  /**
-   * Returns a TypeName from a request message type.
-   *
-   * Since request imports are special in Java, in that they have a different
-   * prefix, the logic is separate from the standard flow.
-   */
-  @Override
-  public TypeName getRequestTypeName(TypeInfo typeInfo) {
-    // By default, use the concatenation of the method name components. If the
-    // default type name is overridden, use that value instead.
-    String typeName = typeInfo.message().typeName();
-    if (typeName.equals(DiscoveryImporter.REQUEST_FIELD_NAME)) {
-      typeName = String.join(".", methodNameComponents);
-    }
-    return getTypeName(
-        typeInfo,
-        String.join(".", "com.google.api.services", apiNameVersion, apiTypeName, typeName));
-  }
-
-  /**
-   * Returns a TypeName from typeInfo.
-   */
   @Override
   public TypeName getTypeName(TypeInfo typeInfo) {
     String typeName = "";
     if (typeInfo.isMessage()) {
-      typeName =
-          String.join(
-              ".",
-              "com.google.api.services",
-              apiNameVersion,
-              "model",
-              typeInfo.message().typeName());
+      typeName = typeInfo.message().typeName();
     }
     return getTypeName(typeInfo, typeName);
   }

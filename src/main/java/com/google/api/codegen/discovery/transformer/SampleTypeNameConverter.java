@@ -30,11 +30,6 @@ public interface SampleTypeNameConverter {
   TypeName getServiceTypeName(SampleConfig sampleConfig);
 
   /**
-   * Provides a TypeName for the request's TypeInfo.
-   */
-  TypeName getRequestTypeName(TypeInfo typeInfo);
-
-  /**
    * Provides a TypeName for the given TypeInfo.
    */
   TypeName getTypeName(TypeInfo typeInfo);
