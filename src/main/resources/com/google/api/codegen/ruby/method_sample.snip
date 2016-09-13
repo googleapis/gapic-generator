@@ -21,16 +21,16 @@
     {@initCode(apiMethod.initCode)}
   @end
   @switch apiMethod.type.toString
-  @case "FlattenedMethod"
-    {@flattenedMethodSampleCode(apiMethod)}
-  @case "PagedFlattenedMethod"
-    {@pagedFlattenedMethodSampleCode(apiMethod)}
+  @case "OptionalArrayMethod"
+    {@optionalArrayMethodSampleCode(apiMethod)}
+  @case "PagedOptionalArrayMethod"
+    {@pagedOptionalArrayMethodSampleCode(apiMethod)}
   @default
     $unhandledCase: {@apiMethod.type.toString}$
   @end
 @end
 
-@private flattenedMethodSampleCode(apiMethod)
+@private optionalArrayMethodSampleCode(apiMethod)
   @if apiMethod.hasReturnValue
     response = {@methodCallSampleCode(apiMethod)}
   @else
@@ -38,7 +38,7 @@
   @end
 @end
 
-@private pagedFlattenedMethodSampleCode(apiMethod)
+@private pagedOptionalArrayMethodSampleCode(apiMethod)
 
   @# Iterate over all results.
   {@methodCallSampleCode(apiMethod)}.each do |element|

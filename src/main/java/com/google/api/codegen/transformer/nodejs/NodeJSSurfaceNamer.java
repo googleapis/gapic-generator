@@ -20,6 +20,7 @@ import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.nodejs.NodeJSNameFormatter;
 import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
 import com.google.api.tools.framework.model.Field;
@@ -102,5 +103,15 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     }
 
     return getModelTypeFormatter().getFullNameFor(method.getOutputType());
+  }
+
+  @Override
+  public String getFullyQualifiedStubType(Interface service) {
+    return getModelTypeFormatter().getFullNameFor(service);
+  }
+
+  @Override
+  public String getGrpcClientImportName(Interface service) {
+    return "grpc-" + NamePath.dotted(service.getFile().getFullName()).toDashed();
   }
 }
