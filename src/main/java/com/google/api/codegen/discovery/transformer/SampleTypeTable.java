@@ -19,7 +19,6 @@ import com.google.api.codegen.discovery.config.TypeInfo;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.api.codegen.util.TypedValue;
-import com.google.common.base.Strings;
 import java.util.List;
 
 /**
@@ -37,10 +36,6 @@ public class SampleTypeTable implements SampleTypeNameConverter {
 
   @Override
   public TypeName getServiceTypeName(SampleConfig sampleConfig) {
-    String apiTypeNameOverride = sampleConfig.apiTypeNameOverride();
-    if (!Strings.isNullOrEmpty(apiTypeNameOverride)) {
-      return typeTable.getTypeName(apiTypeNameOverride);
-    }
     return typeNameConverter.getServiceTypeName(sampleConfig);
   }
 
@@ -49,30 +44,11 @@ public class SampleTypeTable implements SampleTypeNameConverter {
   }
 
   @Override
-  public TypeName getRequestTypeName(TypeInfo typeInfo) {
-    String typeNameOverride = typeInfo.message().typeNameOverride();
-    if (!Strings.isNullOrEmpty(typeNameOverride)) {
-      return typeTable.getTypeName(typeNameOverride);
-    }
-    return typeNameConverter.getRequestTypeName(typeInfo);
-  }
-
-  @Override
   public TypeName getTypeName(TypeInfo typeInfo) {
-    String typeNameOverride = "";
-    if (typeInfo.isMessage()) {
-      typeNameOverride = typeInfo.message().typeNameOverride();
-    }
-    if (!Strings.isNullOrEmpty(typeNameOverride)) {
-      return typeTable.getTypeName(typeNameOverride);
-    }
     return typeNameConverter.getTypeName(typeInfo);
   }
 
-  public String getAndSaveNicknameFor(TypeInfo typeInfo, boolean isRequestType) {
-    if (isRequestType) {
-      return typeTable.getAndSaveNicknameFor(getRequestTypeName(typeInfo));
-    }
+  public String getAndSaveNicknameFor(TypeInfo typeInfo) {
     return typeTable.getAndSaveNicknameFor(getTypeName(typeInfo));
   }
 

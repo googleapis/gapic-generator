@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discovery;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -60,9 +61,11 @@ public class ViewModelProvider implements DiscoveryProvider {
 
   @Override
   public Map<String, Doc> generate(Method method) {
-    // TODO(saicheems): Explain what's going on here!
+    // Before the transformer step, we generate the SampleConfig and apply overrides if available.
     SampleConfig sampleConfig =
-        new ApiaryConfigToSampleConfigConverter(method, apiaryConfig, typeNameGenerator).convert();
+        new ApiaryConfigToSampleConfigConverter(
+                Collections.singletonList(method), apiaryConfig, typeNameGenerator)
+            .convert();
     if (sampleConfigOverrides != null) {
       ObjectMapper mapper = new ObjectMapper();
       JsonNode tree = mapper.valueToTree(sampleConfig);

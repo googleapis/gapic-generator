@@ -34,30 +34,30 @@ public class ApiaryConfigToSampleConfigConverter {
   private static final String VALUE_FIELD_NAME = "value";
   private static final String PAGE_TOKEN_FIELD_NAME = "nextPageToken";
 
-  private final Method method;
+  private final List<Method> methods;
   private final ApiaryConfig apiaryConfig;
   private final TypeNameGenerator typeNameGenerator;
 
   private final String apiName;
   private final String apiVersion;
-  //private final String apiNameVersion;
   private final Map<String, List<String>> methodNameComponents;
 
   public ApiaryConfigToSampleConfigConverter(
-      Method method, ApiaryConfig apiaryConfig, TypeNameGenerator typeNameGenerator) {
-    this.method = method;
+      List<Method> methods, ApiaryConfig apiaryConfig, TypeNameGenerator typeNameGenerator) {
+    this.methods = methods;
     this.apiaryConfig = apiaryConfig;
     this.typeNameGenerator = typeNameGenerator;
 
     apiName = apiaryConfig.getApiName();
     apiVersion = apiaryConfig.getApiVersion();
-    //apiNameVersion = String.join(".", apiName, apiVersion);
     methodNameComponents = new HashMap<String, List<String>>();
-
-    String methodName = method.getName();
-    LinkedList<String> nameComponents = new LinkedList<>(Arrays.asList(methodName.split("\\.")));
-    nameComponents.removeFirst(); // Removes the API name.
-    methodNameComponents.put(method.getName(), nameComponents);
+    // Pull all the methodNameComponents out.
+    for (Method method : methods) {
+      String methodName = method.getName();
+      LinkedList<String> nameComponents = new LinkedList<>(Arrays.asList(methodName.split("\\.")));
+      nameComponents.removeFirst(); // Removes the API name.
+      methodNameComponents.put(method.getName(), nameComponents);
+    }
   }
 
   /**
@@ -66,21 +66,23 @@ public class ApiaryConfigToSampleConfigConverter {
   public SampleConfig convert() {
     String apiName = apiaryConfig.getApiName();
     String apiVersion = apiaryConfig.getApiVersion();
-    String apiNameVersion = String.join(".", apiName, apiVersion);
+    Map<String, MethodInfo> methods = new HashMap<String, MethodInfo>();
+    for (Method method : this.methods) {
+      methods.put(method.getName(), createMethod(method, apiaryConfig));
+    }
     return SampleConfig.newBuilder()
         .apiTitle(apiaryConfig.getApiTitle())
         .apiName(apiName)
         .apiVersion(apiVersion)
-        //.apiNameVersion(apiNameVersion)
-        .apiTypeName(typeNameGenerator.getApiTypeName(apiName, apiNameVersion))
-        .methods(createMethods(method, apiaryConfig))
+        .apiTypeName(typeNameGenerator.getApiTypeName(apiName, apiVersion))
+        .methods(methods)
         .build();
   }
 
   /**
    * Creates a method.
    */
-  private Map<String, MethodInfo> createMethods(Method method, ApiaryConfig apiaryConfig) {
+  private MethodInfo createMethod(Method method, ApiaryConfig apiaryConfig) {
     Map<String, FieldInfo> fields = new HashMap<>();
     TypeInfo requestBodyType = null;
     for (String fieldName : apiaryConfig.getMethodParams(method.getName())) {
@@ -110,7 +112,7 @@ public class ApiaryConfigToSampleConfigConverter {
       // If field is null, then the page streaming resource field is not
       // repeated. We allow null to be stored, and leave it to the user to
       // override appropriately.
-      if (field == null) {
+      if (field != null) {
         pageStreamingResourceField = createFieldInfo(field, method, apiaryConfig);
       }
     }
@@ -124,7 +126,7 @@ public class ApiaryConfigToSampleConfigConverter {
             .isPageStreaming(isPageStreaming)
             .pageStreamingResourceField(pageStreamingResourceField)
             .build();
-    return Collections.singletonMap(method.getName(), methodInfo);
+    return methodInfo;
   }
 
   /**

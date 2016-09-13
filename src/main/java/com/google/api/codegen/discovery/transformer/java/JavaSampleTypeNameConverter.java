@@ -14,19 +14,13 @@
  */
 package com.google.api.codegen.discovery.transformer.java;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.codegen.discovery.config.SampleConfig;
 import com.google.api.codegen.discovery.config.TypeInfo;
 import com.google.api.codegen.discovery.transformer.SampleTypeNameConverter;
-import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.java.JavaTypeTable;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
 
@@ -69,7 +63,9 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
 
   private TypeNameConverter typeNameConverter;
 
-  public JavaSampleTypeNameConverter() {}
+  public JavaSampleTypeNameConverter() {
+    this.typeNameConverter = new JavaTypeTable();
+  }
 
   @Override
   public TypeName getServiceTypeName(SampleConfig sampleConfig) {
