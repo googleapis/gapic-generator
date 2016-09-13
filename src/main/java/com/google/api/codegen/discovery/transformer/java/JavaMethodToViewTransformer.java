@@ -17,11 +17,10 @@ package com.google.api.codegen.discovery.transformer.java;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-
-import com.google.api.codegen.discovery.FieldInfo;
-import com.google.api.codegen.discovery.MethodInfo;
-import com.google.api.codegen.discovery.SampleConfig;
-import com.google.api.codegen.discovery.TypeInfo;
+import com.google.api.codegen.discovery.config.FieldInfo;
+import com.google.api.codegen.discovery.config.MethodInfo;
+import com.google.api.codegen.discovery.config.SampleConfig;
+import com.google.api.codegen.discovery.config.TypeInfo;
 import com.google.api.codegen.discovery.transformer.MethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.SampleNamer;
 import com.google.api.codegen.discovery.transformer.SampleTransformerContext;
@@ -95,12 +94,16 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
 
     if (methodInfo.isPageStreaming()) {
       FieldInfo fieldInfo = methodInfo.pageStreamingResourceField();
+      if (fieldInfo == null) {
+        throw new IllegalArgumentException(
+            "method is page streaming, but the page streaming resource field is null.");
+      }
       // TODO(garrettjones): Should I form this name this way?
       sampleBodyView.resourceGetterName(Name.lowerCamel("get", fieldInfo.name()).toLowerCamel());
       String nickname = sampleTypeTable.getAndSaveNicknameFor(fieldInfo.type(), false);
       sampleBodyView.resourceTypeName(nickname);
       // Rename the type from Map<K, V> to Map.Entry<K, V> to match what we
-      // expect in the iterating for-loop.
+      // expect in the for-loop.
       if (fieldInfo.type().isMap()) {
         sampleBodyView.resourceTypeName(sampleNamer.getMapEntryTypeFromMapType(nickname));
       }

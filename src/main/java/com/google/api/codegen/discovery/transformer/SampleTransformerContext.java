@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
-import com.google.api.codegen.discovery.SampleConfig;
+import com.google.api.codegen.discovery.config.SampleConfig;
 import com.google.auto.value.AutoValue;
 
 @AutoValue

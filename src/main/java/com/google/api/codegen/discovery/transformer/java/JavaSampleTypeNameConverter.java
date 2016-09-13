@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.api.codegen.DiscoveryImporter;
-import com.google.api.codegen.discovery.SampleConfig;
-import com.google.api.codegen.discovery.TypeInfo;
+import com.google.api.codegen.discovery.config.SampleConfig;
+import com.google.api.codegen.discovery.config.TypeInfo;
 import com.google.api.codegen.discovery.transformer.SampleTypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;

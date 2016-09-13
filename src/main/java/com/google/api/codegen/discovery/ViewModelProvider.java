@@ -22,6 +22,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.discovery.config.ApiaryConfigToSampleConfigConverter;
+import com.google.api.codegen.discovery.config.SampleConfig;
+import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.discovery.transformer.MethodToViewTransformer;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -37,6 +40,7 @@ public class ViewModelProvider implements DiscoveryProvider {
   private final CommonSnippetSetRunner snippetSetRunner;
   private final MethodToViewTransformer methodToViewTransformer;
   private final JsonNode sampleConfigOverrides;
+  private final TypeNameGenerator typeNameGenerator;
   private final String outputRoot;
 
   private ViewModelProvider(
@@ -44,18 +48,21 @@ public class ViewModelProvider implements DiscoveryProvider {
       CommonSnippetSetRunner snippetSetRunner,
       MethodToViewTransformer methodToViewTransformer,
       JsonNode sampleConfigOverrides,
+      TypeNameGenerator typeNameGenerator,
       String outputRoot) {
     this.apiaryConfig = apiaryConfig;
     this.snippetSetRunner = snippetSetRunner;
     this.methodToViewTransformer = methodToViewTransformer;
     this.sampleConfigOverrides = sampleConfigOverrides;
+    this.typeNameGenerator = typeNameGenerator;
     this.outputRoot = outputRoot;
   }
 
   @Override
   public Map<String, Doc> generate(Method method) {
     // TODO(saicheems): Explain what's going on here!
-    SampleConfig sampleConfig = ApiaryConfigToSampleConfigConverter.convert(method, apiaryConfig);
+    SampleConfig sampleConfig =
+        new ApiaryConfigToSampleConfigConverter(method, apiaryConfig, typeNameGenerator).convert();
     if (sampleConfigOverrides != null) {
       ObjectMapper mapper = new ObjectMapper();
       JsonNode tree = mapper.valueToTree(sampleConfig);
@@ -114,6 +121,7 @@ public class ViewModelProvider implements DiscoveryProvider {
     private CommonSnippetSetRunner snippetSetRunner;
     private MethodToViewTransformer methodToViewTransformer;
     private JsonNode sampleConfigOverrides;
+    private TypeNameGenerator typeNameGenerator;
     private String outputRoot;
 
     private Builder() {}
@@ -138,6 +146,11 @@ public class ViewModelProvider implements DiscoveryProvider {
       return this;
     }
 
+    public Builder setTypeNameGenerator(TypeNameGenerator typeNameGenerator) {
+      this.typeNameGenerator = typeNameGenerator;
+      return this;
+    }
+
     public Builder setOutputRoot(String outputRoot) {
       this.outputRoot = outputRoot;
       return this;
@@ -149,6 +162,7 @@ public class ViewModelProvider implements DiscoveryProvider {
           snippetSetRunner,
           methodToViewTransformer,
           sampleConfigOverrides,
+          typeNameGenerator,
           outputRoot);
     }
   }

@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
-import com.google.api.codegen.discovery.SampleConfig;
-import com.google.api.codegen.discovery.TypeInfo;
+import com.google.api.codegen.discovery.config.SampleConfig;
+import com.google.api.codegen.discovery.config.TypeInfo;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.api.codegen.util.TypedValue;
