@@ -65,7 +65,7 @@ public class RubyNameFormatter implements NameFormatter {
 
   @Override
   public String packageFilePathPiece(Name name) {
-    return name.toLowerUnderscore();
+    return name.toOriginal().toLowerCase();
   }
 
   @Override
