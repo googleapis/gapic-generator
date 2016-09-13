@@ -55,12 +55,12 @@ public class ClientConfigGapicContext extends GapicContext {
   }
 
   @Override
-  protected boolean shouldMethodAppear(Method method) {
+  protected boolean isSupported(Method method) {
     return true;
   }
 
   @Override
-  public List<Method> getMethods(Interface service) {
-    return getMethodsV2(service);
+  public List<Method> getSupportedMethods(Interface service) {
+    return getSupportedMethodsV2(service);
   }
 }

@@ -99,7 +99,7 @@ public class PythonGapicContext extends GapicContext {
   }
 
   @Override
-  protected boolean shouldMethodAppear(Method method) {
+  protected boolean isSupported(Method method) {
     return true;
   }
 

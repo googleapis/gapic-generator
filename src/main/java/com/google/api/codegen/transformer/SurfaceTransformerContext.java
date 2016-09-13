@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.CollectionConfig;
-import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.tools.framework.model.Interface;
@@ -32,15 +31,13 @@ import java.util.List;
 @AutoValue
 public abstract class SurfaceTransformerContext {
   public static SurfaceTransformerContext create(
-      GapicContext gapicContext, Interface interfaze, ApiConfig apiConfig, ModelTypeTable typeTable, SurfaceNamer namer) {
-    return new AutoValue_SurfaceTransformerContext(gapicContext, interfaze, apiConfig, typeTable, namer);
+      Interface interfaze, ApiConfig apiConfig, ModelTypeTable typeTable, SurfaceNamer namer) {
+    return new AutoValue_SurfaceTransformerContext(interfaze, apiConfig, typeTable, namer);
   }
 
   public Model getModel() {
     return getInterface().getModel();
   }
-
-  public abstract GapicContext getGapicContext();
 
   public abstract Interface getInterface();
 
@@ -85,13 +82,22 @@ public abstract class SurfaceTransformerContext {
   }
 
   /**
+   * Returns true if the method is supported by the current context.
+   * Currently no streaming methods are supported.
+   * TODO: integrate with GapicContext for this method.
+   */
+  private boolean isSupported(Method method) {
+    return !method.getResponseStreaming() && !method.getRequestStreaming();
+  }
+
+  /**
    * Returns a list of simple RPC methods.
    */
   public List<Method> getSupportedMethods() {
     List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
     for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
       Method method = methodConfig.getMethod();
-      if (!getGapicContext().isSupported(method)) {
+      if (isSupported(method)) {
         methods.add(method);
       }
     }

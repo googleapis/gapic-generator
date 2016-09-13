@@ -910,8 +910,8 @@ class LibraryServiceApi(object):
 
         Example:
           >>> from library.library_service_api import LibraryServiceApi
-          >>> from google.gax import CallOptions, INITIAL_PAGE
           >>> api = LibraryServiceApi()
+          >>> requests = [request]
           >>> for element in api.stream_shelves():
           >>>   # process element
           >>>   pass
@@ -941,6 +941,7 @@ class LibraryServiceApi(object):
           >>> from library.library_service_api import LibraryServiceApi
           >>> api = LibraryServiceApi()
           >>> name = ''
+          >>> requests = [request]
           >>> for element in api.stream_books(name):
           >>>   # process element
           >>>   pass
@@ -974,8 +975,9 @@ class LibraryServiceApi(object):
           >>> from library.library_service_api import LibraryServiceApi
           >>> from google.example.library.v1 import library_pb2
           >>> api = LibraryServiceApi()
-          >>> request = tagger_pb2.DiscussBookRequest()
-          >>> for element in api.discuss_book([request]):
+          >>> request = library_pb2.DiscussBookRequest()
+          >>> requests = [request]
+          >>> for element in api.discuss_book(requests):
           >>>   # process element
           >>>   pass
 

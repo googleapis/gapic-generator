@@ -112,21 +112,21 @@ public class GapicContext extends CodegenContext {
   }
 
   /**
-   * Returns true when the method should appear in the result of codegen. Currently only non
-   * stremaing methods are allowed by defualt, because majority of language clients do not support
-   * streaming APIs. Subclass may override this method to allow them.
+   * Returns true when the method is supported by the current codegen context. By default, only non
+   * stremaing methods are supported unless subclass explicitly allows.
+   * TODO: remove this method when all languages support gRPC streaming.
    */
-  protected boolean shouldMethodAppear(Method method) {
+  protected boolean isSupported(Method method) {
     return !method.getRequestStreaming() && !method.getResponseStreaming();
   }
 
   /**
    * Returns a list of RPC methods supported by the context.
    */
-  public List<Method> getMethods(Interface service) {
+  public List<Method> getSupportedMethods(Interface service) {
     List<Method> simples = new ArrayList<>(service.getMethods().size());
     for (Method method : service.getMethods()) {
-      if (shouldMethodAppear(method)) {
+      if (isSupported(method)) {
         simples.add(method);
       }
     }
@@ -136,9 +136,9 @@ public class GapicContext extends CodegenContext {
   /**
    * Returns a list of RPC methods supported by the context, taking into account GRPC interface
    * rerouting.
-   * TODO replace getMethods with this when all languages are migrated.
+   * TODO replace getSupportedMethods with this when all languages are migrated.
    */
-  public List<Method> getMethodsV2(Interface service) {
+  public List<Method> getSupportedMethodsV2(Interface service) {
     InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
     if (interfaceConfig == null) {
       throw new IllegalStateException(
@@ -147,7 +147,7 @@ public class GapicContext extends CodegenContext {
     List<Method> methods = new ArrayList<>(interfaceConfig.getMethodConfigs().size());
     for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
       Method method = methodConfig.getMethod();
-      if (shouldMethodAppear(method)) {
+      if (isSupported(method)) {
         methods.add(method);
       }
     }

@@ -48,8 +48,7 @@ public class ServiceMessages {
         new Predicate<Method>() {
           @Override
           public boolean apply(Method method) {
-            return !method.getResponseStreaming()
-                && config.getMethodConfig(method).isPageStreaming();
+            return config.getMethodConfig(method).isPageStreaming();
           }
         };
 

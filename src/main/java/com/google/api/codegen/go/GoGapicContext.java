@@ -272,7 +272,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
    */
   public Collection<PageStreamingConfig> getPageStreamingConfigs(Interface service) {
     Map<String, PageStreamingConfig> streamingConfigs = new LinkedHashMap<>();
-    for (Method method : getMethods(service)) {
+    for (Method method : getSupportedMethods(service)) {
       MethodConfig methodConfig =
           getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
 
@@ -432,7 +432,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
     // Add method request-type imports
     // TODO(pongad): Change this back to service.getMethods() once streaming is implemented.
     //   imports for streaming methods are removed for now to not mess with tests.
-    for (Method method : getMethods(service)) {
+    for (Method method : getSupportedMethods(service)) {
       MessageType inputMessage = method.getInputMessage();
       MessageType outputMessage = method.getOutputMessage();
       MethodConfig methodConfig =

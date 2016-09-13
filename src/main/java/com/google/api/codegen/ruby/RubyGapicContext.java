@@ -370,7 +370,6 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
             new RubyTypeTable(getApiConfig().getPackageName()),
             new RubyModelTypeNameConverter(getApiConfig().getPackageName()));
     return SurfaceTransformerContext.create(
-        this,
         service,
         getApiConfig(),
         modelTypeTable,

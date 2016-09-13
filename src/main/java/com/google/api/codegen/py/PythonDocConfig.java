@@ -66,14 +66,14 @@ abstract class PythonDocConfig extends DocConfig {
   }
 
   /**
-   * Does this method is a gRPC-response streaming?
+   * Is this method gRPC-response streaming?
    */
   public boolean isResponseGrpcStreaming() {
     return getMethod().getResponseStreaming();
   }
 
   /**
-   * Does this method is a gRPC-request streaming?
+   * Is this method gRPC-request streaming?
    */
   public boolean isRequestGrpcStreaming() {
     return getMethod().getRequestStreaming();

@@ -159,6 +159,15 @@ public class PythonImportHandler {
   private PythonImport addImport(ProtoFile file, PythonImport imp) {
     // No conflict
     if (stringImports.get(imp.shortName()) == null) {
+      if (file != null && fileImports.containsKey(file)) {
+        throw new IllegalArgumentException(
+            "fileImports already has "
+                + file.getSimpleName()
+                + " for "
+                + fileImports.get(file)
+                + " but adding "
+                + imp.shortName());
+      }
       fileImports.put(file, imp.shortName());
       stringImports.put(imp.shortName(), imp);
       return imp;

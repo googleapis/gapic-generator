@@ -18,6 +18,7 @@
         {@initCode}
       @end
       @if docConfig.isResponseGrpcStreaming
+        {@prompt} requests = [request]
         {@prompt} for element in {@methodCallSampleCode(docConfig, {@FALSE})}:
         {@prompt}   # process element
         {@prompt}   pass
@@ -146,7 +147,7 @@
 # Render the API method call itself
 @private methodCallSampleCode(docConfig, isPageStreaming)
   @if docConfig.isRequestGrpcStreaming()
-    api.{@methodCallName(docConfig)}([request])
+    api.{@methodCallName(docConfig)}(requests)
   @else
     @let argFields = {@docConfig.getInitCode.getArgFields}
       api.{@methodCallName(docConfig)}(\
