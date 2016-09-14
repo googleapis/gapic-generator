@@ -16,13 +16,29 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 
+import java.util.List;
+
 @AutoValue
 public abstract class GrpcStubView {
   public abstract String name();
 
+  public abstract String fullyQualifiedType();
+
   public abstract String createStubFunctionName();
 
+  public abstract String grpcClientVariableName();
+
+  public abstract String grpcClientImportName();
+
   public abstract String grpcClientTypeName();
+
+  public abstract List<String> methodNames();
+
+  public abstract String stubMethodsArrayName();
+
+  public abstract String protoFileName();
+
+  public abstract String namespace();
 
   public static Builder newBuilder() {
     return new AutoValue_GrpcStubView.Builder();
@@ -32,9 +48,23 @@ public abstract class GrpcStubView {
   public static abstract class Builder {
     public abstract Builder name(String val);
 
+    public abstract Builder fullyQualifiedType(String val);
+
     public abstract Builder createStubFunctionName(String val);
 
+    public abstract Builder grpcClientVariableName(String val);
+
+    public abstract Builder grpcClientImportName(String val);
+
     public abstract Builder grpcClientTypeName(String val);
+
+    public abstract Builder methodNames(List<String> val);
+
+    public abstract Builder stubMethodsArrayName(String val);
+
+    public abstract Builder protoFileName(String val);
+
+    public abstract Builder namespace(String val);
 
     public abstract GrpcStubView build();
   }

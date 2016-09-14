@@ -61,7 +61,7 @@ var ALL_SCOPES = [
  *
  * @class
  */
-function NoTemplatesServiceApi(gaxGrpc, grpcClient, opts) {
+function NoTemplatesServiceApi(gaxGrpc, grpcClients, opts) {
   opts = opts || {};
   var servicePath = opts.servicePath || SERVICE_ADDRESS;
   var port = opts.port || DEFAULT_SERVICE_PORT;
@@ -69,11 +69,12 @@ function NoTemplatesServiceApi(gaxGrpc, grpcClient, opts) {
   var clientConfig = opts.clientConfig || {};
   var timeout = opts.timeout || DEFAULT_TIMEOUT;
   var appName = opts.appName || 'gax';
-  var appVersion = opts.appVersion || gax.Version;
+  var appVersion = opts.appVersion || gax.version;
 
   var googleApiClient = [
     appName + '/' + appVersion,
     CODE_GEN_NAME_VERSION,
+    'gax/' + gax.version,
     'nodejs/' + process.version].join(' ');
 
   var defaults = gaxGrpc.constructSettings(
@@ -85,18 +86,20 @@ function NoTemplatesServiceApi(gaxGrpc, grpcClient, opts) {
       null,
       {'x-goog-api-client': googleApiClient});
 
-  var stub = gaxGrpc.createStub(
+  var noTemplatesServiceStub = gaxGrpc.createStub(
       servicePath,
       port,
-      grpcClient.google.cloud.example.v1.NoTemplatesService,
+      grpcClients.noTemplatesServiceClient.google.cloud.example.v1.NoTemplatesService,
       {sslCreds: sslCreds});
-  var methods = [
+  var noTemplatesServiceStubMethods = [
     'increment'
   ];
-  methods.forEach(function(methodName) {
+  noTemplatesServiceStubMethods.forEach(function(methodName) {
     this['_' + methodName] = gax.createApiCall(
-        stub.then(function(stub) { return stub[methodName].bind(stub); }),
-        defaults[methodName]);
+      noTemplatesServiceStub.then(function(noTemplatesServiceStub) {
+        return noTemplatesServiceStub[methodName].bind(noTemplatesServiceStub);
+      }),
+      defaults[methodName]);
   }.bind(this));
 }
 
@@ -143,8 +146,12 @@ function NoTemplatesServiceApiBuilder(gaxGrpc) {
     return new NoTemplatesServiceApiBuilder(gaxGrpc);
   }
 
-  var grpcClient = require('grpc-google-cloud-example-v1').client;
-  extend(this, grpcClient.google.cloud.example.v1);
+  var noTemplatesServiceClient = require('grpc-google-cloud-example-v1').client;
+  extend(this, noTemplatesServiceClient.google.cloud.example.v1);
+
+  var grpcClients = {
+    noTemplatesServiceClient: noTemplatesServiceClient
+  };
 
   /**
    * Build a new instance of {@link NoTemplatesServiceApi}.
@@ -167,7 +174,7 @@ function NoTemplatesServiceApiBuilder(gaxGrpc) {
    *   The version of the calling service.
    */
   this.noTemplatesServiceApi = function(opts) {
-    return new NoTemplatesServiceApi(gaxGrpc, grpcClient, opts);
+    return new NoTemplatesServiceApi(gaxGrpc, grpcClients, opts);
   };
   extend(this.noTemplatesServiceApi, NoTemplatesServiceApi);
 }

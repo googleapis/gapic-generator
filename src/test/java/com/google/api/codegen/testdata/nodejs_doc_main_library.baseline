@@ -91,7 +91,7 @@ var ALL_SCOPES = [
  *
  * @class
  */
-function LibraryServiceApi(gaxGrpc, grpcClient, opts) {
+function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
   opts = opts || {};
   var servicePath = opts.servicePath || SERVICE_ADDRESS;
   var port = opts.port || DEFAULT_SERVICE_PORT;
@@ -99,11 +99,12 @@ function LibraryServiceApi(gaxGrpc, grpcClient, opts) {
   var clientConfig = opts.clientConfig || {};
   var timeout = opts.timeout || DEFAULT_TIMEOUT;
   var appName = opts.appName || 'gax';
-  var appVersion = opts.appVersion || gax.Version;
+  var appVersion = opts.appVersion || gax.version;
 
   var googleApiClient = [
     appName + '/' + appVersion,
     CODE_GEN_NAME_VERSION,
+    'gax/' + gax.version,
     'nodejs/' + process.version].join(' ');
 
 
@@ -126,12 +127,12 @@ function LibraryServiceApi(gaxGrpc, grpcClient, opts) {
       bundleDescriptors,
       {'x-goog-api-client': googleApiClient});
 
-  var stub = gaxGrpc.createStub(
+  var libraryServiceStub = gaxGrpc.createStub(
       servicePath,
       port,
-      grpcClient.google.example.library.v1.LibraryService,
+      grpcClients.libraryServiceClient.google.example.library.v1.LibraryService,
       {sslCreds: sslCreds});
-  var methods = [
+  var libraryServiceStubMethods = [
     'createShelf',
     'getShelf',
     'listShelves',
@@ -150,10 +151,28 @@ function LibraryServiceApi(gaxGrpc, grpcClient, opts) {
     'updateBookIndex',
     'addTag'
   ];
-  methods.forEach(function(methodName) {
+  libraryServiceStubMethods.forEach(function(methodName) {
     this['_' + methodName] = gax.createApiCall(
-        stub.then(function(stub) { return stub[methodName].bind(stub); }),
-        defaults[methodName]);
+      libraryServiceStub.then(function(libraryServiceStub) {
+        return libraryServiceStub[methodName].bind(libraryServiceStub);
+      }),
+      defaults[methodName]);
+  }.bind(this));
+
+  var labelerStub = gaxGrpc.createStub(
+      servicePath,
+      port,
+      grpcClients.labelerClient.google.tagger.v1.Labeler,
+      {sslCreds: sslCreds});
+  var labelerStubMethods = [
+    'addLabel'
+  ];
+  labelerStubMethods.forEach(function(methodName) {
+    this['_' + methodName] = gax.createApiCall(
+      labelerStub.then(function(labelerStub) {
+        return labelerStub[methodName].bind(labelerStub);
+      }),
+      defaults[methodName]);
   }.bind(this));
 }
 
@@ -1025,16 +1044,73 @@ LibraryServiceApi.prototype.addTag = function addTag() {
   return this._addTag(req, args.options, args.callback);
 };
 
+/**
+ * Adds a label to the entity.
+ *
+ * @param {string} resource
+ *   REQUIRED: The resource which the label is being added to.
+ *   Resource is usually specified as a path, such as,
+ *   projects/{project}/zones/{zone}/disks/{disk}.
+ * @param {string} label
+ *   REQUIRED: The label to add.
+ * @param {gax.CallOptions=} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @param {function(?Error, ?Object)=} callback
+ *   The function which will be called with the result of the API call.
+ *
+ *   The second parameter to the callback is an object representing [AddLabelResponse]{@link AddLabelResponse}
+ * @returns {gax.EventEmitter} - the event emitter to handle the call
+ *   status.
+ *
+ * @example
+ *
+ * var api = libraryV1.libraryServiceApi();
+ * var formattedResource = api.bookPath("[SHELF]", "[BOOK]");
+ * var label = '';
+ * api.addLabel(formattedResource, label, function(err, response) {
+ *     if (err) {
+ *         console.error(err);
+ *         return;
+ *     }
+ *     // doThingsWith(response)
+ * });
+ */
+LibraryServiceApi.prototype.addLabel = function addLabel() {
+  var args = arguejs({
+    resource: String,
+    label: String,
+    options: [gax.CallOptions],
+    callback: [Function]
+  }, arguments);
+  var req = {
+    resource: args.resource,
+    label: args.label
+  };
+  return this._addLabel(req, args.options, args.callback);
+};
+
 function LibraryServiceApiBuilder(gaxGrpc) {
   if (!(this instanceof LibraryServiceApiBuilder)) {
     return new LibraryServiceApiBuilder(gaxGrpc);
   }
 
-  var grpcClient = gaxGrpc.load([{
+  var libraryServiceClient = gaxGrpc.load([{
     root: require('google-proto-files')('..'),
     file: 'library.proto'
   }]);
-  extend(this, grpcClient.google.example.library.v1);
+  extend(this, libraryServiceClient.google.example.library.v1);
+
+  var labelerClient = gaxGrpc.load([{
+    root: require('google-proto-files')('..'),
+    file: 'tagger.proto'
+  }]);
+  extend(this, labelerClient.google.tagger.v1);
+
+  var grpcClients = {
+    libraryServiceClient: libraryServiceClient,
+    labelerClient: labelerClient
+  };
 
   /**
    * Build a new instance of {@link LibraryServiceApi}.
@@ -1057,7 +1133,7 @@ function LibraryServiceApiBuilder(gaxGrpc) {
    *   The version of the calling service.
    */
   this.libraryServiceApi = function(opts) {
-    return new LibraryServiceApi(gaxGrpc, grpcClient, opts);
+    return new LibraryServiceApi(gaxGrpc, grpcClients, opts);
   };
   extend(this.libraryServiceApi, LibraryServiceApi);
 }

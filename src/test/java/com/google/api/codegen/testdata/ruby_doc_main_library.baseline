@@ -43,10 +43,12 @@ module Library
     # Check out {cloud docs!}[https://cloud.google.com/library/example/link].
     # This is {not a cloud link}[http://www.google.com].
     #
-    # @!attribute [r] stub
+    # @!attribute [r] library_service_stub
     #   @return [Google::Example::Library::V1::LibraryService::Stub]
+    # @!attribute [r] labeler_stub
+    #   @return [Google::Tagger::V1::Labeler::Stub]
     class LibraryServiceApi
-      attr_reader :stub
+      attr_reader :library_service_stub, :labeler_stub
 
       # The default address of the service.
       SERVICE_ADDRESS = "library-example.googleapis.com".freeze
@@ -212,9 +214,11 @@ module Library
         # See https://github.com/googleapis/toolkit/issues/446
         require "google/gax/grpc"
         require "library_services_pb"
+        require "tagger_services_pb"
 
         google_api_client = "#{app_name}/#{app_version} " \
-          "#{CODE_GEN_NAME_VERSION} ruby/#{RUBY_VERSION}".freeze
+          "#{CODE_GEN_NAME_VERSION} gax/#{Google::Gax::VERSION} " \
+          "ruby/#{RUBY_VERSION}".freeze
         headers = { :"x-goog-api-client" => google_api_client }
         client_config_file = Pathname.new(__dir__).join(
           "library_service_client_config.json"
@@ -232,7 +236,7 @@ module Library
             kwargs: headers
           )
         end
-        @stub = Google::Gax::Grpc.create_stub(
+        @library_service_stub = Google::Gax::Grpc.create_stub(
           service_path,
           port,
           chan_creds: chan_creds,
@@ -240,74 +244,86 @@ module Library
           scopes: scopes,
           &Google::Example::Library::V1::LibraryService::Stub.method(:new)
         )
+        @labeler_stub = Google::Gax::Grpc.create_stub(
+          service_path,
+          port,
+          chan_creds: chan_creds,
+          channel: channel,
+          scopes: scopes,
+          &Google::Tagger::V1::Labeler::Stub.method(:new)
+        )
 
         @create_shelf = Google::Gax.create_api_call(
-          @stub.method(:create_shelf),
+          @library_service_stub.method(:create_shelf),
           defaults["create_shelf"]
         )
         @get_shelf = Google::Gax.create_api_call(
-          @stub.method(:get_shelf),
+          @library_service_stub.method(:get_shelf),
           defaults["get_shelf"]
         )
         @list_shelves = Google::Gax.create_api_call(
-          @stub.method(:list_shelves),
+          @library_service_stub.method(:list_shelves),
           defaults["list_shelves"]
         )
         @delete_shelf = Google::Gax.create_api_call(
-          @stub.method(:delete_shelf),
+          @library_service_stub.method(:delete_shelf),
           defaults["delete_shelf"]
         )
         @merge_shelves = Google::Gax.create_api_call(
-          @stub.method(:merge_shelves),
+          @library_service_stub.method(:merge_shelves),
           defaults["merge_shelves"]
         )
         @create_book = Google::Gax.create_api_call(
-          @stub.method(:create_book),
+          @library_service_stub.method(:create_book),
           defaults["create_book"]
         )
         @publish_series = Google::Gax.create_api_call(
-          @stub.method(:publish_series),
+          @library_service_stub.method(:publish_series),
           defaults["publish_series"]
         )
         @get_book = Google::Gax.create_api_call(
-          @stub.method(:get_book),
+          @library_service_stub.method(:get_book),
           defaults["get_book"]
         )
         @list_books = Google::Gax.create_api_call(
-          @stub.method(:list_books),
+          @library_service_stub.method(:list_books),
           defaults["list_books"]
         )
         @delete_book = Google::Gax.create_api_call(
-          @stub.method(:delete_book),
+          @library_service_stub.method(:delete_book),
           defaults["delete_book"]
         )
         @update_book = Google::Gax.create_api_call(
-          @stub.method(:update_book),
+          @library_service_stub.method(:update_book),
           defaults["update_book"]
         )
         @move_book = Google::Gax.create_api_call(
-          @stub.method(:move_book),
+          @library_service_stub.method(:move_book),
           defaults["move_book"]
         )
         @list_strings = Google::Gax.create_api_call(
-          @stub.method(:list_strings),
+          @library_service_stub.method(:list_strings),
           defaults["list_strings"]
         )
         @add_comments = Google::Gax.create_api_call(
-          @stub.method(:add_comments),
+          @library_service_stub.method(:add_comments),
           defaults["add_comments"]
         )
         @get_book_from_archive = Google::Gax.create_api_call(
-          @stub.method(:get_book_from_archive),
+          @library_service_stub.method(:get_book_from_archive),
           defaults["get_book_from_archive"]
         )
         @update_book_index = Google::Gax.create_api_call(
-          @stub.method(:update_book_index),
+          @library_service_stub.method(:update_book_index),
           defaults["update_book_index"]
         )
         @add_tag = Google::Gax.create_api_call(
-          @stub.method(:add_tag),
+          @library_service_stub.method(:add_tag),
           defaults["add_tag"]
+        )
+        @add_label = Google::Gax.create_api_call(
+          @labeler_stub.method(:add_label),
+          defaults["add_label"]
         )
       end
 
@@ -907,6 +923,40 @@ module Library
           tag: tag
         )
         @add_tag.call(req, options)
+      end
+
+      # Adds a label to the entity.
+      #
+      # @param resource [String]
+      #   REQUIRED: The resource which the label is being added to.
+      #   Resource is usually specified as a path, such as,
+      #   projects/{project}/zones/{zone}/disks/{disk}.
+      # @param label [String]
+      #   REQUIRED: The label to add.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Tagger::V1::AddLabelResponse]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1/library_service_api"
+      #
+      #   LibraryServiceApi = Library::V1::LibraryServiceApi
+      #
+      #   library_service_api = LibraryServiceApi.new
+      #   formatted_resource = LibraryServiceApi.book_path("[SHELF]", "[BOOK]")
+      #   label = ''
+      #   response = library_service_api.add_label(formatted_resource, label)
+
+      def add_label \
+          resource,
+          label,
+          options: nil
+        req = Google::Tagger::V1::AddLabelRequest.new(
+          resource: resource,
+          label: label
+        )
+        @add_label.call(req, options)
       end
     end
   end

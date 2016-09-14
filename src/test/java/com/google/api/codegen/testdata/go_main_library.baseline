@@ -71,37 +71,40 @@ func defaultClientOptions() []option.ClientOption {
     }
 }
 
-func defaultRetryOptions() []gax.CallOption {
-    return []gax.CallOption{
-        gax.WithTimeout(30000*time.Millisecond),
-        gax.WithDelayTimeoutSettings(100*time.Millisecond, 1000*time.Millisecond, 1.2),
-        gax.WithRPCTimeoutSettings(300*time.Millisecond, 3000*time.Millisecond, 1.3),
-    }
-}
-
 func defaultCallOptions() *CallOptions {
-    withIdempotentRetryCodes := gax.WithRetryCodes([]codes.Code{
-        codes.DeadlineExceeded,
-        codes.Unavailable,
-    })
+    retry := map[[2]string][]gax.CallOption{
+        {"default", "idempotent"}: {
+            gax.WithRetry(func() gax.Retryer {
+                return gax.OnCodes([]codes.Code{
+                    codes.DeadlineExceeded,
+                    codes.Unavailable,
+                }, gax.Backoff{
+                    Initial: 100*time.Millisecond,
+                    Max: 1000*time.Millisecond,
+                    Multiplier: 1.2,
+                })
+            }),
+        },
+    }
+
     return &CallOptions{
-        CreateShelf: defaultRetryOptions(),
-        GetShelf: append(defaultRetryOptions(), withIdempotentRetryCodes),
-        ListShelves: append(defaultRetryOptions(), withIdempotentRetryCodes),
-        DeleteShelf: append(defaultRetryOptions(), withIdempotentRetryCodes),
-        MergeShelves: defaultRetryOptions(),
-        CreateBook: defaultRetryOptions(),
-        PublishSeries: defaultRetryOptions(),
-        GetBook: append(defaultRetryOptions(), withIdempotentRetryCodes),
-        ListBooks: append(defaultRetryOptions(), withIdempotentRetryCodes),
-        DeleteBook: append(defaultRetryOptions(), withIdempotentRetryCodes),
-        UpdateBook: append(defaultRetryOptions(), withIdempotentRetryCodes),
-        MoveBook: defaultRetryOptions(),
-        ListStrings: append(defaultRetryOptions(), withIdempotentRetryCodes),
-        AddComments: defaultRetryOptions(),
-        GetBookFromArchive: append(defaultRetryOptions(), withIdempotentRetryCodes),
-        UpdateBookIndex: append(defaultRetryOptions(), withIdempotentRetryCodes),
-        AddTag: defaultRetryOptions(),
+        CreateShelf: retry[[2]string{"default", "non_idempotent"}],
+        GetShelf: retry[[2]string{"default", "idempotent"}],
+        ListShelves: retry[[2]string{"default", "idempotent"}],
+        DeleteShelf: retry[[2]string{"default", "idempotent"}],
+        MergeShelves: retry[[2]string{"default", "non_idempotent"}],
+        CreateBook: retry[[2]string{"default", "non_idempotent"}],
+        PublishSeries: retry[[2]string{"default", "non_idempotent"}],
+        GetBook: retry[[2]string{"default", "idempotent"}],
+        ListBooks: retry[[2]string{"default", "idempotent"}],
+        DeleteBook: retry[[2]string{"default", "idempotent"}],
+        UpdateBook: retry[[2]string{"default", "idempotent"}],
+        MoveBook: retry[[2]string{"default", "non_idempotent"}],
+        ListStrings: retry[[2]string{"default", "idempotent"}],
+        AddComments: retry[[2]string{"default", "non_idempotent"}],
+        GetBookFromArchive: retry[[2]string{"default", "idempotent"}],
+        UpdateBookIndex: retry[[2]string{"default", "idempotent"}],
+        AddTag: retry[[2]string{"default", "non_idempotent"}],
     }
 }
 
