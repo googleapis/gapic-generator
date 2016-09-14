@@ -325,7 +325,10 @@ public class ApiMethodTransformer {
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
     apiMethod.initCode(
         initCodeTransformer.generateInitCode(
-            context.cloneWithEmptyTypeTable(), context.getMethodConfig().getRequiredFields()));
+            context.cloneWithEmptyTypeTable(),
+            context.getMethodConfig().getRequiredFields(),
+            new SymbolTable(),
+            null));
 
     apiMethod.name(namer.getApiMethodName(context.getMethod()));
     apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
