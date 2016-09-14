@@ -261,9 +261,9 @@ public class PythonGapicContext extends GapicContext {
     contentBuilder.append("Args:\n");
     if (method.getRequestStreaming()) {
       contentBuilder.append(
-          "  requests (iterator of "
+          "  requests (iterator["
               + typeComment(method.getInputType(), importHandler)
-              + "): The input objects.\n");
+              + "]): The input objects.\n");
     } else {
       for (Field field :
           removePageTokenFromFields(method.getInputType().getMessageType().getFields(), config)) {
