@@ -14,35 +14,29 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.auto.value.AutoValue;
 
-import java.util.List;
-
 @AutoValue
-public abstract class StructureInitCodeLineView implements InitCodeLineView {
-  public abstract InitCodeLineType lineType();
+public abstract class InitCodeLineElementView {
 
-  public abstract String typeName();
+  public abstract String fieldSetFunction();
 
-  public abstract String identifier();
+  public abstract String keyIdentifier();
 
-  public abstract List<FieldSettingView> fieldSettings();
+  public abstract String valueIdentifier();
 
   public static Builder newBuilder() {
-    return new AutoValue_StructureInitCodeLineView.Builder();
+    return new AutoValue_InitCodeLineElementView.Builder();
   }
 
   @AutoValue.Builder
   public static abstract class Builder {
-    public abstract Builder lineType(InitCodeLineType val);
+    public abstract Builder fieldSetFunction(String val);
 
-    public abstract Builder typeName(String val);
+    public abstract Builder keyIdentifier(String val);
 
-    public abstract Builder identifier(String val);
+    public abstract Builder valueIdentifier(String val);
 
-    public abstract Builder fieldSettings(List<FieldSettingView> val);
-
-    public abstract StructureInitCodeLineView build();
+    public abstract InitCodeLineElementView build();
   }
 }

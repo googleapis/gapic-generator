@@ -1,0 +1,359 @@
+/* Copyright 2016 Google Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.api.codegen.metacode;
+
+import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.testing.TestValueGenerator;
+import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.TypeRef;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+
+import autovalue.shaded.com.google.common.common.annotations.VisibleForTesting;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class SpecItemNode {
+
+  private String key;
+  private InitCodeLineType lineType;
+  private InitValueConfig initValueConfig;
+  private Map<String, SpecItemNode> children;
+  private TypeRef typeRef;
+  private Name identifier;
+  private InitCodeLine initCodeLine;
+
+  public String getKey() {
+    return key;
+  }
+
+  public InitCodeLineType getLineType() {
+    return lineType;
+  }
+
+  public InitValueConfig getInitValueConfig() {
+    return initValueConfig;
+  }
+
+  public Map<String, SpecItemNode> getChildren() {
+    return children;
+  }
+
+  public TypeRef getType() {
+    return typeRef;
+  }
+
+  public Name getIdentifier() {
+    return identifier;
+  }
+
+  public InitCodeLine getInitCodeLine() {
+    return initCodeLine;
+  }
+
+  void addChild(SpecItemNode newChild) {
+    SpecItemNode oldChild = children.get(newChild.key);
+    if (oldChild != null && oldChild.lineType != InitCodeLineType.Unknown) {
+      for (SpecItemNode newSubChild : newChild.children.values()) {
+        oldChild.addChild(newSubChild);
+      }
+    } else {
+      children.put(newChild.key, newChild);
+    }
+  }
+
+  public static SpecItemNode create(String key) {
+    return new SpecItemNode(key, InitCodeLineType.Unknown, InitValueConfig.create());
+  }
+
+  public static SpecItemNode createWithValue(String key, InitValueConfig initValueConfig) {
+    return new SpecItemNode(key, InitCodeLineType.SimpleInitLine, initValueConfig);
+  }
+
+  public static SpecItemNode createWithChildren(
+      String key, InitCodeLineType type, SpecItemNode... children) {
+    SpecItemNode item = new SpecItemNode(key, type, InitValueConfig.create());
+    for (SpecItemNode child : children) {
+      item.addChild(child);
+    }
+    return item;
+  }
+
+  public SpecItemNode(String key, InitCodeLineType nodeType, InitValueConfig initValueConfig) {
+    this.key = key;
+    this.lineType = nodeType;
+    this.initValueConfig = initValueConfig;
+    this.children = new LinkedHashMap<>();
+  }
+
+  @VisibleForTesting
+  SpecItemNode(
+      String key,
+      InitCodeLineType nodeType,
+      InitValueConfig initValueConfig,
+      Map<String, SpecItemNode> children,
+      TypeRef typeRef,
+      Name identifier,
+      InitCodeLine initCodeLine) {
+    this.key = key;
+    this.lineType = nodeType;
+    this.initValueConfig = initValueConfig;
+    this.children = children;
+    this.typeRef = typeRef;
+    this.identifier = identifier;
+    this.initCodeLine = initCodeLine;
+  }
+
+  protected void updateTree(
+      SymbolTable table, TestValueGenerator valueGenerator, TypeRef type, Name suggestedName) {
+
+    // Remove and re-add children with checked keys, call updateTree() recursively
+    for (SpecItemNode child : new ArrayList<>(children.values())) {
+      children.remove(child.key);
+      child.key = getKeyValue(type, child.key);
+      child.updateTree(
+          table,
+          valueGenerator,
+          getChildType(type, child.key),
+          getChildSuggestedName(suggestedName, lineType, child));
+      addChild(child);
+    }
+
+    // Update the nodeType, typeRef, identifier and initValueConfig
+    typeRef = type;
+    validateType();
+    identifier = table.getNewSymbol(suggestedName);
+    if (children.size() == 0) {
+      if (initValueConfig.hasInitialValue()) {
+        // Update initValueConfig with checked value
+        String newValue = validateValue(type, initValueConfig.getInitialValue());
+        initValueConfig = InitValueConfig.createWithValue(newValue);
+      } else if (initValueConfig.isEmpty() && type.isPrimitive() && valueGenerator != null) {
+        String newValue = valueGenerator.getAndStoreValue(type, identifier);
+        initValueConfig = InitValueConfig.createWithValue(newValue);
+      }
+    }
+  }
+
+  protected void constructInitializationOrderList(List<SpecItemNode> initCodeLines) {
+    for (SpecItemNode childItem : children.values()) {
+      childItem.constructInitializationOrderList(initCodeLines);
+    }
+    initCodeLines.add(this);
+  }
+
+  /**
+   * TODO(michaelbausor): delete this method once DocConfig is no longer used (when python converts
+   * to MVVM)
+   */
+  protected void createInitCodeLines() {
+    if (children.size() == 0) {
+      initCodeLine = SimpleInitCodeLine.create(typeRef, identifier, initValueConfig);
+      return;
+    }
+    for (SpecItemNode childItem : children.values()) {
+      childItem.createInitCodeLines();
+    }
+    switch (lineType) {
+      case StructureInitLine:
+        List<FieldSetting> fieldSettings = new ArrayList<>();
+        for (SpecItemNode childItem : children.values()) {
+          FieldSetting fieldSetting =
+              FieldSetting.create(
+                  childItem.typeRef,
+                  childItem.identifier,
+                  childItem.initCodeLine.getIdentifier(),
+                  childItem.initCodeLine.getInitValueConfig());
+          fieldSettings.add(fieldSetting);
+        }
+        initCodeLine = StructureInitCodeLine.create(typeRef, identifier, fieldSettings);
+        break;
+      case ListInitLine:
+        List<Name> elementIdentifiers = new ArrayList<>();
+        for (SpecItemNode childItem : children.values()) {
+          elementIdentifiers.add(childItem.initCodeLine.getIdentifier());
+        }
+        initCodeLine = ListInitCodeLine.create(typeRef, identifier, elementIdentifiers);
+        break;
+      case MapInitLine:
+        Map<String, Name> elementIdentifierMap = new LinkedHashMap<>();
+        for (SpecItemNode childItem : children.values()) {
+          elementIdentifierMap.put(childItem.key, childItem.initCodeLine.getIdentifier());
+        }
+        initCodeLine =
+            MapInitCodeLine.create(
+                typeRef.getMapKeyField().getType(),
+                typeRef.getMapValueField().getType(),
+                typeRef,
+                identifier,
+                elementIdentifierMap);
+        break;
+      default:
+        throw new IllegalArgumentException("Unexpected ParsedNodeType: " + lineType);
+    }
+  }
+
+  /*
+   * Validate the lineType against the typeRef that has been set, and against child objects. In the
+   * case of no child objects being present, update the lineType to SimpleInitLine.
+   */
+  private void validateType() {
+    switch (lineType) {
+      case StructureInitLine:
+        if (!typeRef.isMessage() || typeRef.isRepeated()) {
+          throw new IllegalArgumentException(
+              "typeRef " + typeRef + " not compatible with " + lineType);
+        }
+        break;
+      case ListInitLine:
+        if (typeRef.isMap() || !typeRef.isRepeated()) {
+          throw new IllegalArgumentException(
+              "typeRef " + typeRef + " not compatible with " + lineType);
+        }
+        for (int i = 0; i < children.size(); i++) {
+          if (!children.containsKey(Integer.toString(i))) {
+            throw new IllegalArgumentException(
+                "typeRef " + typeRef + " must have ordered indices, got " + children.keySet());
+          }
+        }
+        break;
+      case MapInitLine:
+        if (!typeRef.isMap()) {
+          throw new IllegalArgumentException(
+              "typeRef " + typeRef + " not compatible with " + lineType);
+        }
+        break;
+      case SimpleInitLine:
+        if (!typeRef.isPrimitive() && !typeRef.isEnum()) {
+          throw new IllegalArgumentException(
+              "typeRef " + typeRef + " not compatible with " + lineType);
+        }
+        // Fall through to Unknown to check for no children.
+      case Unknown:
+        // Any typeRef is acceptable, but we need to check that there are no children.
+        if (children.size() != 0) {
+          throw new IllegalArgumentException("node with Unknown type cannot have children");
+        }
+        break;
+      default:
+        throw new IllegalArgumentException("unexpected InitcodeLineType: " + lineType);
+    }
+    // Update the type of childless nodes to SimpleInitLine
+    if (children.size() == 0) {
+      lineType = InitCodeLineType.SimpleInitLine;
+    }
+  }
+
+  private static Name getChildSuggestedName(
+      Name parentName, InitCodeLineType parentType, SpecItemNode child) {
+    switch (parentType) {
+      case StructureInitLine:
+        return Name.from(child.key);
+      case MapInitLine:
+        return parentName.join("item");
+      case ListInitLine:
+        return parentName.join("element");
+      default:
+        throw new IllegalArgumentException("Cannot generate child name for " + parentType);
+    }
+  }
+
+  private static String getKeyValue(TypeRef parentType, String key) {
+    if (parentType.isMap()) {
+      TypeRef keyType = parentType.getMapKeyField().getType();
+      return validateValue(keyType, key);
+    } else if (parentType.isRepeated()) {
+      TypeRef keyType = TypeRef.of(Type.TYPE_UINT64);
+      return validateValue(keyType, key);
+    } else {
+      // Don't validate message types, field will be missing for a bad key
+      return key;
+    }
+  }
+
+  private static TypeRef getChildType(TypeRef parentType, String key) {
+    if (parentType.isMap()) {
+      return parentType.getMapValueField().getType();
+    } else if (parentType.isRepeated()) {
+      // Using the Optional cardinality replaces the Repeated cardinality
+      return parentType.makeOptional();
+    } else if (parentType.isMessage()) {
+      for (Field field : parentType.getMessageType().getFields()) {
+        if (field.getSimpleName().equals(key)) {
+          return field.getType();
+        }
+      }
+      throw new IllegalArgumentException(
+          "Message type " + parentType + " does not have field " + key);
+    } else {
+      throw new IllegalArgumentException(
+          "Primitive type " + parentType + " cannot have children. Child key: " + key);
+    }
+  }
+
+  /**
+   * Validates that the provided value matches the provided type, and returns the validated value.
+   * For string and byte types, the returned value has quote characters removed. Throws an
+   * IllegalArgumentException is the provided type is not supported or doesn't match the value.
+   */
+  private static String validateValue(TypeRef type, String value) {
+    Type descType = type.getKind();
+    switch (descType) {
+      case TYPE_BOOL:
+        String lowerCaseValue = value.toLowerCase();
+        if (lowerCaseValue.equals("true") || lowerCaseValue.equals("false")) {
+          return lowerCaseValue;
+        }
+        break;
+      case TYPE_DOUBLE:
+      case TYPE_FLOAT:
+        if (Pattern.matches("[+-]?([0-9]*[.])?[0-9]+", value)) {
+          return value;
+        }
+        break;
+      case TYPE_INT64:
+      case TYPE_UINT64:
+      case TYPE_SINT64:
+      case TYPE_FIXED64:
+      case TYPE_SFIXED64:
+      case TYPE_INT32:
+      case TYPE_UINT32:
+      case TYPE_SINT32:
+      case TYPE_FIXED32:
+      case TYPE_SFIXED32:
+        if (Pattern.matches("[+-]?[0-9]+", value)) {
+          return value;
+        }
+        break;
+      case TYPE_STRING:
+      case TYPE_BYTES:
+        Matcher matcher = Pattern.compile("\"([^\\\"]*)\"").matcher(value);
+        if (matcher.matches()) {
+          return matcher.group(1);
+        }
+        break;
+      default:
+        // Throw an exception if a value is unsupported for the given type.
+        throw new IllegalArgumentException(
+            "Tried to assign value for unsupported type " + type + "; value " + value);
+    }
+    throw new IllegalArgumentException("Could not assign value '" + value + "' to type " + type);
+  }
+}

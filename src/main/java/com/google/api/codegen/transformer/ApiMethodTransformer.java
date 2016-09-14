@@ -19,7 +19,6 @@ import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.CallableMethodDetailView;
@@ -192,8 +191,7 @@ public class ApiMethodTransformer {
       StaticLangApiMethodView.Builder methodViewBuilder) {
     SurfaceNamer namer = context.getNamer();
     methodViewBuilder.initCode(
-        initCodeTransformer.generateInitCode(
-            context.cloneWithEmptyTypeTable(), fields, new SymbolTable(), null));
+        initCodeTransformer.generateInitCode(context.cloneWithEmptyTypeTable(), fields));
     methodViewBuilder.doc(
         ApiMethodDocView.newBuilder()
             .mainDocLines(namer.getDocLines(context.getMethod()))
@@ -225,8 +223,7 @@ public class ApiMethodTransformer {
             .throwsDocLines(namer.getThrowsDocLines())
             .build());
     methodViewBuilder.initCode(
-        initCodeTransformer.generateRequestObjectInitCode(
-            context.cloneWithEmptyTypeTable(), new SymbolTable(), null));
+        initCodeTransformer.generateRequestObjectInitCode(context.cloneWithEmptyTypeTable()));
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
@@ -252,8 +249,7 @@ public class ApiMethodTransformer {
             .throwsDocLines(new ArrayList<String>())
             .build());
     methodViewBuilder.initCode(
-        initCodeTransformer.generateRequestObjectInitCode(
-            context.cloneWithEmptyTypeTable(), new SymbolTable(), null));
+        initCodeTransformer.generateRequestObjectInitCode(context.cloneWithEmptyTypeTable()));
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
@@ -329,10 +325,7 @@ public class ApiMethodTransformer {
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
     apiMethod.initCode(
         initCodeTransformer.generateInitCode(
-            context.cloneWithEmptyTypeTable(),
-            context.getMethodConfig().getRequiredFields(),
-            new SymbolTable(),
-            null));
+            context.cloneWithEmptyTypeTable(), context.getMethodConfig().getRequiredFields()));
 
     apiMethod.name(namer.getApiMethodName(context.getMethod()));
     apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
@@ -354,10 +347,7 @@ public class ApiMethodTransformer {
     apiMethod.apiModuleName(namer.getApiWrapperModuleName(context.getInterface()));
     apiMethod.initCode(
         initCodeTransformer.generateInitCode(
-            context.cloneWithEmptyTypeTable(),
-            context.getMethodConfig().getRequiredFields(),
-            new SymbolTable(),
-            null));
+            context.cloneWithEmptyTypeTable(), context.getMethodConfig().getRequiredFields()));
 
     apiMethod.doc(generateOptionalArrayMethodDoc(context));
 

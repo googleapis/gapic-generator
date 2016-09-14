@@ -14,21 +14,16 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.BundlingConfig;
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.SmokeTestConfig;
-import com.google.api.codegen.metacode.FieldSetting;
-import com.google.api.codegen.metacode.FieldStructureParser;
-import com.google.api.codegen.metacode.InitCode;
-import com.google.api.codegen.metacode.InitCodeGenerator;
-import com.google.api.codegen.metacode.InitCodeGeneratorContext;
-import com.google.api.codegen.metacode.InitCodeLine;
+import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitValueConfig;
-import com.google.api.codegen.metacode.ListInitCodeLine;
-import com.google.api.codegen.metacode.MapInitCodeLine;
-import com.google.api.codegen.metacode.SimpleInitCodeLine;
-import com.google.api.codegen.metacode.StructureInitCodeLine;
+import com.google.api.codegen.metacode.SpecItemNode;
+import com.google.api.codegen.metacode.SpecItemParserContext;
+import com.google.api.codegen.metacode.SpecItemRootNode;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
@@ -45,7 +40,6 @@ import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -60,33 +54,31 @@ import java.util.Map;
  */
 public class InitCodeTransformer {
 
-  public InitCodeView generateInitCode(
-      MethodTransformerContext context,
-      Iterable<Field> fields,
-      SymbolTable table,
-      TestValueGenerator valueGenerator) {
-    return buildInitCodeView(
-        context,
-        generateInitCodeHelper(
-            Lists.newArrayList(fields),
-            table,
-            valueGenerator,
-            createSampleInitFieldStructure(context),
-            Name.from("request"),
-            context.getMethod().getInputType()));
+  public InitCodeView generateInitCode(MethodTransformerContext context, Iterable<Field> fields) {
+    SpecItemRootNode rootNode =
+        SpecItemRootNode.createSpecItemTree(
+            SpecItemParserContext.newBuilder()
+                .table(new SymbolTable())
+                .rootObjectType(context.getMethod().getInputType())
+                .initValueConfigMap(createInitValueMap(context))
+                .sampleCodeInitFields(context.getMethodConfig().getSampleCodeInitFields())
+                .initFieldSet(fields)
+                .suggestedName(Name.from("request"))
+                .build());
+    return buildInitCodeViewFlattened(context, rootNode);
   }
 
-  public InitCodeView generateRequestObjectInitCode(
-      MethodTransformerContext context, SymbolTable table, TestValueGenerator valueGenerator) {
-    return buildInitCodeView(
-        context,
-        generateInitCodeHelper(
-            null,
-            table,
-            valueGenerator,
-            createSampleInitFieldStructure(context),
-            Name.from("request"),
-            context.getMethod().getInputType()));
+  public InitCodeView generateRequestObjectInitCode(MethodTransformerContext context) {
+    SpecItemRootNode rootNode =
+        SpecItemRootNode.createSpecItemTree(
+            SpecItemParserContext.newBuilder()
+                .table(new SymbolTable())
+                .rootObjectType(context.getMethod().getInputType())
+                .initValueConfigMap(createInitValueMap(context))
+                .sampleCodeInitFields(context.getMethodConfig().getSampleCodeInitFields())
+                .suggestedName(Name.from("request"))
+                .build());
+    return buildInitCodeViewRequestObject(context, rootNode);
   }
 
   public InitCodeView generateTestMethodInitCode(
@@ -94,120 +86,77 @@ public class InitCodeTransformer {
       Iterable<Field> fields,
       SymbolTable table,
       TestValueGenerator valueGenerator) {
-    return buildInitCodeView(
-        context,
-        generateInitCodeHelper(
-            Lists.newArrayList(fields),
-            table,
-            valueGenerator,
-            createTestRequestInitFieldStructure(context, fields),
-            Name.from("request"),
-            context.getMethod().getInputType()));
+    SpecItemRootNode rootNode =
+        SpecItemRootNode.createSpecItemTree(
+            SpecItemParserContext.newBuilder()
+                .table(table)
+                .valueGenerator(valueGenerator)
+                .rootObjectType(context.getMethod().getInputType())
+                .initValueConfigMap(createInitValueMap(context))
+                .initFieldSet(fields)
+                .suggestedName(Name.from("request"))
+                .build());
+    return buildInitCodeViewFlattened(context, rootNode);
   }
 
   public InitCodeView generateMockResponseObjectInitCode(
       MethodTransformerContext context, SymbolTable table, TestValueGenerator valueGenerator) {
-    return buildInitCodeView(
-        context,
-        generateInitCodeHelper(
-            null,
-            table,
-            valueGenerator,
-            createMockResponseInitFieldStructure(context),
-            Name.from("expected_response"),
-            context.getMethod().getOutputType()));
+    ArrayList<Field> primitiveFields = new ArrayList<>();
+    for (Field field : context.getMethod().getOutputMessage().getFields()) {
+      if (field.getType().isPrimitive()) {
+        primitiveFields.add(field);
+      }
+    }
+    SpecItemRootNode rootNode =
+        SpecItemRootNode.createSpecItemTree(
+            SpecItemParserContext.newBuilder()
+                .table(table)
+                .valueGenerator(valueGenerator)
+                .rootObjectType(context.getMethod().getOutputType())
+                .initValueConfigMap(createInitValueMap(context))
+                .subTrees(createMockResponseInitSubTrees(context))
+                .initFieldSet(primitiveFields)
+                .suggestedName(Name.from("expected_response"))
+                .build());
+    return buildInitCodeViewRequestObject(context, rootNode);
   }
 
   public InitCodeView generateSmokeTestInitCode(
-      MethodTransformerContext methodContext, SymbolTable table) {
-    SmokeTestConfig testConfig = methodContext.getInterfaceConfig().getSmokeTestConfig();
-    Method method = testConfig.getMethod();
-
-    ArrayList<Field> fields = new ArrayList<>();
-    for (Field field : method.getInputMessage().getFields()) {
-      if (testConfig.getInitFields().contains(field.getSimpleName())) {
-        fields.add(field);
-      }
-    }
-
-    return buildInitCodeView(
-        methodContext,
-        generateInitCodeHelper(
-            fields,
-            table,
-            null,
-            createSmokeTestInitMap(testConfig.getInitFields(), methodContext),
-            Name.from("request"),
-            method.getInputType()));
-  }
-
-  private Map<String, Object> createSmokeTestInitMap(
-      List<String> smokeTestInitFields, MethodTransformerContext context) {
-    Map<String, Object> initFieldStructure =
-        FieldStructureParser.parseFields(smokeTestInitFields, createInitValueMap(context));
-    return initFieldStructure;
-  }
-
-  private InitCode generateInitCodeHelper(
-      ArrayList<Field> fields,
-      SymbolTable table,
-      TestValueGenerator valueGenerator,
-      Map<String, Object> initFieldStructure,
-      Name initObjectName,
-      TypeRef initObjectType) {
-    InitCodeGeneratorContext initCodeContextBuilder =
-        InitCodeGeneratorContext.newBuilder()
-            .symbolTable(table)
-            .valueGenerator(valueGenerator)
-            .initStructure(initFieldStructure)
-            .initObjectName(initObjectName)
-            .initObjectType(initObjectType)
-            .flattenedFields(fields)
-            .build();
-    InitCodeGenerator generator = new InitCodeGenerator();
-    return generator.generate(initCodeContextBuilder);
-  }
-
-  private InitCodeView buildInitCodeView(MethodTransformerContext context, InitCode initCode) {
-    ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
-    ModelTypeTable typeTable = context.getTypeTable();
-    SurfaceNamer namer = context.getNamer();
-
-    // Initialize the type table with the apiClassName since each sample will be using the
-    // apiClass.
-    typeTable.getAndSaveNicknameFor(
-        namer.getFullyQualifiedApiWrapperClassName(
-            context.getInterface(), context.getApiConfig().getPackageName()));
-
-    return InitCodeView.newBuilder()
-        .lines(generateSurfaceInitCodeLines(context, initCode))
-        .fieldSettings(getFieldSettings(context, initCode.getArgFields()))
-        .imports(importTypeTransformer.generateImports(typeTable.getImports()))
-        .apiFileName(
-            namer.getServiceFileName(
-                context.getInterface(), context.getApiConfig().getPackageName()))
-        .build();
+      MethodTransformerContext context, SymbolTable table) {
+    SmokeTestConfig testConfig = context.getInterfaceConfig().getSmokeTestConfig();
+    SpecItemRootNode rootNode =
+        SpecItemRootNode.createSpecItemTree(
+            SpecItemParserContext.newBuilder()
+                .table(table)
+                .rootObjectType(testConfig.getMethod().getInputType())
+                .initValueConfigMap(createInitValueMap(context))
+                .sampleCodeInitFields(testConfig.getInitFields())
+                .suggestedName(Name.from("request"))
+                .build());
+    return buildInitCodeViewFlattened(context, rootNode);
   }
 
   public List<GapicSurfaceTestAssertView> generateRequestAssertViews(
       MethodTransformerContext context, Iterable<Field> fields) {
-    InitCode initCode =
-        generateInitCodeHelper(
-            Lists.newArrayList(fields),
-            new SymbolTable(),
-            null,
-            createSampleInitFieldStructure(context),
-            Name.from("request"),
-            context.getMethod().getInputType());
+
+    SpecItemRootNode rootNode =
+        SpecItemRootNode.createSpecItemTree(
+            SpecItemParserContext.newBuilder()
+                .table(new SymbolTable())
+                .rootObjectType(context.getMethod().getInputType())
+                .initValueConfigMap(createInitValueMap(context))
+                .initFieldSet(fields)
+                .suggestedName(Name.from("request"))
+                .build());
 
     List<GapicSurfaceTestAssertView> assertViews = new ArrayList<>();
     SurfaceNamer namer = context.getNamer();
     // Add request fields checking
-    for (FieldSetting fieldSetting : initCode.getArgFields()) {
+    for (SpecItemNode fieldItemTree : rootNode.getChildren().values()) {
       String getterMethod =
-          namer.getFieldGetFunctionName(fieldSetting.getType(), fieldSetting.getIdentifier());
+          namer.getFieldGetFunctionName(fieldItemTree.getType(), Name.from(fieldItemTree.getKey()));
       String expectedValueIdentifier =
-          namer.getVariableName(fieldSetting.getIdentifier(), fieldSetting.getInitValueConfig());
+          namer.getVariableName(fieldItemTree.getIdentifier(), fieldItemTree.getInitValueConfig());
       assertViews.add(createAssertView(expectedValueIdentifier, getterMethod));
     }
     return assertViews;
@@ -220,72 +169,75 @@ public class InitCodeTransformer {
         .build();
   }
 
-  private Map<String, Object> createSampleInitFieldStructure(MethodTransformerContext context) {
-    Map<String, Object> initFieldStructure =
-        FieldStructureParser.parseFields(
-            context.getMethodConfig().getSampleCodeInitFields(), createInitValueMap(context));
-    return initFieldStructure;
+  private InitCodeView buildInitCodeViewFlattened(
+      MethodTransformerContext context, SpecItemRootNode root) {
+    List<SpecItemNode> orderedItems = root.listInInitializationOrder();
+    List<SpecItemNode> argItems = new ArrayList<>(root.getChildren().values());
+    //Remove the request object for flattened method
+    orderedItems.remove(orderedItems.size() - 1);
+    return buildInitCodeView(context, orderedItems, argItems);
   }
 
-  private Map<String, Object> createTestRequestInitFieldStructure(
-      MethodTransformerContext context, Iterable<Field> fields) {
-    ArrayList<String> fieldStrings = new ArrayList<>();
-    createTestRequestInitFieldStructure(context, fieldStrings, fields, "", 1);
-    return FieldStructureParser.parseFields(fieldStrings, createInitValueMap(context));
+  private InitCodeView buildInitCodeViewRequestObject(
+      MethodTransformerContext context, SpecItemRootNode root) {
+    List<SpecItemNode> orderedItems = root.listInInitializationOrder();
+    List<SpecItemNode> argItems = Lists.newArrayList((SpecItemNode) root);
+    return buildInitCodeView(context, orderedItems, argItems);
   }
 
-  private void createTestRequestInitFieldStructure(
+  private InitCodeView buildInitCodeView(
       MethodTransformerContext context,
-      ArrayList<String> fieldStrings,
-      Iterable<Field> fields,
-      String prefix,
-      int depth) {
-    for (Field field : fields) {
-      String initString = prefix + field.getSimpleName();
+      Iterable<SpecItemNode> orderedItems,
+      Iterable<SpecItemNode> argItems) {
+    ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
+    ModelTypeTable typeTable = context.getTypeTable();
+    SurfaceNamer namer = context.getNamer();
 
-      if (field.getType().isMap()) {
-        // TODO(michaelbausor) support recursive map initialization
-        fieldStrings.add(initString);
-      } else {
-        if (field.getType().isRepeated()) {
-          initString += "[0]";
-        }
-        fieldStrings.add(initString);
-        if (field.getType().isMessage() && depth > 0) {
-          createTestRequestInitFieldStructure(
-              context,
-              fieldStrings,
-              field.getType().getMessageType().getFields(),
-              initString + ".",
-              depth - 1);
-        }
-      }
-    }
+    // Initialize the type table with the apiClassName since each sample will be using the
+    // apiClass.
+    typeTable.getAndSaveNicknameFor(
+        namer.getFullyQualifiedApiWrapperClassName(
+            context.getInterface(), context.getApiConfig().getPackageName()));
+
+    return InitCodeView.newBuilder()
+        .lines(generateSurfaceInitCodeLines(context, orderedItems))
+        .fieldSettings(getFieldSettings(context, argItems))
+        .imports(importTypeTransformer.generateImports(typeTable.getImports()))
+        .apiFileName(
+            namer.getServiceFileName(
+                context.getInterface(), context.getApiConfig().getPackageName()))
+        .build();
   }
 
-  private Map<String, Object> createMockResponseInitFieldStructure(
-      MethodTransformerContext context) {
-    ArrayList<String> fields = new ArrayList<>();
-    for (Field field : context.getMethod().getOutputMessage().getFields()) {
-      if (field.getType().isPrimitive()) {
-        fields.add(field.getSimpleName());
-      }
-    }
+  private List<SpecItemNode> createMockResponseInitSubTrees(MethodTransformerContext context) {
+    List<SpecItemNode> specItems = new ArrayList<>();
     if (context.getMethodConfig().isPageStreaming()) {
-      // Initialize one resource element if it is page-streaming, and set the initial value of the
-      // page token to empty, in order to indicate that no more pages are available.
+      // Initialize one resource element if it is page-streaming.
       PageStreamingConfig config = context.getMethodConfig().getPageStreaming();
-      fields.add(config.getResourcesField().getSimpleName() + "[0]");
-      fields.add(config.getResponseTokenField().getSimpleName() + "=\"\"");
+      String resourceFieldName = config.getResourcesField().getSimpleName();
+      SpecItemNode childItem = SpecItemNode.create("0");
+      SpecItemNode item =
+          SpecItemNode.createWithChildren(
+              resourceFieldName, InitCodeLineType.ListInitLine, childItem);
+      specItems.add(item);
+
+      // Set the initial value of the page token to empty, in order to indicate that no more pages
+      // are available
+      String responseTokenName = config.getResponseTokenField().getSimpleName();
+      specItems.add(
+          SpecItemNode.createWithValue(responseTokenName, InitValueConfig.createWithValue("\"\"")));
     }
     if (context.getMethodConfig().isBundling()) {
       // Initialize one bundling element if it is bundling.
-      fields.add(
-          context.getMethodConfig().getBundling().getSubresponseField().getSimpleName() + "[0]");
+      BundlingConfig config = context.getMethodConfig().getBundling();
+      String subResponseFieldName = config.getSubresponseField().getSimpleName();
+      SpecItemNode childItem = SpecItemNode.create("0");
+      SpecItemNode item =
+          SpecItemNode.createWithChildren(
+              subResponseFieldName, InitCodeLineType.ListInitLine, childItem);
+      specItems.add(item);
     }
-    Map<String, Object> initFieldStructure =
-        FieldStructureParser.parseFields(fields, createInitValueMap(context));
-    return initFieldStructure;
+    return specItems;
   }
 
   private ImmutableMap<String, InitValueConfig> createInitValueMap(
@@ -304,90 +256,100 @@ public class InitCodeTransformer {
   }
 
   private List<InitCodeLineView> generateSurfaceInitCodeLines(
-      MethodTransformerContext context, InitCode initCode) {
+      MethodTransformerContext context, Iterable<SpecItemNode> SpecItemNodes) {
     List<InitCodeLineView> surfaceLines = new ArrayList<>();
-    for (InitCodeLine line : initCode.getLines()) {
-      switch (line.getLineType()) {
+    for (SpecItemNode item : SpecItemNodes) {
+      switch (item.getLineType()) {
         case StructureInitLine:
-          surfaceLines.add(generateStructureInitCodeLine(context, (StructureInitCodeLine) line));
+          surfaceLines.add(generateStructureInitCodeLine(context, item));
           continue;
         case ListInitLine:
-          surfaceLines.add(generateListInitCodeLine(context, (ListInitCodeLine) line));
+          surfaceLines.add(generateListInitCodeLine(context, item));
           continue;
         case SimpleInitLine:
-          surfaceLines.add(generateSimpleInitCodeLine(context, (SimpleInitCodeLine) line));
+          surfaceLines.add(generateSimpleInitCodeLine(context, item));
           continue;
         case MapInitLine:
-          surfaceLines.add(generateMapInitCodeLine(context, (MapInitCodeLine) line));
+          surfaceLines.add(generateMapInitCodeLine(context, item));
           continue;
         default:
-          throw new RuntimeException("unhandled line type: " + line.getLineType());
+          throw new RuntimeException("unhandled line type: " + item.getLineType());
       }
     }
     return surfaceLines;
   }
 
-  private StructureInitCodeLineView generateStructureInitCodeLine(
-      MethodTransformerContext context, StructureInitCodeLine line) {
-    StructureInitCodeLineView.Builder surfaceLine = StructureInitCodeLineView.newBuilder();
-
-    SurfaceNamer namer = context.getNamer();
-    surfaceLine.lineType(line.getLineType());
-    surfaceLine.typeName(context.getTypeTable().getAndSaveNicknameFor(line.getType()));
-    surfaceLine.identifier(namer.getVariableName(line.getIdentifier(), line.getInitValueConfig()));
-    surfaceLine.fieldSettings(getFieldSettings(context, line.getFieldSettings()));
-    surfaceLine.initValue(getInitValue(context, line.getType(), line.getInitValueConfig()));
-
-    return surfaceLine.build();
-  }
-
-  private ListInitCodeLineView generateListInitCodeLine(
-      MethodTransformerContext context, ListInitCodeLine line) {
-    ListInitCodeLineView.Builder surfaceLine = ListInitCodeLineView.newBuilder();
-
-    SurfaceNamer namer = context.getNamer();
-    surfaceLine.lineType(line.getLineType());
-    surfaceLine.elementTypeName(
-        context.getTypeTable().getAndSaveNicknameForElementType(line.getElementType()));
-    surfaceLine.identifier(namer.getVariableName(line.getIdentifier(), line.getInitValueConfig()));
-    List<String> elementIdentifiers = new ArrayList<>();
-    for (Name identifier : line.getElementIdentifiers()) {
-      elementIdentifiers.add(namer.varName(identifier));
-    }
-    surfaceLine.elementIdentifiers(elementIdentifiers);
-
-    return surfaceLine.build();
-  }
-
-  private SimpleInitCodeLineView generateSimpleInitCodeLine(
-      MethodTransformerContext context, SimpleInitCodeLine line) {
+  private InitCodeLineView generateSimpleInitCodeLine(
+      MethodTransformerContext context, SpecItemNode item) {
     SimpleInitCodeLineView.Builder surfaceLine = SimpleInitCodeLineView.newBuilder();
 
     SurfaceNamer namer = context.getNamer();
-    surfaceLine.lineType(line.getLineType());
-    surfaceLine.typeName(context.getTypeTable().getAndSaveNicknameFor(line.getType()));
-    surfaceLine.identifier(namer.getVariableName(line.getIdentifier(), line.getInitValueConfig()));
-    surfaceLine.initValue(getInitValue(context, line.getType(), line.getInitValueConfig()));
+    ModelTypeTable typeTable = context.getTypeTable();
+    surfaceLine.lineType(InitCodeLineType.SimpleInitLine);
+    surfaceLine.identifier(namer.getVariableName(item.getIdentifier(), item.getInitValueConfig()));
+    surfaceLine.typeName(typeTable.getAndSaveNicknameFor(item.getType()));
+
+    surfaceLine.initValue(getInitValue(context, item.getType(), item.getInitValueConfig()));
+
+    return surfaceLine.build();
+  }
+
+  private InitCodeLineView generateStructureInitCodeLine(
+      MethodTransformerContext context, SpecItemNode item) {
+    StructureInitCodeLineView.Builder surfaceLine = StructureInitCodeLineView.newBuilder();
+
+    SurfaceNamer namer = context.getNamer();
+    ModelTypeTable typeTable = context.getTypeTable();
+    surfaceLine.lineType(InitCodeLineType.StructureInitLine);
+    surfaceLine.identifier(namer.getVariableName(item.getIdentifier(), item.getInitValueConfig()));
+    surfaceLine.typeName(typeTable.getAndSaveNicknameFor(item.getType()));
+
+    surfaceLine.fieldSettings(getFieldSettings(context, item.getChildren().values()));
+
+    return surfaceLine.build();
+  }
+
+  private InitCodeLineView generateListInitCodeLine(
+      MethodTransformerContext context, SpecItemNode item) {
+    ListInitCodeLineView.Builder surfaceLine = ListInitCodeLineView.newBuilder();
+
+    SurfaceNamer namer = context.getNamer();
+    ModelTypeTable typeTable = context.getTypeTable();
+    surfaceLine.lineType(InitCodeLineType.ListInitLine);
+    surfaceLine.identifier(namer.getVariableName(item.getIdentifier(), item.getInitValueConfig()));
+
+    surfaceLine.elementTypeName(
+        typeTable.getAndSaveNicknameForElementType(item.getType().makeOptional()));
+    List<String> entries = new ArrayList<>();
+    for (SpecItemNode child : item.getChildren().values()) {
+      entries.add(namer.varName(child.getIdentifier()));
+    }
+    surfaceLine.elementIdentifiers(entries);
 
     return surfaceLine.build();
   }
 
   private InitCodeLineView generateMapInitCodeLine(
-      MethodTransformerContext context, MapInitCodeLine line) {
+      MethodTransformerContext context, SpecItemNode item) {
     MapInitCodeLineView.Builder surfaceLine = MapInitCodeLineView.newBuilder();
 
+    SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
-    surfaceLine.lineType(line.getLineType());
-    surfaceLine.keyTypeName(typeTable.getAndSaveNicknameFor(line.getKeyType()));
-    surfaceLine.valueTypeName(typeTable.getAndSaveNicknameFor(line.getValueType()));
-    surfaceLine.identifier(
-        context.getNamer().getVariableName(line.getIdentifier(), line.getInitValueConfig()));
+    surfaceLine.lineType(InitCodeLineType.MapInitLine);
+    surfaceLine.identifier(namer.getVariableName(item.getIdentifier(), item.getInitValueConfig()));
+
+    surfaceLine.keyTypeName(
+        typeTable.getAndSaveNicknameFor(item.getType().getMapKeyField().getType()));
+    surfaceLine.valueTypeName(
+        typeTable.getAndSaveNicknameFor(item.getType().getMapValueField().getType()));
+
     List<MapEntryView> entries = new ArrayList<>();
-    for (Map.Entry<String, Name> entry : line.getElementIdentifierMap().entrySet()) {
+    for (Map.Entry<String, SpecItemNode> entry : item.getChildren().entrySet()) {
       MapEntryView.Builder mapEntry = MapEntryView.newBuilder();
-      mapEntry.key(typeTable.renderPrimitiveValue(line.getKeyType(), entry.getKey()));
-      mapEntry.value(
-          context.getNamer().getVariableName(line.getElementIdentifierValue(entry.getKey()), null));
+      mapEntry.key(
+          typeTable.renderPrimitiveValue(
+              item.getType().getMapKeyField().getType(), entry.getKey()));
+      mapEntry.value(context.getNamer().getVariableName(entry.getValue().getIdentifier(), null));
       entries.add(mapEntry.build());
     }
     surfaceLine.initEntries(entries);
@@ -425,15 +387,15 @@ public class InitCodeTransformer {
   }
 
   private List<FieldSettingView> getFieldSettings(
-      MethodTransformerContext context, Iterable<FieldSetting> fieldSettings) {
+      MethodTransformerContext context, Iterable<SpecItemNode> childItems) {
     SurfaceNamer namer = context.getNamer();
     List<FieldSettingView> allSettings = new ArrayList<>();
-    for (FieldSetting setting : fieldSettings) {
+    for (SpecItemNode item : childItems) {
       FieldSettingView.Builder fieldSetting = FieldSettingView.newBuilder();
       fieldSetting.fieldSetFunction(
-          namer.getFieldSetFunctionName(setting.getType(), setting.getFieldName()));
+          namer.getFieldSetFunctionName(item.getType(), Name.from(item.getKey())));
       fieldSetting.identifier(
-          namer.getVariableName(setting.getIdentifier(), setting.getInitValueConfig()));
+          namer.getVariableName(item.getIdentifier(), item.getInitValueConfig()));
       allSettings.add(fieldSetting.build());
     }
     return allSettings;
