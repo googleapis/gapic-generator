@@ -44,17 +44,26 @@ public class SampleTypeTable implements SampleTypeNameConverter {
   }
 
   @Override
-  public TypeName getRequestTypeName(String apiTypeName, String requestTypeName) {
-    return typeNameConverter.getRequestTypeName(apiTypeName, requestTypeName);
+  public TypeName getRequestTypeName(String apiTypeName, TypeInfo typeInfo) {
+    return typeNameConverter.getRequestTypeName(apiTypeName, typeInfo);
   }
 
-  public String getAndSaveNicknameForRequestType(String apiTypeName, String requestTypeName) {
-    return typeTable.getAndSaveNicknameFor(getRequestTypeName(apiTypeName, requestTypeName));
+  public String getAndSaveNicknameForRequestType(String apiTypeName, TypeInfo typeInfo) {
+    return typeTable.getAndSaveNicknameFor(getRequestTypeName(apiTypeName, typeInfo));
   }
 
   @Override
   public TypeName getTypeName(TypeInfo typeInfo) {
     return typeNameConverter.getTypeName(typeInfo);
+  }
+
+  @Override
+  public TypeName getTypeNameForElementType(TypeInfo typeInfo) {
+    return typeNameConverter.getTypeNameForElementType(typeInfo);
+  }
+
+  public String getAndSaveNickNameForElementType(TypeInfo typeInfo) {
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(typeInfo));
   }
 
   public String getAndSaveNicknameFor(TypeInfo typeInfo) {

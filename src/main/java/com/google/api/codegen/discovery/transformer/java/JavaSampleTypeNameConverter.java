@@ -76,10 +76,21 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
     return typeNameConverter.getTypeName(Joiner.on('.').join(packagePrefix, apiTypeName));
   }
 
+  /**
+   * Returns packagePrefix with subpackage appended if not empty.
+   */
+  private String packagePrefix(String subpackage) {
+    if (!Strings.isNullOrEmpty(subpackage)) {
+      return new StringBuilder(packagePrefix).append('.').append(subpackage).toString();
+    }
+    return packagePrefix;
+  }
+
   @Override
-  public TypeName getRequestTypeName(String apiTypeName, String requestTypeName) {
+  public TypeName getRequestTypeName(String apiTypeName, TypeInfo typeInfo) {
+    MessageTypeInfo type = typeInfo.message();
     return typeNameConverter.getTypeName(
-        Joiner.on('.').join(packagePrefix, apiTypeName, requestTypeName));
+        Joiner.on('.').join(packagePrefix(type.subpackage()), apiTypeName, type.typeName()));
   }
 
   @Override
@@ -91,9 +102,27 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
       if (!Strings.isNullOrEmpty(messageInfo.subpackage())) {
         sb.append('.').append(messageInfo.subpackage());
       }
-      return typeNameConverter.getTypeName(sb.append('.').append(messageInfo.typeName()).toString());
+      return typeNameConverter.getTypeName(
+          sb.append('.').append(messageInfo.typeName()).toString());
     }
     return getNonMessageTypeName(typeInfo);
+  }
+
+  @Override
+  public TypeName getTypeNameForElementType(TypeInfo typeInfo) {
+    // Maps are special-cased so we return Map.Entry types.
+    if (typeInfo.isMap()) {
+      TypeName mapTypeName = new TypeName("java.util.Map", "Map.Entry");
+      TypeName keyTypeName = getTypeNameForElementType(typeInfo.mapKey(), true);
+      TypeName valueTypeName = getTypeNameForElementType(typeInfo.mapValue(), true);
+      return new TypeName(
+          mapTypeName.getFullName(),
+          mapTypeName.getNickname(),
+          "%s<%i, %i>",
+          keyTypeName,
+          valueTypeName);
+    }
+    return getTypeNameForElementType(typeInfo, true);
   }
 
   private TypeName getNonMessageTypeName(TypeInfo typeInfo) {
@@ -117,8 +146,8 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
     return getTypeNameForElementType(typeInfo, false);
   }
 
-  private TypeName getTypeNameForElementType(TypeInfo type, boolean shouldBoxPrimitives) {
-    String primitiveTypeName = PRIMIVITVE_TYPE_MAP.get(type.kind());
+  private TypeName getTypeNameForElementType(TypeInfo typeInfo, boolean shouldBoxPrimitives) {
+    String primitiveTypeName = PRIMIVITVE_TYPE_MAP.get(typeInfo.kind());
     if (primitiveTypeName != null) {
       if (primitiveTypeName.contains(".")) {
         // For fully-qualified type names, use the regular resolver. These types are already boxed,
@@ -130,11 +159,11 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
       }
       return new TypeName(primitiveTypeName);
     }
-    switch (type.kind()) {
+    switch (typeInfo.kind()) {
       case TYPE_MESSAGE:
-        return getTypeName(type);
+        return getTypeName(typeInfo);
       default:
-        throw new IllegalArgumentException("unknown type kind: " + type.kind());
+        throw new IllegalArgumentException("unknown type kind: " + typeInfo.kind());
     }
   }
 

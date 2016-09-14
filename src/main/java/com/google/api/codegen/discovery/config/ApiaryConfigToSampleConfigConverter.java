@@ -20,10 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.beust.jcommander.internal.Lists;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryImporter;
-import com.google.common.base.Splitter;
 import com.google.protobuf.Field;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
@@ -53,7 +51,7 @@ public class ApiaryConfigToSampleConfigConverter {
     // produce them here for ease-of-access.
     for (Method method : methods) {
       String methodName = method.getName();
-      LinkedList<String> nameComponents = new LinkedList<String>(Arrays.asList(methodName.split("\\.")));
+      LinkedList<String> nameComponents = new LinkedList<>(Arrays.asList(methodName.split("\\.")));
       nameComponents.removeFirst(); // Removes the API name.
       methodNameComponents.put(method.getName(), nameComponents);
     }
@@ -110,8 +108,8 @@ public class ApiaryConfigToSampleConfigConverter {
     if (isPageStreaming) {
       Field field = getPageStreamingResourceField(apiaryConfig.getType(responseTypeUrl));
       // If field is null, then the page streaming resource field is not
-      // repeated. We allow null to be stored, and leave it to the user to
-      // override appropriately.
+      // repeated. We allow null to be stored, and leave it to the overrides
+      // file to define appropriately.
       if (field != null) {
         pageStreamingResourceField = createFieldInfo(field, method);
       }
@@ -161,8 +159,7 @@ public class ApiaryConfigToSampleConfigConverter {
     if (isMap) {
       Type type = apiaryConfig.getType(field.getTypeUrl());
       mapKey = createTypeInfo(apiaryConfig.getField(type, KEY_FIELD_NAME), method);
-      mapValue =
-          createTypeInfo(apiaryConfig.getField(type, VALUE_FIELD_NAME), method);
+      mapValue = createTypeInfo(apiaryConfig.getField(type, VALUE_FIELD_NAME), method);
     } else if (field.getKind() == Field.Kind.TYPE_MESSAGE) {
       isMessage = true;
       messageTypeInfo = createMessageTypeInfo(field, method, apiaryConfig, false);
@@ -227,7 +224,11 @@ public class ApiaryConfigToSampleConfigConverter {
         fields.put(field2.getName(), createFieldInfo(field2, method));
       }
     }
-    return MessageTypeInfo.newBuilder().typeName(typeName).subpackage(typeNameGenerator.getSubpackage(false)).fields(fields).build();
+    return MessageTypeInfo.newBuilder()
+        .typeName(typeName)
+        .subpackage(typeNameGenerator.getSubpackage(false))
+        .fields(fields)
+        .build();
   }
 
   /**

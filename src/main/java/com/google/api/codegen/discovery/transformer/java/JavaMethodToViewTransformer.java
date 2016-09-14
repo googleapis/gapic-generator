@@ -86,7 +86,7 @@ public class JavaMethodToViewTransformer implements SampleMethodToViewTransforme
     sampleBodyView.requestVarName(symbolTable.getNewSymbol("request"));
     sampleBodyView.requestTypeName(
         sampleTypeTable.getAndSaveNicknameForRequestType(
-            sampleConfig.apiTypeName(), methodInfo.requestType().message().typeName()));
+            sampleConfig.apiTypeName(), methodInfo.requestType()));
 
     sampleBodyView.requestBodyVarName("");
     sampleBodyView.requestBodyTypeName("");
@@ -101,12 +101,12 @@ public class JavaMethodToViewTransformer implements SampleMethodToViewTransforme
             "method is page streaming, but the page streaming resource field is null.");
       }
       sampleBodyView.resourceGetterName(sampleNamer.getResourceGetterName(fieldInfo.name()));
-      String nickname = sampleTypeTable.getAndSaveNicknameFor(fieldInfo.type());
-      sampleBodyView.resourceTypeName(nickname);
-      // Rename the type from Map<K, V> to Map.Entry<K, V> to match what we
-      // expect in the for-loop.
+      // If the type is a map, we save the element type (Map.Entry<K, V>) only.
       if (fieldInfo.type().isMap()) {
-        sampleBodyView.resourceTypeName(sampleNamer.getMapEntryTypeFromMapType(nickname));
+        sampleBodyView.resourceTypeName(
+            sampleTypeTable.getAndSaveNickNameForElementType(fieldInfo.type()));
+      } else {
+        sampleBodyView.resourceTypeName(sampleTypeTable.getAndSaveNicknameFor(fieldInfo.type()));
       }
       sampleBodyView.isResourceMap(fieldInfo.type().isMap());
     }

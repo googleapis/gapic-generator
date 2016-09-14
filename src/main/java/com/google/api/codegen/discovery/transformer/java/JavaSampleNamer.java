@@ -22,9 +22,4 @@ class JavaSampleNamer extends SampleNamer {
   public JavaSampleNamer() {
     super(new JavaNameFormatter());
   }
-
-  @Override
-  public String getMapEntryTypeFromMapType(String nickname) {
-    return nickname.replaceFirst("Map", "Map.Entry");
-  }
 }

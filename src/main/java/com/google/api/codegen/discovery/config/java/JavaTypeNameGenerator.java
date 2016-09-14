@@ -52,7 +52,7 @@ public class JavaTypeNameGenerator implements TypeNameGenerator {
 
   @Override
   public String getSubpackage(boolean isRequest) {
-    if (isRequest) {
+    if (!isRequest) {
       return "model";
     }
     return "";

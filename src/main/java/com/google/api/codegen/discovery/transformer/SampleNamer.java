@@ -40,7 +40,7 @@ public class SampleNamer extends NameFormatterDelegator {
   }
 
   public String getResourceGetterName(String fieldName) {
-    return methodName(Name.from("get", fieldName));
+    return methodName(Name.lowerCamel("get", fieldName));
   }
 
   public String getMapEntryTypeFromMapType(String nickname) {

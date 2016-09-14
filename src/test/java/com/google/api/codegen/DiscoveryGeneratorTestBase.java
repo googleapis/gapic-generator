@@ -78,7 +78,6 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
   protected Object run() {
     GeneratorProto generator = config.getGenerator();
 
-    String factory = generator.getFactory();
     String id = generator.getId();
 
     // TODO(saicheems): Fix this!

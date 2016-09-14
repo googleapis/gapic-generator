@@ -157,7 +157,8 @@ public class ViewModelProvider implements DiscoveryProvider {
       return this;
     }
 
-    public Builder setMethodToViewTransformer(SampleMethodToViewTransformer methodToViewTransformer) {
+    public Builder setMethodToViewTransformer(
+        SampleMethodToViewTransformer methodToViewTransformer) {
       this.methodToViewTransformer = methodToViewTransformer;
       return this;
     }

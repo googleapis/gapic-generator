@@ -31,14 +31,19 @@ public interface SampleTypeNameConverter {
   TypeName getServiceTypeName(String apiTypeName);
 
   /**
-   * Provides a TypeName from the given TODOs!.
+   * Provides a TypeName from the given API type name and TypeInfo.
    */
-  TypeName getRequestTypeName(String apiTypeName, String requestTypeName);
+  TypeName getRequestTypeName(String apiTypeName, TypeInfo typeInfo);
 
   /**
    * Provides a TypeName for the given TypeInfo.
    */
   TypeName getTypeName(TypeInfo typeInfo);
+
+  /**
+   * Provides an element TypeName for the given TypeInfo.
+   */
+  TypeName getTypeNameForElementType(TypeInfo typeInfo);
 
   /**
    * Provides a TypedValue containing the zero value of the given TypeInfo.
