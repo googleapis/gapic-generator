@@ -215,11 +215,7 @@ public class InitCodeTransformer {
       // Initialize one resource element if it is page-streaming.
       PageStreamingConfig config = context.getMethodConfig().getPageStreaming();
       String resourceFieldName = config.getResourcesField().getSimpleName();
-      InitCodeNode childItem = InitCodeNode.create("0");
-      InitCodeNode item =
-          InitCodeNode.createWithChildren(
-              resourceFieldName, InitCodeLineType.ListInitLine, childItem);
-      specItems.add(item);
+      specItems.add(InitCodeNode.createSingletonList(resourceFieldName));
 
       // Set the initial value of the page token to empty, in order to indicate that no more pages
       // are available
@@ -231,11 +227,7 @@ public class InitCodeTransformer {
       // Initialize one bundling element if it is bundling.
       BundlingConfig config = context.getMethodConfig().getBundling();
       String subResponseFieldName = config.getSubresponseField().getSimpleName();
-      InitCodeNode childItem = InitCodeNode.create("0");
-      InitCodeNode item =
-          InitCodeNode.createWithChildren(
-              subResponseFieldName, InitCodeLineType.ListInitLine, childItem);
-      specItems.add(item);
+      specItems.add(InitCodeNode.createSingletonList(subResponseFieldName));
     }
     return specItems;
   }

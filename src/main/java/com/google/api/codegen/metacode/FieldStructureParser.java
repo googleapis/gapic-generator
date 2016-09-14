@@ -60,11 +60,11 @@ public class FieldStructureParser {
       valueConfig = initValueConfigMap.get(fieldSpec);
     }
 
-    return parsePartialFieldToInitCodeLineNode(
+    return parsePartialFieldToInitCodeNode(
         equalsParts[0], InitCodeLineType.Unknown, valueConfig, null);
   }
 
-  private static InitCodeNode parsePartialFieldToInitCodeLineNode(
+  private static InitCodeNode parsePartialFieldToInitCodeNode(
       String toMatch,
       InitCodeLineType prevType,
       InitValueConfig initValueConfig,
@@ -94,6 +94,9 @@ public class FieldStructureParser {
       toMatch = null;
     }
 
+    // Create new InitCodeNode with prevItem as a child node. If prevItem is null, then this is the
+    // first call to parsePartialFieldToInitCodeNode(), and we create a new InitCodeNode using
+    // initValueConfig (if it is not also null)
     InitCodeNode item;
     if (prevItem != null) {
       item = InitCodeNode.createWithChildren(key, prevType, prevItem);
@@ -106,6 +109,6 @@ public class FieldStructureParser {
     if (toMatch == null) {
       return item;
     }
-    return parsePartialFieldToInitCodeLineNode(toMatch, nextType, null, item);
+    return parsePartialFieldToInitCodeNode(toMatch, nextType, null, item);
   }
 }

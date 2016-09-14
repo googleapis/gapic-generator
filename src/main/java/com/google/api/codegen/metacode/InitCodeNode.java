@@ -19,6 +19,7 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import java.util.ArrayList;
@@ -81,27 +82,36 @@ public class InitCodeNode {
 
   public static InitCodeNode createWithChildren(
       String key, InitCodeLineType type, InitCodeNode... children) {
+    return createWithChildren(key, type, Lists.newArrayList(children));
+  }
+
+  public static InitCodeNode createWithChildren(
+      String key, InitCodeLineType type, Iterable<InitCodeNode> children) {
     InitCodeNode item = new InitCodeNode(key, type, InitValueConfig.create());
     for (InitCodeNode child : children) {
-      item.addChild(child);
+      item.mergeChild(child);
     }
     return item;
+  }
+
+  public static InitCodeNode createSingletonList(String key) {
+    InitCodeNode child = InitCodeNode.create("0");
+    return InitCodeNode.createWithChildren(key, InitCodeLineType.ListInitLine, child);
   }
 
   /*
    * Constructs a tree of objects to be initialized using the provided context, and returns the root
    */
-  public static InitCodeNode createSpecItemTree(SpecItemParserContext parser) {
-    List<InitCodeNode> subTrees = buildSubTrees(parser);
-    InitCodeNode rootTree =
-        createWithChildren(
-            "root",
-            InitCodeLineType.StructureInitLine,
-            subTrees.toArray(new InitCodeNode[subTrees.size()]));
-    rootTree.updateTree(
-        parser.table(), parser.valueGenerator(), parser.rootObjectType(), parser.suggestedName());
-    rootTree.createInitCodeLines();
-    return rootTree;
+  public static InitCodeNode createSpecItemTree(SpecItemParserContext context) {
+    List<InitCodeNode> subTrees = buildSubTrees(context);
+    InitCodeNode root = createWithChildren("root", InitCodeLineType.StructureInitLine, subTrees);
+    root.updateTree(
+        context.table(),
+        context.valueGenerator(),
+        context.rootObjectType(),
+        context.suggestedName());
+    root.createInitCodeLines();
+    return root;
   }
 
   /*
@@ -123,11 +133,11 @@ public class InitCodeNode {
     this.children = new LinkedHashMap<>();
   }
 
-  private void addChild(InitCodeNode newChild) {
+  private void mergeChild(InitCodeNode newChild) {
     InitCodeNode oldChild = children.get(newChild.key);
     if (oldChild != null && oldChild.lineType != InitCodeLineType.Unknown) {
       for (InitCodeNode newSubChild : newChild.children.values()) {
-        oldChild.addChild(newSubChild);
+        oldChild.mergeChild(newSubChild);
       }
     } else {
       children.put(newChild.key, newChild);
@@ -175,26 +185,27 @@ public class InitCodeNode {
   private void updateTree(
       SymbolTable table, TestValueGenerator valueGenerator, TypeRef type, Name suggestedName) {
 
-    // Remove and re-add children with checked keys, call updateTree() recursively
+    // Check and update key values against type, then remove and re-add children with updated keys
+    // Call updateTree() recursively
     for (InitCodeNode child : new ArrayList<>(children.values())) {
       children.remove(child.key);
-      child.key = getKeyValue(type, child.key);
+      child.key = getValidatedKeyValue(type, child.key);
       child.updateTree(
           table,
           valueGenerator,
           getChildType(type, child.key),
           getChildSuggestedName(suggestedName, lineType, child));
-      addChild(child);
+      mergeChild(child);
     }
 
     // Update the nodeType, typeRef, identifier and initValueConfig
     typeRef = type;
-    validateType();
+    getValidateType();
     identifier = table.getNewSymbol(suggestedName);
     if (children.size() == 0) {
       if (initValueConfig.hasInitialValue()) {
         // Update initValueConfig with checked value
-        String newValue = validateValue(type, initValueConfig.getInitialValue());
+        String newValue = getValidatedValue(type, initValueConfig.getInitialValue());
         initValueConfig = InitValueConfig.createWithValue(newValue);
       } else if (initValueConfig.isEmpty()
           && type.isPrimitive()
@@ -261,7 +272,7 @@ public class InitCodeNode {
    * Validate the lineType against the typeRef that has been set, and against child objects. In the
    * case of no child objects being present, update the lineType to SimpleInitLine.
    */
-  private void validateType() {
+  private void getValidateType() {
     switch (lineType) {
       case StructureInitLine:
         if (!typeRef.isMessage() || typeRef.isRepeated()) {
@@ -322,13 +333,13 @@ public class InitCodeNode {
     }
   }
 
-  private static String getKeyValue(TypeRef parentType, String key) {
+  private static String getValidatedKeyValue(TypeRef parentType, String key) {
     if (parentType.isMap()) {
       TypeRef keyType = parentType.getMapKeyField().getType();
-      return validateValue(keyType, key);
+      return getValidatedValue(keyType, key);
     } else if (parentType.isRepeated()) {
       TypeRef keyType = TypeRef.of(Type.TYPE_UINT64);
-      return validateValue(keyType, key);
+      return getValidatedValue(keyType, key);
     } else {
       // Don't validate message types, field will be missing for a bad key
       return key;
@@ -360,7 +371,7 @@ public class InitCodeNode {
    * For string and byte types, the returned value has quote characters removed. Throws an
    * IllegalArgumentException is the provided type is not supported or doesn't match the value.
    */
-  private static String validateValue(TypeRef type, String value) {
+  private static String getValidatedValue(TypeRef type, String value) {
     Type descType = type.getKind();
     switch (descType) {
       case TYPE_BOOL:
