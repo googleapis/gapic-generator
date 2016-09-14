@@ -27,23 +27,26 @@ public class JavaTypeNameGenerator implements TypeNameGenerator {
   private static final String PACKAGE_PREFIX = "com.google.api.services";
 
   @Override
-  public String getApiTypeName(String apiName, String apiVersion) {
-    return Joiner.on('.')
-        .join(PACKAGE_PREFIX, apiName, apiVersion, Name.lowerCamel(apiName).toUpperCamel());
+  public String getPackagePrefix(String apiName, String apiVersion) {
+    return Joiner.on('.').join(PACKAGE_PREFIX, apiName, apiVersion);
   }
 
   @Override
-  public String getRequestTypeName(
-      String apiName, String apiVersion, List<String> methodNameComponents) {
-    List<String> nameComponents = new ArrayList<String>(methodNameComponents);
-    for (int i = 0; i < nameComponents.size(); i++) {
-      nameComponents.set(i, Name.lowerCamel(nameComponents.get(i)).toUpperCamel());
+  public String getApiTypeName(String apiName) {
+    return Name.lowerCamel(apiName).toUpperCamel();
+  }
+
+  @Override
+  public String getRequestTypeName(List<String> methodNameComponents) {
+    List<String> copy = new ArrayList<>(methodNameComponents);
+    for (int i = 0; i < copy.size(); i++) {
+      copy.set(i, Name.lowerCamel(copy.get(i)).toUpperCamel());
     }
-    return getApiTypeName(apiName, apiVersion) + "." + Joiner.on('.').join(nameComponents);
+    return Joiner.on('.').join(copy);
   }
 
   @Override
-  public String getMessageTypeName(String apiName, String apiVersion, String messageTypeName) {
-    return Joiner.on('.').join(PACKAGE_PREFIX, apiName, apiVersion, "model", messageTypeName);
+  public String getMessageTypeName(String messageTypeName) {
+    return messageTypeName;
   }
 }

@@ -14,18 +14,18 @@
  */
 package com.google.api.codegen.discovery.config;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.protobuf.Field;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.List;
 
 public class ApiaryConfigToSampleConfigConverter {
 
@@ -38,8 +38,6 @@ public class ApiaryConfigToSampleConfigConverter {
   private final ApiaryConfig apiaryConfig;
   private final TypeNameGenerator typeNameGenerator;
 
-  private final String apiName;
-  private final String apiVersion;
   private final Map<String, List<String>> methodNameComponents;
 
   public ApiaryConfigToSampleConfigConverter(
@@ -48,8 +46,6 @@ public class ApiaryConfigToSampleConfigConverter {
     this.apiaryConfig = apiaryConfig;
     this.typeNameGenerator = typeNameGenerator;
 
-    apiName = apiaryConfig.getApiName();
-    apiVersion = apiaryConfig.getApiVersion();
     methodNameComponents = new HashMap<String, List<String>>();
     // Pull all the methodNameComponents out.
     for (Method method : methods) {
@@ -74,7 +70,8 @@ public class ApiaryConfigToSampleConfigConverter {
         .apiTitle(apiaryConfig.getApiTitle())
         .apiName(apiName)
         .apiVersion(apiVersion)
-        .apiTypeName(typeNameGenerator.getApiTypeName(apiName, apiVersion))
+        .apiTypeName(typeNameGenerator.getApiTypeName(apiName))
+        .packagePrefix(typeNameGenerator.getPackagePrefix(apiName, apiVersion))
         .methods(methods)
         .build();
   }
@@ -188,10 +185,8 @@ public class ApiaryConfigToSampleConfigConverter {
   private TypeInfo createTypeInfo(Method method, boolean isRequest) {
     String typeName =
         isRequest
-            ? typeNameGenerator.getRequestTypeName(
-                apiName, apiVersion, methodNameComponents.get(method.getName()))
-            : typeNameGenerator.getMessageTypeName(
-                apiName, apiVersion, method.getResponseTypeUrl());
+            ? typeNameGenerator.getRequestTypeName(methodNameComponents.get(method.getName()))
+            : typeNameGenerator.getMessageTypeName(method.getResponseTypeUrl());
     MessageTypeInfo messageTypeInfo =
         MessageTypeInfo.newBuilder()
             .typeName(typeName)
@@ -216,7 +211,7 @@ public class ApiaryConfigToSampleConfigConverter {
    */
   private MessageTypeInfo createMessageTypeInfo(
       Field field, Method method, ApiaryConfig apiaryConfig, boolean deep) {
-    String typeName = typeNameGenerator.getMessageTypeName(apiName, apiVersion, field.getTypeUrl());
+    String typeName = typeNameGenerator.getMessageTypeName(field.getTypeUrl());
     Type type = apiaryConfig.getType(typeName);
     Map<String, FieldInfo> fields = new HashMap<>();
     if (deep) {

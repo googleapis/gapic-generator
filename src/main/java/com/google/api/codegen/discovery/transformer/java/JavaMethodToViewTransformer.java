@@ -47,7 +47,8 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
   @Override
   public ViewModel transform(Method method, SampleConfig sampleConfig) {
     SampleTypeTable sampleTypeTable =
-        new SampleTypeTable(new JavaTypeTable(), new JavaSampleTypeNameConverter());
+        new SampleTypeTable(
+            new JavaTypeTable(), new JavaSampleTypeNameConverter(sampleConfig.packagePrefix()));
     JavaSampleNamer namer = new JavaSampleNamer();
     SampleTransformerContext context =
         SampleTransformerContext.create(sampleConfig, sampleTypeTable, namer, method.getName());
@@ -79,10 +80,13 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
 
     SampleBodyView.Builder sampleBodyView = SampleBodyView.newBuilder();
     sampleBodyView.serviceVarName(symbolTable.getNewSymbol(sampleNamer.getServiceVarName()));
-    sampleBodyView.serviceTypeName(sampleTypeTable.getAndSaveNicknameFor(sampleConfig));
+    sampleBodyView.serviceTypeName(
+        sampleTypeTable.getAndSaveNicknameForServiceType(sampleConfig.apiTypeName()));
     sampleBodyView.methodNameComponents(methodInfo.nameComponents());
     sampleBodyView.requestVarName(symbolTable.getNewSymbol("request"));
-    sampleBodyView.requestTypeName(sampleTypeTable.getAndSaveNicknameFor(methodInfo.requestType()));
+    sampleBodyView.requestTypeName(
+        sampleTypeTable.getAndSaveNicknameForRequestType(
+            sampleConfig.apiTypeName(), methodInfo.requestType().message().typeName()));
 
     sampleBodyView.requestBodyVarName("");
     sampleBodyView.requestBodyTypeName("");
@@ -96,8 +100,7 @@ public class JavaMethodToViewTransformer implements MethodToViewTransformer {
         throw new IllegalArgumentException(
             "method is page streaming, but the page streaming resource field is null.");
       }
-      // TODO(garrettjones): Should I form this name this way?
-      sampleBodyView.resourceGetterName(Name.lowerCamel("get", fieldInfo.name()).toLowerCamel());
+      sampleBodyView.resourceGetterName(sampleNamer.getResourceGetterName(fieldInfo.name()));
       String nickname = sampleTypeTable.getAndSaveNicknameFor(fieldInfo.type());
       sampleBodyView.resourceTypeName(nickname);
       // Rename the type from Map<K, V> to Map.Entry<K, V> to match what we

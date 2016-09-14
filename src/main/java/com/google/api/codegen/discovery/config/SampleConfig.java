@@ -56,6 +56,12 @@ public abstract class SampleConfig {
   public abstract String apiTypeName();
 
   /**
+   * Returns the language specific package prefix for API types.
+   */
+  @JsonProperty("packagePrefix")
+  public abstract String packagePrefix();
+
+  /**
    * Returns a map of method names to methods.
    */
   @JsonProperty("methodInfo")
@@ -79,6 +85,9 @@ public abstract class SampleConfig {
 
     @JsonProperty("apiTypeName")
     public abstract Builder apiTypeName(String val);
+
+    @JsonProperty("packagePrefix")
+    public abstract Builder packagePrefix(String val);
 
     @JsonProperty("methodInfo")
     public abstract Builder methods(Map<String, MethodInfo> val);

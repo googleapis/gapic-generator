@@ -37,7 +37,7 @@ public class SymbolTable {
    */
   public Name getNewSymbol(Name desiredName) {
     String lower = desiredName.toLowerUnderscore();
-    String suffix = getSuffix(lower);
+    String suffix = getAndSaveSuffix(lower);
     if (Strings.isNullOrEmpty(suffix)) {
       return desiredName;
     }
@@ -48,10 +48,10 @@ public class SymbolTable {
    * Returns a unique name, with a numeric suffix in case of conflicts.
    *
    * Not guaranteed to work as expected if used in combination with {@link
-   * #getNewSymbol(String)}.
+   * #getNewSymbol(Name)}.
    */
   public String getNewSymbol(String desiredName) {
-    String suffix = getSuffix(desiredName);
+    String suffix = getAndSaveSuffix(desiredName);
     return desiredName + suffix;
   }
 
@@ -60,7 +60,7 @@ public class SymbolTable {
    *
    *  Stores the joined desiredName/suffix in an internal map.
    */
-  private String getSuffix(String desiredName) {
+  private String getAndSaveSuffix(String desiredName) {
     if (!symbolTable.contains(desiredName)) {
       symbolTable.add(desiredName);
       return "";

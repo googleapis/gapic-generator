@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NameFormatterDelegator;
 
@@ -35,7 +36,11 @@ public class SampleNamer extends NameFormatterDelegator {
   }
 
   public String getFieldVarName(String fieldName) {
-    return fieldName;
+    return varName(Name.lowerCamel(fieldName));
+  }
+
+  public String getResourceGetterName(String fieldName) {
+    return methodName(Name.from("get", fieldName));
   }
 
   public String getMapEntryTypeFromMapType(String nickname) {

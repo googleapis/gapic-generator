@@ -14,7 +14,8 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
-import com.google.api.codegen.discovery.config.SampleConfig;
+import java.util.List;
+
 import com.google.api.codegen.discovery.config.TypeInfo;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
@@ -27,7 +28,12 @@ public interface SampleTypeNameConverter {
   /**
    * Provides a TypeName for the service.
    */
-  TypeName getServiceTypeName(SampleConfig sampleConfig);
+  TypeName getServiceTypeName(String apiTypeName);
+
+  /**
+   * Provides a TypeName from the given TODOs!.
+   */
+  TypeName getRequestTypeName(String apiTypeName, String requestTypeName);
 
   /**
    * Provides a TypeName for the given TypeInfo.

@@ -14,12 +14,12 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
-import com.google.api.codegen.discovery.config.SampleConfig;
+import java.util.List;
+
 import com.google.api.codegen.discovery.config.TypeInfo;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.api.codegen.util.TypedValue;
-import java.util.List;
 
 /**
  * Manages the imports for a set of fully-qualified type names.
@@ -35,12 +35,21 @@ public class SampleTypeTable implements SampleTypeNameConverter {
   }
 
   @Override
-  public TypeName getServiceTypeName(SampleConfig sampleConfig) {
-    return typeNameConverter.getServiceTypeName(sampleConfig);
+  public TypeName getServiceTypeName(String apiName) {
+    return typeNameConverter.getServiceTypeName(apiName);
   }
 
-  public String getAndSaveNicknameFor(SampleConfig sampleConfig) {
-    return typeTable.getAndSaveNicknameFor(getServiceTypeName(sampleConfig));
+  public String getAndSaveNicknameForServiceType(String apiName) {
+    return typeTable.getAndSaveNicknameFor(getServiceTypeName(apiName));
+  }
+
+  @Override
+  public TypeName getRequestTypeName(String apiTypeName, String requestTypeName) {
+    return typeNameConverter.getRequestTypeName(apiTypeName, requestTypeName);
+  }
+
+  public String getAndSaveNicknameForRequestType(String apiTypeName, String requestTypeName) {
+    return typeTable.getAndSaveNicknameFor(getRequestTypeName(apiTypeName, requestTypeName));
   }
 
   @Override

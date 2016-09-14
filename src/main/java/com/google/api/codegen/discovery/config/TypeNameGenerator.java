@@ -18,10 +18,11 @@ import java.util.List;
 
 public interface TypeNameGenerator {
 
-  public String getApiTypeName(String apiName, String apiVersion);
+  public String getPackagePrefix(String apiName, String apiVersion);
 
-  public String getRequestTypeName(
-      String apiName, String apiVersion, List<String> methodNameComponents);
+  public String getApiTypeName(String apiName);
 
-  public String getMessageTypeName(String apiName, String apiVersion, String messageTypeName);
+  public String getRequestTypeName(List<String> methodNameComponents);
+
+  public String getMessageTypeName(String messageTypeName);
 }

@@ -14,7 +14,8 @@
  */
 package com.google.api.codegen.discovery.transformer.java;
 
-import com.google.api.codegen.discovery.config.SampleConfig;
+import java.util.List;
+
 import com.google.api.codegen.discovery.config.TypeInfo;
 import com.google.api.codegen.discovery.transformer.SampleTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
@@ -23,6 +24,8 @@ import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
+
+import autovalue.shaded.com.google.common.common.base.Joiner;
 
 /**
  * Maps SampleConfig and TypeInfo instances to Java specific TypeName instances.
@@ -61,31 +64,39 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
           .put(Field.Kind.TYPE_ENUM, "\"\"")
           .build();
 
-  private TypeNameConverter typeNameConverter;
+  private final TypeNameConverter typeNameConverter;
+  private final String packagePrefix;
 
-  public JavaSampleTypeNameConverter() {
+  public JavaSampleTypeNameConverter(String packagePrefix) {
     this.typeNameConverter = new JavaTypeTable();
+    this.packagePrefix = packagePrefix;
   }
 
   @Override
-  public TypeName getServiceTypeName(SampleConfig sampleConfig) {
-    return typeNameConverter.getTypeName(sampleConfig.apiTypeName());
+  public TypeName getServiceTypeName(String apiTypeName) {
+    return typeNameConverter.getTypeName(Joiner.on('.').join(packagePrefix, apiTypeName));
+  }
+
+  @Override
+  public TypeName getRequestTypeName(String apiTypeName, String requestTypeName) {
+    return typeNameConverter.getTypeName(
+        Joiner.on('.').join(packagePrefix, apiTypeName, requestTypeName));
   }
 
   @Override
   public TypeName getTypeName(TypeInfo typeInfo) {
-    String typeName = "";
     if (typeInfo.isMessage()) {
-      typeName = typeInfo.message().typeName();
+      return typeNameConverter.getTypeName(
+          Joiner.on('.').join(packagePrefix, "model", typeInfo.message().typeName()));
     }
-    return getTypeName(typeInfo, typeName);
+    return getNonMessageTypeName(typeInfo);
   }
 
-  private TypeName getTypeName(TypeInfo typeInfo, String typeName) {
-    if (typeInfo.isMessage()) {
+  private TypeName getNonMessageTypeName(TypeInfo typeInfo) {
+    /*if (typeInfo.isMessage()) {
       // {apiName}.{resource1}.{resource2}...{messageTypeName}
       return typeNameConverter.getTypeName(typeName);
-    }
+    }*/
     if (typeInfo.isMap()) {
       TypeName mapTypeName = typeNameConverter.getTypeName("java.util.Map");
       TypeName keyTypeName = getTypeNameForElementType(typeInfo.mapKey(), true);
