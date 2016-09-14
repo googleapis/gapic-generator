@@ -19,8 +19,7 @@ import com.google.api.codegen.metacode.InitCode;
 import com.google.api.codegen.metacode.InitCodeLine;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.metacode.InputParameter;
-import com.google.api.codegen.metacode.SpecItemNode;
-import com.google.api.codegen.metacode.SpecItemRootNode;
+import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.SpecItemParserContext;
 import com.google.api.codegen.metacode.StructureInitCodeLine;
 import com.google.api.codegen.util.Name;
@@ -106,8 +105,8 @@ public abstract class DocConfig {
             InitValueConfig.create(context.getApiWrapperName(service), collectionConfig);
         initValueConfigMap.put(fieldNamePattern.getKey(), initValueConfig);
       }
-      SpecItemRootNode rootNode =
-          SpecItemRootNode.createSpecItemTree(
+      InitCodeNode rootNode =
+          InitCodeNode.createSpecItemTree(
               SpecItemParserContext.newBuilder()
                   .table(new SymbolTable())
                   .rootObjectType(method.getInputType())
@@ -116,9 +115,8 @@ public abstract class DocConfig {
                   .initFieldSet(fields)
                   .suggestedName(Name.from("request"))
                   .build());
-      rootNode.createInitCodeLines();
       List<InitCodeLine> initCodeLines = new ArrayList<>();
-      for (SpecItemNode item : rootNode.listInInitializationOrder()) {
+      for (InitCodeNode item : rootNode.listInInitializationOrder()) {
         initCodeLines.add(item.getInitCodeLine());
       }
       return initCodeLines;

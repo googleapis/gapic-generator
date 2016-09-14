@@ -47,7 +47,7 @@ public abstract class SpecItemParserContext {
   public abstract List<String> sampleCodeInitFields();
 
   @Nullable
-  public abstract List<SpecItemNode> subTrees();
+  public abstract List<InitCodeNode> subTrees();
 
   public static SpecItemParserContext.Builder newBuilder() {
     return new AutoValue_SpecItemParserContext.Builder();
@@ -69,7 +69,7 @@ public abstract class SpecItemParserContext {
 
     public abstract Builder sampleCodeInitFields(List<String> val);
 
-    public abstract Builder subTrees(List<SpecItemNode> val);
+    public abstract Builder subTrees(List<InitCodeNode> val);
 
     public abstract SpecItemParserContext build();
   }

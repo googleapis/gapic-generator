@@ -103,9 +103,9 @@ public class SampleInitCodeTest {
   public void testSimpleField() throws Exception {
     String fieldSpec = "myfield";
 
-    SpecItemNode expectedStructure = SpecItemNode.create("myfield");
+    InitCodeNode expectedStructure = InitCodeNode.create("myfield");
 
-    SpecItemNode actualStructure = FieldStructureParser.parse(fieldSpec);
+    InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
     Truth.assertThat(checkEquals(actualStructure, expectedStructure));
   }
 
@@ -113,12 +113,12 @@ public class SampleInitCodeTest {
   public void testEmbeddedField() throws Exception {
     String fieldSpec = "myobj.myfield";
 
-    SpecItemNode innerStructure = SpecItemNode.create("myfield");
-    SpecItemNode expectedStructure =
-        SpecItemNode.createWithChildren(
+    InitCodeNode innerStructure = InitCodeNode.create("myfield");
+    InitCodeNode expectedStructure =
+        InitCodeNode.createWithChildren(
             "myobj", InitCodeLineType.StructureInitLine, innerStructure);
 
-    SpecItemNode actualStructure = FieldStructureParser.parse(fieldSpec);
+    InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
     Truth.assertThat(checkEquals(actualStructure, expectedStructure));
   }
 
@@ -126,11 +126,11 @@ public class SampleInitCodeTest {
   public void testListField() throws Exception {
     String fieldSpec = "mylist[0]";
 
-    SpecItemNode innerStructure = SpecItemNode.create("0");
-    SpecItemNode expectedStructure =
-        SpecItemNode.createWithChildren("mylist", InitCodeLineType.ListInitLine, innerStructure);
+    InitCodeNode innerStructure = InitCodeNode.create("0");
+    InitCodeNode expectedStructure =
+        InitCodeNode.createWithChildren("mylist", InitCodeLineType.ListInitLine, innerStructure);
 
-    SpecItemNode actualStructure = FieldStructureParser.parse(fieldSpec);
+    InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
     Truth.assertThat(checkEquals(actualStructure, expectedStructure));
   }
 
@@ -138,11 +138,11 @@ public class SampleInitCodeTest {
   public void testMapField() throws Exception {
     String fieldSpec = "mymap{key}";
 
-    SpecItemNode innerStructure = SpecItemNode.create("key");
-    SpecItemNode expectedStructure =
-        SpecItemNode.createWithChildren("mymap", InitCodeLineType.MapInitLine, innerStructure);
+    InitCodeNode innerStructure = InitCodeNode.create("key");
+    InitCodeNode expectedStructure =
+        InitCodeNode.createWithChildren("mymap", InitCodeLineType.MapInitLine, innerStructure);
 
-    SpecItemNode actualStructure = FieldStructureParser.parse(fieldSpec);
+    InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
     Truth.assertThat(checkEquals(actualStructure, expectedStructure));
   }
 
@@ -150,13 +150,13 @@ public class SampleInitCodeTest {
   public void testNestedListField() throws Exception {
     String fieldSpec = "mylist[0][0]";
 
-    SpecItemNode innerList = SpecItemNode.create("0");
-    SpecItemNode outerList =
-        SpecItemNode.createWithChildren("0", InitCodeLineType.ListInitLine, innerList);
-    SpecItemNode expectedStructure =
-        SpecItemNode.createWithChildren("mylist", InitCodeLineType.ListInitLine, outerList);
+    InitCodeNode innerList = InitCodeNode.create("0");
+    InitCodeNode outerList =
+        InitCodeNode.createWithChildren("0", InitCodeLineType.ListInitLine, innerList);
+    InitCodeNode expectedStructure =
+        InitCodeNode.createWithChildren("mylist", InitCodeLineType.ListInitLine, outerList);
 
-    SpecItemNode actualStructure = FieldStructureParser.parse(fieldSpec);
+    InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
     Truth.assertThat(checkEquals(actualStructure, expectedStructure));
   }
 
@@ -164,13 +164,13 @@ public class SampleInitCodeTest {
   public void testNestedMixedField() throws Exception {
     String fieldSpec = "mylist[0]{key}";
 
-    SpecItemNode innerMap = SpecItemNode.create("key");
-    SpecItemNode innerList =
-        SpecItemNode.createWithChildren("0", InitCodeLineType.ListInitLine, innerMap);
-    SpecItemNode expectedStructure =
-        SpecItemNode.createWithChildren("mylist", InitCodeLineType.ListInitLine, innerList);
+    InitCodeNode innerMap = InitCodeNode.create("key");
+    InitCodeNode innerList =
+        InitCodeNode.createWithChildren("0", InitCodeLineType.ListInitLine, innerMap);
+    InitCodeNode expectedStructure =
+        InitCodeNode.createWithChildren("mylist", InitCodeLineType.ListInitLine, innerList);
 
-    SpecItemNode actualStructure = FieldStructureParser.parse(fieldSpec);
+    InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
     Truth.assertThat(checkEquals(actualStructure, expectedStructure));
   }
 
@@ -178,13 +178,10 @@ public class SampleInitCodeTest {
   public void testAssignment() throws Exception {
     String fieldSpec = "myfield=\"default\"";
 
-    SpecItemNode expectedStructure =
-        new SpecItemNode(
-            "myfield",
-            InitCodeLineType.SimpleInitLine,
-            InitValueConfig.createWithValue("\"default\""));
+    InitCodeNode expectedStructure =
+        InitCodeNode.createWithValue("myfield", InitValueConfig.createWithValue("\"default\""));
 
-    SpecItemNode actualStructure = FieldStructureParser.parse(fieldSpec);
+    InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
     Truth.assertThat(checkEquals(actualStructure, expectedStructure));
   }
 
@@ -192,13 +189,13 @@ public class SampleInitCodeTest {
   public void testListEmbeddedField() throws Exception {
     String fieldSpec = "mylist[0].myfield";
 
-    SpecItemNode innerStructure = SpecItemNode.create("myfield");
-    SpecItemNode innerList =
-        SpecItemNode.createWithChildren("0", InitCodeLineType.StructureInitLine, innerStructure);
-    SpecItemNode expectedStructure =
-        SpecItemNode.createWithChildren("mylist", InitCodeLineType.ListInitLine, innerList);
+    InitCodeNode innerStructure = InitCodeNode.create("myfield");
+    InitCodeNode innerList =
+        InitCodeNode.createWithChildren("0", InitCodeLineType.StructureInitLine, innerStructure);
+    InitCodeNode expectedStructure =
+        InitCodeNode.createWithChildren("mylist", InitCodeLineType.ListInitLine, innerList);
 
-    SpecItemNode actualStructure = FieldStructureParser.parse(fieldSpec);
+    InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
     Truth.assertThat(checkEquals(actualStructure, expectedStructure));
   }
 
@@ -206,78 +203,69 @@ public class SampleInitCodeTest {
   public void testEmbeddedFieldList() throws Exception {
     String fieldSpec = "myfield.mylist[0]";
 
-    SpecItemNode innerList = SpecItemNode.create("0");
-    SpecItemNode innerStructure =
-        SpecItemNode.createWithChildren("mylist", InitCodeLineType.ListInitLine, innerList);
-    SpecItemNode expectedStructure =
-        SpecItemNode.createWithChildren(
+    InitCodeNode innerList = InitCodeNode.create("0");
+    InitCodeNode innerStructure =
+        InitCodeNode.createWithChildren("mylist", InitCodeLineType.ListInitLine, innerList);
+    InitCodeNode expectedStructure =
+        InitCodeNode.createWithChildren(
             "myfield", InitCodeLineType.StructureInitLine, innerStructure);
 
-    SpecItemNode actualStructure = FieldStructureParser.parse(fieldSpec);
+    InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
     Truth.assertThat(checkEquals(actualStructure, expectedStructure));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testListFieldBadIndex() throws Exception {
     List<String> fieldSpecs = Arrays.asList("mylist[1]");
-    SpecItemRootNode.createSpecItemTree(
-        getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+    InitCodeNode.createSpecItemTree(getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testListFieldIndexGap() throws Exception {
     List<String> fieldSpecs = Arrays.asList("mylist[0]", "mylist[2]");
-    SpecItemRootNode.createSpecItemTree(
-        getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+    InitCodeNode.createSpecItemTree(getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testListFieldMismatchedListThenField() throws Exception {
     List<String> fieldSpecs = Arrays.asList("myfield[0]", "myfield.subfield");
-    SpecItemRootNode.createSpecItemTree(
-        getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+    InitCodeNode.createSpecItemTree(getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testListFieldMismatchedFieldThenList() throws Exception {
     List<String> fieldSpecs = Arrays.asList("myfield.subfield", "myfield[0]");
-    SpecItemRootNode.createSpecItemTree(
-        getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+    InitCodeNode.createSpecItemTree(getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testBadField() throws Exception {
     List<String> fieldSpecs = Arrays.asList("notafield");
-    SpecItemRootNode.createSpecItemTree(
-        getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+    InitCodeNode.createSpecItemTree(getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testBadSubField() throws Exception {
     List<String> fieldSpecs = Arrays.asList("myfield.notafield");
-    SpecItemRootNode.createSpecItemTree(
-        getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+    InitCodeNode.createSpecItemTree(getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testMapFieldBadStringIndex() throws Exception {
     List<String> fieldSpecs = Arrays.asList("stringmap{0}");
-    SpecItemRootNode.createSpecItemTree(
-        getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+    InitCodeNode.createSpecItemTree(getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testMapFieldBadStringIndexNoQuotes() throws Exception {
     List<String> fieldSpecs = Arrays.asList("stringmap{key}");
-    SpecItemRootNode.createSpecItemTree(
-        getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+    InitCodeNode.createSpecItemTree(getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testMapFieldBadIntIndex() throws Exception {
     List<String> fieldSpecs = Arrays.asList("intmap{\"key\"}");
-    SpecItemRootNode.createSpecItemTree(
-        getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+    InitCodeNode.createSpecItemTree(getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
   }
 
   @Test
@@ -288,11 +276,11 @@ public class SampleInitCodeTest {
     List<String> expectedKeyList =
         Lists.newArrayList("mylist", "myfield", "secondfield", "stringmap", "intmap", "root");
 
-    SpecItemRootNode rootNode =
-        SpecItemRootNode.createSpecItemTree(
+    InitCodeNode rootNode =
+        InitCodeNode.createSpecItemTree(
             getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
     List<String> actualKeyList = new ArrayList<>();
-    for (SpecItemNode node : rootNode.listInInitializationOrder()) {
+    for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
     }
     Truth.assertThat(actualKeyList.equals(expectedKeyList));
@@ -304,11 +292,11 @@ public class SampleInitCodeTest {
 
     List<String> expectedKeyList = Arrays.asList("0", "1", "mylist", "root");
 
-    SpecItemRootNode rootNode =
-        SpecItemRootNode.createSpecItemTree(
+    InitCodeNode rootNode =
+        InitCodeNode.createSpecItemTree(
             getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
     List<String> actualKeyList = new ArrayList<>();
-    for (SpecItemNode node : rootNode.listInInitializationOrder()) {
+    for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
     }
     Truth.assertThat(actualKeyList.equals(expectedKeyList));
@@ -322,11 +310,11 @@ public class SampleInitCodeTest {
     List<String> expectedKeyList =
         Arrays.asList("key1", "key2", "stringmap", "123", "456", "intmap", "root");
 
-    SpecItemRootNode rootNode =
-        SpecItemRootNode.createSpecItemTree(
+    InitCodeNode rootNode =
+        InitCodeNode.createSpecItemTree(
             getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
     List<String> actualKeyList = new ArrayList<>();
-    for (SpecItemNode node : rootNode.listInInitializationOrder()) {
+    for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
     }
     Truth.assertThat(actualKeyList.equals(expectedKeyList));
@@ -339,11 +327,11 @@ public class SampleInitCodeTest {
     List<String> expectedKeyList =
         Arrays.asList("subfield", "subsecondfield", "0", "mylist", "root");
 
-    SpecItemRootNode rootNode =
-        SpecItemRootNode.createSpecItemTree(
+    InitCodeNode rootNode =
+        InitCodeNode.createSpecItemTree(
             getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
     List<String> actualKeyList = new ArrayList<>();
-    for (SpecItemNode node : rootNode.listInInitializationOrder()) {
+    for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
     }
     Truth.assertThat(actualKeyList.equals(expectedKeyList));
@@ -355,11 +343,11 @@ public class SampleInitCodeTest {
 
     List<String> expectedKeyList = Arrays.asList("subfield", "myfield", "root");
 
-    SpecItemRootNode rootNode =
-        SpecItemRootNode.createSpecItemTree(
+    InitCodeNode rootNode =
+        InitCodeNode.createSpecItemTree(
             getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
     List<String> actualKeyList = new ArrayList<>();
-    for (SpecItemNode node : rootNode.listInInitializationOrder()) {
+    for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
     }
     Truth.assertThat(actualKeyList.equals(expectedKeyList));
@@ -371,17 +359,17 @@ public class SampleInitCodeTest {
 
     List<String> expectedKeyList = Arrays.asList("subfield", "0", "mylist", "root");
 
-    SpecItemRootNode rootNode =
-        SpecItemRootNode.createSpecItemTree(
+    InitCodeNode rootNode =
+        InitCodeNode.createSpecItemTree(
             getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
     List<String> actualKeyList = new ArrayList<>();
-    for (SpecItemNode node : rootNode.listInInitializationOrder()) {
+    for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
     }
     Truth.assertThat(actualKeyList.equals(expectedKeyList));
   }
 
-  private static boolean checkEquals(SpecItemNode first, SpecItemNode second) {
+  private static boolean checkEquals(InitCodeNode first, InitCodeNode second) {
     if (first == second) {
       return true;
     }

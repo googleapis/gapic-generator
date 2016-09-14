@@ -42,34 +42,33 @@ public class FieldStructureParser {
     return fieldMapPattern;
   }
 
-  public static SpecItemNode parse(String fieldSpec) {
+  public static InitCodeNode parse(String fieldSpec) {
     return parse(fieldSpec, ImmutableMap.<String, InitValueConfig>of());
   }
 
-  public static SpecItemNode parse(
+  public static InitCodeNode parse(
       String fieldSpec, Map<String, InitValueConfig> initValueConfigMap) {
     String[] equalsParts = fieldSpec.split("[=]");
-    InitValueConfig valueConfig = InitValueConfig.create();
-    InitCodeLineType type = InitCodeLineType.Unknown;
     if (equalsParts.length > 2) {
       throw new IllegalArgumentException("Inconsistent: found multiple '=' characters");
     }
+
+    InitValueConfig valueConfig = null;
     if (equalsParts.length == 2) {
       valueConfig = InitValueConfig.createWithValue(equalsParts[1]);
-      type = InitCodeLineType.SimpleInitLine;
     } else if (initValueConfigMap.containsKey(fieldSpec)) {
       valueConfig = initValueConfigMap.get(fieldSpec);
-      type = InitCodeLineType.SimpleInitLine;
     }
 
-    return parsePartialFieldToInitCodeLineNode(equalsParts[0], type, valueConfig, null);
+    return parsePartialFieldToInitCodeLineNode(
+        equalsParts[0], InitCodeLineType.Unknown, valueConfig, null);
   }
 
-  private static SpecItemNode parsePartialFieldToInitCodeLineNode(
+  private static InitCodeNode parsePartialFieldToInitCodeLineNode(
       String toMatch,
       InitCodeLineType prevType,
       InitValueConfig initValueConfig,
-      SpecItemNode prevItem) {
+      InitCodeNode prevItem) {
 
     InitCodeLineType nextType;
     String key;
@@ -95,14 +94,18 @@ public class FieldStructureParser {
       toMatch = null;
     }
 
-    SpecItemNode item = new SpecItemNode(key, prevType, initValueConfig);
+    InitCodeNode item;
     if (prevItem != null) {
-      item.addChild(prevItem);
+      item = InitCodeNode.createWithChildren(key, prevType, prevItem);
+    } else if (initValueConfig != null) {
+      item = InitCodeNode.createWithValue(key, initValueConfig);
+    } else {
+      item = InitCodeNode.create(key);
     }
 
     if (toMatch == null) {
       return item;
     }
-    return parsePartialFieldToInitCodeLineNode(toMatch, nextType, InitValueConfig.create(), item);
+    return parsePartialFieldToInitCodeLineNode(toMatch, nextType, null, item);
   }
 }
