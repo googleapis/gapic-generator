@@ -94,13 +94,19 @@ public class PythonImportHandler {
     }
   }
 
-  public PythonImportHandler(Method method) {
-    addImport(
-        method.getFile(),
-        PythonImport.create(
-            ImportType.APP,
-            method.getFile().getProto().getPackage(),
-            PythonProtoElements.getPbFileName(method.getInputMessage())));
+  public PythonImportHandler(Iterable<Field> requiredFields) {
+    for (Field field : requiredFields) {
+      if (!field.getType().isMessage()) {
+        continue;
+      }
+      MessageType messageType = field.getType().getMessageType();
+      addImport(
+          messageType.getFile(),
+          PythonImport.create(
+              ImportType.APP,
+              messageType.getFile().getProto().getPackage(),
+              PythonProtoElements.getPbFileName(messageType)));
+    }
   }
 
   // Independent import handler to support fragment generation from discovery sources

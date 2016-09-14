@@ -46,6 +46,10 @@ abstract class PythonDocConfig extends DocConfig {
 
   public abstract Method getMethod();
 
+  public abstract Interface getInterface();
+
+  public abstract PythonImportHandler getImportHandler();
+
   @Override
   public String getMethodName() {
     return LanguageUtil.upperCamelToLowerUnderscore(getMethod().getSimpleName());
@@ -56,8 +60,8 @@ abstract class PythonDocConfig extends DocConfig {
    */
   public boolean isIterableResponse() {
     Method method = getMethod();
-    Interface service = (Interface) method.getParent();
-    MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+    MethodConfig methodConfig =
+        getApiConfig().getInterfaceConfig(getInterface()).getMethodConfig(method);
     return methodConfig.isPageStreaming();
   }
 
@@ -92,7 +96,7 @@ abstract class PythonDocConfig extends DocConfig {
       }
 
       if (lineType != null && lineType.isMessage()) {
-        importStrings.addAll(new PythonImportHandler(getMethod()).calculateImports());
+        importStrings.addAll(getImportHandler().calculateImports());
         break;
       }
     }
@@ -101,13 +105,33 @@ abstract class PythonDocConfig extends DocConfig {
 
   @AutoValue.Builder
   abstract static class Builder extends DocConfig.Builder<Builder> {
-    public abstract PythonDocConfig build();
+    abstract PythonDocConfig autoBuild();
+
+    abstract Method getMethod();
+
+    abstract Interface getInterface();
+
+    abstract ApiConfig getApiConfig();
+
+    abstract Builder setImportHandler(PythonImportHandler importHandler);
+
+    public PythonDocConfig build() {
+      setImportHandler(
+          new PythonImportHandler(
+              getApiConfig()
+                  .getInterfaceConfig(getInterface())
+                  .getMethodConfig(getMethod())
+                  .getRequiredFields()));
+      return autoBuild();
+    }
 
     public abstract Builder setApiConfig(ApiConfig apiConfig);
 
     public abstract Builder setApiName(String serviceName);
 
     public abstract Builder setMethod(Method method);
+
+    public abstract Builder setInterface(Interface iface);
 
     public abstract Builder setReturnType(String returnType);
 
