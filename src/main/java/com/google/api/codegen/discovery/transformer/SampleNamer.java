@@ -27,10 +27,6 @@ public class SampleNamer extends NameFormatterDelegator {
     super(nameFormatter);
   }
 
-  private String getNotImplementedString(String feature) {
-    return "$ NOT IMPLEMENTED: " + feature + " $";
-  }
-
   public String getServiceVarName() {
     return "service";
   }
@@ -41,9 +37,5 @@ public class SampleNamer extends NameFormatterDelegator {
 
   public String getResourceGetterName(String fieldName) {
     return methodName(Name.lowerCamel("get", fieldName));
-  }
-
-  public String getMapEntryTypeFromMapType(String nickname) {
-    return getNotImplementedString("getMapEntryTypeFromMapType");
   }
 }

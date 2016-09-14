@@ -19,8 +19,7 @@ import java.util.List;
 
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.util.Name;
-
-import autovalue.shaded.com.google.common.common.base.Joiner;
+import com.google.common.base.Joiner;
 
 public class JavaTypeNameGenerator implements TypeNameGenerator {
 

@@ -97,13 +97,8 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
   public TypeName getTypeName(TypeInfo typeInfo) {
     if (typeInfo.isMessage()) {
       MessageTypeInfo messageInfo = typeInfo.message();
-      StringBuilder sb = new StringBuilder(packagePrefix);
-      // If the message has a subpackage, make sure we include it in the package path.
-      if (!Strings.isNullOrEmpty(messageInfo.subpackage())) {
-        sb.append('.').append(messageInfo.subpackage());
-      }
       return typeNameConverter.getTypeName(
-          sb.append('.').append(messageInfo.typeName()).toString());
+          Joiner.on('.').join(packagePrefix(messageInfo.subpackage()), messageInfo.typeName()));
     }
     return getNonMessageTypeName(typeInfo);
   }
