@@ -45,6 +45,7 @@ public class PythonImportHandler {
    */
   private final BiMap<ProtoFile, String> fileImports = HashBiMap.create();
 
+  /** This constructor is for the main imports of a generated service file */
   public PythonImportHandler(Interface service) {
     // Add non-service-specific imports.
     addImportStandard("json");
@@ -77,6 +78,7 @@ public class PythonImportHandler {
     }
   }
 
+  /** This constructor is used for doc messages. */
   public PythonImportHandler(ProtoFile file) {
     for (MessageType message : file.getMessages()) {
       for (Field field : message.getMessageFields()) {
@@ -94,6 +96,10 @@ public class PythonImportHandler {
     }
   }
 
+  /**
+   * This constructor is used for sample-gen where only the required fields of a method are needed
+   * to be imported.
+   */
   public PythonImportHandler(Iterable<Field> requiredFields) {
     for (Field field : requiredFields) {
       if (!field.getType().isMessage()) {
