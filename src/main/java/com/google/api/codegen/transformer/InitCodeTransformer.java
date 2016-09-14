@@ -20,8 +20,8 @@ import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.SmokeTestConfig;
 import com.google.api.codegen.metacode.InitCodeLineType;
-import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.metacode.InitCodeNode;
+import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.metacode.SpecItemParserContext;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
@@ -102,7 +102,7 @@ public class InitCodeTransformer {
       MethodTransformerContext context, SymbolTable table, TestValueGenerator valueGenerator) {
     ArrayList<Field> primitiveFields = new ArrayList<>();
     for (Field field : context.getMethod().getOutputMessage().getFields()) {
-      if (field.getType().isPrimitive()) {
+      if (field.getType().isPrimitive() && !field.getType().isRepeated()) {
         primitiveFields.add(field);
       }
     }

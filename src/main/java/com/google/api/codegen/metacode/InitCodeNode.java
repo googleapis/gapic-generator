@@ -196,7 +196,10 @@ public class InitCodeNode {
         // Update initValueConfig with checked value
         String newValue = validateValue(type, initValueConfig.getInitialValue());
         initValueConfig = InitValueConfig.createWithValue(newValue);
-      } else if (initValueConfig.isEmpty() && type.isPrimitive() && valueGenerator != null) {
+      } else if (initValueConfig.isEmpty()
+          && type.isPrimitive()
+          && !type.isRepeated()
+          && valueGenerator != null) {
         String newValue = valueGenerator.getAndStoreValue(type, identifier);
         initValueConfig = InitValueConfig.createWithValue(newValue);
       }
