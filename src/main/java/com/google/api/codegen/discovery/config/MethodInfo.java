@@ -40,7 +40,7 @@ public abstract class MethodInfo {
   public abstract List<String> nameComponents();
 
   /**
-   * Returns a map of method field names to fields.
+   * Returns a map of field names to fields.
    *
    * The map doesn't include the request body type, see {@link
    * #requestBodyType()}.

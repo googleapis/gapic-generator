@@ -14,18 +14,17 @@
  */
 package com.google.api.codegen.discovery.transformer.java;
 
-import java.util.List;
-
+import com.google.api.codegen.discovery.config.MessageTypeInfo;
 import com.google.api.codegen.discovery.config.TypeInfo;
 import com.google.api.codegen.discovery.transformer.SampleTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
-
-import autovalue.shaded.com.google.common.common.base.Joiner;
 
 /**
  * Maps SampleConfig and TypeInfo instances to Java specific TypeName instances.
@@ -86,17 +85,18 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
   @Override
   public TypeName getTypeName(TypeInfo typeInfo) {
     if (typeInfo.isMessage()) {
-      return typeNameConverter.getTypeName(
-          Joiner.on('.').join(packagePrefix, "model", typeInfo.message().typeName()));
+      MessageTypeInfo messageInfo = typeInfo.message();
+      StringBuilder sb = new StringBuilder(packagePrefix);
+      // If the message has a subpackage, make sure we include it in the package path.
+      if (!Strings.isNullOrEmpty(messageInfo.subpackage())) {
+        sb.append('.').append(messageInfo.subpackage());
+      }
+      return typeNameConverter.getTypeName(sb.append('.').append(messageInfo.typeName()).toString());
     }
     return getNonMessageTypeName(typeInfo);
   }
 
   private TypeName getNonMessageTypeName(TypeInfo typeInfo) {
-    /*if (typeInfo.isMessage()) {
-      // {apiName}.{resource1}.{resource2}...{messageTypeName}
-      return typeNameConverter.getTypeName(typeName);
-    }*/
     if (typeInfo.isMap()) {
       TypeName mapTypeName = typeNameConverter.getTypeName("java.util.Map");
       TypeName keyTypeName = getTypeNameForElementType(typeInfo.mapKey(), true);

@@ -25,4 +25,6 @@ public interface TypeNameGenerator {
   public String getRequestTypeName(List<String> methodNameComponents);
 
   public String getMessageTypeName(String messageTypeName);
+
+  public String getSubpackage(boolean isRequest);
 }

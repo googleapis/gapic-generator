@@ -17,7 +17,7 @@ package com.google.api.codegen.util;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.api.client.util.Strings;
+import com.google.common.base.Strings;
 
 /**
  * A utility class used to get and store unique symbols.

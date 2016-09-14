@@ -49,4 +49,12 @@ public class JavaTypeNameGenerator implements TypeNameGenerator {
   public String getMessageTypeName(String messageTypeName) {
     return messageTypeName;
   }
+
+  @Override
+  public String getSubpackage(boolean isRequest) {
+    if (isRequest) {
+      return "model";
+    }
+    return "";
+  }
 }

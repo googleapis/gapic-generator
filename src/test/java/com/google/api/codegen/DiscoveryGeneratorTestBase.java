@@ -82,6 +82,7 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
     String id = generator.getId();
 
     // TODO(saicheems): Fix this!
+    // Specifically, create a test that utilizes the overrides functionality.
     DiscoveryProvider provider =
         MainDiscoveryProviderFactory.defaultCreate(
             discoveryImporter.getService(), discoveryImporter.getConfig(), null, id);

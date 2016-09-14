@@ -21,7 +21,7 @@ import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
 import com.google.api.codegen.discovery.config.SampleConfig;
 import com.google.api.codegen.discovery.config.TypeInfo;
-import com.google.api.codegen.discovery.transformer.MethodToViewTransformer;
+import com.google.api.codegen.discovery.transformer.SampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.SampleNamer;
 import com.google.api.codegen.discovery.transformer.SampleTransformerContext;
 import com.google.api.codegen.discovery.transformer.SampleTypeTable;
@@ -38,7 +38,7 @@ import com.google.protobuf.Method;
  * Transforms a Method and SampleConfig into the standard discovery surface for
  * Java.
  */
-public class JavaMethodToViewTransformer implements MethodToViewTransformer {
+public class JavaMethodToViewTransformer implements SampleMethodToViewTransformer {
 
   private final static String TEMPLATE_FILENAME = "java/discovery_fragment.snip";
 

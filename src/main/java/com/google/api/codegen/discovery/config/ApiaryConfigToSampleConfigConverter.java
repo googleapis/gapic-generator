@@ -20,8 +20,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.beust.jcommander.internal.Lists;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryImporter;
+import com.google.common.base.Splitter;
 import com.google.protobuf.Field;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
@@ -32,7 +34,7 @@ public class ApiaryConfigToSampleConfigConverter {
   private static final String EMPTY_TYPE_URL = "Empty";
   private static final String KEY_FIELD_NAME = "key";
   private static final String VALUE_FIELD_NAME = "value";
-  private static final String PAGE_TOKEN_FIELD_NAME = "nextPageToken";
+  private static final String NEXT_PAGE_TOKEN_FIELD_NAME = "nextPageToken";
 
   private final List<Method> methods;
   private final ApiaryConfig apiaryConfig;
@@ -47,24 +49,25 @@ public class ApiaryConfigToSampleConfigConverter {
     this.typeNameGenerator = typeNameGenerator;
 
     methodNameComponents = new HashMap<String, List<String>>();
-    // Pull all the methodNameComponents out.
+    // Since methodNameComponents are used to generate the request type name, we
+    // produce them here for ease-of-access.
     for (Method method : methods) {
       String methodName = method.getName();
-      LinkedList<String> nameComponents = new LinkedList<>(Arrays.asList(methodName.split("\\.")));
+      LinkedList<String> nameComponents = new LinkedList<String>(Arrays.asList(methodName.split("\\.")));
       nameComponents.removeFirst(); // Removes the API name.
       methodNameComponents.put(method.getName(), nameComponents);
     }
   }
 
   /**
-   * Converts the provided configuration into a SampleConfig.
+   * Converts the class' configuration into a SampleConfig.
    */
   public SampleConfig convert() {
     String apiName = apiaryConfig.getApiName();
     String apiVersion = apiaryConfig.getApiVersion();
     Map<String, MethodInfo> methods = new HashMap<String, MethodInfo>();
     for (Method method : this.methods) {
-      methods.put(method.getName(), createMethod(method, apiaryConfig));
+      methods.put(method.getName(), createMethod(method));
     }
     return SampleConfig.newBuilder()
         .apiTitle(apiaryConfig.getApiTitle())
@@ -79,7 +82,7 @@ public class ApiaryConfigToSampleConfigConverter {
   /**
    * Creates a method.
    */
-  private MethodInfo createMethod(Method method, ApiaryConfig apiaryConfig) {
+  private MethodInfo createMethod(Method method) {
     Map<String, FieldInfo> fields = new HashMap<>();
     TypeInfo requestBodyType = null;
     for (String fieldName : apiaryConfig.getMethodParams(method.getName())) {
@@ -88,10 +91,10 @@ public class ApiaryConfigToSampleConfigConverter {
       // If one of the method arguments is a Message, we parse that separately
       // as the request body.
       if (fieldName.equals(DiscoveryImporter.REQUEST_FIELD_NAME)) {
-        requestBodyType = createTypeInfo(field, method, apiaryConfig);
+        requestBodyType = createTypeInfo(field, method);
         continue;
       }
-      fields.put(field.getName(), createFieldInfo(field, method, apiaryConfig));
+      fields.put(field.getName(), createFieldInfo(field, method));
     }
 
     TypeInfo requestType = createTypeInfo(method, true);
@@ -102,15 +105,15 @@ public class ApiaryConfigToSampleConfigConverter {
       responseType = createTypeInfo(method, false);
     }
 
-    boolean isPageStreaming = isPageStreaming(method, apiaryConfig);
+    boolean isPageStreaming = isPageStreaming(method);
     FieldInfo pageStreamingResourceField = null;
     if (isPageStreaming) {
-      Field field = getPageStreamingResouceField(apiaryConfig.getType(responseTypeUrl));
+      Field field = getPageStreamingResourceField(apiaryConfig.getType(responseTypeUrl));
       // If field is null, then the page streaming resource field is not
       // repeated. We allow null to be stored, and leave it to the user to
       // override appropriately.
       if (field != null) {
-        pageStreamingResourceField = createFieldInfo(field, method, apiaryConfig);
+        pageStreamingResourceField = createFieldInfo(field, method);
       }
     }
     MethodInfo methodInfo =
@@ -131,21 +134,21 @@ public class ApiaryConfigToSampleConfigConverter {
    *
    * Returns null if field is null.
    */
-  private FieldInfo createFieldInfo(Field field, Method method, ApiaryConfig apiaryConfig) {
+  private FieldInfo createFieldInfo(Field field, Method method) {
     if (field == null) {
       return null;
     }
     return FieldInfo.newBuilder()
         .name(field.getName())
         .description(apiaryConfig.getDescription(method.getRequestTypeUrl(), field.getName()))
-        .type(createTypeInfo(field, method, apiaryConfig))
+        .type(createTypeInfo(field, method))
         .build();
   }
 
   /**
    * Creates the type of a field.
    */
-  private TypeInfo createTypeInfo(Field field, Method method, ApiaryConfig apiaryConfig) {
+  private TypeInfo createTypeInfo(Field field, Method method) {
     boolean isMap =
         apiaryConfig.getAdditionalProperties(method.getResponseTypeUrl(), field.getName()) != null;
     boolean isArray = !isMap && (field.getCardinality() == Cardinality.CARDINALITY_REPEATED);
@@ -157,9 +160,9 @@ public class ApiaryConfigToSampleConfigConverter {
 
     if (isMap) {
       Type type = apiaryConfig.getType(field.getTypeUrl());
-      mapKey = createTypeInfo(apiaryConfig.getField(type, KEY_FIELD_NAME), method, apiaryConfig);
+      mapKey = createTypeInfo(apiaryConfig.getField(type, KEY_FIELD_NAME), method);
       mapValue =
-          createTypeInfo(apiaryConfig.getField(type, VALUE_FIELD_NAME), method, apiaryConfig);
+          createTypeInfo(apiaryConfig.getField(type, VALUE_FIELD_NAME), method);
     } else if (field.getKind() == Field.Kind.TYPE_MESSAGE) {
       isMessage = true;
       messageTypeInfo = createMessageTypeInfo(field, method, apiaryConfig, false);
@@ -179,17 +182,21 @@ public class ApiaryConfigToSampleConfigConverter {
    * Creates the type of a method's request and response messages.
    *
    * Serves as a wrapper over createMessageInfo that produces a message type
-   * which contains only the type's name. If isRequest is true, the type name
-   * will be "request$", and the correct upper-camel type name otherwise.
+   * which contains only the type's name. The semantics of the method name
+   * change if the message is the request or response type. For a request type,
+   * typeName is some combination of the methodNameComponents, and for a
+   * response type, typeName is parsed from the configuration.
    */
   private TypeInfo createTypeInfo(Method method, boolean isRequest) {
     String typeName =
         isRequest
             ? typeNameGenerator.getRequestTypeName(methodNameComponents.get(method.getName()))
             : typeNameGenerator.getMessageTypeName(method.getResponseTypeUrl());
+    String subpackage = typeNameGenerator.getSubpackage(isRequest);
     MessageTypeInfo messageTypeInfo =
         MessageTypeInfo.newBuilder()
             .typeName(typeName)
+            .subpackage(subpackage)
             .fields(new HashMap<String, FieldInfo>())
             .build();
     return TypeInfo.newBuilder()
@@ -206,8 +213,9 @@ public class ApiaryConfigToSampleConfigConverter {
   /**
    * Creates a message type from a type and a field.
    *
-   * If deep is false, the fields of the message are not generated. This is
-   * mostly to avoid cycles.
+   * If deep is false, the fields of the message are not explored or generated.
+   * Since there is no detection and defense against cycles, only set deep to
+   * true if the fields of the message are important.
    */
   private MessageTypeInfo createMessageTypeInfo(
       Field field, Method method, ApiaryConfig apiaryConfig, boolean deep) {
@@ -216,16 +224,19 @@ public class ApiaryConfigToSampleConfigConverter {
     Map<String, FieldInfo> fields = new HashMap<>();
     if (deep) {
       for (Field field2 : type.getFieldsList()) {
-        fields.put(field2.getName(), createFieldInfo(field2, method, apiaryConfig));
+        fields.put(field2.getName(), createFieldInfo(field2, method));
       }
     }
-    return MessageTypeInfo.newBuilder().typeName(typeName).fields(fields).build();
+    return MessageTypeInfo.newBuilder().typeName(typeName).subpackage(typeNameGenerator.getSubpackage(false)).fields(fields).build();
   }
 
   /**
    * Returns true if method is page streaming.
+   *
+   * The heuristic implemented checks if there is some field "nextPageToken"
+   * within the method's response type, and returns true if so.
    */
-  private boolean isPageStreaming(Method method, ApiaryConfig apiaryConfig) {
+  private boolean isPageStreaming(Method method) {
     Type type = apiaryConfig.getType(method.getResponseTypeUrl());
     if (type == null) {
       return false;
@@ -233,7 +244,7 @@ public class ApiaryConfigToSampleConfigConverter {
     // If the response type contains a field named "nextPageToken", we can
     // safely assume that the method is page streaming.
     for (Field field : type.getFieldsList()) {
-      if (field.getName().equals(PAGE_TOKEN_FIELD_NAME)) {
+      if (field.getName().equals(NEXT_PAGE_TOKEN_FIELD_NAME)) {
         return true;
       }
     }
@@ -242,8 +253,11 @@ public class ApiaryConfigToSampleConfigConverter {
 
   /**
    * Returns the resource field of a page streaming response type.
+   *
+   * The heuristic implemented returns the first field within type that has a
+   * repeated cardinality.
    */
-  private Field getPageStreamingResouceField(Type type) {
+  private Field getPageStreamingResourceField(Type type) {
     // We assume the first field with repeated cardinality is the right one.
     for (Field field : type.getFieldsList()) {
       if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {

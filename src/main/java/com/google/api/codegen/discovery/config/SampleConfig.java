@@ -49,8 +49,11 @@ public abstract class SampleConfig {
   /**
    * Returns the API's type name.
    *
-   * For example: "adexchangebuyer"
-   * The casing of this value is not guaranteed.
+   * The type name of the message in the target language, but not
+   * fully-qualified. To produce a fully qualified name, it may be necessary to
+   * use {@link #packagePrefix()}}.
+   *
+   * For example: "Adexchangebuyer"
    */
   @JsonProperty("apiTypeName")
   public abstract String apiTypeName();

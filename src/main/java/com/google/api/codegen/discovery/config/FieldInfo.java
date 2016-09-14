@@ -24,6 +24,9 @@ public abstract class FieldInfo {
 
   /**
    * Returns the field's name.
+   *
+   * Always lower camel case.
+   * For example: "projectId"
    */
   @JsonProperty("name")
   public abstract String name();

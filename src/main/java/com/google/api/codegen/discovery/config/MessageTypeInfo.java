@@ -26,14 +26,24 @@ public abstract class MessageTypeInfo {
   /**
    * Returns the message's type name.
    *
-   * If the message is a method's request type, the type name will be
-   * "request$".
+   * The type name of the message in the target language, but not
+   * fully-qualified. To produce a fully-qualified name, properties from
+   * SampleConfig or MethodInfo may be necessary.
    */
   @JsonProperty("typeName")
   public abstract String typeName();
 
   /**
-   * Returns a map of message field names to fields.
+   * Returns the message's subpackage, or empty string if none.
+   *
+   * If the message's fully qualified type name sits under a subpackage, append
+   * this value to the packagePrefix to derive the full package path.
+   * For example: "model"
+   */
+  public abstract String subpackage();
+
+  /**
+   * Returns a map of field names to fields.
    */
   @JsonProperty("fields")
   public abstract Map<String, FieldInfo> fields();
@@ -47,6 +57,9 @@ public abstract class MessageTypeInfo {
 
     @JsonProperty("typeName")
     public abstract Builder typeName(String val);
+
+    @JsonProperty("subpackage")
+    public abstract Builder subpackage(String val);
 
     @JsonProperty("fields")
     public abstract Builder fields(Map<String, FieldInfo> val);

@@ -21,7 +21,7 @@ import com.google.protobuf.Method;
 /*
  * Transforms a Method into a ViewModel instance that can be rendered by a template engine.
  */
-public interface MethodToViewTransformer {
+public interface SampleMethodToViewTransformer {
 
   ViewModel transform(Method method, SampleConfig sampleConfig);
 }
