@@ -67,7 +67,7 @@ public abstract class SampleConfig {
   /**
    * Returns a map of method names to methods.
    */
-  @JsonProperty("methodInfo")
+  @JsonProperty("methods")
   public abstract Map<String, MethodInfo> methods();
 
   public static Builder newBuilder() {
@@ -92,7 +92,7 @@ public abstract class SampleConfig {
     @JsonProperty("packagePrefix")
     public abstract Builder packagePrefix(String val);
 
-    @JsonProperty("methodInfo")
+    @JsonProperty("methods")
     public abstract Builder methods(Map<String, MethodInfo> val);
 
     public abstract SampleConfig build();

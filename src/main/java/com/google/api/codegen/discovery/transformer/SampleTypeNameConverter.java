@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
-import java.util.List;
-
 import com.google.api.codegen.discovery.config.TypeInfo;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
@@ -41,7 +39,7 @@ public interface SampleTypeNameConverter {
   TypeName getTypeName(TypeInfo typeInfo);
 
   /**
-   * Provides an element TypeName for the given TypeInfo.
+   * Provides the element TypeName for the given TypeInfo.
    */
   TypeName getTypeNameForElementType(TypeInfo typeInfo);
 

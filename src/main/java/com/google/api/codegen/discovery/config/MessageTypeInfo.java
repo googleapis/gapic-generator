@@ -40,6 +40,7 @@ public abstract class MessageTypeInfo {
    * this value to the packagePrefix to derive the full package path.
    * For example: "model"
    */
+  @JsonProperty("subpackage")
   public abstract String subpackage();
 
   /**

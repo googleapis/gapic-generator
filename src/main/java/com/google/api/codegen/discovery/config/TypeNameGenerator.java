@@ -16,15 +16,41 @@ package com.google.api.codegen.discovery.config;
 
 import java.util.List;
 
+/**
+ * Generates language specific names for types and package paths.
+ *
+ */
 public interface TypeNameGenerator {
 
+  /**
+   * Returns the package prefix for the API.
+   */
   public String getPackagePrefix(String apiName, String apiVersion);
 
+  /**
+   * Returns the API type name.
+   *
+   * Not fully qualified.
+   */
   public String getApiTypeName(String apiName);
 
+  /**
+   * Returns the request's type name.
+   *
+   * Not fully qualified.
+   */
   public String getRequestTypeName(List<String> methodNameComponents);
 
+  /**
+   * Returns the message's type name.
+   *
+   * Not fully qualified.
+   */
   public String getMessageTypeName(String messageTypeName);
 
+  /**
+   * Returns a message's subpackage depending on whether or not it's a request
+   * type.
+   */
   public String getSubpackage(boolean isRequest);
 }

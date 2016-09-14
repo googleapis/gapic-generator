@@ -98,7 +98,7 @@ public class ViewModelProvider implements DiscoveryProvider {
       try {
         return mapper.treeToValue(tree, SampleConfig.class);
       } catch (Exception e) {
-        throw new RuntimeException("failed to parse config to node, this should never happen");
+        throw new RuntimeException("failed to parse config to node: " + e.getMessage());
       }
     }
     return sampleConfig;

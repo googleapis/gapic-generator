@@ -24,6 +24,7 @@ import com.google.common.base.Joiner;
 public class JavaTypeNameGenerator implements TypeNameGenerator {
 
   private static final String PACKAGE_PREFIX = "com.google.api.services";
+  private static final String NON_REQUEST_SUBPACKAGE = "model";
 
   @Override
   public String getPackagePrefix(String apiName, String apiVersion) {
@@ -52,7 +53,7 @@ public class JavaTypeNameGenerator implements TypeNameGenerator {
   @Override
   public String getSubpackage(boolean isRequest) {
     if (!isRequest) {
-      return "model";
+      return NON_REQUEST_SUBPACKAGE;
     }
     return "";
   }
