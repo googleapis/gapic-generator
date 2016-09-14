@@ -27,7 +27,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class SpecItemParserContext {
+public abstract class InitTreeParserContext {
 
   public abstract SymbolTable table();
 
@@ -39,18 +39,18 @@ public abstract class SpecItemParserContext {
   public abstract Name suggestedName();
 
   @Nullable
-  public abstract Iterable<Field> initFieldSet();
+  public abstract Iterable<Field> initFields();
 
   public abstract Map<String, InitValueConfig> initValueConfigMap();
 
   @Nullable
-  public abstract List<String> sampleCodeInitFields();
+  public abstract List<String> dottedPathStrings();
 
   @Nullable
-  public abstract List<InitCodeNode> subTrees();
+  public abstract List<InitCodeNode> initSubTrees();
 
-  public static SpecItemParserContext.Builder newBuilder() {
-    return new AutoValue_SpecItemParserContext.Builder();
+  public static InitTreeParserContext.Builder newBuilder() {
+    return new AutoValue_InitTreeParserContext.Builder();
   }
 
   @AutoValue.Builder
@@ -63,14 +63,14 @@ public abstract class SpecItemParserContext {
 
     public abstract Builder suggestedName(Name val);
 
-    public abstract Builder initFieldSet(Iterable<Field> val);
+    public abstract Builder initFields(Iterable<Field> val);
 
     public abstract Builder initValueConfigMap(Map<String, InitValueConfig> val);
 
-    public abstract Builder sampleCodeInitFields(List<String> val);
+    public abstract Builder dottedPathStrings(List<String> val);
 
-    public abstract Builder subTrees(List<InitCodeNode> val);
+    public abstract Builder initSubTrees(List<InitCodeNode> val);
 
-    public abstract SpecItemParserContext build();
+    public abstract InitTreeParserContext build();
   }
 }

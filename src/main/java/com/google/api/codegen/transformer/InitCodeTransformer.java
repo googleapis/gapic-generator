@@ -21,8 +21,8 @@ import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.SmokeTestConfig;
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
+import com.google.api.codegen.metacode.InitTreeParserContext;
 import com.google.api.codegen.metacode.InitValueConfig;
-import com.google.api.codegen.metacode.SpecItemParserContext;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
@@ -55,13 +55,13 @@ public class InitCodeTransformer {
 
   public InitCodeView generateInitCode(MethodTransformerContext context, Iterable<Field> fields) {
     InitCodeNode rootNode =
-        InitCodeNode.createSpecItemTree(
-            SpecItemParserContext.newBuilder()
+        InitCodeNode.createTree(
+            InitTreeParserContext.newBuilder()
                 .table(new SymbolTable())
                 .rootObjectType(context.getMethod().getInputType())
                 .initValueConfigMap(createInitValueMap(context))
-                .sampleCodeInitFields(context.getMethodConfig().getSampleCodeInitFields())
-                .initFieldSet(fields)
+                .dottedPathStrings(context.getMethodConfig().getSampleCodeInitFields())
+                .initFields(fields)
                 .suggestedName(Name.from("request"))
                 .build());
     return buildInitCodeViewFlattened(context, rootNode);
@@ -69,12 +69,12 @@ public class InitCodeTransformer {
 
   public InitCodeView generateRequestObjectInitCode(MethodTransformerContext context) {
     InitCodeNode rootNode =
-        InitCodeNode.createSpecItemTree(
-            SpecItemParserContext.newBuilder()
+        InitCodeNode.createTree(
+            InitTreeParserContext.newBuilder()
                 .table(new SymbolTable())
                 .rootObjectType(context.getMethod().getInputType())
                 .initValueConfigMap(createInitValueMap(context))
-                .sampleCodeInitFields(context.getMethodConfig().getSampleCodeInitFields())
+                .dottedPathStrings(context.getMethodConfig().getSampleCodeInitFields())
                 .suggestedName(Name.from("request"))
                 .build());
     return buildInitCodeViewRequestObject(context, rootNode);
@@ -86,14 +86,14 @@ public class InitCodeTransformer {
       SymbolTable table,
       TestValueGenerator valueGenerator) {
     InitCodeNode rootNode =
-        InitCodeNode.createSpecItemTree(
-            SpecItemParserContext.newBuilder()
+        InitCodeNode.createTree(
+            InitTreeParserContext.newBuilder()
                 .table(table)
                 .valueGenerator(valueGenerator)
                 .rootObjectType(context.getMethod().getInputType())
                 .initValueConfigMap(createInitValueMap(context))
-                .sampleCodeInitFields(context.getMethodConfig().getSampleCodeInitFields())
-                .initFieldSet(fields)
+                .dottedPathStrings(context.getMethodConfig().getSampleCodeInitFields())
+                .initFields(fields)
                 .suggestedName(Name.from("request"))
                 .build());
     return buildInitCodeViewFlattened(context, rootNode);
@@ -108,14 +108,14 @@ public class InitCodeTransformer {
       }
     }
     InitCodeNode rootNode =
-        InitCodeNode.createSpecItemTree(
-            SpecItemParserContext.newBuilder()
+        InitCodeNode.createTree(
+            InitTreeParserContext.newBuilder()
                 .table(table)
                 .valueGenerator(valueGenerator)
                 .rootObjectType(context.getMethod().getOutputType())
                 .initValueConfigMap(createInitValueMap(context))
-                .subTrees(createMockResponseInitSubTrees(context))
-                .initFieldSet(primitiveFields)
+                .initSubTrees(createMockResponseInitSubTrees(context))
+                .initFields(primitiveFields)
                 .suggestedName(Name.from("expected_response"))
                 .build());
     return buildInitCodeViewRequestObject(context, rootNode);
@@ -125,12 +125,12 @@ public class InitCodeTransformer {
       MethodTransformerContext context, SymbolTable table) {
     SmokeTestConfig testConfig = context.getInterfaceConfig().getSmokeTestConfig();
     InitCodeNode rootNode =
-        InitCodeNode.createSpecItemTree(
-            SpecItemParserContext.newBuilder()
+        InitCodeNode.createTree(
+            InitTreeParserContext.newBuilder()
                 .table(table)
                 .rootObjectType(testConfig.getMethod().getInputType())
                 .initValueConfigMap(createInitValueMap(context))
-                .sampleCodeInitFields(testConfig.getInitFields())
+                .dottedPathStrings(testConfig.getInitFields())
                 .suggestedName(Name.from("request"))
                 .build());
     return buildInitCodeViewFlattened(context, rootNode);
@@ -140,12 +140,12 @@ public class InitCodeTransformer {
       MethodTransformerContext context, Iterable<Field> fields) {
 
     InitCodeNode rootNode =
-        InitCodeNode.createSpecItemTree(
-            SpecItemParserContext.newBuilder()
+        InitCodeNode.createTree(
+            InitTreeParserContext.newBuilder()
                 .table(new SymbolTable())
                 .rootObjectType(context.getMethod().getInputType())
                 .initValueConfigMap(createInitValueMap(context))
-                .initFieldSet(fields)
+                .initFields(fields)
                 .suggestedName(Name.from("request"))
                 .build());
 

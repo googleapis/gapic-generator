@@ -20,7 +20,7 @@ import com.google.api.codegen.metacode.InitCodeLine;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.metacode.InputParameter;
 import com.google.api.codegen.metacode.InitCodeNode;
-import com.google.api.codegen.metacode.SpecItemParserContext;
+import com.google.api.codegen.metacode.InitTreeParserContext;
 import com.google.api.codegen.metacode.StructureInitCodeLine;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
@@ -106,13 +106,13 @@ public abstract class DocConfig {
         initValueConfigMap.put(fieldNamePattern.getKey(), initValueConfig);
       }
       InitCodeNode rootNode =
-          InitCodeNode.createSpecItemTree(
-              SpecItemParserContext.newBuilder()
+          InitCodeNode.createTree(
+              InitTreeParserContext.newBuilder()
                   .table(new SymbolTable())
                   .rootObjectType(method.getInputType())
                   .initValueConfigMap(initValueConfigMap.build())
-                  .sampleCodeInitFields(methodConfig.getSampleCodeInitFields())
-                  .initFieldSet(fields)
+                  .dottedPathStrings(methodConfig.getSampleCodeInitFields())
+                  .initFields(fields)
                   .suggestedName(Name.from("request"))
                   .build());
       List<InitCodeLine> initCodeLines = new ArrayList<>();

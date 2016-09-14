@@ -21,6 +21,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/*
+ * FieldStructureParser parses a dotted path specification and into a "tree" of InitCodeNode
+ * objects, and returns the root. Each InitCodeNode object will have at most 1 child, so the "tree"
+ * will actually be a list.
+ */
 public class FieldStructureParser {
 
   private static Pattern fieldStructurePattern = Pattern.compile("(.+)[.]([^.\\{\\[]+)");
@@ -42,13 +47,13 @@ public class FieldStructureParser {
     return fieldMapPattern;
   }
 
-  public static InitCodeNode parse(String fieldSpec) {
-    return parse(fieldSpec, ImmutableMap.<String, InitValueConfig>of());
+  public static InitCodeNode parse(String dottedPathString) {
+    return parse(dottedPathString, ImmutableMap.<String, InitValueConfig>of());
   }
 
   public static InitCodeNode parse(
-      String fieldSpec, Map<String, InitValueConfig> initValueConfigMap) {
-    String[] equalsParts = fieldSpec.split("[=]");
+      String dottedPathString, Map<String, InitValueConfig> initValueConfigMap) {
+    String[] equalsParts = dottedPathString.split("[=]");
     if (equalsParts.length > 2) {
       throw new IllegalArgumentException("Inconsistent: found multiple '=' characters");
     }
@@ -56,59 +61,59 @@ public class FieldStructureParser {
     InitValueConfig valueConfig = null;
     if (equalsParts.length == 2) {
       valueConfig = InitValueConfig.createWithValue(equalsParts[1]);
-    } else if (initValueConfigMap.containsKey(fieldSpec)) {
-      valueConfig = initValueConfigMap.get(fieldSpec);
+    } else if (initValueConfigMap.containsKey(dottedPathString)) {
+      valueConfig = initValueConfigMap.get(dottedPathString);
     }
 
-    return parsePartialFieldToInitCodeNode(
+    return parsePartialDottedPathToInitCodeNode(
         equalsParts[0], InitCodeLineType.Unknown, valueConfig, null);
   }
 
-  private static InitCodeNode parsePartialFieldToInitCodeNode(
-      String toMatch,
+  private static InitCodeNode parsePartialDottedPathToInitCodeNode(
+      String partialDottedPath,
       InitCodeLineType prevType,
       InitValueConfig initValueConfig,
-      InitCodeNode prevItem) {
+      InitCodeNode prevNode) {
 
     InitCodeLineType nextType;
     String key;
-    Matcher structureMatcher = fieldStructurePattern.matcher(toMatch);
-    Matcher listMatcher = fieldListPattern.matcher(toMatch);
-    Matcher mapMatcher = fieldMapPattern.matcher(toMatch);
+    Matcher structureMatcher = fieldStructurePattern.matcher(partialDottedPath);
+    Matcher listMatcher = fieldListPattern.matcher(partialDottedPath);
+    Matcher mapMatcher = fieldMapPattern.matcher(partialDottedPath);
     if (structureMatcher.matches()) {
       key = structureMatcher.group(2);
       nextType = InitCodeLineType.StructureInitLine;
-      toMatch = structureMatcher.group(1);
+      partialDottedPath = structureMatcher.group(1);
     } else if (listMatcher.matches()) {
       key = listMatcher.group(2);
       nextType = InitCodeLineType.ListInitLine;
-      toMatch = listMatcher.group(1);
+      partialDottedPath = listMatcher.group(1);
     } else if (mapMatcher.matches()) {
       key = mapMatcher.group(2);
       nextType = InitCodeLineType.MapInitLine;
-      toMatch = mapMatcher.group(1);
+      partialDottedPath = mapMatcher.group(1);
     } else {
       // No pattern match implies toMatch contains simple field (with no "." separators)
-      key = toMatch;
+      key = partialDottedPath;
       nextType = InitCodeLineType.Unknown;
-      toMatch = null;
+      partialDottedPath = null;
     }
 
     // Create new InitCodeNode with prevItem as a child node. If prevItem is null, then this is the
     // first call to parsePartialFieldToInitCodeNode(), and we create a new InitCodeNode using
     // initValueConfig (if it is not also null)
     InitCodeNode item;
-    if (prevItem != null) {
-      item = InitCodeNode.createWithChildren(key, prevType, prevItem);
+    if (prevNode != null) {
+      item = InitCodeNode.createWithChildren(key, prevType, prevNode);
     } else if (initValueConfig != null) {
       item = InitCodeNode.createWithValue(key, initValueConfig);
     } else {
       item = InitCodeNode.create(key);
     }
 
-    if (toMatch == null) {
+    if (partialDottedPath == null) {
       return item;
     }
-    return parsePartialFieldToInitCodeNode(toMatch, nextType, null, item);
+    return parsePartialDottedPathToInitCodeNode(partialDottedPath, nextType, null, item);
   }
 }

@@ -62,8 +62,8 @@ public class SampleInitCodeTest {
     method = interfaze.getMethods().get(0);
   }
 
-  private SpecItemParserContext.Builder getContextBuilder() {
-    return SpecItemParserContext.newBuilder()
+  private InitTreeParserContext.Builder getContextBuilder() {
+    return InitTreeParserContext.newBuilder()
         .table(new SymbolTable())
         .rootObjectType(method.getInputType())
         .initValueConfigMap(ImmutableMap.<String, InitValueConfig>of())
@@ -217,55 +217,55 @@ public class SampleInitCodeTest {
   @Test(expected = IllegalArgumentException.class)
   public void testListFieldBadIndex() throws Exception {
     List<String> fieldSpecs = Arrays.asList("mylist[1]");
-    InitCodeNode.createSpecItemTree(getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+    InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testListFieldIndexGap() throws Exception {
     List<String> fieldSpecs = Arrays.asList("mylist[0]", "mylist[2]");
-    InitCodeNode.createSpecItemTree(getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+    InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testListFieldMismatchedListThenField() throws Exception {
     List<String> fieldSpecs = Arrays.asList("myfield[0]", "myfield.subfield");
-    InitCodeNode.createSpecItemTree(getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+    InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testListFieldMismatchedFieldThenList() throws Exception {
     List<String> fieldSpecs = Arrays.asList("myfield.subfield", "myfield[0]");
-    InitCodeNode.createSpecItemTree(getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+    InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testBadField() throws Exception {
     List<String> fieldSpecs = Arrays.asList("notafield");
-    InitCodeNode.createSpecItemTree(getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+    InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testBadSubField() throws Exception {
     List<String> fieldSpecs = Arrays.asList("myfield.notafield");
-    InitCodeNode.createSpecItemTree(getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+    InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testMapFieldBadStringIndex() throws Exception {
     List<String> fieldSpecs = Arrays.asList("stringmap{0}");
-    InitCodeNode.createSpecItemTree(getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+    InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testMapFieldBadStringIndexNoQuotes() throws Exception {
     List<String> fieldSpecs = Arrays.asList("stringmap{key}");
-    InitCodeNode.createSpecItemTree(getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+    InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testMapFieldBadIntIndex() throws Exception {
     List<String> fieldSpecs = Arrays.asList("intmap{\"key\"}");
-    InitCodeNode.createSpecItemTree(getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+    InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
   }
 
   @Test
@@ -277,8 +277,7 @@ public class SampleInitCodeTest {
         Lists.newArrayList("mylist", "myfield", "secondfield", "stringmap", "intmap", "root");
 
     InitCodeNode rootNode =
-        InitCodeNode.createSpecItemTree(
-            getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+        InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
     List<String> actualKeyList = new ArrayList<>();
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
@@ -293,8 +292,7 @@ public class SampleInitCodeTest {
     List<String> expectedKeyList = Arrays.asList("0", "1", "mylist", "root");
 
     InitCodeNode rootNode =
-        InitCodeNode.createSpecItemTree(
-            getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+        InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
     List<String> actualKeyList = new ArrayList<>();
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
@@ -311,8 +309,7 @@ public class SampleInitCodeTest {
         Arrays.asList("key1", "key2", "stringmap", "123", "456", "intmap", "root");
 
     InitCodeNode rootNode =
-        InitCodeNode.createSpecItemTree(
-            getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+        InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
     List<String> actualKeyList = new ArrayList<>();
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
@@ -328,8 +325,7 @@ public class SampleInitCodeTest {
         Arrays.asList("subfield", "subsecondfield", "0", "mylist", "root");
 
     InitCodeNode rootNode =
-        InitCodeNode.createSpecItemTree(
-            getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+        InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
     List<String> actualKeyList = new ArrayList<>();
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
@@ -344,8 +340,7 @@ public class SampleInitCodeTest {
     List<String> expectedKeyList = Arrays.asList("subfield", "myfield", "root");
 
     InitCodeNode rootNode =
-        InitCodeNode.createSpecItemTree(
-            getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+        InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
     List<String> actualKeyList = new ArrayList<>();
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
@@ -360,8 +355,7 @@ public class SampleInitCodeTest {
     List<String> expectedKeyList = Arrays.asList("subfield", "0", "mylist", "root");
 
     InitCodeNode rootNode =
-        InitCodeNode.createSpecItemTree(
-            getContextBuilder().sampleCodeInitFields(fieldSpecs).build());
+        InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
     List<String> actualKeyList = new ArrayList<>();
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());

@@ -102,7 +102,7 @@ public class InitCodeNode {
   /*
    * Constructs a tree of objects to be initialized using the provided context, and returns the root
    */
-  public static InitCodeNode createSpecItemTree(SpecItemParserContext context) {
+  public static InitCodeNode createTree(InitTreeParserContext context) {
     List<InitCodeNode> subTrees = buildSubTrees(context);
     InitCodeNode root = createWithChildren("root", InitCodeLineType.StructureInitLine, subTrees);
     root.updateTree(
@@ -144,18 +144,18 @@ public class InitCodeNode {
     }
   }
 
-  private static List<InitCodeNode> buildSubTrees(SpecItemParserContext context) {
+  private static List<InitCodeNode> buildSubTrees(InitTreeParserContext context) {
     List<InitCodeNode> subTrees = new ArrayList<>();
-    if (context.sampleCodeInitFields() != null) {
-      for (String sampleCodeInitField : context.sampleCodeInitFields()) {
+    if (context.dottedPathStrings() != null) {
+      for (String sampleCodeInitField : context.dottedPathStrings()) {
         subTrees.add(FieldStructureParser.parse(sampleCodeInitField, context.initValueConfigMap()));
       }
     }
-    if (context.initFieldSet() != null) {
+    if (context.initFields() != null) {
       // Add items in fieldSet to newSubTrees in case they were not included in
       // sampleCodeInitFields, and to ensure the order is determined by initFieldSet
       List<InitCodeNode> newSubTrees = new ArrayList<>();
-      for (Field field : context.initFieldSet()) {
+      for (Field field : context.initFields()) {
         String nameString = field.getSimpleName();
         InitValueConfig initValueConfig = context.initValueConfigMap().get(nameString);
         if (initValueConfig == null) {
@@ -166,7 +166,7 @@ public class InitCodeNode {
       }
       // Filter subTrees using fieldSet
       Set<String> fieldSet = new HashSet<>();
-      for (Field field : context.initFieldSet()) {
+      for (Field field : context.initFields()) {
         fieldSet.add(field.getSimpleName());
       }
       for (InitCodeNode subTree : subTrees) {
@@ -176,8 +176,8 @@ public class InitCodeNode {
       }
       subTrees = newSubTrees;
     }
-    if (context.subTrees() != null) {
-      subTrees.addAll(context.subTrees());
+    if (context.initSubTrees() != null) {
+      subTrees.addAll(context.initSubTrees());
     }
     return subTrees;
   }
