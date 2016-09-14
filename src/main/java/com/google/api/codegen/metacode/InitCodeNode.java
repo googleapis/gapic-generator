@@ -142,29 +142,29 @@ public class InitCodeNode {
       }
     }
     if (context.initFieldSet() != null) {
+      // Add items in fieldSet to newSubTrees in case they were not included in
+      // sampleCodeInitFields, and to ensure the order is determined by initFieldSet
+      List<InitCodeNode> newSubTrees = new ArrayList<>();
+      for (Field field : context.initFieldSet()) {
+        String nameString = field.getSimpleName();
+        InitValueConfig initValueConfig = context.initValueConfigMap().get(nameString);
+        if (initValueConfig == null) {
+          newSubTrees.add(InitCodeNode.create(nameString));
+        } else {
+          newSubTrees.add(InitCodeNode.createWithValue(nameString, initValueConfig));
+        }
+      }
       // Filter subTrees using fieldSet
       Set<String> fieldSet = new HashSet<>();
       for (Field field : context.initFieldSet()) {
         fieldSet.add(field.getSimpleName());
       }
-      List<InitCodeNode> filteredSubTrees = new ArrayList<>();
       for (InitCodeNode subTree : subTrees) {
         if (fieldSet.contains(subTree.getKey())) {
-          filteredSubTrees.add(subTree);
+          newSubTrees.add(subTree);
         }
       }
-      subTrees = filteredSubTrees;
-
-      // Add items in fieldSet to subTrees in case they were not included in sampleCodeInitFields
-      for (Field field : context.initFieldSet()) {
-        String nameString = field.getSimpleName();
-        InitValueConfig initValueConfig = context.initValueConfigMap().get(nameString);
-        if (initValueConfig == null) {
-          subTrees.add(InitCodeNode.create(nameString));
-        } else {
-          subTrees.add(InitCodeNode.createWithValue(nameString, initValueConfig));
-        }
-      }
+      subTrees = newSubTrees;
     }
     if (context.subTrees() != null) {
       subTrees.addAll(context.subTrees());

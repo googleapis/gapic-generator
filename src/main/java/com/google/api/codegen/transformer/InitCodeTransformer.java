@@ -92,6 +92,7 @@ public class InitCodeTransformer {
                 .valueGenerator(valueGenerator)
                 .rootObjectType(context.getMethod().getInputType())
                 .initValueConfigMap(createInitValueMap(context))
+                .sampleCodeInitFields(context.getMethodConfig().getSampleCodeInitFields())
                 .initFieldSet(fields)
                 .suggestedName(Name.from("request"))
                 .build());
