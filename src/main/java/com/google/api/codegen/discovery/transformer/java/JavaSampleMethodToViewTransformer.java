@@ -28,7 +28,6 @@ import com.google.api.codegen.discovery.transformer.SampleTypeTable;
 import com.google.api.codegen.discovery.viewmodel.SampleBodyView;
 import com.google.api.codegen.discovery.viewmodel.SampleFieldView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
-import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -38,11 +37,11 @@ import com.google.protobuf.Method;
  * Transforms a Method and SampleConfig into the standard discovery surface for
  * Java.
  */
-public class JavaMethodToViewTransformer implements SampleMethodToViewTransformer {
+public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTransformer {
 
   private final static String TEMPLATE_FILENAME = "java/discovery_fragment.snip";
 
-  public JavaMethodToViewTransformer() {}
+  public JavaSampleMethodToViewTransformer() {}
 
   @Override
   public ViewModel transform(Method method, SampleConfig sampleConfig) {
@@ -83,7 +82,7 @@ public class JavaMethodToViewTransformer implements SampleMethodToViewTransforme
     sampleBodyView.serviceTypeName(
         sampleTypeTable.getAndSaveNicknameForServiceType(sampleConfig.apiTypeName()));
     sampleBodyView.methodNameComponents(methodInfo.nameComponents());
-    sampleBodyView.requestVarName(symbolTable.getNewSymbol("request"));
+    sampleBodyView.requestVarName(symbolTable.getNewSymbol(sampleNamer.getRequestVarName()));
     sampleBodyView.requestTypeName(
         sampleTypeTable.getAndSaveNicknameForRequestType(
             sampleConfig.apiTypeName(), methodInfo.requestType()));
@@ -115,7 +114,7 @@ public class JavaMethodToViewTransformer implements SampleMethodToViewTransforme
     sampleBodyView.responseTypeName("");
     sampleBodyView.hasOutput(methodInfo.responseType() != null);
     if (methodInfo.responseType() != null) {
-      sampleBodyView.responseVarName(symbolTable.getNewSymbol("response"));
+      sampleBodyView.responseVarName(symbolTable.getNewSymbol(sampleNamer.getResponseVarName()));
       sampleBodyView.responseTypeName(
           sampleTypeTable.getAndSaveNicknameFor(methodInfo.responseType()));
     }
@@ -131,7 +130,7 @@ public class JavaMethodToViewTransformer implements SampleMethodToViewTransforme
 
     sampleBodyView.hasInputRequest(methodInfo.requestBodyType() != null);
     if (methodInfo.requestBodyType() != null) {
-      String requestBodyVarName = symbolTable.getNewSymbol("requestBody");
+      String requestBodyVarName = symbolTable.getNewSymbol(sampleNamer.getRequestBodyVarName());
       sampleBodyView.requestBodyVarName(requestBodyVarName);
       sampleBodyView.requestBodyTypeName(
           sampleTypeTable.getAndSaveNicknameFor(methodInfo.requestBodyType()));

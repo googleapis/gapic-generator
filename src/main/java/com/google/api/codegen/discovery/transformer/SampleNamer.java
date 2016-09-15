@@ -27,15 +27,45 @@ public class SampleNamer extends NameFormatterDelegator {
     super(nameFormatter);
   }
 
+  /**
+   * Returns the variable name of the service.
+   */
   public String getServiceVarName() {
-    return "service";
+    return varName(Name.lowerCamel("service"));
   }
 
+  /**
+   * Returns the variable name for a field.
+   */
   public String getFieldVarName(String fieldName) {
     return varName(Name.lowerCamel(fieldName));
   }
 
+  /**
+   * Returns the resource getter method name for a resource field.
+   */
   public String getResourceGetterName(String fieldName) {
     return methodName(Name.lowerCamel("get", fieldName));
+  }
+
+  /**
+   * Returns the variable name of the request.
+   */
+  public String getRequestVarName() {
+    return varName(Name.lowerCamel("request"));
+  }
+
+  /**
+   * Returns the variable name of the request body.
+   */
+  public String getRequestBodyVarName() {
+    return varName(Name.lowerCamel("requestBody"));
+  }
+
+  /**
+   * Returns the variable name of the response.
+   */
+  public String getResponseVarName() {
+    return varName(Name.lowerCamel("response"));
   }
 }

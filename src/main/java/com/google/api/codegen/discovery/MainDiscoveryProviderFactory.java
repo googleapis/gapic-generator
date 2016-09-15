@@ -23,7 +23,7 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.csharp.CSharpDiscoveryContext;
 import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
 import com.google.api.codegen.discovery.config.java.JavaTypeNameGenerator;
-import com.google.api.codegen.discovery.transformer.java.JavaMethodToViewTransformer;
+import com.google.api.codegen.discovery.transformer.java.JavaSampleMethodToViewTransformer;
 import com.google.api.codegen.go.GoDiscoveryContext;
 import com.google.api.codegen.go.GoSnippetSetRunner;
 import com.google.api.codegen.nodejs.NodeJSDiscoveryContext;
@@ -56,6 +56,12 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
 
   public static DiscoveryProvider defaultCreate(
       Service service, ApiaryConfig apiaryConfig, JsonNode sampleConfigOverrides, String id) {
+    // If the JSON object has a language field at root that matches the current
+    // language, use that node instead. Conversely, if there is no language
+    // field, don't adjust the node.
+    if (sampleConfigOverrides != null && sampleConfigOverrides.has(id)) {
+      sampleConfigOverrides = sampleConfigOverrides.get(id);
+    }
     if (id.equals(CSHARP)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new CSharpDiscoveryContext(service, apiaryConfig))
@@ -76,7 +82,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
       return ViewModelProvider.newBuilder()
           .setApiaryConfig(apiaryConfig)
           .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-          .setMethodToViewTransformer(new JavaMethodToViewTransformer())
+          .setMethodToViewTransformer(new JavaSampleMethodToViewTransformer())
           .setOverrides(sampleConfigOverrides)
           .setTypeNameGenerator(new JavaTypeNameGenerator())
           .setOutputRoot(
