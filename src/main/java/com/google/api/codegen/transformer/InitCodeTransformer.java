@@ -114,7 +114,7 @@ public class InitCodeTransformer {
                 .valueGenerator(valueGenerator)
                 .rootObjectType(context.getMethod().getOutputType())
                 .initValueConfigMap(createInitValueMap(context))
-                .initSubTrees(createMockResponseInitSubTrees(context))
+                .additionalSubTrees(createMockResponseAdditionalSubTrees(context))
                 .initFields(primitiveFields)
                 .suggestedName(Name.from("expected_response"))
                 .build());
@@ -209,27 +209,28 @@ public class InitCodeTransformer {
         .build();
   }
 
-  private List<InitCodeNode> createMockResponseInitSubTrees(MethodTransformerContext context) {
-    List<InitCodeNode> specItems = new ArrayList<>();
+  private List<InitCodeNode> createMockResponseAdditionalSubTrees(
+      MethodTransformerContext context) {
+    List<InitCodeNode> additionalSubTrees = new ArrayList<>();
     if (context.getMethodConfig().isPageStreaming()) {
       // Initialize one resource element if it is page-streaming.
       PageStreamingConfig config = context.getMethodConfig().getPageStreaming();
       String resourceFieldName = config.getResourcesField().getSimpleName();
-      specItems.add(InitCodeNode.createSingletonList(resourceFieldName));
+      additionalSubTrees.add(InitCodeNode.createSingletonList(resourceFieldName));
 
       // Set the initial value of the page token to empty, in order to indicate that no more pages
       // are available
       String responseTokenName = config.getResponseTokenField().getSimpleName();
-      specItems.add(
-          InitCodeNode.createWithValue(responseTokenName, InitValueConfig.createWithValue("\"\"")));
+      additionalSubTrees.add(
+          InitCodeNode.createWithValue(responseTokenName, InitValueConfig.createWithValue("")));
     }
     if (context.getMethodConfig().isBundling()) {
       // Initialize one bundling element if it is bundling.
       BundlingConfig config = context.getMethodConfig().getBundling();
       String subResponseFieldName = config.getSubresponseField().getSimpleName();
-      specItems.add(InitCodeNode.createSingletonList(subResponseFieldName));
+      additionalSubTrees.add(InitCodeNode.createSingletonList(subResponseFieldName));
     }
-    return specItems;
+    return additionalSubTrees;
   }
 
   private ImmutableMap<String, InitValueConfig> createInitValueMap(

@@ -251,14 +251,14 @@ public class SampleInitCodeTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testMapFieldBadStringIndex() throws Exception {
-    List<String> fieldSpecs = Arrays.asList("stringmap{0}");
+  public void testMapFieldBadStringIndexUnclosedDoubleQuotes() throws Exception {
+    List<String> fieldSpecs = Arrays.asList("stringmap{\"key}");
     InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testMapFieldBadStringIndexNoQuotes() throws Exception {
-    List<String> fieldSpecs = Arrays.asList("stringmap{key}");
+  public void testMapFieldBadStringIndexUnclosedSingleQuotes() throws Exception {
+    List<String> fieldSpecs = Arrays.asList("stringmap{'key}");
     InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
   }
 

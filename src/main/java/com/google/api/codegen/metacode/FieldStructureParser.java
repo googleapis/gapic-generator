@@ -32,6 +32,9 @@ public class FieldStructureParser {
   private static Pattern fieldListPattern = Pattern.compile("(.+)\\[([^\\]]+)\\]");
   private static Pattern fieldMapPattern = Pattern.compile("(.+)\\{([^\\}]+)\\}");
 
+  private static Pattern singleQuoteStringPattern = Pattern.compile("'([^\\\']*)'");
+  private static Pattern doubleQuoteStringPattern = Pattern.compile("\"([^\\\"]*)\"");
+
   @VisibleForTesting
   static Pattern getFieldStructurePattern() {
     return fieldStructurePattern;
@@ -60,7 +63,7 @@ public class FieldStructureParser {
 
     InitValueConfig valueConfig = null;
     if (equalsParts.length == 2) {
-      valueConfig = InitValueConfig.createWithValue(equalsParts[1]);
+      valueConfig = InitValueConfig.createWithValue(stripQuotes(equalsParts[1]));
     } else if (initValueConfigMap.containsKey(dottedPathString)) {
       valueConfig = initValueConfigMap.get(dottedPathString);
     }
@@ -89,7 +92,7 @@ public class FieldStructureParser {
       nextType = InitCodeLineType.ListInitLine;
       partialDottedPath = listMatcher.group(1);
     } else if (mapMatcher.matches()) {
-      key = mapMatcher.group(2);
+      key = stripQuotes(mapMatcher.group(2));
       nextType = InitCodeLineType.MapInitLine;
       partialDottedPath = mapMatcher.group(1);
     } else {
@@ -115,5 +118,16 @@ public class FieldStructureParser {
       return item;
     }
     return parsePartialDottedPathToInitCodeNode(partialDottedPath, nextType, null, item);
+  }
+
+  private static String stripQuotes(String value) {
+    Matcher singleQuoteMatcher = singleQuoteStringPattern.matcher(value);
+    Matcher doubleQuoteMatcher = doubleQuoteStringPattern.matcher(value);
+    if (singleQuoteMatcher.matches()) {
+      value = singleQuoteMatcher.group(1);
+    } else if (doubleQuoteMatcher.matches()) {
+      value = doubleQuoteMatcher.group(1);
+    }
+    return value;
   }
 }

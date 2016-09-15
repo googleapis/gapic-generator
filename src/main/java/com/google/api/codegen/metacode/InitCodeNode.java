@@ -176,8 +176,8 @@ public class InitCodeNode {
       }
       subTrees = newSubTrees;
     }
-    if (context.initSubTrees() != null) {
-      subTrees.addAll(context.initSubTrees());
+    if (context.additionalSubTrees() != null) {
+      subTrees.addAll(context.additionalSubTrees());
     }
     return subTrees;
   }
@@ -185,28 +185,26 @@ public class InitCodeNode {
   private void updateTree(
       SymbolTable table, TestValueGenerator valueGenerator, TypeRef type, Name suggestedName) {
 
-    // Check and update key values against type, then remove and re-add children with updated keys
-    // Call updateTree() recursively
-    for (InitCodeNode child : new ArrayList<>(children.values())) {
-      children.remove(child.key);
-      child.key = getValidatedKeyValue(type, child.key);
+    for (InitCodeNode child : children.values()) {
+      validateKeyValue(type, child.key);
       child.updateTree(
           table,
           valueGenerator,
           getChildType(type, child.key),
           getChildSuggestedName(suggestedName, lineType, child));
-      mergeChild(child);
     }
 
-    // Update the nodeType, typeRef, identifier and initValueConfig
+    validateType(lineType, type, children.keySet());
     typeRef = type;
-    getValidateType();
     identifier = table.getNewSymbol(suggestedName);
+
     if (children.size() == 0) {
+      // Set the lineType of childless nodes to SimpleInitLine
+      lineType = InitCodeLineType.SimpleInitLine;
+
+      // Validate initValueConfig, or generate random value
       if (initValueConfig.hasInitialValue()) {
-        // Update initValueConfig with checked value
-        String newValue = getValidatedValue(type, initValueConfig.getInitialValue());
-        initValueConfig = InitValueConfig.createWithValue(newValue);
+        validateValue(type, initValueConfig.getInitialValue());
       } else if (initValueConfig.isEmpty()
           && type.isPrimitive()
           && !type.isRepeated()
@@ -272,7 +270,8 @@ public class InitCodeNode {
    * Validate the lineType against the typeRef that has been set, and against child objects. In the
    * case of no child objects being present, update the lineType to SimpleInitLine.
    */
-  private void getValidateType() {
+  private static void validateType(
+      InitCodeLineType lineType, TypeRef typeRef, Set<String> childKeys) {
     switch (lineType) {
       case StructureInitLine:
         if (!typeRef.isMessage() || typeRef.isRepeated()) {
@@ -285,10 +284,10 @@ public class InitCodeNode {
           throw new IllegalArgumentException(
               "typeRef " + typeRef + " not compatible with " + lineType);
         }
-        for (int i = 0; i < children.size(); i++) {
-          if (!children.containsKey(Integer.toString(i))) {
+        for (int i = 0; i < childKeys.size(); i++) {
+          if (!childKeys.contains(Integer.toString(i))) {
             throw new IllegalArgumentException(
-                "typeRef " + typeRef + " must have ordered indices, got " + children.keySet());
+                "typeRef " + typeRef + " must have ordered indices, got " + childKeys);
           }
         }
         break;
@@ -306,16 +305,12 @@ public class InitCodeNode {
         // Fall through to Unknown to check for no children.
       case Unknown:
         // Any typeRef is acceptable, but we need to check that there are no children.
-        if (children.size() != 0) {
+        if (childKeys.size() != 0) {
           throw new IllegalArgumentException("node with Unknown type cannot have children");
         }
         break;
       default:
         throw new IllegalArgumentException("unexpected InitcodeLineType: " + lineType);
-    }
-    // Update the type of childless nodes to SimpleInitLine
-    if (children.size() == 0) {
-      lineType = InitCodeLineType.SimpleInitLine;
     }
   }
 
@@ -333,16 +328,15 @@ public class InitCodeNode {
     }
   }
 
-  private static String getValidatedKeyValue(TypeRef parentType, String key) {
+  private static void validateKeyValue(TypeRef parentType, String key) {
     if (parentType.isMap()) {
       TypeRef keyType = parentType.getMapKeyField().getType();
-      return getValidatedValue(keyType, key);
+      validateValue(keyType, key);
     } else if (parentType.isRepeated()) {
       TypeRef keyType = TypeRef.of(Type.TYPE_UINT64);
-      return getValidatedValue(keyType, key);
+      validateValue(keyType, key);
     } else {
       // Don't validate message types, field will be missing for a bad key
-      return key;
     }
   }
 
@@ -367,23 +361,22 @@ public class InitCodeNode {
   }
 
   /**
-   * Validates that the provided value matches the provided type, and returns the validated value.
-   * For string and byte types, the returned value has quote characters removed. Throws an
-   * IllegalArgumentException is the provided type is not supported or doesn't match the value.
+   * Validates that the provided value matches the provided type. Throws an IllegalArgumentException
+   * if the provided type is not supported or doesn't match the value.
    */
-  private static String getValidatedValue(TypeRef type, String value) {
+  private static void validateValue(TypeRef type, String value) {
     Type descType = type.getKind();
     switch (descType) {
       case TYPE_BOOL:
         String lowerCaseValue = value.toLowerCase();
         if (lowerCaseValue.equals("true") || lowerCaseValue.equals("false")) {
-          return lowerCaseValue;
+          return;
         }
         break;
       case TYPE_DOUBLE:
       case TYPE_FLOAT:
         if (Pattern.matches("[+-]?([0-9]*[.])?[0-9]+", value)) {
-          return value;
+          return;
         }
         break;
       case TYPE_INT64:
@@ -397,14 +390,14 @@ public class InitCodeNode {
       case TYPE_FIXED32:
       case TYPE_SFIXED32:
         if (Pattern.matches("[+-]?[0-9]+", value)) {
-          return value;
+          return;
         }
         break;
       case TYPE_STRING:
       case TYPE_BYTES:
-        Matcher matcher = Pattern.compile("\"([^\\\"]*)\"").matcher(value);
+        Matcher matcher = Pattern.compile("([^\\\"']*)").matcher(value);
         if (matcher.matches()) {
-          return matcher.group(1);
+          return;
         }
         break;
       default:

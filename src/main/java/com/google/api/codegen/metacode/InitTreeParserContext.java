@@ -47,7 +47,7 @@ public abstract class InitTreeParserContext {
   public abstract List<String> dottedPathStrings();
 
   @Nullable
-  public abstract List<InitCodeNode> initSubTrees();
+  public abstract List<InitCodeNode> additionalSubTrees();
 
   public static InitTreeParserContext.Builder newBuilder() {
     return new AutoValue_InitTreeParserContext.Builder();
@@ -69,7 +69,7 @@ public abstract class InitTreeParserContext {
 
     public abstract Builder dottedPathStrings(List<String> val);
 
-    public abstract Builder initSubTrees(List<InitCodeNode> val);
+    public abstract Builder additionalSubTrees(List<InitCodeNode> val);
 
     public abstract InitTreeParserContext build();
   }
