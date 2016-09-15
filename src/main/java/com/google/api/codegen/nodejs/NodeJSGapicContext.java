@@ -610,7 +610,13 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
               "false",
               // common parameters passed to methods.
               "options",
-              "callback")
+              "callback",
+              // parameters used in CallOptions.
+              "timeout",
+              "retry",
+              "flattenPages",
+              "pageToken",
+              "isBundling")
           .build();
 
   private static final ImmutableSet<String> COMMON_PROTO_PATHS =
