@@ -42,32 +42,61 @@ public class InitCodeNode {
   private Map<String, InitCodeNode> children;
   private TypeRef typeRef;
   private Name identifier;
+
+  // TODO(michaelbausor): delete this field once DocConfig is no longer used (when python converts
+  // to MVVM)
   private InitCodeLine initCodeLine;
 
+  /*
+   * Get the key associated with the node. For InitCodeNode objects that are not a root object, they
+   * will be stored in their parent node using this key. For elements of a structure, this is the
+   * field name. For map elements, it is the map key. For list elements, it is the list index.
+   */
   public String getKey() {
     return key;
   }
 
+  /*
+   * Get the InitCodeLineType.
+   */
   public InitCodeLineType getLineType() {
     return lineType;
   }
 
+  /*
+   * Get the InitValueConfig. For InitCodeNode objects with 1 or more children, the InitValueConfig
+   * object will not contain an initial value or formatting config.
+   */
   public InitValueConfig getInitValueConfig() {
     return initValueConfig;
   }
 
+  /*
+   * Get a map of this nodes children. Each child is stored with key equal to child.getKey().
+   */
   public Map<String, InitCodeNode> getChildren() {
     return children;
   }
 
+  /*
+   * Get the TypeRef of the node.
+   */
   public TypeRef getType() {
     return typeRef;
   }
 
+  /*
+   * Get the unique Name that will be used as a variable name in the initialization code.
+   */
   public Name getIdentifier() {
     return identifier;
   }
 
+  /*
+   * Get the InitCodeLine object.
+   * TODO(michaelbausor): delete this method once DocConfig is no longer used (when python converts
+   * to MVVM)
+   */
   public InitCodeLine getInitCodeLine() {
     return initCodeLine;
   }
