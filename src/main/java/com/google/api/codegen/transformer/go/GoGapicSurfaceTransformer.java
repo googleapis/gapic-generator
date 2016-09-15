@@ -27,11 +27,12 @@ import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.api.codegen.viewmodel.RetryPairDefinitionView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
-import com.google.api.codegen.viewmodel.StaticLangXCombinedView;
+import com.google.api.codegen.viewmodel.StaticLangXCombinedSurfaceView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.gax.core.RetrySettings;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
@@ -74,32 +75,35 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   @Override
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
+    GoSurfaceNamer namer = new GoSurfaceNamer(model, apiConfig.getPackageName());
     for (Interface service : new InterfaceView().getElementIterable(model)) {
-      models.add(generate(model, service, apiConfig));
+      SurfaceTransformerContext context =
+          SurfaceTransformerContext.create(service, apiConfig, createTypeTable(), namer);
+      models.add(generate(context));
     }
     return models;
   }
 
-  private StaticLangXCombinedView generate(Model model, Interface service, ApiConfig apiConfig) {
-    StaticLangXCombinedView.Builder view = StaticLangXCombinedView.newBuilder();
+  private StaticLangXCombinedSurfaceView generate(SurfaceTransformerContext context) {
+    StaticLangXCombinedSurfaceView.Builder view = StaticLangXCombinedSurfaceView.newBuilder();
+
+    SurfaceNamer namer = context.getNamer();
+    Model model = context.getModel();
+    Interface service = context.getInterface();
+    ApiConfig apiConfig = context.getApiConfig();
 
     view.templateFileName(XAPI_TEMPLATE_FILENAME);
     view.serviceDoc(comments(service));
-
-    GoSurfaceNamer namer = new GoSurfaceNamer(model, service, apiConfig);
-    SurfaceTransformerContext context =
-        SurfaceTransformerContext.create(service, apiConfig, createTypeTable(), namer);
-
     view.packageName(namer.getPackageName());
-    view.clientName(namer.getClientName());
-    view.clientConstructorName(namer.getClientConstructorName());
-    view.defaultClientOptionFunc(namer.getDefaultClientOptionFunc());
-    view.defaultCallOptionFunc(namer.getDefaultCallOptionFunc());
-    view.callOptionsName(namer.getCallOptionsName());
-    view.serviceName(namer.getServiceName());
-    view.grpcClientTypeName(namer.getGrpcClientTypeName());
-    view.grpcClientConstructorName(namer.getGrpcClientConstructorName());
-    view.outputPath(namer.getOutputPath());
+    view.clientName(namer.getClientTypeName(service));
+    view.clientConstructorName(namer.getClientConstructorName(service));
+    view.defaultClientOptionFunctionName(namer.getDefaultClientOptionFunctionName(service));
+    view.defaultCallOptionFunctionName(namer.getDefaultCallOptionFunctionName(service));
+    view.callOptionsTypeName(namer.getCallOptionsTypeName(service));
+    view.serviceName(namer.getServicePhraseName(service));
+    view.grpcClientTypeName(namer.getGrpcClientTypeName(service));
+    view.grpcClientConstructorName(namer.getGrpcClientConstructorName(service));
+    view.outputPath(GoSurfaceNamer.getOutputPath(service, apiConfig));
 
     Collection<RetryPairDefinitionView> retryDef = generateRetryPairDefinitions(namer, context);
     boolean hasRetry = !retryDef.isEmpty();
@@ -154,7 +158,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private Collection<RetryPairDefinitionView> generateRetryPairDefinitions(
-      GoSurfaceNamer namer, SurfaceTransformerContext context) {
+      SurfaceNamer namer, SurfaceTransformerContext context) {
     Set<RetryPairDefinitionView.Name> retryNames = new HashSet<>();
     for (Method method : context.getNonStreamingMethods()) {
       MethodConfig conf = context.getMethodConfig(method);
@@ -173,15 +177,15 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
       if (codes.isEmpty()) {
         continue;
       }
-      ImmutableSet.Builder<String> builder = ImmutableSet.<String>builder();
+      ImmutableSet.Builder<String> retryCodeNames = ImmutableSet.<String>builder();
       for (Code code : codes) {
-        builder.add(namer.getStatusCodeName(code));
+        retryCodeNames.add(namer.getStatusCodeName(code));
       }
       retryDef.put(
           name,
           RetryPairDefinitionView.newBuilder()
               .name(name)
-              .retryCodes(builder.build())
+              .retryCodes(retryCodeNames.build())
               .params(retryParamsDef.get(name.params()))
               .build());
     }
@@ -198,6 +202,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     }
     return retryNames;
   }
+
+  private static final String EMPTY_PROTO_PKG = "github.com/golang/protobuf/ptypes/empty";
 
   private List<String> getImports(SurfaceTransformerContext context, boolean hasRetry) {
     TreeSet<GoImport> standard = new TreeSet<>();
@@ -223,8 +229,13 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     thirdParty.add(GoImport.create("google.golang.org/api/transport"));
 
     for (Map.Entry<String, String> entry : context.getTypeTable().getImports().entrySet()) {
-      thirdParty.add(GoImport.create(entry.getKey(), entry.getValue()));
+      if (!entry.getKey().equals(EMPTY_PROTO_PKG)) {
+        thirdParty.add(GoImport.create(entry.getKey(), entry.getValue()));
+      }
     }
+
+    // We don't have to save import of empty proto.
+    // Instead of return the empty, we return nothing.
 
     return formatImports(standard, thirdParty);
   }

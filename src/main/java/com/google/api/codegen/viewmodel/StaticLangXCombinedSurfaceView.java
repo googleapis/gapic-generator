@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 @AutoValue
-public abstract class StaticLangXCombinedView implements ViewModel {
+public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
   @Override
   public abstract String templateFileName();
 
@@ -51,11 +51,11 @@ public abstract class StaticLangXCombinedView implements ViewModel {
 
   public abstract String clientConstructorName();
 
-  public abstract String callOptionsName();
+  public abstract String callOptionsTypeName();
 
-  public abstract String defaultClientOptionFunc();
+  public abstract String defaultClientOptionFunctionName();
 
-  public abstract String defaultCallOptionFunc();
+  public abstract String defaultCallOptionFunctionName();
 
   public abstract String serviceName();
 
@@ -74,7 +74,7 @@ public abstract class StaticLangXCombinedView implements ViewModel {
   public abstract List<PageStreamingDescriptorClassView> pageStreamingDescriptorClasses();
 
   public static Builder newBuilder() {
-    return new AutoValue_StaticLangXCombinedView.Builder();
+    return new AutoValue_StaticLangXCombinedSurfaceView.Builder();
   }
 
   @AutoValue.Builder
@@ -90,11 +90,11 @@ public abstract class StaticLangXCombinedView implements ViewModel {
 
     public abstract Builder clientConstructorName(String val);
 
-    public abstract Builder callOptionsName(String val);
+    public abstract Builder callOptionsTypeName(String val);
 
-    public abstract Builder defaultClientOptionFunc(String val);
+    public abstract Builder defaultClientOptionFunctionName(String val);
 
-    public abstract Builder defaultCallOptionFunc(String val);
+    public abstract Builder defaultCallOptionFunctionName(String val);
 
     public abstract Builder serviceName(String val);
 
@@ -125,6 +125,6 @@ public abstract class StaticLangXCombinedView implements ViewModel {
     public abstract Builder pageStreamingDescriptorClasses(
         List<PageStreamingDescriptorClassView> val);
 
-    public abstract StaticLangXCombinedView build();
+    public abstract StaticLangXCombinedSurfaceView build();
   }
 }

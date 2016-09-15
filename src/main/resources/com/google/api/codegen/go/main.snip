@@ -7,6 +7,8 @@
 
     package {@view.packageName}
 
+    # No indent here. `view.imports` already has the indent.
+    # Go has a blank line in the middle, and we don't want that line indented.
     import (
     @join imp : view.imports
     {@imp}
@@ -20,13 +22,13 @@
     )
 
     // CallOptions contains the retry settings for each method of this client.
-    type {@view.callOptionsName} struct {
+    type {@view.callOptionsTypeName} struct {
         @join apiMethod : view.apiMethods
             {@apiMethod.name} []gax.CallOption
         @end
     }
 
-    func {@view.defaultClientOptionFunc}() []option.ClientOption {
+    func {@view.defaultClientOptionFunctionName}() []option.ClientOption {
         return []option.ClientOption{
             option.WithEndpoint("{@view.serviceAddress}:{@view.servicePort}"),
             option.WithScopes(
@@ -37,7 +39,7 @@
         }
     }
 
-    func {@view.defaultCallOptionFunc}() *{@view.callOptionsName} {
+    func {@view.defaultCallOptionFunctionName}() *{@view.callOptionsTypeName} {
         retry := map[[2]string][]gax.CallOption{
             @join def : view.retryPairDefinitions
               {"{@def.name.params}", "{@def.name.codes}"}: {
@@ -55,7 +57,7 @@
               },
             @end
         }
-        return &{@view.callOptionsName}{
+        return &{@view.callOptionsTypeName}{
             @join settings : view.callSettings
                 {@settings.methodName}: retry[[2]string{"{@settings.retryParamsName}", "{@settings.retryCodesName}"}],
             @end
@@ -71,7 +73,7 @@
         client {@view.grpcClientTypeName}
 
         // The call options for this service.
-        CallOptions *{@view.callOptionsName}
+        CallOptions *{@view.callOptionsTypeName}
 
         // The metadata to be sent with each request.
         metadata map[string][]string
@@ -83,14 +85,14 @@
         {@line}
     @end
     func {@view.clientConstructorName}(ctx context.Context, opts ...option.ClientOption) (*{@view.clientName}, error) {
-        conn, err := transport.DialGRPC(ctx, append({@view.defaultClientOptionFunc}(), opts...)...)
+        conn, err := transport.DialGRPC(ctx, append({@view.defaultClientOptionFunctionName}(), opts...)...)
         if err != nil {
             return nil, err
         }
         c := &{@view.clientName} {
             conn: conn,
             client: {@view.grpcClientConstructorName}(conn),
-            CallOptions: {@view.defaultCallOptionFunc}(),
+            CallOptions: {@view.defaultCallOptionFunctionName}(),
         }
         c.SetGoogleClientInfo("gax", gax.Version)
         return c, nil

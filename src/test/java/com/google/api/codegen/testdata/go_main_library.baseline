@@ -59,6 +59,7 @@ type CallOptions struct {
     GetBookFromArchive []gax.CallOption
     UpdateBookIndex []gax.CallOption
     AddTag []gax.CallOption
+    AddLabel []gax.CallOption
 }
 
 func defaultClientOptions() []option.ClientOption {
@@ -86,7 +87,6 @@ func defaultCallOptions() *CallOptions {
             }),
         },
     }
-
     return &CallOptions{
         CreateShelf: retry[[2]string{"default", "non_idempotent"}],
         GetShelf: retry[[2]string{"default", "idempotent"}],
@@ -105,10 +105,11 @@ func defaultCallOptions() *CallOptions {
         GetBookFromArchive: retry[[2]string{"default", "idempotent"}],
         UpdateBookIndex: retry[[2]string{"default", "idempotent"}],
         AddTag: retry[[2]string{"default", "non_idempotent"}],
+        AddLabel: retry[[2]string{"default", "non_idempotent"}],
     }
 }
 
-// Client is a client for interacting with LibraryService.
+// Client is a client for interacting with library service.
 type Client struct {
     // The connection to the service.
     conn *grpc.ClientConn
@@ -171,8 +172,7 @@ func (c *Client) SetGoogleClientInfo(name, version string) {
     }
 }
 
-
-// ShelfPath returns the path for the shelf resource.
+// LibraryShelfPath returns the path for the shelf resource.
 func LibraryShelfPath(shelf string) string {
     path, err := libraryShelfPathTemplate.Render(map[string]string{
         "shelf": shelf,
@@ -183,8 +183,8 @@ func LibraryShelfPath(shelf string) string {
     return path
 }
 
-// BookPath returns the path for the book resource.
-func LibraryBookPath(shelf string, book string) string {
+// LibraryBookPath returns the path for the book resource.
+func LibraryBookPath(shelf, book string) string {
     path, err := libraryBookPathTemplate.Render(map[string]string{
         "shelf": shelf,
         "book": book,
@@ -195,8 +195,8 @@ func LibraryBookPath(shelf string, book string) string {
     return path
 }
 
-// ArchivedBookPath returns the path for the archived book resource.
-func LibraryArchivedBookPath(archivePath string, book string) string {
+// LibraryArchivedBookPath returns the path for the archived book resource.
+func LibraryArchivedBookPath(archivePath, book string) string {
     path, err := libraryArchivedBookPathTemplate.Render(map[string]string{
         "archive_path": archivePath,
         "book": book,
@@ -207,11 +207,12 @@ func LibraryArchivedBookPath(archivePath string, book string) string {
     return path
 }
 
+
 // CreateShelf creates a shelf, and returns the new Shelf.
 func (c *Client) CreateShelf(ctx context.Context, req *librarypb.CreateShelfRequest) (*librarypb.Shelf, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
     var resp *librarypb.Shelf
-    err := gax.Invoke(ctx, func (ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
         var err error
         resp, err = c.client.CreateShelf(ctx, req)
         return err
@@ -222,12 +223,11 @@ func (c *Client) CreateShelf(ctx context.Context, req *librarypb.CreateShelfRequ
     return resp, nil
 }
 
-
 // GetShelf gets a shelf.
 func (c *Client) GetShelf(ctx context.Context, req *librarypb.GetShelfRequest) (*librarypb.Shelf, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
     var resp *librarypb.Shelf
-    err := gax.Invoke(ctx, func (ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
         var err error
         resp, err = c.client.GetShelf(ctx, req)
         return err
@@ -238,37 +238,45 @@ func (c *Client) GetShelf(ctx context.Context, req *librarypb.GetShelfRequest) (
     return resp, nil
 }
 
-
 // ListShelves lists shelves.
 func (c *Client) ListShelves(ctx context.Context, req *librarypb.ListShelvesRequest) *ShelfIterator {
     ctx = metadata.NewContext(ctx, c.metadata)
     it := &ShelfIterator{}
-    it.apiCall = func() error {
+
+    fetch := func(pageSize int, pageToken string) (string, err) {
         var resp *librarypb.ListShelvesResponse
-        err := gax.Invoke(ctx, func (ctx context.Context) error {
+        req.PageToken = pageToken
+        if pageSize > math.MaxInt32 {
+            req.PageSize = math.MaxInt32
+        } else {
+            req.PageSize = int32(pageSize)
+        }
+        err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
-            req.PageToken = it.nextPageToken
             resp, err = c.client.ListShelves(ctx, req)
             return err
         }, c.CallOptions.ListShelves...)
         if err != nil {
-            return err
+            return "", err
         }
-        if resp.NextPageToken == "" {
-            it.atLastPage = true
-        }
-        it.nextPageToken = resp.NextPageToken
         it.items = resp.Shelves
-        return nil
+        return resp.NextPageToken, nil
     }
+    bufLen := func() int { return len(it.items) }
+    takeBuf := func() interface{} {
+        b := it.items
+        it.items = nil
+        return b
+    }
+
+    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, bufLen, takeBuf)
     return it
 }
-
 
 // DeleteShelf deletes a shelf.
 func (c *Client) DeleteShelf(ctx context.Context, req *librarypb.DeleteShelfRequest) error {
     ctx = metadata.NewContext(ctx, c.metadata)
-    err := gax.Invoke(ctx, func (ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
         var err error
         _, err = c.client.DeleteShelf(ctx, req)
         return err
@@ -276,14 +284,13 @@ func (c *Client) DeleteShelf(ctx context.Context, req *librarypb.DeleteShelfRequ
     return err
 }
 
-
 // MergeShelves merges two shelves by adding all books from the shelf named
 // `other_shelf_name` to shelf `name`, and deletes
 // `other_shelf_name`. Returns the updated shelf.
 func (c *Client) MergeShelves(ctx context.Context, req *librarypb.MergeShelvesRequest) (*librarypb.Shelf, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
     var resp *librarypb.Shelf
-    err := gax.Invoke(ctx, func (ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
         var err error
         resp, err = c.client.MergeShelves(ctx, req)
         return err
@@ -294,12 +301,11 @@ func (c *Client) MergeShelves(ctx context.Context, req *librarypb.MergeShelvesRe
     return resp, nil
 }
 
-
 // CreateBook creates a book.
 func (c *Client) CreateBook(ctx context.Context, req *librarypb.CreateBookRequest) (*librarypb.Book, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
     var resp *librarypb.Book
-    err := gax.Invoke(ctx, func (ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
         var err error
         resp, err = c.client.CreateBook(ctx, req)
         return err
@@ -310,12 +316,11 @@ func (c *Client) CreateBook(ctx context.Context, req *librarypb.CreateBookReques
     return resp, nil
 }
 
-
 // PublishSeries creates a series of books.
 func (c *Client) PublishSeries(ctx context.Context, req *librarypb.PublishSeriesRequest) (*librarypb.PublishSeriesResponse, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
     var resp *librarypb.PublishSeriesResponse
-    err := gax.Invoke(ctx, func (ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
         var err error
         resp, err = c.client.PublishSeries(ctx, req)
         return err
@@ -326,12 +331,11 @@ func (c *Client) PublishSeries(ctx context.Context, req *librarypb.PublishSeries
     return resp, nil
 }
 
-
 // GetBook gets a book.
 func (c *Client) GetBook(ctx context.Context, req *librarypb.GetBookRequest) (*librarypb.Book, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
     var resp *librarypb.Book
-    err := gax.Invoke(ctx, func (ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
         var err error
         resp, err = c.client.GetBook(ctx, req)
         return err
@@ -342,38 +346,45 @@ func (c *Client) GetBook(ctx context.Context, req *librarypb.GetBookRequest) (*l
     return resp, nil
 }
 
-
 // ListBooks lists books in a shelf.
 func (c *Client) ListBooks(ctx context.Context, req *librarypb.ListBooksRequest) *BookIterator {
     ctx = metadata.NewContext(ctx, c.metadata)
     it := &BookIterator{}
-    it.apiCall = func() error {
+
+    fetch := func(pageSize int, pageToken string) (string, err) {
         var resp *librarypb.ListBooksResponse
-        err := gax.Invoke(ctx, func (ctx context.Context) error {
+        req.PageToken = pageToken
+        if pageSize > math.MaxInt32 {
+            req.PageSize = math.MaxInt32
+        } else {
+            req.PageSize = int32(pageSize)
+        }
+        err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
-            req.PageToken = it.nextPageToken
-            req.PageSize = it.pageSize
             resp, err = c.client.ListBooks(ctx, req)
             return err
         }, c.CallOptions.ListBooks...)
         if err != nil {
-            return err
+            return "", err
         }
-        if resp.NextPageToken == "" {
-            it.atLastPage = true
-        }
-        it.nextPageToken = resp.NextPageToken
         it.items = resp.Books
-        return nil
+        return resp.NextPageToken, nil
     }
+    bufLen := func() int { return len(it.items) }
+    takeBuf := func() interface{} {
+        b := it.items
+        it.items = nil
+        return b
+    }
+
+    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, bufLen, takeBuf)
     return it
 }
-
 
 // DeleteBook deletes a book.
 func (c *Client) DeleteBook(ctx context.Context, req *librarypb.DeleteBookRequest) error {
     ctx = metadata.NewContext(ctx, c.metadata)
-    err := gax.Invoke(ctx, func (ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
         var err error
         _, err = c.client.DeleteBook(ctx, req)
         return err
@@ -381,12 +392,11 @@ func (c *Client) DeleteBook(ctx context.Context, req *librarypb.DeleteBookReques
     return err
 }
 
-
 // UpdateBook updates a book.
 func (c *Client) UpdateBook(ctx context.Context, req *librarypb.UpdateBookRequest) (*librarypb.Book, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
     var resp *librarypb.Book
-    err := gax.Invoke(ctx, func (ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
         var err error
         resp, err = c.client.UpdateBook(ctx, req)
         return err
@@ -397,12 +407,11 @@ func (c *Client) UpdateBook(ctx context.Context, req *librarypb.UpdateBookReques
     return resp, nil
 }
 
-
 // MoveBook moves a book to another shelf, and returns the new book.
 func (c *Client) MoveBook(ctx context.Context, req *librarypb.MoveBookRequest) (*librarypb.Book, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
     var resp *librarypb.Book
-    err := gax.Invoke(ctx, func (ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
         var err error
         resp, err = c.client.MoveBook(ctx, req)
         return err
@@ -413,38 +422,45 @@ func (c *Client) MoveBook(ctx context.Context, req *librarypb.MoveBookRequest) (
     return resp, nil
 }
 
-
 // ListStrings lists a primitive resource. To test go page streaming.
 func (c *Client) ListStrings(ctx context.Context, req *librarypb.ListStringsRequest) *StringIterator {
     ctx = metadata.NewContext(ctx, c.metadata)
     it := &StringIterator{}
-    it.apiCall = func() error {
+
+    fetch := func(pageSize int, pageToken string) (string, err) {
         var resp *librarypb.ListStringsResponse
-        err := gax.Invoke(ctx, func (ctx context.Context) error {
+        req.PageToken = pageToken
+        if pageSize > math.MaxInt32 {
+            req.PageSize = math.MaxInt32
+        } else {
+            req.PageSize = int32(pageSize)
+        }
+        err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
-            req.PageToken = it.nextPageToken
-            req.PageSize = it.pageSize
             resp, err = c.client.ListStrings(ctx, req)
             return err
         }, c.CallOptions.ListStrings...)
         if err != nil {
-            return err
+            return "", err
         }
-        if resp.NextPageToken == "" {
-            it.atLastPage = true
-        }
-        it.nextPageToken = resp.NextPageToken
         it.items = resp.Strings
-        return nil
+        return resp.NextPageToken, nil
     }
+    bufLen := func() int { return len(it.items) }
+    takeBuf := func() interface{} {
+        b := it.items
+        it.items = nil
+        return b
+    }
+
+    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, bufLen, takeBuf)
     return it
 }
-
 
 // AddComments adds comments to a book
 func (c *Client) AddComments(ctx context.Context, req *librarypb.AddCommentsRequest) error {
     ctx = metadata.NewContext(ctx, c.metadata)
-    err := gax.Invoke(ctx, func (ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
         var err error
         _, err = c.client.AddComments(ctx, req)
         return err
@@ -452,12 +468,11 @@ func (c *Client) AddComments(ctx context.Context, req *librarypb.AddCommentsRequ
     return err
 }
 
-
 // GetBookFromArchive gets a book from an archive.
 func (c *Client) GetBookFromArchive(ctx context.Context, req *librarypb.GetBookFromArchiveRequest) (*librarypb.Book, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
     var resp *librarypb.Book
-    err := gax.Invoke(ctx, func (ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
         var err error
         resp, err = c.client.GetBookFromArchive(ctx, req)
         return err
@@ -468,11 +483,10 @@ func (c *Client) GetBookFromArchive(ctx context.Context, req *librarypb.GetBookF
     return resp, nil
 }
 
-
 // UpdateBookIndex updates the index of a book.
 func (c *Client) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBookIndexRequest) error {
     ctx = metadata.NewContext(ctx, c.metadata)
-    err := gax.Invoke(ctx, func (ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
         var err error
         _, err = c.client.UpdateBookIndex(ctx, req)
         return err
@@ -480,12 +494,11 @@ func (c *Client) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBookI
     return err
 }
 
-
 // AddTag adds a tag to the book. This RPC is a mixin.
 func (c *Client) AddTag(ctx context.Context, req *taggerpb.AddTagRequest) (*taggerpb.AddTagResponse, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
     var resp *taggerpb.AddTagResponse
-    err := gax.Invoke(ctx, func (ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
         var err error
         resp, err = c.client.AddTag(ctx, req)
         return err
@@ -496,236 +509,85 @@ func (c *Client) AddTag(ctx context.Context, req *taggerpb.AddTagRequest) (*tagg
     return resp, nil
 }
 
+// AddLabel adds a label to the entity.
+func (c *Client) AddLabel(ctx context.Context, req *taggerpb.AddLabelRequest) (*taggerpb.AddLabelResponse, error) {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    var resp *taggerpb.AddLabelResponse
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
+        var err error
+        resp, err = c.client.AddLabel(ctx, req)
+        return err
+    }, c.CallOptions.AddLabel...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
 
 
 // ShelfIterator manages a stream of *librarypb.Shelf.
 type ShelfIterator struct {
-    // The current page data.
-    items         []*librarypb.Shelf
-    atLastPage    bool
-    currentIndex  int
-    nextPageToken string
-    apiCall       func() error
+    items    []*librarypb.Shelf
+    pageInfo *iterator.PageInfo
+    nextFunc func() error
 }
 
-// NextPage returns the next page of results.
-//
-// NextPage may return a second return value of Done along with the last page of results. After
-// NextPage returns Done, all subsequent calls to NextPage will return (nil, Done).
-//
-// Next and NextPage should not be used with the same iterator.
-func (it *ShelfIterator) NextPage() ([]*librarypb.Shelf, error) {
-    if it.atLastPage {
-        // We already returned Done with the last page of items. Continue to
-        // return Done, but with no items.
-        return nil, Done
-    }
-    if err := it.apiCall(); err != nil {
+// PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
+func (it *ShelfIterator) PageInfo() *iterator.PageInfo {
+    return it.pageInfo
+}
+
+// Next returns the next result. Its second return value is iterator.Done if there are no more
+// results. Once Next returns Done, all subsequent calls will return Done.
+func (it *ShelfIterator) Next() (*librarypb.Shelf, error) {
+    if err := it.nextFunc(); err != nil {
         return nil, err
     }
-    if it.atLastPage {
-        return it.items, Done
-    }
-    return it.items, nil
+    item := it.items[0]
+    it.items = it.items[1:]
+    return item, nil
 }
-
-// Next returns the next result. Its second return value is Done if there are no more results.
-// Once next returns Done, all subsequent calls will return Done.
-//
-// SetPageToken should not be called when using Next.
-//
-// Next and NextPage should not be used with the same iterator.
-func (it *ShelfIterator) Next() (*librarypb.Shelf, error) {
-    for it.currentIndex >= len(it.items) {
-        if it.atLastPage {
-            return nil, Done
-        }
-        if err := it.apiCall(); err != nil {
-            return nil, err
-        }
-        it.currentIndex = 0
-    }
-    result := it.items[it.currentIndex]
-    it.currentIndex++
-    return result, nil
-}
-
-// SetPageToken sets the page token for the next call to NextPage, to resume the iteration from
-// a previous point.
-func (it *ShelfIterator) SetPageToken(token string) {
-    it.nextPageToken = token
-}
-
-// NextPageToken returns a page token that can be used with SetPageToken to resume
-// iteration from the next page. It returns the empty string if there are no more pages.
-func (it *ShelfIterator) NextPageToken() string {
-    return it.nextPageToken
-}
-
 // BookIterator manages a stream of *librarypb.Book.
 type BookIterator struct {
-    // The current page data.
-    items         []*librarypb.Book
-    atLastPage    bool
-    currentIndex  int
-    pageSize      int32
-    nextPageToken string
-    apiCall       func() error
+    items    []*librarypb.Book
+    pageInfo *iterator.PageInfo
+    nextFunc func() error
 }
 
-// NextPage returns the next page of results.
-// It will return at most the number of results specified by the last call to SetPageSize.
-// If SetPageSize was never called or was called with a value less than 1,
-// the page size is determined by the underlying service.
-//
-// NextPage may return a second return value of Done along with the last page of results. After
-// NextPage returns Done, all subsequent calls to NextPage will return (nil, Done).
-//
-// Next and NextPage should not be used with the same iterator.
-func (it *BookIterator) NextPage() ([]*librarypb.Book, error) {
-    if it.atLastPage {
-        // We already returned Done with the last page of items. Continue to
-        // return Done, but with no items.
-        return nil, Done
-    }
-    if err := it.apiCall(); err != nil {
+// PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
+func (it *BookIterator) PageInfo() *iterator.PageInfo {
+    return it.pageInfo
+}
+
+// Next returns the next result. Its second return value is iterator.Done if there are no more
+// results. Once Next returns Done, all subsequent calls will return Done.
+func (it *BookIterator) Next() (*librarypb.Book, error) {
+    if err := it.nextFunc(); err != nil {
         return nil, err
     }
-    if it.atLastPage {
-        return it.items, Done
-    }
-    return it.items, nil
+    item := it.items[0]
+    it.items = it.items[1:]
+    return item, nil
 }
-
-// Next returns the next result. Its second return value is Done if there are no more results.
-// Once next returns Done, all subsequent calls will return Done.
-//
-// Internally, Next retrieves results in bulk. You can call SetPageSize as a performance hint to
-// affect how many results are retrieved in a single RPC.
-//
-// SetPageToken should not be called when using Next.
-//
-// Next and NextPage should not be used with the same iterator.
-func (it *BookIterator) Next() (*librarypb.Book, error) {
-    for it.currentIndex >= len(it.items) {
-        if it.atLastPage {
-            return nil, Done
-        }
-        if err := it.apiCall(); err != nil {
-            return nil, err
-        }
-        it.currentIndex = 0
-    }
-    result := it.items[it.currentIndex]
-    it.currentIndex++
-    return result, nil
-}
-
-// PageSize returns the page size for all subsequent calls to NextPage.
-func (it *BookIterator) PageSize() int {
-    return int(it.pageSize)
-}
-
-// SetPageSize sets the page size for all subsequent calls to NextPage.
-func (it *BookIterator) SetPageSize(pageSize int) {
-    if pageSize > math.MaxInt32 {
-        pageSize = math.MaxInt32
-    }
-    it.pageSize = int32(pageSize)
-}
-
-// SetPageToken sets the page token for the next call to NextPage, to resume the iteration from
-// a previous point.
-func (it *BookIterator) SetPageToken(token string) {
-    it.nextPageToken = token
-}
-
-// NextPageToken returns a page token that can be used with SetPageToken to resume
-// iteration from the next page. It returns the empty string if there are no more pages.
-func (it *BookIterator) NextPageToken() string {
-    return it.nextPageToken
-}
-
 // StringIterator manages a stream of string.
 type StringIterator struct {
-    // The current page data.
-    items         []string
-    atLastPage    bool
-    currentIndex  int
-    pageSize      int32
-    nextPageToken string
-    apiCall       func() error
+    items    []string
+    pageInfo *iterator.PageInfo
+    nextFunc func() error
 }
 
-// NextPage returns the next page of results.
-// It will return at most the number of results specified by the last call to SetPageSize.
-// If SetPageSize was never called or was called with a value less than 1,
-// the page size is determined by the underlying service.
-//
-// NextPage may return a second return value of Done along with the last page of results. After
-// NextPage returns Done, all subsequent calls to NextPage will return (nil, Done).
-//
-// Next and NextPage should not be used with the same iterator.
-func (it *StringIterator) NextPage() ([]string, error) {
-    if it.atLastPage {
-        // We already returned Done with the last page of items. Continue to
-        // return Done, but with no items.
-        return nil, Done
-    }
-    if err := it.apiCall(); err != nil {
+// PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
+func (it *StringIterator) PageInfo() *iterator.PageInfo {
+    return it.pageInfo
+}
+
+// Next returns the next result. Its second return value is iterator.Done if there are no more
+// results. Once Next returns Done, all subsequent calls will return Done.
+func (it *StringIterator) Next() (string, error) {
+    if err := it.nextFunc(); err != nil {
         return nil, err
     }
-    if it.atLastPage {
-        return it.items, Done
-    }
-    return it.items, nil
-}
-
-// Next returns the next result. Its second return value is Done if there are no more results.
-// Once next returns Done, all subsequent calls will return Done.
-//
-// Internally, Next retrieves results in bulk. You can call SetPageSize as a performance hint to
-// affect how many results are retrieved in a single RPC.
-//
-// SetPageToken should not be called when using Next.
-//
-// Next and NextPage should not be used with the same iterator.
-func (it *StringIterator) Next() (string, error) {
-    for it.currentIndex >= len(it.items) {
-        if it.atLastPage {
-            return "", Done
-        }
-        if err := it.apiCall(); err != nil {
-            return "", err
-        }
-        it.currentIndex = 0
-    }
-    result := it.items[it.currentIndex]
-    it.currentIndex++
-    return result, nil
-}
-
-// PageSize returns the page size for all subsequent calls to NextPage.
-func (it *StringIterator) PageSize() int {
-    return int(it.pageSize)
-}
-
-// SetPageSize sets the page size for all subsequent calls to NextPage.
-func (it *StringIterator) SetPageSize(pageSize int) {
-    if pageSize > math.MaxInt32 {
-        pageSize = math.MaxInt32
-    }
-    it.pageSize = int32(pageSize)
-}
-
-// SetPageToken sets the page token for the next call to NextPage, to resume the iteration from
-// a previous point.
-func (it *StringIterator) SetPageToken(token string) {
-    it.nextPageToken = token
-}
-
-// NextPageToken returns a page token that can be used with SetPageToken to resume
-// iteration from the next page. It returns the empty string if there are no more pages.
-func (it *StringIterator) NextPageToken() string {
-    return it.nextPageToken
+    item := it.items[0]
+    it.items = it.items[1:]
+    return item, nil
 }

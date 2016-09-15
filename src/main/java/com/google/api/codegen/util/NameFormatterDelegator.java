@@ -53,6 +53,11 @@ public abstract class NameFormatterDelegator implements NameFormatter {
   }
 
   @Override
+  public String fieldName(Name name) {
+    return formatter.fieldName(name);
+  }
+
+  @Override
   public String staticFunctionName(Name name) {
     return formatter.staticFunctionName(name);
   }
@@ -83,7 +88,7 @@ public abstract class NameFormatterDelegator implements NameFormatter {
   }
 
   @Override
-  public String humanName(Name name) {
-    return formatter.humanName(name);
+  public String phraseName(Name name) {
+    return formatter.phraseName(name);
   }
 }

@@ -36,33 +36,33 @@ import java.io.File;
 import java.util.List;
 
 public class GoSurfaceNamer extends SurfaceNamer {
-  private final Model model;
-  private final Interface service;
-  private final ApiConfig apiConfig;
+
   private final GoModelTypeNameConverter converter;
+  private final Model model;
+  private final String packagePath;
 
-  public GoSurfaceNamer(Model model, Interface service, ApiConfig apiConfig) {
-    this(model, service, apiConfig, new GoModelTypeNameConverter());
+  public GoSurfaceNamer(Model model, String packagePath) {
+    this(new GoModelTypeNameConverter(), model, packagePath);
   }
 
-  private GoSurfaceNamer(
-      Model model, Interface service, ApiConfig apiConfig, GoModelTypeNameConverter converter) {
+  private GoSurfaceNamer(GoModelTypeNameConverter converter, Model model, String packagePath) {
     super(new GoNameFormatter(), new ModelTypeFormatterImpl(converter), new GoTypeTable());
-    this.model = model;
-    this.service = service;
-    this.apiConfig = apiConfig;
     this.converter = converter;
+    this.model = model;
+    this.packagePath = packagePath;
   }
 
   @Override
-  public String getPathTemplateName(CollectionConfig collectionConfig) {
+  public String getPathTemplateName(Interface service, CollectionConfig collectionConfig) {
     return inittedConstantName(
-        Name.from(getReducedServiceName(), collectionConfig.getEntityName(), "path", "template"));
+        Name.from(
+            getReducedServiceName(service), collectionConfig.getEntityName(), "path", "template"));
   }
 
   @Override
-  public String getPathTemplateNameGetter(CollectionConfig collectionConfig) {
-    return methodName(Name.from(getReducedServiceName(), collectionConfig.getEntityName(), "path"));
+  public String getPathTemplateNameGetter(Interface service, CollectionConfig collectionConfig) {
+    return methodName(
+        Name.from(getReducedServiceName(service), collectionConfig.getEntityName(), "path"));
   }
 
   @Override
@@ -84,11 +84,11 @@ public class GoSurfaceNamer extends SurfaceNamer {
   @Override
   public String getAndSavePagedResponseTypeName(ModelTypeTable typeTable, TypeRef resourceType) {
     String typeName = converter.getTypeNameForElementType(resourceType).getNickname();
-    int p = typeName.indexOf('.');
-    if (p >= 0) {
-      typeName = typeName.substring(p + 1);
+    int dotIndex = typeName.indexOf('.');
+    if (dotIndex >= 0) {
+      typeName = typeName.substring(dotIndex + 1);
     }
-    return Name.anyCamel(typeName).toUpperCamel() + "Iterator";
+    return Name.anyCamel(typeName).join("iterator").toUpperCamel();
   }
 
   private static String lowerFirstLetter(String s) {
@@ -106,72 +106,73 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
-    return methodName(identifier);
-  }
-
-  public String getGrpcClientTypeName() {
-    // getNickname() thinks the client is a message type and appends a "*".
+  public String getGrpcClientTypeName(Interface service) {
+    // getNickname() thinks the client is a message type and prepends a "*".
     // substring gets rid of the star.
     return converter.getTypeName(service).getNickname().substring(1) + "Client";
   }
 
-  public String getGrpcClientConstructorName() {
-    return getGrpcClientTypeName().replace(".", ".New");
+  @Override
+  public String getGrpcClientConstructorName(Interface service) {
+    return getGrpcClientTypeName(service).replace(".", ".New");
   }
 
-  public String getCallOptionsName() {
-    return clientNamePrefix() + "CallOptions";
+  @Override
+  public String getCallOptionsTypeName(Interface service) {
+    return clientNamePrefix(service).join("call").join("options").toUpperCamel();
   }
 
-  public String getDefaultClientOptionFunc() {
-    return "default" + getClientName() + "Options";
+  @Override
+  public String getDefaultClientOptionFunctionName(Interface service) {
+    return Name.lowerCamel("default")
+        .join(clientNamePrefix(service))
+        .join("client")
+        .join("options")
+        .toLowerCamel();
   }
 
-  public String getDefaultCallOptionFunc() {
-    return "default" + getCallOptionsName();
+  @Override
+  public String getDefaultCallOptionFunctionName(Interface service) {
+    return Name.lowerCamel("default")
+        .join(clientNamePrefix(service))
+        .join("call")
+        .join("options")
+        .toLowerCamel();
   }
 
-  public String getClientName() {
-    return clientNamePrefix() + "Client";
+  @Override
+  public String getClientTypeName(Interface service) {
+    return clientNamePrefix(service).join("client").toUpperCamel();
   }
 
-  public String getClientConstructorName() {
-    return "New" + getClientName();
+  @Override
+  public String getClientConstructorName(Interface service) {
+    return Name.lowerCamel("new").join(clientNamePrefix(service)).join("client").toUpperCamel();
   }
 
-  public String getServiceName() {
-    return service.getSimpleName();
-  }
-
-  /**
-   * Returns the Go package name.
-   *
-   * Retrieved by splitting the package string on `/` and returning the second to last string if
-   * possible, and otherwise the last string in the resulting array.
-   *
-   * TODO(saicheems): Figure out how to reliably get the intended value...
-   */
+  @Override
   public String getPackageName() {
-    String split[] = apiConfig.getPackageName().split("/");
-    if (split.length - 2 >= 0) {
-      return split[split.length - 2];
-    }
-    return split[split.length - 1];
+    // packagePath is in form "cloud.google.com/go/library/apiv1";
+    // we want "library".
+    String[] parts = packagePath.split("/");
+    return parts[parts.length - 2];
   }
 
-  private String clientNamePrefix() {
-    String name = getReducedServiceName();
+  private Name clientNamePrefix(Interface service) {
+    String name = getReducedServiceName(service);
     // If there's only one service, or the service name matches the package name, don't prefix with
     // the service name.
     if (model.getSymbolTable().getInterfaces().size() == 1 || name.equals(getPackageName())) {
       name = "";
     }
-    return name;
+    return Name.upperCamel(name);
   }
 
-  public String getOutputPath() {
-    return apiConfig.getPackageName() + File.separator + getReducedServiceName() + "_client.go";
+  public static String getOutputPath(Interface service, ApiConfig apiConfig) {
+    return apiConfig.getPackageName()
+        + File.separator
+        + getReducedServiceName(service)
+        + "_client.go";
   }
 
   /**
@@ -180,8 +181,8 @@ public class GoSurfaceNamer extends SurfaceNamer {
    * For example:
    *  LoggingServiceV2 => logging
    */
-  private String getReducedServiceName() {
-    String name = getServiceName().replaceAll("V[0-9]+$", "");
+  public static String getReducedServiceName(Interface service) {
+    String name = service.getSimpleName().replaceAll("V[0-9]+$", "");
     name = name.replaceAll("Service$", "");
     return Name.upperCamel(name).toLowerUnderscore();
   }

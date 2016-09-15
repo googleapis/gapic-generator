@@ -178,8 +178,7 @@ public class ApiMethodTransformer {
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
     TypeRef resourceType = pageStreaming.getResourcesField().getType();
     String resourceTypeName = context.getTypeTable().getAndSaveNicknameForElementType(resourceType);
-    String resourceFieldName =
-        context.getNamer().getFieldGetFunctionName(pageStreaming.getResourcesField());
+    String resourceFieldName = context.getNamer().getFieldName(pageStreaming.getResourcesField());
     methodViewBuilder.listMethod(
         ListMethodDetailView.newBuilder()
             .resourceTypeName(resourceTypeName)
@@ -304,7 +303,8 @@ public class ApiMethodTransformer {
           throw new IllegalStateException("No collection config with id '" + entityName + "'");
         }
         PathTemplateCheckView.Builder check = PathTemplateCheckView.newBuilder();
-        check.pathTemplateName(context.getNamer().getPathTemplateName(collectionConfig));
+        check.pathTemplateName(
+            context.getNamer().getPathTemplateName(context.getInterface(), collectionConfig));
         check.paramName(context.getNamer().getVariableName(field));
         check.allowEmptyString(shouldAllowEmpty(context, field));
         check.validationMessageContext(context.getNamer().getApiMethodName(context.getMethod()));

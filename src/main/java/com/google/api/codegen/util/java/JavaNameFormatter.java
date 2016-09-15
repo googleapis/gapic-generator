@@ -44,6 +44,11 @@ public class JavaNameFormatter implements NameFormatter {
   }
 
   @Override
+  public String fieldName(Name name) {
+    return name.toLowerCamel();
+  }
+
+  @Override
   public String staticFunctionName(Name name) {
     return name.toLowerCamel();
   }
@@ -74,7 +79,7 @@ public class JavaNameFormatter implements NameFormatter {
   }
 
   @Override
-  public String humanName(Name name) {
-    throw new UnsupportedOperationException();
+  public String phraseName(Name name) {
+    return name.toLowerUnderscore().replace('_', ' ');
   }
 }

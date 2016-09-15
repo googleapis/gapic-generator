@@ -25,7 +25,6 @@ import java.util.TreeMap;
 
 public class GoTypeTable implements TypeTable {
 
-  private static final String EMPTY_PROTO_PKG = "github.com/golang/protobuf/ptypes/empty";
   private final TreeMap<String, String> imports = new TreeMap<>();
 
   @Override
@@ -67,7 +66,7 @@ public class GoTypeTable implements TypeTable {
     String[] parts = alias.getFullName().split(";");
     // We don't have to save import of empty proto.
     // Instead of return the empty, we return nothing.
-    if (parts.length == 3 && !parts[0].equals(EMPTY_PROTO_PKG)) {
+    if (parts.length == 3) {
       imports.put(parts[0], parts[1]);
     }
     return alias.getNickname();

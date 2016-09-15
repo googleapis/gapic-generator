@@ -70,7 +70,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getPathTemplateName(CollectionConfig collectionConfig) {
+  public String getPathTemplateName(Interface service, CollectionConfig collectionConfig) {
     return inittedConstantName(Name.from(collectionConfig.getEntityName(), "name", "template"));
   }
 

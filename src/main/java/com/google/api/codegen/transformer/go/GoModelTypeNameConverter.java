@@ -87,13 +87,13 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
   /**
    * Since Go imports by package instead of by class name,
    * we have to treat it differently than other languages.
-   * Imports in Go has 3 components:
+   * Imports in Go have 3 components:
    * - Import path, like "github.com/googleapis/gax-go"
    * - local package name, like "gax"; this is the name we call the package we import
    * - The name of the thing in the package we want, like "CallOption"
    *
-   * We need all 3 pieces in the full name and the last 2 in the nick name.
-   * For nick name, we simply use: "gax.CallOption",
+   * We need all 3 pieces in the full name and the last 2 in the nickname.
+   * For nickname, we simply use: "gax.CallOption",
    * which is how we refer to the import in the program text.
    * For the full name, we use join all 3 by semicolons:
    * "github.com/googleapis/gax-go;gax;CallOption"
@@ -105,7 +105,7 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
     String elemName = elem.getSimpleName();
 
     // This is out of our list of curated protos,
-    // and we don't current have a good way to name them
+    // and we don't currently have a good way to name them.
     if (!Strings.isNullOrEmpty(importPath) && !importPath.startsWith(CORE_PROTO_BASE)) {
       String localName = protoPackage.replace(".", "_");
       return new TypeName(

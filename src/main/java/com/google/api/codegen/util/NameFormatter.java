@@ -41,6 +41,11 @@ public interface NameFormatter {
   String methodName(Name name);
 
   /**
+   * Formats the name as a field name.
+   */
+  String fieldName(Name name);
+
+  /**
    * Formats the name as a static function name.
    */
   String staticFunctionName(Name name);
@@ -77,5 +82,5 @@ public interface NameFormatter {
   /**
    * Formats the name into human readable form, useful in comments.
    */
-  String humanName(Name name);
+  String phraseName(Name name);
 }

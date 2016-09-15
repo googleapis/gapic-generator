@@ -31,6 +31,8 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 
+import io.grpc.Status;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,6 +135,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
+  /** The name of the field. */
+  public String getFieldName(Field field) {
+    return fieldName(Name.from(field.getSimpleName()));
+  }
+
   /** The function name to set the given proto field. */
   public String getFieldSetFunctionName(Field field) {
     return getFieldSetFunctionName(field.getType(), Name.from(field.getSimpleName()));
@@ -192,21 +199,28 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
+   * The name of the package
+   */
+  public String getPackageName() {
+    return getNotImplementedString("SurfaceNamer.getPackagename");
+  }
+
+  /**
    * The name of a path template constant for the given collection,
    * to be held in an API wrapper class.
    */
-  public String getPathTemplateName(CollectionConfig collectionConfig) {
+  public String getPathTemplateName(Interface service, CollectionConfig collectionConfig) {
     return inittedConstantName(Name.from(collectionConfig.getEntityName(), "path", "template"));
   }
 
   /** The name of a getter function to get a particular path template for the given collection. */
-  public String getPathTemplateNameGetter(CollectionConfig collectionConfig) {
+  public String getPathTemplateNameGetter(Interface service, CollectionConfig collectionConfig) {
     return methodName(Name.from("get", collectionConfig.getEntityName(), "name", "template"));
   }
 
   /** The name of the path template resource, in human format. */
   public String getPathTemplateResourceName(CollectionConfig collectionConfig) {
-    return humanName(Name.from(collectionConfig.getEntityName()));
+    return phraseName(Name.from(collectionConfig.getEntityName()));
   }
 
   /** The function name to format the entity for the given collection. */
@@ -284,6 +298,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
+   * Human-friendly name of this service
+   */
+  public String getServicePhraseName(Interface service) {
+    return phraseName(Name.upperCamel(service.getSimpleName()));
+  }
+
+  /**
    * The type name of the Grpc client class.
    * This needs to match what Grpc generates for the particular language.
    */
@@ -291,6 +312,30 @@ public class SurfaceNamer extends NameFormatterDelegator {
     NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
     String className = className(Name.upperCamel(namePath.getHead(), "Client"));
     return qualifiedName(namePath.withHead(className));
+  }
+
+  /**
+   * Name of the Grpc client constructor.
+   * This needs to match what Grpc generates for the particular language.
+   */
+  public String getGrpcClientConstructorName(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getGrpcClientConstructorName");
+  }
+
+  /**
+   * The type of the service client.
+   * The client is VKit generated, not GRPC.
+   */
+  public String getClientTypeName(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getGrpcClientConstructorName");
+  }
+
+  /**
+   * The name of the constructor for the service client.
+   * The client is VKit generated, not GRPC.
+   */
+  public String getClientConstructorName(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getGrpcClientConstructorName");
   }
 
   /**
@@ -387,6 +432,26 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The type name for retry settings. */
   public String getRetrySettingsTypeName() {
     return getNotImplementedString("SurfaceNamer.getRetrySettingsClassName");
+  }
+
+  /** Type name of the status code */
+  public String getStatusCodeName(Status.Code code) {
+    return inittedConstantName(Name.upperUnderScore(code.toString()));
+  }
+
+  /** The function name to retrieve default client option */
+  public String getDefaultClientOptionFunctionName(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getDefaultClientOptionFunctionName");
+  }
+
+  /** The type name of call options */
+  public String getCallOptionsTypeName(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getCallOptionsTypeName");
+  }
+
+  /** The function name to retrieve default call option */
+  public String getDefaultCallOptionFunctionName(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getDefaultCallOptionFunctionName");
   }
 
   /** The type name for an optional array argument; not used in most languages. */
