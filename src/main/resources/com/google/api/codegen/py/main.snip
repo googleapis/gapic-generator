@@ -205,10 +205,11 @@
             Args:
               service_path (string): The domain name of the API remote host.
               port (int): The port on which to connect to the remote host.
-              channel (:class:`grpc.beta.implementations.Channel`): A ``Channel``
-                object through which to make calls.
-              ssl_creds (:class:`grpc.beta.implementations.ClientCredentials`):
-                A `ClientCredentials` for use with an SSL-enabled channel.
+              channel (:class:`grpc.Channel`): A ``Channel`` instance through
+                which to make calls.
+              ssl_creds (:class:`grpc.ChannelCredentials`): A
+                ``ChannelCredentials`` instance for use with an SSL-enabled
+                channel.
               client_config (dict):
                 A dictionary for call options for each method. See
                 :func:`google.gax.construct_settings` for the structure of
@@ -236,7 +237,7 @@
             metadata = [('x-goog-api-client', goog_api_client)]
             {@constructDefaults(service)}
             self.stub = config.create_stub(
-                {@stubModule}.beta_create_{@stubService}_stub,
+                {@stubModule}.{@stubService}Stub,
                 service_path,
                 port,
                 ssl_creds=ssl_creds,
