@@ -14,12 +14,14 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.metacode.FieldStructureParser;
+import com.google.api.codegen.metacode.FieldSetting;
 import com.google.api.codegen.metacode.InitCode;
-import com.google.api.codegen.metacode.InitCodeGenerator;
-import com.google.api.codegen.metacode.InitCodeGeneratorContext;
+import com.google.api.codegen.metacode.InitCodeLine;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.metacode.InputParameter;
+import com.google.api.codegen.metacode.InitCodeNode;
+import com.google.api.codegen.metacode.InitTreeParserContext;
+import com.google.api.codegen.metacode.StructureInitCodeLine;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.tools.framework.model.Field;
@@ -27,8 +29,10 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /** Represents the generic documentation settings for an Api method. */
@@ -57,16 +61,16 @@ public abstract class DocConfig {
     @SuppressWarnings("unchecked")
     public BuilderType setRequestObjectInitCode(
         GapicContext context, Interface service, Method method) {
-      Map<String, Object> initFieldStructure = createInitFieldStructure(context, service, method);
-      InitCodeGenerator generator = new InitCodeGenerator();
-      InitCodeGeneratorContext initContext =
-          InitCodeGeneratorContext.newBuilder()
-              .symbolTable(new SymbolTable())
-              .initStructure(initFieldStructure)
-              .initObjectName(Name.from("request"))
-              .initObjectType(method.getInputType())
-              .build();
-      InitCode initCode = generator.generate(initContext);
+      List<InitCodeLine> initCodeLines = createInitCodeLines(context, service, method, null);
+      InitCodeLine lastLine = initCodeLines.get(initCodeLines.size() - 1);
+      FieldSetting objectField =
+          FieldSetting.create(
+              method.getInputType(),
+              Name.from("request"),
+              lastLine.getIdentifier(),
+              lastLine.getInitValueConfig());
+      List<FieldSetting> outputFields = Arrays.asList(objectField);
+      InitCode initCode = InitCode.create(initCodeLines, outputFields);
       setInitCodeProxy(initCode);
       return (BuilderType) this;
     }
@@ -74,23 +78,21 @@ public abstract class DocConfig {
     @SuppressWarnings("unchecked")
     public BuilderType setFieldInitCode(
         GapicContext context, Interface service, Method method, Iterable<Field> fields) {
-      Map<String, Object> initFieldStructure = createInitFieldStructure(context, service, method);
-      InitCodeGenerator generator = new InitCodeGenerator();
-      InitCodeGeneratorContext initContext =
-          InitCodeGeneratorContext.newBuilder()
-              .symbolTable(new SymbolTable())
-              .initStructure(initFieldStructure)
-              .initObjectName(Name.from("request"))
-              .initObjectType(method.getInputType())
-              .flattenedFields(Lists.newArrayList(fields))
-              .build();
-      InitCode initCode = generator.generate(initContext);
+      List<InitCodeLine> initCodeLines = createInitCodeLines(context, service, method, fields);
+      InitCodeLine lastLine = initCodeLines.remove(initCodeLines.size() - 1);
+      List<FieldSetting> outputFields;
+      if (initCodeLines.size() == 0) {
+        outputFields = new ArrayList<>();
+      } else {
+        outputFields = ((StructureInitCodeLine) lastLine).getFieldSettings();
+      }
+      InitCode initCode = InitCode.create(initCodeLines, outputFields);
       setInitCodeProxy(initCode);
       return (BuilderType) this;
     }
 
-    private static Map<String, Object> createInitFieldStructure(
-        GapicContext context, Interface service, Method method) {
+    private static List<InitCodeLine> createInitCodeLines(
+        GapicContext context, Interface service, Method method, Iterable<Field> fields) {
       MethodConfig methodConfig =
           context.getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
       Map<String, String> fieldNamePatterns = methodConfig.getFieldNamePatterns();
@@ -103,10 +105,21 @@ public abstract class DocConfig {
             InitValueConfig.create(context.getApiWrapperName(service), collectionConfig);
         initValueConfigMap.put(fieldNamePattern.getKey(), initValueConfig);
       }
-      Map<String, Object> initFieldStructure =
-          FieldStructureParser.parseFields(
-              methodConfig.getSampleCodeInitFields(), initValueConfigMap.build());
-      return initFieldStructure;
+      InitCodeNode rootNode =
+          InitCodeNode.createTree(
+              InitTreeParserContext.newBuilder()
+                  .table(new SymbolTable())
+                  .rootObjectType(method.getInputType())
+                  .initValueConfigMap(initValueConfigMap.build())
+                  .dottedPathStrings(methodConfig.getSampleCodeInitFields())
+                  .initFields(fields)
+                  .suggestedName(Name.from("request"))
+                  .build());
+      List<InitCodeLine> initCodeLines = new ArrayList<>();
+      for (InitCodeNode item : rootNode.listInInitializationOrder()) {
+        initCodeLines.add(item.getInitCodeLine());
+      }
+      return initCodeLines;
     }
 
     public BuilderType setRequestObjectParam(Method method) {

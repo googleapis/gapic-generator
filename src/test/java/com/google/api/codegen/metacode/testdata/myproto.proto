@@ -1,0 +1,27 @@
+// (-- Library API for toolkit testing purposes --)
+
+syntax = "proto3";
+
+package google.example.myproto.v1;
+
+service MyProto {
+  rpc MyMethod(MethodRequest) returns (MethodResponse);
+}
+
+message MethodRequest {
+  repeated SubMessage mylist = 1;
+  SubMessage myfield = 2;
+  SubMessage secondfield = 3;
+
+  map<string, string> stringmap = 4;
+  map<int32, string> intmap = 5;
+}
+
+message SubMessage {
+  string subfield = 1;
+  string subsecondfield = 2;
+}
+
+message MethodResponse {
+  string myfield = 1;
+}

@@ -19,11 +19,13 @@ import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
+import com.google.common.base.Joiner;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -83,14 +85,19 @@ public class JavaTypeTable implements TypeTable {
   }
 
   @Override
-  public TypeName getContainerTypeName(String containerFullName, String elementFullName) {
+  public TypeName getContainerTypeName(String containerFullName, String... elementFullNames) {
     TypeName containerTypeName = getTypeName(containerFullName);
-    TypeName elementTypeName = getTypeName(elementFullName);
+    TypeName[] elementTypeNames = new TypeName[elementFullNames.length];
+    for (int i = 0; i < elementTypeNames.length; i++) {
+      elementTypeNames[i] = getTypeName(elementFullNames[i]);
+    }
+    String argPattern = Joiner.on(",").join(Collections.nCopies(elementTypeNames.length, "%i"));
+    String pattern = "%s<" + argPattern + ">";
     return new TypeName(
         containerTypeName.getFullName(),
         containerTypeName.getNickname(),
-        "%s<%i>",
-        elementTypeName);
+        pattern,
+        elementTypeNames);
   }
 
   @Override

@@ -16,6 +16,8 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 
+import javax.annotation.Nullable;
+
 @AutoValue
 public abstract class PageStreamingDescriptorClassView {
   public abstract String name();
@@ -32,9 +34,19 @@ public abstract class PageStreamingDescriptorClassView {
 
   public abstract String requestTokenSetFunction();
 
+  @Nullable
+  public abstract String requestPageSizeSetFunction();
+
+  @Nullable
+  public abstract String requestPageSizeGetFunction();
+
   public abstract String responseTokenGetFunction();
 
   public abstract String resourcesFieldGetFunction();
+
+  public boolean requestHasPageSize() {
+    return requestPageSizeSetFunction() != null && requestPageSizeGetFunction() != null;
+  }
 
   public static Builder newBuilder() {
     return new AutoValue_PageStreamingDescriptorClassView.Builder();
@@ -56,6 +68,10 @@ public abstract class PageStreamingDescriptorClassView {
     public abstract Builder defaultTokenValue(String val);
 
     public abstract Builder requestTokenSetFunction(String val);
+
+    public abstract Builder requestPageSizeSetFunction(String val);
+
+    public abstract Builder requestPageSizeGetFunction(String val);
 
     public abstract Builder responseTokenGetFunction(String val);
 

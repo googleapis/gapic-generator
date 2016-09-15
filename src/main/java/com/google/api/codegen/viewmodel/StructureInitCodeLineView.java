@@ -29,8 +29,6 @@ public abstract class StructureInitCodeLineView implements InitCodeLineView {
 
   public abstract List<FieldSettingView> fieldSettings();
 
-  public abstract InitValueView initValue();
-
   public static Builder newBuilder() {
     return new AutoValue_StructureInitCodeLineView.Builder();
   }
@@ -44,8 +42,6 @@ public abstract class StructureInitCodeLineView implements InitCodeLineView {
     public abstract Builder identifier(String val);
 
     public abstract Builder fieldSettings(List<FieldSettingView> val);
-
-    public abstract Builder initValue(InitValueView val);
 
     public abstract StructureInitCodeLineView build();
   }
