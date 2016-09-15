@@ -134,7 +134,7 @@ public class InitCodeNode {
   public static InitCodeNode createTree(InitTreeParserContext context) {
     List<InitCodeNode> subTrees = buildSubTrees(context);
     InitCodeNode root = createWithChildren("root", InitCodeLineType.StructureInitLine, subTrees);
-    root.updateTree(
+    root.resolveNamesAndTypes(
         context.table(),
         context.valueGenerator(),
         context.rootObjectType(),
@@ -211,12 +211,12 @@ public class InitCodeNode {
     return subTrees;
   }
 
-  private void updateTree(
+  private void resolveNamesAndTypes(
       SymbolTable table, TestValueGenerator valueGenerator, TypeRef type, Name suggestedName) {
 
     for (InitCodeNode child : children.values()) {
       validateKeyValue(type, child.key);
-      child.updateTree(
+      child.resolveNamesAndTypes(
           table,
           valueGenerator,
           getChildType(type, child.key),
