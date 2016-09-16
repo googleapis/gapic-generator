@@ -77,9 +77,4 @@ public class NodeJSNameFormatter implements NameFormatter {
   public String classFileNameBase(Name name) {
     return name.toOriginal();
   }
-
-  @Override
-  public String phraseName(Name name) {
-    return name.toLowerCamel().replace('_', ' ');
-  }
 }

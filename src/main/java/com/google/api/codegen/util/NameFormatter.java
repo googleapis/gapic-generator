@@ -78,9 +78,4 @@ public interface NameFormatter {
    *  Formats the base file name.
    */
   String classFileNameBase(Name name);
-
-  /**
-   * Formats the name into human readable form, useful in comments.
-   */
-  String phraseName(Name name);
 }

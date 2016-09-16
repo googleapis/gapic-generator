@@ -77,9 +77,4 @@ public class RubyNameFormatter implements NameFormatter {
   public String classFileNameBase(Name name) {
     return name.toLowerUnderscore();
   }
-
-  @Override
-  public String phraseName(Name name) {
-    return name.toLowerUnderscore().replace('_', ' ');
-  }
 }

@@ -30,7 +30,7 @@ import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.go.GoTypeTable;
-import com.google.api.codegen.viewmodel.RetryPairDefinitionView;
+import com.google.api.codegen.viewmodel.RetryConfigDefinitionView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangXCombinedSurfaceView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -93,19 +93,19 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     ApiConfig apiConfig = context.getApiConfig();
 
     view.templateFileName(XAPI_TEMPLATE_FILENAME);
-    view.serviceDoc(comments(service));
+    view.serviceDoc(doc(service));
     view.packageName(namer.getPackageName());
-    view.clientName(namer.getClientTypeName(service));
-    view.clientConstructorName(namer.getClientConstructorName(service));
-    view.defaultClientOptionFunctionName(namer.getDefaultClientOptionFunctionName(service));
-    view.defaultCallOptionFunctionName(namer.getDefaultCallOptionFunctionName(service));
-    view.callOptionsTypeName(namer.getCallOptionsTypeName(service));
+    view.clientName(namer.getApiWrapperClassName(service));
+    view.clientConstructorName(namer.getApiWrapperClassConstructorName(service));
+    view.defaultClientOptionFunctionName(namer.getDefaultApiSettingsFunctionName(service));
+    view.defaultCallOptionFunctionName(namer.getDefaultCallSettingsFunctionName(service));
+    view.callOptionsTypeName(namer.getCallSettingsTypeName(service));
     view.serviceName(namer.getServicePhraseName(service));
     view.grpcClientTypeName(namer.getGrpcClientTypeName(service));
     view.grpcClientConstructorName(namer.getGrpcClientConstructorName(service));
     view.outputPath(GoSurfaceNamer.getOutputPath(service, apiConfig));
 
-    Collection<RetryPairDefinitionView> retryDef = generateRetryPairDefinitions(namer, context);
+    List<RetryConfigDefinitionView> retryDef = generateRetryConfigDefinitions(namer, context);
     boolean hasRetry = !retryDef.isEmpty();
     view.retryPairDefinitions(retryDef);
 
@@ -121,7 +121,9 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.servicePort(serviceConfig.getServicePort());
     view.authScopes(serviceConfig.getAuthScopes(service));
 
-    view.imports(getImports(context, hasRetry));
+    addXApiImports(context, hasRetry);
+    view.imports(GoTypeTable.formatImports(context.getTypeTable().getImports()));
+    // view.imports(getImports(context, hasRetry));
 
     return view.build();
   }
@@ -133,10 +135,12 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   /**
    * Returns the doc comments of Go for the proto elements.
    */
-  public static List<String> comments(ProtoElement element) {
+  public static List<String> doc(ProtoElement element) {
     if (!element.hasAttribute(ElementDocumentationAttribute.KEY)) {
       return ImmutableList.<String>of("");
     }
+
+    // TODO(pongad): GoContextCommon should be deleted after we convert Go discovery to MVMM.
     return new GoContextCommon().getCommentLines(DocumentationUtil.getScopedDescription(element));
   }
 
@@ -157,47 +161,47 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     return apiMethods;
   }
 
-  private Collection<RetryPairDefinitionView> generateRetryPairDefinitions(
+  private List<RetryConfigDefinitionView> generateRetryConfigDefinitions(
       SurfaceNamer namer, SurfaceTransformerContext context) {
-    Set<RetryPairDefinitionView.Name> retryNames = new HashSet<>();
+    Set<RetryConfigDefinitionView.Name> retryNames = new HashSet<>();
     for (Method method : context.getNonStreamingMethods()) {
       MethodConfig conf = context.getMethodConfig(method);
       retryNames.add(
-          RetryPairDefinitionView.Name.create(
+          RetryConfigDefinitionView.Name.create(
               conf.getRetrySettingsConfigName(), conf.getRetryCodesConfigName()));
     }
 
-    TreeMap<RetryPairDefinitionView.Name, RetryPairDefinitionView> retryDef = new TreeMap<>();
+    TreeMap<RetryConfigDefinitionView.Name, RetryConfigDefinitionView> retryDef = new TreeMap<>();
     Map<String, ImmutableSet<Code>> retryCodesDef =
         context.getInterfaceConfig().getRetryCodesDefinition();
     Map<String, RetrySettings> retryParamsDef =
         context.getInterfaceConfig().getRetrySettingsDefinition();
-    for (RetryPairDefinitionView.Name name : retryNames) {
+    for (RetryConfigDefinitionView.Name name : retryNames) {
       ImmutableSet<Code> codes = retryCodesDef.get(name.codes());
       if (codes.isEmpty()) {
         continue;
       }
-      ImmutableSet.Builder<String> retryCodeNames = ImmutableSet.<String>builder();
+      List<String> retryCodeNames = new ArrayList<>();
       for (Code code : codes) {
         retryCodeNames.add(namer.getStatusCodeName(code));
       }
       retryDef.put(
           name,
-          RetryPairDefinitionView.newBuilder()
+          RetryConfigDefinitionView.newBuilder()
               .name(name)
-              .retryCodes(retryCodeNames.build())
+              .retryCodes(retryCodeNames)
               .params(retryParamsDef.get(name.params()))
               .build());
     }
-    return retryDef.values();
+    return new ArrayList<>(retryDef.values());
   }
 
-  private Set<RetryPairDefinitionView.Name> getRetryNames(SurfaceTransformerContext context) {
-    Set<RetryPairDefinitionView.Name> retryNames = new HashSet<>();
+  private Set<RetryConfigDefinitionView.Name> getRetryNames(SurfaceTransformerContext context) {
+    Set<RetryConfigDefinitionView.Name> retryNames = new HashSet<>();
     for (Method method : context.getNonStreamingMethods()) {
       MethodConfig conf = context.getMethodConfig(method);
       retryNames.add(
-          RetryPairDefinitionView.Name.create(
+          RetryConfigDefinitionView.Name.create(
               conf.getRetrySettingsConfigName(), conf.getRetryCodesConfigName()));
     }
     return retryNames;
@@ -205,54 +209,27 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private static final String EMPTY_PROTO_PKG = "github.com/golang/protobuf/ptypes/empty";
 
-  private List<String> getImports(SurfaceTransformerContext context, boolean hasRetry) {
-    TreeSet<GoImport> standard = new TreeSet<>();
-    TreeSet<GoImport> thirdParty = new TreeSet<>();
+  private void addXApiImports(SurfaceTransformerContext context, boolean hasRetry) {
+    ModelTypeTable typeTable = context.getTypeTable();
+    typeTable.saveNicknameFor("fmt;;;");
+    typeTable.saveNicknameFor("runtime;;;");
+    typeTable.saveNicknameFor("golang.org/x/net/context;;;");
+    typeTable.saveNicknameFor("google.golang.org/grpc;;;");
+    typeTable.saveNicknameFor("google.golang.org/grpc/metadata;;;");
+    typeTable.saveNicknameFor("github.com/googleapis/gax-go;gax;;");
+    typeTable.saveNicknameFor("google.golang.org/api/option;;;");
+    typeTable.saveNicknameFor("google.golang.org/api/transport;;;");
 
-    standard.add(GoImport.create("fmt"));
-    standard.add(GoImport.create("runtime"));
     if (hasRetry) {
-      standard.add(GoImport.create("time"));
-      thirdParty.add(GoImport.create("google.golang.org/grpc/codes"));
+      typeTable.saveNicknameFor("time;;;");
+      typeTable.saveNicknameFor("google.golang.org/grpc/codes;;;");
     }
     for (Method method : context.getNonStreamingMethods()) {
       if (context.getMethodConfig(method).isPageStreaming()) {
-        standard.add(GoImport.create("math"));
+        typeTable.saveNicknameFor("math;;;");
         break;
       }
     }
-    thirdParty.add(GoImport.create("golang.org/x/net/context"));
-    thirdParty.add(GoImport.create("google.golang.org/grpc"));
-    thirdParty.add(GoImport.create("google.golang.org/grpc/metadata"));
-    thirdParty.add(GoImport.create("github.com/googleapis/gax-go", "gax"));
-    thirdParty.add(GoImport.create("google.golang.org/api/option"));
-    thirdParty.add(GoImport.create("google.golang.org/api/transport"));
-
-    for (Map.Entry<String, String> entry : context.getTypeTable().getImports().entrySet()) {
-      if (!entry.getKey().equals(EMPTY_PROTO_PKG)) {
-        thirdParty.add(GoImport.create(entry.getKey(), entry.getValue()));
-      }
-    }
-
-    // We don't have to save import of empty proto.
-    // Instead of return the empty, we return nothing.
-
-    return formatImports(standard, thirdParty);
-  }
-
-  private List<String> formatImports(Set<GoImport> standard, Set<GoImport> thirdParty) {
-    List<String> result = new ArrayList<String>();
-    if (standard != null) {
-      for (GoImport goImport : standard) {
-        result.add("    " + goImport.importString());
-      }
-      result.add("");
-    }
-    if (thirdParty != null) {
-      for (GoImport goImport : thirdParty) {
-        result.add("    " + goImport.importString());
-      }
-    }
-    return result;
+    typeTable.getImports().remove(EMPTY_PROTO_PKG);
   }
 }

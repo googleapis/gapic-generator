@@ -19,7 +19,8 @@ import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -34,11 +35,11 @@ public class GoTypeTable implements TypeTable {
 
   @Override
   public TypeName getTypeName(String fullName) {
-    String[] parts = fullName.split(";");
-    if (parts.length != 3) {
+    String[] parts = fullName.split(";", -1);
+    if (parts.length != 4) {
       return new TypeName(fullName);
     }
-    return new TypeName(fullName, "*" + parts[1] + "." + parts[2]);
+    return new TypeName(fullName, parts[3] + parts[1] + "." + parts[2]);
   }
 
   @Override
@@ -63,10 +64,8 @@ public class GoTypeTable implements TypeTable {
 
   @Override
   public String getAndSaveNicknameFor(TypeAlias alias) {
-    String[] parts = alias.getFullName().split(";");
-    // We don't have to save import of empty proto.
-    // Instead of return the empty, we return nothing.
-    if (parts.length == 3) {
+    String[] parts = alias.getFullName().split(";", -1);
+    if (parts.length == 4) {
       imports.put(parts[0], parts[1]);
     }
     return alias.getNickname();
@@ -75,5 +74,30 @@ public class GoTypeTable implements TypeTable {
   @Override
   public Map<String, String> getImports() {
     return imports;
+  }
+
+  public static List<String> formatImports(Map<String, String> imports) {
+    List<String> standard = new ArrayList<>(imports.size() + 1);
+    List<String> thirdParty = new ArrayList<>(imports.size() + 1);
+
+    for (Map.Entry<String, String> imp : imports.entrySet()) {
+      String importPath = imp.getKey();
+      String packageRename = imp.getValue();
+      List<String> target = isStandardImport(importPath) ? standard : thirdParty;
+      if (packageRename.equals("")) {
+        target.add(String.format("\"%s\"", importPath));
+      } else {
+        target.add(String.format("%s \"%s\"", packageRename, importPath));
+      }
+    }
+    standard.add("");
+    standard.addAll(thirdParty);
+    return standard;
+  }
+
+  private static boolean isStandardImport(String importPath) {
+    // TODO(pongad): Some packages in standard ibrary have slashes,
+    // we might have to special case them.
+    return !importPath.contains("/");
   }
 }

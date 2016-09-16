@@ -10,9 +10,9 @@
     # No indent here. `view.imports` already has the indent.
     # Go has a blank line in the middle, and we don't want that line indented.
     import (
-    @join imp : view.imports
-    {@imp}
-    @end
+        @join imp : view.imports
+            {@imp}
+        @end
     )
 
     var (
@@ -64,7 +64,7 @@
         }
     }
 
-    // {@view.clientName} is a client for interacting with {@view.serviceName}.
+    // {@view.clientName} is a client for interacting with the {@view.serviceName}.
     type {@view.clientName} struct {
         // The connection to the service.
         conn *grpc.ClientConn
@@ -123,7 +123,7 @@
         func {@getter.name}({@pathTemplateParams(getter.args)} string) string {
             path, err := {@getter.pathTemplateName}.Render(map[string]string{
                 @join arg : getter.args
-                    "{@arg.templateArg}": {@arg.funcParam},
+                    "{@arg.templateKey}": {@arg.name},
                 @end
             })
             if err != nil {
@@ -247,6 +247,6 @@
 
 @private pathTemplateParams(args)
     @join e : args on ", "
-      {@e.funcParam}
+      {@e.name}
     @end
 @end

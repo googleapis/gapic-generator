@@ -43,7 +43,7 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
 
   public abstract List<PathTemplateGetterFunctionView> pathTemplateGetters();
 
-  public abstract Collection<RetryPairDefinitionView> retryPairDefinitions();
+  public abstract List<RetryConfigDefinitionView> retryPairDefinitions();
 
   public abstract List<StaticLangApiMethodView> apiMethods();
 
@@ -110,7 +110,7 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
 
     public abstract Builder pathTemplates(List<PathTemplateView> val);
 
-    public abstract Builder retryPairDefinitions(Collection<RetryPairDefinitionView> val);
+    public abstract Builder retryPairDefinitions(List<RetryConfigDefinitionView> val);
 
     public abstract Builder serviceDoc(List<String> val);
 

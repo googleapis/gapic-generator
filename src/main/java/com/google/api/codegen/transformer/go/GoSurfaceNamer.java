@@ -107,9 +107,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getGrpcClientTypeName(Interface service) {
-    // getNickname() thinks the client is a message type and prepends a "*".
-    // substring gets rid of the star.
-    return converter.getTypeName(service).getNickname().substring(1) + "Client";
+    return converter.getTypeName(service).getNickname() + "Client";
   }
 
   @Override
@@ -118,13 +116,13 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getCallOptionsTypeName(Interface service) {
+  public String getCallSettingsTypeName(Interface service) {
     return clientNamePrefix(service).join("call").join("options").toUpperCamel();
   }
 
   @Override
-  public String getDefaultClientOptionFunctionName(Interface service) {
-    return Name.lowerCamel("default")
+  public String getDefaultApiSettingsFunctionName(Interface service) {
+    return Name.from("default")
         .join(clientNamePrefix(service))
         .join("client")
         .join("options")
@@ -132,7 +130,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDefaultCallOptionFunctionName(Interface service) {
+  public String getDefaultCallSettingsFunctionName(Interface service) {
     return Name.lowerCamel("default")
         .join(clientNamePrefix(service))
         .join("call")
@@ -141,12 +139,12 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getClientTypeName(Interface service) {
+  public String getApiWrapperClassName(Interface service) {
     return clientNamePrefix(service).join("client").toUpperCamel();
   }
 
   @Override
-  public String getClientConstructorName(Interface service) {
+  public String getApiWrapperClassConstructorName(Interface service) {
     return Name.lowerCamel("new").join(clientNamePrefix(service)).join("client").toUpperCamel();
   }
 
@@ -188,7 +186,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   public String getStatusCodeName(Status.Code code) {
-    return Name.upperUnderScore(code.toString()).toUpperCamel();
+    return Name.upperUnderscore(code.toString()).toUpperCamel();
   }
 
   @Override

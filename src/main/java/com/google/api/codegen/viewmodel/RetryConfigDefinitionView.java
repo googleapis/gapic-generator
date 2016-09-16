@@ -16,19 +16,20 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.gax.core.RetrySettings;
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableSet;
+
+import java.util.List;
 
 @AutoValue
-public abstract class RetryPairDefinitionView {
+public abstract class RetryConfigDefinitionView {
 
   public abstract Name name();
 
-  public abstract ImmutableSet<String> retryCodes();
+  public abstract List<String> retryCodes();
 
   public abstract RetrySettings params();
 
   public static Builder newBuilder() {
-    return new AutoValue_RetryPairDefinitionView.Builder();
+    return new AutoValue_RetryConfigDefinitionView.Builder();
   }
 
   @AutoValue.Builder
@@ -36,11 +37,11 @@ public abstract class RetryPairDefinitionView {
 
     public abstract Builder name(Name val);
 
-    public abstract Builder retryCodes(ImmutableSet<String> val);
+    public abstract Builder retryCodes(List<String> val);
 
     public abstract Builder params(RetrySettings val);
 
-    public abstract RetryPairDefinitionView build();
+    public abstract RetryConfigDefinitionView build();
   }
 
   @AutoValue
@@ -50,7 +51,7 @@ public abstract class RetryPairDefinitionView {
     public abstract String codes();
 
     public static Name create(String paramsName, String codesName) {
-      return new AutoValue_RetryPairDefinitionView_Name(paramsName, codesName);
+      return new AutoValue_RetryConfigDefinitionView_Name(paramsName, codesName);
     }
 
     public int compareTo(Name other) {

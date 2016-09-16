@@ -65,7 +65,7 @@ public class ApiCallableTransformer {
     apiCallableBuilder.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     apiCallableBuilder.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
     apiCallableBuilder.name(context.getNamer().getCallableName(method));
-    apiCallableBuilder.settingsFunctionName(context.getNamer().getSettingsFunctionName(method));
+    apiCallableBuilder.settingsFunctionName(context.getNamer().getCallSettingsFunctionName(method));
 
     if (methodConfig.isBundling()) {
       apiCallableBuilder.type(ApiCallableType.BundlingApiCallable);
@@ -95,7 +95,7 @@ public class ApiCallableTransformer {
       pagedApiCallableBuilder.responseTypeName(pagedResponseTypeName);
       pagedApiCallableBuilder.name(context.getNamer().getPagedCallableName(method));
       pagedApiCallableBuilder.settingsFunctionName(
-          context.getNamer().getSettingsFunctionName(method));
+          context.getNamer().getCallSettingsFunctionName(method));
 
       apiCallables.add(pagedApiCallableBuilder.build());
     }
@@ -144,8 +144,8 @@ public class ApiCallableTransformer {
       settings.type(ApiCallableType.SimpleApiCallable);
     }
 
-    settings.memberName(namer.getSettingsMemberName(method));
-    settings.settingsGetFunction(namer.getSettingsFunctionName(method));
+    settings.memberName(namer.getCallSettingsMemberName(method));
+    settings.settingsGetFunction(namer.getCallSettingsFunctionName(method));
 
     return Arrays.asList(settings.build());
   }

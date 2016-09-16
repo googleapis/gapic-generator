@@ -18,6 +18,7 @@ import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
 import com.google.api.codegen.viewmodel.ParseResourceFunctionView;
+import com.google.api.codegen.viewmodel.PathTemplateArgumentView;
 import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.PathTemplateView;
 import com.google.api.codegen.viewmodel.ResourceIdParamView;
@@ -103,14 +104,14 @@ public class PathTemplateTransformer {
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
       PathTemplateGetterFunctionView.Builder function = PathTemplateGetterFunctionView.newBuilder();
       function.name(namer.getPathTemplateNameGetter(service, collectionConfig));
-      function.resourceName(namer.getPathTemplateResourceName(collectionConfig));
+      function.resourceName(namer.getPathTemplateResourcePhraseName(collectionConfig));
       function.pathTemplateName(namer.getPathTemplateName(service, collectionConfig));
       function.pattern(collectionConfig.getNamePattern());
 
-      List<PathTemplateGetterFunctionView.Argument> args = new ArrayList<>();
-      for (String templateArg : collectionConfig.getNameTemplate().vars()) {
-        String funcParam = context.getNamer().varName(Name.from(templateArg));
-        args.add(PathTemplateGetterFunctionView.Argument.create(funcParam, templateArg));
+      List<PathTemplateArgumentView> args = new ArrayList<>();
+      for (String templateKey : collectionConfig.getNameTemplate().vars()) {
+        String name = context.getNamer().varName(Name.from(templateKey));
+        args.add(PathTemplateArgumentView.newBuilder().templateKey(templateKey).name(name).build());
       }
       function.args(args);
       functions.add(function.build());

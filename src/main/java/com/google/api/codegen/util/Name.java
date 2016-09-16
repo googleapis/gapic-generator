@@ -47,7 +47,7 @@ public class Name {
    * @throws IllegalArgumentException if any of the strings contain any characters that are not
    * upper case or underscores.
    */
-  public static Name upperUnderScore(String... pieces) {
+  public static Name upperUnderscore(String... pieces) {
     List<NamePiece> namePieces = new ArrayList<>();
     for (String piece : pieces) {
       validateUpperUnderscore(piece);
@@ -211,6 +211,13 @@ public class Name {
       firstPiece = false;
     }
     return buffer.toString();
+  }
+
+  /**
+   * Returns the name in human readable form, useful in comments.
+   */
+  public String toPhrase() {
+    return toLowerUnderscore().replace('_', ' ');
   }
 
   /**

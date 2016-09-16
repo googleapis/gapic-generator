@@ -83,6 +83,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
+   * The name of the constructor for the service client.
+   * The client is VKit generated, not GRPC.
+   */
+  public String getApiWrapperClassConstructorName(Interface interfaze) {
+    return className(Name.upperCamel(interfaze.getSimpleName(), "Api"));
+  }
+
+  /**
    * The name of a variable that holds an instance of the class that implements
    * a particular proto interface.
    */
@@ -105,6 +113,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getApiSettingsClassName(Interface interfaze) {
     return className(Name.upperCamel(interfaze.getSimpleName(), "Settings"));
+  }
+
+  /** The function name to retrieve default client option */
+  public String getDefaultApiSettingsFunctionName(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getDefaultClientOptionFunctionName");
   }
 
   /**
@@ -219,8 +232,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the path template resource, in human format. */
-  public String getPathTemplateResourceName(CollectionConfig collectionConfig) {
-    return phraseName(Name.from(collectionConfig.getEntityName()));
+  public String getPathTemplateResourcePhraseName(CollectionConfig collectionConfig) {
+    return Name.from(collectionConfig.getEntityName()).toPhrase();
   }
 
   /** The function name to format the entity for the given collection. */
@@ -301,7 +314,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * Human-friendly name of this service
    */
   public String getServicePhraseName(Interface service) {
-    return phraseName(Name.upperCamel(service.getSimpleName()));
+    return Name.upperCamel(service.getSimpleName()).toPhrase();
   }
 
   /**
@@ -319,23 +332,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * This needs to match what Grpc generates for the particular language.
    */
   public String getGrpcClientConstructorName(Interface service) {
-    return getNotImplementedString("SurfaceNamer.getGrpcClientConstructorName");
-  }
-
-  /**
-   * The type of the service client.
-   * The client is VKit generated, not GRPC.
-   */
-  public String getClientTypeName(Interface service) {
-    return getNotImplementedString("SurfaceNamer.getGrpcClientConstructorName");
-  }
-
-  /**
-   * The name of the constructor for the service client.
-   * The client is VKit generated, not GRPC.
-   */
-  public String getClientConstructorName(Interface service) {
-    return getNotImplementedString("SurfaceNamer.getGrpcClientConstructorName");
+    return getGrpcClientTypeName(service);
   }
 
   /**
@@ -436,22 +433,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** Type name of the status code */
   public String getStatusCodeName(Status.Code code) {
-    return inittedConstantName(Name.upperUnderScore(code.toString()));
-  }
-
-  /** The function name to retrieve default client option */
-  public String getDefaultClientOptionFunctionName(Interface service) {
-    return getNotImplementedString("SurfaceNamer.getDefaultClientOptionFunctionName");
-  }
-
-  /** The type name of call options */
-  public String getCallOptionsTypeName(Interface service) {
-    return getNotImplementedString("SurfaceNamer.getCallOptionsTypeName");
-  }
-
-  /** The function name to retrieve default call option */
-  public String getDefaultCallOptionFunctionName(Interface service) {
-    return getNotImplementedString("SurfaceNamer.getDefaultCallOptionFunctionName");
+    return inittedConstantName(Name.upperUnderscore(code.toString()));
   }
 
   /** The type name for an optional array argument; not used in most languages. */
@@ -490,13 +472,23 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the settings member name for the given method. */
-  public String getSettingsMemberName(Method method) {
+  public String getCallSettingsMemberName(Method method) {
     return methodName(Name.upperCamel(method.getSimpleName(), "Settings"));
   }
 
   /** The getter function name for the settings for the given method. */
-  public String getSettingsFunctionName(Method method) {
-    return getSettingsMemberName(method);
+  public String getCallSettingsFunctionName(Method method) {
+    return getCallSettingsMemberName(method);
+  }
+
+  /** The type name of call options */
+  public String getCallSettingsTypeName(Interface service) {
+    return className(Name.upperCamel(service.getSimpleName(), "Settings"));
+  }
+
+  /** The function name to retrieve default call option */
+  public String getDefaultCallSettingsFunctionName(Interface service) {
+    return methodName(Name.upperCamel(service.getSimpleName(), "Settings"));
   }
 
   /**
