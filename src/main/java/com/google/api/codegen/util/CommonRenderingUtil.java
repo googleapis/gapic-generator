@@ -38,6 +38,8 @@ public class CommonRenderingUtil {
 
   /**
    * Returns the input text split on newlines and maxWidth.
+   *
+   * Lines longer than maxWidth are split on index maxWidth - 1.
    */
   public static List<String> getDocLines(String text, int maxWidth) {
     maxWidth = maxWidth - 1;

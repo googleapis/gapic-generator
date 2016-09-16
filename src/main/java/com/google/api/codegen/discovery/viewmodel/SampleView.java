@@ -30,7 +30,6 @@ public abstract class SampleView implements ViewModel {
 
   @Override
   public String resourceRoot() {
-    // TODO(saicheems): Needed?
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 

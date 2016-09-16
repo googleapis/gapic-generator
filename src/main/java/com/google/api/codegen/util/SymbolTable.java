@@ -56,9 +56,11 @@ public class SymbolTable {
   }
 
   /**
-   *  Returns the next numeric suffix that makes desiredName unique.
+   * Returns the next numeric suffix that makes desiredName unique.
    *
-   *  Stores the joined desiredName/suffix in an internal map.
+   * Stores the joined desiredName/suffix in an internal map.
+   * For example, if "foo" is passed, "" is returned. If "foo" is passed again,
+   * "2" is returned, and then "3" and so on.
    */
   private String getAndSaveSuffix(String desiredName) {
     if (!symbolTable.contains(desiredName)) {

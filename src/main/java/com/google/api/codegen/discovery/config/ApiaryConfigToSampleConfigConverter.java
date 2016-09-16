@@ -48,7 +48,7 @@ public class ApiaryConfigToSampleConfigConverter {
 
     methodNameComponents = new HashMap<String, List<String>>();
     // Since methodNameComponents are used to generate the request type name, we
-    // produce them here for ease-of-access.
+    // produce them here for ease of access.
     for (Method method : methods) {
       String methodName = method.getName();
       LinkedList<String> nameComponents = new LinkedList<>(Arrays.asList(methodName.split("\\.")));
@@ -86,8 +86,8 @@ public class ApiaryConfigToSampleConfigConverter {
     for (String fieldName : apiaryConfig.getMethodParams(method.getName())) {
       Field field =
           apiaryConfig.getField(apiaryConfig.getType(method.getRequestTypeUrl()), fieldName);
-      // If one of the method arguments is a Message, we parse that separately
-      // as the request body.
+      // If one of the method arguments has the field name "request$", it's the
+      // request body.
       if (fieldName.equals(DiscoveryImporter.REQUEST_FIELD_NAME)) {
         requestBodyType = createTypeInfo(field, method);
         continue;

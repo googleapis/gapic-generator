@@ -32,7 +32,7 @@ public abstract class FieldInfo {
   public abstract String name();
 
   /**
-   * Returns the configuration of the field's type.
+   * Returns the field's type.
    */
   @JsonProperty("type")
   public abstract TypeInfo type();
