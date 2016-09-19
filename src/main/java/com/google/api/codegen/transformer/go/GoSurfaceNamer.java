@@ -169,7 +169,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
    * Returns the service name with common suffixes removed.
    *
    * For example:
-   *  LoggingServiceV2 => logging
+   *  "LoggingServiceV2" becomes "logging"
    */
   public static String getReducedServiceName(Interface service) {
     String name = service.getSimpleName().replaceAll("V[0-9]+$", "");
