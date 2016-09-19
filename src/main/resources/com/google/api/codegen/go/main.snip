@@ -3,12 +3,8 @@
 @snippet generate(view)
     {@headerComment()}
 
-    // AUTO-GENERATED CODE. DO NOT EDIT.
+    package {@view.localPackageName}
 
-    package {@view.packageName}
-
-    # No indent here. `view.imports` already has the indent.
-    # Go has a blank line in the middle, and we don't want that line indented.
     import (
         @join imp : view.imports
             {@imp}
@@ -64,7 +60,7 @@
         }
     }
 
-    // {@view.clientName} is a client for interacting with the {@view.serviceName}.
+    // {@view.clientName} is a client for interacting with {@view.serviceOriginalName}.
     type {@view.clientName} struct {
         // The connection to the service.
         conn *grpc.ClientConn
@@ -79,7 +75,7 @@
         metadata map[string][]string
     }
 
-    // {@view.clientConstructorName} creates a new {@view.serviceName} client.
+    // {@view.clientConstructorName} creates a new {@view.servicePhraseName} client.
     //
     @join line : view.serviceDoc
         {@line}

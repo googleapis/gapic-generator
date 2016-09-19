@@ -96,7 +96,7 @@ public class GoTypeTable implements TypeTable {
   }
 
   private static boolean isStandardImport(String importPath) {
-    // TODO(pongad): Some packages in standard ibrary have slashes,
+    // TODO(pongad): Some packages in standard library have slashes,
     // we might have to special case them.
     return !importPath.contains("/");
   }

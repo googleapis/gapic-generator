@@ -103,7 +103,8 @@ public class MainGapicProviderFactory
               .setModel(model)
               .setApiConfig(apiConfig)
               .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-              .setModelToViewTransformer(new GoGapicSurfaceTransformer())
+              .setModelToViewTransformer(
+                  new GoGapicSurfaceTransformer(new PackageNameCodePathMapper()))
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 

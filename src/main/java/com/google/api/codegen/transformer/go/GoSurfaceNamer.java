@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.go;
 
-import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
@@ -32,7 +31,6 @@ import com.google.api.tools.framework.model.TypeRef;
 
 import io.grpc.Status;
 
-import java.io.File;
 import java.util.List;
 
 public class GoSurfaceNamer extends SurfaceNamer {
@@ -88,7 +86,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
     if (dotIndex >= 0) {
       typeName = typeName.substring(dotIndex + 1);
     }
-    return Name.anyCamel(typeName).join("iterator").toUpperCamel();
+    return className(Name.anyCamel(typeName).join("iterator"));
   }
 
   private static String lowerFirstLetter(String s) {
@@ -117,7 +115,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getCallSettingsTypeName(Interface service) {
-    return clientNamePrefix(service).join("call").join("options").toUpperCamel();
+    return className(clientNamePrefix(service).join("call").join("options"));
   }
 
   @Override
@@ -149,7 +147,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getPackageName() {
+  public String getLocalPackageName() {
     // packagePath is in form "cloud.google.com/go/library/apiv1";
     // we want "library".
     String[] parts = packagePath.split("/");
@@ -160,17 +158,10 @@ public class GoSurfaceNamer extends SurfaceNamer {
     String name = getReducedServiceName(service);
     // If there's only one service, or the service name matches the package name, don't prefix with
     // the service name.
-    if (model.getSymbolTable().getInterfaces().size() == 1 || name.equals(getPackageName())) {
+    if (model.getSymbolTable().getInterfaces().size() == 1 || name.equals(getLocalPackageName())) {
       name = "";
     }
     return Name.upperCamel(name);
-  }
-
-  public static String getOutputPath(Interface service, ApiConfig apiConfig) {
-    return apiConfig.getPackageName()
-        + File.separator
-        + getReducedServiceName(service)
-        + "_client.go";
   }
 
   /**

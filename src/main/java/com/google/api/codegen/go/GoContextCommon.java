@@ -41,7 +41,7 @@ public class GoContextCommon {
    *
    * Lines are wrapped to 70 characters. See documentation of wrapLine for more details.
    */
-  public Iterable<String> getWrappedCommentLines(String text) {
+  public List<String> getWrappedCommentLines(String text) {
     List<String> result = new ArrayList<>();
     for (String line : Splitter.on(String.format("%n")).split(text)) {
       for (String wrapped : wrapLine(line, 70)) {

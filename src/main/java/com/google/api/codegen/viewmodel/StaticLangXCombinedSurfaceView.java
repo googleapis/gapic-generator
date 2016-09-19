@@ -57,7 +57,9 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
 
   public abstract String defaultCallOptionFunctionName();
 
-  public abstract String serviceName();
+  public abstract String servicePhraseName();
+
+  public abstract String serviceOriginalName();
 
   public abstract String grpcClientTypeName();
 
@@ -67,7 +69,7 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
 
   public abstract List<String> serviceDoc();
 
-  public abstract String packageName();
+  public abstract String localPackageName();
 
   public abstract String serviceAddress();
 
@@ -96,7 +98,9 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
 
     public abstract Builder defaultCallOptionFunctionName(String val);
 
-    public abstract Builder serviceName(String val);
+    public abstract Builder servicePhraseName(String val);
+
+    public abstract Builder serviceOriginalName(String val);
 
     public abstract Builder grpcClientTypeName(String val);
 
@@ -104,7 +108,7 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
 
     public abstract Builder outputPath(String val);
 
-    public abstract Builder packageName(String val);
+    public abstract Builder localPackageName(String val);
 
     public abstract Builder callSettings(List<ApiCallSettingsView> callSettings);
 

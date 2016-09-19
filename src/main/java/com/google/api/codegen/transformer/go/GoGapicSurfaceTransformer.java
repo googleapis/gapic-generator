@@ -15,8 +15,8 @@
 package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.ApiConfig;
+import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.go.GoContextCommon;
-import com.google.api.codegen.go.GoImport;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.ServiceConfig;
@@ -30,7 +30,9 @@ import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.go.GoTypeTable;
+import com.google.api.codegen.viewmodel.PackageInfoView;
 import com.google.api.codegen.viewmodel.RetryConfigDefinitionView;
+import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangXCombinedSurfaceView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -46,15 +48,15 @@ import com.google.common.collect.ImmutableSet;
 
 import io.grpc.Status.Code;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
@@ -66,21 +68,28 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private final ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
+  private final GapicCodePathMapper pathMapper;
+
+  public GoGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
+    this.pathMapper = pathMapper;
+  }
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(XAPI_TEMPLATE_FILENAME);
+    return Arrays.asList(XAPI_TEMPLATE_FILENAME, DOC_TEMPLATE_FILENAME);
   }
 
   @Override
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
     GoSurfaceNamer namer = new GoSurfaceNamer(model, apiConfig.getPackageName());
+    List<ServiceDocView> serviceDocs = new ArrayList<>();
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(service, apiConfig, createTypeTable(), namer);
       models.add(generate(context));
     }
+    models.add(generatePackageInfo(model, apiConfig, namer));
     return models;
   }
 
@@ -94,16 +103,20 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
     view.templateFileName(XAPI_TEMPLATE_FILENAME);
     view.serviceDoc(doc(service));
-    view.packageName(namer.getPackageName());
+    view.localPackageName(namer.getLocalPackageName());
     view.clientName(namer.getApiWrapperClassName(service));
     view.clientConstructorName(namer.getApiWrapperClassConstructorName(service));
     view.defaultClientOptionFunctionName(namer.getDefaultApiSettingsFunctionName(service));
     view.defaultCallOptionFunctionName(namer.getDefaultCallSettingsFunctionName(service));
     view.callOptionsTypeName(namer.getCallSettingsTypeName(service));
-    view.serviceName(namer.getServicePhraseName(service));
+    view.serviceOriginalName(namer.getServiceOriginalName(service));
+    view.servicePhraseName(namer.getServicePhraseName(service));
     view.grpcClientTypeName(namer.getGrpcClientTypeName(service));
     view.grpcClientConstructorName(namer.getGrpcClientConstructorName(service));
-    view.outputPath(GoSurfaceNamer.getOutputPath(service, apiConfig));
+
+    String outputPath = pathMapper.getOutputPath(service, apiConfig);
+    String fileName = GoSurfaceNamer.getReducedServiceName(service) + "_client.go";
+    view.outputPath(outputPath + File.separator + fileName);
 
     List<RetryConfigDefinitionView> retryDef = generateRetryConfigDefinitions(namer, context);
     boolean hasRetry = !retryDef.isEmpty();
@@ -123,9 +136,25 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
     addXApiImports(context, hasRetry);
     view.imports(GoTypeTable.formatImports(context.getTypeTable().getImports()));
-    // view.imports(getImports(context, hasRetry));
 
     return view.build();
+  }
+
+  private PackageInfoView generatePackageInfo(
+      Model model, ApiConfig apiConfig, SurfaceNamer namer) {
+    String outputPath = apiConfig.getPackageName();
+    String fileName = "doc.go";
+    String doc = model.getServiceConfig().getDocumentation().getSummary();
+    return PackageInfoView.newBuilder()
+        .templateFileName(DOC_TEMPLATE_FILENAME)
+        .outputPath(outputPath + File.separator + fileName)
+        .serviceTitle("")
+        .importPath(apiConfig.getPackageName())
+        .packageName(namer.getLocalPackageName())
+        .serviceDocs(Collections.<ServiceDocView>emptyList())
+        // TODO(pongad): GoContextCommon should be deleted after we convert Go discovery to MVMM.
+        .packageDoc(new GoContextCommon().getWrappedCommentLines(doc))
+        .build();
   }
 
   private ModelTypeTable createTypeTable() {
@@ -153,6 +182,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
       if (methodConfig.isPageStreaming()) {
         apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext));
+        context.getTypeTable().saveNicknameFor("math;;;");
       } else {
         apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(methodContext));
       }
@@ -223,12 +253,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     if (hasRetry) {
       typeTable.saveNicknameFor("time;;;");
       typeTable.saveNicknameFor("google.golang.org/grpc/codes;;;");
-    }
-    for (Method method : context.getNonStreamingMethods()) {
-      if (context.getMethodConfig(method).isPageStreaming()) {
-        typeTable.saveNicknameFor("math;;;");
-        break;
-      }
     }
     typeTable.getImports().remove(EMPTY_PROTO_PKG);
   }

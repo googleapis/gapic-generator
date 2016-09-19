@@ -214,8 +214,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /**
    * The name of the package
    */
-  public String getPackageName() {
-    return getNotImplementedString("SurfaceNamer.getPackagename");
+  public String getLocalPackageName() {
+    return getNotImplementedString("SurfaceNamer.getLocalPackageName");
   }
 
   /**
@@ -308,6 +308,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The path to the client config for the given interface. */
   public String getClientConfigPath(Interface service) {
     return getNotImplementedString("SurfaceNamer.getClientConfigPath");
+  }
+
+  /**
+   * Original name of the service, taken from protobuf.
+   */
+  public String getServiceOriginalName(Interface service) {
+    return service.getSimpleName();
   }
 
   /**
