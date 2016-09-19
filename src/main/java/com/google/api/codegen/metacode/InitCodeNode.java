@@ -23,6 +23,7 @@ import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -69,6 +70,13 @@ public class InitCodeNode {
    */
   public InitValueConfig getInitValueConfig() {
     return initValueConfig;
+  }
+
+  /*
+   * Updates the InitValueConfig.
+   */
+  public void updateInitValueConfig(InitValueConfig initValueConfig) {
+    this.initValueConfig = initValueConfig;
   }
 
   /*
@@ -165,6 +173,9 @@ public class InitCodeNode {
   private void mergeChild(InitCodeNode newChild) {
     InitCodeNode oldChild = children.get(newChild.key);
     if (oldChild != null && oldChild.lineType != InitCodeLineType.Unknown) {
+      InitValueConfig mergedValueConfig =
+          mergeInitValueConfig(oldChild.getInitValueConfig(), newChild.getInitValueConfig());
+      oldChild.updateInitValueConfig(mergedValueConfig);
       for (InitCodeNode newSubChild : newChild.children.values()) {
         oldChild.mergeChild(newSubChild);
       }
@@ -173,16 +184,34 @@ public class InitCodeNode {
     }
   }
 
+  private static InitValueConfig mergeInitValueConfig(
+      InitValueConfig oldConfig, InitValueConfig newConfig) {
+    HashMap<String, String> collectionValues = new HashMap<>();
+    if (oldConfig.hasSimpleInitialValue()
+        && newConfig.hasSimpleInitialValue()
+        && oldConfig.getInitialValue().equals(newConfig.getInitialValue())) {
+      throw new IllegalArgumentException("Inconsistent init values");
+    }
+    if (oldConfig.hasFormattedInitialValue()) {
+      collectionValues.putAll(oldConfig.getCollectionValues());
+    }
+    if (newConfig.hasFormattedInitialValue()) {
+      collectionValues.putAll(newConfig.getCollectionValues());
+    }
+    return oldConfig.withInitialCollectionValues(collectionValues);
+  }
+
   private static List<InitCodeNode> buildSubTrees(InitTreeParserContext context) {
     List<InitCodeNode> subTrees = new ArrayList<>();
-    if (context.dottedPathStrings() != null) {
-      for (String sampleCodeInitField : context.dottedPathStrings()) {
-        subTrees.add(FieldStructureParser.parse(sampleCodeInitField, context.initValueConfigMap()));
+    if (context.initFieldConfigStrings() != null) {
+      for (String initFieldConfigString : context.initFieldConfigStrings()) {
+        subTrees.add(
+            FieldStructureParser.parse(initFieldConfigString, context.initValueConfigMap()));
       }
     }
     if (context.initFields() != null) {
       // Add items in fieldSet to newSubTrees in case they were not included in
-      // sampleCodeInitFields, and to ensure the order is determined by initFieldSet
+      // sampleCodeInitFields, and to ensure the order is determined by initFields
       List<InitCodeNode> newSubTrees = new ArrayList<>();
       for (Field field : context.initFields()) {
         String nameString = field.getSimpleName();
@@ -232,7 +261,7 @@ public class InitCodeNode {
       lineType = InitCodeLineType.SimpleInitLine;
 
       // Validate initValueConfig, or generate random value
-      if (initValueConfig.hasInitialValue()) {
+      if (initValueConfig.hasSimpleInitialValue()) {
         validateValue(type, initValueConfig.getInitialValue());
       } else if (initValueConfig.isEmpty()
           && type.isPrimitive()

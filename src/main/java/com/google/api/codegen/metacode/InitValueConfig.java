@@ -17,24 +17,32 @@ package com.google.api.codegen.metacode;
 import com.google.api.codegen.CollectionConfig;
 import com.google.auto.value.AutoValue;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.Nullable;
 
-/**
- * InitValueConfig configures the initial value of an initialized variable.
- */
+/** InitValueConfig configures the initial value of an initialized variable. */
 @AutoValue
 public abstract class InitValueConfig {
 
   public static InitValueConfig create() {
-    return new AutoValue_InitValueConfig(null, null, null);
+    return new AutoValue_InitValueConfig(null, null, null, null);
   }
 
   public static InitValueConfig createWithValue(String value) {
-    return new AutoValue_InitValueConfig(null, null, value);
+    return new AutoValue_InitValueConfig(null, null, value, null);
   }
 
   public static InitValueConfig create(String apiWrapperName, CollectionConfig collectionConfig) {
-    return new AutoValue_InitValueConfig(apiWrapperName, collectionConfig, null);
+    return new AutoValue_InitValueConfig(apiWrapperName, collectionConfig, null, null);
+  }
+
+  public static InitValueConfig create(
+      String apiWrapperName,
+      CollectionConfig collectionConfig,
+      Map<String, String> collectionValues) {
+    return new AutoValue_InitValueConfig(apiWrapperName, collectionConfig, null, collectionValues);
   }
 
   @Nullable
@@ -46,11 +54,24 @@ public abstract class InitValueConfig {
   @Nullable
   public abstract String getInitialValue();
 
-  /**
-   * Creates an updated InitValueConfig with the provided value.
-   */
+  @Nullable
+  public abstract Map<String, String> getCollectionValues();
+
+  /** Creates an updated InitValueConfig with the provided value. */
   public InitValueConfig withInitialValue(String string) {
-    return new AutoValue_InitValueConfig(getApiWrapperName(), getCollectionConfig(), string);
+    return new AutoValue_InitValueConfig(getApiWrapperName(), getCollectionConfig(), string, null);
+  }
+
+  /** Creates an updated InitValueConfig with the provided value. */
+  public InitValueConfig withInitialCollectionValue(String entityName, String value) {
+    HashMap<String, String> collectionValues = new HashMap<>();
+    collectionValues.put(entityName, value);
+    return withInitialCollectionValues(collectionValues);
+  }
+
+  public InitValueConfig withInitialCollectionValues(Map<String, String> collectionValues) {
+    return new AutoValue_InitValueConfig(
+        getApiWrapperName(), getCollectionConfig(), null, collectionValues);
   }
 
   public boolean isEmpty() {
@@ -61,7 +82,11 @@ public abstract class InitValueConfig {
     return getCollectionConfig() != null;
   }
 
-  public boolean hasInitialValue() {
+  public boolean hasFormattedInitialValue() {
+    return getCollectionValues() != null && !getCollectionValues().isEmpty();
+  }
+
+  public boolean hasSimpleInitialValue() {
     return getInitialValue() != null;
   }
 }

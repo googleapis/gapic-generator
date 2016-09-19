@@ -19,15 +19,19 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /** SmokeTestConfig represents the smoke test configuration for a method. */
 public class SmokeTestConfig {
   private final Method method;
-  private final List<String> initFields;
+  private final List<String> initFieldNames;
+  private final List<String> initFieldSpecs;
 
-  private SmokeTestConfig(Method method, List<String> initFields) {
-    this.initFields = initFields;
+  private SmokeTestConfig(Method method, List<String> initFieldSpecs, List<String> initFieldNames) {
+    this.initFieldSpecs = initFieldSpecs;
+    this.initFieldNames = initFieldNames;
     this.method = method;
   }
 
@@ -42,7 +46,13 @@ public class SmokeTestConfig {
     }
 
     if (testedMethod != null) {
-      return new SmokeTestConfig(testedMethod, smokeTestConfigProto.getInitFieldsList());
+      List<String> initFieldSpecs = smokeTestConfigProto.getInitFieldsList();
+      ArrayList<String> initFieldNames = new ArrayList<>();
+      for (String fieldSpec : initFieldSpecs) {
+        String[] fieldSpecParts = fieldSpec.split("[<=>]");
+        initFieldNames.add(fieldSpecParts[0]);
+      }
+      return new SmokeTestConfig(testedMethod, initFieldSpecs, initFieldNames);
     } else {
       diagCollector.addDiag(
           Diag.error(SimpleLocation.TOPLEVEL, "The configured smoke test method does not exist."));
@@ -50,9 +60,14 @@ public class SmokeTestConfig {
     }
   }
 
+  /** Returns a list of initialized field names. */
+  public List<String> getInitFieldNames() {
+    return initFieldNames;
+  }
+
   /** Returns a list of initialized fields configuration. */
-  public List<String> getInitFields() {
-    return initFields;
+  public List<String> getInitFieldSpecs() {
+    return initFieldSpecs;
   }
 
   /** Returns the method that is used in the smoke test. */
