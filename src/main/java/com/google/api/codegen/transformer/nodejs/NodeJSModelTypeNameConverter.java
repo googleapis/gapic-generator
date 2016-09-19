@@ -161,4 +161,11 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
         return value;
     }
   }
+
+  @Override
+  public TypeName getTypeNameForTypedResourceName(
+      ProtoElement elem, String typedResourceShortName) {
+    throw new UnsupportedOperationException(
+        "getTypeNameForTypedResourceName not supported by NodeJS");
+  }
 }

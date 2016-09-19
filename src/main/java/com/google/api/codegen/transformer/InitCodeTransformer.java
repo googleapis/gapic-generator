@@ -24,6 +24,7 @@ import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitTreeParserContext;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.FieldSettingView;
@@ -34,6 +35,7 @@ import com.google.api.codegen.viewmodel.InitValueView;
 import com.google.api.codegen.viewmodel.ListInitCodeLineView;
 import com.google.api.codegen.viewmodel.MapEntryView;
 import com.google.api.codegen.viewmodel.MapInitCodeLineView;
+import com.google.api.codegen.viewmodel.ResourceNameInitValueView;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
@@ -280,9 +282,18 @@ public class InitCodeTransformer {
     ModelTypeTable typeTable = context.getTypeTable();
     surfaceLine.lineType(InitCodeLineType.SimpleInitLine);
     surfaceLine.identifier(namer.getVariableName(item.getIdentifier(), item.getInitValueConfig()));
-    surfaceLine.typeName(typeTable.getAndSaveNicknameFor(item.getType()));
 
-    surfaceLine.initValue(getInitValue(context, item.getType(), item.getInitValueConfig()));
+    Field itemField = item.getField();
+    String resourceName = null;
+    if (itemField != null && namer.useResourceNameFormatOption(itemField)) {
+      resourceName = ResourceNameUtil.getResourceName(itemField);
+      surfaceLine.typeName(
+          typeTable.getAndSaveNicknameForTypedResourceName(itemField, resourceName));
+    } else {
+      surfaceLine.typeName(typeTable.getAndSaveNicknameFor(item.getType()));
+    }
+    surfaceLine.initValue(
+        getInitValue(context, item.getType(), item.getInitValueConfig(), resourceName));
 
     return surfaceLine.build();
   }
@@ -351,13 +362,11 @@ public class InitCodeTransformer {
   }
 
   private InitValueView getInitValue(
-      MethodTransformerContext context, TypeRef type, InitValueConfig initValueConfig) {
+      MethodTransformerContext context,
+      TypeRef type,
+      InitValueConfig initValueConfig,
+      String resourceName) {
     if (initValueConfig.hasFormattingConfig()) {
-      FormattedInitValueView.Builder initValue = FormattedInitValueView.newBuilder();
-
-      initValue.apiWrapperName(context.getNamer().getApiWrapperClassName(context.getInterface()));
-      initValue.formatFunctionName(
-          context.getNamer().getFormatFunctionName(initValueConfig.getCollectionConfig()));
       List<String> formatFunctionArgs = new ArrayList<>();
       for (String entityName : initValueConfig.getCollectionConfig().getNameTemplate().vars()) {
         String entityValue =
@@ -368,9 +377,27 @@ public class InitCodeTransformer {
         }
         formatFunctionArgs.add(entityValue);
       }
-      initValue.formatArgs(formatFunctionArgs);
 
-      return initValue.build();
+      if (resourceName != null) {
+
+        ResourceNameInitValueView.Builder initValue = ResourceNameInitValueView.newBuilder();
+
+        initValue.resourceTypeName(resourceName);
+        initValue.formatArgs(formatFunctionArgs);
+
+        return initValue.build();
+      } else {
+
+        FormattedInitValueView.Builder initValue = FormattedInitValueView.newBuilder();
+
+        initValue.apiWrapperName(context.getNamer().getApiWrapperClassName(context.getInterface()));
+        initValue.formatFunctionName(
+            context.getNamer().getFormatFunctionName(initValueConfig.getCollectionConfig()));
+
+        initValue.formatArgs(formatFunctionArgs);
+
+        return initValue.build();
+      }
     } else {
       SimpleInitValueView.Builder initValue = SimpleInitValueView.newBuilder();
 
@@ -391,8 +418,12 @@ public class InitCodeTransformer {
     List<FieldSettingView> allSettings = new ArrayList<>();
     for (InitCodeNode item : childItems) {
       FieldSettingView.Builder fieldSetting = FieldSettingView.newBuilder();
-      fieldSetting.fieldSetFunction(
-          namer.getFieldSetFunctionName(item.getType(), Name.from(item.getKey())));
+      if (item.getField() != null) {
+        fieldSetting.fieldSetFunction(namer.getFieldSetFunctionName(item.getField()));
+      } else {
+        fieldSetting.fieldSetFunction(
+            namer.getFieldSetFunctionName(item.getType(), Name.from(item.getKey())));
+      }
       fieldSetting.identifier(
           namer.getVariableName(item.getIdentifier(), item.getInitValueConfig()));
       allSettings.add(fieldSetting.build());

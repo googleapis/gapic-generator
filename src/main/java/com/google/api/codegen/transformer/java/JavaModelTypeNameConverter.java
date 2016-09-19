@@ -21,6 +21,7 @@ import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
@@ -205,7 +206,23 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeName(ProtoElement elem) {
-    // Construct the full name in Java
+    String packageName = getProtoElementPackage(elem);
+    String shortName = elem.getFullName().substring(elem.getFile().getFullName().length() + 1);
+    String longName = packageName + "." + shortName;
+
+    return new TypeName(longName, shortName);
+  }
+
+  @Override
+  public TypeName getTypeNameForTypedResourceName(
+      ProtoElement elem, String typedResourceShortName) {
+    String packageName = getProtoElementPackage(elem);
+    String longName = packageName + "." + typedResourceShortName;
+
+    return new TypeName(longName, typedResourceShortName);
+  }
+
+  private static String getProtoElementPackage(ProtoElement elem) {
     String name = getJavaPackage(elem.getFile());
     if (!elem.getFile().getProto().getOptions().getJavaMultipleFiles()) {
       String outerClassName = elem.getFile().getProto().getOptions().getJavaOuterClassname();
@@ -214,11 +231,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
       }
       name = name + "." + outerClassName;
     }
-    String typeName = elem.getFullName().substring(elem.getFile().getFullName().length() + 1);
-    name = name + "." + typeName;
-    String shortName = name.substring(name.lastIndexOf('.') + 1);
-
-    return new TypeName(name, shortName);
+    return name;
   }
 
   private static String getJavaPackage(ProtoFile file) {

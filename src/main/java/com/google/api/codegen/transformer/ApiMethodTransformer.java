@@ -19,6 +19,7 @@ import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.CallableMethodDetailView;
@@ -281,6 +282,10 @@ public class ApiMethodTransformer {
       MethodTransformerContext context, ImmutableList<Field> fields) {
     List<PathTemplateCheckView> pathTemplateChecks = new ArrayList<>();
     for (Field field : fields) {
+      if (context.getNamer().useResourceNameFormatOption(field)) {
+        // Don't generate a path template check when using a ResourceName type instead of a string
+        continue;
+      }
       ImmutableMap<String, String> fieldNamePatterns =
           context.getMethodConfig().getFieldNamePatterns();
       String entityName = fieldNamePatterns.get(field.getSimpleName());
@@ -410,7 +415,13 @@ public class ApiMethodTransformer {
     param.name(namer.getVariableName(field));
 
     if (namer.shouldImportRequestObjectParamType(field)) {
-      param.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getType()));
+      if (namer.useResourceNameFormatOption(field)) {
+        String resourceName = ResourceNameUtil.getResourceName(field);
+        param.typeName(
+            context.getTypeTable().getAndSaveNicknameForTypedResourceName(field, resourceName));
+      } else {
+        param.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getType()));
+      }
     } else {
       param.typeName(
           namer.getNotImplementedString(

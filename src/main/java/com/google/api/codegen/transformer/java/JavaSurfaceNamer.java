@@ -19,6 +19,7 @@ import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
@@ -122,5 +123,10 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFullyQualifiedApiWrapperClassName(Interface service, String packageName) {
     return packageName + "." + getApiWrapperClassName(service);
+  }
+
+  @Override
+  public boolean useResourceNameFormatOption(Field field) {
+    return ResourceNameUtil.hasResourceName(field);
   }
 }

@@ -30,7 +30,11 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
-
+import com.google.common.collect.Lists;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.ExtensionRegistry;
+import com.google.protobuf.UnknownFieldSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -135,7 +139,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to set the given proto field. */
   public String getFieldSetFunctionName(Field field) {
-    return getFieldSetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+    if (useResourceNameFormatOption(field)) {
+      return getResourceNameFieldSetFunctionName(Name.from(field.getSimpleName()));
+    } else {
+      return getFieldSetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+    }
   }
 
   /** The function name to set a field having the given type and name. */
@@ -149,9 +157,17 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
+  public String getResourceNameFieldSetFunctionName(Name identifier) {
+    return methodName(Name.from("set").join(identifier).join("with_resource"));
+  }
+
   /** The function name to get the given proto field. */
   public String getFieldGetFunctionName(Field field) {
-    return getFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+    if (useResourceNameFormatOption(field)) {
+      return getResourceNameFieldGetFunctionName(Name.from(field.getSimpleName()));
+    } else {
+      return getFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+    }
   }
 
   /** The function name to get a field having the given type and name. */
@@ -161,6 +177,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     } else {
       return methodName(Name.from("get").join(identifier));
     }
+  }
+
+  /** The function name to get a field having the given type and name. */
+  public String getResourceNameFieldGetFunctionName(Name identifier) {
+    return methodName(Name.from("get").join(identifier).join("as_resource"));
   }
 
   /**
@@ -342,6 +363,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public boolean shouldImportRequestObjectParamElementType(Field field) {
     return true;
+  }
+
+  public boolean useResourceNameFormatOption(Field field) {
+    return false;
   }
 
   /** Converts the given text to doc lines in the format of the current language. */
