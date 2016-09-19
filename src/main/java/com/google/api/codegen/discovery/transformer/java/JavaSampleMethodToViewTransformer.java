@@ -15,6 +15,7 @@
 package com.google.api.codegen.discovery.transformer.java;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import com.google.api.codegen.discovery.config.FieldInfo;
@@ -47,7 +48,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
   public ViewModel transform(Method method, SampleConfig sampleConfig) {
     SampleTypeTable sampleTypeTable =
         new SampleTypeTable(
-            new JavaTypeTable(), new JavaSampleTypeNameConverter(sampleConfig.packagePrefix()));
+            new JavaTypeTable(""), new JavaSampleTypeNameConverter(sampleConfig.packagePrefix()));
     JavaSampleNamer namer = new JavaSampleNamer();
     SampleTransformerContext context =
         SampleTransformerContext.create(sampleConfig, sampleTypeTable, namer, method.getName());
@@ -59,14 +60,18 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     SampleConfig sampleConfig = context.getSampleConfig();
     SampleTypeTable typeTable = context.getTypeTable();
 
+    SampleBodyView body = createSampleBody(context);
+    // Imports must be collected last.
+    List<String> imports = new ArrayList<String>();
+    imports.addAll(typeTable.getImports().keySet());
     return SampleView.newBuilder()
         .templateFileName(TEMPLATE_FILENAME)
         .outputPath(context.getMethodName() + ".frag.java")
         .apiTitle(sampleConfig.apiTitle())
         .apiName(sampleConfig.apiName())
         .apiVersion(sampleConfig.apiVersion())
-        .body(createSampleBody(context))
-        .imports(typeTable.getImports())
+        .body(body)
+        .imports(imports)
         .build();
   }
 

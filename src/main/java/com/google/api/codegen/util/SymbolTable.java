@@ -67,6 +67,7 @@ public class SymbolTable {
       symbolTable.add(desiredName);
       return "";
     }
+    // Resolve collisions with a numeric suffix, starting with 2.
     int i = 2;
     while (symbolTable.contains(desiredName + Integer.toString(i))) {
       i++;

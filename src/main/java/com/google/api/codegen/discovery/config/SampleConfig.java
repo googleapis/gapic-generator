@@ -19,6 +19,35 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 import java.util.Map;
 
+/**
+ * Contains the set of information required to produce a code sample from a
+ * discovery document.
+ *
+ * Supports serialization to/from JSON to accommodate overrides for any value.
+ * A generated SampleConfig will contain some language specific type information
+ * that is intended to be pieced together at a later stage of generation.
+ *
+ * For example, in Java:
+ * <pre>{
+ *  "apiTypeName": "HelloWorld"
+ *  "packagePrefix": "foo.google.bar.helloworld.v1"
+ *  "methods": {
+ *    "helloworld.list": {
+ *      "nameComponents": ["foo", "bar", "list"]
+ *      "requestType": {
+ *        "message": {
+ *          "typeName": "ListWorldsRequest",
+ *          "subpackage": "model"
+ *        }
+ *      }
+ *    }
+ *  }
+ *}</pre>
+ * The generated API type name might be
+ * {@code "foo.google.bar.helloworld.v1.HelloWorld"}, and the generated
+ * request type name might be
+ * {@code "foo.google.bar.helloworld.v1.model.ListWorldsRequest"}.
+ */
 @AutoValue
 @JsonDeserialize(builder = AutoValue_SampleConfig.Builder.class)
 public abstract class SampleConfig {

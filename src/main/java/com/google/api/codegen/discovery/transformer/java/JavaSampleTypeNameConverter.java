@@ -67,7 +67,7 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
   private final String packagePrefix;
 
   public JavaSampleTypeNameConverter(String packagePrefix) {
-    this.typeNameConverter = new JavaTypeTable();
+    this.typeNameConverter = new JavaTypeTable("");
     this.packagePrefix = packagePrefix;
   }
 
