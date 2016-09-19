@@ -80,7 +80,8 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getAndSavePagedResponseTypeName(ModelTypeTable typeTable, TypeRef resourceType) {
+  public String getAndSavePagedResponseTypeName(
+      ModelTypeTable typeTable, TypeRef inputType, TypeRef outputType, TypeRef resourceType) {
     String typeName = converter.getTypeNameForElementType(resourceType).getNickname();
     int dotIndex = typeName.indexOf('.');
     if (dotIndex >= 0) {

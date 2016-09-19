@@ -527,7 +527,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * given type table, and returns it.
    */
   public String getAndSavePagedResponseTypeName(
-      ModelTypeTable typeTable, TypeRef... parameterizedTypes) {
+      ModelTypeTable typeTable, TypeRef inputType, TypeRef outputType, TypeRef resourceType) {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeName");
   }
 
