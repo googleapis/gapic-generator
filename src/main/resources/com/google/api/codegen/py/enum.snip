@@ -43,6 +43,10 @@
 @end
 
 @private shouldGenerateEnum(element)
+    # Note: cannot use and(element.isEnum, element.getEnumType.isReachable)
+    # because template language evaluates function arguments eagerly, which
+    # can cause an exception to be thrown at element.getEnumType if element is
+    # not an enum.
     @if element.isEnum
         @if element.getEnumType.isReachable
             TRUE
