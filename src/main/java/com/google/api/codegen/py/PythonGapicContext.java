@@ -390,18 +390,6 @@ public class PythonGapicContext extends GapicContext {
     return upperCamelToLowerUnderscore(service.getSimpleName()) + "_stub";
   }
 
-  public String methodInputModule(Method method, PythonImportHandler importHandler) {
-    String module = method.getFile().getProto().getPackage();
-    String attribute = PythonProtoElements.getPbFileName(method.getInputType().getMessageType());
-    return importHandler.getModule(module, attribute);
-  }
-
-  public String elementModule(ProtoElement elem, PythonImportHandler importHandler) {
-    String module = elem.getFile().getProto().getPackage();
-    String attribute = PythonProtoElements.getPbFileName(elem);
-    return importHandler.getModule(module, attribute);
-  }
-
   public String stubNameForMethod(Interface service, Method method) {
     MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
     String rerouteToGrpcInterface = methodConfig.getRerouteToGrpcInterface();

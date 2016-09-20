@@ -260,21 +260,4 @@ public class PythonImportHandler {
       return "";
     }
   }
-
-  /**
-   * This is needed for situations where a ProtoFile is not enough to determine the module
-   * name. This occurs if an api config both declares some mixin methods in the service proto and
-   * some mixin methods in the gapic yaml using the reroute_to_grpc_interface tag. In practice
-   * this case shouldn't occur, but in either case, this method will return the correct module.
-   */
-  public String getModule(String module, String attribute) {
-    String localName = "";
-    for (PythonImport pyImport : stringImports.inverse().keySet()) {
-      if (pyImport.attributeName().equals(attribute) && pyImport.moduleName().equals(module)) {
-        localName = pyImport.localName();
-        break;
-      }
-    }
-    return Strings.isNullOrEmpty(localName) ? attribute : localName;
-  }
 }

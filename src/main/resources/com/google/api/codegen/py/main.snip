@@ -236,7 +236,7 @@
             {@constructDefaults(service)}
             @join stubInterface : context.getStubInterfaces(service)
                 @let stubName = context.stubName(stubInterface), \
-                        stubModule = context.elementModule(stubInterface, importHandler), \
+                        stubModule = importHandler.fileToModule(stubInterface.getFile()), \
                         stubService = stubInterface.getSimpleName
                     self.{@stubName} = config.create_stub(
                         {@stubModule}.beta_create_{@stubService}_stub,
@@ -414,8 +414,7 @@
 @end
 
 @private flattenedMethod(service, method)
-    @let methodInputModule = context.methodInputModule(method, importHandler), \
-             inputTypeName = method.getInputMessage().getSimpleName(), \
+    @let methodInputElementPath = importHandler.elementPath(method.getInputMessage, FALSE), \
              documentation = methodComments(service, method), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
              requiredParams = methodConfig.getRequiredFields(), \
@@ -442,15 +441,15 @@
                 @end
                 @if requiredParams
                     @if optionalParams
-                        request = {@methodInputModule}.{@inputTypeName}(
+                        request = {@methodInputElementPath}(
                             {@namedParameters(requiredParams)},
                             {@namedParameters(optionalParams)})
                     @else
-                        request = {@methodInputModule}.{@inputTypeName}(
+                        request = {@methodInputElementPath}(
                             {@namedParameters(requiredParams)})
                     @end
                 @else
-                    request = {@methodInputModule}.{@inputTypeName}(
+                    request = {@methodInputElementPath}(
                         {@namedParameters(optionalParams)})
                 @end
                 {@callLine(method)}
@@ -461,7 +460,7 @@
                 @if documentation
                     {@documentation}
                 @end
-                request = {@methodInputModule}.{@inputTypeName}()
+                request = {@methodInputElementPath}()
                 {@callLine(method)}
         @end
     @end
