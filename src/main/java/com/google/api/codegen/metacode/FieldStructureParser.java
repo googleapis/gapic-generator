@@ -14,13 +14,11 @@
  */
 package com.google.api.codegen.metacode;
 
-import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.annotation.Nullable;
 
 /*
  * FieldStructureParser parses a dotted path specification and into a "tree" of InitCodeNode
@@ -35,27 +33,6 @@ public class FieldStructureParser {
 
   private static Pattern singleQuoteStringPattern = Pattern.compile("'([^\\\']*)'");
   private static Pattern doubleQuoteStringPattern = Pattern.compile("\"([^\\\"]*)\"");
-
-  @AutoValue
-  protected abstract static class InitFieldConfig {
-    public abstract String fieldConfigString();
-
-    public abstract String fieldPath();
-
-    @Nullable
-    public abstract String entityName();
-
-    @Nullable
-    public abstract String value();
-
-    public boolean hasInitValue() {
-      return value() != null;
-    }
-
-    public boolean isFormattedField() {
-      return entityName() != null;
-    }
-  }
 
   @VisibleForTesting
   static Pattern getFieldStructurePattern() {
@@ -78,52 +55,32 @@ public class FieldStructureParser {
 
   public static InitCodeNode parse(
       String initFieldConfigString, Map<String, InitValueConfig> initValueConfigMap) {
-    String fieldName = null;
-    String entityName = null;
-    String value = null;
-
-    String[] equalsParts = initFieldConfigString.split("[=]");
-    if (equalsParts.length > 2) {
-      throw new IllegalArgumentException("Inconsistent: found multiple '=' characters");
-    } else if (equalsParts.length == 2) {
-      value = equalsParts[1];
-    }
-
-    String[] fieldSpecs = equalsParts[0].split("[%]");
-    fieldName = fieldSpecs[0];
-    if (fieldSpecs.length == 2) {
-      entityName = fieldSpecs[1];
-    } else if (fieldSpecs.length > 2) {
-      throw new IllegalArgumentException("Inconsistent: found multiple '%' characters");
-    }
-    InitFieldConfig fieldConfig =
-        new AutoValue_FieldStructureParser_InitFieldConfig(
-            initFieldConfigString, fieldName, entityName, value);
-
-    InitValueConfig valueConfig = null;
-    if (fieldConfig.hasInitValue()) {
-      valueConfig = createInitValueConfig(fieldConfig, initValueConfigMap);
-    } else if (initValueConfigMap.containsKey(fieldConfig.fieldPath())) {
-      valueConfig = initValueConfigMap.get(fieldConfig.fieldPath());
-    }
-
+    InitFieldConfig fieldConfig = InitFieldConfig.of(initFieldConfigString);
+    InitValueConfig valueConfig =
+        createInitValueConfig(InitFieldConfig.of(initFieldConfigString), initValueConfigMap);
     return parsePartialDottedPathToInitCodeNode(
         fieldConfig.fieldPath(), InitCodeLineType.Unknown, valueConfig, null);
   }
 
   private static InitValueConfig createInitValueConfig(
       InitFieldConfig fieldConfig, Map<String, InitValueConfig> initValueConfigMap) {
-    if (fieldConfig.isFormattedField()) {
-      if (initValueConfigMap.containsKey(fieldConfig.fieldPath())) {
-        InitValueConfig valueConfig = initValueConfigMap.get(fieldConfig.fieldPath());
-        return valueConfig.withInitialCollectionValue(
-            fieldConfig.entityName(), fieldConfig.value());
+    InitValueConfig valueConfig = null;
+    if (fieldConfig.hasInitValue()) {
+      if (fieldConfig.isFormattedField()) {
+        if (!initValueConfigMap.containsKey(fieldConfig.fieldPath())) {
+          throw new IllegalArgumentException("The field name is not found in the collection map.");
+        }
+        valueConfig =
+            initValueConfigMap
+                .get(fieldConfig.fieldPath())
+                .withInitialCollectionValue(fieldConfig.entityName(), fieldConfig.value());
       } else {
-        throw new IllegalArgumentException("The field name is not found in the collection map.");
+        valueConfig = InitValueConfig.createWithValue(stripQuotes(fieldConfig.value()));
       }
-    } else {
-      return InitValueConfig.createWithValue(stripQuotes(fieldConfig.value()));
+    } else if (initValueConfigMap.containsKey(fieldConfig.fieldPath())) {
+      valueConfig = initValueConfigMap.get(fieldConfig.fieldPath());
     }
+    return valueConfig;
   }
 
   private static InitCodeNode parsePartialDottedPathToInitCodeNode(
