@@ -55,9 +55,8 @@ public class FieldStructureParser {
 
   public static InitCodeNode parse(
       String initFieldConfigString, Map<String, InitValueConfig> initValueConfigMap) {
-    InitFieldConfig fieldConfig = InitFieldConfig.of(initFieldConfigString);
-    InitValueConfig valueConfig =
-        createInitValueConfig(InitFieldConfig.of(initFieldConfigString), initValueConfigMap);
+    InitFieldConfig fieldConfig = InitFieldConfig.from(initFieldConfigString);
+    InitValueConfig valueConfig = createInitValueConfig(fieldConfig, initValueConfigMap);
     return parsePartialDottedPathToInitCodeNode(
         fieldConfig.fieldPath(), InitCodeLineType.Unknown, valueConfig, null);
   }
@@ -65,18 +64,16 @@ public class FieldStructureParser {
   private static InitValueConfig createInitValueConfig(
       InitFieldConfig fieldConfig, Map<String, InitValueConfig> initValueConfigMap) {
     InitValueConfig valueConfig = null;
-    if (fieldConfig.hasInitValue()) {
-      if (fieldConfig.isFormattedField()) {
-        if (!initValueConfigMap.containsKey(fieldConfig.fieldPath())) {
-          throw new IllegalArgumentException("The field name is not found in the collection map.");
-        }
-        valueConfig =
-            initValueConfigMap
-                .get(fieldConfig.fieldPath())
-                .withInitialCollectionValue(fieldConfig.entityName(), fieldConfig.value());
-      } else {
-        valueConfig = InitValueConfig.createWithValue(stripQuotes(fieldConfig.value()));
+    if (fieldConfig.hasFormattedInitValue()) {
+      if (!initValueConfigMap.containsKey(fieldConfig.fieldPath())) {
+        throw new IllegalArgumentException("The field name is not found in the collection map.");
       }
+      valueConfig =
+          initValueConfigMap
+              .get(fieldConfig.fieldPath())
+              .withInitialCollectionValue(fieldConfig.entityName(), fieldConfig.value());
+    } else if (fieldConfig.hasSimpleInitValue()) {
+      valueConfig = InitValueConfig.createWithValue(stripQuotes(fieldConfig.value()));
     } else if (initValueConfigMap.containsKey(fieldConfig.fieldPath())) {
       valueConfig = initValueConfigMap.get(fieldConfig.fieldPath());
     }

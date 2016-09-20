@@ -34,7 +34,7 @@ public abstract class InitFieldConfig {
   /*
    * Parses the given config string and returns the corresponding object.
    */
-  public static InitFieldConfig of(String initFieldConfigString) {
+  public static InitFieldConfig from(String initFieldConfigString) {
     String fieldName = null;
     String entityName = null;
     String value = null;
@@ -56,11 +56,11 @@ public abstract class InitFieldConfig {
     return new AutoValue_InitFieldConfig(fieldName, entityName, value);
   }
 
-  public boolean hasInitValue() {
-    return value() != null;
+  public boolean hasSimpleInitValue() {
+    return entityName() == null && value() != null;
   }
 
-  public boolean isFormattedField() {
-    return entityName() != null;
+  public boolean hasFormattedInitValue() {
+    return entityName() != null && value() != null;
   }
 }
