@@ -15,6 +15,8 @@
 package com.google.api.codegen.gapic;
 
 import com.google.api.codegen.ApiConfig;
+import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.NameFormatter;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
@@ -22,18 +24,21 @@ import com.google.common.base.Strings;
 import java.util.ArrayList;
 
 /**
- * An implementation of GapicCodePathMapper that generates the output path from a prefix, and/or package
- * name.
+ * An implementation of GapicCodePathMapper that generates the output path from a prefix, and/or
+ * package name.
  */
 public class CommonGapicCodePathMapper implements GapicCodePathMapper {
   private final String prefix;
   private final boolean shouldAppendPackage;
+  private final NameFormatter nameFormatter;
 
   private static String PACKAGE_SPLIT_REGEX = "[.:\\\\]";
 
-  private CommonGapicCodePathMapper(String prefix, boolean shouldAppendPackage) {
+  private CommonGapicCodePathMapper(
+      String prefix, boolean shouldAppendPackage, NameFormatter nameFormatter) {
     this.prefix = prefix;
     this.shouldAppendPackage = shouldAppendPackage;
+    this.nameFormatter = nameFormatter;
   }
 
   @Override
@@ -48,7 +53,10 @@ public class CommonGapicCodePathMapper implements GapicCodePathMapper {
         // We can have empty segments in cases like Ruby where the separator
         // between path components is multiple characters ("::")
         if (!segment.isEmpty()) {
-          dirs.add(segment.toLowerCase());
+          dirs.add(
+              nameFormatter == null
+                  ? segment.toLowerCase()
+                  : nameFormatter.packageFilePathPiece(Name.upperCamel(segment)));
         }
       }
     }
@@ -66,6 +74,7 @@ public class CommonGapicCodePathMapper implements GapicCodePathMapper {
   public static class Builder {
     private String prefix = "";
     private boolean shouldAppendPackage = false;
+    private NameFormatter nameFormatter = null;
 
     public Builder setPrefix(String prefix) {
       this.prefix = prefix;
@@ -77,8 +86,13 @@ public class CommonGapicCodePathMapper implements GapicCodePathMapper {
       return this;
     }
 
+    public Builder setPackageFilePathNameFormatter(NameFormatter nameFormatter) {
+      this.nameFormatter = nameFormatter;
+      return this;
+    }
+
     public CommonGapicCodePathMapper build() {
-      return new CommonGapicCodePathMapper(prefix, shouldAppendPackage);
+      return new CommonGapicCodePathMapper(prefix, shouldAppendPackage, nameFormatter);
     }
   }
 }

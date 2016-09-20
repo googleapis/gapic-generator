@@ -41,6 +41,7 @@ import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
+import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -258,6 +259,7 @@ public class MainGapicProviderFactory
           CommonGapicCodePathMapper.newBuilder()
               .setPrefix("lib")
               .setShouldAppendPackage(true)
+              .setPackageFilePathNameFormatter(new RubyNameFormatter())
               .build();
       GapicProvider<? extends Object> mainProvider =
           CommonGapicProvider.<Interface>newBuilder()

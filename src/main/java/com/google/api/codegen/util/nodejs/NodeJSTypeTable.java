@@ -61,7 +61,7 @@ public class NodeJSTypeTable implements TypeTable {
   }
 
   @Override
-  public TypeName getContainerTypeName(String containerFullName, String elementFullName) {
+  public TypeName getContainerTypeName(String containerFullName, String... elementFullName) {
     return getTypeName(containerFullName);
   }
 

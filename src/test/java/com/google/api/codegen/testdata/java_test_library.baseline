@@ -15,7 +15,7 @@
 
 package com.google.gcloud.pubsub.spi;
 
-import com.google.api.gax.core.PageAccessor;
+import com.google.api.gax.core.PagedListResponse;
 import com.google.api.gax.testing.MockGrpcService;
 import com.google.api.gax.testing.MockServiceHelper;
 import com.google.common.collect.Lists;
@@ -218,12 +218,12 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void listShelvesTest() {
+    String nextPageToken = "";
     Shelf shelvesElement = Shelf.newBuilder().build();
     List<Shelf> shelves = Arrays.asList(shelvesElement);
-    String nextPageToken = "nextPageToken-1530815211";
     ListShelvesResponse expectedResponse = ListShelvesResponse.newBuilder()
-      .addAllShelves(shelves)
       .setNextPageToken(nextPageToken)
+      .addAllShelves(shelves)
       .build();
     List<GeneratedMessage> expectedResponses = new ArrayList<>();
     expectedResponses.add(expectedResponse);
@@ -231,11 +231,9 @@ public class LibraryServiceTest {
 
 
 
-    PageAccessor<Shelf> pageAccessor = api.listShelves();
+    PagedListResponse<ListShelvesRequest, ListShelvesResponse, Shelf> pagedListResponse = api.listShelves();
 
-    // PageAccessor will not make actual request until it is being used.
-    // Add all the pages here in order to make grpc requests.
-    List<Shelf> resources = Lists.newArrayList(pageAccessor.getPageValues());
+    List<Shelf> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getShelvesList().get(0), resources.get(0));
 
@@ -248,8 +246,7 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void deleteShelfTest() {
-    Empty expectedResponse = Empty.newBuilder()
-      .build();
+    Empty expectedResponse = Empty.newBuilder().build();
     List<GeneratedMessage> expectedResponses = new ArrayList<>();
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
@@ -389,12 +386,12 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void listBooksTest() {
+    String nextPageToken = "";
     Book booksElement = Book.newBuilder().build();
     List<Book> books = Arrays.asList(booksElement);
-    String nextPageToken = "nextPageToken-1530815211";
     ListBooksResponse expectedResponse = ListBooksResponse.newBuilder()
-      .addAllBooks(books)
       .setNextPageToken(nextPageToken)
+      .addAllBooks(books)
       .build();
     List<GeneratedMessage> expectedResponses = new ArrayList<>();
     expectedResponses.add(expectedResponse);
@@ -403,11 +400,9 @@ public class LibraryServiceTest {
     String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
     String filter = "filter-1274492040";
 
-    PageAccessor<Book> pageAccessor = api.listBooks(formattedName, filter);
+    PagedListResponse<ListBooksRequest, ListBooksResponse, Book> pagedListResponse = api.listBooks(formattedName, filter);
 
-    // PageAccessor will not make actual request until it is being used.
-    // Add all the pages here in order to make grpc requests.
-    List<Book> resources = Lists.newArrayList(pageAccessor.getPageValues());
+    List<Book> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getBooksList().get(0), resources.get(0));
 
@@ -422,8 +417,7 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void deleteBookTest() {
-    Empty expectedResponse = Empty.newBuilder()
-      .build();
+    Empty expectedResponse = Empty.newBuilder().build();
     List<GeneratedMessage> expectedResponses = new ArrayList<>();
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
@@ -542,12 +536,12 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void listStringsTest() {
+    String nextPageToken = "";
     String stringsElement = "stringsElement474465855";
     List<String> strings = Arrays.asList(stringsElement);
-    String nextPageToken = "nextPageToken-1530815211";
     ListStringsResponse expectedResponse = ListStringsResponse.newBuilder()
-      .addAllStrings(strings)
       .setNextPageToken(nextPageToken)
+      .addAllStrings(strings)
       .build();
     List<GeneratedMessage> expectedResponses = new ArrayList<>();
     expectedResponses.add(expectedResponse);
@@ -555,11 +549,9 @@ public class LibraryServiceTest {
 
 
 
-    PageAccessor<String> pageAccessor = api.listStrings();
+    PagedListResponse<ListStringsRequest, ListStringsResponse, String> pagedListResponse = api.listStrings();
 
-    // PageAccessor will not make actual request until it is being used.
-    // Add all the pages here in order to make grpc requests.
-    List<String> resources = Lists.newArrayList(pageAccessor.getPageValues());
+    List<String> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getStringsList().get(0), resources.get(0));
 
@@ -572,8 +564,7 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void addCommentsTest() {
-    Empty expectedResponse = Empty.newBuilder()
-      .build();
+    Empty expectedResponse = Empty.newBuilder().build();
     List<GeneratedMessage> expectedResponses = new ArrayList<>();
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
@@ -630,14 +621,13 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void updateBookIndexTest() {
-    Empty expectedResponse = Empty.newBuilder()
-      .build();
+    Empty expectedResponse = Empty.newBuilder().build();
     List<GeneratedMessage> expectedResponses = new ArrayList<>();
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
     String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
-    String indexName = "indexName746962392";
+    String indexName = "default index";
     String indexMapItem = "indexMapItem1918721251";
     Map<String, String> indexMap = new HashMap<>();
     indexMap.put("default_key", indexMapItem);
@@ -656,8 +646,7 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void addTagTest() {
-    AddTagResponse expectedResponse = AddTagResponse.newBuilder()
-      .build();
+    AddTagResponse expectedResponse = AddTagResponse.newBuilder().build();
     List<GeneratedMessage> expectedResponses = new ArrayList<>();
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
@@ -680,8 +669,7 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void addLabelTest() {
-    AddLabelResponse expectedResponse = AddLabelResponse.newBuilder()
-      .build();
+    AddLabelResponse expectedResponse = AddLabelResponse.newBuilder().build();
     List<GeneratedMessage> expectedResponses = new ArrayList<>();
     expectedResponses.add(expectedResponse);
     mockLabeler.setResponses(expectedResponses);

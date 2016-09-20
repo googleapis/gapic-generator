@@ -28,8 +28,6 @@ public interface TypeNameConverter {
    */
   NamePath getNamePath(String fullName);
 
-  /**
-   * Creates a TypeName for the container type and element type.
-   */
-  TypeName getContainerTypeName(String containerFullName, String elementFullName);
+  /** Creates a TypeName for the container type and element type. */
+  TypeName getContainerTypeName(String containerFullName, String... elementFullNames);
 }

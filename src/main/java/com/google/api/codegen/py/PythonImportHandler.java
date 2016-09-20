@@ -84,12 +84,22 @@ public class PythonImportHandler {
     }
   }
 
-  public PythonImportHandler(Method method) {
-    addImport(
-        PythonImport.create(
-            ImportType.APP,
-            method.getFile().getProto().getPackage(),
-            PythonProtoElements.getPbFileName(method.getInputMessage())));
+  /**
+   * This constructor is used for sample-gen where only the required fields of a method are needed
+   * to be imported.
+   */
+  public PythonImportHandler(Iterable<Field> requiredFields) {
+    for (Field field : requiredFields) {
+      if (!field.getType().isMessage()) {
+        continue;
+      }
+      MessageType messageType = field.getType().getMessageType();
+      addImport(
+          PythonImport.create(
+              ImportType.APP,
+              messageType.getFile().getProto().getPackage(),
+              PythonProtoElements.getPbFileName(messageType)));
+    }
   }
 
   // Independent import handler to support fragment generation from discovery sources

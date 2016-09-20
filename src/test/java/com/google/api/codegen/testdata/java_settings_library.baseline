@@ -355,6 +355,14 @@ public class LibraryServiceSettings extends ServiceApiSettings {
             .build();
         }
         @Override
+        public ListShelvesRequest injectPageSize(ListShelvesRequest payload, int pageSize) {
+          throw new UnsupportedOperationException("page size is not supported by this API method");
+        }
+        @Override
+        public Integer extractPageSize(ListShelvesRequest payload) {
+          throw new UnsupportedOperationException("page size is not supported by this API method");
+        }
+        @Override
         public Object extractNextToken(ListShelvesResponse payload) {
           return payload.getNextPageToken();
         }
@@ -378,6 +386,17 @@ public class LibraryServiceSettings extends ServiceApiSettings {
             .build();
         }
         @Override
+        public ListBooksRequest injectPageSize(ListBooksRequest payload, int pageSize) {
+          return ListBooksRequest
+            .newBuilder(payload)
+            .setPageSize(pageSize)
+            .build();
+        }
+        @Override
+        public Integer extractPageSize(ListBooksRequest payload) {
+          return payload.getPageSize();
+        }
+        @Override
         public Object extractNextToken(ListBooksResponse payload) {
           return payload.getNextPageToken();
         }
@@ -399,6 +418,17 @@ public class LibraryServiceSettings extends ServiceApiSettings {
             .newBuilder(payload)
             .setPageToken((String) token)
             .build();
+        }
+        @Override
+        public ListStringsRequest injectPageSize(ListStringsRequest payload, int pageSize) {
+          return ListStringsRequest
+            .newBuilder(payload)
+            .setPageSize(pageSize)
+            .build();
+        }
+        @Override
+        public Integer extractPageSize(ListStringsRequest payload) {
+          return payload.getPageSize();
         }
         @Override
         public Object extractNextToken(ListStringsResponse payload) {

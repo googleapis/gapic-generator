@@ -21,5 +21,6 @@ public enum InitCodeLineType {
   StructureInitLine,
   ListInitLine,
   SimpleInitLine,
-  MapInitLine
+  MapInitLine,
+  Unknown
 }
