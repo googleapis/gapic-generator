@@ -42,18 +42,6 @@
     """Wrappers for protocol buffer enum types."""
 @end
 
-@private shouldGenerateEnum(element)
-    # Note: cannot use and(element.isEnum, element.getEnumType.isReachable)
-    # because template language evaluates function arguments eagerly, which
-    # can cause an exception to be thrown at element.getEnumType if element is
-    # not an enum.
-    @if element.isEnum
-        @if element.getEnumType.isReachable
-            TRUE
-        @end
-    @end
-@end
-
 @private enumComments(enum)
     @let overview = context.getSphinxifiedScopedDescription(enum)
         """
@@ -82,7 +70,7 @@
 @end
 
 @private enumConstants()
-    @join type : context.getModel.getSymbolTable.getDeclaredTypes if shouldGenerateEnum(type) on BREAK.add(BREAK).add(BREAK)
+    @join type : context.python.getEnumTypes(context.getModel) on BREAK.add(BREAK).add(BREAK)
         {@enumSection(type.getEnumType)}
     @end
 @end

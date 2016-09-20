@@ -20,6 +20,7 @@ import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
+import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -146,6 +147,10 @@ public class PythonGapicContext extends GapicContext {
     return typeComment(field.getType(), importHandler);
   }
 
+  private String enumClassName(EnumType enumType) {
+    return "enums." + pythonCommon.wrapIfKeywordOrBuiltIn(enumType.getSimpleName());
+  }
+
   private String typeComment(TypeRef type, PythonImportHandler importHandler) {
     switch (type.getKind()) {
       case TYPE_MESSAGE:
@@ -153,8 +158,8 @@ public class PythonGapicContext extends GapicContext {
       case TYPE_ENUM:
         return "enum :class:`"
             + getApiConfig().getPackageName()
-            + ".enums."
-            + pythonCommon.wrapIfKeywordOrBuiltIn(type.getEnumType().getSimpleName())
+            + "."
+            + enumClassName(type.getEnumType())
             + "`";
       default:
         if (type.isPrimitive()) {
@@ -359,7 +364,11 @@ public class PythonGapicContext extends GapicContext {
       case TYPE_ENUM:
         Preconditions.checkArgument(
             type.getEnumType().getValues().size() > 0, "enum must have a value");
-        return importHandler.elementPath(type.getEnumType().getValues().get(0), false);
+        // TODO:multiple enums of same name?
+        return "enums."
+            + type.getEnumType().getSimpleName()
+            + "."
+            + type.getEnumType().getValues().get(0).getSimpleName();
       default:
         if (type.isPrimitive()) {
           return DEFAULT_VALUE_MAP.get(type.getKind());

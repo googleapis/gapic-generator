@@ -29,15 +29,12 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-/**
- * Represents the Python documentation settings for an Api method.
- */
+/** Represents the Python documentation settings for an Api method. */
 @AutoValue
 abstract class PythonDocConfig extends DocConfig {
   public static PythonDocConfig.Builder newBuilder() {
@@ -57,9 +54,7 @@ abstract class PythonDocConfig extends DocConfig {
     return LanguageUtil.upperCamelToLowerUnderscore(getMethod().getSimpleName());
   }
 
-  /**
-   * Does this method return an iterable response?
-   */
+  /** Does this method return an iterable response? */
   public boolean isPageStreaming() {
     Method method = getMethod();
     MethodConfig methodConfig =
@@ -67,23 +62,17 @@ abstract class PythonDocConfig extends DocConfig {
     return methodConfig.isPageStreaming();
   }
 
-  /**
-   * Is this method gRPC-response streaming?
-   */
+  /** Is this method gRPC-response streaming? */
   public boolean isResponseGrpcStreaming() {
     return getMethod().getResponseStreaming();
   }
 
-  /**
-   * Is this method gRPC-request streaming?
-   */
+  /** Is this method gRPC-request streaming? */
   public boolean isRequestGrpcStreaming() {
     return getMethod().getRequestStreaming();
   }
 
-  /**
-   * Get list of import statements for this method's code sample.
-   */
+  /** Get list of import statements for this method's code sample. */
   public List<String> getAppImports() {
     List<String> importStrings = new ArrayList<>();
     importStrings.add(apiImport(getApiName()));
@@ -112,8 +101,17 @@ abstract class PythonDocConfig extends DocConfig {
           // nothing to do
       }
 
-      if (lineType != null && lineType.isMessage()) {
-        protoImports.add(getImportHandler().fileToImport(lineType.getMessageType().getFile()));
+      if (lineType != null) {
+        if (lineType.isMessage()) {
+          // TODO: What if a file is not imported in the main GAPIC codegen, but is needed for
+          // samplegen? For example, subfields of request messages.
+          protoImports.add(getImportHandler().fileToImport(lineType.getMessageType().getFile()));
+        } else if (lineType.isEnum()) {
+          protoImports.add(
+              (PythonImport.create(
+                      PythonImport.ImportType.APP, getApiConfig().getPackageName(), "enums"))
+                  .importString());
+        }
       }
     }
     importStrings.addAll(protoImports);

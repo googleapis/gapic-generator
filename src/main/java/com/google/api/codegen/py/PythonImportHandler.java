@@ -26,7 +26,7 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-
+import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,9 +41,9 @@ public class PythonImportHandler {
   private final BiMap<String, PythonImport> stringImports = HashBiMap.create();
 
   /**
-   * Bi-map from proto files to short names for imports. Should only be modified through
-   * addImport() to maintain the invariant that elements of this map are in 1:1 correspondence with
-   * those in stringImports.
+   * Bi-map from proto files to short names for imports. Should only be modified through addImport()
+   * to maintain the invariant that elements of this map are in 1:1 correspondence with those in
+   * stringImports.
    */
   private final BiMap<ProtoFile, String> fileImports = HashBiMap.create();
 
@@ -59,6 +59,11 @@ public class PythonImportHandler {
     addImportExternal("google.gax", "api_callable");
     addImportExternal("google.gax", "config");
     addImportExternal("google.gax", "path_template");
+
+    // only if add enum import if there are enums
+    if (!Iterables.isEmpty(new PythonContextCommon().getEnumTypes(service.getModel()))) {
+      addImportLocal(service.getFile().getProto().getPackage(), "enums");
+    }
 
     // Add method request-type imports.
     for (MethodConfig methodConfig : apiConfig.getInterfaceConfig(service).getMethodConfigs()) {
@@ -106,7 +111,7 @@ public class PythonImportHandler {
    * Returns the path to a proto element. If fullyQualified is false, returns the fully qualified
    * path.
    *
-   * For example, with message `Hello.World` under import `hello`, if fullyQualified is true: for
+   * <p>For example, with message `Hello.World` under import `hello`, if fullyQualified is true: for
    * `path.to.hello.Hello.World`, it returns `path.to.hello.Hello.World` false: for
    * `path.to.hello.Hello.World`, it returns `hello.Hello.World`
    */
@@ -205,9 +210,7 @@ public class PythonImportHandler {
     return addImport(ImportType.APP, moduleName, attributeName).shortName();
   }
 
-  /**
-   * Calculate the imports map and return a sorted set of python import output strings.
-   */
+  /** Calculate the imports map and return a sorted set of python import output strings. */
   public List<String> calculateImports() {
     // Order by import type, then lexicographically
     List<String> stdlibResult = new ArrayList<>();
