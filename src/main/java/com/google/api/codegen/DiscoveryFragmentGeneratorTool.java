@@ -48,7 +48,6 @@ public class DiscoveryFragmentGeneratorTool {
             .desc("The path to the sample config overrides file")
             .hasArg()
             .argName("OVERRIDES")
-            .required(true)
             .build());
     options.addOption(
         Option.builder()
