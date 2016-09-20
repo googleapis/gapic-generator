@@ -151,7 +151,7 @@ public class PythonGapicContext extends GapicContext {
       case TYPE_MESSAGE:
         return ":class:`" + importHandler.elementPath(type.getMessageType(), true) + "`";
       case TYPE_ENUM:
-        return "enum from :class:`"
+        return "enum :class:`"
             + getApiConfig().getPackageName()
             + ".enums."
             + pythonCommon.wrapIfKeywordOrBuiltIn(type.getEnumType().getSimpleName())
