@@ -106,7 +106,7 @@ public class SampleInitCodeTest {
     InitCodeNode expectedStructure = InitCodeNode.create("myfield");
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
-    Truth.assertThat(checkEquals(actualStructure, expectedStructure));
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
   }
 
   @Test
@@ -119,7 +119,7 @@ public class SampleInitCodeTest {
             "myobj", InitCodeLineType.StructureInitLine, innerStructure);
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
-    Truth.assertThat(checkEquals(actualStructure, expectedStructure));
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
   }
 
   @Test
@@ -131,7 +131,7 @@ public class SampleInitCodeTest {
         InitCodeNode.createWithChildren("mylist", InitCodeLineType.ListInitLine, innerStructure);
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
-    Truth.assertThat(checkEquals(actualStructure, expectedStructure));
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
   }
 
   @Test
@@ -143,7 +143,7 @@ public class SampleInitCodeTest {
         InitCodeNode.createWithChildren("mymap", InitCodeLineType.MapInitLine, innerStructure);
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
-    Truth.assertThat(checkEquals(actualStructure, expectedStructure));
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
   }
 
   @Test
@@ -157,7 +157,7 @@ public class SampleInitCodeTest {
         InitCodeNode.createWithChildren("mylist", InitCodeLineType.ListInitLine, outerList);
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
-    Truth.assertThat(checkEquals(actualStructure, expectedStructure));
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
   }
 
   @Test
@@ -166,12 +166,12 @@ public class SampleInitCodeTest {
 
     InitCodeNode innerMap = InitCodeNode.create("key");
     InitCodeNode innerList =
-        InitCodeNode.createWithChildren("0", InitCodeLineType.ListInitLine, innerMap);
+        InitCodeNode.createWithChildren("0", InitCodeLineType.MapInitLine, innerMap);
     InitCodeNode expectedStructure =
         InitCodeNode.createWithChildren("mylist", InitCodeLineType.ListInitLine, innerList);
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
-    Truth.assertThat(checkEquals(actualStructure, expectedStructure));
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
   }
 
   @Test
@@ -179,10 +179,10 @@ public class SampleInitCodeTest {
     String fieldSpec = "myfield=\"default\"";
 
     InitCodeNode expectedStructure =
-        InitCodeNode.createWithValue("myfield", InitValueConfig.createWithValue("\"default\""));
+        InitCodeNode.createWithValue("myfield", InitValueConfig.createWithValue("default"));
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
-    Truth.assertThat(checkEquals(actualStructure, expectedStructure));
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
   }
 
   @Test
@@ -196,7 +196,7 @@ public class SampleInitCodeTest {
         InitCodeNode.createWithChildren("mylist", InitCodeLineType.ListInitLine, innerList);
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
-    Truth.assertThat(checkEquals(actualStructure, expectedStructure));
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
   }
 
   @Test
@@ -211,7 +211,7 @@ public class SampleInitCodeTest {
             "myfield", InitCodeLineType.StructureInitLine, innerStructure);
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
-    Truth.assertThat(checkEquals(actualStructure, expectedStructure));
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -282,7 +282,7 @@ public class SampleInitCodeTest {
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
     }
-    Truth.assertThat(actualKeyList.equals(expectedKeyList));
+    Truth.assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
   }
 
   @Test
@@ -297,7 +297,7 @@ public class SampleInitCodeTest {
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
     }
-    Truth.assertThat(actualKeyList.equals(expectedKeyList));
+    Truth.assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
   }
 
   @Test
@@ -314,7 +314,7 @@ public class SampleInitCodeTest {
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
     }
-    Truth.assertThat(actualKeyList.equals(expectedKeyList));
+    Truth.assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
   }
 
   @Test
@@ -330,7 +330,7 @@ public class SampleInitCodeTest {
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
     }
-    Truth.assertThat(actualKeyList.equals(expectedKeyList));
+    Truth.assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
   }
 
   @Test
@@ -345,7 +345,7 @@ public class SampleInitCodeTest {
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
     }
-    Truth.assertThat(actualKeyList.equals(expectedKeyList));
+    Truth.assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
   }
 
   @Test
@@ -360,17 +360,17 @@ public class SampleInitCodeTest {
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
     }
-    Truth.assertThat(actualKeyList.equals(expectedKeyList));
+    Truth.assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
   }
 
   private static boolean checkEquals(InitCodeNode first, InitCodeNode second) {
     if (first == second) {
       return true;
     }
-    return first.getKey().equals(second.getKey())
+    if (!(first.getKey().equals(second.getKey())
         && first.getLineType().equals(second.getLineType())
         && first.getInitValueConfig().equals(second.getInitValueConfig())
-        && first.getChildren().equals(second.getChildren())
+        && first.getChildren().keySet().equals(second.getChildren().keySet())
         && (first.getType() == null
             ? second.getType() == null
             : first.getType().equals(second.getType()))
@@ -379,6 +379,14 @@ public class SampleInitCodeTest {
             : first.getIdentifier().equals(second.getIdentifier()))
         && (first.getInitCodeLine() == null
             ? second.getInitCodeLine() == null
-            : first.getInitCodeLine().equals(second.getInitCodeLine()));
+            : first.getInitCodeLine().equals(second.getInitCodeLine())))) {
+      return false;
+    }
+    for (String key : first.getChildren().keySet()) {
+      if (!checkEquals(first.getChildren().get(key), second.getChildren().get(key))) {
+        return false;
+      }
+    }
+    return true;
   }
 }
