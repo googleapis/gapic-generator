@@ -32,18 +32,9 @@ import java.util.List;
 public class PythonImportHandler {
 
   /**
-   * Bi-map from short names to PythonImport objects for imports. Should only be modified through
-   * addImport() to maintain the invariant that elements of this map are in 1:1 correspondence with
-   * those in fileImports.
+   * Bi-map from short names to PythonImport objects for imports.
    */
   private final BiMap<String, PythonImport> stringImports = HashBiMap.create();
-
-  /**
-   * Bi-map from proto files to short names for imports. Should only be modified through
-   * addImport() to maintain the invariant that elements of this map are in 1:1 correspondence with
-   * those in stringImports.
-   */
-  private final BiMap<ProtoFile, String> fileImports = HashBiMap.create();
 
   /** This constructor is for the main imports of a generated service file */
   public PythonImportHandler(Interface service) {
@@ -61,7 +52,6 @@ public class PythonImportHandler {
     // Add method request-type imports.
     for (Method method : service.getMethods()) {
       addImport(
-          method.getFile(),
           PythonImport.create(
               ImportType.APP,
               method.getFile().getProto().getPackage(),
@@ -69,7 +59,6 @@ public class PythonImportHandler {
       for (Field field : method.getInputType().getMessageType().getMessageFields()) {
         MessageType messageType = field.getType().getMessageType();
         addImport(
-            messageType.getFile(),
             PythonImport.create(
                 ImportType.APP,
                 messageType.getFile().getProto().getPackage(),
@@ -86,7 +75,6 @@ public class PythonImportHandler {
         // Don't include imports to messages in the same file.
         if (!messageType.getFile().equals(file)) {
           addImport(
-              messageType.getFile(),
               PythonImport.create(
                   ImportType.APP,
                   messageType.getFile().getProto().getPackage(),
@@ -107,7 +95,6 @@ public class PythonImportHandler {
       }
       MessageType messageType = field.getType().getMessageType();
       addImport(
-          messageType.getFile(),
           PythonImport.create(
               ImportType.APP,
               messageType.getFile().getProto().getPackage(),
@@ -133,19 +120,12 @@ public class PythonImportHandler {
     if (fullyQualified) {
       path = elt.getFile().getProto().getPackage() + "." + PythonProtoElements.getPbFileName(elt);
     } else {
-      path = fileToModule(elt.getFile());
+      String module = elt.getFile().getProto().getPackage();
+      String attribute = PythonProtoElements.getPbFileName(elt);
+      path = getShortName(module, attribute);
     }
 
-    if (Strings.isNullOrEmpty(path)) {
-      // path is either empty or the prefix string.
-      path = prefix;
-    } else {
-      // If path isn't empty:
-      if (!Strings.isNullOrEmpty(prefix)) {
-        // If prefix isn't empty, append it to path.
-        path += "." + prefix;
-      }
-    }
+    path += Strings.isNullOrEmpty(prefix) ? "" : "." + prefix;
     path += "." + elt.getSimpleName();
     return path;
   }
@@ -153,10 +133,9 @@ public class PythonImportHandler {
   /*
    * Adds an import to the import maps.
    */
-  private PythonImport addImport(ProtoFile file, PythonImport imp) {
+  private PythonImport addImport(PythonImport imp) {
     // No conflict
     if (stringImports.get(imp.shortName()) == null) {
-      fileImports.put(file, imp.shortName());
       stringImports.put(imp.shortName(), imp);
       return imp;
 
@@ -168,7 +147,6 @@ public class PythonImportHandler {
     } else {
       String oldShortName = imp.shortName();
       PythonImport formerImp = stringImports.remove(oldShortName);
-      ProtoFile formerFile = fileImports.inverse().remove(oldShortName);
 
       PythonImport disambiguatedNewImp = imp.disambiguate();
       PythonImport disambiguatedOldImp = formerImp.disambiguate();
@@ -180,8 +158,8 @@ public class PythonImportHandler {
         disambiguatedOldImp = formerImp;
       }
 
-      addImport(formerFile, disambiguatedOldImp);
-      return addImport(file, disambiguatedNewImp);
+      addImport(disambiguatedOldImp);
+      return addImport(disambiguatedNewImp);
     }
   }
 
@@ -189,7 +167,7 @@ public class PythonImportHandler {
   // Some are written with overloads since snippet engine currently does not support varargs.
 
   public PythonImport addImport(ImportType type, String... names) {
-    return addImport(null, PythonImport.create(type, names));
+    return addImport(PythonImport.create(type, names));
   }
 
   public String addImportStandard(String moduleName) {
@@ -250,11 +228,13 @@ public class PythonImportHandler {
     return all;
   }
 
-  public String fileToModule(ProtoFile file) {
-    if (fileImports.containsKey(file)) {
-      return fileImports.get(file);
-    } else {
-      return "";
+  /** Returns the name for a module for a module and attribute stored in the input handler. */
+  public String getShortName(String module, String attribute) {
+    for (PythonImport pyImport : stringImports.inverse().keySet()) {
+      if (pyImport.attributeName().equals(attribute) && pyImport.moduleName().equals(module)) {
+        return pyImport.shortName();
+      }
     }
+    return attribute;
   }
 }
