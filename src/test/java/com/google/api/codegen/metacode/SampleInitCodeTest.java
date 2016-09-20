@@ -26,18 +26,16 @@ import com.google.api.tools.framework.setup.StandardSetup;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.truth.Truth;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 public class SampleInitCodeTest {
 
@@ -264,6 +262,12 @@ public class SampleInitCodeTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testFormattedFieldBadField() throws Exception {
+    String fieldSpec = "name%entity";
+    FieldStructureParser.parse(fieldSpec);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testFormattedFieldBadFieldWithValue() throws Exception {
     String fieldSpec = "name%entity=test";
     FieldStructureParser.parse(fieldSpec);
   }
@@ -379,8 +383,16 @@ public class SampleInitCodeTest {
 
     List<String> expectedKeyList = Arrays.asList("formatted_field", "root");
 
+    HashMap<String, InitValueConfig> initValueMap = new HashMap<>();
+    InitValueConfig initValueConfig = InitValueConfig.create("test-api", null);
+    initValueMap.put("formatted_field", initValueConfig);
+
     InitCodeNode rootNode =
-        InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
+        InitCodeNode.createTree(
+            getContextBuilder()
+                .initFieldConfigStrings(fieldSpecs)
+                .initValueConfigMap(initValueMap)
+                .build());
     List<String> actualKeyList = new ArrayList<>();
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());

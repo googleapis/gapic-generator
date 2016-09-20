@@ -60,6 +60,10 @@ public abstract class InitFieldConfig {
     return entityName() == null && value() != null;
   }
 
+  public boolean isFormattedConfig() {
+    return entityName() != null;
+  }
+
   public boolean hasFormattedInitValue() {
     return entityName() != null && value() != null;
   }

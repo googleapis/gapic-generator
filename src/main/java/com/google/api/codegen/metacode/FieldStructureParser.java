@@ -63,11 +63,14 @@ public class FieldStructureParser {
 
   private static InitValueConfig createInitValueConfig(
       InitFieldConfig fieldConfig, Map<String, InitValueConfig> initValueConfigMap) {
+    if (fieldConfig.isFormattedConfig()
+        && !initValueConfigMap.containsKey(fieldConfig.fieldPath())) {
+      // If the field is a formatted field, it must exist in the value config map.
+      throw new IllegalArgumentException("The field name is not found in the collection map.");
+    }
+
     InitValueConfig valueConfig = null;
     if (fieldConfig.hasFormattedInitValue()) {
-      if (!initValueConfigMap.containsKey(fieldConfig.fieldPath())) {
-        throw new IllegalArgumentException("The field name is not found in the collection map.");
-      }
       valueConfig =
           initValueConfigMap
               .get(fieldConfig.fieldPath())
