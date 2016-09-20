@@ -5,67 +5,67 @@
  * 1. If not already done, enable the Google Compute Engine Instance Group Updater API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/replicapoolupdater
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/replicapoolupdater/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.replicapoolupdater.Replicapoolupdater;
-import com.google.api.services.replicapoolupdater.model.Operation;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater.RollingUpdates.Cancel;
+import com.google.api.services.replicapoolupdater.v1beta1.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class ReplicapoolupdaterExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Replicapoolupdater replicapoolupdaterService = new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
+  public void run() throws IOException, GeneralSecurityException {
+    // The name of the zone in which the update's target resides.
+    String zone = ""; // TODO: Update field(s).
 
     // The Google Developers Console project name.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
-
-    // The name of the zone in which the update's target resides.
-    String zone = "{MY-ZONE}"; // TODO: Update placeholder value(s).
+    String project = ""; // TODO: Update field(s).
 
     // The name of the update.
-    String rollingUpdate = "{MY-ROLLING-UPDATE}"; // TODO: Update placeholder value(s).
+    String rollingUpdate = ""; // TODO: Update field(s).
 
-    Replicapoolupdater.RollingUpdates.Cancel request = replicapoolupdaterService.rollingUpdates().cancel(project, zone, rollingUpdate);
+    Replicapoolupdater service = createService();
+    Cancel request = service.rollingUpdates().cancel(zone, project, rollingUpdate);
     Operation response = request.execute();
+    System.out.println(response);
+  }
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+  public Replicapoolupdater createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -74,67 +74,67 @@ public class ReplicapoolupdaterExample {
  * 1. If not already done, enable the Google Compute Engine Instance Group Updater API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/replicapoolupdater
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/replicapoolupdater/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.replicapoolupdater.Replicapoolupdater;
-import com.google.api.services.replicapoolupdater.model.RollingUpdate;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater.RollingUpdates.Get;
+import com.google.api.services.replicapoolupdater.v1beta1.model.RollingUpdate;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class ReplicapoolupdaterExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Replicapoolupdater replicapoolupdaterService = new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
+  public void run() throws IOException, GeneralSecurityException {
+    // The name of the zone in which the update's target resides.
+    String zone = ""; // TODO: Update field(s).
 
     // The Google Developers Console project name.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
-
-    // The name of the zone in which the update's target resides.
-    String zone = "{MY-ZONE}"; // TODO: Update placeholder value(s).
+    String project = ""; // TODO: Update field(s).
 
     // The name of the update.
-    String rollingUpdate = "{MY-ROLLING-UPDATE}"; // TODO: Update placeholder value(s).
+    String rollingUpdate = ""; // TODO: Update field(s).
 
-    Replicapoolupdater.RollingUpdates.Get request = replicapoolupdaterService.rollingUpdates().get(project, zone, rollingUpdate);
+    Replicapoolupdater service = createService();
+    Get request = service.rollingUpdates().get(zone, project, rollingUpdate);
     RollingUpdate response = request.execute();
+    System.out.println(response);
+  }
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+  public Replicapoolupdater createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -143,69 +143,68 @@ public class ReplicapoolupdaterExample {
  * 1. If not already done, enable the Google Compute Engine Instance Group Updater API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/replicapoolupdater
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/replicapoolupdater/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.replicapoolupdater.Replicapoolupdater;
-import com.google.api.services.replicapoolupdater.model.Operation;
-import com.google.api.services.replicapoolupdater.model.RollingUpdate;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater.RollingUpdates.Insert;
+import com.google.api.services.replicapoolupdater.v1beta1.model.Operation;
+import com.google.api.services.replicapoolupdater.v1beta1.model.RollingUpdate;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class ReplicapoolupdaterExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Replicapoolupdater replicapoolupdaterService = new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-    // The Google Developers Console project name.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
-
-    // The name of the zone in which the update's target resides.
-    String zone = "{MY-ZONE}"; // TODO: Update placeholder value(s).
-
-    // TODO: Assign values to the desired fields.
+  public void run() throws IOException, GeneralSecurityException {
+    // TODO: Assign desired fields.
     RollingUpdate requestBody = new RollingUpdate();
 
+    // The name of the zone in which the update's target resides.
+    String zone = ""; // TODO: Update field(s).
 
-    Replicapoolupdater.RollingUpdates.Insert request = replicapoolupdaterService.rollingUpdates().insert(project, zone, requestBody);
+    // The Google Developers Console project name.
+    String project = ""; // TODO: Update field(s).
+
+    Replicapoolupdater service = createService();
+    Insert request = service.rollingUpdates().insert(zone, project, requestBody);
     Operation response = request.execute();
+    System.out.println(response);
+  }
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+  public Replicapoolupdater createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -214,76 +213,73 @@ public class ReplicapoolupdaterExample {
  * 1. If not already done, enable the Google Compute Engine Instance Group Updater API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/replicapoolupdater
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/replicapoolupdater/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.replicapoolupdater.Replicapoolupdater;
-import com.google.api.services.replicapoolupdater.model.RollingUpdate;
-import com.google.api.services.replicapoolupdater.model.RollingUpdateList;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater.RollingUpdates.List;
+import com.google.api.services.replicapoolupdater.v1beta1.model.RollingUpdate;
+import com.google.api.services.replicapoolupdater.v1beta1.model.RollingUpdateList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class ReplicapoolupdaterExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Replicapoolupdater replicapoolupdaterService = new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
+  public void run() throws IOException, GeneralSecurityException {
+    // The name of the zone in which the update's target resides.
+    String zone = ""; // TODO: Update field(s).
 
     // The Google Developers Console project name.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+    String project = ""; // TODO: Update field(s).
 
-    // The name of the zone in which the update's target resides.
-    String zone = "{MY-ZONE}"; // TODO: Update placeholder value(s).
-
-    Replicapoolupdater.RollingUpdates.List request = replicapoolupdaterService.rollingUpdates().list(project, zone);
-
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
+    Replicapoolupdater service = createService();
+    List request = service.rollingUpdates().list(zone, project);
     RollingUpdateList response;
     do {
       response = request.execute();
-      if (response.getItems() == null)
+      if (response.getItems() == null) {
         continue;
-
-      for (RollingUpdate rollingUpdate : response.getItems()) {
-        // TODO: Use rollingUpdate
-        System.out.println(gson.toJson(new JsonParser().parse(rollingUpdate.toString())));
       }
-
-      request.setPageToken(response.getNextPageToken());
+      for (RollingUpdate item : response.getItems()) {
+        System.out.println(item);
+      }
     } while (response.getNextPageToken() != null);
+  }
+
+  public Replicapoolupdater createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -292,148 +288,76 @@ public class ReplicapoolupdaterExample {
  * 1. If not already done, enable the Google Compute Engine Instance Group Updater API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/replicapoolupdater
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/replicapoolupdater/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.replicapoolupdater.Replicapoolupdater;
-import com.google.api.services.replicapoolupdater.model.InstanceUpdate;
-import com.google.api.services.replicapoolupdater.model.InstanceUpdateList;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater.RollingUpdates.ListInstanceUpdates;
+import com.google.api.services.replicapoolupdater.v1beta1.model.InstanceUpdate;
+import com.google.api.services.replicapoolupdater.v1beta1.model.InstanceUpdateList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class ReplicapoolupdaterExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Replicapoolupdater replicapoolupdaterService = new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
+  public void run() throws IOException, GeneralSecurityException {
+    // The name of the zone in which the update's target resides.
+    String zone = ""; // TODO: Update field(s).
 
     // The Google Developers Console project name.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
-
-    // The name of the zone in which the update's target resides.
-    String zone = "{MY-ZONE}"; // TODO: Update placeholder value(s).
+    String project = ""; // TODO: Update field(s).
 
     // The name of the update.
-    String rollingUpdate = "{MY-ROLLING-UPDATE}"; // TODO: Update placeholder value(s).
+    String rollingUpdate = ""; // TODO: Update field(s).
 
-    Replicapoolupdater.RollingUpdates.ListInstanceUpdates request = replicapoolupdaterService.rollingUpdates().listInstanceUpdates(project, zone, rollingUpdate);
-
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
+    Replicapoolupdater service = createService();
+    ListInstanceUpdates request = service.rollingUpdates().listInstanceUpdates(zone, project, rollingUpdate);
     InstanceUpdateList response;
     do {
       response = request.execute();
-      if (response.getItems() == null)
+      if (response.getItems() == null) {
         continue;
-
-      for (InstanceUpdate instanceUpdate : response.getItems()) {
-        // TODO: Use instanceUpdate
-        System.out.println(gson.toJson(new JsonParser().parse(instanceUpdate.toString())));
       }
-
-      request.setPageToken(response.getNextPageToken());
+      for (InstanceUpdate item : response.getItems()) {
+        System.out.println(item);
+      }
     } while (response.getNextPageToken() != null);
   }
-}
-/**
- * BEFORE RUNNING:
- * ---------------
- * 1. If not already done, enable the Google Compute Engine Instance Group Updater API
- *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/replicapoolupdater
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
- *    instructions at https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/replicapoolupdater/v1beta1/java
- */
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.replicapoolupdater.Replicapoolupdater;
-import com.google.api.services.replicapoolupdater.model.Operation;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-public class ReplicapoolupdaterExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
+  public Replicapoolupdater createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
     if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Replicapoolupdater replicapoolupdaterService = new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
+    return new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
 
-    // The Google Developers Console project name.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
-
-    // The name of the zone in which the update's target resides.
-    String zone = "{MY-ZONE}"; // TODO: Update placeholder value(s).
-
-    // The name of the update.
-    String rollingUpdate = "{MY-ROLLING-UPDATE}"; // TODO: Update placeholder value(s).
-
-    Replicapoolupdater.RollingUpdates.Pause request = replicapoolupdaterService.rollingUpdates().pause(project, zone, rollingUpdate);
-    Operation response = request.execute();
-
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -442,67 +366,67 @@ public class ReplicapoolupdaterExample {
  * 1. If not already done, enable the Google Compute Engine Instance Group Updater API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/replicapoolupdater
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/replicapoolupdater/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.replicapoolupdater.Replicapoolupdater;
-import com.google.api.services.replicapoolupdater.model.Operation;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater.RollingUpdates.Pause;
+import com.google.api.services.replicapoolupdater.v1beta1.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class ReplicapoolupdaterExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
+  public void run() throws IOException, GeneralSecurityException {
+    // The name of the zone in which the update's target resides.
+    String zone = ""; // TODO: Update field(s).
+
+    // The Google Developers Console project name.
+    String project = ""; // TODO: Update field(s).
+
+    // The name of the update.
+    String rollingUpdate = ""; // TODO: Update field(s).
+
+    Replicapoolupdater service = createService();
+    Pause request = service.rollingUpdates().pause(zone, project, rollingUpdate);
+    Operation response = request.execute();
+    System.out.println(response);
+  }
+
+  public Replicapoolupdater createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
     if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Replicapoolupdater replicapoolupdaterService = new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
+    return new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
 
-    // The Google Developers Console project name.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
-
-    // The name of the zone in which the update's target resides.
-    String zone = "{MY-ZONE}"; // TODO: Update placeholder value(s).
-
-    // The name of the update.
-    String rollingUpdate = "{MY-ROLLING-UPDATE}"; // TODO: Update placeholder value(s).
-
-    Replicapoolupdater.RollingUpdates.Resume request = replicapoolupdaterService.rollingUpdates().resume(project, zone, rollingUpdate);
-    Operation response = request.execute();
-
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -511,67 +435,67 @@ public class ReplicapoolupdaterExample {
  * 1. If not already done, enable the Google Compute Engine Instance Group Updater API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/replicapoolupdater
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/replicapoolupdater/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.replicapoolupdater.Replicapoolupdater;
-import com.google.api.services.replicapoolupdater.model.Operation;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater.RollingUpdates.Resume;
+import com.google.api.services.replicapoolupdater.v1beta1.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class ReplicapoolupdaterExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
+  public void run() throws IOException, GeneralSecurityException {
+    // The name of the zone in which the update's target resides.
+    String zone = ""; // TODO: Update field(s).
+
+    // The Google Developers Console project name.
+    String project = ""; // TODO: Update field(s).
+
+    // The name of the update.
+    String rollingUpdate = ""; // TODO: Update field(s).
+
+    Replicapoolupdater service = createService();
+    Resume request = service.rollingUpdates().resume(zone, project, rollingUpdate);
+    Operation response = request.execute();
+    System.out.println(response);
+  }
+
+  public Replicapoolupdater createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
     if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Replicapoolupdater replicapoolupdaterService = new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
+    return new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
 
-    // The Google Developers Console project name.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
-
-    // The name of the zone in which the update's target resides.
-    String zone = "{MY-ZONE}"; // TODO: Update placeholder value(s).
-
-    // The name of the update.
-    String rollingUpdate = "{MY-ROLLING-UPDATE}"; // TODO: Update placeholder value(s).
-
-    Replicapoolupdater.RollingUpdates.Rollback request = replicapoolupdaterService.rollingUpdates().rollback(project, zone, rollingUpdate);
-    Operation response = request.execute();
-
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -580,67 +504,136 @@ public class ReplicapoolupdaterExample {
  * 1. If not already done, enable the Google Compute Engine Instance Group Updater API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/replicapoolupdater
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/replicapoolupdater/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.replicapoolupdater.Replicapoolupdater;
-import com.google.api.services.replicapoolupdater.model.Operation;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater.RollingUpdates.Rollback;
+import com.google.api.services.replicapoolupdater.v1beta1.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class ReplicapoolupdaterExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
+  public void run() throws IOException, GeneralSecurityException {
+    // The name of the zone in which the update's target resides.
+    String zone = ""; // TODO: Update field(s).
+
+    // The Google Developers Console project name.
+    String project = ""; // TODO: Update field(s).
+
+    // The name of the update.
+    String rollingUpdate = ""; // TODO: Update field(s).
+
+    Replicapoolupdater service = createService();
+    Rollback request = service.rollingUpdates().rollback(zone, project, rollingUpdate);
+    Operation response = request.execute();
+    System.out.println(response);
+  }
+
+  public Replicapoolupdater createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
     if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Replicapoolupdater replicapoolupdaterService = new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
+    return new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+}
+/**
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Compute Engine Instance Group Updater API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/replicapoolupdater
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/replicapoolupdater/v1beta1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater.ZoneOperations.Get;
+import com.google.api.services.replicapoolupdater.v1beta1.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ReplicapoolupdaterExample {
+  public void run() throws IOException, GeneralSecurityException {
+    // Name of the zone scoping this request.
+    String zone = ""; // TODO: Update field(s).
 
     // Name of the project scoping this request.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
-
-    // Name of the zone scoping this request.
-    String zone = "{MY-ZONE}"; // TODO: Update placeholder value(s).
+    String project = ""; // TODO: Update field(s).
 
     // Name of the operation resource to return.
-    String operation = "{MY-OPERATION}"; // TODO: Update placeholder value(s).
+    String operation = ""; // TODO: Update field(s).
 
-    Replicapoolupdater.ZoneOperations.Get request = replicapoolupdaterService.zoneOperations().get(project, zone, operation);
+    Replicapoolupdater service = createService();
+    Get request = service.zoneOperations().get(zone, project, operation);
     Operation response = request.execute();
+    System.out.println(response);
+  }
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+  public Replicapoolupdater createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -649,75 +642,72 @@ public class ReplicapoolupdaterExample {
  * 1. If not already done, enable the Google Compute Engine Instance Group Updater API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/replicapoolupdater
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/replicapoolupdater/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.replicapoolupdater.Replicapoolupdater;
-import com.google.api.services.replicapoolupdater.model.Operation;
-import com.google.api.services.replicapoolupdater.model.OperationList;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater;
+import com.google.api.services.replicapoolupdater.v1beta1.Replicapoolupdater.ZoneOperations.List;
+import com.google.api.services.replicapoolupdater.v1beta1.model.Operation;
+import com.google.api.services.replicapoolupdater.v1beta1.model.OperationList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class ReplicapoolupdaterExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Replicapoolupdater replicapoolupdaterService = new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
+  public void run() throws IOException, GeneralSecurityException {
+    // Name of the zone scoping this request.
+    String zone = ""; // TODO: Update field(s).
 
     // Name of the project scoping this request.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+    String project = ""; // TODO: Update field(s).
 
-    // Name of the zone scoping this request.
-    String zone = "{MY-ZONE}"; // TODO: Update placeholder value(s).
-
-    Replicapoolupdater.ZoneOperations.List request = replicapoolupdaterService.zoneOperations().list(project, zone);
-
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
+    Replicapoolupdater service = createService();
+    List request = service.zoneOperations().list(zone, project);
     OperationList response;
     do {
       response = request.execute();
-      if (response.getItems() == null)
+      if (response.getItems() == null) {
         continue;
-
-      for (Operation operation : response.getItems()) {
-        // TODO: Use operation
-        System.out.println(gson.toJson(new JsonParser().parse(operation.toString())));
       }
-
-      request.setPageToken(response.getNextPageToken());
+      for (Operation item : response.getItems()) {
+        System.out.println(item);
+      }
     } while (response.getNextPageToken() != null);
+  }
+
+  public Replicapoolupdater createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new Replicapoolupdater.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }

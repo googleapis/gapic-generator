@@ -39,6 +39,8 @@ public abstract class SampleView implements ViewModel {
 
   public abstract String apiVersion();
 
+  public abstract String className();
+
   public abstract List<String> imports();
 
   public abstract SampleBodyView body();
@@ -65,6 +67,8 @@ public abstract class SampleView implements ViewModel {
     public abstract Builder apiName(String val);
 
     public abstract Builder apiVersion(String val);
+
+    public abstract Builder className(String val);
 
     public abstract Builder imports(List<String> val);
 

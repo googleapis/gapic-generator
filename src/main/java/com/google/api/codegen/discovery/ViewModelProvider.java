@@ -120,6 +120,9 @@ public class ViewModelProvider implements DiscoveryProvider {
     while (fieldNames.hasNext()) {
       String fieldName = fieldNames.next();
       JsonNode primaryValue = tree.get(fieldName);
+      // Skip null nodes, since it's possible for the overrides tree to contain
+      // nodes that the primary tree does not (for example, the overrides tree
+      // may contain many more methods).
       if (primaryValue == null) {
         continue;
       } else if (primaryValue.isObject()) {

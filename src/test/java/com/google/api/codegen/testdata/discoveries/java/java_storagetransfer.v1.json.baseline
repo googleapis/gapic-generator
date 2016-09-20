@@ -5,59 +5,58 @@
  * 1. If not already done, enable the Google Storage Transfer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/storagetransfer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/storagetransfer/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storagetransfer.v1.Storagetransfer;
+import com.google.api.services.storagetransfer.v1.Storagetransfer.GetGoogleServiceAccount;
 import com.google.api.services.storagetransfer.v1.model.GoogleServiceAccount;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class StoragetransferExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
+  public void run() throws IOException, GeneralSecurityException {
+    Storagetransfer service = createService();
+    GetGoogleServiceAccount request = service.getGoogleServiceAccount();
+    GoogleServiceAccount response = request.execute();
+    System.out.println(response);
+  }
+
+  public Storagetransfer createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
     if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
+    return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
 
-
-    Storagetransfer.V1.GetGoogleServiceAccount request = storagetransferService.v1().getGoogleServiceAccount();
-    GoogleServiceAccount response = request.execute();
-
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -66,62 +65,62 @@ public class StoragetransferExample {
  * 1. If not already done, enable the Google Storage Transfer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/storagetransfer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/storagetransfer/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storagetransfer.v1.Storagetransfer;
+import com.google.api.services.storagetransfer.v1.Storagetransfer.GoogleServiceAccounts.Get;
 import com.google.api.services.storagetransfer.v1.model.GoogleServiceAccount;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class StoragetransferExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
+  public void run() throws IOException, GeneralSecurityException {
     // The ID of the Google Developers Console project that the Google service account is associated with.
     // Required.
-    String projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+    String projectId = ""; // TODO: Update field(s).
 
-    Storagetransfer.GoogleServiceAccounts.Get request = storagetransferService.googleServiceAccounts().get(projectId);
+    Storagetransfer service = createService();
+    Get request = service.googleServiceAccounts().get(projectId);
     GoogleServiceAccount response = request.execute();
+    System.out.println(response);
+  }
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+  public Storagetransfer createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -130,126 +129,61 @@ public class StoragetransferExample {
  * 1. If not already done, enable the Google Storage Transfer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/storagetransfer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/storagetransfer/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storagetransfer.v1.Storagetransfer;
+import com.google.api.services.storagetransfer.v1.Storagetransfer.TransferJobs.Create;
 import com.google.api.services.storagetransfer.v1.model.TransferJob;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class StoragetransferExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Assign values to the desired fields.
+  public void run() throws IOException, GeneralSecurityException {
+    // TODO: Assign desired fields.
     TransferJob requestBody = new TransferJob();
 
-
-    Storagetransfer.TransferJobs.Create request = storagetransferService.transferJobs().create(requestBody);
+    Storagetransfer service = createService();
+    Create request = service.transferJobs().create(requestBody);
     TransferJob response = request.execute();
-
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+    System.out.println(response);
   }
-}
-/**
- * BEFORE RUNNING:
- * ---------------
- * 1. If not already done, enable the Google Storage Transfer API
- *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/storagetransfer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
- *    instructions at https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/storagetransfer/v1/java
- */
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.storagetransfer.v1.Storagetransfer;
-import com.google.api.services.storagetransfer.v1.model.TransferJob;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-public class StoragetransferExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
+  public Storagetransfer createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
     if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
+    return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
 
-    // The job to get. Required.
-    String jobName = "{MY-JOB-NAME}"; // TODO: Update placeholder value(s).
-
-    Storagetransfer.TransferJobs.Get request = storagetransferService.transferJobs().get(jobName);
-    TransferJob response = request.execute();
-
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -258,72 +192,131 @@ public class StoragetransferExample {
  * 1. If not already done, enable the Google Storage Transfer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/storagetransfer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/storagetransfer/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storagetransfer.v1.Storagetransfer;
+import com.google.api.services.storagetransfer.v1.Storagetransfer.TransferJobs.Get;
+import com.google.api.services.storagetransfer.v1.model.TransferJob;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class StoragetransferExample {
+  public void run() throws IOException, GeneralSecurityException {
+    // The job to get. Required.
+    String jobName = ""; // TODO: Update field(s).
+
+    Storagetransfer service = createService();
+    Get request = service.transferJobs().get(jobName);
+    TransferJob response = request.execute();
+    System.out.println(response);
+  }
+
+  public Storagetransfer createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+}
+/**
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Storage Transfer API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/storagetransfer
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/storagetransfer/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.storagetransfer.v1.Storagetransfer;
+import com.google.api.services.storagetransfer.v1.Storagetransfer.TransferJobs.List;
 import com.google.api.services.storagetransfer.v1.model.ListTransferJobsResponse;
 import com.google.api.services.storagetransfer.v1.model.TransferJob;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class StoragetransferExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    Storagetransfer.TransferJobs.List request = storagetransferService.transferJobs().list();
-
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
+  public void run() throws IOException, GeneralSecurityException {
+    Storagetransfer service = createService();
+    List request = service.transferJobs().list();
     ListTransferJobsResponse response;
     do {
       response = request.execute();
-      if (response.getTransferJobs() == null)
+      if (response.getTransferJobs() == null) {
         continue;
-
-      for (TransferJob transferJob : response.getTransferJobs()) {
-        // TODO: Use transferJob
-        System.out.println(gson.toJson(new JsonParser().parse(transferJob.toString())));
       }
-
-      request.setPageToken(response.getNextPageToken());
+      for (TransferJob item : response.getTransferJobs()) {
+        System.out.println(item);
+      }
     } while (response.getNextPageToken() != null);
   }
+
+  public Storagetransfer createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
+  }
 }
 /**
  * BEFORE RUNNING:
@@ -331,66 +324,65 @@ public class StoragetransferExample {
  * 1. If not already done, enable the Google Storage Transfer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/storagetransfer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/storagetransfer/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storagetransfer.v1.Storagetransfer;
+import com.google.api.services.storagetransfer.v1.Storagetransfer.TransferJobs.Patch;
 import com.google.api.services.storagetransfer.v1.model.TransferJob;
 import com.google.api.services.storagetransfer.v1.model.UpdateTransferJobRequest;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class StoragetransferExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-    // The name of job to update. Required.
-    String jobName = "{MY-JOB-NAME}"; // TODO: Update placeholder value(s).
-
-    // TODO: Assign values to the desired fields to be changed.
+  public void run() throws IOException, GeneralSecurityException {
+    // TODO: Assign desired fields.
     UpdateTransferJobRequest requestBody = new UpdateTransferJobRequest();
 
+    // The name of job to update. Required.
+    String jobName = ""; // TODO: Update field(s).
 
-    Storagetransfer.TransferJobs.Patch request = storagetransferService.transferJobs().patch(jobName, requestBody);
+    Storagetransfer service = createService();
+    Patch request = service.transferJobs().patch(jobName, requestBody);
     TransferJob response = request.execute();
+    System.out.println(response);
+  }
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+  public Storagetransfer createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -399,54 +391,59 @@ public class StoragetransferExample {
  * 1. If not already done, enable the Google Storage Transfer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/storagetransfer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/storagetransfer/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storagetransfer.v1.Storagetransfer;
+import com.google.api.services.storagetransfer.v1.Storagetransfer.TransferOperations.Cancel;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class StoragetransferExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
+  public void run() throws IOException, GeneralSecurityException {
     // The name of the operation resource to be cancelled.
-    String name = "{MY-NAME}"; // TODO: Update placeholder value(s).
+    String name = ""; // TODO: Update field(s).
 
-    Storagetransfer.TransferOperations.Cancel request = storagetransferService.transferOperations().cancel(name);
+    Storagetransfer service = createService();
+    Cancel request = service.transferOperations().cancel(name);
     request.execute();
+  }
+
+  public Storagetransfer createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -455,117 +452,59 @@ public class StoragetransferExample {
  * 1. If not already done, enable the Google Storage Transfer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/storagetransfer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/storagetransfer/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storagetransfer.v1.Storagetransfer;
+import com.google.api.services.storagetransfer.v1.Storagetransfer.TransferOperations.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class StoragetransferExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
+  public void run() throws IOException, GeneralSecurityException {
     // The name of the operation resource to be deleted.
-    String name = "{MY-NAME}"; // TODO: Update placeholder value(s).
+    String name = ""; // TODO: Update field(s).
 
-    Storagetransfer.TransferOperations.Delete request = storagetransferService.transferOperations().delete(name);
+    Storagetransfer service = createService();
+    Delete request = service.transferOperations().delete(name);
     request.execute();
   }
-}
-/**
- * BEFORE RUNNING:
- * ---------------
- * 1. If not already done, enable the Google Storage Transfer API
- *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/storagetransfer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
- *    instructions at https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/storagetransfer/v1/java
- */
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.storagetransfer.v1.Storagetransfer;
-import com.google.api.services.storagetransfer.v1.model.Operation;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-public class StoragetransferExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
+  public Storagetransfer createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
     if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
+    return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
 
-    // The name of the operation resource.
-    String name = "{MY-NAME}"; // TODO: Update placeholder value(s).
-
-    Storagetransfer.TransferOperations.Get request = storagetransferService.transferOperations().get(name);
-    Operation response = request.execute();
-
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -574,73 +513,133 @@ public class StoragetransferExample {
  * 1. If not already done, enable the Google Storage Transfer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/storagetransfer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/storagetransfer/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storagetransfer.v1.Storagetransfer;
+import com.google.api.services.storagetransfer.v1.Storagetransfer.TransferOperations.Get;
+import com.google.api.services.storagetransfer.v1.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class StoragetransferExample {
+  public void run() throws IOException, GeneralSecurityException {
+    // The name of the operation resource.
+    String name = ""; // TODO: Update field(s).
+
+    Storagetransfer service = createService();
+    Get request = service.transferOperations().get(name);
+    Operation response = request.execute();
+    System.out.println(response);
+  }
+
+  public Storagetransfer createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+}
+/**
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Storage Transfer API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/storagetransfer
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/storagetransfer/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.storagetransfer.v1.Storagetransfer;
+import com.google.api.services.storagetransfer.v1.Storagetransfer.TransferOperations.List;
 import com.google.api.services.storagetransfer.v1.model.ListOperationsResponse;
 import com.google.api.services.storagetransfer.v1.model.Operation;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class StoragetransferExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
+  public void run() throws IOException, GeneralSecurityException {
     // The value `transferOperations`.
-    String name = "{MY-NAME}"; // TODO: Update placeholder value(s).
+    String name = ""; // TODO: Update field(s).
 
-    Storagetransfer.TransferOperations.List request = storagetransferService.transferOperations().list(name);
-
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
+    Storagetransfer service = createService();
+    List request = service.transferOperations().list(name);
     ListOperationsResponse response;
     do {
       response = request.execute();
-      if (response.getOperations() == null)
+      if (response.getOperations() == null) {
         continue;
-
-      for (Operation operation : response.getOperations()) {
-        // TODO: Use operation
-        System.out.println(gson.toJson(new JsonParser().parse(operation.toString())));
       }
-
-      request.setPageToken(response.getNextPageToken());
+      for (Operation item : response.getOperations()) {
+        System.out.println(item);
+      }
     } while (response.getNextPageToken() != null);
+  }
+
+  public Storagetransfer createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -649,59 +648,63 @@ public class StoragetransferExample {
  * 1. If not already done, enable the Google Storage Transfer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/storagetransfer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/storagetransfer/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storagetransfer.v1.Storagetransfer;
+import com.google.api.services.storagetransfer.v1.Storagetransfer.TransferOperations.Pause;
 import com.google.api.services.storagetransfer.v1.model.PauseTransferOperationRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class StoragetransferExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
+  public void run() throws IOException, GeneralSecurityException {
+    // TODO: Assign desired fields.
+    PauseTransferOperationRequest requestBody = new PauseTransferOperationRequest();
+
+    // The name of the transfer operation. Required.
+    String name = ""; // TODO: Update field(s).
+
+    Storagetransfer service = createService();
+    Pause request = service.transferOperations().pause(name, requestBody);
+    request.execute();
+  }
+
+  public Storagetransfer createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
     if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
+    return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
 
-    // The name of the transfer operation. Required.
-    String name = "{MY-NAME}"; // TODO: Update placeholder value(s).
-
-    // TODO: Assign values to the desired fields.
-    PauseTransferOperationRequest requestBody = new PauseTransferOperationRequest();
-
-
-    Storagetransfer.TransferOperations.Pause request = storagetransferService.transferOperations().pause(name, requestBody);
-    request.execute();
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -710,58 +713,62 @@ public class StoragetransferExample {
  * 1. If not already done, enable the Google Storage Transfer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/storagetransfer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/storagetransfer/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storagetransfer.v1.Storagetransfer;
+import com.google.api.services.storagetransfer.v1.Storagetransfer.TransferOperations.Resume;
 import com.google.api.services.storagetransfer.v1.model.ResumeTransferOperationRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class StoragetransferExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
+  public void run() throws IOException, GeneralSecurityException {
+    // TODO: Assign desired fields.
+    ResumeTransferOperationRequest requestBody = new ResumeTransferOperationRequest();
+
+    // The name of the transfer operation. Required.
+    String name = ""; // TODO: Update field(s).
+
+    Storagetransfer service = createService();
+    Resume request = service.transferOperations().resume(name, requestBody);
+    request.execute();
+  }
+
+  public Storagetransfer createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
     if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
+    return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
 
-    // The name of the transfer operation. Required.
-    String name = "{MY-NAME}"; // TODO: Update placeholder value(s).
-
-    // TODO: Assign values to the desired fields.
-    ResumeTransferOperationRequest requestBody = new ResumeTransferOperationRequest();
-
-
-    Storagetransfer.TransferOperations.Resume request = storagetransferService.transferOperations().resume(name, requestBody);
-    request.execute();
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new Main().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }

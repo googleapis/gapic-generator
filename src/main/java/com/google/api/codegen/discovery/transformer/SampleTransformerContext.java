@@ -21,15 +21,18 @@ import com.google.auto.value.AutoValue;
 public abstract class SampleTransformerContext {
 
   public static SampleTransformerContext create(
-      SampleConfig sampleConfig, SampleTypeTable typeTable, SampleNamer namer, String methodName) {
-    return new AutoValue_SampleTransformerContext(sampleConfig, typeTable, namer, methodName);
+      SampleConfig sampleConfig,
+      SampleTypeTable typeTable,
+      SampleNamer sampleNamer,
+      String methodName) {
+    return new AutoValue_SampleTransformerContext(sampleConfig, typeTable, sampleNamer, methodName);
   }
 
   public abstract SampleConfig getSampleConfig();
 
   public abstract SampleTypeTable getTypeTable();
 
-  public abstract SampleNamer getNamer();
+  public abstract SampleNamer getSampleNamer();
 
   public abstract String getMethodName();
 }

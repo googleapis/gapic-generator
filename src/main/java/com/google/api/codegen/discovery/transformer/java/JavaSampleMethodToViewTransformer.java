@@ -70,6 +70,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
         .apiTitle(sampleConfig.apiTitle())
         .apiName(sampleConfig.apiName())
         .apiVersion(sampleConfig.apiVersion())
+        .className(context.getSampleNamer().getSampleClassName(sampleConfig.apiTypeName()))
         .body(body)
         .imports(imports)
         .build();
@@ -78,7 +79,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
   public SampleBodyView createSampleBody(SampleTransformerContext context) {
     SampleConfig sampleConfig = context.getSampleConfig();
     MethodInfo methodInfo = sampleConfig.methods().get(context.getMethodName());
-    SampleNamer sampleNamer = context.getNamer();
+    SampleNamer sampleNamer = context.getSampleNamer();
     SampleTypeTable sampleTypeTable = context.getTypeTable();
     SymbolTable symbolTable = new SymbolTable();
 

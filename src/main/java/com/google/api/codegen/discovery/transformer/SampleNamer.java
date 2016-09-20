@@ -28,6 +28,13 @@ public class SampleNamer extends NameFormatterDelegator {
   }
 
   /**
+   * Returns the class name of the sample.
+   */
+  public String getSampleClassName(String apiTypeName) {
+    return className(Name.upperCamel(apiTypeName, "Example"));
+  }
+
+  /**
    * Returns the variable name of the service.
    */
   public String getServiceVarName() {
