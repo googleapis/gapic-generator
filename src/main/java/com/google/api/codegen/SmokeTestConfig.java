@@ -19,19 +19,15 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
-import java.util.ArrayList;
 import java.util.List;
 
 /** SmokeTestConfig represents the smoke test configuration for a method. */
 public class SmokeTestConfig {
   private final Method method;
-  private final List<String> initFieldNames;
   private final List<String> initFieldConfigStrings;
 
-  private SmokeTestConfig(
-      Method method, List<String> initFieldConfigStrings, List<String> initFieldNames) {
+  private SmokeTestConfig(Method method, List<String> initFieldConfigStrings) {
     this.method = method;
-    this.initFieldNames = initFieldNames;
     this.initFieldConfigStrings = initFieldConfigStrings;
   }
 
@@ -44,15 +40,8 @@ public class SmokeTestConfig {
         break;
       }
     }
-
     if (testedMethod != null) {
-      List<String> initFieldSpecs = smokeTestConfigProto.getInitFieldsList();
-      ArrayList<String> initFieldNames = new ArrayList<>();
-      for (String fieldSpec : initFieldSpecs) {
-        String[] fieldSpecParts = fieldSpec.split("[<=>]");
-        initFieldNames.add(fieldSpecParts[0]);
-      }
-      return new SmokeTestConfig(testedMethod, initFieldSpecs, initFieldNames);
+      return new SmokeTestConfig(testedMethod, smokeTestConfigProto.getInitFieldsList());
     } else {
       diagCollector.addDiag(
           Diag.error(SimpleLocation.TOPLEVEL, "The configured smoke test method does not exist."));

@@ -17,11 +17,9 @@ package com.google.api.codegen.metacode;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.annotation.Nullable;
 
 /*
@@ -80,20 +78,6 @@ public class FieldStructureParser {
 
   public static InitCodeNode parse(
       String initFieldConfigString, Map<String, InitValueConfig> initValueConfigMap) {
-    InitFieldConfig fieldConfig = parseInitFieldConfig(initFieldConfigString);
-    InitValueConfig valueConfig = null;
-
-    if (fieldConfig.hasInitValue()) {
-      valueConfig = createInitValueConfig(fieldConfig, initValueConfigMap);
-    } else if (initValueConfigMap.containsKey(fieldConfig.fieldPath())) {
-      valueConfig = initValueConfigMap.get(fieldConfig.fieldPath());
-    }
-
-    return parsePartialDottedPathToInitCodeNode(
-        fieldConfig.fieldPath(), InitCodeLineType.Unknown, valueConfig, null);
-  }
-
-  private static InitFieldConfig parseInitFieldConfig(String initFieldConfigString) {
     String fieldName = null;
     String entityName = null;
     String value = null;
@@ -112,8 +96,19 @@ public class FieldStructureParser {
     } else if (fieldSpecs.length > 2) {
       throw new IllegalArgumentException("Inconsistent: found multiple '%' characters");
     }
-    return new AutoValue_FieldStructureParser_InitFieldConfig(
-        initFieldConfigString, fieldName, entityName, value);
+    InitFieldConfig fieldConfig =
+        new AutoValue_FieldStructureParser_InitFieldConfig(
+            initFieldConfigString, fieldName, entityName, value);
+
+    InitValueConfig valueConfig = null;
+    if (fieldConfig.hasInitValue()) {
+      valueConfig = createInitValueConfig(fieldConfig, initValueConfigMap);
+    } else if (initValueConfigMap.containsKey(fieldConfig.fieldPath())) {
+      valueConfig = initValueConfigMap.get(fieldConfig.fieldPath());
+    }
+
+    return parsePartialDottedPathToInitCodeNode(
+        fieldConfig.fieldPath(), InitCodeLineType.Unknown, valueConfig, null);
   }
 
   private static InitValueConfig createInitValueConfig(

@@ -189,7 +189,7 @@ public class InitCodeNode {
     HashMap<String, String> collectionValues = new HashMap<>();
     if (oldConfig.hasSimpleInitialValue()
         && newConfig.hasSimpleInitialValue()
-        && oldConfig.getInitialValue().equals(newConfig.getInitialValue())) {
+        && !oldConfig.getInitialValue().equals(newConfig.getInitialValue())) {
       throw new IllegalArgumentException("Inconsistent init values");
     }
     if (oldConfig.hasFormattingConfigInitialValues()) {

@@ -26,16 +26,18 @@ import com.google.api.tools.framework.setup.StandardSetup;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.truth.Truth;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 public class SampleInitCodeTest {
 
@@ -171,6 +173,39 @@ public class SampleInitCodeTest {
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec, initValueMap);
     Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
+  }
+
+  @Test
+  public void testFormattedFieldWithValues() throws Exception {
+    List<String> fieldSpecs =
+        Arrays.asList("formatted_field%entity1=test1", "formatted_field%entity2=test2");
+
+    HashMap<String, InitValueConfig> initValueMap = new HashMap<>();
+    InitValueConfig initValueConfig = InitValueConfig.create("test-api", null);
+    initValueMap.put("formatted_field", initValueConfig);
+
+    HashMap<String, String> expectedCollectionValues = new HashMap<>();
+    expectedCollectionValues.put("entity1", "test1");
+    expectedCollectionValues.put("entity2", "test2");
+
+    InitCodeNode actualStructure =
+        InitCodeNode.createTree(
+            getContextBuilder()
+                .initFieldConfigStrings(fieldSpecs)
+                .initValueConfigMap(initValueMap)
+                .build());
+    Truth.assertThat(actualStructure.getChildren().isEmpty()).isFalse();
+    InitCodeNode actualFormattedFieldNode = actualStructure.getChildren().get("formatted_field");
+    Truth.assertThat(actualFormattedFieldNode.getInitValueConfig()).isNotNull();
+    Truth.assertThat(
+            actualFormattedFieldNode.getInitValueConfig().hasFormattingConfigInitialValues())
+        .isTrue();
+    Truth.assertThat(
+            actualFormattedFieldNode
+                .getInitValueConfig()
+                .getCollectionValues()
+                .equals(expectedCollectionValues))
+        .isTrue();
   }
 
   @Test
@@ -333,7 +368,7 @@ public class SampleInitCodeTest {
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
     }
-    Truth.assertThat(actualKeyList.equals(expectedKeyList));
+    Truth.assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
   }
 
   @Test
