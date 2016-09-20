@@ -90,6 +90,12 @@ public class GoTypeTable implements TypeTable {
         target.add(String.format("%s \"%s\"", packageRename, importPath));
       }
     }
+    if (standard.isEmpty()) {
+      return thirdParty;
+    }
+    if (thirdParty.isEmpty()) {
+      return standard;
+    }
     standard.add("");
     standard.addAll(thirdParty);
     return standard;

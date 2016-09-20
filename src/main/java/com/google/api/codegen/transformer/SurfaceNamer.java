@@ -91,6 +91,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
+   * Constructor name for the type with the given nickname.
+   */
+  public String getTypeConstructor(String typeNickname) {
+    return typeNickname;
+  }
+
+  /**
    * The name of a variable that holds an instance of the class that implements
    * a particular proto interface.
    */

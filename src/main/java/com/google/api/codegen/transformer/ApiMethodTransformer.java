@@ -166,8 +166,12 @@ public class ApiMethodTransformer {
   private void setCommonFields(
       MethodTransformerContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
     SurfaceNamer namer = context.getNamer();
-    methodViewBuilder.apiRequestTypeName(
-        context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getInputType()));
+
+    String requestTypeName =
+        context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getInputType());
+    methodViewBuilder.apiRequestTypeName(requestTypeName);
+    methodViewBuilder.apiRequestTypeConstructor(namer.getTypeConstructor(requestTypeName));
+
     methodViewBuilder.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
     methodViewBuilder.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
     methodViewBuilder.settingsGetterName(namer.getCallSettingsFunctionName(context.getMethod()));

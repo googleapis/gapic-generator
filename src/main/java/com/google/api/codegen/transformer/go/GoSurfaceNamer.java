@@ -182,6 +182,14 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getTypeConstructor(String typeNickname) {
+    if (!typeNickname.startsWith("*")) {
+      return typeNickname;
+    }
+    return "&" + typeNickname.substring(1);
+  }
+
+  @Override
   public String getGrpcContainerTypeName(Interface service) {
     return "";
   }

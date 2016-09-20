@@ -76,7 +76,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(XAPI_TEMPLATE_FILENAME, DOC_TEMPLATE_FILENAME);
+    return Arrays.asList(XAPI_TEMPLATE_FILENAME, DOC_TEMPLATE_FILENAME, SAMPLE_TEMPLATE_FILENAME);
   }
 
   @Override
@@ -87,13 +87,17 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(service, apiConfig, createTypeTable(), namer);
-      models.add(generate(context));
+      models.add(generate(context, Constant.XAPI));
+
+      context = SurfaceTransformerContext.create(service, apiConfig, createTypeTable(), namer);
+      models.add(generate(context, Constant.SAMPLE));
     }
     models.add(generatePackageInfo(model, apiConfig, namer));
     return models;
   }
 
-  private StaticLangXCombinedSurfaceView generate(SurfaceTransformerContext context) {
+  private StaticLangXCombinedSurfaceView generate(
+      SurfaceTransformerContext context, Constant constant) {
     StaticLangXCombinedSurfaceView.Builder view = StaticLangXCombinedSurfaceView.newBuilder();
 
     SurfaceNamer namer = context.getNamer();
@@ -101,7 +105,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     Interface service = context.getInterface();
     ApiConfig apiConfig = context.getApiConfig();
 
-    view.templateFileName(XAPI_TEMPLATE_FILENAME);
+    view.templateFileName(constant.template);
     view.serviceDoc(doc(service));
     view.localPackageName(namer.getLocalPackageName());
     view.clientName(namer.getApiWrapperClassName(service));
@@ -115,17 +119,18 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.grpcClientConstructorName(namer.getGrpcClientConstructorName(service));
 
     String outputPath = pathMapper.getOutputPath(service, apiConfig);
-    String fileName = GoSurfaceNamer.getReducedServiceName(service) + "_client.go";
+    String fileName = GoSurfaceNamer.getReducedServiceName(service) + constant.fileNameSuffix;
     view.outputPath(outputPath + File.separator + fileName);
 
-    List<RetryConfigDefinitionView> retryDef = generateRetryConfigDefinitions(namer, context);
+    List<RetryConfigDefinitionView> retryDef =
+        generateRetryConfigDefinitions(namer, context, constant);
     boolean hasRetry = !retryDef.isEmpty();
     view.retryPairDefinitions(retryDef);
 
     view.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
     view.pathTemplateGetters(pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
     view.callSettings(apiCallableTransformer.generateCallSettings(context));
-    view.apiMethods(generateApiMethods(context));
+    view.apiMethods(generateApiMethods(context, constant));
     view.pageStreamingDescriptorClasses(
         pageStreamingTransformer.generateDescriptorClasses(context));
 
@@ -134,7 +139,11 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.servicePort(serviceConfig.getServicePort());
     view.authScopes(serviceConfig.getAuthScopes(service));
 
-    addXApiImports(context, hasRetry);
+    addImports(context, constant);
+    if (constant.importPackageName) {
+      context.getTypeTable().saveNicknameFor(apiConfig.getPackageName() + ";;;");
+    }
+
     view.imports(GoTypeTable.formatImports(context.getTypeTable().getImports()));
 
     return view.build();
@@ -173,7 +182,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     return new GoContextCommon().getCommentLines(DocumentationUtil.getScopedDescription(element));
   }
 
-  private List<StaticLangApiMethodView> generateApiMethods(SurfaceTransformerContext context) {
+  private List<StaticLangApiMethodView> generateApiMethods(
+      SurfaceTransformerContext context, Constant constant) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
 
     for (Method method : context.getNonStreamingMethods()) {
@@ -182,7 +192,9 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
       if (methodConfig.isPageStreaming()) {
         apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext));
-        context.getTypeTable().saveNicknameFor("math;;;");
+        for (String imp : constant.pageStreamImports) {
+          context.getTypeTable().saveNicknameFor(imp);
+        }
       } else {
         apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(methodContext));
       }
@@ -192,7 +204,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private List<RetryConfigDefinitionView> generateRetryConfigDefinitions(
-      SurfaceNamer namer, SurfaceTransformerContext context) {
+      SurfaceNamer namer, SurfaceTransformerContext context, Constant constant) {
     Set<RetryConfigDefinitionView.Name> retryNames = new HashSet<>();
     for (Method method : context.getNonStreamingMethods()) {
       MethodConfig conf = context.getMethodConfig(method);
@@ -223,6 +235,11 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
               .params(retryParamsDef.get(name.params()))
               .build());
     }
+    if (!retryDef.isEmpty()) {
+      for (String imp : constant.retryImports) {
+        context.getTypeTable().saveNicknameFor(imp);
+      }
+    }
     return new ArrayList<>(retryDef.values());
   }
 
@@ -239,21 +256,58 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private static final String EMPTY_PROTO_PKG = "github.com/golang/protobuf/ptypes/empty";
 
-  private void addXApiImports(SurfaceTransformerContext context, boolean hasRetry) {
+  private void addImports(SurfaceTransformerContext context, Constant constant) {
     ModelTypeTable typeTable = context.getTypeTable();
-    typeTable.saveNicknameFor("fmt;;;");
-    typeTable.saveNicknameFor("runtime;;;");
-    typeTable.saveNicknameFor("golang.org/x/net/context;;;");
-    typeTable.saveNicknameFor("google.golang.org/grpc;;;");
-    typeTable.saveNicknameFor("google.golang.org/grpc/metadata;;;");
-    typeTable.saveNicknameFor("github.com/googleapis/gax-go;gax;;");
-    typeTable.saveNicknameFor("google.golang.org/api/option;;;");
-    typeTable.saveNicknameFor("google.golang.org/api/transport;;;");
-
-    if (hasRetry) {
-      typeTable.saveNicknameFor("time;;;");
-      typeTable.saveNicknameFor("google.golang.org/grpc/codes;;;");
+    for (String imp : constant.unconditionalImports) {
+      typeTable.saveNicknameFor(imp);
     }
     typeTable.getImports().remove(EMPTY_PROTO_PKG);
+  }
+
+  private enum Constant {
+    XAPI(
+        XAPI_TEMPLATE_FILENAME,
+        "_client.go",
+        ImmutableList.<String>of(
+            "fmt;;;",
+            "runtime;;;",
+            "golang.org/x/net/context;;;",
+            "google.golang.org/grpc;;;",
+            "google.golang.org/grpc/metadata;;;",
+            "github.com/googleapis/gax-go;gax;;",
+            "google.golang.org/api/option;;;",
+            "google.golang.org/api/transport;;;"),
+        ImmutableList.<String>of("time;;;", "google.golang.org/grpc/codes;;;"),
+        ImmutableList.<String>of("math;;;"),
+        false),
+    SAMPLE(
+        SAMPLE_TEMPLATE_FILENAME,
+        "_client_example_test.go",
+        ImmutableList.<String>of("golang.org/x/net/context;;;"),
+        ImmutableList.<String>of(),
+        ImmutableList.<String>of(),
+        true);
+
+    private final String template;
+    private final String fileNameSuffix;
+    private final ImmutableList<String> unconditionalImports;
+    private final ImmutableList<String> retryImports;
+    private final ImmutableList<String> pageStreamImports;
+    private final boolean importPackageName;
+
+    Constant(
+        String template,
+        String fileNameSuffix,
+        ImmutableList<String> unconditionalImports,
+        ImmutableList<String> retryImports,
+        ImmutableList<String> pageStreamImports,
+        boolean importPackageName) {
+      this.template = template;
+      this.fileNameSuffix = fileNameSuffix;
+      this.unconditionalImports = unconditionalImports;
+      this.retryImports = retryImports;
+      this.pageStreamImports = pageStreamImports;
+      this.importPackageName = importPackageName;
+    }
   }
 }

@@ -39,6 +39,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract String apiRequestTypeName();
 
+  public abstract String apiRequestTypeConstructor();
+
   public abstract String responseTypeName();
 
   public abstract String name();
@@ -84,6 +86,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
     public abstract Builder doc(ApiMethodDocView doc);
 
     public abstract Builder apiRequestTypeName(String requestTypeName);
+
+    public abstract Builder apiRequestTypeConstructor(String requestTypeConstructor);
 
     public abstract Builder responseTypeName(String responseTypeName);
 
