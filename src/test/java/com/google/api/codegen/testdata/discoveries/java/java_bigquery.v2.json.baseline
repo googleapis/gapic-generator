@@ -23,14 +23,14 @@ import java.util.Arrays;
 
 public class BigqueryExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Dataset ID of dataset being deleted
-    String datasetId = ""; // TODO: Update field(s).
-
     // Project ID of the dataset being deleted
     String projectId = ""; // TODO: Update field(s).
 
+    // Dataset ID of dataset being deleted
+    String datasetId = ""; // TODO: Update field(s).
+
     Bigquery service = createService();
-    Delete request = service.datasets().delete(datasetId, projectId);
+    Delete request = service.datasets().delete(projectId, datasetId);
     request.execute();
   }
 
@@ -88,14 +88,14 @@ import java.util.Arrays;
 
 public class BigqueryExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Dataset ID of the requested dataset
-    String datasetId = ""; // TODO: Update field(s).
-
     // Project ID of the requested dataset
     String projectId = ""; // TODO: Update field(s).
 
+    // Dataset ID of the requested dataset
+    String datasetId = ""; // TODO: Update field(s).
+
     Bigquery service = createService();
-    Get request = service.datasets().get(datasetId, projectId);
+    Get request = service.datasets().get(projectId, datasetId);
     Dataset response = request.execute();
     System.out.println(response);
   }
@@ -295,14 +295,14 @@ public class BigqueryExample {
     // TODO: Assign desired fields.
     Dataset requestBody = new Dataset();
 
-    // Dataset ID of the dataset being updated
-    String datasetId = ""; // TODO: Update field(s).
-
     // Project ID of the dataset being updated
     String projectId = ""; // TODO: Update field(s).
 
+    // Dataset ID of the dataset being updated
+    String datasetId = ""; // TODO: Update field(s).
+
     Bigquery service = createService();
-    Patch request = service.datasets().patch(datasetId, projectId, requestBody);
+    Patch request = service.datasets().patch(projectId, datasetId, requestBody);
     Dataset response = request.execute();
     System.out.println(response);
   }
@@ -364,14 +364,14 @@ public class BigqueryExample {
     // TODO: Assign desired fields.
     Dataset requestBody = new Dataset();
 
-    // Dataset ID of the dataset being updated
-    String datasetId = ""; // TODO: Update field(s).
-
     // Project ID of the dataset being updated
     String projectId = ""; // TODO: Update field(s).
 
+    // Dataset ID of the dataset being updated
+    String datasetId = ""; // TODO: Update field(s).
+
     Bigquery service = createService();
-    Update request = service.datasets().update(datasetId, projectId, requestBody);
+    Update request = service.datasets().update(projectId, datasetId, requestBody);
     Dataset response = request.execute();
     System.out.println(response);
   }
@@ -430,14 +430,14 @@ import java.util.Arrays;
 
 public class BigqueryExample {
   public void run() throws IOException, GeneralSecurityException {
-    // [Required] Job ID of the job to cancel
-    String jobId = ""; // TODO: Update field(s).
-
     // [Required] Project ID of the job to cancel
     String projectId = ""; // TODO: Update field(s).
 
+    // [Required] Job ID of the job to cancel
+    String jobId = ""; // TODO: Update field(s).
+
     Bigquery service = createService();
-    Cancel request = service.jobs().cancel(jobId, projectId);
+    Cancel request = service.jobs().cancel(projectId, jobId);
     JobCancelResponse response = request.execute();
     System.out.println(response);
   }
@@ -496,14 +496,14 @@ import java.util.Arrays;
 
 public class BigqueryExample {
   public void run() throws IOException, GeneralSecurityException {
-    // [Required] Job ID of the requested job
-    String jobId = ""; // TODO: Update field(s).
-
     // [Required] Project ID of the requested job
     String projectId = ""; // TODO: Update field(s).
 
+    // [Required] Job ID of the requested job
+    String jobId = ""; // TODO: Update field(s).
+
     Bigquery service = createService();
-    Get request = service.jobs().get(jobId, projectId);
+    Get request = service.jobs().get(projectId, jobId);
     Job response = request.execute();
     System.out.println(response);
   }
@@ -562,14 +562,14 @@ import java.util.Arrays;
 
 public class BigqueryExample {
   public void run() throws IOException, GeneralSecurityException {
-    // [Required] Job ID of the query job
-    String jobId = ""; // TODO: Update field(s).
-
     // [Required] Project ID of the query job
     String projectId = ""; // TODO: Update field(s).
 
+    // [Required] Job ID of the query job
+    String jobId = ""; // TODO: Update field(s).
+
     Bigquery service = createService();
-    GetQueryResults request = service.jobs().getQueryResults(jobId, projectId);
+    GetQueryResults request = service.jobs().getQueryResults(projectId, jobId);
     GetQueryResultsResponse response = request.execute();
     System.out.println(response);
   }
@@ -906,17 +906,17 @@ public class BigqueryExample {
     // TODO: Assign desired fields.
     TableDataInsertAllRequest requestBody = new TableDataInsertAllRequest();
 
+    // Project ID of the destination table.
+    String projectId = ""; // TODO: Update field(s).
+
     // Dataset ID of the destination table.
     String datasetId = ""; // TODO: Update field(s).
 
     // Table ID of the destination table.
     String tableId = ""; // TODO: Update field(s).
 
-    // Project ID of the destination table.
-    String projectId = ""; // TODO: Update field(s).
-
     Bigquery service = createService();
-    InsertAll request = service.tabledata().insertAll(datasetId, tableId, projectId, requestBody);
+    InsertAll request = service.tabledata().insertAll(projectId, datasetId, tableId, requestBody);
     TableDataInsertAllResponse response = request.execute();
     System.out.println(response);
   }
@@ -975,17 +975,17 @@ import java.util.Arrays;
 
 public class BigqueryExample {
   public void run() throws IOException, GeneralSecurityException {
+    // Project ID of the table to read
+    String projectId = ""; // TODO: Update field(s).
+
     // Dataset ID of the table to read
     String datasetId = ""; // TODO: Update field(s).
 
     // Table ID of the table to read
     String tableId = ""; // TODO: Update field(s).
 
-    // Project ID of the table to read
-    String projectId = ""; // TODO: Update field(s).
-
     Bigquery service = createService();
-    List request = service.tabledata().list(datasetId, tableId, projectId);
+    List request = service.tabledata().list(projectId, datasetId, tableId);
     TableDataList response = request.execute();
     System.out.println(response);
   }
@@ -1043,17 +1043,17 @@ import java.util.Arrays;
 
 public class BigqueryExample {
   public void run() throws IOException, GeneralSecurityException {
+    // Project ID of the table to delete
+    String projectId = ""; // TODO: Update field(s).
+
     // Dataset ID of the table to delete
     String datasetId = ""; // TODO: Update field(s).
 
     // Table ID of the table to delete
     String tableId = ""; // TODO: Update field(s).
 
-    // Project ID of the table to delete
-    String projectId = ""; // TODO: Update field(s).
-
     Bigquery service = createService();
-    Delete request = service.tables().delete(datasetId, tableId, projectId);
+    Delete request = service.tables().delete(projectId, datasetId, tableId);
     request.execute();
   }
 
@@ -1111,17 +1111,17 @@ import java.util.Arrays;
 
 public class BigqueryExample {
   public void run() throws IOException, GeneralSecurityException {
+    // Project ID of the requested table
+    String projectId = ""; // TODO: Update field(s).
+
     // Dataset ID of the requested table
     String datasetId = ""; // TODO: Update field(s).
 
     // Table ID of the requested table
     String tableId = ""; // TODO: Update field(s).
 
-    // Project ID of the requested table
-    String projectId = ""; // TODO: Update field(s).
-
     Bigquery service = createService();
-    Get request = service.tables().get(datasetId, tableId, projectId);
+    Get request = service.tables().get(projectId, datasetId, tableId);
     Table response = request.execute();
     System.out.println(response);
   }
@@ -1183,14 +1183,14 @@ public class BigqueryExample {
     // TODO: Assign desired fields.
     Table requestBody = new Table();
 
-    // Dataset ID of the new table
-    String datasetId = ""; // TODO: Update field(s).
-
     // Project ID of the new table
     String projectId = ""; // TODO: Update field(s).
 
+    // Dataset ID of the new table
+    String datasetId = ""; // TODO: Update field(s).
+
     Bigquery service = createService();
-    Insert request = service.tables().insert(datasetId, projectId, requestBody);
+    Insert request = service.tables().insert(projectId, datasetId, requestBody);
     Table response = request.execute();
     System.out.println(response);
   }
@@ -1250,14 +1250,14 @@ import java.util.Arrays;
 
 public class BigqueryExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Dataset ID of the tables to list
-    String datasetId = ""; // TODO: Update field(s).
-
     // Project ID of the tables to list
     String projectId = ""; // TODO: Update field(s).
 
+    // Dataset ID of the tables to list
+    String datasetId = ""; // TODO: Update field(s).
+
     Bigquery service = createService();
-    List request = service.tables().list(datasetId, projectId);
+    List request = service.tables().list(projectId, datasetId);
     TableList response;
     do {
       response = request.execute();
@@ -1327,17 +1327,17 @@ public class BigqueryExample {
     // TODO: Assign desired fields.
     Table requestBody = new Table();
 
+    // Project ID of the table to update
+    String projectId = ""; // TODO: Update field(s).
+
     // Dataset ID of the table to update
     String datasetId = ""; // TODO: Update field(s).
 
     // Table ID of the table to update
     String tableId = ""; // TODO: Update field(s).
 
-    // Project ID of the table to update
-    String projectId = ""; // TODO: Update field(s).
-
     Bigquery service = createService();
-    Patch request = service.tables().patch(datasetId, tableId, projectId, requestBody);
+    Patch request = service.tables().patch(projectId, datasetId, tableId, requestBody);
     Table response = request.execute();
     System.out.println(response);
   }
@@ -1399,17 +1399,17 @@ public class BigqueryExample {
     // TODO: Assign desired fields.
     Table requestBody = new Table();
 
+    // Project ID of the table to update
+    String projectId = ""; // TODO: Update field(s).
+
     // Dataset ID of the table to update
     String datasetId = ""; // TODO: Update field(s).
 
     // Table ID of the table to update
     String tableId = ""; // TODO: Update field(s).
 
-    // Project ID of the table to update
-    String projectId = ""; // TODO: Update field(s).
-
     Bigquery service = createService();
-    Update request = service.tables().update(datasetId, tableId, projectId, requestBody);
+    Update request = service.tables().update(projectId, datasetId, tableId, requestBody);
     Table response = request.execute();
     System.out.println(response);
   }

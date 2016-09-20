@@ -24,17 +24,17 @@ import java.util.Arrays;
 
 public class SqladminExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Cloud SQL instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
+
+    // Cloud SQL instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
 
     // The ID of the Backup Run to delete. To find a Backup Run ID, use the list method.
     long id = 0L; // TODO: Update field(s).
 
     Sqladmin service = createService();
-    Delete request = service.backupRuns().delete(instance, project, id);
+    Delete request = service.backupRuns().delete(project, instance, id);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -93,17 +93,17 @@ import java.util.Arrays;
 
 public class SqladminExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Cloud SQL instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
+
+    // Cloud SQL instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
 
     // The ID of this Backup Run.
     long id = 0L; // TODO: Update field(s).
 
     Sqladmin service = createService();
-    Get request = service.backupRuns().get(instance, project, id);
+    Get request = service.backupRuns().get(project, instance, id);
     BackupRun response = request.execute();
     System.out.println(response);
   }
@@ -163,14 +163,14 @@ import java.util.Arrays;
 
 public class SqladminExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Cloud SQL instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
 
+    // Cloud SQL instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    List request = service.backupRuns().list(instance, project);
+    List request = service.backupRuns().list(project, instance);
     BackupRunsListResponse response;
     do {
       response = request.execute();
@@ -237,17 +237,17 @@ import java.util.Arrays;
 
 public class SqladminExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Name of the database to be deleted in the instance.
-    String database = ""; // TODO: Update field(s).
+    // Project ID of the project that contains the instance.
+    String project = ""; // TODO: Update field(s).
 
     // Database instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    // Project ID of the project that contains the instance.
-    String project = ""; // TODO: Update field(s).
+    // Name of the database to be deleted in the instance.
+    String database = ""; // TODO: Update field(s).
 
     Sqladmin service = createService();
-    Delete request = service.databases().delete(database, instance, project);
+    Delete request = service.databases().delete(project, instance, database);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -306,17 +306,17 @@ import java.util.Arrays;
 
 public class SqladminExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Name of the database in the instance.
-    String database = ""; // TODO: Update field(s).
+    // Project ID of the project that contains the instance.
+    String project = ""; // TODO: Update field(s).
 
     // Database instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    // Project ID of the project that contains the instance.
-    String project = ""; // TODO: Update field(s).
+    // Name of the database in the instance.
+    String database = ""; // TODO: Update field(s).
 
     Sqladmin service = createService();
-    Get request = service.databases().get(database, instance, project);
+    Get request = service.databases().get(project, instance, database);
     Database response = request.execute();
     System.out.println(response);
   }
@@ -379,14 +379,14 @@ public class SqladminExample {
     // TODO: Assign desired fields.
     Database requestBody = new Database();
 
-    // Database instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
 
+    // Database instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    Insert request = service.databases().insert(instance, project, requestBody);
+    Insert request = service.databases().insert(project, instance, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -445,14 +445,14 @@ import java.util.Arrays;
 
 public class SqladminExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Cloud SQL instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the project for which to list Cloud SQL instances.
     String project = ""; // TODO: Update field(s).
 
+    // Cloud SQL instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    List request = service.databases().list(instance, project);
+    List request = service.databases().list(project, instance);
     DatabasesListResponse response = request.execute();
     System.out.println(response);
   }
@@ -515,17 +515,17 @@ public class SqladminExample {
     // TODO: Assign desired fields.
     Database requestBody = new Database();
 
-    // Name of the database to be updated in the instance.
-    String database = ""; // TODO: Update field(s).
+    // Project ID of the project that contains the instance.
+    String project = ""; // TODO: Update field(s).
 
     // Database instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    // Project ID of the project that contains the instance.
-    String project = ""; // TODO: Update field(s).
+    // Name of the database to be updated in the instance.
+    String database = ""; // TODO: Update field(s).
 
     Sqladmin service = createService();
-    Patch request = service.databases().patch(database, instance, project, requestBody);
+    Patch request = service.databases().patch(project, instance, database, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -588,17 +588,17 @@ public class SqladminExample {
     // TODO: Assign desired fields.
     Database requestBody = new Database();
 
-    // Name of the database to be updated in the instance.
-    String database = ""; // TODO: Update field(s).
+    // Project ID of the project that contains the instance.
+    String project = ""; // TODO: Update field(s).
 
     // Database instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    // Project ID of the project that contains the instance.
-    String project = ""; // TODO: Update field(s).
+    // Name of the database to be updated in the instance.
+    String database = ""; // TODO: Update field(s).
 
     Sqladmin service = createService();
-    Update request = service.databases().update(database, instance, project, requestBody);
+    Update request = service.databases().update(project, instance, database, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -721,14 +721,14 @@ public class SqladminExample {
     // TODO: Assign desired fields.
     InstancesCloneRequest requestBody = new InstancesCloneRequest();
 
-    // The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the source as well as the clone Cloud SQL instance.
     String project = ""; // TODO: Update field(s).
 
+    // The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    Clone request = service.instances().clone(instance, project, requestBody);
+    Clone request = service.instances().clone(project, instance, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -787,14 +787,14 @@ import java.util.Arrays;
 
 public class SqladminExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Cloud SQL instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the project that contains the instance to be deleted.
     String project = ""; // TODO: Update field(s).
 
+    // Cloud SQL instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    Delete request = service.instances().delete(instance, project);
+    Delete request = service.instances().delete(project, instance);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -857,14 +857,14 @@ public class SqladminExample {
     // TODO: Assign desired fields.
     InstancesExportRequest requestBody = new InstancesExportRequest();
 
-    // Cloud SQL instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the project that contains the instance to be exported.
     String project = ""; // TODO: Update field(s).
 
+    // Cloud SQL instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    Export request = service.instances().export(instance, project, requestBody);
+    Export request = service.instances().export(project, instance, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -927,14 +927,14 @@ public class SqladminExample {
     // TODO: Assign desired fields.
     InstancesFailoverRequest requestBody = new InstancesFailoverRequest();
 
-    // Cloud SQL instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // ID of the project that contains the read replica.
     String project = ""; // TODO: Update field(s).
 
+    // Cloud SQL instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    Failover request = service.instances().failover(instance, project, requestBody);
+    Failover request = service.instances().failover(project, instance, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -993,14 +993,14 @@ import java.util.Arrays;
 
 public class SqladminExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Database instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
 
+    // Database instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    Get request = service.instances().get(instance, project);
+    Get request = service.instances().get(project, instance);
     DatabaseInstance response = request.execute();
     System.out.println(response);
   }
@@ -1063,14 +1063,14 @@ public class SqladminExample {
     // TODO: Assign desired fields.
     InstancesImportRequest requestBody = new InstancesImportRequest();
 
-    // Cloud SQL instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
 
+    // Cloud SQL instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    Import request = service.instances().import(instance, project, requestBody);
+    Import request = service.instances().import(project, instance, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -1272,14 +1272,14 @@ public class SqladminExample {
     // TODO: Assign desired fields.
     DatabaseInstance requestBody = new DatabaseInstance();
 
-    // Cloud SQL instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
 
+    // Cloud SQL instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    Patch request = service.instances().patch(instance, project, requestBody);
+    Patch request = service.instances().patch(project, instance, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -1338,14 +1338,14 @@ import java.util.Arrays;
 
 public class SqladminExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Cloud SQL read replica instance name.
-    String instance = ""; // TODO: Update field(s).
-
     // ID of the project that contains the read replica.
     String project = ""; // TODO: Update field(s).
 
+    // Cloud SQL read replica instance name.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    PromoteReplica request = service.instances().promoteReplica(instance, project);
+    PromoteReplica request = service.instances().promoteReplica(project, instance);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -1404,14 +1404,14 @@ import java.util.Arrays;
 
 public class SqladminExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Cloud SQL instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
 
+    // Cloud SQL instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    ResetSslConfig request = service.instances().resetSslConfig(instance, project);
+    ResetSslConfig request = service.instances().resetSslConfig(project, instance);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -1470,14 +1470,14 @@ import java.util.Arrays;
 
 public class SqladminExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Cloud SQL instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the project that contains the instance to be restarted.
     String project = ""; // TODO: Update field(s).
 
+    // Cloud SQL instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    Restart request = service.instances().restart(instance, project);
+    Restart request = service.instances().restart(project, instance);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -1540,14 +1540,14 @@ public class SqladminExample {
     // TODO: Assign desired fields.
     InstancesRestoreBackupRequest requestBody = new InstancesRestoreBackupRequest();
 
-    // Cloud SQL instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
 
+    // Cloud SQL instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    RestoreBackup request = service.instances().restoreBackup(instance, project, requestBody);
+    RestoreBackup request = service.instances().restoreBackup(project, instance, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -1606,14 +1606,14 @@ import java.util.Arrays;
 
 public class SqladminExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Cloud SQL read replica instance name.
-    String instance = ""; // TODO: Update field(s).
-
     // ID of the project that contains the read replica.
     String project = ""; // TODO: Update field(s).
 
+    // Cloud SQL read replica instance name.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    StartReplica request = service.instances().startReplica(instance, project);
+    StartReplica request = service.instances().startReplica(project, instance);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -1672,14 +1672,14 @@ import java.util.Arrays;
 
 public class SqladminExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Cloud SQL read replica instance name.
-    String instance = ""; // TODO: Update field(s).
-
     // ID of the project that contains the read replica.
     String project = ""; // TODO: Update field(s).
 
+    // Cloud SQL read replica instance name.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    StopReplica request = service.instances().stopReplica(instance, project);
+    StopReplica request = service.instances().stopReplica(project, instance);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -1742,14 +1742,14 @@ public class SqladminExample {
     // TODO: Assign desired fields.
     DatabaseInstance requestBody = new DatabaseInstance();
 
-    // Cloud SQL instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
 
+    // Cloud SQL instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    Update request = service.instances().update(instance, project, requestBody);
+    Update request = service.instances().update(project, instance, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -1875,14 +1875,14 @@ import java.util.Arrays;
 
 public class SqladminExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Cloud SQL instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
 
+    // Cloud SQL instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    List request = service.operations().list(instance, project);
+    List request = service.operations().list(project, instance);
     OperationsListResponse response;
     do {
       response = request.execute();
@@ -1953,14 +1953,14 @@ public class SqladminExample {
     // TODO: Assign desired fields.
     SslCertsCreateEphemeralRequest requestBody = new SslCertsCreateEphemeralRequest();
 
-    // Cloud SQL instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the Cloud SQL project.
     String project = ""; // TODO: Update field(s).
 
+    // Cloud SQL instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    CreateEphemeral request = service.sslCerts().createEphemeral(instance, project, requestBody);
+    CreateEphemeral request = service.sslCerts().createEphemeral(project, instance, requestBody);
     SslCert response = request.execute();
     System.out.println(response);
   }
@@ -2019,17 +2019,17 @@ import java.util.Arrays;
 
 public class SqladminExample {
   public void run() throws IOException, GeneralSecurityException {
+    // Project ID of the project that contains the instance to be deleted.
+    String project = ""; // TODO: Update field(s).
+
     // Cloud SQL instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
     // Sha1 FingerPrint.
     String sha1Fingerprint = ""; // TODO: Update field(s).
 
-    // Project ID of the project that contains the instance to be deleted.
-    String project = ""; // TODO: Update field(s).
-
     Sqladmin service = createService();
-    Delete request = service.sslCerts().delete(instance, sha1Fingerprint, project);
+    Delete request = service.sslCerts().delete(project, instance, sha1Fingerprint);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -2088,17 +2088,17 @@ import java.util.Arrays;
 
 public class SqladminExample {
   public void run() throws IOException, GeneralSecurityException {
+    // Project ID of the project that contains the instance.
+    String project = ""; // TODO: Update field(s).
+
     // Cloud SQL instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
     // Sha1 FingerPrint.
     String sha1Fingerprint = ""; // TODO: Update field(s).
 
-    // Project ID of the project that contains the instance.
-    String project = ""; // TODO: Update field(s).
-
     Sqladmin service = createService();
-    Get request = service.sslCerts().get(instance, sha1Fingerprint, project);
+    Get request = service.sslCerts().get(project, instance, sha1Fingerprint);
     SslCert response = request.execute();
     System.out.println(response);
   }
@@ -2161,14 +2161,14 @@ public class SqladminExample {
     // TODO: Assign desired fields.
     SslCertsInsertRequest requestBody = new SslCertsInsertRequest();
 
-    // Cloud SQL instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the project to which the newly created Cloud SQL instances should belong.
     String project = ""; // TODO: Update field(s).
 
+    // Cloud SQL instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    Insert request = service.sslCerts().insert(instance, project, requestBody);
+    Insert request = service.sslCerts().insert(project, instance, requestBody);
     SslCertsInsertResponse response = request.execute();
     System.out.println(response);
   }
@@ -2227,14 +2227,14 @@ import java.util.Arrays;
 
 public class SqladminExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Cloud SQL instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the project for which to list Cloud SQL instances.
     String project = ""; // TODO: Update field(s).
 
+    // Cloud SQL instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    List request = service.sslCerts().list(instance, project);
+    List request = service.sslCerts().list(project, instance);
     SslCertsListResponse response = request.execute();
     System.out.println(response);
   }
@@ -2356,6 +2356,9 @@ import java.util.Arrays;
 
 public class SqladminExample {
   public void run() throws IOException, GeneralSecurityException {
+    // Project ID of the project that contains the instance.
+    String project = ""; // TODO: Update field(s).
+
     // Database instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
@@ -2365,11 +2368,8 @@ public class SqladminExample {
     // Name of the user in the instance.
     String name = ""; // TODO: Update field(s).
 
-    // Project ID of the project that contains the instance.
-    String project = ""; // TODO: Update field(s).
-
     Sqladmin service = createService();
-    Delete request = service.users().delete(instance, host, name, project);
+    Delete request = service.users().delete(project, instance, host, name);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -2432,14 +2432,14 @@ public class SqladminExample {
     // TODO: Assign desired fields.
     User requestBody = new User();
 
-    // Database instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
 
+    // Database instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    Insert request = service.users().insert(instance, project, requestBody);
+    Insert request = service.users().insert(project, instance, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
@@ -2499,14 +2499,14 @@ import java.util.Arrays;
 
 public class SqladminExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Database instance ID. This does not include the project ID.
-    String instance = ""; // TODO: Update field(s).
-
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
 
+    // Database instance ID. This does not include the project ID.
+    String instance = ""; // TODO: Update field(s).
+
     Sqladmin service = createService();
-    List request = service.users().list(instance, project);
+    List request = service.users().list(project, instance);
     UsersListResponse response;
     do {
       response = request.execute();
@@ -2577,6 +2577,9 @@ public class SqladminExample {
     // TODO: Assign desired fields.
     User requestBody = new User();
 
+    // Project ID of the project that contains the instance.
+    String project = ""; // TODO: Update field(s).
+
     // Database instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
@@ -2586,11 +2589,8 @@ public class SqladminExample {
     // Name of the user in the instance.
     String name = ""; // TODO: Update field(s).
 
-    // Project ID of the project that contains the instance.
-    String project = ""; // TODO: Update field(s).
-
     Sqladmin service = createService();
-    Update request = service.users().update(instance, host, name, project, requestBody);
+    Update request = service.users().update(project, instance, host, name, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }

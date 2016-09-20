@@ -89,14 +89,14 @@ import java.util.Arrays;
 
 public class CloudtraceExample {
   public void run() throws IOException, GeneralSecurityException {
-    // ID of the trace to return.
-    String traceId = ""; // TODO: Update field(s).
-
     // ID of the Cloud project where the trace data is stored.
     String projectId = ""; // TODO: Update field(s).
 
+    // ID of the trace to return.
+    String traceId = ""; // TODO: Update field(s).
+
     Cloudtrace service = createService();
-    Get request = service.projects().traces().get(traceId, projectId);
+    Get request = service.projects().traces().get(projectId, traceId);
     Trace response = request.execute();
     System.out.println(response);
   }

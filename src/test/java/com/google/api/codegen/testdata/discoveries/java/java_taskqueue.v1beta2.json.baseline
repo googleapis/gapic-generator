@@ -89,17 +89,17 @@ import java.util.Arrays;
 
 public class TaskqueueExample {
   public void run() throws IOException, GeneralSecurityException {
-    // The id of the task to delete.
-    String task = ""; // TODO: Update field(s).
-
     // The project under which the queue lies.
     String project = ""; // TODO: Update field(s).
 
     // The taskqueue to delete a task from.
     String taskqueue = ""; // TODO: Update field(s).
 
+    // The id of the task to delete.
+    String task = ""; // TODO: Update field(s).
+
     Taskqueue service = createService();
-    Delete request = service.tasks().delete(task, project, taskqueue);
+    Delete request = service.tasks().delete(project, taskqueue, task);
     request.execute();
   }
 
@@ -157,17 +157,17 @@ import java.util.Arrays;
 
 public class TaskqueueExample {
   public void run() throws IOException, GeneralSecurityException {
-    // The task to get properties of.
-    String task = ""; // TODO: Update field(s).
-
     // The project under which the queue lies.
     String project = ""; // TODO: Update field(s).
 
     // The taskqueue in which the task belongs.
     String taskqueue = ""; // TODO: Update field(s).
 
+    // The task to get properties of.
+    String task = ""; // TODO: Update field(s).
+
     Taskqueue service = createService();
-    Get request = service.tasks().get(task, project, taskqueue);
+    Get request = service.tasks().get(project, taskqueue, task);
     Task response = request.execute();
     System.out.println(response);
   }
@@ -295,20 +295,20 @@ import java.util.Arrays;
 
 public class TaskqueueExample {
   public void run() throws IOException, GeneralSecurityException {
-    // The number of tasks to lease.
-    int numTasks = 0; // TODO: Update field(s).
-
     // The project under which the queue lies.
     String project = ""; // TODO: Update field(s).
-
-    // The lease in seconds.
-    int leaseSecs = 0; // TODO: Update field(s).
 
     // The taskqueue to lease a task from.
     String taskqueue = ""; // TODO: Update field(s).
 
+    // The number of tasks to lease.
+    int numTasks = 0; // TODO: Update field(s).
+
+    // The lease in seconds.
+    int leaseSecs = 0; // TODO: Update field(s).
+
     Taskqueue service = createService();
-    Lease request = service.tasks().lease(numTasks, project, leaseSecs, taskqueue);
+    Lease request = service.tasks().lease(project, taskqueue, numTasks, leaseSecs);
     Tasks response = request.execute();
     System.out.println(response);
   }
@@ -436,20 +436,20 @@ public class TaskqueueExample {
     // TODO: Assign desired fields.
     Task requestBody = new Task();
 
-
-    String task = ""; // TODO: Update field(s).
-
-    // The new lease in seconds.
-    int newLeaseSeconds = 0; // TODO: Update field(s).
-
     // The project under which the queue lies.
     String project = ""; // TODO: Update field(s).
 
 
     String taskqueue = ""; // TODO: Update field(s).
 
+
+    String task = ""; // TODO: Update field(s).
+
+    // The new lease in seconds.
+    int newLeaseSeconds = 0; // TODO: Update field(s).
+
     Taskqueue service = createService();
-    Patch request = service.tasks().patch(task, newLeaseSeconds, project, taskqueue, requestBody);
+    Patch request = service.tasks().patch(project, taskqueue, task, newLeaseSeconds, requestBody);
     Task response = request.execute();
     System.out.println(response);
   }
@@ -511,20 +511,20 @@ public class TaskqueueExample {
     // TODO: Assign desired fields.
     Task requestBody = new Task();
 
-
-    String task = ""; // TODO: Update field(s).
-
-    // The new lease in seconds.
-    int newLeaseSeconds = 0; // TODO: Update field(s).
-
     // The project under which the queue lies.
     String project = ""; // TODO: Update field(s).
 
 
     String taskqueue = ""; // TODO: Update field(s).
 
+
+    String task = ""; // TODO: Update field(s).
+
+    // The new lease in seconds.
+    int newLeaseSeconds = 0; // TODO: Update field(s).
+
     Taskqueue service = createService();
-    Update request = service.tasks().update(task, newLeaseSeconds, project, taskqueue, requestBody);
+    Update request = service.tasks().update(project, taskqueue, task, newLeaseSeconds, requestBody);
     Task response = request.execute();
     System.out.println(response);
   }

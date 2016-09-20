@@ -90,14 +90,14 @@ import java.util.Arrays;
 
 public class DataflowExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Identifies a single job.
-    String jobId = ""; // TODO: Update field(s).
-
     // The project which owns the job.
     String projectId = ""; // TODO: Update field(s).
 
+    // Identifies a single job.
+    String jobId = ""; // TODO: Update field(s).
+
     Dataflow service = createService();
-    Get request = service.projects().jobs().get(jobId, projectId);
+    Get request = service.projects().jobs().get(projectId, jobId);
     Job response = request.execute();
     System.out.println(response);
   }
@@ -156,14 +156,14 @@ import java.util.Arrays;
 
 public class DataflowExample {
   public void run() throws IOException, GeneralSecurityException {
-    // The job to get messages for.
-    String jobId = ""; // TODO: Update field(s).
-
     // A project id.
     String projectId = ""; // TODO: Update field(s).
 
+    // The job to get messages for.
+    String jobId = ""; // TODO: Update field(s).
+
     Dataflow service = createService();
-    GetMetrics request = service.projects().jobs().getMetrics(jobId, projectId);
+    GetMetrics request = service.projects().jobs().getMetrics(projectId, jobId);
     JobMetrics response = request.execute();
     System.out.println(response);
   }
@@ -295,14 +295,14 @@ import java.util.Arrays;
 
 public class DataflowExample {
   public void run() throws IOException, GeneralSecurityException {
-    // The job to get messages about.
-    String jobId = ""; // TODO: Update field(s).
-
     // A project id.
     String projectId = ""; // TODO: Update field(s).
 
+    // The job to get messages about.
+    String jobId = ""; // TODO: Update field(s).
+
     Dataflow service = createService();
-    List request = service.projects().jobs().messages().list(jobId, projectId);
+    List request = service.projects().jobs().messages().list(projectId, jobId);
     ListJobMessagesResponse response;
     do {
       response = request.execute();
@@ -372,14 +372,14 @@ public class DataflowExample {
     // TODO: Assign desired fields.
     Job requestBody = new Job();
 
-    // Identifies a single job.
-    String jobId = ""; // TODO: Update field(s).
-
     // The project which owns the job.
     String projectId = ""; // TODO: Update field(s).
 
+    // Identifies a single job.
+    String jobId = ""; // TODO: Update field(s).
+
     Dataflow service = createService();
-    Update request = service.projects().jobs().update(jobId, projectId, requestBody);
+    Update request = service.projects().jobs().update(projectId, jobId, requestBody);
     Job response = request.execute();
     System.out.println(response);
   }
@@ -442,14 +442,14 @@ public class DataflowExample {
     // TODO: Assign desired fields.
     LeaseWorkItemRequest requestBody = new LeaseWorkItemRequest();
 
-    // Identifies the workflow job this worker belongs to.
-    String jobId = ""; // TODO: Update field(s).
-
     // Identifies the project this worker belongs to.
     String projectId = ""; // TODO: Update field(s).
 
+    // Identifies the workflow job this worker belongs to.
+    String jobId = ""; // TODO: Update field(s).
+
     Dataflow service = createService();
-    Lease request = service.projects().jobs().workItems().lease(jobId, projectId, requestBody);
+    Lease request = service.projects().jobs().workItems().lease(projectId, jobId, requestBody);
     LeaseWorkItemResponse response = request.execute();
     System.out.println(response);
   }
@@ -512,14 +512,14 @@ public class DataflowExample {
     // TODO: Assign desired fields.
     ReportWorkItemStatusRequest requestBody = new ReportWorkItemStatusRequest();
 
-    // The job which the WorkItem is part of.
-    String jobId = ""; // TODO: Update field(s).
-
     // The project which owns the WorkItem's job.
     String projectId = ""; // TODO: Update field(s).
 
+    // The job which the WorkItem is part of.
+    String jobId = ""; // TODO: Update field(s).
+
     Dataflow service = createService();
-    ReportStatus request = service.projects().jobs().workItems().reportStatus(jobId, projectId, requestBody);
+    ReportStatus request = service.projects().jobs().workItems().reportStatus(projectId, jobId, requestBody);
     ReportWorkItemStatusResponse response = request.execute();
     System.out.println(response);
   }

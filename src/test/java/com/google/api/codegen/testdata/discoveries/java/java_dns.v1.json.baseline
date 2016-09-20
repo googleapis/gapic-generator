@@ -96,14 +96,14 @@ public class DnsExample {
     // Identifies the project addressed by this request.
     String project = ""; // TODO: Update field(s).
 
-    // The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
-    String changeId = ""; // TODO: Update field(s).
-
     // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
     String managedZone = ""; // TODO: Update field(s).
 
+    // The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
+    String changeId = ""; // TODO: Update field(s).
+
     Dns service = createService();
-    Get request = service.changes().get(project, changeId, managedZone);
+    Get request = service.changes().get(project, managedZone, changeId);
     Change response = request.execute();
     System.out.println(response);
   }

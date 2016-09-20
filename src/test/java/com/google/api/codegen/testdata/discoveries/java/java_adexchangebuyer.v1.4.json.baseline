@@ -605,17 +605,17 @@ import java.util.Arrays;
 
 public class GoatAPIExample {
   public void run() throws IOException, GeneralSecurityException {
-    // The buyer-specific id for this creative.
-    String buyerCreativeId = ""; // TODO: Update field(s).
-
     // The id for the account that will serve this creative.
     int accountId = 0; // TODO: Update field(s).
+
+    // The buyer-specific id for this creative.
+    String buyerCreativeId = ""; // TODO: Update field(s).
 
     // The id of the deal id to associate with this creative.
     long dealId = 0L; // TODO: Update field(s).
 
     GoatAPI service = createService();
-    AddDeal request = service.creatives().addDeal(buyerCreativeId, accountId, dealId);
+    AddDeal request = service.creatives().addDeal(accountId, buyerCreativeId, dealId);
     request.execute();
   }
 
@@ -673,14 +673,14 @@ import java.util.Arrays;
 
 public class GoatAPIExample {
   public void run() throws IOException, GeneralSecurityException {
-    // The buyer-specific id for this creative.
-    String buyerCreativeId = ""; // TODO: Update field(s).
-
     // The id for the account that will serve this creative.
     int accountId = 0; // TODO: Update field(s).
 
+    // The buyer-specific id for this creative.
+    String buyerCreativeId = ""; // TODO: Update field(s).
+
     GoatAPI service = createService();
-    Get request = service.creatives().get(buyerCreativeId, accountId);
+    Get request = service.creatives().get(accountId, buyerCreativeId);
     Creative response = request.execute();
     System.out.println(response);
   }
@@ -870,17 +870,17 @@ import java.util.Arrays;
 
 public class GoatAPIExample {
   public void run() throws IOException, GeneralSecurityException {
-    // The buyer-specific id for this creative.
-    String buyerCreativeId = ""; // TODO: Update field(s).
-
     // The id for the account that will serve this creative.
     int accountId = 0; // TODO: Update field(s).
+
+    // The buyer-specific id for this creative.
+    String buyerCreativeId = ""; // TODO: Update field(s).
 
     // The id of the deal id to disassociate with this creative.
     long dealId = 0L; // TODO: Update field(s).
 
     GoatAPI service = createService();
-    RemoveDeal request = service.creatives().removeDeal(buyerCreativeId, accountId, dealId);
+    RemoveDeal request = service.creatives().removeDeal(accountId, buyerCreativeId, dealId);
     request.execute();
   }
 
@@ -1401,14 +1401,14 @@ public class GoatAPIExample {
     // The account id to get the reports.
     long accountId = 0L; // TODO: Update field(s).
 
-    // The start time of the report in ISO 8601 timestamp format using UTC.
-    String startDateTime = ""; // TODO: Update field(s).
-
     // The end time of the report in ISO 8601 timestamp format using UTC.
     String endDateTime = ""; // TODO: Update field(s).
 
+    // The start time of the report in ISO 8601 timestamp format using UTC.
+    String startDateTime = ""; // TODO: Update field(s).
+
     GoatAPI service = createService();
-    List request = service.performanceReport().list(accountId, startDateTime, endDateTime);
+    List request = service.performanceReport().list(accountId, endDateTime, startDateTime);
     PerformanceReportList response = request.execute();
     System.out.println(response);
   }
@@ -2117,19 +2117,19 @@ public class GoatAPIExample {
     // TODO: Assign desired fields.
     Proposal requestBody = new Proposal();
 
-    // The proposed action to take on the proposal.
-    String updateAction = ""; // TODO: Update field(s).
+    // The proposal id to update.
+    String proposalId = ""; // TODO: Update field(s).
 
     // The last known revision number to update. If the head revision in the marketplace database has
     // since changed, an error will be thrown. The caller should then fetch the latest proposal at head
     // revision and retry the update at that revision.
     long revisionNumber = 0L; // TODO: Update field(s).
 
-    // The proposal id to update.
-    String proposalId = ""; // TODO: Update field(s).
+    // The proposed action to take on the proposal.
+    String updateAction = ""; // TODO: Update field(s).
 
     GoatAPI service = createService();
-    Patch request = service.proposals().patch(updateAction, revisionNumber, proposalId, requestBody);
+    Patch request = service.proposals().patch(proposalId, revisionNumber, updateAction, requestBody);
     Proposal response = request.execute();
     System.out.println(response);
   }
@@ -2312,19 +2312,19 @@ public class GoatAPIExample {
     // TODO: Assign desired fields.
     Proposal requestBody = new Proposal();
 
-    // The proposed action to take on the proposal.
-    String updateAction = ""; // TODO: Update field(s).
+    // The proposal id to update.
+    String proposalId = ""; // TODO: Update field(s).
 
     // The last known revision number to update. If the head revision in the marketplace database has
     // since changed, an error will be thrown. The caller should then fetch the latest proposal at head
     // revision and retry the update at that revision.
     long revisionNumber = 0L; // TODO: Update field(s).
 
-    // The proposal id to update.
-    String proposalId = ""; // TODO: Update field(s).
+    // The proposed action to take on the proposal.
+    String updateAction = ""; // TODO: Update field(s).
 
     GoatAPI service = createService();
-    Update request = service.proposals().update(updateAction, revisionNumber, proposalId, requestBody);
+    Update request = service.proposals().update(proposalId, revisionNumber, updateAction, requestBody);
     Proposal response = request.execute();
     System.out.println(response);
   }

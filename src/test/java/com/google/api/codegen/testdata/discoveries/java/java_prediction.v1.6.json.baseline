@@ -28,14 +28,14 @@ public class PredictionExample {
     // TODO: Assign desired fields.
     Input requestBody = new Input();
 
-    // The name of a hosted model.
-    String hostedModelName = ""; // TODO: Update field(s).
-
     // The project associated with the model.
     String project = ""; // TODO: Update field(s).
 
+    // The name of a hosted model.
+    String hostedModelName = ""; // TODO: Update field(s).
+
     Prediction service = createService();
-    Predict request = service.hostedmodels().predict(hostedModelName, project, requestBody);
+    Predict request = service.hostedmodels().predict(project, hostedModelName, requestBody);
     Output response = request.execute();
     System.out.println(response);
   }

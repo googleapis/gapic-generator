@@ -1284,16 +1284,16 @@ public class StorageExample {
     // Name of a bucket.
     String bucket = ""; // TODO: Update field(s).
 
-    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = ""; // TODO: Update field(s).
-
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
     String object = ""; // TODO: Update field(s).
 
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
+    String entity = ""; // TODO: Update field(s).
+
     Storage service = createService();
-    Delete request = service.objectAccessControls().delete(bucket, entity, object);
+    Delete request = service.objectAccessControls().delete(bucket, object, entity);
     request.execute();
   }
 
@@ -1354,16 +1354,16 @@ public class StorageExample {
     // Name of a bucket.
     String bucket = ""; // TODO: Update field(s).
 
-    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = ""; // TODO: Update field(s).
-
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
     String object = ""; // TODO: Update field(s).
 
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
+    String entity = ""; // TODO: Update field(s).
+
     Storage service = createService();
-    Get request = service.objectAccessControls().get(bucket, entity, object);
+    Get request = service.objectAccessControls().get(bucket, object, entity);
     ObjectAccessControl response = request.execute();
     System.out.println(response);
   }
@@ -1565,16 +1565,16 @@ public class StorageExample {
     // Name of a bucket.
     String bucket = ""; // TODO: Update field(s).
 
-    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = ""; // TODO: Update field(s).
-
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
     String object = ""; // TODO: Update field(s).
 
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
+    String entity = ""; // TODO: Update field(s).
+
     Storage service = createService();
-    Patch request = service.objectAccessControls().patch(bucket, entity, object, requestBody);
+    Patch request = service.objectAccessControls().patch(bucket, object, entity, requestBody);
     ObjectAccessControl response = request.execute();
     System.out.println(response);
   }
@@ -1639,16 +1639,16 @@ public class StorageExample {
     // Name of a bucket.
     String bucket = ""; // TODO: Update field(s).
 
-    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = ""; // TODO: Update field(s).
-
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
     String object = ""; // TODO: Update field(s).
 
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
+    String entity = ""; // TODO: Update field(s).
+
     Storage service = createService();
-    Update request = service.objectAccessControls().update(bucket, entity, object, requestBody);
+    Update request = service.objectAccessControls().update(bucket, object, entity, requestBody);
     ObjectAccessControl response = request.execute();
     System.out.println(response);
   }
@@ -1779,24 +1779,24 @@ public class StorageExample {
     // TODO: Assign desired fields.
     com.google.api.services.storage.v1.model.Object requestBody = new com.google.api.services.storage.v1.model.Object();
 
-    // Name of the bucket in which to store the new object. Overrides the provided object metadata's
-    // bucket value, if any.For information about how to URL encode object names to be path safe, see
-    // Encoding URI Path Parts.
-    String destinationBucket = ""; // TODO: Update field(s).
+    // Name of the bucket in which to find the source object.
+    String sourceBucket = ""; // TODO: Update field(s).
 
     // Name of the source object. For information about how to URL encode object names to be path safe,
     // see Encoding URI Path Parts.
     String sourceObject = ""; // TODO: Update field(s).
 
-    // Name of the bucket in which to find the source object.
-    String sourceBucket = ""; // TODO: Update field(s).
+    // Name of the bucket in which to store the new object. Overrides the provided object metadata's
+    // bucket value, if any.For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
+    String destinationBucket = ""; // TODO: Update field(s).
 
     // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
     // object metadata's name value, if any.
     String destinationObject = ""; // TODO: Update field(s).
 
     Storage service = createService();
-    Copy request = service.objects().copy(destinationBucket, sourceObject, sourceBucket, destinationObject, requestBody);
+    Copy request = service.objects().copy(sourceBucket, sourceObject, destinationBucket, destinationObject, requestBody);
     com.google.api.services.storage.v1.model.Object response = request.execute();
     System.out.println(response);
   }
@@ -2195,16 +2195,16 @@ public class StorageExample {
     // TODO: Assign desired fields.
     com.google.api.services.storage.v1.model.Object requestBody = new com.google.api.services.storage.v1.model.Object();
 
-    // Name of the bucket in which to store the new object. Overrides the provided object metadata's
-    // bucket value, if any.
-    String destinationBucket = ""; // TODO: Update field(s).
+    // Name of the bucket in which to find the source object.
+    String sourceBucket = ""; // TODO: Update field(s).
 
     // Name of the source object. For information about how to URL encode object names to be path safe,
     // see Encoding URI Path Parts.
     String sourceObject = ""; // TODO: Update field(s).
 
-    // Name of the bucket in which to find the source object.
-    String sourceBucket = ""; // TODO: Update field(s).
+    // Name of the bucket in which to store the new object. Overrides the provided object metadata's
+    // bucket value, if any.
+    String destinationBucket = ""; // TODO: Update field(s).
 
     // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
     // object metadata's name value, if any. For information about how to URL encode object names to be
@@ -2212,7 +2212,7 @@ public class StorageExample {
     String destinationObject = ""; // TODO: Update field(s).
 
     Storage service = createService();
-    Rewrite request = service.objects().rewrite(destinationBucket, sourceObject, sourceBucket, destinationObject, requestBody);
+    Rewrite request = service.objects().rewrite(sourceBucket, sourceObject, destinationBucket, destinationObject, requestBody);
     RewriteResponse response = request.execute();
     System.out.println(response);
   }

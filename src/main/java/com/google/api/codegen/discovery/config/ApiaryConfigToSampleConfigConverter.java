@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryImporter;
+import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
@@ -81,7 +82,8 @@ public class ApiaryConfigToSampleConfigConverter {
    * Creates a method.
    */
   private MethodInfo createMethod(Method method) {
-    Map<String, FieldInfo> fields = new HashMap<>();
+    // The order of fields must be preserved, so we use an ImmutableMap.
+    ImmutableMap.Builder<String, FieldInfo> fields = new ImmutableMap.Builder<>();
     TypeInfo requestBodyType = null;
     for (String fieldName : apiaryConfig.getMethodParams(method.getName())) {
       Field field =
@@ -117,7 +119,7 @@ public class ApiaryConfigToSampleConfigConverter {
     MethodInfo methodInfo =
         MethodInfo.newBuilder()
             .nameComponents(methodNameComponents.get(method.getName()))
-            .fields(fields)
+            .fields(fields.build())
             .requestType(requestType)
             .requestBodyType(requestBodyType)
             .responseType(responseType)

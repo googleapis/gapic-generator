@@ -90,14 +90,14 @@ import java.util.Arrays;
 
 public class CloudmonitoringExample {
   public void run() throws IOException, GeneralSecurityException {
-    // Name of the metric.
-    String metric = ""; // TODO: Update field(s).
-
     // The project ID to which the metric belongs.
     String project = ""; // TODO: Update field(s).
 
+    // Name of the metric.
+    String metric = ""; // TODO: Update field(s).
+
     Cloudmonitoring service = createService();
-    Delete request = service.metricDescriptors().delete(metric, project);
+    Delete request = service.metricDescriptors().delete(project, metric);
     DeleteMetricDescriptorResponse response = request.execute();
     System.out.println(response);
   }
@@ -237,19 +237,19 @@ public class CloudmonitoringExample {
     // TODO: Assign desired fields.
     ListTimeseriesRequest requestBody = new ListTimeseriesRequest();
 
-    // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
-    // compute.googleapis.com/instance/disk/read_ops_count.
-    String metric = ""; // TODO: Update field(s).
-
     // The project ID to which this time series belongs. The value can be the numeric project ID or
     // string-based project name.
     String project = ""; // TODO: Update field(s).
+
+    // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
+    // compute.googleapis.com/instance/disk/read_ops_count.
+    String metric = ""; // TODO: Update field(s).
 
     // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
     String youngest = ""; // TODO: Update field(s).
 
     Cloudmonitoring service = createService();
-    List request = service.timeseries().list(metric, project, youngest, requestBody);
+    List request = service.timeseries().list(project, metric, youngest, requestBody);
     ListTimeseriesResponse response;
     do {
       response = request.execute();
@@ -388,19 +388,19 @@ public class CloudmonitoringExample {
     // TODO: Assign desired fields.
     ListTimeseriesDescriptorsRequest requestBody = new ListTimeseriesDescriptorsRequest();
 
-    // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
-    // compute.googleapis.com/instance/disk/read_ops_count.
-    String metric = ""; // TODO: Update field(s).
-
     // The project ID to which this time series belongs. The value can be the numeric project ID or
     // string-based project name.
     String project = ""; // TODO: Update field(s).
+
+    // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
+    // compute.googleapis.com/instance/disk/read_ops_count.
+    String metric = ""; // TODO: Update field(s).
 
     // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
     String youngest = ""; // TODO: Update field(s).
 
     Cloudmonitoring service = createService();
-    List request = service.timeseriesDescriptors().list(metric, project, youngest, requestBody);
+    List request = service.timeseriesDescriptors().list(project, metric, youngest, requestBody);
     ListTimeseriesDescriptorsResponse response;
     do {
       response = request.execute();
