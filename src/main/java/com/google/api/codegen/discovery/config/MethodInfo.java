@@ -17,6 +17,8 @@ package com.google.api.codegen.discovery.config;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableMap;
+
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -46,7 +48,7 @@ public abstract class MethodInfo {
    * #requestBodyType()}.
    */
   @JsonProperty("fields")
-  public abstract Map<String, FieldInfo> fields();
+  public abstract ImmutableMap<String, FieldInfo> fields();
 
   /**
    * Returns the type for this method's request.
@@ -106,7 +108,7 @@ public abstract class MethodInfo {
     public abstract Builder nameComponents(List<String> val);
 
     @JsonProperty("fields")
-    public abstract Builder fields(Map<String, FieldInfo> val);
+    public abstract Builder fields(ImmutableMap<String, FieldInfo> val);
 
     @JsonProperty("requestType")
     public abstract Builder requestType(TypeInfo val);
