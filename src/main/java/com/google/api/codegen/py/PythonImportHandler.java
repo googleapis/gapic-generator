@@ -47,6 +47,7 @@ public class PythonImportHandler {
    */
   private final BiMap<ProtoFile, String> fileImports = HashBiMap.create();
 
+  /** This constructor is for the main imports of a generated service file */
   public PythonImportHandler(Interface service, ApiConfig apiConfig) {
     // Add non-service-specific imports.
     addImportStandard("json");
@@ -80,6 +81,7 @@ public class PythonImportHandler {
     }
   }
 
+  /** This constructor is used for doc messages. */
   public PythonImportHandler(ProtoFile file) {
     for (MessageType message : file.getMessages()) {
       for (Field field : message.getMessageFields()) {
@@ -97,13 +99,23 @@ public class PythonImportHandler {
     }
   }
 
-  public PythonImportHandler(Method method) {
-    addImport(
-        method.getFile(),
-        PythonImport.create(
-            ImportType.APP,
-            method.getFile().getProto().getPackage(),
-            PythonProtoElements.getPbFileName(method.getInputMessage())));
+  /**
+   * This constructor is used for sample-gen where only the required fields of a method are needed
+   * to be imported.
+   */
+  public PythonImportHandler(Iterable<Field> requiredFields) {
+    for (Field field : requiredFields) {
+      if (!field.getType().isMessage()) {
+        continue;
+      }
+      MessageType messageType = field.getType().getMessageType();
+      addImport(
+          messageType.getFile(),
+          PythonImport.create(
+              ImportType.APP,
+              messageType.getFile().getProto().getPackage(),
+              PythonProtoElements.getPbFileName(messageType)));
+    }
   }
 
   // Independent import handler to support fragment generation from discovery sources

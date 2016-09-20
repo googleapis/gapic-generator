@@ -56,11 +56,11 @@ public class RubyTypeTable implements TypeTable {
 
   @Override
   public NamePath getNamePath(String fullName) {
-    return NamePath.dotted(fullName);
+    return NamePath.doubleColoned(fullName);
   }
 
   @Override
-  public TypeName getContainerTypeName(String containerFullName, String elementFullName) {
+  public TypeName getContainerTypeName(String containerFullName, String... elementFullName) {
     return getTypeName(containerFullName);
   }
 

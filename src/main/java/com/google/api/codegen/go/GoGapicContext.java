@@ -39,6 +39,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
+import io.grpc.Status;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -419,21 +421,6 @@ public class GoGapicContext extends GapicContext implements GoContext {
     return GoImport.create(pkgName, localName);
   }
 
-  private Set<GoImport> getStandardImports(Interface service) {
-    TreeSet<GoImport> standardImports = new TreeSet<>();
-
-    standardImports.add(GoImport.create("fmt"));
-    standardImports.add(GoImport.create("runtime"));
-
-    if (!getApiConfig().getInterfaceConfig(service).getRetrySettingsDefinition().isEmpty()) {
-      standardImports.add(GoImport.create("time"));
-    }
-    if (!getPageStreamingConfigs(service).isEmpty()) {
-      standardImports.add(GoImport.create("math"));
-    }
-    return standardImports;
-  }
-
   /**
    * Returns a set of imports for all messages in the given service.
    *
@@ -494,19 +481,33 @@ public class GoGapicContext extends GapicContext implements GoContext {
    * indentation within the 'import' section in Go file.
    */
   public Iterable<String> getImports(Interface service) {
+    TreeSet<GoImport> standard = new TreeSet<>();
     TreeSet<GoImport> thirdParty = new TreeSet<>();
+
+    standard.add(GoImport.create("fmt"));
+    standard.add(GoImport.create("runtime"));
+
+    InterfaceConfig conf = getApiConfig().getInterfaceConfig(service);
+    for (RetryConfigName retry : getRetryConfigNames(service)) {
+      if (!conf.getRetryCodesDefinition().get(retry.getCodesName()).isEmpty()) {
+        standard.add(GoImport.create("time"));
+        thirdParty.add(GoImport.create("google.golang.org/grpc/codes"));
+        break;
+      }
+    }
+    if (!getPageStreamingConfigs(service).isEmpty()) {
+      standard.add(GoImport.create("math"));
+    }
 
     // Add non-service-specific imports.
     thirdParty.add(GoImport.create("golang.org/x/net/context"));
     thirdParty.add(GoImport.create("google.golang.org/grpc"));
-    thirdParty.add(GoImport.create("google.golang.org/grpc/codes"));
     thirdParty.add(GoImport.create("google.golang.org/grpc/metadata"));
     thirdParty.add(GoImport.create(GAX_PACKAGE_BASE, "gax"));
     thirdParty.add(GoImport.create("google.golang.org/api/option"));
     thirdParty.add(GoImport.create("google.golang.org/api/transport"));
 
     thirdParty.addAll(getMessageImports(service, false));
-    Set<GoImport> standard = getStandardImports(service);
     return formatImports(standard, thirdParty);
   }
 

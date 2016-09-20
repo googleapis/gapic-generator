@@ -85,7 +85,10 @@ public class ApiCallableTransformer {
           context
               .getNamer()
               .getAndSavePagedResponseTypeName(
-                  typeTable, pageStreaming.getResourcesField().getType());
+                  typeTable,
+                  method.getInputType(),
+                  method.getOutputType(),
+                  pageStreaming.getResourcesField().getType());
 
       pagedApiCallableBuilder.requestTypeName(
           typeTable.getAndSaveNicknameFor(method.getInputType()));

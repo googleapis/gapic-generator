@@ -90,12 +90,10 @@
 @private methodCall(test)
   @switch test.methodType
   @case "PagedFlattenedMethod"
-    PageAccessor<{@test.resourceTypeName}> pageAccessor = api.{@test.surfaceMethodName}(\
+    PagedListResponse<{@test.requestTypeName}, {@test.responseTypeName}, {@test.resourceTypeName}> pagedListResponse = api.{@test.surfaceMethodName}(\
       {@sampleMethodCallArgList(test.initCode.fieldSettings)});
 
-    // PageAccessor will not make actual request until it is being used.
-    // Add all the pages here in order to make grpc requests.
-    List<{@test.resourceTypeName}> resources = Lists.newArrayList(pageAccessor.getPageValues());
+    List<{@test.resourceTypeName}> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.{@test.resourcesFieldGetterName}().get(0), resources.get(0));
   @case "FlattenedMethod"

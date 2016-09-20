@@ -19,11 +19,9 @@ import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.CallableMethodDetailView;
-import com.google.api.codegen.viewmodel.DynamicLangApiMethodView;
 import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
 import com.google.api.codegen.viewmodel.ListMethodDetailView;
 import com.google.api.codegen.viewmodel.MapParamDocView;
@@ -176,7 +174,13 @@ public class ApiMethodTransformer {
     methodViewBuilder.listMethod(
         ListMethodDetailView.newBuilder().resourceTypeName(resourceTypeName).build());
     methodViewBuilder.responseTypeName(
-        context.getNamer().getAndSavePagedResponseTypeName(context.getTypeTable(), resourceType));
+        context
+            .getNamer()
+            .getAndSavePagedResponseTypeName(
+                context.getTypeTable(),
+                context.getMethod().getInputType(),
+                context.getMethod().getOutputType(),
+                resourceType));
     methodViewBuilder.hasReturnValue(true);
   }
 
@@ -186,8 +190,7 @@ public class ApiMethodTransformer {
       StaticLangApiMethodView.Builder methodViewBuilder) {
     SurfaceNamer namer = context.getNamer();
     methodViewBuilder.initCode(
-        initCodeTransformer.generateInitCode(
-            context.cloneWithEmptyTypeTable(), fields, new SymbolTable(), null));
+        initCodeTransformer.generateInitCode(context.cloneWithEmptyTypeTable(), fields));
     methodViewBuilder.doc(
         ApiMethodDocView.newBuilder()
             .mainDocLines(namer.getDocLines(context.getMethod()))
@@ -219,8 +222,7 @@ public class ApiMethodTransformer {
             .throwsDocLines(namer.getThrowsDocLines())
             .build());
     methodViewBuilder.initCode(
-        initCodeTransformer.generateRequestObjectInitCode(
-            context.cloneWithEmptyTypeTable(), new SymbolTable(), null));
+        initCodeTransformer.generateRequestObjectInitCode(context.cloneWithEmptyTypeTable()));
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
@@ -246,8 +248,7 @@ public class ApiMethodTransformer {
             .throwsDocLines(new ArrayList<String>())
             .build());
     methodViewBuilder.initCode(
-        initCodeTransformer.generateRequestObjectInitCode(
-            context.cloneWithEmptyTypeTable(), new SymbolTable(), null));
+        initCodeTransformer.generateRequestObjectInitCode(context.cloneWithEmptyTypeTable()));
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
@@ -308,33 +309,7 @@ public class ApiMethodTransformer {
     return true;
   }
 
-  public DynamicLangApiMethodView generateDynamicLangApiMethod(MethodTransformerContext context) {
-    // This is an incomplete method that only generates views that pertain to sample
-    // code generation for a dynamic language.
-    SurfaceNamer namer = context.getNamer();
-    DynamicLangApiMethodView.Builder apiMethod = DynamicLangApiMethodView.newBuilder();
-
-    if (context.getMethodConfig().isPageStreaming()) {
-      apiMethod.type(ApiMethodType.PagedFlattenedMethod);
-    } else {
-      apiMethod.type(ApiMethodType.FlattenedMethod);
-    }
-    apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
-    apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
-    apiMethod.initCode(
-        initCodeTransformer.generateInitCode(
-            context.cloneWithEmptyTypeTable(),
-            context.getMethodConfig().getRequiredFields(),
-            new SymbolTable(),
-            null));
-
-    apiMethod.name(namer.getApiMethodName(context.getMethod()));
-    apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
-
-    return apiMethod.build();
-  }
-
-  public OptionalArrayMethodView generateOptionalArrayMethod(MethodTransformerContext context) {
+  public OptionalArrayMethodView generateDynamicLangApiMethod(MethodTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
     OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
 
@@ -348,10 +323,7 @@ public class ApiMethodTransformer {
     apiMethod.apiModuleName(namer.getApiWrapperModuleName(context.getInterface()));
     apiMethod.initCode(
         initCodeTransformer.generateInitCode(
-            context.cloneWithEmptyTypeTable(),
-            context.getMethodConfig().getRequiredFields(),
-            new SymbolTable(),
-            null));
+            context.cloneWithEmptyTypeTable(), context.getMethodConfig().getRequiredFields()));
 
     apiMethod.doc(generateOptionalArrayMethodDoc(context));
 

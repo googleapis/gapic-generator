@@ -55,16 +55,16 @@
 
 @private serviceClassBody(service)
   @let path_templates = {@pathTemplateSection(service)}, \
-       documentation = {@comments(context.defaultComments(service))}
+       documentation = {@comments(context.defaultComments(service))}, \
+       stubs = {@context.getStubs(service)}
     @if documentation
       {@documentation}
       @#
 
     @end
-    @# @@!attribute [r] stub
-    @#   @@return [{@context.rubyTypeNameForProtoElement(service)}::Stub]
+    {@stubComments(stubs)}
     class {@context.getApiWrapperName(service)}
-      attr_reader :stub
+      attr_reader {@listStubNames(stubs)}
 
       {@constantSection(service)}
       @if path_templates
@@ -75,6 +75,19 @@
 
       {@serviceMethodsSection(service)}
     end
+  @end
+@end
+
+@private stubComments(stubs)
+  @join stub : stubs
+    @# @@!attribute [r] {@stub.name}
+    @#   @@return [{@stub.fullyQualifiedType}]
+  @end
+@end
+
+@private listStubNames(stubs)
+  @join stub : stubs on ", "
+    :{@stub.name}
   @end
 @end
 
@@ -213,27 +226,35 @@
       @# the gRPC module only when it's required.
       @# See https://github.com/googleapis/toolkit/issues/446
       require "google/gax/grpc"
-      require "{@context.getGrpcFilename(service)}"
+      @join import : {@context.getServiceImports(service)}
+        require "{@import.fullName}"
+      @end
 
       google_api_client = "#{app_name}/#{app_version} " @\
-        "#{CODE_GEN_NAME_VERSION} ruby/#{RUBY_VERSION}".freeze
+        "#{CODE_GEN_NAME_VERSION} gax/#{Google::Gax::VERSION} " @\
+        "ruby/#{RUBY_VERSION}".freeze
       headers = { :"x-goog-api-client" => google_api_client }
       {@constructDefaults(service)}
-      @@stub = Google::Gax::Grpc.create_stub(
-        service_path,
-        port,
-        chan_creds: chan_creds,
-        channel: channel,
-        scopes: scopes,
-        &{@context.rubyTypeNameForProtoElement(service)}::Stub.method(:new)
-      )
-
-      @join method : context.getNonStreamingMethods(service)
-        @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName())
-          @@{@methodName} = Google::Gax.create_api_call(
-            @@stub.method(:{@methodName}),
-            defaults["{@methodName}"]
+      @let stubs = @context.getStubs(service)
+        @join stubView : stubs
+          @@{@stubView.name} = Google::Gax::Grpc.create_stub(
+            service_path,
+            port,
+            chan_creds: chan_creds,
+            channel: channel,
+            scopes: scopes,
+            &{@stubView.fullyQualifiedType}.method(:new)
           )
+        @end
+
+
+        @join stubView : stubs
+          @join methodName : stubView.methodNames
+            @@{@methodName} = Google::Gax.create_api_call(
+              @@{@stubView.name}.method(:{@methodName}),
+              defaults["{@methodName}"]
+            )
+          @end
         @end
       @end
     end
@@ -337,7 +358,7 @@
 
 @private serviceMethodsSection(service)
   @# Service calls
-  @join method : context.getNonStreamingMethods(service)
+  @join method : context.getNonStreamingMethodsV2(service)
 
     {@flattenedMethod(service, method)}
   @end
@@ -346,7 +367,7 @@
 @private flattenedMethod(service, method)
   @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
        inputTypeName = context.rubyTypeName(method.getInputType()), \
-       documentation = comments(context.methodComments(method)), \
+       documentation = comments(context.methodComments(service, method)), \
        methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        requiredParams = methodConfig.getRequiredFields(), \
        optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig), \
