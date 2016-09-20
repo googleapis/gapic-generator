@@ -15,9 +15,11 @@
       {@prompt} api = {@ApiName}()
       @if initCode
         {@initCode}
+        @if docConfig.isRequestGrpcStreaming
+          {@prompt} requests = [request]
+        @end
       @end
       @if docConfig.isResponseGrpcStreaming
-        {@prompt} requests = [request]
         {@prompt} for element in {@methodCallSampleCode(docConfig, {@FALSE})}:
         {@prompt}   # process element
         {@prompt}   pass

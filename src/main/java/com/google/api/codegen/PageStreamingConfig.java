@@ -125,21 +125,6 @@ public class PageStreamingConfig {
       }
     }
 
-    String pageSizeFieldName = pageStreaming.getRequest().getPageSizeField();
-    Field pageSizeField = null;
-    if (!Strings.isNullOrEmpty(pageSizeFieldName)) {
-      pageSizeField = method.getInputType().getMessageType().lookupField(pageSizeFieldName);
-      if (pageSizeField == null) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "Request field missing for page streaming: method = %s, message type = %s, field = %s",
-                method.getFullName(),
-                method.getInputType().getMessageType().getFullName(),
-                pageSizeFieldName));
-      }
-    }
-
     String responseTokenFieldName = pageStreaming.getResponse().getTokenField();
     Field responseTokenField = null;
     if (!Strings.isNullOrEmpty(responseTokenFieldName)) {
@@ -172,7 +157,10 @@ public class PageStreamingConfig {
       return null;
     }
     return new PageStreamingConfig(
-        requestTokenField, pageSizeField, responseTokenField, resourcesField);
+        requestTokenField,
+        null /* pageSize field is not used for gRPC streaming */,
+        responseTokenField,
+        resourcesField);
   }
 
   private PageStreamingConfig(
