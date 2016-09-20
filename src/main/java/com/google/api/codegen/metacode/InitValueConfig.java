@@ -58,11 +58,6 @@ public abstract class InitValueConfig {
   public abstract Map<String, String> getCollectionValues();
 
   /** Creates an updated InitValueConfig with the provided value. */
-  public InitValueConfig withInitialValue(String string) {
-    return new AutoValue_InitValueConfig(getApiWrapperName(), getCollectionConfig(), string, null);
-  }
-
-  /** Creates an updated InitValueConfig with the provided value. */
   public InitValueConfig withInitialCollectionValue(String entityName, String value) {
     HashMap<String, String> collectionValues = new HashMap<>();
     collectionValues.put(entityName, value);
@@ -82,7 +77,7 @@ public abstract class InitValueConfig {
     return getCollectionConfig() != null;
   }
 
-  public boolean hasFormattedInitialValue() {
+  public boolean hasFormattingConfigInitialValues() {
     return getCollectionValues() != null && !getCollectionValues().isEmpty();
   }
 

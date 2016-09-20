@@ -163,15 +163,14 @@ public class SampleInitCodeTest {
   public void testFormattedField() throws Exception {
     String fieldSpec = "name%entity";
 
-    InitCodeNode expectedStructure =
-        InitCodeNode.createWithChildren("name", InitCodeLineType.SimpleInitLine);
-
     HashMap<String, InitValueConfig> initValueMap = new HashMap<>();
     InitValueConfig initValueConfig = InitValueConfig.create("test-api", null);
     initValueMap.put("name", initValueConfig);
 
+    InitCodeNode expectedStructure = InitCodeNode.createWithValue("name", initValueConfig);
+
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec, initValueMap);
-    Truth.assertThat(checkEquals(actualStructure, expectedStructure));
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
   }
 
   @Test
@@ -343,7 +342,7 @@ public class SampleInitCodeTest {
         Arrays.asList(
             "formatted_field%entity1", "formatted_field%entity2", "formatted_field%entity3");
 
-    List<String> expectedKeyList = Arrays.asList("formattedField");
+    List<String> expectedKeyList = Arrays.asList("formatted_field", "root");
 
     InitCodeNode rootNode =
         InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());

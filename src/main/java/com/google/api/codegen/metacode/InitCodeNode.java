@@ -75,7 +75,7 @@ public class InitCodeNode {
   /*
    * Updates the InitValueConfig.
    */
-  public void updateInitValueConfig(InitValueConfig initValueConfig) {
+  private void updateInitValueConfig(InitValueConfig initValueConfig) {
     this.initValueConfig = initValueConfig;
   }
 
@@ -192,10 +192,10 @@ public class InitCodeNode {
         && oldConfig.getInitialValue().equals(newConfig.getInitialValue())) {
       throw new IllegalArgumentException("Inconsistent init values");
     }
-    if (oldConfig.hasFormattedInitialValue()) {
+    if (oldConfig.hasFormattingConfigInitialValues()) {
       collectionValues.putAll(oldConfig.getCollectionValues());
     }
-    if (newConfig.hasFormattedInitialValue()) {
+    if (newConfig.hasFormattingConfigInitialValues()) {
       collectionValues.putAll(newConfig.getCollectionValues());
     }
     return oldConfig.withInitialCollectionValues(collectionValues);

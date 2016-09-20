@@ -19,7 +19,6 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,12 +26,13 @@ import java.util.List;
 public class SmokeTestConfig {
   private final Method method;
   private final List<String> initFieldNames;
-  private final List<String> initFieldSpecs;
+  private final List<String> initFieldConfigStrings;
 
-  private SmokeTestConfig(Method method, List<String> initFieldSpecs, List<String> initFieldNames) {
-    this.initFieldSpecs = initFieldSpecs;
-    this.initFieldNames = initFieldNames;
+  private SmokeTestConfig(
+      Method method, List<String> initFieldConfigStrings, List<String> initFieldNames) {
     this.method = method;
+    this.initFieldNames = initFieldNames;
+    this.initFieldConfigStrings = initFieldConfigStrings;
   }
 
   public static SmokeTestConfig createSmokeTestConfig(
@@ -60,14 +60,9 @@ public class SmokeTestConfig {
     }
   }
 
-  /** Returns a list of initialized field names. */
-  public List<String> getInitFieldNames() {
-    return initFieldNames;
-  }
-
   /** Returns a list of initialized fields configuration. */
-  public List<String> getInitFieldSpecs() {
-    return initFieldSpecs;
+  public List<String> getInitFieldConfigStrings() {
+    return initFieldConfigStrings;
   }
 
   /** Returns the method that is used in the smoke test. */

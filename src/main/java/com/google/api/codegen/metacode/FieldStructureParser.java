@@ -80,7 +80,7 @@ public class FieldStructureParser {
 
   public static InitCodeNode parse(
       String initFieldConfigString, Map<String, InitValueConfig> initValueConfigMap) {
-    InitFieldConfig fieldConfig = createInitFieldConfig(initFieldConfigString);
+    InitFieldConfig fieldConfig = parseInitFieldConfig(initFieldConfigString);
     InitValueConfig valueConfig = null;
 
     if (fieldConfig.hasInitValue()) {
@@ -93,7 +93,7 @@ public class FieldStructureParser {
         fieldConfig.fieldPath(), InitCodeLineType.Unknown, valueConfig, null);
   }
 
-  private static InitFieldConfig createInitFieldConfig(String initFieldConfigString) {
+  private static InitFieldConfig parseInitFieldConfig(String initFieldConfigString) {
     String fieldName = null;
     String entityName = null;
     String value = null;

@@ -42,6 +42,7 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -129,7 +130,7 @@ public class InitCodeTransformer {
                 .table(table)
                 .rootObjectType(testConfig.getMethod().getInputType())
                 .initValueConfigMap(createCollectionMap(context))
-                .initFieldConfigStrings(testConfig.getInitFieldSpecs())
+                .initFieldConfigStrings(testConfig.getInitFieldConfigStrings())
                 .suggestedName(Name.from("request"))
                 .build());
     return buildInitCodeViewFlattened(context, rootNode);
@@ -361,7 +362,7 @@ public class InitCodeTransformer {
       for (String entityName : initValueConfig.getCollectionConfig().getNameTemplate().vars()) {
         String entityValue =
             "\"[" + LanguageUtil.lowerUnderscoreToUpperUnderscore(entityName) + "]\"";
-        if (initValueConfig.hasFormattedInitialValue()
+        if (initValueConfig.hasFormattingConfigInitialValues()
             && initValueConfig.getCollectionValues().containsKey(entityName)) {
           entityValue = initValueConfig.getCollectionValues().get(entityName);
         }
