@@ -4,8 +4,7 @@
 @snippet generateMethodSampleCode(docConfig)
   @let prompt = ">>>", \
        ApiName = docConfig.getApiName, \
-       docImportHandler = docConfig.getImportHandler, \
-       initCode = {@initCode(prompt, docConfig.getInitCode, docImportHandler)}
+       initCode = {@initCode(prompt, docConfig.getInitCode)}
     Example:
       @join import : docConfig.getAppImports
         {@prompt} {@import}
@@ -46,15 +45,15 @@
 # Helper functions for generateMethodSampleCode()
 
 # Generate argument initialization code for API call
-@private initCode(prompt, initCodeSpec, docImportHandler)
+@private initCode(prompt, initCodeSpec)
   @join line : initCodeSpec.getLines()
     @switch line.getLineType.toString()
     @case "StructureInitLine"
-      {@prompt} {@initLineStructure(line, docImportHandler)}
+      {@prompt} {@initLineStructure(line)}
     @case "ListInitLine"
       {@prompt} {@initLineList(line)}
     @case "SimpleInitLine"
-      {@prompt} {@initLineSimple(line, docImportHandler)}
+      {@prompt} {@initLineSimple(line)}
     @case "MapInitLine"
       {@prompt} {@initLineMap(line)}
     @default
@@ -64,9 +63,9 @@
 @end
 
 # Generate a Protobuf message argument
-@private initLineStructure(line, docImportHandler)
+@private initLineStructure(line)
   @let messageType = line.getType.getMessageType, \
-       initLineStructureClass = docImportHandler.elementPath(messageType, {@FALSE})
+       initLineStructureClass = importHandler.elementPath(messageType, {@FALSE})
     {@formattedIdentifier(line)} = {@initLineStructureClass}(\
       {@initLineStructureArgs(line)}\
     )
@@ -107,8 +106,8 @@
 @end
 
 # Generate a simple argument
-@private initLineSimple(line, docImportHandler)
-  {@formattedIdentifier(line)} = {@initValue(line, docImportHandler)}
+@private initLineSimple(line)
+  {@formattedIdentifier(line)} = {@initValue(line)}
 @end
 
 # Properly format an identifier for this language
@@ -117,14 +116,14 @@
 @end
 
 # Value for simple argument
-@private initValue(line, docImportHandler)
+@private initValue(line)
   @let metadata = line.getInitValueConfig
     @if metadata.hasFormattingConfig()
       api.{@formatResourceFunctionName(metadata.getCollectionConfig)}(\
         {@formatResourceFunctionArgs(metadata.getCollectionConfig)}\
       )
     @else
-      {@context.defaultValue(line.getType, docImportHandler)}
+      {@context.defaultValue(line.getType, importHandler)}
     @end
   @end
 @end
