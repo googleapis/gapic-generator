@@ -68,8 +68,8 @@ public class PythonImportHandler {
           PythonImport.create(
               ImportType.APP,
               method.getFile().getProto().getPackage(),
-              PythonProtoElements.getPbFileName(method.getInputMessage())));
-      for (Field field : method.getInputType().getMessageType().getMessageFields()) {
+              PythonProtoElements.getPbFileName(method)));
+      for (Field field : method.getInputMessage().getMessageFields()) {
         MessageType messageType = field.getType().getMessageType();
         addImport(
             messageType.getFile(),
