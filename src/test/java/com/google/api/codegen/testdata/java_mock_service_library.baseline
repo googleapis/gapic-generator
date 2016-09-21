@@ -16,7 +16,7 @@
 package com.google.gcloud.pubsub.spi;
 
 import com.google.api.gax.testing.MockGrpcService;
-import com.google.protobuf.GeneratedMessage;
+import com.google.protobuf.GeneratedMessageV3;
 import com.google.tagger.v1.LabelerGrpc;
 import io.grpc.ServerServiceDefinition;
 import java.util.List;
@@ -30,18 +30,18 @@ public class MockLabeler implements MockGrpcService  {
   }
 
   @Override
-  public List<GeneratedMessage> getRequests() {
+  public List<GeneratedMessageV3> getRequests() {
     return serviceImpl.getRequests();
   }
 
   @Override
-  public void setResponses(List<GeneratedMessage> responses) {
+  public void setResponses(List<GeneratedMessageV3> responses) {
     serviceImpl.setResponses(responses);
   }
 
   @Override
   public ServerServiceDefinition getServiceDefinition() {
-    return LabelerGrpc.bindService(serviceImpl);
+    return serviceImpl.bindService();
   }
 
   @Override
@@ -68,7 +68,7 @@ package com.google.gcloud.pubsub.spi;
 
 import com.google.api.gax.testing.MockGrpcService;
 import com.google.example.library.v1.LibraryServiceGrpc;
-import com.google.protobuf.GeneratedMessage;
+import com.google.protobuf.GeneratedMessageV3;
 import io.grpc.ServerServiceDefinition;
 import java.util.List;
 
@@ -81,18 +81,18 @@ public class MockLibraryService implements MockGrpcService  {
   }
 
   @Override
-  public List<GeneratedMessage> getRequests() {
+  public List<GeneratedMessageV3> getRequests() {
     return serviceImpl.getRequests();
   }
 
   @Override
-  public void setResponses(List<GeneratedMessage> responses) {
+  public void setResponses(List<GeneratedMessageV3> responses) {
     serviceImpl.setResponses(responses);
   }
 
   @Override
   public ServerServiceDefinition getServiceDefinition() {
-    return LibraryServiceGrpc.bindService(serviceImpl);
+    return serviceImpl.bindService();
   }
 
   @Override
