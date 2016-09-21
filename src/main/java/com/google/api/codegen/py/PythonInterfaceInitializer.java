@@ -14,14 +14,21 @@
  */
 package com.google.api.codegen.py;
 
+import com.google.api.codegen.ApiConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.common.collect.ImmutableMap;
 
 public class PythonInterfaceInitializer implements PythonSnippetSetInputInitializer<Interface> {
 
+  private final ApiConfig apiConfig;
+
+  public PythonInterfaceInitializer(ApiConfig apiConfig) {
+    this.apiConfig = apiConfig;
+  }
+
   @Override
   public PythonImportHandler getImportHandler(Interface iface) {
-    return new PythonImportHandler(iface);
+    return new PythonImportHandler(iface, apiConfig);
   }
 
   @Override

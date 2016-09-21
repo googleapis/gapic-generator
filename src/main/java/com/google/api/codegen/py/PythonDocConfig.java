@@ -109,11 +109,11 @@ abstract class PythonDocConfig extends DocConfig {
 
     abstract Method getMethod();
 
+    abstract Builder setImportHandler(PythonImportHandler importHandler);
+
     abstract Interface getInterface();
 
     abstract ApiConfig getApiConfig();
-
-    abstract Builder setImportHandler(PythonImportHandler importHandler);
 
     public PythonDocConfig build() {
       setImportHandler(
