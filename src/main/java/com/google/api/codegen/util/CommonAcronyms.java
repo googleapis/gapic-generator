@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by landrito on 9/20/16.
+ * Utility class to replace fully capitalized common acronyms with an upper camel interpretation.
  */
 public class CommonAcronyms {
   public static final ImmutableSet<String> ACRONYMS =
