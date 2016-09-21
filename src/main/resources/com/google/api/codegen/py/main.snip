@@ -384,7 +384,7 @@
   @let apiConfig = context.getApiConfig, \
        apiName = context.getApiWrapperName(service), \
        returnType = context.returnTypeOrEmpty(method, importHandler), \
-       fields = context.getRequiredFields(method), \
+       fields = context.getRequiredFields(service, method), \
        builder = context.newDocConfigBuilder \
          .setInterface(service) \
          .setApiConfig(apiConfig) \
@@ -463,46 +463,28 @@
                     @end
                     @if requiredParams
                         @if optionalParams
-                            request = {@methodInputModule}.{@inputTypeName}(
+                            request = {@methodInputElementPath}(
                                 {@namedParameters(requiredParams)},
                                 {@namedParameters(optionalParams)})
                         @else
-                            request = {@methodInputModule}.{@inputTypeName}(
+                            request = {@methodInputElementPath}(
                                 {@namedParameters(requiredParams)})
                         @end
                     @else
-                        {@optionalParameterValues(optionalParams)},
-                    @end
-                    options=None):
-                @if documentation
-                    {@documentation}
-                @end
-                @if {@defaultMutableValues(optionalParams)}
-                    {@defaultMutableValues(optionalParams)}
-                @end
-                @if requiredParams
-                    @if optionalParams
                         request = {@methodInputElementPath}(
-                            {@namedParameters(requiredParams)},
                             {@namedParameters(optionalParams)})
-                    @else
-                        request = {@methodInputElementPath}(
-                            {@namedParameters(requiredParams)})
                     @end
-                @else
-                    request = {@methodInputElementPath}(
-                        {@namedParameters(optionalParams)})
-                @end
-                {@callLine(method, "request")}
-        @else
-            def {@methodName(method)}(
-                    self,
-                    options=None):
-                @if documentation
-                    {@documentation}
-                @end
-                request = {@methodInputElementPath}()
-                {@callLine(method, "request")}
+                    {@callLine(method, "request")}
+            @else
+                def {@methodName(method)}(
+                        self,
+                        options=None):
+                    @if documentation
+                        {@documentation}
+                    @end
+                    request = {@methodInputElementPath}()
+                    {@callLine(method, "request")}
+            @end
         @end
     @end
 @end
