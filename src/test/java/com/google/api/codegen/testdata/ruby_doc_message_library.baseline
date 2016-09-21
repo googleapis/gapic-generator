@@ -700,7 +700,7 @@ module Google
         #     returned from the previous call to +ListShelves+ method.
         class ListShelvesRequest; end
 
-        # Request message for LibraryService.ListShelves.
+        # Response message for LibraryService.ListShelves.
         # @!attribute [rw] shelves
         #   @return [Array<Google::Example::Library::V1::Shelf>]
         #     The list of shelves.
@@ -712,6 +712,15 @@ module Google
         #     field in the subsequent call to +ListShelves+ method to retrieve the next
         #     page of results.
         class ListShelvesResponse; end
+
+        # Request message for LibraryService.StreamShelves.
+        class StreamShelvesRequest; end
+
+        # Response message for LibraryService.StreamShelves.
+        # @!attribute [rw] shelves
+        #   @return [Array<Google::Example::Library::V1::Shelf>]
+        #     The list of shelves.
+        class StreamShelvesResponse; end
 
         # Request message for LibraryService.DeleteShelf.
         # @!attribute [rw] name
@@ -793,6 +802,12 @@ module Google
         #     field in the subsequent call to +ListBooks+ method to retrieve the next
         #     page of results.
         class ListBooksResponse; end
+
+        # Request message for LibraryService.StreamBooks.
+        # @!attribute [rw] name
+        #   @return [String]
+        #     The name of the shelf whose books we'd like to list.
+        class StreamBooksRequest; end
 
         # Request message for LibraryService.UpdateBook.
         # @!attribute [rw] name
@@ -883,6 +898,16 @@ module Google
         #   @return [Hash{String => String}]
         #     The index to update the book with
         class UpdateBookIndexRequest; end
+
+        # @!attribute [rw] name
+        #   @return [String]
+        #     The name of the book to be discussed. If this is in the middle
+        #     of the stream and this is not specified, the name in the previous
+        #     message will be reused.
+        # @!attribute [rw] comment
+        #   @return [Google::Example::Library::V1::Comment]
+        #     The new comment.
+        class DiscussBookRequest; end
       end
     end
   end

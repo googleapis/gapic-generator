@@ -324,6 +324,15 @@ class LibraryServiceApi(object):
         self._update_book_index = api_callable.create_api_call(
             self.library_service_stub.UpdateBookIndex,
             settings=defaults['update_book_index'])
+        self._stream_shelves = api_callable.create_api_call(
+            self.library_service_stub.StreamShelves,
+            settings=defaults['stream_shelves'])
+        self._stream_books = api_callable.create_api_call(
+            self.library_service_stub.StreamBooks,
+            settings=defaults['stream_books'])
+        self._discuss_book = api_callable.create_api_call(
+            self.library_service_stub.DiscussBook,
+            settings=defaults['discuss_book'])
         self._add_tag = api_callable.create_api_call(
             self.library_service_stub.AddTag,
             settings=defaults['add_tag'])
@@ -891,6 +900,97 @@ class LibraryServiceApi(object):
             index_name=index_name,
             index_map=index_map)
         self._update_book_index(request, options)
+
+    def stream_shelves(
+            self,
+            options=None):
+        """
+        Test server streaming
+        gRPC streaming methods don't have HTTP equivalent and need not have google.api.http option.
+
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> api = LibraryServiceApi()
+          >>> for element in api.stream_shelves():
+          >>>   # process element
+          >>>   pass
+
+        Args:
+          options (:class:`google.gax.CallOptions`): Overrides the default
+            settings for this call, e.g, timeout, retries etc.
+
+        Returns:
+          iterator[:class:`google.example.library.v1.library_pb2.StreamShelvesResponse`].
+
+        Raises:
+          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+        """
+        request = library_pb2.StreamShelvesRequest()
+        return self._stream_shelves(request, options)
+
+    def stream_books(
+            self,
+            name,
+            options=None):
+        """
+        Test server streaming, non-paged responses.
+        gRPC streaming methods don't have HTTP equivalent and need not have google.api.http option.
+
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> api = LibraryServiceApi()
+          >>> name = ''
+          >>> for element in api.stream_books(name):
+          >>>   # process element
+          >>>   pass
+
+        Args:
+          name (string): The name of the shelf whose books we'd like to list.
+          options (:class:`google.gax.CallOptions`): Overrides the default
+            settings for this call, e.g, timeout, retries etc.
+
+        Returns:
+          iterator[:class:`google.example.library.v1.library_pb2.Book`].
+
+        Raises:
+          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+        """
+        request = library_pb2.StreamBooksRequest(
+            name=name)
+        return self._stream_books(request, options)
+
+    def discuss_book(
+            self,
+            requests,
+            options=None):
+        """
+        Test bidi-streaming.
+        gRPC streaming methods don't have HTTP equivalent and need not have google.api.http option.
+
+        EXPERIMENTAL: This method interface might change in the future.
+
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1 import library_pb2
+          >>> api = LibraryServiceApi()
+          >>> request = library_pb2.DiscussBookRequest()
+          >>> requests = [request]
+          >>> for element in api.discuss_book(requests):
+          >>>   # process element
+          >>>   pass
+
+        Args:
+          requests (iterator[:class:`google.example.library.v1.library_pb2.DiscussBookRequest`]): The input objects.
+          options (:class:`google.gax.CallOptions`): Overrides the default
+            settings for this call, e.g, timeout, retries etc.
+
+        Returns:
+          iterator[:class:`google.example.library.v1.library_pb2.Comment`].
+
+        Raises:
+          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+        """
+        return self._discuss_book(requests, options)
 
     def add_tag(
             self,

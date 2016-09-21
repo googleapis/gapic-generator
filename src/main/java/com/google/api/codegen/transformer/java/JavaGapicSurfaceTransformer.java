@@ -280,7 +280,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private List<StaticLangApiMethodView> generateApiMethods(SurfaceTransformerContext context) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
 
-    for (Method method : context.getNonStreamingMethods()) {
+    for (Method method : context.getSupportedMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       MethodTransformerContext methodContext = context.asMethodContext(method);
 

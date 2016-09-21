@@ -733,7 +733,7 @@ class ListShelvesRequest(object):
 
 class ListShelvesResponse(object):
     """
-    Request message for LibraryService.ListShelves.
+    Response message for LibraryService.ListShelves.
 
     Attributes:
       shelves (list[:class:`google.example.library.v1.library_pb2.Shelf`]): The list of shelves.
@@ -742,6 +742,27 @@ class ListShelvesResponse(object):
         ``ListShelvesRequest.page_token``
         field in the subsequent call to ``ListShelves`` method to retrieve the next
         page of results.
+
+    """
+    pass
+
+
+class StreamShelvesRequest(object):
+    """
+    Request message for LibraryService.StreamShelves.
+
+    Attributes:
+
+    """
+    pass
+
+
+class StreamShelvesResponse(object):
+    """
+    Response message for LibraryService.StreamShelves.
+
+    Attributes:
+      shelves (list[:class:`google.example.library.v1.library_pb2.Shelf`]): The list of shelves.
 
     """
     pass
@@ -852,6 +873,17 @@ class ListBooksResponse(object):
     pass
 
 
+class StreamBooksRequest(object):
+    """
+    Request message for LibraryService.StreamBooks.
+
+    Attributes:
+      name (string): The name of the shelf whose books we'd like to list.
+
+    """
+    pass
+
+
 class UpdateBookRequest(object):
     """
     Request message for LibraryService.UpdateBook.
@@ -951,6 +983,18 @@ class UpdateBookIndexRequest(object):
       name (string): The name of the book to update.
       index_name (string): The name of the index for the book
       index_map (dict[string -> :class:`google.example.library.v1.library_pb2.UpdateBookIndexRequest.IndexMapEntry`]): The index to update the book with
+
+    """
+    pass
+
+
+class DiscussBookRequest(object):
+    """
+    Attributes:
+      name (string): The name of the book to be discussed. If this is in the middle
+        of the stream and this is not specified, the name in the previous
+        message will be reused.
+      comment (:class:`google.example.library.v1.library_pb2.Comment`): The new comment.
 
     """
     pass
