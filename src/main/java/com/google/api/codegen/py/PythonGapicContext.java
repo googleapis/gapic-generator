@@ -34,14 +34,13 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import javax.annotation.Nullable;
 
 /** A GapicContext specialized for Python. */
@@ -298,7 +297,10 @@ public class PythonGapicContext extends GapicContext {
     // exception types
     contentBuilder.append(
         "\n\nRaises:\n  :exc:`google.gax.errors.GaxError` if the RPC is aborted.");
-
+    if (Iterables.size(config.getRequiredFields()) > 0
+        || Iterables.size(removePageTokenFromFields(config.getOptionalFields(), config)) > 0) {
+      contentBuilder.append("\n  :exc:`ValueError` if the parameters are invalid.");
+    }
     return Splitter.on("\n").splitToList(contentBuilder.toString());
   }
 
