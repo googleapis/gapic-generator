@@ -111,4 +111,22 @@ public class NameTest {
   public void illegalUpperCamel() {
     Name.upperCamel("factoryDecorator");
   }
+
+  @Test
+  public void acronyms() {
+    Name name = Name.upperCamel("IAM", "HTTP", "XML", "Dog");
+    Truth.assertThat(name.toLowerUnderscore()).isEqualTo("iam_http_xml_dog");
+    Truth.assertThat(name.toUpperUnderscore()).isEqualTo("IAM_HTTP_XML_DOG");
+    Truth.assertThat(name.toLowerCamel()).isEqualTo("iamHttpXmlDog");
+    Truth.assertThat(name.toUpperCamel()).isEqualTo("IamHttpXmlDog");
+  }
+
+  @Test
+  public void combinedAcronyms() {
+    Name name = Name.lowerCamel("dogIAMHTTPXML");
+    Truth.assertThat(name.toLowerUnderscore()).isEqualTo("dog_iam_http_xml");
+    Truth.assertThat(name.toUpperUnderscore()).isEqualTo("DOG_IAM_HTTP_XML");
+    Truth.assertThat(name.toLowerCamel()).isEqualTo("dogIamHttpXml");
+    Truth.assertThat(name.toUpperCamel()).isEqualTo("DogIamHttpXml");
+  }
 }

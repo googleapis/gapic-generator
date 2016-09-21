@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.util.CommonAcronyms;
 import com.google.common.base.CaseFormat;
 
 import java.util.Map;
@@ -36,14 +37,17 @@ public class LanguageUtil {
   }
 
   public static String upperCamelToUpperUnderscore(String name) {
+    name = CommonAcronyms.replaceAcronyms(name);
     return CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, name);
   }
 
   public static String upperCamelToLowerCamel(String name) {
+    name = CommonAcronyms.replaceAcronyms(name);
     return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, name);
   }
 
   public static String upperCamelToLowerUnderscore(String name) {
+    name = CommonAcronyms.replaceAcronyms(name);
     return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
   }
 
@@ -64,14 +68,17 @@ public class LanguageUtil {
   }
 
   public static String lowerCamelToUpperCamel(String name) {
+    name = CommonAcronyms.replaceAcronyms(name);
     return CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, name);
   }
 
   public static String lowerCamelToLowerUnderscore(String name) {
+    name = CommonAcronyms.replaceAcronyms(name);
     return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
   }
 
   public static String lowerCamelToUpperUnderscore(String name) {
+    name = CommonAcronyms.replaceAcronyms(name);
     return CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, name);
   }
 }
