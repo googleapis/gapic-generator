@@ -97,13 +97,6 @@ public class GoSurfaceNamer extends SurfaceNamer {
     return s;
   }
 
-  private static String upperFirstLetter(String s) {
-    if (s.length() > 0) {
-      s = Character.toUpperCase(s.charAt(0)) + s.substring(1);
-    }
-    return s;
-  }
-
   @Override
   public String getGrpcClientTypeName(Interface service) {
     return converter.getTypeName(service).getNickname() + "Client";
@@ -130,7 +123,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getDefaultCallSettingsFunctionName(Interface service) {
-    return Name.lowerCamel("default")
+    return Name.from("default")
         .join(clientNamePrefix(service))
         .join("call")
         .join("options")
@@ -139,12 +132,25 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getApiWrapperClassName(Interface service) {
-    return clientNamePrefix(service).join("client").toUpperCamel();
+    return className(clientNamePrefix(service).join("client"));
   }
 
   @Override
   public String getApiWrapperClassConstructorName(Interface service) {
-    return Name.lowerCamel("new").join(clientNamePrefix(service)).join("client").toUpperCamel();
+    return methodName(Name.from("new").join(clientNamePrefix(service)).join("client"));
+  }
+
+  @Override
+  public String getApiWrapperClassConstructorExampleName(Interface service) {
+    return methodName(
+        Name.from("example").join("new").join(clientNamePrefix(service)).join("client"));
+  }
+
+  @Override
+  public String getApiMethodExampleName(Interface service, Method method) {
+    return methodName(Name.from("example").join(clientNamePrefix(service)).join("client"))
+        + "_"
+        + getApiMethodName(method);
   }
 
   @Override

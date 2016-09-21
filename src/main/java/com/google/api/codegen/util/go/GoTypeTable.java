@@ -77,8 +77,8 @@ public class GoTypeTable implements TypeTable {
   }
 
   public static List<String> formatImports(Map<String, String> imports) {
-    List<String> standard = new ArrayList<>(imports.size() + 1);
-    List<String> thirdParty = new ArrayList<>(imports.size() + 1);
+    List<String> standard = new ArrayList<>(imports.size());
+    List<String> thirdParty = new ArrayList<>(imports.size());
 
     for (Map.Entry<String, String> imp : imports.entrySet()) {
       String importPath = imp.getKey();
@@ -90,15 +90,13 @@ public class GoTypeTable implements TypeTable {
         target.add(String.format("%s \"%s\"", packageRename, importPath));
       }
     }
-    if (standard.isEmpty()) {
-      return thirdParty;
+
+    List<String> merge = new ArrayList<>(standard);
+    if (!standard.isEmpty() && !thirdParty.isEmpty()) {
+      merge.add("");
     }
-    if (thirdParty.isEmpty()) {
-      return standard;
-    }
-    standard.add("");
-    standard.addAll(thirdParty);
-    return standard;
+    merge.addAll(thirdParty);
+    return merge;
   }
 
   private static boolean isStandardImport(String importPath) {

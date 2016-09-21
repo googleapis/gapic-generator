@@ -58,6 +58,8 @@ public class ApiMethodTransformer {
 
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(context.getNamer().getApiMethodName(context.getMethod()));
+    methodViewBuilder.exampleName(
+        context.getNamer().getApiMethodExampleName(context.getInterface(), context.getMethod()));
     setListMethodFields(context, methodViewBuilder);
     setFlattenedMethodFields(context, fields, methodViewBuilder);
     methodViewBuilder.isPageStreaming(true);
@@ -72,6 +74,8 @@ public class ApiMethodTransformer {
 
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(namer.getApiMethodName(context.getMethod()));
+    methodViewBuilder.exampleName(
+        context.getNamer().getApiMethodExampleName(context.getInterface(), context.getMethod()));
     setListMethodFields(context, methodViewBuilder);
     setRequestObjectMethodFields(
         context, namer.getPagedCallableMethodName(context.getMethod()), methodViewBuilder);
@@ -86,6 +90,10 @@ public class ApiMethodTransformer {
 
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(namer.getPagedCallableMethodName(context.getMethod()));
+    methodViewBuilder.exampleName(
+        context
+            .getNamer()
+            .getPagedCallableMethodExampleName(context.getInterface(), context.getMethod()));
     setListMethodFields(context, methodViewBuilder);
     setCallableMethodFields(
         context, namer.getPagedCallableName(context.getMethod()), methodViewBuilder);
@@ -101,6 +109,10 @@ public class ApiMethodTransformer {
 
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(namer.getCallableMethodName(context.getMethod()));
+    methodViewBuilder.exampleName(
+        context
+            .getNamer()
+            .getCallableMethodExampleName(context.getInterface(), context.getMethod()));
     setListMethodFields(context, methodViewBuilder);
     setCallableMethodFields(context, namer.getCallableName(context.getMethod()), methodViewBuilder);
 
@@ -126,6 +138,8 @@ public class ApiMethodTransformer {
 
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(context.getNamer().getApiMethodName(context.getMethod()));
+    methodViewBuilder.exampleName(
+        context.getNamer().getApiMethodExampleName(context.getInterface(), context.getMethod()));
     setFlattenedMethodFields(context, fields, methodViewBuilder);
     setStaticLangSyncReturnFields(context, methodViewBuilder);
     methodViewBuilder.isPageStreaming(false);
@@ -139,6 +153,8 @@ public class ApiMethodTransformer {
 
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(namer.getApiMethodName(context.getMethod()));
+    methodViewBuilder.exampleName(
+        context.getNamer().getApiMethodExampleName(context.getInterface(), context.getMethod()));
     setRequestObjectMethodFields(
         context, namer.getCallableMethodName(context.getMethod()), methodViewBuilder);
     setStaticLangSyncReturnFields(context, methodViewBuilder);
@@ -153,6 +169,10 @@ public class ApiMethodTransformer {
 
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(namer.getCallableMethodName(context.getMethod()));
+    methodViewBuilder.exampleName(
+        context
+            .getNamer()
+            .getCallableMethodExampleName(context.getInterface(), context.getMethod()));
     setCallableMethodFields(context, namer.getCallableName(context.getMethod()), methodViewBuilder);
     methodViewBuilder.responseTypeName(
         context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType()));

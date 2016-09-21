@@ -45,6 +45,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract String name();
 
+  public abstract String exampleName();
+
   public abstract String settingsGetterName();
 
   public abstract List<RequestObjectParamView> methodParams();
@@ -92,6 +94,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
     public abstract Builder responseTypeName(String responseTypeName);
 
     public abstract Builder name(String name);
+
+    public abstract Builder exampleName(String name);
 
     public abstract Builder settingsGetterName(String name);
 

@@ -35,6 +35,7 @@ import com.google.api.codegen.viewmodel.RetryConfigDefinitionView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangXCombinedSurfaceView;
+import com.google.api.codegen.viewmodel.StaticLangXExampleView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.gax.core.RetrySettings;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
@@ -87,17 +88,16 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(service, apiConfig, createTypeTable(), namer);
-      models.add(generate(context, Constant.XAPI));
+      models.add(generate(context));
 
       context = SurfaceTransformerContext.create(service, apiConfig, createTypeTable(), namer);
-      models.add(generate(context, Constant.SAMPLE));
+      models.add(generateExample(context));
     }
     models.add(generatePackageInfo(model, apiConfig, namer));
     return models;
   }
 
-  private StaticLangXCombinedSurfaceView generate(
-      SurfaceTransformerContext context, Constant constant) {
+  private StaticLangXCombinedSurfaceView generate(SurfaceTransformerContext context) {
     StaticLangXCombinedSurfaceView.Builder view = StaticLangXCombinedSurfaceView.newBuilder();
 
     SurfaceNamer namer = context.getNamer();
@@ -105,7 +105,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     Interface service = context.getInterface();
     ApiConfig apiConfig = context.getApiConfig();
 
-    view.templateFileName(constant.template);
+    view.templateFileName(XAPI_TEMPLATE_FILENAME);
     view.serviceDoc(doc(service));
     view.localPackageName(namer.getLocalPackageName());
     view.clientName(namer.getApiWrapperClassName(service));
@@ -119,18 +119,16 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.grpcClientConstructorName(namer.getGrpcClientConstructorName(service));
 
     String outputPath = pathMapper.getOutputPath(service, apiConfig);
-    String fileName = GoSurfaceNamer.getReducedServiceName(service) + constant.fileNameSuffix;
+    String fileName = GoSurfaceNamer.getReducedServiceName(service) + "_client.go";
     view.outputPath(outputPath + File.separator + fileName);
 
-    List<RetryConfigDefinitionView> retryDef =
-        generateRetryConfigDefinitions(namer, context, constant);
-    boolean hasRetry = !retryDef.isEmpty();
+    List<RetryConfigDefinitionView> retryDef = generateRetryConfigDefinitions(namer, context);
     view.retryPairDefinitions(retryDef);
 
     view.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
     view.pathTemplateGetters(pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
     view.callSettings(apiCallableTransformer.generateCallSettings(context));
-    view.apiMethods(generateApiMethods(context, constant));
+    view.apiMethods(generateApiMethods(context, Collections.singletonList("math;;;")));
     view.pageStreamingDescriptorClasses(
         pageStreamingTransformer.generateDescriptorClasses(context));
 
@@ -139,11 +137,34 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.servicePort(serviceConfig.getServicePort());
     view.authScopes(serviceConfig.getAuthScopes(service));
 
-    addImports(context, constant);
-    if (constant.importPackageName) {
-      context.getTypeTable().saveNicknameFor(apiConfig.getPackageName() + ";;;");
-    }
+    addXApiImports(context);
+    view.imports(GoTypeTable.formatImports(context.getTypeTable().getImports()));
 
+    return view.build();
+  }
+
+  private StaticLangXExampleView generateExample(SurfaceTransformerContext context) {
+    StaticLangXExampleView.Builder view = StaticLangXExampleView.newBuilder();
+
+    SurfaceNamer namer = context.getNamer();
+    Model model = context.getModel();
+    Interface service = context.getInterface();
+    ApiConfig apiConfig = context.getApiConfig();
+
+    view.templateFileName(SAMPLE_TEMPLATE_FILENAME);
+
+    String outputPath = pathMapper.getOutputPath(service, apiConfig);
+    String fileName = GoSurfaceNamer.getReducedServiceName(service) + "_client_example_test.go";
+    view.outputPath(outputPath + File.separator + fileName);
+
+    view.exampleLocalPackageName(namer.getLocalPackageName() + "_test");
+    view.libLocalPackageName(namer.getLocalPackageName());
+    view.clientName(namer.getApiWrapperClassName(service));
+    view.clientConstructorName(namer.getApiWrapperClassConstructorName(service));
+    view.clientConstructorExampleName(namer.getApiWrapperClassConstructorExampleName(service));
+    view.apiMethods(generateApiMethods(context, Collections.<String>emptyList()));
+
+    addXExampleImports(context);
     view.imports(GoTypeTable.formatImports(context.getTypeTable().getImports()));
 
     return view.build();
@@ -183,7 +204,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private List<StaticLangApiMethodView> generateApiMethods(
-      SurfaceTransformerContext context, Constant constant) {
+      SurfaceTransformerContext context, List<String> pageStreamImports) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
 
     for (Method method : context.getNonStreamingMethods()) {
@@ -192,7 +213,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
       if (methodConfig.isPageStreaming()) {
         apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext));
-        for (String imp : constant.pageStreamImports) {
+        for (String imp : pageStreamImports) {
           context.getTypeTable().saveNicknameFor(imp);
         }
       } else {
@@ -204,7 +225,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private List<RetryConfigDefinitionView> generateRetryConfigDefinitions(
-      SurfaceNamer namer, SurfaceTransformerContext context, Constant constant) {
+      SurfaceNamer namer, SurfaceTransformerContext context) {
     Set<RetryConfigDefinitionView.Name> retryNames = new HashSet<>();
     for (Method method : context.getNonStreamingMethods()) {
       MethodConfig conf = context.getMethodConfig(method);
@@ -236,9 +257,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
               .build());
     }
     if (!retryDef.isEmpty()) {
-      for (String imp : constant.retryImports) {
-        context.getTypeTable().saveNicknameFor(imp);
-      }
+      context.getTypeTable().saveNicknameFor("time;;;");
+      context.getTypeTable().saveNicknameFor("google.golang.org/grpc/codes;;;");
     }
     return new ArrayList<>(retryDef.values());
   }
@@ -256,58 +276,23 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private static final String EMPTY_PROTO_PKG = "github.com/golang/protobuf/ptypes/empty";
 
-  private void addImports(SurfaceTransformerContext context, Constant constant) {
+  private void addXApiImports(SurfaceTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
-    for (String imp : constant.unconditionalImports) {
-      typeTable.saveNicknameFor(imp);
-    }
+    typeTable.saveNicknameFor("fmt;;;");
+    typeTable.saveNicknameFor("runtime;;;");
+    typeTable.saveNicknameFor("golang.org/x/net/context;;;");
+    typeTable.saveNicknameFor("google.golang.org/grpc;;;");
+    typeTable.saveNicknameFor("google.golang.org/grpc/metadata;;;");
+    typeTable.saveNicknameFor("github.com/googleapis/gax-go;gax;;");
+    typeTable.saveNicknameFor("google.golang.org/api/option;;;");
+    typeTable.saveNicknameFor("google.golang.org/api/transport;;;");
     typeTable.getImports().remove(EMPTY_PROTO_PKG);
   }
 
-  private enum Constant {
-    XAPI(
-        XAPI_TEMPLATE_FILENAME,
-        "_client.go",
-        ImmutableList.<String>of(
-            "fmt;;;",
-            "runtime;;;",
-            "golang.org/x/net/context;;;",
-            "google.golang.org/grpc;;;",
-            "google.golang.org/grpc/metadata;;;",
-            "github.com/googleapis/gax-go;gax;;",
-            "google.golang.org/api/option;;;",
-            "google.golang.org/api/transport;;;"),
-        ImmutableList.<String>of("time;;;", "google.golang.org/grpc/codes;;;"),
-        ImmutableList.<String>of("math;;;"),
-        false),
-    SAMPLE(
-        SAMPLE_TEMPLATE_FILENAME,
-        "_client_example_test.go",
-        ImmutableList.<String>of("golang.org/x/net/context;;;"),
-        ImmutableList.<String>of(),
-        ImmutableList.<String>of(),
-        true);
-
-    private final String template;
-    private final String fileNameSuffix;
-    private final ImmutableList<String> unconditionalImports;
-    private final ImmutableList<String> retryImports;
-    private final ImmutableList<String> pageStreamImports;
-    private final boolean importPackageName;
-
-    Constant(
-        String template,
-        String fileNameSuffix,
-        ImmutableList<String> unconditionalImports,
-        ImmutableList<String> retryImports,
-        ImmutableList<String> pageStreamImports,
-        boolean importPackageName) {
-      this.template = template;
-      this.fileNameSuffix = fileNameSuffix;
-      this.unconditionalImports = unconditionalImports;
-      this.retryImports = retryImports;
-      this.pageStreamImports = pageStreamImports;
-      this.importPackageName = importPackageName;
-    }
+  private void addXExampleImports(SurfaceTransformerContext context) {
+    ModelTypeTable typeTable = context.getTypeTable();
+    typeTable.saveNicknameFor("golang.org/x/net/context;;;");
+    typeTable.saveNicknameFor(context.getApiConfig().getPackageName() + ";;;");
+    typeTable.getImports().remove(EMPTY_PROTO_PKG);
   }
 }

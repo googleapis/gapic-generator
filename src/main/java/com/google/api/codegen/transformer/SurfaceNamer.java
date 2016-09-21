@@ -91,6 +91,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
+   * The name of example of the constructor for the service client.
+   * The client is VKit generated, not GRPC.
+   */
+  public String getApiWrapperClassConstructorExampleName(Interface interfaze) {
+    return getApiWrapperClassConstructorName(interfaze);
+  }
+
+  /**
    * Constructor name for the type with the given nickname.
    */
   public String getTypeConstructor(String typeNickname) {
@@ -383,6 +391,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return methodName(Name.upperCamel(method.getSimpleName()));
   }
 
+  /** The name of the example for the method. */
+  public String getApiMethodExampleName(Interface interfaze, Method method) {
+    return getApiMethodName(method);
+  }
+
   /**
    * The name of a variable to hold a value for the given proto message field
    * (such as a flattened parameter).
@@ -470,14 +483,23 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return methodName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
   }
 
+  /** The name of the example for the paged callable variant. */
+  public String getPagedCallableMethodExampleName(Interface interfaze, Method method) {
+    return getPagedCallableMethodName(method);
+  }
+
   /** The name of the callable for the paged callable variant of the given method. */
   public String getPagedCallableName(Method method) {
     return varName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
   }
-
   /** The name of the plain callable variant of the given method. */
   public String getCallableMethodName(Method method) {
     return methodName(Name.upperCamel(method.getSimpleName(), "Callable"));
+  }
+
+  /** The name of the example for the plain callable variant. */
+  public String getCallableMethodExampleName(Interface interfaze, Method method) {
+    return getCallableMethodName(method);
   }
 
   /** The name of the plain callable for the given method. */

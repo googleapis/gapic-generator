@@ -3,7 +3,7 @@
 @snippet generate(view)
     {@headerComment()}
 
-    package {@view.localPackageName}_test
+    package {@view.exampleLocalPackageName}
 
     import (
         @join imp : view.imports
@@ -11,9 +11,9 @@
         @end
     )
 
-    func Example{@view.clientConstructorName}() {
+    func {@view.clientConstructorExampleName}() {
         ctx := context.Background()
-        c, err := {@view.localPackageName}.{@view.clientConstructorName}(ctx)
+        c, err := {@view.libLocalPackageName}.{@view.clientConstructorName}(ctx)
         if err != nil {
             // TODO: Handle error.
         }
@@ -34,10 +34,11 @@
 
 
     @end
+
 @end
 
 @private simpleMethod(view, method)
-    func Example{@view.clientName}_{@method.name}() {
+    func {@method.exampleName}() {
         {@methodInit(view, method)}
         resp, err := c.{@method.name}(ctx, req)
         if err != nil {
@@ -49,7 +50,7 @@
 @end
 
 @private emptyReturnMethod(view, method)
-    func Example{@view.clientName}_{@method.name}() {
+    func {@method.exampleName}() {
         {@methodInit(view, method)}
         err = c.{@method.name}(ctx, req)
         if err != nil {
@@ -59,7 +60,7 @@
 @end
 
 @private pageStreamingMethod(view, method)
-    func Example{@view.clientName}_{@method.name}() {
+    func {@method.exampleName}() {
         {@methodInit(view, method)}
         it := c.{@method.name}(ctx, req)
         for {
@@ -76,7 +77,7 @@
 
 @private methodInit(view, method)
     ctx := context.Background()
-    c, err := {@view.localPackageName}.{@view.clientConstructorName}(ctx)
+    c, err := {@view.libLocalPackageName}.{@view.clientConstructorName}(ctx)
     if err != nil {
         // TODO: Handle error.
     }
