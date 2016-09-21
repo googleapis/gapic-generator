@@ -1,0 +1,76 @@
+@snippet generateFilename(service)
+    enums.py
+@end
+
+@snippet generateBody(service)
+@end
+
+@snippet generateMethodSampleCode(docConfig)
+@end
+
+@snippet generateModule(_, __, ___)
+    @let enums = enumConstants()
+        @if enums
+            {@licenseSection()}
+        
+            {@moduleDocstring()}
+        
+        
+            {@enums}
+
+        @end
+    @end
+@end
+
+@private licenseSection()
+    @# Copyright 2016 Google Inc. All rights reserved.
+    @#
+    @# Licensed under the Apache License, Version 2.0 (the "License");
+    @# you may not use this file except in compliance with the License.
+    @# You may obtain a copy of the License at
+    @#
+    @# http://www.apache.org/licenses/LICENSE-2.0
+    @#
+    @# Unless required by applicable law or agreed to in writing, software
+    @# distributed under the License is distributed on an "AS IS" BASIS,
+    @# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    @# See the License for the specific language governing permissions and
+    @# limitations under the License.
+@end
+
+@private moduleDocstring()
+    """Wrappers for protocol buffer enum types."""
+@end
+
+@private enumComments(enum)
+    @let overview = context.getSphinxifiedScopedDescription(enum)
+        """
+        @if overview
+            @join line : context.splitToLines(overview)
+                {@line}
+            @end
+        {@BREAK}
+        @end
+        Attributes:
+        @join value : enum.getValues()
+            @join line : {@context.enumValueComment(value)} if line
+                {@line}
+            @end
+        @end
+        """
+    @end
+@end
+
+@private enumSection(enum)
+    class {@context.python.wrapIfKeywordOrBuiltIn(enum.getSimpleName)}(object):
+        {@enumComments(enum)}
+        @join value : enum.getValues
+            {@context.python.wrapIfKeywordOrBuiltIn(value.getSimpleName)} = {@value.getNumber}
+        @end
+@end
+
+@private enumConstants()
+    @join type : context.python.getEnumTypes(context.getModel) on BREAK.add(BREAK).add(BREAK)
+        {@enumSection(type.getEnumType)}
+    @end
+@end

@@ -45,11 +45,9 @@ import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
-
-import org.apache.commons.lang3.NotImplementedException;
-
 import java.util.Arrays;
 import java.util.List;
+import org.apache.commons.lang3.NotImplementedException;
 
 /** MainGapicProviderFactory creates GapicProvider instances based on an id. */
 public class MainGapicProviderFactory
@@ -225,6 +223,19 @@ public class MainGapicProviderFactory
               .setSnippetFileNames(Arrays.asList("py/main.snip"))
               .setCodePathMapper(pythonPathMapper)
               .build();
+      // Note: enumProvider implementation doesn't care about the InputElementT view.
+      GapicProvider<? extends Object> enumProvider =
+          CommonGapicProvider.<Interface>newBuilder()
+              .setModel(model)
+              .setView(new InterfaceView())
+              .setContext(new PythonGapicContext(model, apiConfig))
+              .setSnippetSetRunner(
+                  new PythonSnippetSetRunner<Interface>(
+                      new PythonInterfaceInitializer(apiConfig),
+                      SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
+              .setSnippetFileNames(Arrays.asList("py/enum.snip"))
+              .setCodePathMapper(pythonPathMapper)
+              .build();
       GapicProvider<? extends Object> clientConfigProvider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
@@ -238,7 +249,8 @@ public class MainGapicProviderFactory
               .build();
 
       if (id.equals(PYTHON)) {
-        return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, clientConfigProvider);
+        return Arrays.<GapicProvider<? extends Object>>asList(
+            mainProvider, enumProvider, clientConfigProvider);
       }
 
       GapicProvider<? extends Object> messageProvider =
@@ -253,7 +265,7 @@ public class MainGapicProviderFactory
               .setCodePathMapper(CommonGapicCodePathMapper.defaultInstance())
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(
-          mainProvider, messageProvider, clientConfigProvider);
+          mainProvider, messageProvider, enumProvider, clientConfigProvider);
 
     } else if (id.equals(RUBY) || id.equals(RUBY_DOC)) {
       GapicCodePathMapper rubyPathMapper =

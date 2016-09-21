@@ -20,6 +20,8 @@ import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
+import com.google.api.tools.framework.model.EnumType;
+import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
@@ -145,12 +147,20 @@ public class PythonGapicContext extends GapicContext {
     return typeComment(field.getType(), importHandler);
   }
 
+  private String enumClassName(EnumType enumType) {
+    return "enums." + pythonCommon.wrapIfKeywordOrBuiltIn(enumType.getSimpleName());
+  }
+
   private String typeComment(TypeRef type, PythonImportHandler importHandler) {
     switch (type.getKind()) {
       case TYPE_MESSAGE:
         return ":class:`" + importHandler.elementPath(type.getMessageType(), true) + "`";
       case TYPE_ENUM:
-        return ":class:`" + importHandler.elementPath(type.getEnumType(), true) + "`";
+        return "enum :class:`"
+            + getApiConfig().getPackageName()
+            + "."
+            + enumClassName(type.getEnumType())
+            + "`";
       default:
         if (type.isPrimitive()) {
           return PRIMITIVE_TYPE_NAMES.get(type.getKind());
@@ -161,13 +171,8 @@ public class PythonGapicContext extends GapicContext {
   }
 
   /** Returns a comment string for field, consisting of type information and proto comment. */
-  private String fieldComment(
-      String name, Field field, PythonImportHandler importHandler, String paramComment) {
-    String comment =
-        String.format("  %s (%s)", name, fieldTypeCardinalityComment(field, importHandler));
-    if (paramComment == null) {
-      paramComment = getSphinxifiedScopedDescription(field);
-    }
+  private String fieldComment(String name, String type, String paramComment) {
+    String comment = String.format("  %s (%s)", name, type);
     if (!Strings.isNullOrEmpty(paramComment)) {
       if (paramComment.charAt(paramComment.length() - 1) == '\n') {
         paramComment = paramComment.substring(0, paramComment.length() - 1);
@@ -175,6 +180,15 @@ public class PythonGapicContext extends GapicContext {
       comment += ": " + paramComment.replaceAll("(\\r?\\n)", "\n    ");
     }
     return comment + "\n";
+  }
+
+  /** Alternative way of calling fieldComment for proto fields. */
+  private String fieldComment(
+      String name, Field field, PythonImportHandler importHandler, String paramComment) {
+    if (paramComment == null) {
+      paramComment = getSphinxifiedScopedDescription(field);
+    }
+    return fieldComment(name, fieldTypeCardinalityComment(field, importHandler), paramComment);
   }
 
   /**
@@ -235,15 +249,18 @@ public class PythonGapicContext extends GapicContext {
     return PythonDocConfig.newBuilder();
   }
 
+  public List<String> splitToLines(String s) {
+    return Splitter.on("\n").splitToList(s);
+  }
+
   /** Generate comments lines for a given method's description. */
   public List<String> methodDescriptionComments(Method method) {
     String description = "";
     if (method.hasAttribute(ElementDocumentationAttribute.KEY)) {
       String sphinxified = getSphinxifiedScopedDescription(method);
-      sphinxified = sphinxified.trim();
       description = sphinxified.replaceAll("\\s*\\n\\s*", "\n");
     }
-    return Splitter.on("\n").splitToList(description);
+    return splitToLines(description);
   }
 
   /**
@@ -301,7 +318,19 @@ public class PythonGapicContext extends GapicContext {
         || Iterables.size(removePageTokenFromFields(config.getOptionalFields(), config)) > 0) {
       contentBuilder.append("\n  :exc:`ValueError` if the parameters are invalid.");
     }
-    return Splitter.on("\n").splitToList(contentBuilder.toString());
+    return splitToLines(contentBuilder.toString());
+  }
+
+  public List<String> enumValueComment(EnumValue value) {
+    String description = "";
+    if (value.hasAttribute(ElementDocumentationAttribute.KEY)) {
+      String sphinxified = getSphinxifiedScopedDescription(value);
+      description = sphinxified.replaceAll("\\s*\\n\\s*", "\n");
+    }
+    description =
+        fieldComment(
+            pythonCommon.wrapIfKeywordOrBuiltIn(value.getSimpleName()), "int", description);
+    return splitToLines(description);
   }
 
   /** Get required (non-optional) fields. */
@@ -335,7 +364,11 @@ public class PythonGapicContext extends GapicContext {
       case TYPE_ENUM:
         Preconditions.checkArgument(
             type.getEnumType().getValues().size() > 0, "enum must have a value");
-        return importHandler.elementPath(type.getEnumType().getValues().get(0), false);
+        // TODO:multiple enums of same name?
+        return "enums."
+            + type.getEnumType().getSimpleName()
+            + "."
+            + type.getEnumType().getValues().get(0).getSimpleName();
       default:
         if (type.isPrimitive()) {
           return DEFAULT_VALUE_MAP.get(type.getKind());
@@ -359,7 +392,7 @@ public class PythonGapicContext extends GapicContext {
     }
   }
 
-  private String getSphinxifiedScopedDescription(ProtoElement element) {
+  public String getSphinxifiedScopedDescription(ProtoElement element) {
     return PythonSphinxCommentFixer.sphinxify(DocumentationUtil.getScopedDescription(element));
   }
 
