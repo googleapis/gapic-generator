@@ -64,11 +64,11 @@ public class PythonImportHandler {
     for (MethodConfig methodConfig : apiConfig.getInterfaceConfig(service).getMethodConfigs()) {
       Method method = methodConfig.getMethod();
       addImport(
-          method.getFile(),
+          method.getInputMessage().getFile(),
           PythonImport.create(
               ImportType.APP,
-              method.getFile().getProto().getPackage(),
-              PythonProtoElements.getPbFileName(method)));
+              method.getInputMessage().getFile().getProto().getPackage(),
+              PythonProtoElements.getPbFileName(method.getInputMessage())));
       for (Field field : method.getInputMessage().getMessageFields()) {
         MessageType messageType = field.getType().getMessageType();
         addImport(
