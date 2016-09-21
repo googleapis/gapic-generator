@@ -15,21 +15,23 @@
 
 package com.google.api.codegen.util;
 
-import com.google.common.collect.ImmutableSet;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.google.common.collect.ImmutableMap;
 
 /**
  * Utility class to replace fully capitalized common acronyms with an upper camel interpretation.
  */
 public class CommonAcronyms {
-  public static final ImmutableSet<String> ACRONYMS =
-      ImmutableSet.<String>builder().add("IAM", "HTTP", "XML", "API").build();
+  private static final ImmutableMap<String, String> ACRONYMS =
+      ImmutableMap.<String, String>builder()
+          .put("IAM", "Iam")
+          .put("HTTP", "Http")
+          .put("XML", "Xml")
+          .put("API", "Api")
+          .build();
 
   public static String replaceAcronyms(String str) {
-    for (String acronym : CommonAcronyms.ACRONYMS) {
-      str = str.replace(acronym, acronym.charAt(0) + acronym.substring(1).toLowerCase());
+    for (String acronym : ACRONYMS.keySet()) {
+      str = str.replace(acronym, ACRONYMS.get(acronym));
     }
     return str;
   }
