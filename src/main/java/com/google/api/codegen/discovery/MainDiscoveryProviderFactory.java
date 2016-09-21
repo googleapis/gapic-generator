@@ -80,6 +80,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
 
     } else if (id.equals(JAVA)) {
       return ViewModelProvider.newBuilder()
+          .setMethods(service.getApis(0).getMethodsList())
           .setApiaryConfig(apiaryConfig)
           .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
           .setMethodToViewTransformer(new JavaSampleMethodToViewTransformer())

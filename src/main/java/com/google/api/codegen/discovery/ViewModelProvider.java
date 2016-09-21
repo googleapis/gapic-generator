@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.discovery;
 
-import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -41,6 +41,7 @@ import com.google.protobuf.Method;
  */
 public class ViewModelProvider implements DiscoveryProvider {
 
+  private final List<Method> methods;
   private final ApiaryConfig apiaryConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
   private final SampleMethodToViewTransformer methodToViewTransformer;
@@ -49,12 +50,14 @@ public class ViewModelProvider implements DiscoveryProvider {
   private final String outputRoot;
 
   private ViewModelProvider(
+      List<Method> methods,
       ApiaryConfig apiaryConfig,
       CommonSnippetSetRunner snippetSetRunner,
       SampleMethodToViewTransformer methodToViewTransformer,
       JsonNode sampleConfigOverrides,
       TypeNameGenerator typeNameGenerator,
       String outputRoot) {
+    this.methods = methods;
     this.apiaryConfig = apiaryConfig;
     this.snippetSetRunner = snippetSetRunner;
     this.methodToViewTransformer = methodToViewTransformer;
@@ -66,10 +69,11 @@ public class ViewModelProvider implements DiscoveryProvider {
   @Override
   public Map<String, Doc> generate(Method method) {
     // Before the transformer step, we generate the SampleConfig and apply overrides if available.
+    // TODO(saicheems): Once all MVVM refactoring is done, change
+    // DiscoveryProvider to generate a single SampleConfig and provide one
+    // method at a time.
     SampleConfig sampleConfig =
-        new ApiaryConfigToSampleConfigConverter(
-                Collections.singletonList(method), apiaryConfig, typeNameGenerator)
-            .convert();
+        new ApiaryConfigToSampleConfigConverter(methods, apiaryConfig, typeNameGenerator).convert();
     sampleConfig = override(sampleConfig, sampleConfigOverrides);
     ViewModel surfaceDoc = methodToViewTransformer.transform(method, sampleConfig);
     Doc doc = snippetSetRunner.generate(surfaceDoc);
@@ -149,6 +153,7 @@ public class ViewModelProvider implements DiscoveryProvider {
   }
 
   public static class Builder {
+    private List<Method> methods;
     private ApiaryConfig apiaryConfig;
     private CommonSnippetSetRunner snippetSetRunner;
     private SampleMethodToViewTransformer methodToViewTransformer;
@@ -157,6 +162,11 @@ public class ViewModelProvider implements DiscoveryProvider {
     private String outputRoot;
 
     private Builder() {}
+
+    public Builder setMethods(List<Method> methods) {
+      this.methods = methods;
+      return this;
+    }
 
     public Builder setApiaryConfig(ApiaryConfig apiaryConfig) {
       this.apiaryConfig = apiaryConfig;
@@ -191,6 +201,7 @@ public class ViewModelProvider implements DiscoveryProvider {
 
     public ViewModelProvider build() {
       return new ViewModelProvider(
+          methods,
           apiaryConfig,
           snippetSetRunner,
           methodToViewTransformer,
