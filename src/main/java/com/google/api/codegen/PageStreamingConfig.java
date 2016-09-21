@@ -118,7 +118,7 @@ public class PageStreamingConfig {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
-                "Request field missing for page streaming: method = %s, message type = %s, field = %s",
+                "Request field missing for gRPC streaming: method = %s, message type = %s, field = %s",
                 method.getFullName(),
                 method.getInputType().getMessageType().getFullName(),
                 requestTokenFieldName));
@@ -134,7 +134,7 @@ public class PageStreamingConfig {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
-                "Response field missing for page streaming: method = %s, message type = %s, field = %s",
+                "Response field missing for gRPC streaming: method = %s, message type = %s, field = %s",
                 method.getFullName(),
                 method.getOutputType().getMessageType().getFullName(),
                 responseTokenFieldName));
@@ -147,7 +147,7 @@ public class PageStreamingConfig {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
-              "Resources field missing for page streaming: method = %s, message type = %s, field = %s",
+              "Resources field missing for gRPC streaming: method = %s, message type = %s, field = %s",
               method.getFullName(),
               method.getOutputType().getMessageType().getFullName(),
               resourcesFieldName));

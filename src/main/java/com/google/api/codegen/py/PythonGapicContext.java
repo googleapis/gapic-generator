@@ -215,10 +215,10 @@ public class PythonGapicContext extends GapicContext {
     }
 
     String path = importHandler.elementPath(returnMessageType, true);
-    String classInfo = ":class:`" + path + "` instance";
+    String classInfo = ":class:`" + path + "`";
 
     if (method.getResponseStreaming()) {
-      return "Returns:\n" + "  An iterator which yields " + classInfo + "s.";
+      return "Returns:\n" + "  iterator[" + classInfo + "].";
     } else if (config.isPageStreaming()) {
       return "Returns:"
           + "\n  A :class:`google.gax.PageIterator` instance. By default, this"
@@ -228,7 +228,7 @@ public class PythonGapicContext extends GapicContext {
           + "\n  This object can also be configured to iterate over the pages"
           + "\n  of the response through the `CallOptions` parameter.";
     } else {
-      return "Returns:\n  A " + classInfo + ".";
+      return "Returns:\n  A " + classInfo + " instance.";
     }
   }
 
