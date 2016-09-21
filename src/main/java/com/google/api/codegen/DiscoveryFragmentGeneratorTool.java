@@ -44,6 +44,13 @@ public class DiscoveryFragmentGeneratorTool {
             .build());
     options.addOption(
         Option.builder()
+            .longOpt("overrides")
+            .desc("The path to the sample config overrides file")
+            .hasArg()
+            .argName("OVERRIDES")
+            .build());
+    options.addOption(
+        Option.builder()
             .longOpt("gapic_yaml")
             .desc("The GAPIC YAML configuration file or files.")
             .hasArg()
@@ -67,18 +74,20 @@ public class DiscoveryFragmentGeneratorTool {
     generate(
         cl.getOptionValue("discovery_doc"),
         cl.getOptionValues("gapic_yaml"),
+        cl.getOptionValue("overrides", ""),
         cl.getOptionValue("output", ""));
   }
 
-  @SuppressWarnings("unchecked")
   private static void generate(
-      String discoveryDoc, String[] generatorConfigs, String outputDirectory) throws Exception {
+      String discoveryDoc, String[] generatorConfigs, String overridesFile, String outputDirectory)
+      throws Exception {
 
     ToolOptions options = ToolOptions.create();
     options.set(DiscoveryFragmentGeneratorApi.DISCOVERY_DOC, discoveryDoc);
-    options.set(DiscoveryFragmentGeneratorApi.OUTPUT_FILE, outputDirectory);
     options.set(
         DiscoveryFragmentGeneratorApi.GENERATOR_CONFIG_FILES, Arrays.asList(generatorConfigs));
+    options.set(DiscoveryFragmentGeneratorApi.OVERRIDES_FILE, overridesFile);
+    options.set(DiscoveryFragmentGeneratorApi.OUTPUT_FILE, outputDirectory);
     DiscoveryFragmentGeneratorApi generator = new DiscoveryFragmentGeneratorApi(options);
     generator.run();
   }

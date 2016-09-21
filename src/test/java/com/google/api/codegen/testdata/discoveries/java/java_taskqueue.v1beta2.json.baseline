@@ -5,64 +5,64 @@
  * 1. If not already done, enable the TaskQueue API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/taskqueue
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/taskqueue/v1beta2/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.taskqueue.Taskqueue;
+import com.google.api.services.taskqueue.Taskqueue.Taskqueues.Get;
 import com.google.api.services.taskqueue.model.TaskQueue;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class TaskqueueExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Taskqueue taskqueueService = new Taskqueue.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
+  public void run() throws IOException, GeneralSecurityException {
     // The project under which the queue lies.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+    String project = ""; // TODO: Update field(s).
 
     // The id of the taskqueue to get the properties of.
-    String taskqueue = "{MY-TASKQUEUE}"; // TODO: Update placeholder value(s).
+    String taskqueue = ""; // TODO: Update field(s).
 
-    Taskqueue.Taskqueues.Get request = taskqueueService.taskqueues().get(project, taskqueue);
+    Taskqueue service = createService();
+    Get request = service.taskqueues().get(project, taskqueue);
     TaskQueue response = request.execute();
+    System.out.println(response);
+  }
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+  public Taskqueue createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new Taskqueue.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new TaskqueueExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -71,61 +71,66 @@ public class TaskqueueExample {
  * 1. If not already done, enable the TaskQueue API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/taskqueue
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/taskqueue/v1beta2/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.taskqueue.Taskqueue;
+import com.google.api.services.taskqueue.Taskqueue.Tasks.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class TaskqueueExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Taskqueue taskqueueService = new Taskqueue.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
+  public void run() throws IOException, GeneralSecurityException {
     // The project under which the queue lies.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+    String project = ""; // TODO: Update field(s).
 
     // The taskqueue to delete a task from.
-    String taskqueue = "{MY-TASKQUEUE}"; // TODO: Update placeholder value(s).
+    String taskqueue = ""; // TODO: Update field(s).
 
     // The id of the task to delete.
-    String task = "{MY-TASK}"; // TODO: Update placeholder value(s).
+    String task = ""; // TODO: Update field(s).
 
-    Taskqueue.Tasks.Delete request = taskqueueService.tasks().delete(project, taskqueue, task);
+    Taskqueue service = createService();
+    Delete request = service.tasks().delete(project, taskqueue, task);
     request.execute();
   }
+
+  public Taskqueue createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new Taskqueue.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new TaskqueueExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
+  }
 }
 /**
  * BEFORE RUNNING:
@@ -133,67 +138,67 @@ public class TaskqueueExample {
  * 1. If not already done, enable the TaskQueue API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/taskqueue
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/taskqueue/v1beta2/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.taskqueue.Taskqueue;
+import com.google.api.services.taskqueue.Taskqueue.Tasks.Get;
 import com.google.api.services.taskqueue.model.Task;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class TaskqueueExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Taskqueue taskqueueService = new Taskqueue.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
+  public void run() throws IOException, GeneralSecurityException {
     // The project under which the queue lies.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+    String project = ""; // TODO: Update field(s).
 
     // The taskqueue in which the task belongs.
-    String taskqueue = "{MY-TASKQUEUE}"; // TODO: Update placeholder value(s).
+    String taskqueue = ""; // TODO: Update field(s).
 
     // The task to get properties of.
-    String task = "{MY-TASK}"; // TODO: Update placeholder value(s).
+    String task = ""; // TODO: Update field(s).
 
-    Taskqueue.Tasks.Get request = taskqueueService.tasks().get(project, taskqueue, task);
+    Taskqueue service = createService();
+    Get request = service.tasks().get(project, taskqueue, task);
     Task response = request.execute();
+    System.out.println(response);
+  }
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+  public Taskqueue createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new Taskqueue.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new TaskqueueExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -202,68 +207,67 @@ public class TaskqueueExample {
  * 1. If not already done, enable the TaskQueue API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/taskqueue
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/taskqueue/v1beta2/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.taskqueue.Taskqueue;
+import com.google.api.services.taskqueue.Taskqueue.Tasks.Insert;
 import com.google.api.services.taskqueue.model.Task;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class TaskqueueExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Taskqueue taskqueueService = new Taskqueue.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
+  public void run() throws IOException, GeneralSecurityException {
+    // TODO: Assign desired fields.
+    Task requestBody = new Task();
 
     // The project under which the queue lies
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+    String project = ""; // TODO: Update field(s).
 
     // The taskqueue to insert the task into
-    String taskqueue = "{MY-TASKQUEUE}"; // TODO: Update placeholder value(s).
+    String taskqueue = ""; // TODO: Update field(s).
 
-    // TODO: Assign values to the desired fields.
-    Task requestBody = new Task();
-
-
-    Taskqueue.Tasks.Insert request = taskqueueService.tasks().insert(project, taskqueue, requestBody);
+    Taskqueue service = createService();
+    Insert request = service.tasks().insert(project, taskqueue, requestBody);
     Task response = request.execute();
+    System.out.println(response);
+  }
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+  public Taskqueue createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new Taskqueue.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new TaskqueueExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -272,70 +276,70 @@ public class TaskqueueExample {
  * 1. If not already done, enable the TaskQueue API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/taskqueue
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/taskqueue/v1beta2/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.taskqueue.Taskqueue;
+import com.google.api.services.taskqueue.Taskqueue.Tasks.Lease;
 import com.google.api.services.taskqueue.model.Tasks;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class TaskqueueExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Taskqueue taskqueueService = new Taskqueue.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
+  public void run() throws IOException, GeneralSecurityException {
     // The project under which the queue lies.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+    String project = ""; // TODO: Update field(s).
 
     // The taskqueue to lease a task from.
-    String taskqueue = "{MY-TASKQUEUE}"; // TODO: Update placeholder value(s).
+    String taskqueue = ""; // TODO: Update field(s).
 
     // The number of tasks to lease.
-    int numTasks = 0; // TODO: Update placeholder value(s).
+    int numTasks = 0; // TODO: Update field(s).
 
     // The lease in seconds.
-    int leaseSecs = 0; // TODO: Update placeholder value(s).
+    int leaseSecs = 0; // TODO: Update field(s).
 
-    Taskqueue.Tasks.Lease request = taskqueueService.tasks().lease(project, taskqueue, numTasks, leaseSecs);
+    Taskqueue service = createService();
+    Lease request = service.tasks().lease(project, taskqueue, numTasks, leaseSecs);
     Tasks response = request.execute();
+    System.out.println(response);
+  }
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+  public Taskqueue createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new Taskqueue.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new TaskqueueExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -344,64 +348,64 @@ public class TaskqueueExample {
  * 1. If not already done, enable the TaskQueue API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/taskqueue
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/taskqueue/v1beta2/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.taskqueue.Taskqueue;
+import com.google.api.services.taskqueue.Taskqueue.Tasks.List;
 import com.google.api.services.taskqueue.model.Tasks2;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class TaskqueueExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Taskqueue taskqueueService = new Taskqueue.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
+  public void run() throws IOException, GeneralSecurityException {
     // The project under which the queue lies.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+    String project = ""; // TODO: Update field(s).
 
     // The id of the taskqueue to list tasks from.
-    String taskqueue = "{MY-TASKQUEUE}"; // TODO: Update placeholder value(s).
+    String taskqueue = ""; // TODO: Update field(s).
 
-    Taskqueue.Tasks.List request = taskqueueService.tasks().list(project, taskqueue);
+    Taskqueue service = createService();
+    List request = service.tasks().list(project, taskqueue);
     Tasks2 response = request.execute();
+    System.out.println(response);
+  }
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+  public Taskqueue createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new Taskqueue.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new TaskqueueExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -410,74 +414,73 @@ public class TaskqueueExample {
  * 1. If not already done, enable the TaskQueue API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/taskqueue
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/taskqueue/v1beta2/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.taskqueue.Taskqueue;
+import com.google.api.services.taskqueue.Taskqueue.Tasks.Patch;
 import com.google.api.services.taskqueue.model.Task;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class TaskqueueExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
+  public void run() throws IOException, GeneralSecurityException {
+    // TODO: Assign desired fields.
+    Task requestBody = new Task();
+
+    // The project under which the queue lies.
+    String project = ""; // TODO: Update field(s).
+
+
+    String taskqueue = ""; // TODO: Update field(s).
+
+
+    String task = ""; // TODO: Update field(s).
+
+    // The new lease in seconds.
+    int newLeaseSeconds = 0; // TODO: Update field(s).
+
+    Taskqueue service = createService();
+    Patch request = service.tasks().patch(project, taskqueue, task, newLeaseSeconds, requestBody);
+    Task response = request.execute();
+    System.out.println(response);
+  }
+
+  public Taskqueue createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
     if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Taskqueue taskqueueService = new Taskqueue.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
+    return new Taskqueue.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
 
-    // The project under which the queue lies.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
-
-
-    String taskqueue = "{MY-TASKQUEUE}"; // TODO: Update placeholder value(s).
-
-
-    String task = "{MY-TASK}"; // TODO: Update placeholder value(s).
-
-    // The new lease in seconds.
-    int newLeaseSeconds = 0; // TODO: Update placeholder value(s).
-
-    // TODO: Assign values to the desired fields to be changed.
-    Task requestBody = new Task();
-
-
-    Taskqueue.Tasks.Patch request = taskqueueService.tasks().patch(project, taskqueue, task, newLeaseSeconds, requestBody);
-    Task response = request.execute();
-
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new TaskqueueExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
 /**
@@ -486,73 +489,72 @@ public class TaskqueueExample {
  * 1. If not already done, enable the TaskQueue API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/taskqueue
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/taskqueue/v1beta2/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.taskqueue.Taskqueue;
+import com.google.api.services.taskqueue.Taskqueue.Tasks.Update;
 import com.google.api.services.taskqueue.model.Task;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class TaskqueueExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
+  public void run() throws IOException, GeneralSecurityException {
+    // TODO: Assign desired fields.
+    Task requestBody = new Task();
+
+    // The project under which the queue lies.
+    String project = ""; // TODO: Update field(s).
+
+
+    String taskqueue = ""; // TODO: Update field(s).
+
+
+    String task = ""; // TODO: Update field(s).
+
+    // The new lease in seconds.
+    int newLeaseSeconds = 0; // TODO: Update field(s).
+
+    Taskqueue service = createService();
+    Update request = service.tasks().update(project, taskqueue, task, newLeaseSeconds, requestBody);
+    Task response = request.execute();
+    System.out.println(response);
+  }
+
+  public Taskqueue createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
     if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Taskqueue taskqueueService = new Taskqueue.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
+    return new Taskqueue.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
 
-    // The project under which the queue lies.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
-
-
-    String taskqueue = "{MY-TASKQUEUE}"; // TODO: Update placeholder value(s).
-
-
-    String task = "{MY-TASK}"; // TODO: Update placeholder value(s).
-
-    // The new lease in seconds.
-    int newLeaseSeconds = 0; // TODO: Update placeholder value(s).
-
-    // TODO: Assign values to the desired fields.
-    Task requestBody = new Task();
-
-
-    Taskqueue.Tasks.Update request = taskqueueService.tasks().update(project, taskqueue, task, newLeaseSeconds, requestBody);
-    Task response = request.execute();
-
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new TaskqueueExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }

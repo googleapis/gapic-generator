@@ -14,6 +14,19 @@
  */
 package com.google.api.codegen;
 
+import java.io.File;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Nullable;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.codegen.discovery.DiscoveryProvider;
 import com.google.api.codegen.discovery.DiscoveryProviderFactory;
 import com.google.api.codegen.util.ClassInstantiator;
@@ -33,17 +46,6 @@ import com.google.protobuf.Api;
 import com.google.protobuf.Message;
 import com.google.protobuf.Method;
 
-import java.io.File;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
 /**
  * Main class for the discovery doc fragment generator.
  */
@@ -61,6 +63,10 @@ public class DiscoveryFragmentGeneratorApi {
           "output_file",
           "The name of the output file or folder to put generated code.",
           "");
+
+  public static final Option<String> OVERRIDES_FILE =
+      ToolOptions.createOption(
+          String.class, "overrides", "The path to the sample config overrides file.", "");
 
   public static final Option<List<String>> GENERATOR_CONFIG_FILES =
       ToolOptions.createOption(
@@ -98,6 +104,16 @@ public class DiscoveryFragmentGeneratorApi {
       return;
     }
 
+    String overridesFilename = options.get(OVERRIDES_FILE);
+    JsonNode overridesJson = null;
+    if (!Strings.isNullOrEmpty(overridesFilename)) {
+      ObjectMapper mapper = new ObjectMapper();
+      overridesJson =
+          mapper.readTree(
+              com.google.common.io.Files.newReader(
+                  new File(overridesFilename), Charset.forName("UTF8")));
+    }
+
     GeneratorProto generator = configProto.getGenerator();
 
     String factory = generator.getFactory();
@@ -105,7 +121,7 @@ public class DiscoveryFragmentGeneratorApi {
 
     DiscoveryProviderFactory providerFactory = createProviderFactory(factory);
     DiscoveryProvider provider =
-        providerFactory.create(discovery.getService(), discovery.getConfig(), id);
+        providerFactory.create(discovery.getService(), discovery.getConfig(), overridesJson, id);
 
     for (Api api : discovery.getService().getApisList()) {
       for (Method method : api.getMethodsList()) {
@@ -116,7 +132,6 @@ public class DiscoveryFragmentGeneratorApi {
   }
 
   private static DiscoveryProviderFactory createProviderFactory(String factory) {
-    @SuppressWarnings("unchecked")
     DiscoveryProviderFactory provider =
         ClassInstantiator.createClass(
             factory,

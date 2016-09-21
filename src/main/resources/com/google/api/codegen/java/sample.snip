@@ -1,0 +1,114 @@
+@snippet generate(sampleClass)
+  /**
+   * BEFORE RUNNING:
+   * ---------------
+   * 1. If not already done, enable the {@sampleClass.apiTitle}
+   *    and check the quota for your project at
+   *    https://console.developers.google.com/apis/api/{@sampleClass.apiName}
+   * 2. Install the Java client library on Maven or Gradle. Check installation
+   *    instructions at https://github.com/google/google-api-java-client.
+   *    On other build systems, you can add the jar files to your project from
+   *    https://developers.google.com/resources/api-libraries/download/{@sampleClass.apiName}/{@sampleClass.apiVersion}/java
+   */
+  @join import : sampleClass.imports
+    import {@import};
+  @end
+
+  public class {@sampleClass.className} {
+    {@runFunc(sampleClass.body)}
+
+    {@createServiceFunc(sampleClass.body)}
+
+    {@mainFunc(sampleClass)}
+  }
+@end
+
+@private runFunc(sampleBody)
+  public void run() throws IOException, GeneralSecurityException {
+    @if sampleBody.hasInputRequest
+      // TODO: Assign desired fields.
+      {@sampleBody.requestBodyTypeName} {@sampleBody.requestBodyVarName} = new {@sampleBody.requestBodyTypeName}();
+
+    @end
+    @join field : sampleBody.fields if sampleBody.fields
+      @join line : util.getDocLines(field.description, 100)
+        // {@line}
+      @end
+
+      {@field.typeName} {@field.name} = {@field.defaultValue}; // TODO: Update field(s).
+
+    @end
+    {@sampleBody.serviceTypeName} {@sampleBody.serviceVarName} = createService();
+    {@sampleBody.requestTypeName} {@sampleBody.requestVarName} = {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}({@paramList(sampleBody.fieldVarNames)});
+    @if {@sampleBody.isPageStreaming}
+      {@sampleBody.responseTypeName} {@sampleBody.responseVarName};
+      do {
+        {@sampleBody.responseVarName} = {@sampleBody.requestVarName}.execute();
+        if ({@sampleBody.responseVarName}.{@sampleBody.resourceGetterName}() == null) {
+          continue;
+        }
+        @if {@sampleBody.isResourceMap}
+          for ({@sampleBody.resourceTypeName} item : response.{@sampleBody.resourceGetterName}().entrySet()) {
+            System.out.println(item.getKey() + ": " + item.getValue());
+          }
+        @else
+          for ({@sampleBody.resourceTypeName} item : response.{@sampleBody.resourceGetterName}()) {
+            System.out.println(item);
+          }
+        @end
+      } while ({@sampleBody.responseVarName}.getNextPageToken() != null);
+    @else
+      @if {@sampleBody.hasOutput}
+        {@sampleBody.responseTypeName} {@sampleBody.responseVarName} = {@sampleBody.requestVarName}.execute();
+        System.out.println({@sampleBody.responseVarName});
+      @else
+        {@sampleBody.requestVarName}.execute();
+      @end
+    @end
+  }
+@end
+
+@private createServiceFunc(sampleBody)
+  public {@sampleBody.serviceTypeName} createService() throws IOException, GeneralSecurityException {
+    // TODO: This sample uses Application Default Credentials for authentication.
+    // Install the gcloud CLI from https://cloud.google.com/sdk and run
+    // `gcloud beta auth application-default login`
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    return new {@sampleBody.serviceTypeName}.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Sample")
+        .build();
+  }
+@end
+
+@private mainFunc(sampleClass)
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new {@sampleClass.className}().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+@end
+
+@private callChain(methodNameComponents)
+  @join resource : methodNameComponents on "()."
+    {@resource}
+  @end
+@end
+
+@private paramList(fieldVarNames)
+  @join fieldVarName : fieldVarNames on ", "
+    {@fieldVarName}
+  @end
+@end
