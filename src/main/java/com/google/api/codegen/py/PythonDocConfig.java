@@ -32,6 +32,8 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Represents the Python documentation settings for an Api method.
@@ -48,7 +50,7 @@ abstract class PythonDocConfig extends DocConfig {
 
   public abstract Interface getInterface();
 
-  public abstract PythonImportHandler getImportHandler();
+  abstract PythonImportHandler getImportHandler();
 
   @Override
   public String getMethodName() {
@@ -58,11 +60,25 @@ abstract class PythonDocConfig extends DocConfig {
   /**
    * Does this method return an iterable response?
    */
-  public boolean isIterableResponse() {
+  public boolean isPageStreaming() {
     Method method = getMethod();
     MethodConfig methodConfig =
         getApiConfig().getInterfaceConfig(getInterface()).getMethodConfig(method);
     return methodConfig.isPageStreaming();
+  }
+
+  /**
+   * Is this method gRPC-response streaming?
+   */
+  public boolean isResponseGrpcStreaming() {
+    return getMethod().getResponseStreaming();
+  }
+
+  /**
+   * Is this method gRPC-request streaming?
+   */
+  public boolean isRequestGrpcStreaming() {
+    return getMethod().getRequestStreaming();
   }
 
   /**
@@ -81,7 +97,8 @@ abstract class PythonDocConfig extends DocConfig {
     return PythonImport.create(ImportType.APP, moduleName, apiName).importString();
   }
 
-  private List<String> addProtoImports(List<String> importStrings) {
+  private void addProtoImports(List<String> importStrings) {
+    Set<String> protoImports = new TreeSet<>();
     for (InitCodeLine line : getInitCode().getLines()) {
       TypeRef lineType = null;
       switch (line.getLineType()) {
@@ -96,38 +113,21 @@ abstract class PythonDocConfig extends DocConfig {
       }
 
       if (lineType != null && lineType.isMessage()) {
-        importStrings.addAll(getImportHandler().calculateImports());
-        break;
+        protoImports.add(getImportHandler().fileToImport(lineType.getMessageType().getFile()));
       }
     }
-    return importStrings;
+    importStrings.addAll(protoImports);
   }
 
   @AutoValue.Builder
   abstract static class Builder extends DocConfig.Builder<Builder> {
-    abstract PythonDocConfig autoBuild();
-
-    abstract Method getMethod();
-
-    abstract Builder setImportHandler(PythonImportHandler importHandler);
-
-    abstract Interface getInterface();
-
-    abstract ApiConfig getApiConfig();
-
-    public PythonDocConfig build() {
-      setImportHandler(
-          new PythonImportHandler(
-              getApiConfig()
-                  .getInterfaceConfig(getInterface())
-                  .getMethodConfig(getMethod())
-                  .getRequiredFields()));
-      return autoBuild();
-    }
+    abstract PythonDocConfig build();
 
     public abstract Builder setApiConfig(ApiConfig apiConfig);
 
     public abstract Builder setApiName(String serviceName);
+
+    public abstract Builder setImportHandler(PythonImportHandler importHandler);
 
     public abstract Builder setMethod(Method method);
 

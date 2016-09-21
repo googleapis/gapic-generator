@@ -317,13 +317,26 @@ interfaces:
       - index_map{"default_key"}
   - name: StreamShelves
     request_object_method: false
-    page_streaming:
-      request:
-        token_field: page_token
+    grpc_streaming:
       response:
-        token_field: next_page_token
         resources_field: shelves
     retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 30000
+  - name: StreamBooks
+    request_object_method: false
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+    - name
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 30000
+  - name: DiscussBook
+    request_object_method: false
+    retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 30000
   - name: AddTag

@@ -98,6 +98,11 @@ public class PythonGapicContext extends GapicContext {
     return pythonCommon;
   }
 
+  @Override
+  protected boolean isSupported(Method method) {
+    return true;
+  }
+
   // Snippet Helpers
   // ===============
 
@@ -210,9 +215,11 @@ public class PythonGapicContext extends GapicContext {
     }
 
     String path = importHandler.elementPath(returnMessageType, true);
-    String classInfo = ":class:`" + path + "` instance";
+    String classInfo = ":class:`" + path + "`";
 
-    if (config.isPageStreaming()) {
+    if (method.getResponseStreaming()) {
+      return "Returns:\n" + "  iterator[" + classInfo + "].";
+    } else if (config.isPageStreaming()) {
       return "Returns:"
           + "\n  A :class:`google.gax.PageIterator` instance. By default, this"
           + "\n  is an iterable of "
@@ -220,9 +227,8 @@ public class PythonGapicContext extends GapicContext {
           + " instances."
           + "\n  This object can also be configured to iterate over the pages"
           + "\n  of the response through the `CallOptions` parameter.";
-
     } else {
-      return "Returns:\n  A " + classInfo + ".";
+      return "Returns:\n  A " + classInfo + " instance.";
     }
   }
 
@@ -253,23 +259,30 @@ public class PythonGapicContext extends GapicContext {
 
     // parameter types
     contentBuilder.append("Args:\n");
-    for (Field field :
-        removePageTokenFromFields(method.getInputType().getMessageType().getFields(), config)) {
-      String name = pythonCommon.wrapIfKeywordOrBuiltIn(field.getSimpleName());
-      if (config.isPageStreaming()
-          && field.equals((config.getPageStreaming().getPageSizeField()))) {
-        contentBuilder.append(
-            fieldComment(
-                name,
-                field,
-                importHandler,
-                "The maximum number of resources contained in the\n"
-                    + "underlying API response. If page streaming is performed per-\n"
-                    + "resource, this parameter does not affect the return value. If page\n"
-                    + "streaming is performed per-page, this determines the maximum number\n"
-                    + "of resources in a page."));
-      } else {
-        contentBuilder.append(fieldComment(name, field, importHandler, null));
+    if (method.getRequestStreaming()) {
+      contentBuilder.append(
+          "  requests (iterator["
+              + typeComment(method.getInputType(), importHandler)
+              + "]): The input objects.\n");
+    } else {
+      for (Field field :
+          removePageTokenFromFields(method.getInputType().getMessageType().getFields(), config)) {
+        String name = pythonCommon.wrapIfKeywordOrBuiltIn(field.getSimpleName());
+        if (config.isPageStreaming()
+            && field.equals((config.getPageStreaming().getPageSizeField()))) {
+          contentBuilder.append(
+              fieldComment(
+                  name,
+                  field,
+                  importHandler,
+                  "The maximum number of resources contained in the\n"
+                      + "underlying API response. If page streaming is performed per-\n"
+                      + "resource, this parameter does not affect the return value. If page\n"
+                      + "streaming is performed per-page, this determines the maximum number\n"
+                      + "of resources in a page."));
+        } else {
+          contentBuilder.append(fieldComment(name, field, importHandler, null));
+        }
       }
     }
     contentBuilder.append(
