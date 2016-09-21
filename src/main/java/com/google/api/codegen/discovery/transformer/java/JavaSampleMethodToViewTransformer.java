@@ -39,7 +39,7 @@ import com.google.protobuf.Method;
  */
 public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTransformer {
 
-  private final static String TEMPLATE_FILENAME = "java/discovery_fragment.snip";
+  private final static String TEMPLATE_FILENAME = "java/sample.snip";
 
   public JavaSampleMethodToViewTransformer() {}
 
