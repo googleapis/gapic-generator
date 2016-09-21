@@ -22,8 +22,11 @@ import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.api.codegen.viewmodel.ApiCallableType;
+import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
@@ -40,14 +43,17 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 import io.grpc.Status.Code;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
@@ -107,24 +113,41 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private StaticLangXApiView generateXApi(SurfaceTransformerContext context) {
-    List<StaticLangApiMethodView> methods = generateApiMethods(context);
-
+    SurfaceNamer namer = context.getNamer();
     StaticLangXApiView.Builder xapiClass = StaticLangXApiView.newBuilder();
 
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, null));
 
     xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
     xapiClass.packageName(context.getApiConfig().getPackageName());
-    String name = context.getNamer().getApiWrapperClassName(context.getInterface());
+    String name = namer.getApiWrapperClassName(context.getInterface());
+    String grpcName = namer.className(Name.upperCamel(context.getInterface().getSimpleName()));
     xapiClass.name(name);
+    xapiClass.grpcName(grpcName);
+    xapiClass.grpcTypeName(grpcName + "." + name);
     xapiClass.settingsClassName(context.getNamer().getApiSettingsClassName(context.getInterface()));
-    xapiClass.apiCallableMembers(apiCallableTransformer.generateStaticLangApiCallables(context));
+    List<ApiCallableView> callables = FluentIterable.from(apiCallableTransformer.generateStaticLangApiCallables(context))
+        .filter(new Predicate<ApiCallableView>() {
+          @Override public boolean apply(ApiCallableView call) {
+            return call.type() == ApiCallableType.SimpleApiCallable || call.type() == ApiCallableType.BundlingApiCallable;
+          }
+        })
+        .toList();
+    xapiClass.apiCallableMembers(callables);
     xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
     xapiClass.formatResourceFunctions(
         pathTemplateTransformer.generateFormatResourceFunctions(context));
     xapiClass.parseResourceFunctions(
         pathTemplateTransformer.generateParseResourceFunctions(context));
+    List<StaticLangApiMethodView> methods = generateApiMethods(context);
     xapiClass.apiMethods(methods);
+    xapiClass.apiMethodsImpl(FluentIterable.from(methods)
+        .filter(new Predicate<StaticLangApiMethodView>() {
+          @Override public boolean apply(StaticLangApiMethodView method) {
+            return methodTypeHasImpl(method.type());
+          }
+        })
+        .toList());
 
     // must be done as the last step to catch all imports
     xapiClass.imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()));
@@ -133,6 +156,10 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.outputPath(outputPath + File.separator + name + ".cs");
 
     return xapiClass.build();
+  }
+
+  private boolean methodTypeHasImpl(ApiMethodType type) {
+    return type != ApiMethodType.FlattenedMethodAsyncCancellationToken;
   }
 
   private StaticLangXSettingsView generateXSettings(SurfaceTransformerContext context) {
@@ -172,22 +199,24 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private List<StaticLangApiMethodView> generateApiMethods(SurfaceTransformerContext context) {
+    Map<String, PageStreamingDescriptorClassView> pagedByName = Maps.uniqueIndex(pageStreamingTransformer.generateDescriptorClasses(context),
+        new Function<PageStreamingDescriptorClassView, String>() {
+      @Override public String apply(PageStreamingDescriptorClassView v) {
+        return v.name();
+      }
+    });
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
-
     for (Method method : context.getNonStreamingMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       MethodTransformerContext methodContext = context.asMethodContext(method);
 
       if (methodConfig.isPageStreaming()) {
-        /*if (methodConfig.isFlattening()) {
+        if (methodConfig.isFlattening()) {
           for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
-            apiMethods.add(
-                apiMethodTransformer.generatePagedFlattenedMethod(methodContext, fields));
+            apiMethods.add(transformPagedMethod(apiMethodTransformer.generatePagedFlattenedMethod(methodContext, fields, ApiMethodType.PagedFlattenedMethod), pagedByName));
+            apiMethods.add(transformPagedMethod(apiMethodTransformer.generatePagedFlattenedMethod(methodContext, fields, ApiMethodType.PagedFlattenedMethodAsync), pagedByName));
           }
         }
-        apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext));
-        apiMethods.add(apiMethodTransformer.generatePagedCallableMethod(methodContext));
-        apiMethods.add(apiMethodTransformer.generateUnpagedListCallableMethod(methodContext));*/
       } else {
         if (methodConfig.isFlattening()) {
           for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
@@ -196,8 +225,6 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
             apiMethods.add(transformFlattenedMethod(apiMethodTransformer.generateFlattenedMethod(methodContext, fields, ApiMethodType.FlattenedMethodAsyncCancellationToken)));
           }
         }
-        //apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(methodContext));
-        //apiMethods.add(apiMethodTransformer.generateCallableMethod(methodContext));
       }
     }
 
@@ -205,8 +232,7 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
   
   private StaticLangApiMethodView transformFlattenedMethod(StaticLangApiMethodView method) {
-    switch (method.type())
-    {
+    switch (method.type()) {
       case FlattenedMethod:
         method = AddParam(method, "CallSettings", "callSettings", "null", "If not null, applies overrides to this RPC call.");
         method = AddReturnDoc(method, "The RPC response.");
@@ -220,6 +246,27 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
         method = AddParam(method, "CancellationToken", "cancellationToken", null, "A <see cref=\"CancellationToken\"/> to use for this RPC.");
         method = MakeAsync(method);
         method = AddReturnDoc(method, "A Task containing the RPC response.");
+        break;
+      default:
+        throw new RuntimeException("Unexpected method type: '" + method.type() + "'");
+    }
+    return method;
+  }
+  
+  private StaticLangApiMethodView transformPagedMethod(StaticLangApiMethodView method,
+      Map<String, PageStreamingDescriptorClassView> pagedByName) {
+    method = method.toBuilder().pagedView(pagedByName.get(method.name() + "PageStrDesc")).build();
+    method = AddParam(method, "string", "pageToken", "null", "The token returned from the previous request.", "A value of <c>null</c> or an empty string retrieves the first page.");
+    method = AddParam(method, "int?", "pageSize", "null", "The size of page to request. The response will not be larger than this, but may be smaller.", "A value of <c>null</c> or 0 uses a server-defined page size.");
+    method = AddParam(method, "CallSettings", "callSettings", "null", "If not null, applies overrides to this RPC call.");
+    String resource = method.pagedView().resourceTypeName();
+    switch (method.type()) {
+      case PagedFlattenedMethod:
+        method = AddReturnDoc(method, "A pageable sequence of <see cref=\"" + resource + "\"/> resources.");
+        break;
+      case PagedFlattenedMethodAsync:
+        method = AddReturnDoc(method, "A pageable asynchronous sequence of <see cref=\"" + resource + "\"/> resources.");
+        method = method.toBuilder().name(method.name() + "Async").build();
         break;
       default:
         throw new RuntimeException("Unexpected method type: '" + method.type() + "'");

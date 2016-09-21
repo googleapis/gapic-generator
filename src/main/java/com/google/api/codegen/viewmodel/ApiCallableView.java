@@ -26,6 +26,8 @@ public abstract class ApiCallableView {
 
   public abstract String name();
 
+  public abstract String methodName();
+
   public abstract String settingsFunctionName();
 
   public static Builder newBuilder() {
@@ -41,6 +43,8 @@ public abstract class ApiCallableView {
     public abstract Builder responseTypeName(String name);
 
     public abstract Builder name(String name);
+
+    public abstract Builder methodName(String name);
 
     public abstract Builder settingsFunctionName(String name);
 

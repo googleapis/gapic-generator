@@ -30,7 +30,6 @@ public class CSharpApiCallableTransformer extends ApiCallableTransformer {
     });
     
     List<ApiCallSettingsView> settingsMembers = new ArrayList<>();
-
     for (Method method : context.getNonStreamingMethods()) {
       List<ApiCallSettingsView> calls = FluentIterable.from(generateApiCallableSettings(context.asMethodContext(method)))
           .transform(new Function<ApiCallSettingsView, ApiCallSettingsView>() {
@@ -44,7 +43,6 @@ public class CSharpApiCallableTransformer extends ApiCallableTransformer {
           .toList();
       settingsMembers.addAll(calls);
     }
-
     return settingsMembers;
   }
 }

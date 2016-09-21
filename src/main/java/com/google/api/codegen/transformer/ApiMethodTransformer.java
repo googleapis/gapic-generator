@@ -54,14 +54,20 @@ public class ApiMethodTransformer {
 
   public StaticLangApiMethodView generatePagedFlattenedMethod(
       MethodTransformerContext context, ImmutableList<Field> fields) {
+    return generatePagedFlattenedMethod(context, fields, ApiMethodType.PagedFlattenedMethod);
+  }
+
+  public StaticLangApiMethodView generatePagedFlattenedMethod(
+      MethodTransformerContext context, ImmutableList<Field> fields, ApiMethodType type) {
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(context.getNamer().getApiMethodName(context.getMethod()));
+    methodViewBuilder.callableName(context.getNamer().getCallableName(context.getMethod()));
     setListMethodFields(context, methodViewBuilder);
     setFlattenedMethodFields(context, fields, methodViewBuilder);
 
-    return methodViewBuilder.type(ApiMethodType.PagedFlattenedMethod).build();
+    return methodViewBuilder.type(type).build();
   }
 
   public StaticLangApiMethodView generatePagedRequestObjectMethod(
@@ -127,6 +133,7 @@ public class ApiMethodTransformer {
 
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(context.getNamer().getApiMethodName(context.getMethod()));
+    methodViewBuilder.callableName(context.getNamer().getCallableName(context.getMethod()));
     setFlattenedMethodFields(context, fields, methodViewBuilder);
     setStaticLangSyncReturnFields(context, methodViewBuilder);
 
@@ -413,6 +420,7 @@ public class ApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
     param.name(namer.getVariableName(field));
+    param.nameAsMethodName(namer.methodName(Name.lowerCamel(namer.getVariableName(field))));
 
     if (namer.shouldImportRequestObjectParamType(field)) {
       param.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getType()));

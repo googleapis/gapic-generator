@@ -66,6 +66,7 @@ public class ApiCallableTransformer {
     apiCallableBuilder.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     apiCallableBuilder.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
     apiCallableBuilder.name(context.getNamer().getCallableName(method));
+    apiCallableBuilder.methodName(context.getNamer().getApiMethodName(method));
     apiCallableBuilder.settingsFunctionName(context.getNamer().getSettingsFunctionName(method));
 
     if (methodConfig.isBundling()) {
@@ -95,6 +96,7 @@ public class ApiCallableTransformer {
           typeTable.getAndSaveNicknameFor(method.getInputType()));
       pagedApiCallableBuilder.responseTypeName(pagedResponseTypeName);
       pagedApiCallableBuilder.name(context.getNamer().getPagedCallableName(method));
+      pagedApiCallableBuilder.methodName(context.getNamer().getApiMethodName(method));
       pagedApiCallableBuilder.settingsFunctionName(
           context.getNamer().getSettingsFunctionName(method));
 

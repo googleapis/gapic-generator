@@ -27,7 +27,9 @@
 
         {@abstractClient(common.api, common.settings)}
 
-        {@implClient(common.api)}
+        {@implClient(common.api, common.settings)}
+        
+        {@partialPageStreaming(common.api, common.settings)}
     }
 
 @end
@@ -231,6 +233,66 @@
         // - Might be more reassuring on first use
         // - Allows method group conversions
         // Con: overloads!
+        
+        /// <summary>
+        /// Asynchronously creates a <see cref="{@api.name}"/>, applying defaults for all unspecified settings,
+        /// and creating a channel connecting to the given endpoint with application default credentials where
+        /// necessary.
+        /// </summary>
+        /// <param name="endpoint">Optional <see cref="ServiceEndpoint"/>.</param>
+        /// <param name="settings">Optional <see cref="{@settings.name}"/>.</param>
+        /// <returns>The task representing the created <see cref="{@api.name}"/>.</returns>
+        public static async Task<{@api.name}> CreateAsync(ServiceEndpoint endpoint = null, {@settings.name} settings = null)
+        {
+            Channel channel = await s_channelPool.GetChannelAsync(endpoint ?? DefaultEndpoint).ConfigureAwait(false);
+            return Create(channel, settings);
+        }
+
+        /// <summary>
+        /// Synchronously creates a <see cref="{@api.name}"/>, applying defaults for all unspecified settings,
+        /// and creating a channel connecting to the given endpoint with application default credentials where
+        /// necessary.
+        /// </summary>
+        /// <param name="endpoint">Optional <see cref="ServiceEndpoint"/>.</param>
+        /// <param name="settings">Optional <see cref="{@settings.name}"/>.</param>
+        /// <returns>The created <see cref="{@api.name}"/>.</returns>
+        public static {@api.name} Create(ServiceEndpoint endpoint = null, {@settings.name} settings = null)
+        {
+            Channel channel = s_channelPool.GetChannel(endpoint ?? DefaultEndpoint);
+            return Create(channel, settings);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="{@api.name}"/> which uses the specified channel for remote operations.
+        /// </summary>
+        /// <param name="channel">The <see cref="Channel"/> for remote operations. Must not be null.</param>
+        /// <param name="settings">Optional <see cref="{@settings.name}"/>.</param>
+        /// <returns>The created <see cref="{@api.name}"/>.</returns>
+        public static {@api.name} Create(Channel channel, {@settings.name} settings = null)
+        {
+            GaxPreconditions.CheckNotNull(channel, nameof(channel));
+            {@api.grpcTypeName} grpcClient = new {@api.grpcTypeName}(channel);
+            return new {@api.name}Impl(grpcClient, settings);
+        }
+
+        /// <summary>
+        /// Shuts down any channels automatically created by <see cref="Create(ServiceEndpoint, {@settings.name})"/>
+        /// and <see cref="CreateAsync(ServiceEndpoint, {@settings.name})"/>. Channels which weren't automatically
+        /// created are not affected.
+        /// </summary>
+        /// <remarks>After calling this method, further calls to <see cref="Create(ServiceEndpoint, {@settings.name})"/>
+        /// and <see cref="CreateAsync(ServiceEndpoint, {@settings.name})"/> will create new channels, which could
+        /// in turn be shut down by another call to this method.</remarks>
+        /// <returns>A task representing the asynchronous shutdown operation.</returns>
+        public static Task ShutdownDefaultChannelsAsync() => s_channelPool.ShutdownChannelsAsync();
+
+        /// <summary>
+        /// The underlying GRPC {@api.grpcName} client.
+        /// </summary>
+        public virtual {@api.grpcTypeName} GrpcClient
+        {
+            get { throw new NotImplementedException(); }
+        }
 
         @join method : api.apiMethods
             {@xmlDoc(method.doc)}
@@ -240,10 +302,32 @@
     }
 @end
 
-@private implClient(api)
+@private implClient(api, settings)
     public sealed partial class {@api.name}Impl : {@api.name}
     {
         private readonly ClientHelper _clientHelper;
+        @join call : api.apiCallableMembers
+            private readonly ApiCall<{@call.requestTypeName}, {@call.responseTypeName}> {@call.name};
+        @end
+
+        public {@api.name}Impl({@api.grpcTypeName} grpcClient, {@settings.name} settings)
+        {
+            this.GrpcClient = grpcClient;
+            {@settings.name} effectiveSettings = settings ?? {@settings.name}.GetDefault();
+            _clientHelper = new ClientHelper(effectiveSettings);
+            @join call : api.apiCallableMembers
+                {@call.name} = _clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
+                    GrpcClient.{@call.methodName}Async, GrpcClient.{@call.methodName}, effectiveSettings.{@call.methodName}Settings);
+            @end
+        }
+
+        public override {@api.grpcTypeName} GrpcClient { get; }
+        
+        @join method : api.apiMethodsImpl
+            {@xmlDoc(method.doc)}
+            {@method(method, TRUE)}
+
+        @end
     }
 @end
 
@@ -255,6 +339,10 @@
         {@flattenedMethodAsyncCallSettings(method, isImpl)}
     @case "FlattenedMethodAsyncCancellationToken"
         {@flattenedMethodAsyncCancellationToken(method, isImpl)}
+    @case "PagedFlattenedMethod"
+        {@pagedFlattenedMethodSync(method, isImpl)}
+    @case "PagedFlattenedMethodAsync" 
+        {@pagedFlattenedMethodAsync(method, isImpl)}
     @default
         *** ERROR: Cannot handle method type '{@method.type.toString}' ***
     @end
@@ -262,32 +350,107 @@
 
 @private flattenedMethodSync(method, isImpl)
     public virtual {@method.responseTypeName} {@method.name}(
-        {@objectParams(method.methodParamsWithExtras)})
-    {
     @if isImpl
+        {@""}    {@objectParams(method.methodParamsWithExtras)}) => {@method.callableName}.Sync(
+        {@""}        new {@method.apiRequestTypeName}
+        {@""}        {
+        @join param : method.methodParams
+            {@""}            {@param.nameAsMethodName} = {@param.name},
+        @end
+        {@""}        },
+        {@""}        callSettings);
     @else
-        {@""}    throw new NotImplementedException();
+        {@""}    {@objectParams(method.methodParamsWithExtras)})
+        {
+            throw new NotImplementedException();
+        }
     @end
-    }
 @end
 
 @private flattenedMethodAsyncCallSettings(method, isImpl)
     public virtual {@method.responseTypeName} {@method.name}(
-        {@objectParams(method.methodParamsWithExtras)})
-    {
     @if isImpl
+        {@""}    {@objectParams(method.methodParamsWithExtras)}) => {@method.callableName}.Async(
+        {@""}        new {@method.apiRequestTypeName}
+        {@""}        {
+        @join param : method.methodParams
+            {@""}            {@param.nameAsMethodName} = {@param.name},
+        @end
+        {@""}        },
+        {@""}        callSettings);
     @else
-        {@""}    throw new NotImplementedException();
+        {@""}    {@objectParams(method.methodParamsWithExtras)})
+        {
+            throw new NotImplementedException();
+        }
     @end
-    }
 @end
 
 @private flattenedMethodAsyncCancellationToken(method, isImpl)
     @if isImpl
+        *** ERROR: Should never get here ***
     @else
         public virtual {@method.responseTypeName} {@method.name}(
             {@objectParams(method.methodParamsWithExtras)}) => {@method.name}(
                 {@objectArgs(method.methodParams)},
                 new CallSettings { CancellationToken = cancellationToken });
+    @end
+@end
+
+@private pagedFlattenedMethodSync(method, isImpl)
+    public virtual IPagedEnumerable<{@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}> {@method.name}(
+    @if isImpl
+        {@""}    {@objectParams(method.methodParamsWithExtras)}) => new PagedEnumerable<{@method.pagedView.requestTypeName}, {@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}>(
+        {@""}        {@method.callableName},
+        {@""}        new {@method.apiRequestTypeName}
+        {@""}        {
+        @join param : method.methodParams
+            {@""}            {@param.nameAsMethodName} = {@param.name},
+        @end
+        {@""}            PageToken = pageToken ?? "",
+        {@""}            PageSize = pageSize ?? 0,
+        {@""}        },
+        {@""}        callSettings);
+    @else
+        {@""}    {@objectParams(method.methodParamsWithExtras)})
+        {
+            throw new NotImplementedException();
+        }
+    @end
+@end
+
+@private pagedFlattenedMethodAsync(method, isImpl)
+    public virtual IPagedAsyncEnumerable<{@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}> {@method.name}(
+    @if isImpl
+        {@""}    {@objectParams(method.methodParamsWithExtras)}) => new PagedAsyncEnumerable<{@method.pagedView.requestTypeName}, {@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}>(
+        {@""}        {@method.callableName},
+        {@""}        new {@method.apiRequestTypeName}
+        {@""}        {
+        @join param : method.methodParams
+            {@""}            {@param.nameAsMethodName} = {@param.name},
+        @end
+        {@""}            PageToken = pageToken ?? "",
+        {@""}            PageSize = pageSize ?? 0,
+        {@""}        },
+        {@""}        callSettings);
+    @else
+        {@""}    {@objectParams(method.methodParamsWithExtras)})
+        {
+            throw new NotImplementedException();
+        }
+    @end
+@end
+
+@private partialPageStreaming(api, settings)
+    // Partial classes to enable page-streaming
+
+    @join method : api.apiMethods if method.type.toString == "PagedFlattenedMethod"
+        public partial class {@method.pagedView.requestTypeName} : IPageRequest { }
+        public partial class {@method.pagedView.responseTypeName} : IPageResponse<{@method.pagedView.resourceTypeName}>
+        {
+            public IEnumerator<{@method.pagedView.resourceTypeName}> GetEnumerator() => Topics.GetEnumerator();
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        }
+
     @end
 @end

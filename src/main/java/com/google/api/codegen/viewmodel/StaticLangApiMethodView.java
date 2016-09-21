@@ -43,6 +43,9 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract String name();
 
+  @Nullable // Used in C#
+  public abstract String callableName();
+
   public abstract String settingsGetterName();
 
   public abstract List<RequestObjectParamView> methodParams();
@@ -68,6 +71,9 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
   @Nullable
   public abstract RequestObjectMethodDetailView requestObjectMethod();
 
+  @Nullable
+  public abstract PageStreamingDescriptorClassView pagedView();
+
   public abstract Builder toBuilder();
 
   public static Builder newBuilder() {
@@ -92,6 +98,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
     public abstract Builder name(String name);
 
+    public abstract Builder callableName(String name);
+
     public abstract Builder settingsGetterName(String name);
 
     public abstract Builder methodParams(List<RequestObjectParamView> methodParams);
@@ -111,6 +119,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
     public abstract Builder callableMethod(CallableMethodDetailView details);
 
     public abstract Builder requestObjectMethod(RequestObjectMethodDetailView details);
+
+    public abstract Builder pagedView(PageStreamingDescriptorClassView details);
 
     public abstract StaticLangApiMethodView build();
   }

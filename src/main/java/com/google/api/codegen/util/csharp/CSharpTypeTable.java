@@ -7,8 +7,10 @@ import com.google.api.codegen.util.TypeTable;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
+import com.google.common.base.Joiner;
 import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +41,18 @@ public class CSharpTypeTable implements TypeTable {
 
   @Override
   public TypeName getContainerTypeName(String containerFullName, String... elementFullNames) {
-    throw new RuntimeException();
+    TypeName containerTypeName = getTypeName(containerFullName);
+    TypeName[] elementTypeNames = new TypeName[elementFullNames.length];
+    for (int i = 0; i < elementTypeNames.length; i++) {
+      elementTypeNames[i] = getTypeName(elementFullNames[i]);
+    }
+    String argPattern = Joiner.on(",").join(Collections.nCopies(elementTypeNames.length, "%i"));
+    String pattern = "%s<" + argPattern + ">";
+    return new TypeName(
+        containerTypeName.getFullName(),
+        containerTypeName.getNickname(),
+        pattern,
+        elementTypeNames);
   }
 
   @Override

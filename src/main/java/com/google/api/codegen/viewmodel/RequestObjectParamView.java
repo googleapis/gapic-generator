@@ -21,6 +21,9 @@ import javax.annotation.Nullable;
 public abstract class RequestObjectParamView {
   public abstract String name();
 
+  @Nullable
+  public abstract String nameAsMethodName();
+
   public abstract String elementTypeName();
 
   public abstract String typeName();
@@ -46,6 +49,8 @@ public abstract class RequestObjectParamView {
   @AutoValue.Builder
   public static abstract class Builder {
     public abstract Builder name(String val);
+
+    public abstract Builder nameAsMethodName(String val);
 
     public abstract Builder elementTypeName(String val);
 

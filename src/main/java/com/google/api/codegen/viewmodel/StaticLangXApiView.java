@@ -18,6 +18,7 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class StaticLangXApiView implements ViewModel {
@@ -30,6 +31,12 @@ public abstract class StaticLangXApiView implements ViewModel {
 
   public abstract String name();
 
+  @Nullable // Used in C#
+  public abstract String grpcName();
+
+  @Nullable // Used in C#
+  public abstract String grpcTypeName();
+
   public abstract String settingsClassName();
 
   public abstract List<ApiCallableView> apiCallableMembers();
@@ -41,6 +48,9 @@ public abstract class StaticLangXApiView implements ViewModel {
   public abstract List<ParseResourceFunctionView> parseResourceFunctions();
 
   public abstract List<StaticLangApiMethodView> apiMethods();
+
+  @Nullable // Used in C#
+  public abstract List<StaticLangApiMethodView> apiMethodsImpl();
 
   public abstract List<ImportTypeView> imports();
 
@@ -66,6 +76,10 @@ public abstract class StaticLangXApiView implements ViewModel {
 
     public abstract Builder name(String val);
 
+    public abstract Builder grpcName(String val);
+
+    public abstract Builder grpcTypeName(String val);
+
     public abstract Builder settingsClassName(String val);
 
     public abstract Builder apiCallableMembers(List<ApiCallableView> val);
@@ -77,6 +91,8 @@ public abstract class StaticLangXApiView implements ViewModel {
     public abstract Builder parseResourceFunctions(List<ParseResourceFunctionView> val);
 
     public abstract Builder apiMethods(List<StaticLangApiMethodView> val);
+
+    public abstract Builder apiMethodsImpl(List<StaticLangApiMethodView> val);
 
     public abstract Builder imports(List<ImportTypeView> val);
 

@@ -29,4 +29,5 @@ public enum ApiMethodType {
   // C#
   FlattenedMethodAsyncCallSettings,
   FlattenedMethodAsyncCancellationToken,
+  PagedFlattenedMethodAsync,
 }
