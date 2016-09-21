@@ -15,13 +15,13 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts.GlobalAccountsOperations.Delete;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts.GlobalAccountsOperations.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouduseraccountsExample {
+public class CloudUserAccountsExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID for this request.
     String project = ""; // TODO: Update field(s).
@@ -29,12 +29,12 @@ public class ClouduseraccountsExample {
     // Name of the Operations resource to delete.
     String operation = ""; // TODO: Update field(s).
 
-    Clouduseraccounts service = createService();
+    CloudUserAccounts service = createService();
     Delete request = service.globalAccountsOperations().delete(project, operation);
     request.execute();
   }
 
-  public Clouduseraccounts createService() throws IOException, GeneralSecurityException {
+  public CloudUserAccounts createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -48,14 +48,14 @@ public class ClouduseraccountsExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouduseraccounts.Builder(httpTransport, jsonFactory, credential)
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouduseraccountsExample().run();
+      new CloudUserAccountsExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -79,14 +79,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts.GlobalAccountsOperations.Get;
-import com.google.api.services.clouduseraccounts.beta.model.Operation;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts.GlobalAccountsOperations.Get;
+import com.google.api.services.clouduseraccounts.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouduseraccountsExample {
+public class CloudUserAccountsExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID for this request.
     String project = ""; // TODO: Update field(s).
@@ -94,13 +94,13 @@ public class ClouduseraccountsExample {
     // Name of the Operations resource to return.
     String operation = ""; // TODO: Update field(s).
 
-    Clouduseraccounts service = createService();
+    CloudUserAccounts service = createService();
     Get request = service.globalAccountsOperations().get(project, operation);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Clouduseraccounts createService() throws IOException, GeneralSecurityException {
+  public CloudUserAccounts createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -114,14 +114,14 @@ public class ClouduseraccountsExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouduseraccounts.Builder(httpTransport, jsonFactory, credential)
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouduseraccountsExample().run();
+      new CloudUserAccountsExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -145,20 +145,20 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts.GlobalAccountsOperations.List;
-import com.google.api.services.clouduseraccounts.beta.model.Operation;
-import com.google.api.services.clouduseraccounts.beta.model.OperationList;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts.GlobalAccountsOperations.List;
+import com.google.api.services.clouduseraccounts.model.Operation;
+import com.google.api.services.clouduseraccounts.model.OperationList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouduseraccountsExample {
+public class CloudUserAccountsExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID for this request.
     String project = ""; // TODO: Update field(s).
 
-    Clouduseraccounts service = createService();
+    CloudUserAccounts service = createService();
     List request = service.globalAccountsOperations().list(project);
     OperationList response;
     do {
@@ -172,7 +172,7 @@ public class ClouduseraccountsExample {
     } while (response.getNextPageToken() != null);
   }
 
-  public Clouduseraccounts createService() throws IOException, GeneralSecurityException {
+  public CloudUserAccounts createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -186,14 +186,14 @@ public class ClouduseraccountsExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouduseraccounts.Builder(httpTransport, jsonFactory, credential)
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouduseraccountsExample().run();
+      new CloudUserAccountsExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -217,15 +217,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts.Groups.AddMember;
-import com.google.api.services.clouduseraccounts.beta.model.GroupsAddMemberRequest;
-import com.google.api.services.clouduseraccounts.beta.model.Operation;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts.Groups.AddMember;
+import com.google.api.services.clouduseraccounts.model.GroupsAddMemberRequest;
+import com.google.api.services.clouduseraccounts.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouduseraccountsExample {
+public class CloudUserAccountsExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     GroupsAddMemberRequest requestBody = new GroupsAddMemberRequest();
@@ -236,13 +236,13 @@ public class ClouduseraccountsExample {
     // Name of the group for this request.
     String groupName = ""; // TODO: Update field(s).
 
-    Clouduseraccounts service = createService();
+    CloudUserAccounts service = createService();
     AddMember request = service.groups().addMember(project, groupName, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Clouduseraccounts createService() throws IOException, GeneralSecurityException {
+  public CloudUserAccounts createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -256,14 +256,14 @@ public class ClouduseraccountsExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouduseraccounts.Builder(httpTransport, jsonFactory, credential)
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouduseraccountsExample().run();
+      new CloudUserAccountsExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -287,14 +287,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts.Groups.Delete;
-import com.google.api.services.clouduseraccounts.beta.model.Operation;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts.Groups.Delete;
+import com.google.api.services.clouduseraccounts.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouduseraccountsExample {
+public class CloudUserAccountsExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID for this request.
     String project = ""; // TODO: Update field(s).
@@ -302,13 +302,13 @@ public class ClouduseraccountsExample {
     // Name of the Group resource to delete.
     String groupName = ""; // TODO: Update field(s).
 
-    Clouduseraccounts service = createService();
+    CloudUserAccounts service = createService();
     Delete request = service.groups().delete(project, groupName);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Clouduseraccounts createService() throws IOException, GeneralSecurityException {
+  public CloudUserAccounts createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -322,14 +322,14 @@ public class ClouduseraccountsExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouduseraccounts.Builder(httpTransport, jsonFactory, credential)
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouduseraccountsExample().run();
+      new CloudUserAccountsExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -353,14 +353,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts.Groups.Get;
-import com.google.api.services.clouduseraccounts.beta.model.Group;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts.Groups.Get;
+import com.google.api.services.clouduseraccounts.model.Group;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouduseraccountsExample {
+public class CloudUserAccountsExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID for this request.
     String project = ""; // TODO: Update field(s).
@@ -368,13 +368,13 @@ public class ClouduseraccountsExample {
     // Name of the Group resource to return.
     String groupName = ""; // TODO: Update field(s).
 
-    Clouduseraccounts service = createService();
+    CloudUserAccounts service = createService();
     Get request = service.groups().get(project, groupName);
     Group response = request.execute();
     System.out.println(response);
   }
 
-  public Clouduseraccounts createService() throws IOException, GeneralSecurityException {
+  public CloudUserAccounts createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -388,14 +388,14 @@ public class ClouduseraccountsExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouduseraccounts.Builder(httpTransport, jsonFactory, credential)
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouduseraccountsExample().run();
+      new CloudUserAccountsExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -419,15 +419,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts.Groups.Insert;
-import com.google.api.services.clouduseraccounts.beta.model.Group;
-import com.google.api.services.clouduseraccounts.beta.model.Operation;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts.Groups.Insert;
+import com.google.api.services.clouduseraccounts.model.Group;
+import com.google.api.services.clouduseraccounts.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouduseraccountsExample {
+public class CloudUserAccountsExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Group requestBody = new Group();
@@ -435,13 +435,13 @@ public class ClouduseraccountsExample {
     // Project ID for this request.
     String project = ""; // TODO: Update field(s).
 
-    Clouduseraccounts service = createService();
+    CloudUserAccounts service = createService();
     Insert request = service.groups().insert(project, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Clouduseraccounts createService() throws IOException, GeneralSecurityException {
+  public CloudUserAccounts createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -455,14 +455,14 @@ public class ClouduseraccountsExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouduseraccounts.Builder(httpTransport, jsonFactory, credential)
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouduseraccountsExample().run();
+      new CloudUserAccountsExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -486,20 +486,20 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts.Groups.List;
-import com.google.api.services.clouduseraccounts.beta.model.Group;
-import com.google.api.services.clouduseraccounts.beta.model.GroupList;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts.Groups.List;
+import com.google.api.services.clouduseraccounts.model.Group;
+import com.google.api.services.clouduseraccounts.model.GroupList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouduseraccountsExample {
+public class CloudUserAccountsExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID for this request.
     String project = ""; // TODO: Update field(s).
 
-    Clouduseraccounts service = createService();
+    CloudUserAccounts service = createService();
     List request = service.groups().list(project);
     GroupList response;
     do {
@@ -513,7 +513,7 @@ public class ClouduseraccountsExample {
     } while (response.getNextPageToken() != null);
   }
 
-  public Clouduseraccounts createService() throws IOException, GeneralSecurityException {
+  public CloudUserAccounts createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -527,14 +527,14 @@ public class ClouduseraccountsExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouduseraccounts.Builder(httpTransport, jsonFactory, credential)
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouduseraccountsExample().run();
+      new CloudUserAccountsExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -558,15 +558,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts.Groups.RemoveMember;
-import com.google.api.services.clouduseraccounts.beta.model.GroupsRemoveMemberRequest;
-import com.google.api.services.clouduseraccounts.beta.model.Operation;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts.Groups.RemoveMember;
+import com.google.api.services.clouduseraccounts.model.GroupsRemoveMemberRequest;
+import com.google.api.services.clouduseraccounts.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouduseraccountsExample {
+public class CloudUserAccountsExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     GroupsRemoveMemberRequest requestBody = new GroupsRemoveMemberRequest();
@@ -577,13 +577,13 @@ public class ClouduseraccountsExample {
     // Name of the group for this request.
     String groupName = ""; // TODO: Update field(s).
 
-    Clouduseraccounts service = createService();
+    CloudUserAccounts service = createService();
     RemoveMember request = service.groups().removeMember(project, groupName, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Clouduseraccounts createService() throws IOException, GeneralSecurityException {
+  public CloudUserAccounts createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -597,14 +597,14 @@ public class ClouduseraccountsExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouduseraccounts.Builder(httpTransport, jsonFactory, credential)
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouduseraccountsExample().run();
+      new CloudUserAccountsExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -628,14 +628,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts.Linux.GetAuthorizedKeysView;
-import com.google.api.services.clouduseraccounts.beta.model.LinuxGetAuthorizedKeysViewResponse;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts.Linux.GetAuthorizedKeysView;
+import com.google.api.services.clouduseraccounts.model.LinuxGetAuthorizedKeysViewResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouduseraccountsExample {
+public class CloudUserAccountsExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID for this request.
     String project = ""; // TODO: Update field(s).
@@ -649,13 +649,13 @@ public class ClouduseraccountsExample {
     // The fully-qualified URL of the virtual machine requesting the view.
     String instance = ""; // TODO: Update field(s).
 
-    Clouduseraccounts service = createService();
+    CloudUserAccounts service = createService();
     GetAuthorizedKeysView request = service.linux().getAuthorizedKeysView(project, zone, user, instance);
     LinuxGetAuthorizedKeysViewResponse response = request.execute();
     System.out.println(response);
   }
 
-  public Clouduseraccounts createService() throws IOException, GeneralSecurityException {
+  public CloudUserAccounts createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -669,14 +669,14 @@ public class ClouduseraccountsExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouduseraccounts.Builder(httpTransport, jsonFactory, credential)
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouduseraccountsExample().run();
+      new CloudUserAccountsExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -700,14 +700,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts.Linux.GetLinuxAccountViews;
-import com.google.api.services.clouduseraccounts.beta.model.LinuxGetLinuxAccountViewsResponse;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts.Linux.GetLinuxAccountViews;
+import com.google.api.services.clouduseraccounts.model.LinuxGetLinuxAccountViewsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouduseraccountsExample {
+public class CloudUserAccountsExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID for this request.
     String project = ""; // TODO: Update field(s).
@@ -718,13 +718,13 @@ public class ClouduseraccountsExample {
     // The fully-qualified URL of the virtual machine requesting the views.
     String instance = ""; // TODO: Update field(s).
 
-    Clouduseraccounts service = createService();
+    CloudUserAccounts service = createService();
     GetLinuxAccountViews request = service.linux().getLinuxAccountViews(project, zone, instance);
     LinuxGetLinuxAccountViewsResponse response = request.execute();
     System.out.println(response);
   }
 
-  public Clouduseraccounts createService() throws IOException, GeneralSecurityException {
+  public CloudUserAccounts createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -738,14 +738,14 @@ public class ClouduseraccountsExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouduseraccounts.Builder(httpTransport, jsonFactory, credential)
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouduseraccountsExample().run();
+      new CloudUserAccountsExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -769,15 +769,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts.Users.AddPublicKey;
-import com.google.api.services.clouduseraccounts.beta.model.Operation;
-import com.google.api.services.clouduseraccounts.beta.model.PublicKey;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts.Users.AddPublicKey;
+import com.google.api.services.clouduseraccounts.model.Operation;
+import com.google.api.services.clouduseraccounts.model.PublicKey;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouduseraccountsExample {
+public class CloudUserAccountsExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     PublicKey requestBody = new PublicKey();
@@ -788,13 +788,13 @@ public class ClouduseraccountsExample {
     // Name of the user for this request.
     String user = ""; // TODO: Update field(s).
 
-    Clouduseraccounts service = createService();
+    CloudUserAccounts service = createService();
     AddPublicKey request = service.users().addPublicKey(project, user, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Clouduseraccounts createService() throws IOException, GeneralSecurityException {
+  public CloudUserAccounts createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -808,14 +808,14 @@ public class ClouduseraccountsExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouduseraccounts.Builder(httpTransport, jsonFactory, credential)
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouduseraccountsExample().run();
+      new CloudUserAccountsExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -839,14 +839,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts.Users.Delete;
-import com.google.api.services.clouduseraccounts.beta.model.Operation;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts.Users.Delete;
+import com.google.api.services.clouduseraccounts.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouduseraccountsExample {
+public class CloudUserAccountsExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID for this request.
     String project = ""; // TODO: Update field(s).
@@ -854,13 +854,13 @@ public class ClouduseraccountsExample {
     // Name of the user resource to delete.
     String user = ""; // TODO: Update field(s).
 
-    Clouduseraccounts service = createService();
+    CloudUserAccounts service = createService();
     Delete request = service.users().delete(project, user);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Clouduseraccounts createService() throws IOException, GeneralSecurityException {
+  public CloudUserAccounts createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -874,14 +874,14 @@ public class ClouduseraccountsExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouduseraccounts.Builder(httpTransport, jsonFactory, credential)
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouduseraccountsExample().run();
+      new CloudUserAccountsExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -905,14 +905,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts.Users.Get;
-import com.google.api.services.clouduseraccounts.beta.model.User;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts.Users.Get;
+import com.google.api.services.clouduseraccounts.model.User;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouduseraccountsExample {
+public class CloudUserAccountsExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID for this request.
     String project = ""; // TODO: Update field(s).
@@ -920,13 +920,13 @@ public class ClouduseraccountsExample {
     // Name of the user resource to return.
     String user = ""; // TODO: Update field(s).
 
-    Clouduseraccounts service = createService();
+    CloudUserAccounts service = createService();
     Get request = service.users().get(project, user);
     User response = request.execute();
     System.out.println(response);
   }
 
-  public Clouduseraccounts createService() throws IOException, GeneralSecurityException {
+  public CloudUserAccounts createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -940,14 +940,14 @@ public class ClouduseraccountsExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouduseraccounts.Builder(httpTransport, jsonFactory, credential)
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouduseraccountsExample().run();
+      new CloudUserAccountsExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -971,15 +971,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts.Users.Insert;
-import com.google.api.services.clouduseraccounts.beta.model.Operation;
-import com.google.api.services.clouduseraccounts.beta.model.User;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts.Users.Insert;
+import com.google.api.services.clouduseraccounts.model.Operation;
+import com.google.api.services.clouduseraccounts.model.User;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouduseraccountsExample {
+public class CloudUserAccountsExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     User requestBody = new User();
@@ -987,13 +987,13 @@ public class ClouduseraccountsExample {
     // Project ID for this request.
     String project = ""; // TODO: Update field(s).
 
-    Clouduseraccounts service = createService();
+    CloudUserAccounts service = createService();
     Insert request = service.users().insert(project, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Clouduseraccounts createService() throws IOException, GeneralSecurityException {
+  public CloudUserAccounts createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1007,14 +1007,14 @@ public class ClouduseraccountsExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouduseraccounts.Builder(httpTransport, jsonFactory, credential)
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouduseraccountsExample().run();
+      new CloudUserAccountsExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1038,20 +1038,20 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts.Users.List;
-import com.google.api.services.clouduseraccounts.beta.model.User;
-import com.google.api.services.clouduseraccounts.beta.model.UserList;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts.Users.List;
+import com.google.api.services.clouduseraccounts.model.User;
+import com.google.api.services.clouduseraccounts.model.UserList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouduseraccountsExample {
+public class CloudUserAccountsExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID for this request.
     String project = ""; // TODO: Update field(s).
 
-    Clouduseraccounts service = createService();
+    CloudUserAccounts service = createService();
     List request = service.users().list(project);
     UserList response;
     do {
@@ -1065,7 +1065,7 @@ public class ClouduseraccountsExample {
     } while (response.getNextPageToken() != null);
   }
 
-  public Clouduseraccounts createService() throws IOException, GeneralSecurityException {
+  public CloudUserAccounts createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1079,14 +1079,14 @@ public class ClouduseraccountsExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouduseraccounts.Builder(httpTransport, jsonFactory, credential)
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouduseraccountsExample().run();
+      new CloudUserAccountsExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1110,14 +1110,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts;
-import com.google.api.services.clouduseraccounts.beta.Clouduseraccounts.Users.RemovePublicKey;
-import com.google.api.services.clouduseraccounts.beta.model.Operation;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts.Users.RemovePublicKey;
+import com.google.api.services.clouduseraccounts.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouduseraccountsExample {
+public class CloudUserAccountsExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID for this request.
     String project = ""; // TODO: Update field(s).
@@ -1129,13 +1129,13 @@ public class ClouduseraccountsExample {
     // is defined by RFC4716 to be the MD5 digest of the public key.
     String fingerprint = ""; // TODO: Update field(s).
 
-    Clouduseraccounts service = createService();
+    CloudUserAccounts service = createService();
     RemovePublicKey request = service.users().removePublicKey(project, user, fingerprint);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Clouduseraccounts createService() throws IOException, GeneralSecurityException {
+  public CloudUserAccounts createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1149,14 +1149,14 @@ public class ClouduseraccountsExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouduseraccounts.Builder(httpTransport, jsonFactory, credential)
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouduseraccountsExample().run();
+      new CloudUserAccountsExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {

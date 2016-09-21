@@ -16,7 +16,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storagetransfer.v1.Storagetransfer;
-import com.google.api.services.storagetransfer.v1.Storagetransfer.GetGoogleServiceAccount;
+import com.google.api.services.storagetransfer.v1.Storagetransfer.GoogleServiceAccounts.Get;
 import com.google.api.services.storagetransfer.v1.model.GoogleServiceAccount;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -24,8 +24,12 @@ import java.util.Arrays;
 
 public class StoragetransferExample {
   public void run() throws IOException, GeneralSecurityException {
+    // The ID of the Google Developers Console project that the Google service account is associated with.
+    // Required.
+    String projectId = ""; // TODO: Update field(s).
+
     Storagetransfer service = createService();
-    GetGoogleServiceAccount request = service.getGoogleServiceAccount();
+    Get request = service.googleServiceAccounts().get(projectId);
     GoogleServiceAccount response = request.execute();
     System.out.println(response);
   }

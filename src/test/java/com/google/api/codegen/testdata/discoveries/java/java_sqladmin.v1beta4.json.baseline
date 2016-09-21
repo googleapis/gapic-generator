@@ -15,14 +15,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.BackupRuns.Delete;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.BackupRuns.Delete;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
@@ -33,13 +33,13 @@ public class SqladminExample {
     // The ID of the Backup Run to delete. To find a Backup Run ID, use the list method.
     long id = 0L; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Delete request = service.backupRuns().delete(project, instance, id);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -53,14 +53,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -84,14 +84,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.BackupRuns.Get;
-import com.google.api.services.sqladmin.v1beta4.model.BackupRun;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.BackupRuns.Get;
+import com.google.api.services.sqladmin.model.BackupRun;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
@@ -102,13 +102,13 @@ public class SqladminExample {
     // The ID of this Backup Run.
     long id = 0L; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Get request = service.backupRuns().get(project, instance, id);
     BackupRun response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -122,14 +122,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -153,15 +153,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.BackupRuns.List;
-import com.google.api.services.sqladmin.v1beta4.model.BackupRun;
-import com.google.api.services.sqladmin.v1beta4.model.BackupRunsListResponse;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.BackupRuns.List;
+import com.google.api.services.sqladmin.model.BackupRun;
+import com.google.api.services.sqladmin.model.BackupRunsListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
@@ -169,7 +169,7 @@ public class SqladminExample {
     // Cloud SQL instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     List request = service.backupRuns().list(project, instance);
     BackupRunsListResponse response;
     do {
@@ -183,7 +183,7 @@ public class SqladminExample {
     } while (response.getNextPageToken() != null);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -197,14 +197,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -228,14 +228,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Databases.Delete;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Databases.Delete;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
@@ -246,13 +246,13 @@ public class SqladminExample {
     // Name of the database to be deleted in the instance.
     String database = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Delete request = service.databases().delete(project, instance, database);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -266,14 +266,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -297,14 +297,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Databases.Get;
-import com.google.api.services.sqladmin.v1beta4.model.Database;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Databases.Get;
+import com.google.api.services.sqladmin.model.Database;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
@@ -315,13 +315,13 @@ public class SqladminExample {
     // Name of the database in the instance.
     String database = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Get request = service.databases().get(project, instance, database);
     Database response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -335,14 +335,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -366,15 +366,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Databases.Insert;
-import com.google.api.services.sqladmin.v1beta4.model.Database;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Databases.Insert;
+import com.google.api.services.sqladmin.model.Database;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Database requestBody = new Database();
@@ -385,13 +385,13 @@ public class SqladminExample {
     // Database instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Insert request = service.databases().insert(project, instance, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -405,14 +405,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -436,14 +436,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Databases.List;
-import com.google.api.services.sqladmin.v1beta4.model.DatabasesListResponse;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Databases.List;
+import com.google.api.services.sqladmin.model.DatabasesListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID of the project for which to list Cloud SQL instances.
     String project = ""; // TODO: Update field(s).
@@ -451,13 +451,13 @@ public class SqladminExample {
     // Cloud SQL instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     List request = service.databases().list(project, instance);
     DatabasesListResponse response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -471,14 +471,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -502,15 +502,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Databases.Patch;
-import com.google.api.services.sqladmin.v1beta4.model.Database;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Databases.Patch;
+import com.google.api.services.sqladmin.model.Database;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Database requestBody = new Database();
@@ -524,13 +524,13 @@ public class SqladminExample {
     // Name of the database to be updated in the instance.
     String database = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Patch request = service.databases().patch(project, instance, database, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -544,14 +544,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -575,15 +575,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Databases.Update;
-import com.google.api.services.sqladmin.v1beta4.model.Database;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Databases.Update;
+import com.google.api.services.sqladmin.model.Database;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Database requestBody = new Database();
@@ -597,13 +597,13 @@ public class SqladminExample {
     // Name of the database to be updated in the instance.
     String database = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Update request = service.databases().update(project, instance, database, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -617,14 +617,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -648,22 +648,22 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Flags.List;
-import com.google.api.services.sqladmin.v1beta4.model.FlagsListResponse;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Flags.List;
+import com.google.api.services.sqladmin.model.FlagsListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     List request = service.flags().list();
     FlagsListResponse response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -677,14 +677,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -708,15 +708,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Instances.Clone;
-import com.google.api.services.sqladmin.v1beta4.model.InstancesCloneRequest;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Instances.Clone;
+import com.google.api.services.sqladmin.model.InstancesCloneRequest;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     InstancesCloneRequest requestBody = new InstancesCloneRequest();
@@ -727,13 +727,13 @@ public class SqladminExample {
     // The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Clone request = service.instances().clone(project, instance, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -747,14 +747,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -778,14 +778,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Instances.Delete;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Instances.Delete;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID of the project that contains the instance to be deleted.
     String project = ""; // TODO: Update field(s).
@@ -793,13 +793,13 @@ public class SqladminExample {
     // Cloud SQL instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Delete request = service.instances().delete(project, instance);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -813,14 +813,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -844,15 +844,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Instances.Export;
-import com.google.api.services.sqladmin.v1beta4.model.InstancesExportRequest;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Instances.Export;
+import com.google.api.services.sqladmin.model.InstancesExportRequest;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     InstancesExportRequest requestBody = new InstancesExportRequest();
@@ -863,13 +863,13 @@ public class SqladminExample {
     // Cloud SQL instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Export request = service.instances().export(project, instance, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -883,14 +883,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -914,15 +914,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Instances.Failover;
-import com.google.api.services.sqladmin.v1beta4.model.InstancesFailoverRequest;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Instances.Failover;
+import com.google.api.services.sqladmin.model.InstancesFailoverRequest;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     InstancesFailoverRequest requestBody = new InstancesFailoverRequest();
@@ -933,13 +933,13 @@ public class SqladminExample {
     // Cloud SQL instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Failover request = service.instances().failover(project, instance, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -953,14 +953,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -984,14 +984,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Instances.Get;
-import com.google.api.services.sqladmin.v1beta4.model.DatabaseInstance;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Instances.Get;
+import com.google.api.services.sqladmin.model.DatabaseInstance;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
@@ -999,13 +999,13 @@ public class SqladminExample {
     // Database instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Get request = service.instances().get(project, instance);
     DatabaseInstance response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1019,14 +1019,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1050,15 +1050,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Instances.Import;
-import com.google.api.services.sqladmin.v1beta4.model.InstancesImportRequest;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Instances.SQLAdminImport;
+import com.google.api.services.sqladmin.model.InstancesImportRequest;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     InstancesImportRequest requestBody = new InstancesImportRequest();
@@ -1069,13 +1069,13 @@ public class SqladminExample {
     // Cloud SQL instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
-    Import request = service.instances().import(project, instance, requestBody);
+    SQLAdmin service = createService();
+    SQLAdminImport request = service.instances().sqladminImport(project, instance, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1089,14 +1089,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1120,15 +1120,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Instances.Insert;
-import com.google.api.services.sqladmin.v1beta4.model.DatabaseInstance;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Instances.Insert;
+import com.google.api.services.sqladmin.model.DatabaseInstance;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     DatabaseInstance requestBody = new DatabaseInstance();
@@ -1136,13 +1136,13 @@ public class SqladminExample {
     // Project ID of the project to which the newly created Cloud SQL instances should belong.
     String project = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Insert request = service.instances().insert(project, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1156,14 +1156,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1187,20 +1187,20 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Instances.List;
-import com.google.api.services.sqladmin.v1beta4.model.DatabaseInstance;
-import com.google.api.services.sqladmin.v1beta4.model.InstancesListResponse;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Instances.List;
+import com.google.api.services.sqladmin.model.DatabaseInstance;
+import com.google.api.services.sqladmin.model.InstancesListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID of the project for which to list Cloud SQL instances.
     String project = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     List request = service.instances().list(project);
     InstancesListResponse response;
     do {
@@ -1214,7 +1214,7 @@ public class SqladminExample {
     } while (response.getNextPageToken() != null);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1228,14 +1228,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1259,15 +1259,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Instances.Patch;
-import com.google.api.services.sqladmin.v1beta4.model.DatabaseInstance;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Instances.Patch;
+import com.google.api.services.sqladmin.model.DatabaseInstance;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     DatabaseInstance requestBody = new DatabaseInstance();
@@ -1278,13 +1278,13 @@ public class SqladminExample {
     // Cloud SQL instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Patch request = service.instances().patch(project, instance, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1298,14 +1298,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1329,14 +1329,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Instances.PromoteReplica;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Instances.PromoteReplica;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // ID of the project that contains the read replica.
     String project = ""; // TODO: Update field(s).
@@ -1344,13 +1344,13 @@ public class SqladminExample {
     // Cloud SQL read replica instance name.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     PromoteReplica request = service.instances().promoteReplica(project, instance);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1364,14 +1364,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1395,14 +1395,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Instances.ResetSslConfig;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Instances.ResetSslConfig;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
@@ -1410,13 +1410,13 @@ public class SqladminExample {
     // Cloud SQL instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     ResetSslConfig request = service.instances().resetSslConfig(project, instance);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1430,14 +1430,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1461,14 +1461,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Instances.Restart;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Instances.Restart;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID of the project that contains the instance to be restarted.
     String project = ""; // TODO: Update field(s).
@@ -1476,13 +1476,13 @@ public class SqladminExample {
     // Cloud SQL instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Restart request = service.instances().restart(project, instance);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1496,14 +1496,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1527,15 +1527,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Instances.RestoreBackup;
-import com.google.api.services.sqladmin.v1beta4.model.InstancesRestoreBackupRequest;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Instances.RestoreBackup;
+import com.google.api.services.sqladmin.model.InstancesRestoreBackupRequest;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     InstancesRestoreBackupRequest requestBody = new InstancesRestoreBackupRequest();
@@ -1546,13 +1546,13 @@ public class SqladminExample {
     // Cloud SQL instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     RestoreBackup request = service.instances().restoreBackup(project, instance, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1566,14 +1566,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1597,14 +1597,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Instances.StartReplica;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Instances.StartReplica;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // ID of the project that contains the read replica.
     String project = ""; // TODO: Update field(s).
@@ -1612,13 +1612,13 @@ public class SqladminExample {
     // Cloud SQL read replica instance name.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     StartReplica request = service.instances().startReplica(project, instance);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1632,14 +1632,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1663,14 +1663,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Instances.StopReplica;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Instances.StopReplica;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // ID of the project that contains the read replica.
     String project = ""; // TODO: Update field(s).
@@ -1678,13 +1678,13 @@ public class SqladminExample {
     // Cloud SQL read replica instance name.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     StopReplica request = service.instances().stopReplica(project, instance);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1698,14 +1698,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1729,15 +1729,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Instances.Update;
-import com.google.api.services.sqladmin.v1beta4.model.DatabaseInstance;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Instances.Update;
+import com.google.api.services.sqladmin.model.DatabaseInstance;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     DatabaseInstance requestBody = new DatabaseInstance();
@@ -1748,13 +1748,13 @@ public class SqladminExample {
     // Cloud SQL instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Update request = service.instances().update(project, instance, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1768,14 +1768,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1799,14 +1799,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Operations.Get;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Operations.Get;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
@@ -1814,13 +1814,13 @@ public class SqladminExample {
     // Instance operation ID.
     String operation = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Get request = service.operations().get(project, operation);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1834,14 +1834,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1865,15 +1865,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Operations.List;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
-import com.google.api.services.sqladmin.v1beta4.model.OperationsListResponse;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Operations.List;
+import com.google.api.services.sqladmin.model.Operation;
+import com.google.api.services.sqladmin.model.OperationsListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
@@ -1881,7 +1881,7 @@ public class SqladminExample {
     // Cloud SQL instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     List request = service.operations().list(project, instance);
     OperationsListResponse response;
     do {
@@ -1895,7 +1895,7 @@ public class SqladminExample {
     } while (response.getNextPageToken() != null);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1909,14 +1909,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1940,15 +1940,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.SslCerts.CreateEphemeral;
-import com.google.api.services.sqladmin.v1beta4.model.SslCert;
-import com.google.api.services.sqladmin.v1beta4.model.SslCertsCreateEphemeralRequest;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.SslCerts.CreateEphemeral;
+import com.google.api.services.sqladmin.model.SslCert;
+import com.google.api.services.sqladmin.model.SslCertsCreateEphemeralRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     SslCertsCreateEphemeralRequest requestBody = new SslCertsCreateEphemeralRequest();
@@ -1959,13 +1959,13 @@ public class SqladminExample {
     // Cloud SQL instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     CreateEphemeral request = service.sslCerts().createEphemeral(project, instance, requestBody);
     SslCert response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1979,14 +1979,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -2010,14 +2010,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.SslCerts.Delete;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.SslCerts.Delete;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID of the project that contains the instance to be deleted.
     String project = ""; // TODO: Update field(s).
@@ -2028,13 +2028,13 @@ public class SqladminExample {
     // Sha1 FingerPrint.
     String sha1Fingerprint = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Delete request = service.sslCerts().delete(project, instance, sha1Fingerprint);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -2048,14 +2048,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -2079,14 +2079,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.SslCerts.Get;
-import com.google.api.services.sqladmin.v1beta4.model.SslCert;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.SslCerts.Get;
+import com.google.api.services.sqladmin.model.SslCert;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
@@ -2097,13 +2097,13 @@ public class SqladminExample {
     // Sha1 FingerPrint.
     String sha1Fingerprint = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Get request = service.sslCerts().get(project, instance, sha1Fingerprint);
     SslCert response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -2117,14 +2117,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -2148,15 +2148,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.SslCerts.Insert;
-import com.google.api.services.sqladmin.v1beta4.model.SslCertsInsertRequest;
-import com.google.api.services.sqladmin.v1beta4.model.SslCertsInsertResponse;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.SslCerts.Insert;
+import com.google.api.services.sqladmin.model.SslCertsInsertRequest;
+import com.google.api.services.sqladmin.model.SslCertsInsertResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     SslCertsInsertRequest requestBody = new SslCertsInsertRequest();
@@ -2167,13 +2167,13 @@ public class SqladminExample {
     // Cloud SQL instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Insert request = service.sslCerts().insert(project, instance, requestBody);
     SslCertsInsertResponse response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -2187,14 +2187,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -2218,14 +2218,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.SslCerts.List;
-import com.google.api.services.sqladmin.v1beta4.model.SslCertsListResponse;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.SslCerts.List;
+import com.google.api.services.sqladmin.model.SslCertsListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID of the project for which to list Cloud SQL instances.
     String project = ""; // TODO: Update field(s).
@@ -2233,13 +2233,13 @@ public class SqladminExample {
     // Cloud SQL instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     List request = service.sslCerts().list(project, instance);
     SslCertsListResponse response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -2253,14 +2253,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -2284,25 +2284,25 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Tiers.List;
-import com.google.api.services.sqladmin.v1beta4.model.TiersListResponse;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Tiers.List;
+import com.google.api.services.sqladmin.model.TiersListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID of the project for which to list tiers.
     String project = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     List request = service.tiers().list(project);
     TiersListResponse response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -2316,14 +2316,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -2347,14 +2347,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Users.Delete;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Users.Delete;
+import com.google.api.services.sqladmin.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
@@ -2368,13 +2368,13 @@ public class SqladminExample {
     // Name of the user in the instance.
     String name = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Delete request = service.users().delete(project, instance, host, name);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -2388,14 +2388,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -2419,15 +2419,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Users.Insert;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
-import com.google.api.services.sqladmin.v1beta4.model.User;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Users.Insert;
+import com.google.api.services.sqladmin.model.Operation;
+import com.google.api.services.sqladmin.model.User;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     User requestBody = new User();
@@ -2438,13 +2438,13 @@ public class SqladminExample {
     // Database instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Insert request = service.users().insert(project, instance, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -2458,14 +2458,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -2489,15 +2489,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Users.List;
-import com.google.api.services.sqladmin.v1beta4.model.User;
-import com.google.api.services.sqladmin.v1beta4.model.UsersListResponse;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Users.List;
+import com.google.api.services.sqladmin.model.User;
+import com.google.api.services.sqladmin.model.UsersListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // Project ID of the project that contains the instance.
     String project = ""; // TODO: Update field(s).
@@ -2505,7 +2505,7 @@ public class SqladminExample {
     // Database instance ID. This does not include the project ID.
     String instance = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     List request = service.users().list(project, instance);
     UsersListResponse response;
     do {
@@ -2519,7 +2519,7 @@ public class SqladminExample {
     } while (response.getNextPageToken() != null);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -2533,14 +2533,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -2564,15 +2564,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin;
-import com.google.api.services.sqladmin.v1beta4.Sqladmin.Users.Update;
-import com.google.api.services.sqladmin.v1beta4.model.Operation;
-import com.google.api.services.sqladmin.v1beta4.model.User;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.SQLAdmin.Users.Update;
+import com.google.api.services.sqladmin.model.Operation;
+import com.google.api.services.sqladmin.model.User;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class SqladminExample {
+public class SQLAdminExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     User requestBody = new User();
@@ -2589,13 +2589,13 @@ public class SqladminExample {
     // Name of the user in the instance.
     String name = ""; // TODO: Update field(s).
 
-    Sqladmin service = createService();
+    SQLAdmin service = createService();
     Update request = service.users().update(project, instance, host, name, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Sqladmin createService() throws IOException, GeneralSecurityException {
+  public SQLAdmin createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -2609,14 +2609,14 @@ public class SqladminExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Sqladmin.Builder(httpTransport, jsonFactory, credential)
+    return new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new SqladminExample().run();
+      new SQLAdminExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {

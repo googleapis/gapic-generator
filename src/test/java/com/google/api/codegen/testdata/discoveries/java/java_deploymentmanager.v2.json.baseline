@@ -15,15 +15,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager.Deployments.CancelPreview;
-import com.google.api.services.deploymentmanager.v2.model.DeploymentsCancelPreviewRequest;
-import com.google.api.services.deploymentmanager.v2.model.Operation;
+import com.google.api.services.deploymentmanager.DeploymentManager;
+import com.google.api.services.deploymentmanager.DeploymentManager.Deployments.CancelPreview;
+import com.google.api.services.deploymentmanager.model.DeploymentsCancelPreviewRequest;
+import com.google.api.services.deploymentmanager.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class DeploymentmanagerExample {
+public class DeploymentManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     DeploymentsCancelPreviewRequest requestBody = new DeploymentsCancelPreviewRequest();
@@ -34,13 +34,13 @@ public class DeploymentmanagerExample {
     // The name of the deployment for this request.
     String deployment = ""; // TODO: Update field(s).
 
-    Deploymentmanager service = createService();
+    DeploymentManager service = createService();
     CancelPreview request = service.deployments().cancelPreview(project, deployment, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Deploymentmanager createService() throws IOException, GeneralSecurityException {
+  public DeploymentManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -54,14 +54,14 @@ public class DeploymentmanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Deploymentmanager.Builder(httpTransport, jsonFactory, credential)
+    return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new DeploymentmanagerExample().run();
+      new DeploymentManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -85,14 +85,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager.Deployments.Delete;
-import com.google.api.services.deploymentmanager.v2.model.Operation;
+import com.google.api.services.deploymentmanager.DeploymentManager;
+import com.google.api.services.deploymentmanager.DeploymentManager.Deployments.Delete;
+import com.google.api.services.deploymentmanager.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class DeploymentmanagerExample {
+public class DeploymentManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The project ID for this request.
     String project = ""; // TODO: Update field(s).
@@ -100,13 +100,13 @@ public class DeploymentmanagerExample {
     // The name of the deployment for this request.
     String deployment = ""; // TODO: Update field(s).
 
-    Deploymentmanager service = createService();
+    DeploymentManager service = createService();
     Delete request = service.deployments().delete(project, deployment);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Deploymentmanager createService() throws IOException, GeneralSecurityException {
+  public DeploymentManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -120,14 +120,14 @@ public class DeploymentmanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Deploymentmanager.Builder(httpTransport, jsonFactory, credential)
+    return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new DeploymentmanagerExample().run();
+      new DeploymentManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -151,14 +151,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager.Deployments.Get;
-import com.google.api.services.deploymentmanager.v2.model.Deployment;
+import com.google.api.services.deploymentmanager.DeploymentManager;
+import com.google.api.services.deploymentmanager.DeploymentManager.Deployments.Get;
+import com.google.api.services.deploymentmanager.model.Deployment;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class DeploymentmanagerExample {
+public class DeploymentManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The project ID for this request.
     String project = ""; // TODO: Update field(s).
@@ -166,13 +166,13 @@ public class DeploymentmanagerExample {
     // The name of the deployment for this request.
     String deployment = ""; // TODO: Update field(s).
 
-    Deploymentmanager service = createService();
+    DeploymentManager service = createService();
     Get request = service.deployments().get(project, deployment);
     Deployment response = request.execute();
     System.out.println(response);
   }
 
-  public Deploymentmanager createService() throws IOException, GeneralSecurityException {
+  public DeploymentManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -186,14 +186,14 @@ public class DeploymentmanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Deploymentmanager.Builder(httpTransport, jsonFactory, credential)
+    return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new DeploymentmanagerExample().run();
+      new DeploymentManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -217,15 +217,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager.Deployments.Insert;
-import com.google.api.services.deploymentmanager.v2.model.Deployment;
-import com.google.api.services.deploymentmanager.v2.model.Operation;
+import com.google.api.services.deploymentmanager.DeploymentManager;
+import com.google.api.services.deploymentmanager.DeploymentManager.Deployments.Insert;
+import com.google.api.services.deploymentmanager.model.Deployment;
+import com.google.api.services.deploymentmanager.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class DeploymentmanagerExample {
+public class DeploymentManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Deployment requestBody = new Deployment();
@@ -233,13 +233,13 @@ public class DeploymentmanagerExample {
     // The project ID for this request.
     String project = ""; // TODO: Update field(s).
 
-    Deploymentmanager service = createService();
+    DeploymentManager service = createService();
     Insert request = service.deployments().insert(project, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Deploymentmanager createService() throws IOException, GeneralSecurityException {
+  public DeploymentManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -253,14 +253,14 @@ public class DeploymentmanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Deploymentmanager.Builder(httpTransport, jsonFactory, credential)
+    return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new DeploymentmanagerExample().run();
+      new DeploymentManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -284,20 +284,20 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager.Deployments.List;
-import com.google.api.services.deploymentmanager.v2.model.Deployment;
-import com.google.api.services.deploymentmanager.v2.model.DeploymentsListResponse;
+import com.google.api.services.deploymentmanager.DeploymentManager;
+import com.google.api.services.deploymentmanager.DeploymentManager.Deployments.List;
+import com.google.api.services.deploymentmanager.model.Deployment;
+import com.google.api.services.deploymentmanager.model.DeploymentsListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class DeploymentmanagerExample {
+public class DeploymentManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The project ID for this request.
     String project = ""; // TODO: Update field(s).
 
-    Deploymentmanager service = createService();
+    DeploymentManager service = createService();
     List request = service.deployments().list(project);
     DeploymentsListResponse response;
     do {
@@ -311,7 +311,7 @@ public class DeploymentmanagerExample {
     } while (response.getNextPageToken() != null);
   }
 
-  public Deploymentmanager createService() throws IOException, GeneralSecurityException {
+  public DeploymentManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -325,14 +325,14 @@ public class DeploymentmanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Deploymentmanager.Builder(httpTransport, jsonFactory, credential)
+    return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new DeploymentmanagerExample().run();
+      new DeploymentManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -356,15 +356,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager.Deployments.Patch;
-import com.google.api.services.deploymentmanager.v2.model.Deployment;
-import com.google.api.services.deploymentmanager.v2.model.Operation;
+import com.google.api.services.deploymentmanager.DeploymentManager;
+import com.google.api.services.deploymentmanager.DeploymentManager.Deployments.Patch;
+import com.google.api.services.deploymentmanager.model.Deployment;
+import com.google.api.services.deploymentmanager.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class DeploymentmanagerExample {
+public class DeploymentManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Deployment requestBody = new Deployment();
@@ -375,13 +375,13 @@ public class DeploymentmanagerExample {
     // The name of the deployment for this request.
     String deployment = ""; // TODO: Update field(s).
 
-    Deploymentmanager service = createService();
+    DeploymentManager service = createService();
     Patch request = service.deployments().patch(project, deployment, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Deploymentmanager createService() throws IOException, GeneralSecurityException {
+  public DeploymentManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -395,14 +395,14 @@ public class DeploymentmanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Deploymentmanager.Builder(httpTransport, jsonFactory, credential)
+    return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new DeploymentmanagerExample().run();
+      new DeploymentManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -426,15 +426,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager.Deployments.Stop;
-import com.google.api.services.deploymentmanager.v2.model.DeploymentsStopRequest;
-import com.google.api.services.deploymentmanager.v2.model.Operation;
+import com.google.api.services.deploymentmanager.DeploymentManager;
+import com.google.api.services.deploymentmanager.DeploymentManager.Deployments.Stop;
+import com.google.api.services.deploymentmanager.model.DeploymentsStopRequest;
+import com.google.api.services.deploymentmanager.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class DeploymentmanagerExample {
+public class DeploymentManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     DeploymentsStopRequest requestBody = new DeploymentsStopRequest();
@@ -445,13 +445,13 @@ public class DeploymentmanagerExample {
     // The name of the deployment for this request.
     String deployment = ""; // TODO: Update field(s).
 
-    Deploymentmanager service = createService();
+    DeploymentManager service = createService();
     Stop request = service.deployments().stop(project, deployment, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Deploymentmanager createService() throws IOException, GeneralSecurityException {
+  public DeploymentManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -465,14 +465,14 @@ public class DeploymentmanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Deploymentmanager.Builder(httpTransport, jsonFactory, credential)
+    return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new DeploymentmanagerExample().run();
+      new DeploymentManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -496,15 +496,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager.Deployments.Update;
-import com.google.api.services.deploymentmanager.v2.model.Deployment;
-import com.google.api.services.deploymentmanager.v2.model.Operation;
+import com.google.api.services.deploymentmanager.DeploymentManager;
+import com.google.api.services.deploymentmanager.DeploymentManager.Deployments.Update;
+import com.google.api.services.deploymentmanager.model.Deployment;
+import com.google.api.services.deploymentmanager.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class DeploymentmanagerExample {
+public class DeploymentManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Deployment requestBody = new Deployment();
@@ -515,13 +515,13 @@ public class DeploymentmanagerExample {
     // The name of the deployment for this request.
     String deployment = ""; // TODO: Update field(s).
 
-    Deploymentmanager service = createService();
+    DeploymentManager service = createService();
     Update request = service.deployments().update(project, deployment, requestBody);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Deploymentmanager createService() throws IOException, GeneralSecurityException {
+  public DeploymentManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -535,14 +535,14 @@ public class DeploymentmanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Deploymentmanager.Builder(httpTransport, jsonFactory, credential)
+    return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new DeploymentmanagerExample().run();
+      new DeploymentManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -566,14 +566,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager.Manifests.Get;
-import com.google.api.services.deploymentmanager.v2.model.Manifest;
+import com.google.api.services.deploymentmanager.DeploymentManager;
+import com.google.api.services.deploymentmanager.DeploymentManager.Manifests.Get;
+import com.google.api.services.deploymentmanager.model.Manifest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class DeploymentmanagerExample {
+public class DeploymentManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The project ID for this request.
     String project = ""; // TODO: Update field(s).
@@ -584,13 +584,13 @@ public class DeploymentmanagerExample {
     // The name of the manifest for this request.
     String manifest = ""; // TODO: Update field(s).
 
-    Deploymentmanager service = createService();
+    DeploymentManager service = createService();
     Get request = service.manifests().get(project, deployment, manifest);
     Manifest response = request.execute();
     System.out.println(response);
   }
 
-  public Deploymentmanager createService() throws IOException, GeneralSecurityException {
+  public DeploymentManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -604,14 +604,14 @@ public class DeploymentmanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Deploymentmanager.Builder(httpTransport, jsonFactory, credential)
+    return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new DeploymentmanagerExample().run();
+      new DeploymentManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -635,15 +635,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager.Manifests.List;
-import com.google.api.services.deploymentmanager.v2.model.Manifest;
-import com.google.api.services.deploymentmanager.v2.model.ManifestsListResponse;
+import com.google.api.services.deploymentmanager.DeploymentManager;
+import com.google.api.services.deploymentmanager.DeploymentManager.Manifests.List;
+import com.google.api.services.deploymentmanager.model.Manifest;
+import com.google.api.services.deploymentmanager.model.ManifestsListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class DeploymentmanagerExample {
+public class DeploymentManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The project ID for this request.
     String project = ""; // TODO: Update field(s).
@@ -651,7 +651,7 @@ public class DeploymentmanagerExample {
     // The name of the deployment for this request.
     String deployment = ""; // TODO: Update field(s).
 
-    Deploymentmanager service = createService();
+    DeploymentManager service = createService();
     List request = service.manifests().list(project, deployment);
     ManifestsListResponse response;
     do {
@@ -665,7 +665,7 @@ public class DeploymentmanagerExample {
     } while (response.getNextPageToken() != null);
   }
 
-  public Deploymentmanager createService() throws IOException, GeneralSecurityException {
+  public DeploymentManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -679,14 +679,14 @@ public class DeploymentmanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Deploymentmanager.Builder(httpTransport, jsonFactory, credential)
+    return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new DeploymentmanagerExample().run();
+      new DeploymentManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -710,14 +710,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager.Operations.Get;
-import com.google.api.services.deploymentmanager.v2.model.Operation;
+import com.google.api.services.deploymentmanager.DeploymentManager;
+import com.google.api.services.deploymentmanager.DeploymentManager.Operations.Get;
+import com.google.api.services.deploymentmanager.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class DeploymentmanagerExample {
+public class DeploymentManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The project ID for this request.
     String project = ""; // TODO: Update field(s).
@@ -725,13 +725,13 @@ public class DeploymentmanagerExample {
     // The name of the operation for this request.
     String operation = ""; // TODO: Update field(s).
 
-    Deploymentmanager service = createService();
+    DeploymentManager service = createService();
     Get request = service.operations().get(project, operation);
     Operation response = request.execute();
     System.out.println(response);
   }
 
-  public Deploymentmanager createService() throws IOException, GeneralSecurityException {
+  public DeploymentManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -745,14 +745,14 @@ public class DeploymentmanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Deploymentmanager.Builder(httpTransport, jsonFactory, credential)
+    return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new DeploymentmanagerExample().run();
+      new DeploymentManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -776,20 +776,20 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager.Operations.List;
-import com.google.api.services.deploymentmanager.v2.model.Operation;
-import com.google.api.services.deploymentmanager.v2.model.OperationsListResponse;
+import com.google.api.services.deploymentmanager.DeploymentManager;
+import com.google.api.services.deploymentmanager.DeploymentManager.Operations.List;
+import com.google.api.services.deploymentmanager.model.Operation;
+import com.google.api.services.deploymentmanager.model.OperationsListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class DeploymentmanagerExample {
+public class DeploymentManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The project ID for this request.
     String project = ""; // TODO: Update field(s).
 
-    Deploymentmanager service = createService();
+    DeploymentManager service = createService();
     List request = service.operations().list(project);
     OperationsListResponse response;
     do {
@@ -803,7 +803,7 @@ public class DeploymentmanagerExample {
     } while (response.getNextPageToken() != null);
   }
 
-  public Deploymentmanager createService() throws IOException, GeneralSecurityException {
+  public DeploymentManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -817,14 +817,14 @@ public class DeploymentmanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Deploymentmanager.Builder(httpTransport, jsonFactory, credential)
+    return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new DeploymentmanagerExample().run();
+      new DeploymentManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -848,14 +848,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager.Resources.Get;
-import com.google.api.services.deploymentmanager.v2.model.Resource;
+import com.google.api.services.deploymentmanager.DeploymentManager;
+import com.google.api.services.deploymentmanager.DeploymentManager.Resources.Get;
+import com.google.api.services.deploymentmanager.model.Resource;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class DeploymentmanagerExample {
+public class DeploymentManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The project ID for this request.
     String project = ""; // TODO: Update field(s).
@@ -866,13 +866,13 @@ public class DeploymentmanagerExample {
     // The name of the resource for this request.
     String resource = ""; // TODO: Update field(s).
 
-    Deploymentmanager service = createService();
+    DeploymentManager service = createService();
     Get request = service.resources().get(project, deployment, resource);
     Resource response = request.execute();
     System.out.println(response);
   }
 
-  public Deploymentmanager createService() throws IOException, GeneralSecurityException {
+  public DeploymentManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -886,14 +886,14 @@ public class DeploymentmanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Deploymentmanager.Builder(httpTransport, jsonFactory, credential)
+    return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new DeploymentmanagerExample().run();
+      new DeploymentManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -917,15 +917,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager.Resources.List;
-import com.google.api.services.deploymentmanager.v2.model.Resource;
-import com.google.api.services.deploymentmanager.v2.model.ResourcesListResponse;
+import com.google.api.services.deploymentmanager.DeploymentManager;
+import com.google.api.services.deploymentmanager.DeploymentManager.Resources.List;
+import com.google.api.services.deploymentmanager.model.Resource;
+import com.google.api.services.deploymentmanager.model.ResourcesListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class DeploymentmanagerExample {
+public class DeploymentManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The project ID for this request.
     String project = ""; // TODO: Update field(s).
@@ -933,7 +933,7 @@ public class DeploymentmanagerExample {
     // The name of the deployment for this request.
     String deployment = ""; // TODO: Update field(s).
 
-    Deploymentmanager service = createService();
+    DeploymentManager service = createService();
     List request = service.resources().list(project, deployment);
     ResourcesListResponse response;
     do {
@@ -947,7 +947,7 @@ public class DeploymentmanagerExample {
     } while (response.getNextPageToken() != null);
   }
 
-  public Deploymentmanager createService() throws IOException, GeneralSecurityException {
+  public DeploymentManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -961,14 +961,14 @@ public class DeploymentmanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Deploymentmanager.Builder(httpTransport, jsonFactory, credential)
+    return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new DeploymentmanagerExample().run();
+      new DeploymentManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -992,20 +992,20 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager;
-import com.google.api.services.deploymentmanager.v2.Deploymentmanager.Types.List;
-import com.google.api.services.deploymentmanager.v2.model.Type;
-import com.google.api.services.deploymentmanager.v2.model.TypesListResponse;
+import com.google.api.services.deploymentmanager.DeploymentManager;
+import com.google.api.services.deploymentmanager.DeploymentManager.Types.List;
+import com.google.api.services.deploymentmanager.model.Type;
+import com.google.api.services.deploymentmanager.model.TypesListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class DeploymentmanagerExample {
+public class DeploymentManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The project ID for this request.
     String project = ""; // TODO: Update field(s).
 
-    Deploymentmanager service = createService();
+    DeploymentManager service = createService();
     List request = service.types().list(project);
     TypesListResponse response;
     do {
@@ -1019,7 +1019,7 @@ public class DeploymentmanagerExample {
     } while (response.getNextPageToken() != null);
   }
 
-  public Deploymentmanager createService() throws IOException, GeneralSecurityException {
+  public DeploymentManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1033,14 +1033,14 @@ public class DeploymentmanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Deploymentmanager.Builder(httpTransport, jsonFactory, credential)
+    return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new DeploymentmanagerExample().run();
+      new DeploymentManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {

@@ -15,14 +15,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudmonitoring.v2beta2.Cloudmonitoring;
-import com.google.api.services.cloudmonitoring.v2beta2.Cloudmonitoring.MetricDescriptors.Create;
-import com.google.api.services.cloudmonitoring.v2beta2.model.MetricDescriptor;
+import com.google.api.services.cloudmonitoring.CloudMonitoring;
+import com.google.api.services.cloudmonitoring.CloudMonitoring.MetricDescriptors.Create;
+import com.google.api.services.cloudmonitoring.model.MetricDescriptor;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudmonitoringExample {
+public class CloudMonitoringExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     MetricDescriptor requestBody = new MetricDescriptor();
@@ -30,13 +30,13 @@ public class CloudmonitoringExample {
     // The project id. The value can be the numeric project ID or string-based project name.
     String project = ""; // TODO: Update field(s).
 
-    Cloudmonitoring service = createService();
+    CloudMonitoring service = createService();
     Create request = service.metricDescriptors().create(project, requestBody);
     MetricDescriptor response = request.execute();
     System.out.println(response);
   }
 
-  public Cloudmonitoring createService() throws IOException, GeneralSecurityException {
+  public CloudMonitoring createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -50,14 +50,14 @@ public class CloudmonitoringExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudmonitoring.Builder(httpTransport, jsonFactory, credential)
+    return new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudmonitoringExample().run();
+      new CloudMonitoringExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -81,14 +81,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudmonitoring.v2beta2.Cloudmonitoring;
-import com.google.api.services.cloudmonitoring.v2beta2.Cloudmonitoring.MetricDescriptors.Delete;
-import com.google.api.services.cloudmonitoring.v2beta2.model.DeleteMetricDescriptorResponse;
+import com.google.api.services.cloudmonitoring.CloudMonitoring;
+import com.google.api.services.cloudmonitoring.CloudMonitoring.MetricDescriptors.Delete;
+import com.google.api.services.cloudmonitoring.model.DeleteMetricDescriptorResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudmonitoringExample {
+public class CloudMonitoringExample {
   public void run() throws IOException, GeneralSecurityException {
     // The project ID to which the metric belongs.
     String project = ""; // TODO: Update field(s).
@@ -96,13 +96,13 @@ public class CloudmonitoringExample {
     // Name of the metric.
     String metric = ""; // TODO: Update field(s).
 
-    Cloudmonitoring service = createService();
+    CloudMonitoring service = createService();
     Delete request = service.metricDescriptors().delete(project, metric);
     DeleteMetricDescriptorResponse response = request.execute();
     System.out.println(response);
   }
 
-  public Cloudmonitoring createService() throws IOException, GeneralSecurityException {
+  public CloudMonitoring createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -116,14 +116,14 @@ public class CloudmonitoringExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudmonitoring.Builder(httpTransport, jsonFactory, credential)
+    return new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudmonitoringExample().run();
+      new CloudMonitoringExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -147,25 +147,21 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudmonitoring.v2beta2.Cloudmonitoring;
-import com.google.api.services.cloudmonitoring.v2beta2.Cloudmonitoring.MetricDescriptors.List;
-import com.google.api.services.cloudmonitoring.v2beta2.model.ListMetricDescriptorsRequest;
-import com.google.api.services.cloudmonitoring.v2beta2.model.ListMetricDescriptorsResponse;
-import com.google.api.services.cloudmonitoring.v2beta2.model.MetricDescriptor;
+import com.google.api.services.cloudmonitoring.CloudMonitoring;
+import com.google.api.services.cloudmonitoring.CloudMonitoring.MetricDescriptors.List;
+import com.google.api.services.cloudmonitoring.model.ListMetricDescriptorsResponse;
+import com.google.api.services.cloudmonitoring.model.MetricDescriptor;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudmonitoringExample {
+public class CloudMonitoringExample {
   public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    ListMetricDescriptorsRequest requestBody = new ListMetricDescriptorsRequest();
-
     // The project id. The value can be the numeric project ID or string-based project name.
     String project = ""; // TODO: Update field(s).
 
-    Cloudmonitoring service = createService();
-    List request = service.metricDescriptors().list(project, requestBody);
+    CloudMonitoring service = createService();
+    List request = service.metricDescriptors().list(project);
     ListMetricDescriptorsResponse response;
     do {
       response = request.execute();
@@ -178,7 +174,7 @@ public class CloudmonitoringExample {
     } while (response.getNextPageToken() != null);
   }
 
-  public Cloudmonitoring createService() throws IOException, GeneralSecurityException {
+  public CloudMonitoring createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -192,14 +188,14 @@ public class CloudmonitoringExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudmonitoring.Builder(httpTransport, jsonFactory, credential)
+    return new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudmonitoringExample().run();
+      new CloudMonitoringExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -223,20 +219,16 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudmonitoring.v2beta2.Cloudmonitoring;
-import com.google.api.services.cloudmonitoring.v2beta2.Cloudmonitoring.Timeseries.List;
-import com.google.api.services.cloudmonitoring.v2beta2.model.ListTimeseriesRequest;
-import com.google.api.services.cloudmonitoring.v2beta2.model.ListTimeseriesResponse;
-import com.google.api.services.cloudmonitoring.v2beta2.model.Timeseries;
+import com.google.api.services.cloudmonitoring.CloudMonitoring;
+import com.google.api.services.cloudmonitoring.CloudMonitoring.Timeseries.List;
+import com.google.api.services.cloudmonitoring.model.ListTimeseriesResponse;
+import com.google.api.services.cloudmonitoring.model.Timeseries;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudmonitoringExample {
+public class CloudMonitoringExample {
   public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    ListTimeseriesRequest requestBody = new ListTimeseriesRequest();
-
     // The project ID to which this time series belongs. The value can be the numeric project ID or
     // string-based project name.
     String project = ""; // TODO: Update field(s).
@@ -248,8 +240,8 @@ public class CloudmonitoringExample {
     // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
     String youngest = ""; // TODO: Update field(s).
 
-    Cloudmonitoring service = createService();
-    List request = service.timeseries().list(project, metric, youngest, requestBody);
+    CloudMonitoring service = createService();
+    List request = service.timeseries().list(project, metric, youngest);
     ListTimeseriesResponse response;
     do {
       response = request.execute();
@@ -262,7 +254,7 @@ public class CloudmonitoringExample {
     } while (response.getNextPageToken() != null);
   }
 
-  public Cloudmonitoring createService() throws IOException, GeneralSecurityException {
+  public CloudMonitoring createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -276,14 +268,14 @@ public class CloudmonitoringExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudmonitoring.Builder(httpTransport, jsonFactory, credential)
+    return new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudmonitoringExample().run();
+      new CloudMonitoringExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -307,15 +299,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudmonitoring.v2beta2.Cloudmonitoring;
-import com.google.api.services.cloudmonitoring.v2beta2.Cloudmonitoring.Timeseries.Write;
-import com.google.api.services.cloudmonitoring.v2beta2.model.WriteTimeseriesRequest;
-import com.google.api.services.cloudmonitoring.v2beta2.model.WriteTimeseriesResponse;
+import com.google.api.services.cloudmonitoring.CloudMonitoring;
+import com.google.api.services.cloudmonitoring.CloudMonitoring.Timeseries.Write;
+import com.google.api.services.cloudmonitoring.model.WriteTimeseriesRequest;
+import com.google.api.services.cloudmonitoring.model.WriteTimeseriesResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudmonitoringExample {
+public class CloudMonitoringExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     WriteTimeseriesRequest requestBody = new WriteTimeseriesRequest();
@@ -323,13 +315,13 @@ public class CloudmonitoringExample {
     // The project ID. The value can be the numeric project ID or string-based project name.
     String project = ""; // TODO: Update field(s).
 
-    Cloudmonitoring service = createService();
+    CloudMonitoring service = createService();
     Write request = service.timeseries().write(project, requestBody);
     WriteTimeseriesResponse response = request.execute();
     System.out.println(response);
   }
 
-  public Cloudmonitoring createService() throws IOException, GeneralSecurityException {
+  public CloudMonitoring createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -343,14 +335,14 @@ public class CloudmonitoringExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudmonitoring.Builder(httpTransport, jsonFactory, credential)
+    return new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudmonitoringExample().run();
+      new CloudMonitoringExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -374,20 +366,16 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudmonitoring.v2beta2.Cloudmonitoring;
-import com.google.api.services.cloudmonitoring.v2beta2.Cloudmonitoring.TimeseriesDescriptors.List;
-import com.google.api.services.cloudmonitoring.v2beta2.model.ListTimeseriesDescriptorsRequest;
-import com.google.api.services.cloudmonitoring.v2beta2.model.ListTimeseriesDescriptorsResponse;
-import com.google.api.services.cloudmonitoring.v2beta2.model.TimeseriesDescriptor;
+import com.google.api.services.cloudmonitoring.CloudMonitoring;
+import com.google.api.services.cloudmonitoring.CloudMonitoring.TimeseriesDescriptors.List;
+import com.google.api.services.cloudmonitoring.model.ListTimeseriesDescriptorsResponse;
+import com.google.api.services.cloudmonitoring.model.TimeseriesDescriptor;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudmonitoringExample {
+public class CloudMonitoringExample {
   public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    ListTimeseriesDescriptorsRequest requestBody = new ListTimeseriesDescriptorsRequest();
-
     // The project ID to which this time series belongs. The value can be the numeric project ID or
     // string-based project name.
     String project = ""; // TODO: Update field(s).
@@ -399,8 +387,8 @@ public class CloudmonitoringExample {
     // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
     String youngest = ""; // TODO: Update field(s).
 
-    Cloudmonitoring service = createService();
-    List request = service.timeseriesDescriptors().list(project, metric, youngest, requestBody);
+    CloudMonitoring service = createService();
+    List request = service.timeseriesDescriptors().list(project, metric, youngest);
     ListTimeseriesDescriptorsResponse response;
     do {
       response = request.execute();
@@ -413,7 +401,7 @@ public class CloudmonitoringExample {
     } while (response.getNextPageToken() != null);
   }
 
-  public Cloudmonitoring createService() throws IOException, GeneralSecurityException {
+  public CloudMonitoring createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -427,14 +415,14 @@ public class CloudmonitoringExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudmonitoring.Builder(httpTransport, jsonFactory, credential)
+    return new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudmonitoringExample().run();
+      new CloudMonitoringExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {

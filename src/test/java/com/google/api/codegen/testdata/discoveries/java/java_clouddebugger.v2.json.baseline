@@ -15,25 +15,25 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouddebugger.v2.Clouddebugger;
-import com.google.api.services.clouddebugger.v2.Clouddebugger.Controller.Debuggees.Breakpoints.List;
+import com.google.api.services.clouddebugger.v2.CloudDebugger;
+import com.google.api.services.clouddebugger.v2.CloudDebugger.Controller.Debuggees.Breakpoints.List;
 import com.google.api.services.clouddebugger.v2.model.ListActiveBreakpointsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouddebuggerExample {
+public class CloudDebuggerExample {
   public void run() throws IOException, GeneralSecurityException {
     // Identifies the debuggee.
     String debuggeeId = ""; // TODO: Update field(s).
 
-    Clouddebugger service = createService();
+    CloudDebugger service = createService();
     List request = service.controller().debuggees().breakpoints().list(debuggeeId);
     ListActiveBreakpointsResponse response = request.execute();
     System.out.println(response);
   }
 
-  public Clouddebugger createService() throws IOException, GeneralSecurityException {
+  public CloudDebugger createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -47,14 +47,14 @@ public class ClouddebuggerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouddebugger.Builder(httpTransport, jsonFactory, credential)
+    return new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouddebuggerExample().run();
+      new CloudDebuggerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -78,15 +78,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouddebugger.v2.Clouddebugger;
-import com.google.api.services.clouddebugger.v2.Clouddebugger.Controller.Debuggees.Breakpoints.Update;
+import com.google.api.services.clouddebugger.v2.CloudDebugger;
+import com.google.api.services.clouddebugger.v2.CloudDebugger.Controller.Debuggees.Breakpoints.Update;
 import com.google.api.services.clouddebugger.v2.model.UpdateActiveBreakpointRequest;
 import com.google.api.services.clouddebugger.v2.model.UpdateActiveBreakpointResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouddebuggerExample {
+public class CloudDebuggerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     UpdateActiveBreakpointRequest requestBody = new UpdateActiveBreakpointRequest();
@@ -97,13 +97,13 @@ public class ClouddebuggerExample {
     // Breakpoint identifier, unique in the scope of the debuggee.
     String id = ""; // TODO: Update field(s).
 
-    Clouddebugger service = createService();
+    CloudDebugger service = createService();
     Update request = service.controller().debuggees().breakpoints().update(debuggeeId, id, requestBody);
     UpdateActiveBreakpointResponse response = request.execute();
     System.out.println(response);
   }
 
-  public Clouddebugger createService() throws IOException, GeneralSecurityException {
+  public CloudDebugger createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -117,14 +117,14 @@ public class ClouddebuggerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouddebugger.Builder(httpTransport, jsonFactory, credential)
+    return new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouddebuggerExample().run();
+      new CloudDebuggerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -148,26 +148,26 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouddebugger.v2.Clouddebugger;
-import com.google.api.services.clouddebugger.v2.Clouddebugger.Controller.Debuggees.Register;
+import com.google.api.services.clouddebugger.v2.CloudDebugger;
+import com.google.api.services.clouddebugger.v2.CloudDebugger.Controller.Debuggees.Register;
 import com.google.api.services.clouddebugger.v2.model.RegisterDebuggeeRequest;
 import com.google.api.services.clouddebugger.v2.model.RegisterDebuggeeResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouddebuggerExample {
+public class CloudDebuggerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     RegisterDebuggeeRequest requestBody = new RegisterDebuggeeRequest();
 
-    Clouddebugger service = createService();
+    CloudDebugger service = createService();
     Register request = service.controller().debuggees().register(requestBody);
     RegisterDebuggeeResponse response = request.execute();
     System.out.println(response);
   }
 
-  public Clouddebugger createService() throws IOException, GeneralSecurityException {
+  public CloudDebugger createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -181,14 +181,14 @@ public class ClouddebuggerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouddebugger.Builder(httpTransport, jsonFactory, credential)
+    return new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouddebuggerExample().run();
+      new CloudDebuggerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -212,13 +212,13 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouddebugger.v2.Clouddebugger;
-import com.google.api.services.clouddebugger.v2.Clouddebugger.Debugger.Debuggees.Breakpoints.Delete;
+import com.google.api.services.clouddebugger.v2.CloudDebugger;
+import com.google.api.services.clouddebugger.v2.CloudDebugger.Debugger.Debuggees.Breakpoints.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouddebuggerExample {
+public class CloudDebuggerExample {
   public void run() throws IOException, GeneralSecurityException {
     // ID of the debuggee whose breakpoint to delete.
     String debuggeeId = ""; // TODO: Update field(s).
@@ -226,12 +226,12 @@ public class ClouddebuggerExample {
     // ID of the breakpoint to delete.
     String breakpointId = ""; // TODO: Update field(s).
 
-    Clouddebugger service = createService();
+    CloudDebugger service = createService();
     Delete request = service.debugger().debuggees().breakpoints().delete(debuggeeId, breakpointId);
     request.execute();
   }
 
-  public Clouddebugger createService() throws IOException, GeneralSecurityException {
+  public CloudDebugger createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -245,14 +245,14 @@ public class ClouddebuggerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouddebugger.Builder(httpTransport, jsonFactory, credential)
+    return new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouddebuggerExample().run();
+      new CloudDebuggerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -276,14 +276,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouddebugger.v2.Clouddebugger;
-import com.google.api.services.clouddebugger.v2.Clouddebugger.Debugger.Debuggees.Breakpoints.Get;
+import com.google.api.services.clouddebugger.v2.CloudDebugger;
+import com.google.api.services.clouddebugger.v2.CloudDebugger.Debugger.Debuggees.Breakpoints.Get;
 import com.google.api.services.clouddebugger.v2.model.GetBreakpointResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouddebuggerExample {
+public class CloudDebuggerExample {
   public void run() throws IOException, GeneralSecurityException {
     // ID of the debuggee whose breakpoint to get.
     String debuggeeId = ""; // TODO: Update field(s).
@@ -291,13 +291,13 @@ public class ClouddebuggerExample {
     // ID of the breakpoint to get.
     String breakpointId = ""; // TODO: Update field(s).
 
-    Clouddebugger service = createService();
+    CloudDebugger service = createService();
     Get request = service.debugger().debuggees().breakpoints().get(debuggeeId, breakpointId);
     GetBreakpointResponse response = request.execute();
     System.out.println(response);
   }
 
-  public Clouddebugger createService() throws IOException, GeneralSecurityException {
+  public CloudDebugger createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -311,14 +311,14 @@ public class ClouddebuggerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouddebugger.Builder(httpTransport, jsonFactory, credential)
+    return new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouddebuggerExample().run();
+      new CloudDebuggerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -342,25 +342,25 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouddebugger.v2.Clouddebugger;
-import com.google.api.services.clouddebugger.v2.Clouddebugger.Debugger.Debuggees.Breakpoints.List;
+import com.google.api.services.clouddebugger.v2.CloudDebugger;
+import com.google.api.services.clouddebugger.v2.CloudDebugger.Debugger.Debuggees.Breakpoints.List;
 import com.google.api.services.clouddebugger.v2.model.ListBreakpointsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouddebuggerExample {
+public class CloudDebuggerExample {
   public void run() throws IOException, GeneralSecurityException {
     // ID of the debuggee whose breakpoints to list.
     String debuggeeId = ""; // TODO: Update field(s).
 
-    Clouddebugger service = createService();
+    CloudDebugger service = createService();
     List request = service.debugger().debuggees().breakpoints().list(debuggeeId);
     ListBreakpointsResponse response = request.execute();
     System.out.println(response);
   }
 
-  public Clouddebugger createService() throws IOException, GeneralSecurityException {
+  public CloudDebugger createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -374,14 +374,14 @@ public class ClouddebuggerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouddebugger.Builder(httpTransport, jsonFactory, credential)
+    return new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouddebuggerExample().run();
+      new CloudDebuggerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -405,15 +405,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouddebugger.v2.Clouddebugger;
-import com.google.api.services.clouddebugger.v2.Clouddebugger.Debugger.Debuggees.Breakpoints.Set;
+import com.google.api.services.clouddebugger.v2.CloudDebugger;
+import com.google.api.services.clouddebugger.v2.CloudDebugger.Debugger.Debuggees.Breakpoints.Set;
 import com.google.api.services.clouddebugger.v2.model.Breakpoint;
 import com.google.api.services.clouddebugger.v2.model.SetBreakpointResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouddebuggerExample {
+public class CloudDebuggerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Breakpoint requestBody = new Breakpoint();
@@ -421,13 +421,13 @@ public class ClouddebuggerExample {
     // ID of the debuggee where the breakpoint is to be set.
     String debuggeeId = ""; // TODO: Update field(s).
 
-    Clouddebugger service = createService();
+    CloudDebugger service = createService();
     Set request = service.debugger().debuggees().breakpoints().set(debuggeeId, requestBody);
     SetBreakpointResponse response = request.execute();
     System.out.println(response);
   }
 
-  public Clouddebugger createService() throws IOException, GeneralSecurityException {
+  public CloudDebugger createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -441,14 +441,14 @@ public class ClouddebuggerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouddebugger.Builder(httpTransport, jsonFactory, credential)
+    return new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouddebuggerExample().run();
+      new CloudDebuggerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -472,22 +472,22 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouddebugger.v2.Clouddebugger;
-import com.google.api.services.clouddebugger.v2.Clouddebugger.Debugger.Debuggees.List;
+import com.google.api.services.clouddebugger.v2.CloudDebugger;
+import com.google.api.services.clouddebugger.v2.CloudDebugger.Debugger.Debuggees.List;
 import com.google.api.services.clouddebugger.v2.model.ListDebuggeesResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class ClouddebuggerExample {
+public class CloudDebuggerExample {
   public void run() throws IOException, GeneralSecurityException {
-    Clouddebugger service = createService();
+    CloudDebugger service = createService();
     List request = service.debugger().debuggees().list();
     ListDebuggeesResponse response = request.execute();
     System.out.println(response);
   }
 
-  public Clouddebugger createService() throws IOException, GeneralSecurityException {
+  public CloudDebugger createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -501,14 +501,14 @@ public class ClouddebuggerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Clouddebugger.Builder(httpTransport, jsonFactory, credential)
+    return new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new ClouddebuggerExample().run();
+      new CloudDebuggerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {

@@ -15,25 +15,25 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager.Organizations.Get;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.Organization;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager.Organizations.Get;
+import com.google.api.services.cloudresourcemanager.model.Organization;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudresourcemanagerExample {
+public class CloudResourceManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The id of the Organization resource to fetch.
     String organizationId = ""; // TODO: Update field(s).
 
-    Cloudresourcemanager service = createService();
+    CloudResourceManager service = createService();
     Get request = service.organizations().get(organizationId);
     Organization response = request.execute();
     System.out.println(response);
   }
 
-  public Cloudresourcemanager createService() throws IOException, GeneralSecurityException {
+  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -47,14 +47,14 @@ public class CloudresourcemanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudresourcemanager.Builder(httpTransport, jsonFactory, credential)
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudresourcemanagerExample().run();
+      new CloudResourceManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -78,15 +78,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager.Organizations.GetIamPolicy;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.GetIamPolicyRequest;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.Policy;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager.Organizations.GetIamPolicy;
+import com.google.api.services.cloudresourcemanager.model.GetIamPolicyRequest;
+import com.google.api.services.cloudresourcemanager.model.Policy;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudresourcemanagerExample {
+public class CloudResourceManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     GetIamPolicyRequest requestBody = new GetIamPolicyRequest();
@@ -96,13 +96,13 @@ public class CloudresourcemanagerExample {
     // in this value is resource specific and is specified in the `getIamPolicy` documentation.
     String resource = ""; // TODO: Update field(s).
 
-    Cloudresourcemanager service = createService();
+    CloudResourceManager service = createService();
     GetIamPolicy request = service.organizations().getIamPolicy(resource, requestBody);
     Policy response = request.execute();
     System.out.println(response);
   }
 
-  public Cloudresourcemanager createService() throws IOException, GeneralSecurityException {
+  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -116,14 +116,14 @@ public class CloudresourcemanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudresourcemanager.Builder(httpTransport, jsonFactory, credential)
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudresourcemanagerExample().run();
+      new CloudResourceManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -147,17 +147,17 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager.Organizations.List;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.ListOrganizationsResponse;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.Organization;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager.Organizations.List;
+import com.google.api.services.cloudresourcemanager.model.ListOrganizationsResponse;
+import com.google.api.services.cloudresourcemanager.model.Organization;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudresourcemanagerExample {
+public class CloudResourceManagerExample {
   public void run() throws IOException, GeneralSecurityException {
-    Cloudresourcemanager service = createService();
+    CloudResourceManager service = createService();
     List request = service.organizations().list();
     ListOrganizationsResponse response;
     do {
@@ -171,7 +171,7 @@ public class CloudresourcemanagerExample {
     } while (response.getNextPageToken() != null);
   }
 
-  public Cloudresourcemanager createService() throws IOException, GeneralSecurityException {
+  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -185,14 +185,14 @@ public class CloudresourcemanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudresourcemanager.Builder(httpTransport, jsonFactory, credential)
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudresourcemanagerExample().run();
+      new CloudResourceManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -216,15 +216,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager.Organizations.SetIamPolicy;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.Policy;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.SetIamPolicyRequest;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager.Organizations.SetIamPolicy;
+import com.google.api.services.cloudresourcemanager.model.Policy;
+import com.google.api.services.cloudresourcemanager.model.SetIamPolicyRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudresourcemanagerExample {
+public class CloudResourceManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     SetIamPolicyRequest requestBody = new SetIamPolicyRequest();
@@ -234,13 +234,13 @@ public class CloudresourcemanagerExample {
     // in this value is resource specific and is specified in the `setIamPolicy` documentation.
     String resource = ""; // TODO: Update field(s).
 
-    Cloudresourcemanager service = createService();
+    CloudResourceManager service = createService();
     SetIamPolicy request = service.organizations().setIamPolicy(resource, requestBody);
     Policy response = request.execute();
     System.out.println(response);
   }
 
-  public Cloudresourcemanager createService() throws IOException, GeneralSecurityException {
+  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -254,14 +254,14 @@ public class CloudresourcemanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudresourcemanager.Builder(httpTransport, jsonFactory, credential)
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudresourcemanagerExample().run();
+      new CloudResourceManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -285,15 +285,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager.Organizations.TestIamPermissions;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.TestIamPermissionsRequest;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.TestIamPermissionsResponse;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager.Organizations.TestIamPermissions;
+import com.google.api.services.cloudresourcemanager.model.TestIamPermissionsRequest;
+import com.google.api.services.cloudresourcemanager.model.TestIamPermissionsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudresourcemanagerExample {
+public class CloudResourceManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     TestIamPermissionsRequest requestBody = new TestIamPermissionsRequest();
@@ -304,13 +304,13 @@ public class CloudresourcemanagerExample {
     // documentation.
     String resource = ""; // TODO: Update field(s).
 
-    Cloudresourcemanager service = createService();
+    CloudResourceManager service = createService();
     TestIamPermissions request = service.organizations().testIamPermissions(resource, requestBody);
     TestIamPermissionsResponse response = request.execute();
     System.out.println(response);
   }
 
-  public Cloudresourcemanager createService() throws IOException, GeneralSecurityException {
+  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -324,14 +324,14 @@ public class CloudresourcemanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudresourcemanager.Builder(httpTransport, jsonFactory, credential)
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudresourcemanagerExample().run();
+      new CloudResourceManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -355,14 +355,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager.Organizations.Update;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.Organization;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager.Organizations.Update;
+import com.google.api.services.cloudresourcemanager.model.Organization;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudresourcemanagerExample {
+public class CloudResourceManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Organization requestBody = new Organization();
@@ -371,13 +371,13 @@ public class CloudresourcemanagerExample {
     // creating a new Organization. This field is read-only.
     String organizationId = ""; // TODO: Update field(s).
 
-    Cloudresourcemanager service = createService();
+    CloudResourceManager service = createService();
     Update request = service.organizations().update(organizationId, requestBody);
     Organization response = request.execute();
     System.out.println(response);
   }
 
-  public Cloudresourcemanager createService() throws IOException, GeneralSecurityException {
+  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -391,14 +391,14 @@ public class CloudresourcemanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudresourcemanager.Builder(httpTransport, jsonFactory, credential)
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudresourcemanagerExample().run();
+      new CloudResourceManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -422,25 +422,25 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager.Projects.Create;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.Project;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager.Projects.Create;
+import com.google.api.services.cloudresourcemanager.model.Project;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudresourcemanagerExample {
+public class CloudResourceManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Project requestBody = new Project();
 
-    Cloudresourcemanager service = createService();
+    CloudResourceManager service = createService();
     Create request = service.projects().create(requestBody);
     Project response = request.execute();
     System.out.println(response);
   }
 
-  public Cloudresourcemanager createService() throws IOException, GeneralSecurityException {
+  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -454,14 +454,14 @@ public class CloudresourcemanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudresourcemanager.Builder(httpTransport, jsonFactory, credential)
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudresourcemanagerExample().run();
+      new CloudResourceManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -485,23 +485,23 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager.Projects.Delete;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager.Projects.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudresourcemanagerExample {
+public class CloudResourceManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The Project ID (for example, `foo-bar-123`). Required.
     String projectId = ""; // TODO: Update field(s).
 
-    Cloudresourcemanager service = createService();
+    CloudResourceManager service = createService();
     Delete request = service.projects().delete(projectId);
     request.execute();
   }
 
-  public Cloudresourcemanager createService() throws IOException, GeneralSecurityException {
+  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -515,14 +515,14 @@ public class CloudresourcemanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudresourcemanager.Builder(httpTransport, jsonFactory, credential)
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudresourcemanagerExample().run();
+      new CloudResourceManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -546,25 +546,25 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager.Projects.Get;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.Project;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager.Projects.Get;
+import com.google.api.services.cloudresourcemanager.model.Project;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudresourcemanagerExample {
+public class CloudResourceManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The Project ID (for example, `my-project-123`). Required.
     String projectId = ""; // TODO: Update field(s).
 
-    Cloudresourcemanager service = createService();
+    CloudResourceManager service = createService();
     Get request = service.projects().get(projectId);
     Project response = request.execute();
     System.out.println(response);
   }
 
-  public Cloudresourcemanager createService() throws IOException, GeneralSecurityException {
+  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -578,14 +578,14 @@ public class CloudresourcemanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudresourcemanager.Builder(httpTransport, jsonFactory, credential)
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudresourcemanagerExample().run();
+      new CloudResourceManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -609,15 +609,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager.Projects.GetIamPolicy;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.GetIamPolicyRequest;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.Policy;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager.Projects.GetIamPolicy;
+import com.google.api.services.cloudresourcemanager.model.GetIamPolicyRequest;
+import com.google.api.services.cloudresourcemanager.model.Policy;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudresourcemanagerExample {
+public class CloudResourceManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     GetIamPolicyRequest requestBody = new GetIamPolicyRequest();
@@ -627,13 +627,13 @@ public class CloudresourcemanagerExample {
     // in this value is resource specific and is specified in the `getIamPolicy` documentation.
     String resource = ""; // TODO: Update field(s).
 
-    Cloudresourcemanager service = createService();
+    CloudResourceManager service = createService();
     GetIamPolicy request = service.projects().getIamPolicy(resource, requestBody);
     Policy response = request.execute();
     System.out.println(response);
   }
 
-  public Cloudresourcemanager createService() throws IOException, GeneralSecurityException {
+  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -647,14 +647,14 @@ public class CloudresourcemanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudresourcemanager.Builder(httpTransport, jsonFactory, credential)
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudresourcemanagerExample().run();
+      new CloudResourceManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -678,17 +678,17 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager.Projects.List;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.ListProjectsResponse;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.Project;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager.Projects.List;
+import com.google.api.services.cloudresourcemanager.model.ListProjectsResponse;
+import com.google.api.services.cloudresourcemanager.model.Project;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudresourcemanagerExample {
+public class CloudResourceManagerExample {
   public void run() throws IOException, GeneralSecurityException {
-    Cloudresourcemanager service = createService();
+    CloudResourceManager service = createService();
     List request = service.projects().list();
     ListProjectsResponse response;
     do {
@@ -702,7 +702,7 @@ public class CloudresourcemanagerExample {
     } while (response.getNextPageToken() != null);
   }
 
-  public Cloudresourcemanager createService() throws IOException, GeneralSecurityException {
+  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -716,14 +716,14 @@ public class CloudresourcemanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudresourcemanager.Builder(httpTransport, jsonFactory, credential)
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudresourcemanagerExample().run();
+      new CloudResourceManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -747,15 +747,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager.Projects.SetIamPolicy;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.Policy;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.SetIamPolicyRequest;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager.Projects.SetIamPolicy;
+import com.google.api.services.cloudresourcemanager.model.Policy;
+import com.google.api.services.cloudresourcemanager.model.SetIamPolicyRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudresourcemanagerExample {
+public class CloudResourceManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     SetIamPolicyRequest requestBody = new SetIamPolicyRequest();
@@ -765,13 +765,13 @@ public class CloudresourcemanagerExample {
     // in this value is resource specific and is specified in the `setIamPolicy` documentation.
     String resource = ""; // TODO: Update field(s).
 
-    Cloudresourcemanager service = createService();
+    CloudResourceManager service = createService();
     SetIamPolicy request = service.projects().setIamPolicy(resource, requestBody);
     Policy response = request.execute();
     System.out.println(response);
   }
 
-  public Cloudresourcemanager createService() throws IOException, GeneralSecurityException {
+  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -785,14 +785,14 @@ public class CloudresourcemanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudresourcemanager.Builder(httpTransport, jsonFactory, credential)
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudresourcemanagerExample().run();
+      new CloudResourceManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -816,15 +816,15 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager.Projects.TestIamPermissions;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.TestIamPermissionsRequest;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.TestIamPermissionsResponse;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager.Projects.TestIamPermissions;
+import com.google.api.services.cloudresourcemanager.model.TestIamPermissionsRequest;
+import com.google.api.services.cloudresourcemanager.model.TestIamPermissionsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudresourcemanagerExample {
+public class CloudResourceManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     TestIamPermissionsRequest requestBody = new TestIamPermissionsRequest();
@@ -835,13 +835,13 @@ public class CloudresourcemanagerExample {
     // documentation.
     String resource = ""; // TODO: Update field(s).
 
-    Cloudresourcemanager service = createService();
+    CloudResourceManager service = createService();
     TestIamPermissions request = service.projects().testIamPermissions(resource, requestBody);
     TestIamPermissionsResponse response = request.execute();
     System.out.println(response);
   }
 
-  public Cloudresourcemanager createService() throws IOException, GeneralSecurityException {
+  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -855,14 +855,14 @@ public class CloudresourcemanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudresourcemanager.Builder(httpTransport, jsonFactory, credential)
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudresourcemanagerExample().run();
+      new CloudResourceManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -886,14 +886,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager.Projects.Undelete;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.UndeleteProjectRequest;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager.Projects.Undelete;
+import com.google.api.services.cloudresourcemanager.model.UndeleteProjectRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudresourcemanagerExample {
+public class CloudResourceManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     UndeleteProjectRequest requestBody = new UndeleteProjectRequest();
@@ -901,12 +901,12 @@ public class CloudresourcemanagerExample {
     // The project ID (for example, `foo-bar-123`). Required.
     String projectId = ""; // TODO: Update field(s).
 
-    Cloudresourcemanager service = createService();
+    CloudResourceManager service = createService();
     Undelete request = service.projects().undelete(projectId, requestBody);
     request.execute();
   }
 
-  public Cloudresourcemanager createService() throws IOException, GeneralSecurityException {
+  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -920,14 +920,14 @@ public class CloudresourcemanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudresourcemanager.Builder(httpTransport, jsonFactory, credential)
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudresourcemanagerExample().run();
+      new CloudResourceManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -951,14 +951,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager;
-import com.google.api.services.cloudresourcemanager.v1beta1.Cloudresourcemanager.Projects.Update;
-import com.google.api.services.cloudresourcemanager.v1beta1.model.Project;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager.Projects.Update;
+import com.google.api.services.cloudresourcemanager.model.Project;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudresourcemanagerExample {
+public class CloudResourceManagerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Project requestBody = new Project();
@@ -966,13 +966,13 @@ public class CloudresourcemanagerExample {
     // The project ID (for example, `my-project-123`). Required.
     String projectId = ""; // TODO: Update field(s).
 
-    Cloudresourcemanager service = createService();
+    CloudResourceManager service = createService();
     Update request = service.projects().update(projectId, requestBody);
     Project response = request.execute();
     System.out.println(response);
   }
 
-  public Cloudresourcemanager createService() throws IOException, GeneralSecurityException {
+  public CloudResourceManager createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -986,14 +986,14 @@ public class CloudresourcemanagerExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudresourcemanager.Builder(httpTransport, jsonFactory, credential)
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudresourcemanagerExample().run();
+      new CloudResourceManagerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {

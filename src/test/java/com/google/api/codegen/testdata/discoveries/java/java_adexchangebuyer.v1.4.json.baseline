@@ -2,38 +2,38 @@
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.GoatRequest;
-import com.google.goat.model.Account;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Accounts.Get;
+import com.google.api.services.adexchangebuyer.model.Account;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The account id
     int id = 0; // TODO: Update field(s).
 
-    GoatAPI service = createService();
-    GoatRequest request = service.accounts().get(id);
+    AdExchangeBuyer service = createService();
+    Get request = service.accounts().get(id);
     Account response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -47,14 +47,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -65,35 +65,35 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Accounts.List;
-import com.google.goat.model.AccountsList;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Accounts.List;
+import com.google.api.services.adexchangebuyer.model.AccountsList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     List request = service.accounts().list();
     AccountsList response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -107,14 +107,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -125,27 +125,27 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Accounts.Patch;
-import com.google.goat.model.Account;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Accounts.Patch;
+import com.google.api.services.adexchangebuyer.model.Account;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Account requestBody = new Account();
@@ -153,13 +153,13 @@ public class GoatAPIExample {
     // The account id
     int id = 0; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Patch request = service.accounts().patch(id, requestBody);
     Account response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -173,14 +173,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -191,27 +191,27 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Accounts.Update;
-import com.google.goat.model.Account;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Accounts.Update;
+import com.google.api.services.adexchangebuyer.model.Account;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Account requestBody = new Account();
@@ -219,13 +219,13 @@ public class GoatAPIExample {
     // The account id
     int id = 0; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Update request = service.accounts().update(id, requestBody);
     Account response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -239,14 +239,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -257,38 +257,38 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.BillingInfo.Get;
-import com.google.goat.model.BillingInfo;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.BillingInfo.Get;
+import com.google.api.services.adexchangebuyer.model.BillingInfo;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The account id.
     int accountId = 0; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Get request = service.billingInfo().get(accountId);
     BillingInfo response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -302,14 +302,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -320,35 +320,35 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.BillingInfo.List;
-import com.google.goat.model.BillingInfoList;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.BillingInfo.List;
+import com.google.api.services.adexchangebuyer.model.BillingInfoList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     List request = service.billingInfo().list();
     BillingInfoList response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -362,14 +362,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -380,27 +380,27 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Budget.Get;
-import com.google.goat.model.Budget;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Budget.Get;
+import com.google.api.services.adexchangebuyer.model.Budget;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The account id to get the budget information for.
     long accountId = 0L; // TODO: Update field(s).
@@ -408,13 +408,13 @@ public class GoatAPIExample {
     // The billing id to get the budget information for.
     long billingId = 0L; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Get request = service.budget().get(accountId, billingId);
     Budget response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -428,14 +428,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -446,27 +446,27 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Budget.Patch;
-import com.google.goat.model.Budget;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Budget.Patch;
+import com.google.api.services.adexchangebuyer.model.Budget;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Budget requestBody = new Budget();
@@ -477,13 +477,13 @@ public class GoatAPIExample {
     // The billing id associated with the budget being updated.
     long billingId = 0L; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Patch request = service.budget().patch(accountId, billingId, requestBody);
     Budget response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -497,14 +497,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -515,27 +515,27 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Budget.Update;
-import com.google.goat.model.Budget;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Budget.Update;
+import com.google.api.services.adexchangebuyer.model.Budget;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Budget requestBody = new Budget();
@@ -546,13 +546,13 @@ public class GoatAPIExample {
     // The billing id associated with the budget being updated.
     long billingId = 0L; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Update request = service.budget().update(accountId, billingId, requestBody);
     Budget response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -566,14 +566,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -584,26 +584,26 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Creatives.AddDeal;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Creatives.AddDeal;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The id for the account that will serve this creative.
     int accountId = 0; // TODO: Update field(s).
@@ -614,12 +614,12 @@ public class GoatAPIExample {
     // The id of the deal id to associate with this creative.
     long dealId = 0L; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     AddDeal request = service.creatives().addDeal(accountId, buyerCreativeId, dealId);
     request.execute();
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -633,14 +633,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -651,27 +651,27 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Creatives.Get;
-import com.google.goat.model.Creative;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Creatives.Get;
+import com.google.api.services.adexchangebuyer.model.Creative;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The id for the account that will serve this creative.
     int accountId = 0; // TODO: Update field(s).
@@ -679,13 +679,13 @@ public class GoatAPIExample {
     // The buyer-specific id for this creative.
     String buyerCreativeId = ""; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Get request = service.creatives().get(accountId, buyerCreativeId);
     Creative response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -699,14 +699,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -717,38 +717,38 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Creatives.Insert;
-import com.google.goat.model.Creative;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Creatives.Insert;
+import com.google.api.services.adexchangebuyer.model.Creative;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Creative requestBody = new Creative();
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Insert request = service.creatives().insert(requestBody);
     Creative response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -762,14 +762,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -780,30 +780,30 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Creatives.List;
-import com.google.goat.model.Creative;
-import com.google.goat.model.CreativesList;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Creatives.List;
+import com.google.api.services.adexchangebuyer.model.Creative;
+import com.google.api.services.adexchangebuyer.model.CreativesList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     List request = service.creatives().list();
     CreativesList response;
     do {
@@ -817,7 +817,7 @@ public class GoatAPIExample {
     } while (response.getNextPageToken() != null);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -831,14 +831,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -849,26 +849,26 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Creatives.RemoveDeal;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Creatives.RemoveDeal;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The id for the account that will serve this creative.
     int accountId = 0; // TODO: Update field(s).
@@ -879,12 +879,12 @@ public class GoatAPIExample {
     // The id of the deal id to disassociate with this creative.
     long dealId = 0L; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     RemoveDeal request = service.creatives().removeDeal(accountId, buyerCreativeId, dealId);
     request.execute();
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -898,14 +898,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -916,28 +916,28 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Marketplacedeals.Delete;
-import com.google.goat.model.DeleteOrderDealsRequest;
-import com.google.goat.model.DeleteOrderDealsResponse;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Marketplacedeals.Delete;
+import com.google.api.services.adexchangebuyer.model.DeleteOrderDealsRequest;
+import com.google.api.services.adexchangebuyer.model.DeleteOrderDealsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     DeleteOrderDealsRequest requestBody = new DeleteOrderDealsRequest();
@@ -945,13 +945,13 @@ public class GoatAPIExample {
     // The proposalId to delete deals from.
     String proposalId = ""; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Delete request = service.marketplacedeals().delete(proposalId, requestBody);
     DeleteOrderDealsResponse response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -965,14 +965,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -983,28 +983,28 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Marketplacedeals.Insert;
-import com.google.goat.model.AddOrderDealsRequest;
-import com.google.goat.model.AddOrderDealsResponse;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Marketplacedeals.Insert;
+import com.google.api.services.adexchangebuyer.model.AddOrderDealsRequest;
+import com.google.api.services.adexchangebuyer.model.AddOrderDealsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     AddOrderDealsRequest requestBody = new AddOrderDealsRequest();
@@ -1012,13 +1012,13 @@ public class GoatAPIExample {
     // proposalId for which deals need to be added.
     String proposalId = ""; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Insert request = service.marketplacedeals().insert(proposalId, requestBody);
     AddOrderDealsResponse response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1032,14 +1032,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1050,39 +1050,39 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Marketplacedeals.List;
-import com.google.goat.model.GetOrderDealsResponse;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Marketplacedeals.List;
+import com.google.api.services.adexchangebuyer.model.GetOrderDealsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The proposalId to get deals for. To search across proposals specify order_id = '-' as part of the
     // URL.
     String proposalId = ""; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     List request = service.marketplacedeals().list(proposalId);
     GetOrderDealsResponse response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1096,14 +1096,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1114,28 +1114,28 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Marketplacedeals.Update;
-import com.google.goat.model.EditAllOrderDealsRequest;
-import com.google.goat.model.EditAllOrderDealsResponse;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Marketplacedeals.Update;
+import com.google.api.services.adexchangebuyer.model.EditAllOrderDealsRequest;
+import com.google.api.services.adexchangebuyer.model.EditAllOrderDealsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     EditAllOrderDealsRequest requestBody = new EditAllOrderDealsRequest();
@@ -1143,13 +1143,13 @@ public class GoatAPIExample {
     // The proposalId to edit deals on.
     String proposalId = ""; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Update request = service.marketplacedeals().update(proposalId, requestBody);
     EditAllOrderDealsResponse response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1163,14 +1163,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1181,28 +1181,28 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Marketplacenotes.Insert;
-import com.google.goat.model.AddOrderNotesRequest;
-import com.google.goat.model.AddOrderNotesResponse;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Marketplacenotes.Insert;
+import com.google.api.services.adexchangebuyer.model.AddOrderNotesRequest;
+import com.google.api.services.adexchangebuyer.model.AddOrderNotesResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     AddOrderNotesRequest requestBody = new AddOrderNotesRequest();
@@ -1210,13 +1210,13 @@ public class GoatAPIExample {
     // The proposalId to add notes for.
     String proposalId = ""; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Insert request = service.marketplacenotes().insert(proposalId, requestBody);
     AddOrderNotesResponse response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1230,14 +1230,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1248,38 +1248,38 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Marketplacenotes.List;
-import com.google.goat.model.GetOrderNotesResponse;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Marketplacenotes.List;
+import com.google.api.services.adexchangebuyer.model.GetOrderNotesResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The proposalId to get notes for.
     String proposalId = ""; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     List request = service.marketplacenotes().list(proposalId);
     GetOrderNotesResponse response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1293,14 +1293,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1311,27 +1311,27 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Marketplaceprivateauction.Updateproposal;
-import com.google.goat.model.UpdatePrivateAuctionProposalRequest;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Marketplaceprivateauction.Updateproposal;
+import com.google.api.services.adexchangebuyer.model.UpdatePrivateAuctionProposalRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     UpdatePrivateAuctionProposalRequest requestBody = new UpdatePrivateAuctionProposalRequest();
@@ -1339,12 +1339,12 @@ public class GoatAPIExample {
     // The private auction id to be updated.
     String privateAuctionId = ""; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Updateproposal request = service.marketplaceprivateauction().updateproposal(privateAuctionId, requestBody);
     request.execute();
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1358,14 +1358,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1376,27 +1376,27 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.PerformanceReport.List;
-import com.google.goat.model.PerformanceReportList;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.PerformanceReport.List;
+import com.google.api.services.adexchangebuyer.model.PerformanceReportList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The account id to get the reports.
     long accountId = 0L; // TODO: Update field(s).
@@ -1407,13 +1407,13 @@ public class GoatAPIExample {
     // The start time of the report in ISO 8601 timestamp format using UTC.
     String startDateTime = ""; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     List request = service.performanceReport().list(accountId, endDateTime, startDateTime);
     PerformanceReportList response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1427,14 +1427,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1445,26 +1445,26 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.PretargetingConfig.Delete;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.PretargetingConfig.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The account id to delete the pretargeting config for.
     long accountId = 0L; // TODO: Update field(s).
@@ -1472,12 +1472,12 @@ public class GoatAPIExample {
     // The specific id of the configuration to delete.
     long configId = 0L; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Delete request = service.pretargetingConfig().delete(accountId, configId);
     request.execute();
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1491,14 +1491,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1509,27 +1509,27 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.PretargetingConfig.Get;
-import com.google.goat.model.PretargetingConfig;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.PretargetingConfig.Get;
+import com.google.api.services.adexchangebuyer.model.PretargetingConfig;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The account id to get the pretargeting config for.
     long accountId = 0L; // TODO: Update field(s).
@@ -1537,13 +1537,13 @@ public class GoatAPIExample {
     // The specific id of the configuration to retrieve.
     long configId = 0L; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Get request = service.pretargetingConfig().get(accountId, configId);
     PretargetingConfig response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1557,14 +1557,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1575,27 +1575,27 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.PretargetingConfig.Insert;
-import com.google.goat.model.PretargetingConfig;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.PretargetingConfig.Insert;
+import com.google.api.services.adexchangebuyer.model.PretargetingConfig;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     PretargetingConfig requestBody = new PretargetingConfig();
@@ -1603,13 +1603,13 @@ public class GoatAPIExample {
     // The account id to insert the pretargeting config for.
     long accountId = 0L; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Insert request = service.pretargetingConfig().insert(accountId, requestBody);
     PretargetingConfig response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1623,14 +1623,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1641,38 +1641,38 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.PretargetingConfig.List;
-import com.google.goat.model.PretargetingConfigList;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.PretargetingConfig.List;
+import com.google.api.services.adexchangebuyer.model.PretargetingConfigList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The account id to get the pretargeting configs for.
     long accountId = 0L; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     List request = service.pretargetingConfig().list(accountId);
     PretargetingConfigList response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1686,14 +1686,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1704,27 +1704,27 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.PretargetingConfig.Patch;
-import com.google.goat.model.PretargetingConfig;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.PretargetingConfig.Patch;
+import com.google.api.services.adexchangebuyer.model.PretargetingConfig;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     PretargetingConfig requestBody = new PretargetingConfig();
@@ -1735,13 +1735,13 @@ public class GoatAPIExample {
     // The specific id of the configuration to update.
     long configId = 0L; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Patch request = service.pretargetingConfig().patch(accountId, configId, requestBody);
     PretargetingConfig response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1755,14 +1755,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1773,27 +1773,27 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.PretargetingConfig.Update;
-import com.google.goat.model.PretargetingConfig;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.PretargetingConfig.Update;
+import com.google.api.services.adexchangebuyer.model.PretargetingConfig;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     PretargetingConfig requestBody = new PretargetingConfig();
@@ -1804,13 +1804,13 @@ public class GoatAPIExample {
     // The specific id of the configuration to update.
     long configId = 0L; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Update request = service.pretargetingConfig().update(accountId, configId, requestBody);
     PretargetingConfig response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1824,14 +1824,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1842,38 +1842,38 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Products.Get;
-import com.google.goat.model.Product;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Products.Get;
+import com.google.api.services.adexchangebuyer.model.Product;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The id for the product to get the head revision for.
     String productId = ""; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Get request = service.products().get(productId);
     Product response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1887,14 +1887,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1905,35 +1905,35 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Products.Search;
-import com.google.goat.model.GetOffersResponse;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Products.Search;
+import com.google.api.services.adexchangebuyer.model.GetOffersResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Search request = service.products().search();
     GetOffersResponse response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -1947,14 +1947,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -1965,38 +1965,38 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Proposals.Get;
-import com.google.goat.model.Proposal;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Proposals.Get;
+import com.google.api.services.adexchangebuyer.model.Proposal;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // Id of the proposal to retrieve.
     String proposalId = ""; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Get request = service.proposals().get(proposalId);
     Proposal response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -2010,14 +2010,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -2028,39 +2028,39 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Proposals.Insert;
-import com.google.goat.model.CreateOrdersRequest;
-import com.google.goat.model.CreateOrdersResponse;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Proposals.Insert;
+import com.google.api.services.adexchangebuyer.model.CreateOrdersRequest;
+import com.google.api.services.adexchangebuyer.model.CreateOrdersResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     CreateOrdersRequest requestBody = new CreateOrdersRequest();
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Insert request = service.proposals().insert(requestBody);
     CreateOrdersResponse response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -2074,14 +2074,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -2092,27 +2092,27 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Proposals.Patch;
-import com.google.goat.model.Proposal;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Proposals.Patch;
+import com.google.api.services.adexchangebuyer.model.Proposal;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Proposal requestBody = new Proposal();
@@ -2128,13 +2128,13 @@ public class GoatAPIExample {
     // The proposed action to take on the proposal.
     String updateAction = ""; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Patch request = service.proposals().patch(proposalId, revisionNumber, updateAction, requestBody);
     Proposal response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -2148,14 +2148,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -2166,35 +2166,35 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Proposals.Search;
-import com.google.goat.model.GetOrdersResponse;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Proposals.Search;
+import com.google.api.services.adexchangebuyer.model.GetOrdersResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Search request = service.proposals().search();
     GetOrdersResponse response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -2208,14 +2208,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -2226,36 +2226,36 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Proposals.Setupcomplete;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Proposals.Setupcomplete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The proposal id for which the setup is complete
     String proposalId = ""; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Setupcomplete request = service.proposals().setupcomplete(proposalId);
     request.execute();
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -2269,14 +2269,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -2287,27 +2287,27 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Proposals.Update;
-import com.google.goat.model.Proposal;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Proposals.Update;
+import com.google.api.services.adexchangebuyer.model.Proposal;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Proposal requestBody = new Proposal();
@@ -2323,13 +2323,13 @@ public class GoatAPIExample {
     // The proposed action to take on the proposal.
     String updateAction = ""; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     Update request = service.proposals().update(proposalId, revisionNumber, updateAction, requestBody);
     Proposal response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -2343,14 +2343,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -2361,38 +2361,38 @@ public class GoatAPIExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the The GOAT API
+ * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/goatapi
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
  * 2. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/goatapi/v2/java
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.goat.GoatAPI;
-import com.google.goat.GoatAPI.Pubprofiles.List;
-import com.google.goat.model.GetPublisherProfilesByAccountIdResponse;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Pubprofiles.List;
+import com.google.api.services.adexchangebuyer.model.GetPublisherProfilesByAccountIdResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class GoatAPIExample {
+public class AdExchangeBuyerExample {
   public void run() throws IOException, GeneralSecurityException {
     // The accountId of the publisher to get profiles for.
     int accountId = 0; // TODO: Update field(s).
 
-    GoatAPI service = createService();
+    AdExchangeBuyer service = createService();
     List request = service.pubprofiles().list(accountId);
     GetPublisherProfilesByAccountIdResponse response = request.execute();
     System.out.println(response);
   }
 
-  public GoatAPI createService() throws IOException, GeneralSecurityException {
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -2406,14 +2406,14 @@ public class GoatAPIExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new GoatAPI.Builder(httpTransport, jsonFactory, credential)
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new GoatAPIExample().run();
+      new AdExchangeBuyerExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {

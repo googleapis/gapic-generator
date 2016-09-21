@@ -15,14 +15,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudtrace.v1.Cloudtrace;
-import com.google.api.services.cloudtrace.v1.Cloudtrace.Projects.PatchTraces;
+import com.google.api.services.cloudtrace.v1.CloudTrace;
+import com.google.api.services.cloudtrace.v1.CloudTrace.Projects.PatchTraces;
 import com.google.api.services.cloudtrace.v1.model.Traces;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudtraceExample {
+public class CloudTraceExample {
   public void run() throws IOException, GeneralSecurityException {
     // TODO: Assign desired fields.
     Traces requestBody = new Traces();
@@ -30,12 +30,12 @@ public class CloudtraceExample {
     // ID of the Cloud project where the trace data is stored.
     String projectId = ""; // TODO: Update field(s).
 
-    Cloudtrace service = createService();
+    CloudTrace service = createService();
     PatchTraces request = service.projects().patchTraces(projectId, requestBody);
     request.execute();
   }
 
-  public Cloudtrace createService() throws IOException, GeneralSecurityException {
+  public CloudTrace createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -49,14 +49,14 @@ public class CloudtraceExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudtrace.Builder(httpTransport, jsonFactory, credential)
+    return new CloudTrace.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudtraceExample().run();
+      new CloudTraceExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -80,14 +80,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudtrace.v1.Cloudtrace;
-import com.google.api.services.cloudtrace.v1.Cloudtrace.Projects.Traces.Get;
+import com.google.api.services.cloudtrace.v1.CloudTrace;
+import com.google.api.services.cloudtrace.v1.CloudTrace.Projects.Traces.Get;
 import com.google.api.services.cloudtrace.v1.model.Trace;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudtraceExample {
+public class CloudTraceExample {
   public void run() throws IOException, GeneralSecurityException {
     // ID of the Cloud project where the trace data is stored.
     String projectId = ""; // TODO: Update field(s).
@@ -95,13 +95,13 @@ public class CloudtraceExample {
     // ID of the trace to return.
     String traceId = ""; // TODO: Update field(s).
 
-    Cloudtrace service = createService();
+    CloudTrace service = createService();
     Get request = service.projects().traces().get(projectId, traceId);
     Trace response = request.execute();
     System.out.println(response);
   }
 
-  public Cloudtrace createService() throws IOException, GeneralSecurityException {
+  public CloudTrace createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -115,14 +115,14 @@ public class CloudtraceExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudtrace.Builder(httpTransport, jsonFactory, credential)
+    return new CloudTrace.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudtraceExample().run();
+      new CloudTraceExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
@@ -146,20 +146,20 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudtrace.v1.Cloudtrace;
-import com.google.api.services.cloudtrace.v1.Cloudtrace.Projects.Traces.List;
+import com.google.api.services.cloudtrace.v1.CloudTrace;
+import com.google.api.services.cloudtrace.v1.CloudTrace.Projects.Traces.List;
 import com.google.api.services.cloudtrace.v1.model.ListTracesResponse;
 import com.google.api.services.cloudtrace.v1.model.Trace;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public class CloudtraceExample {
+public class CloudTraceExample {
   public void run() throws IOException, GeneralSecurityException {
     // ID of the Cloud project where the trace data is stored.
     String projectId = ""; // TODO: Update field(s).
 
-    Cloudtrace service = createService();
+    CloudTrace service = createService();
     List request = service.projects().traces().list(projectId);
     ListTracesResponse response;
     do {
@@ -173,7 +173,7 @@ public class CloudtraceExample {
     } while (response.getNextPageToken() != null);
   }
 
-  public Cloudtrace createService() throws IOException, GeneralSecurityException {
+  public CloudTrace createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
     // `gcloud beta auth application-default login`
@@ -187,14 +187,14 @@ public class CloudtraceExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Cloudtrace.Builder(httpTransport, jsonFactory, credential)
+    return new CloudTrace.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Sample")
         .build();
   }
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
-      new CloudtraceExample().run();
+      new CloudTraceExample().run();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     } catch (GeneralSecurityException e) {
