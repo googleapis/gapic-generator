@@ -61,8 +61,8 @@
 
 @private aliasSection(service)
     @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service), \
-            bundling = context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service)), \
-            pageStreaming = context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service))
+            bundling = context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethodsV2(service)), \
+            pageStreaming = context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethodsV2(service))
         @if bundling
             _BundleDesc = google.gax.BundleDescriptor
         @end
@@ -109,10 +109,10 @@
         _CODE_GEN_NAME_VERSION = 'gapic/0.1.0'
 
         _GAX_VERSION = pkg_resources.get_distribution('google-gax').version
-        @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service))
+        @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethodsV2(service))
 
             _PAGE_DESCRIPTORS = {
-                @join method : context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service)) on {@", "}.add(BREAK)
+                @join method : context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethodsV2(service)) on {@", "}.add(BREAK)
                     @let pageStreaming = ifaceConfig.getMethodConfig(method).getPageStreaming(), \
                             requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
                             responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
@@ -126,11 +126,11 @@
                 @end
             }
         @end
-        @if context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service))
+        @if context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethodsV2(service))
 
             _BUNDLE_DESCRIPTORS = {
                 @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
-                    @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service)) on {@", "}.add(BREAK)
+                    @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethodsV2(service)) on {@", "}.add(BREAK)
                         @let bundling = ifaceConfig.getMethodConfig(method).getBundling()
                             '{@methodName(method)}': _BundleDesc(
                                 {@bundleDescriptorBody(bundling, method)}
@@ -156,22 +156,22 @@
          jsonBaseName = {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
         default_client_config = json.loads(pkg_resources.resource_string(
             __name__, '{@jsonBaseName}_client_config.json').decode())
-        @if or(context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service)), \
-               context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service)))
+        @if or(context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethodsV2(service)), \
+               context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethodsV2(service)))
             defaults = api_callable.construct_settings(
                 '{@service.getFullName}',
                 default_client_config,
                 client_config,
                 config.STATUS_CODE_NAMES,
                 kwargs={'metadata': metadata},
-                @if context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service))
-                    @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service))
+                @if context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethodsV2(service))
+                    @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethodsV2(service))
                         bundle_descriptors=self._BUNDLE_DESCRIPTORS,
                     @else
                         bundle_descriptors=self._BUNDLE_DESCRIPTORS)
                     @end
                 @end
-                @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service))
+                @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethodsV2(service))
                     page_descriptors=self._PAGE_DESCRIPTORS)
                 @end
         @else
@@ -186,9 +186,7 @@
 @end
 
 @private initMethodSection(service)
-    @let stubModule = pyproto.getPbFileName(service), \
-             stubService = service.getSimpleName(), \
-             ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
+    @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
         def __init__(
                 self,
                 service_path=SERVICE_ADDRESS,
@@ -236,17 +234,24 @@
             )
             metadata = [('x-goog-api-client', goog_api_client)]
             {@constructDefaults(service)}
-            self.stub = config.create_stub(
-                {@stubModule}.{@stubService}Stub,
-                service_path,
-                port,
-                ssl_creds=ssl_creds,
-                channel=channel,
-                metadata_transformer=metadata_transformer,
-                scopes=scopes)
-            @join method : context.getNonStreamingMethods(service)
+            @join stubInterface : context.getStubInterfaces(service)
+                @let stubName = context.stubName(stubInterface), \
+                        stubModule = importHandler.fileToModule(stubInterface.getFile()), \
+                        stubService = stubInterface.getSimpleName
+                    self.{@stubName} = config.create_stub(
+                        {@stubModule}.beta_create_{@stubService}_stub,
+                        service_path,
+                        port,
+                        ssl_creds=ssl_creds,
+                        channel=channel,
+                        metadata_transformer=metadata_transformer,
+                        scopes=scopes)
+                @end
+            @end
+
+            @join method : context.getNonStreamingMethodsV2(service)
                 self._{@methodName(method)} = api_callable.create_api_call(
-                    self.stub.{@method.getSimpleName()},
+                    self.{@context.stubNameForMethod(service, method)}.{@method.getSimpleName()},
                     settings=defaults['{@methodName(method)}'])
             @end
     @end
@@ -346,9 +351,9 @@
     @end
 @end
 
-@private methodComments(method)
+@private methodComments(service, method)
   @let descriptionComments = context.methodDescriptionComments(method), \
-       signatureComments = context.methodSignatureComments(method, importHandler)
+       signatureComments = context.methodSignatureComments(service, method, importHandler)
     """
     @join comment : descriptionComments
       {@comment}
@@ -358,7 +363,7 @@
 
 
     @end
-    {@methodSample(method)}
+    {@methodSample(service, method)}
     @if signatureComments.isEmpty
     @else
 
@@ -371,17 +376,17 @@
   @end
 @end
 
-@private methodSample(method)
+@private methodSample(service, method)
   @let apiConfig = context.getApiConfig, \
-       service = method.getParent, \
        apiName = context.getApiWrapperName(service), \
        returnType = context.returnTypeOrEmpty(method, importHandler), \
-       fields = context.getRequiredFields(method)
+       fields = context.getRequiredFields(service, method)
     {@generateMethodSampleCode(context.newDocConfigBuilder \
       .setInterface(service) \
       .setApiConfig(apiConfig) \
       .setApiName(apiName) \
       .setMethod(method) \
+      .setInterface(service) \
       .setReturnType(returnType) \
       .setFieldInitCode(context, service, method, fields) \
       .setFieldParams(context, fields) \
@@ -391,7 +396,7 @@
 
 @private serviceMethodsSection(service)
     @# Service calls
-    @join method : context.getNonStreamingMethods(service) on BREAK.add(BREAK)
+    @join method : context.getNonStreamingMethodsV2(service) on BREAK.add(BREAK)
         {@flattenedMethod(service, method)}
     @end
 @end
@@ -409,9 +414,8 @@
 @end
 
 @private flattenedMethod(service, method)
-    @let methodInputModule = pyproto.getPbFileName(method.getInputMessage()), \
-             inputTypeName = method.getInputMessage().getSimpleName(), \
-             documentation = methodComments(method), \
+    @let methodInputElementPath = importHandler.elementPath(method.getInputMessage, FALSE), \
+             documentation = methodComments(service, method), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
              requiredParams = methodConfig.getRequiredFields(), \
              optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig)
@@ -437,15 +441,15 @@
                 @end
                 @if requiredParams
                     @if optionalParams
-                        request = {@methodInputModule}.{@inputTypeName}(
+                        request = {@methodInputElementPath}(
                             {@namedParameters(requiredParams)},
                             {@namedParameters(optionalParams)})
                     @else
-                        request = {@methodInputModule}.{@inputTypeName}(
+                        request = {@methodInputElementPath}(
                             {@namedParameters(requiredParams)})
                     @end
                 @else
-                    request = {@methodInputModule}.{@inputTypeName}(
+                    request = {@methodInputElementPath}(
                         {@namedParameters(optionalParams)})
                 @end
                 {@callLine(method)}
@@ -456,7 +460,7 @@
                 @if documentation
                     {@documentation}
                 @end
-                request = {@methodInputModule}.{@inputTypeName}()
+                request = {@methodInputElementPath}()
                 {@callLine(method)}
         @end
     @end

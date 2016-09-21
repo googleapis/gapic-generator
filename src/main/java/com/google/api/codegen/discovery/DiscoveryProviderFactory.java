@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discovery;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
 
@@ -22,7 +23,9 @@ import com.google.api.codegen.ApiaryConfig;
  */
 public interface DiscoveryProviderFactory {
   /**
-   * Create the provider from the given service, apiaryConfig, and id.
+   * Create the provider from the given service, apiaryConfig,
+   * sampleConfigOverrides, and id.
    */
-  DiscoveryProvider create(Service service, ApiaryConfig apiaryConfig, String id);
+  DiscoveryProvider create(
+      Service service, ApiaryConfig apiaryConfig, JsonNode sampleConfigOverrides, String id);
 }

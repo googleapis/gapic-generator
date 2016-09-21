@@ -16,7 +16,6 @@ package com.google.api.codegen.metacode;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,26 +49,38 @@ public class FieldStructureParser {
     return fieldMapPattern;
   }
 
-  public static InitCodeNode parse(String dottedPathString) {
-    return parse(dottedPathString, ImmutableMap.<String, InitValueConfig>of());
+  public static InitCodeNode parse(String initFieldConfigString) {
+    return parse(initFieldConfigString, ImmutableMap.<String, InitValueConfig>of());
   }
 
   public static InitCodeNode parse(
-      String dottedPathString, Map<String, InitValueConfig> initValueConfigMap) {
-    String[] equalsParts = dottedPathString.split("[=]");
-    if (equalsParts.length > 2) {
-      throw new IllegalArgumentException("Inconsistent: found multiple '=' characters");
+      String initFieldConfigString, Map<String, InitValueConfig> initValueConfigMap) {
+    InitFieldConfig fieldConfig = InitFieldConfig.from(initFieldConfigString);
+    InitValueConfig valueConfig = createInitValueConfig(fieldConfig, initValueConfigMap);
+    return parsePartialDottedPathToInitCodeNode(
+        fieldConfig.fieldPath(), InitCodeLineType.Unknown, valueConfig, null);
+  }
+
+  private static InitValueConfig createInitValueConfig(
+      InitFieldConfig fieldConfig, Map<String, InitValueConfig> initValueConfigMap) {
+    if (fieldConfig.isFormattedConfig()
+        && !initValueConfigMap.containsKey(fieldConfig.fieldPath())) {
+      // If the field is a formatted field, it must exist in the value config map.
+      throw new IllegalArgumentException("The field name is not found in the collection map.");
     }
 
     InitValueConfig valueConfig = null;
-    if (equalsParts.length == 2) {
-      valueConfig = InitValueConfig.createWithValue(stripQuotes(equalsParts[1]));
-    } else if (initValueConfigMap.containsKey(dottedPathString)) {
-      valueConfig = initValueConfigMap.get(dottedPathString);
+    if (fieldConfig.hasFormattedInitValue()) {
+      valueConfig =
+          initValueConfigMap
+              .get(fieldConfig.fieldPath())
+              .withInitialCollectionValue(fieldConfig.entityName(), fieldConfig.value());
+    } else if (fieldConfig.hasSimpleInitValue()) {
+      valueConfig = InitValueConfig.createWithValue(stripQuotes(fieldConfig.value()));
+    } else if (initValueConfigMap.containsKey(fieldConfig.fieldPath())) {
+      valueConfig = initValueConfigMap.get(fieldConfig.fieldPath());
     }
-
-    return parsePartialDottedPathToInitCodeNode(
-        equalsParts[0], InitCodeLineType.Unknown, valueConfig, null);
+    return valueConfig;
   }
 
   private static InitCodeNode parsePartialDottedPathToInitCodeNode(

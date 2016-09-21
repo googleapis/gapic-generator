@@ -145,6 +145,10 @@ public class DiscoveryImporter {
     Service serv = builder.addApis(apiBuilder).build();
     importer.service = serv;
 
+    importer.config.setApiTitle(serv.getTitle());
+    importer.config.setApiName(serv.getApis(0).getName());
+    importer.config.setApiVersion(serv.getApis(0).getVersion());
+
     importer.config.getTypes().putAll(importer.types);
     for (Type type : importer.types.values()) {
       for (Field field : type.getFieldsList()) {

@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.py;
 
+import com.google.api.codegen.ApiConfig;
+import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.py.PythonImport.ImportType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -46,7 +48,7 @@ public class PythonImportHandler {
   private final BiMap<ProtoFile, String> fileImports = HashBiMap.create();
 
   /** This constructor is for the main imports of a generated service file */
-  public PythonImportHandler(Interface service) {
+  public PythonImportHandler(Interface service, ApiConfig apiConfig) {
     // Add non-service-specific imports.
     addImportStandard("json");
     addImportStandard("os");
@@ -59,14 +61,15 @@ public class PythonImportHandler {
     addImportExternal("google.gax", "path_template");
 
     // Add method request-type imports.
-    for (Method method : service.getMethods()) {
+    for (MethodConfig methodConfig : apiConfig.getInterfaceConfig(service).getMethodConfigs()) {
+      Method method = methodConfig.getMethod();
       addImport(
-          method.getFile(),
+          method.getInputMessage().getFile(),
           PythonImport.create(
               ImportType.APP,
-              method.getFile().getProto().getPackage(),
+              method.getInputMessage().getFile().getProto().getPackage(),
               PythonProtoElements.getPbFileName(method.getInputMessage())));
-      for (Field field : method.getInputType().getMessageType().getMessageFields()) {
+      for (Field field : method.getInputMessage().getMessageFields()) {
         MessageType messageType = field.getType().getMessageType();
         addImport(
             messageType.getFile(),

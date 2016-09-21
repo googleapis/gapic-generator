@@ -44,7 +44,7 @@ public abstract class InitTreeParserContext {
   public abstract Map<String, InitValueConfig> initValueConfigMap();
 
   @Nullable
-  public abstract List<String> dottedPathStrings();
+  public abstract List<String> initFieldConfigStrings();
 
   @Nullable
   public abstract List<InitCodeNode> additionalSubTrees();
@@ -67,7 +67,7 @@ public abstract class InitTreeParserContext {
 
     public abstract Builder initValueConfigMap(Map<String, InitValueConfig> val);
 
-    public abstract Builder dottedPathStrings(List<String> val);
+    public abstract Builder initFieldConfigStrings(List<String> val);
 
     public abstract Builder additionalSubTrees(List<InitCodeNode> val);
 
