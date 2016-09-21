@@ -123,11 +123,13 @@ public class ViewModelProvider implements DiscoveryProvider {
       String fieldName = fieldNames.next();
       JsonNode primaryValue = tree.get(fieldName);
       JsonNode backupValue = overrideTree.get(fieldName);
-      // Skip null nodes, since it's possible for the overrides tree to contain
-      // nodes that the primary tree does not (for example, the overrides tree
-      // may contain many more methods).
       if (primaryValue == null) {
-        continue;
+        // If backupValue isn't null, then we add it to tree. This can happen if
+        // extra fields/properties are specified.
+        if (backupValue != null) {
+          tree.set(fieldName, backupValue);
+        }
+        // Otherwise, skip null nodes.
       } else if (backupValue.isNull()) {
         // If a node is overridden as null, we pretend it was never specified
         // altogether. We provide this functionality so nodes from an object can
