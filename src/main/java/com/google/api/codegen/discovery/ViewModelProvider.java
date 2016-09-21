@@ -22,6 +22,7 @@ import java.util.TreeMap;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.discovery.config.ApiaryConfigToSampleConfigConverter;
 import com.google.api.codegen.discovery.config.SampleConfig;
@@ -92,7 +93,7 @@ public class ViewModelProvider implements DiscoveryProvider {
     // 3. Overwrite object fields of the SampleConfig tree where field names match.
     // 4. Convert the modified SampleConfig tree back into a SampleConfig.
     if (sampleConfigOverrides != null) {
-      ObjectMapper mapper = new ObjectMapper();
+      ObjectMapper mapper = new ObjectMapper().registerModule(new GuavaModule());
       JsonNode tree = mapper.valueToTree(sampleConfig);
       merge((ObjectNode) tree, (ObjectNode) sampleConfigOverrides);
       try {
@@ -111,6 +112,7 @@ public class ViewModelProvider implements DiscoveryProvider {
    * The merge process loops through the fields of tree and replaces non-object
    * values with the corresponding value from overrideTree if present. Object
    * values are traversed recursively to replace sub-properties.
+   * Null fields in overrideTree are removed from tree.
    *
    * @param tree the original JsonNode to modify.
    * @param overrideTree the JsonNode with values to overwrite tree with.
@@ -120,16 +122,20 @@ public class ViewModelProvider implements DiscoveryProvider {
     while (fieldNames.hasNext()) {
       String fieldName = fieldNames.next();
       JsonNode primaryValue = tree.get(fieldName);
+      JsonNode backupValue = overrideTree.get(fieldName);
       // Skip null nodes, since it's possible for the overrides tree to contain
       // nodes that the primary tree does not (for example, the overrides tree
       // may contain many more methods).
       if (primaryValue == null) {
         continue;
-      } else if (primaryValue.isObject()) {
-        JsonNode backupValue = overrideTree.get(fieldName);
-        if (backupValue.isObject()) {
-          merge((ObjectNode) primaryValue, (ObjectNode) backupValue.deepCopy());
-        }
+      } else if (backupValue.isNull()) {
+        // If a node is overridden as null, we pretend it was never specified
+        // altogether. We provide this functionality so nodes from an object can
+        // be deleted from both trees.
+        // TODO(saicheems): Verify that this is the best approach for this issue.
+        tree.remove(fieldName);
+      } else if (primaryValue.isObject() && backupValue.isObject()) {
+        merge((ObjectNode) primaryValue, (ObjectNode) backupValue.deepCopy());
       } else {
         tree.set(fieldName, overrideTree.get(fieldName));
       }
