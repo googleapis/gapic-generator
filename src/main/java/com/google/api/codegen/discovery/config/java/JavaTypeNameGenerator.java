@@ -28,7 +28,8 @@ public class JavaTypeNameGenerator implements TypeNameGenerator {
 
   @Override
   public String getPackagePrefix(String apiName, String apiVersion) {
-    return Joiner.on('.').join(PACKAGE_PREFIX, apiName, apiVersion);
+    // Most Java libraries don't include the apiVersion in their package.
+    return Joiner.on('.').join(PACKAGE_PREFIX, apiName);
   }
 
   @Override

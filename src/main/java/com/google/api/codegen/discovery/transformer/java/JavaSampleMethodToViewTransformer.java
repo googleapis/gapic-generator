@@ -15,7 +15,6 @@
 package com.google.api.codegen.discovery.transformer.java;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import com.google.api.codegen.discovery.config.FieldInfo;
@@ -106,13 +105,8 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
             "method is page streaming, but the page streaming resource field is null.");
       }
       sampleBodyView.resourceGetterName(sampleNamer.getResourceGetterName(fieldInfo.name()));
-      // If the type is a map, we save the element type (Map.Entry<K, V>) only.
-      if (fieldInfo.type().isMap()) {
-        sampleBodyView.resourceTypeName(
-            sampleTypeTable.getAndSaveNickNameForElementType(fieldInfo.type()));
-      } else {
-        sampleBodyView.resourceTypeName(sampleTypeTable.getAndSaveNicknameFor(fieldInfo.type()));
-      }
+      sampleBodyView.resourceTypeName(
+          sampleTypeTable.getAndSaveNickNameForElementType(fieldInfo.type()));
       sampleBodyView.isResourceMap(fieldInfo.type().isMap());
     }
 

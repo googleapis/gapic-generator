@@ -20,7 +20,6 @@ import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.List;
-import java.util.Map;
 import javax.annotation.Nullable;
 
 @AutoValue

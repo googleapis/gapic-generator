@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
-import java.util.List;
 import java.util.Map;
 
 import com.google.api.codegen.discovery.config.TypeInfo;
@@ -64,7 +63,7 @@ public class SampleTypeTable implements SampleTypeNameConverter {
   }
 
   public String getAndSaveNickNameForElementType(TypeInfo typeInfo) {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(typeInfo));
+    return typeTable.getAndSaveNicknameFor(getTypeNameForElementType(typeInfo));
   }
 
   public String getAndSaveNicknameFor(TypeInfo typeInfo) {
