@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
@@ -103,7 +104,7 @@ public class ApiCallableTransformer {
     return apiCallables;
   }
 
-  private List<ApiCallSettingsView> generateApiCallableSettings(MethodTransformerContext context) {
+  protected List<ApiCallSettingsView> generateApiCallableSettings(MethodTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();

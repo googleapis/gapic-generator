@@ -47,6 +47,9 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract List<RequestObjectParamView> methodParams();
 
+  @Nullable // Used in C#
+  public abstract List<RequestObjectParamView> methodParamsWithExtras();
+
   public abstract List<PathTemplateCheckView> pathTemplateChecks();
 
   public abstract boolean hasReturnValue();
@@ -64,6 +67,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   @Nullable
   public abstract RequestObjectMethodDetailView requestObjectMethod();
+
+  public abstract Builder toBuilder();
 
   public static Builder newBuilder() {
     return new AutoValue_StaticLangApiMethodView.Builder();
@@ -90,6 +95,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
     public abstract Builder settingsGetterName(String name);
 
     public abstract Builder methodParams(List<RequestObjectParamView> methodParams);
+
+    public abstract Builder methodParamsWithExtras(List<RequestObjectParamView> methodParams);
 
     public abstract Builder pathTemplateChecks(List<PathTemplateCheckView> pathTemplateChecks);
 

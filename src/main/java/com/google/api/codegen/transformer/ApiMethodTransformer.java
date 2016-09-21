@@ -118,6 +118,11 @@ public class ApiMethodTransformer {
 
   public StaticLangApiMethodView generateFlattenedMethod(
       MethodTransformerContext context, ImmutableList<Field> fields) {
+    return generateFlattenedMethod(context, fields, ApiMethodType.FlattenedMethod);
+  }
+  
+  public StaticLangApiMethodView generateFlattenedMethod(
+      MethodTransformerContext context, ImmutableList<Field> fields, ApiMethodType type) {
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
     setCommonFields(context, methodViewBuilder);
@@ -125,7 +130,7 @@ public class ApiMethodTransformer {
     setFlattenedMethodFields(context, fields, methodViewBuilder);
     setStaticLangSyncReturnFields(context, methodViewBuilder);
 
-    return methodViewBuilder.type(ApiMethodType.FlattenedMethod).build();
+    return methodViewBuilder.type(type).build();
   }
 
   public StaticLangApiMethodView generateRequestObjectMethod(MethodTransformerContext context) {
@@ -202,7 +207,7 @@ public class ApiMethodTransformer {
     for (Field field : fields) {
       params.add(generateRequestObjectParam(context, field));
     }
-    methodViewBuilder.methodParams(params);
+    methodViewBuilder.methodParams(params).methodParamsWithExtras(params);
     methodViewBuilder.requestObjectParams(params);
 
     methodViewBuilder.pathTemplateChecks(generatePathTemplateChecks(context, fields));
@@ -466,6 +471,7 @@ public class ApiMethodTransformer {
         docLines = context.getNamer().getDocLines(field);
       }
 
+      paramDoc.lines(docLines);
       paramDoc.firstLine(docLines.get(0));
       paramDoc.remainingLines(docLines.subList(1, docLines.size()));
 

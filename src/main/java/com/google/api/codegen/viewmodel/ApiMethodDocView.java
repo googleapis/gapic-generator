@@ -30,7 +30,12 @@ public abstract class ApiMethodDocView {
   public abstract List<String> throwsDocLines();
 
   @Nullable
+  public abstract List<String> returnsDocLines();
+
+  @Nullable
   public abstract String returnTypeName();
+
+  public abstract Builder toBuilder();
 
   public static Builder newBuilder() {
     return new AutoValue_ApiMethodDocView.Builder();
@@ -45,6 +50,8 @@ public abstract class ApiMethodDocView {
     public abstract Builder throwsDocLines(List<String> lines);
 
     public abstract Builder returnTypeName(String name);
+
+    public abstract Builder returnsDocLines(List<String> lines);
 
     public abstract ApiMethodDocView build();
   }

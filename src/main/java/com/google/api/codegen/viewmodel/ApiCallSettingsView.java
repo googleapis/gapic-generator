@@ -17,6 +17,7 @@ package com.google.api.codegen.viewmodel;
 import com.google.auto.value.AutoValue;
 
 import javax.annotation.Nullable;
+import org.joda.time.Duration;
 
 @AutoValue
 public abstract class ApiCallSettingsView {
@@ -46,8 +47,16 @@ public abstract class ApiCallSettingsView {
 
   public abstract String retryParamsName();
 
+  @Nullable // Used in C#
+  public abstract RetryCodesDefinitionView retryCodesView();
+
+  @Nullable // Used in C#
+  public abstract RetryParamsDefinitionView retryParamsView();
+
   @Nullable
   public abstract BundlingConfigView bundlingConfig();
+
+  public abstract Builder toBuilder();
 
   public static Builder newBuilder() {
     return new AutoValue_ApiCallSettingsView.Builder();
@@ -82,6 +91,10 @@ public abstract class ApiCallSettingsView {
     public abstract Builder retryCodesName(String val);
 
     public abstract Builder retryParamsName(String val);
+
+    public abstract Builder retryCodesView(RetryCodesDefinitionView val);
+
+    public abstract Builder retryParamsView(RetryParamsDefinitionView val);
 
     public abstract ApiCallSettingsView build();
   }

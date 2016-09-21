@@ -24,6 +24,8 @@ public abstract class SimpleParamDocView implements ParamDocView {
 
   public abstract String typeName();
 
+  public abstract List<String> lines();
+
   public abstract String firstLine();
 
   public abstract List<String> remainingLines();
@@ -41,6 +43,8 @@ public abstract class SimpleParamDocView implements ParamDocView {
     public abstract Builder paramName(String val);
 
     public abstract Builder typeName(String val);
+    
+    public abstract Builder lines(List<String> val);
 
     public abstract Builder firstLine(String val);
 

@@ -1,0 +1,293 @@
+@extends "csharp/common.snip"
+
+@snippet generate(common)
+    // Copyright 2016 Google Inc. All Rights Reserved.
+    //
+    // Licensed under the Apache License, Version 2.0 (the "License");
+    // you may not use this file except in compliance with the License.
+    // You may obtain a copy of the License at
+    //
+    //     http://www.apache.org/licenses/LICENSE-2.0
+    //
+    // Unless required by applicable law or agreed to in writing, software
+    // distributed under the License is distributed on an "AS IS" BASIS,
+    // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    // See the License for the specific language governing permissions and
+    // limitations under the License.
+
+    // Generated code. DO NOT EDIT!
+
+    @join import : common.api.imports
+        using {@import.fullName};
+    @end
+
+    namespace {@common.api.packageName}
+    {
+        {@settings(common.api, common.settings)}
+
+        {@abstractClient(common.api, common.settings)}
+
+        {@implClient(common.api)}
+    }
+
+@end
+
+@private settings(api, settings)
+    /// <summary>
+    /// Settings for a <see cref="{@api.name}"/>.
+    /// </summary>
+    public sealed partial class {@settings.name} : ServiceSettingsBase
+    {
+        /// <summary>
+        /// Get a new instance of the default <see cref="{@settings.name}"/>.
+        /// </summary>
+        /// <returns>
+        /// A new instance of the default <see cref="{@settings.name}"/>.
+        /// </returns>
+        public static {@settings.name} GetDefault() => new {@settings.name}();
+
+        /// <summary>
+        /// Constructs a new <see cref="{@settings.name}"/> object with default settings.
+        /// </summary>
+        public {@settings.name}() { }
+        
+        private {@settings.name}({@settings.name} existing) : base (existing)
+        {
+            GaxPreconditions.CheckNotNull(existing, nameof(existing));
+            @join call : settings.callSettings
+                {@call.methodName}Settings = existing.{@call.methodName}Settings?.Clone();
+            @end
+        }
+        
+        @join retry : settings.retryCodesDefinitions
+            /// <summary>
+            /// The filter specifying which RPC <see cref="StatusCode">s are eligible for retry
+            /// for "{@retry.name}" <see cref="{@api.name}"/> RPC methods.
+            /// </summary>
+            /// <remarks>
+            @if retry.codes
+               /// The eligible RPC <see cref="StatusCode"/>s for retry for "{@retry.name}" RPC methods are:
+               /// <list type="bullet">
+               @join code : retry.codeNames
+                   /// <item><description><see cref="StatusCode.{@code}"/></description></item>
+               @end
+               /// </list>
+            @else
+                /// There are no RPC <see cref="StatusCode"/>s eligible for retry for "{@retry.name}" RPC methods.
+            @end
+            /// </remarks>
+            public static Predicate<RpcException> {@retry.name}RetryFilter { get; } =
+                RetrySettings.FilterForStatusCodes({@retryCodes(retry.codeNames)});
+
+        @end
+        @join retry : settings.retryParamsDefinitions
+            /// <summary>
+            /// "{@retry.name}" retry backoff for <see cref="{@api.name}"/> RPC methods.
+            /// </summary>
+            /// <returns>
+            /// The "{@retry.name}" retry backoff for <see cref="{@api.name}"/> RPC methods.
+            /// </returns>
+            /// <remarks>
+            /// The "{@retry.name}" retry backoff for <see cref="{@api.name}"/> RPC methods is defined as:
+            /// <list type="bullet">
+            /// <item><description>Initial delay: {@retry.initialRetryDelay.getMillis} milliseconds</description></item>
+            /// <item><description>Delay multiplier: {@retry.retryDelayMultiplier}</description></item>
+            /// <item><description>Maximum delay: {@retry.maxRetryDelay.getMillis} milliseconds</description></item>
+            /// </list>
+            /// </remarks>
+            public static BackoffSettings Get{@retry.name}RetryBackoff() => new BackoffSettings
+            {
+                Delay = TimeSpan.FromMilliseconds({@retry.initialRetryDelay.getMillis}),
+                DelayMultiplier = {@retry.retryDelayMultiplier},
+                MaxDelay = TimeSpan.FromMilliseconds({@retry.maxRetryDelay.getMillis}),
+            };
+            
+            /// <summary>
+            /// "{@retry.name}" timeout backoff for <see cref="{@api.name}"/> RPC methods.
+            /// </summary>
+            /// <returns>
+            /// The "{@retry.name}" timeout backoff for <see cref="{@api.name}"/> RPC methods.
+            /// </returns>
+            /// <remarks>
+            /// The "{@retry.name}" timeout backoff for <see cref="{@api.name}"/> RPC methods is defined as:
+            /// <list type="bullet">
+            /// <item><description>Initial delay: {@retry.initialRpcTimeout.getMillis} milliseconds</description></item>
+            /// <item><description>Delay multiplier: {@retry.rpcTimeoutMultiplier}</description></item>
+            /// <item><description>Maximum delay: {@retry.maxRpcTimeout.getMillis} milliseconds</description></item>
+            /// </list>
+            /// </remarks>
+            public static BackoffSettings Get{@retry.name}TimeoutBackoff() => new BackoffSettings
+            {
+                Delay = TimeSpan.FromMilliseconds({@retry.initialRpcTimeout.getMillis}),
+                DelayMultiplier = {@retry.rpcTimeoutMultiplier},
+                MaxDelay = TimeSpan.FromMilliseconds({@retry.maxRpcTimeout.getMillis}),
+            };
+
+        @end
+        @join call : settings.callSettings
+            /// <summary>
+            /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
+            /// <see cref="{@api.name}.{@call.methodName}"/> and <see cref="{@api.name}.{@call.methodName}Async"/>.
+            /// </summary>
+            /// <remarks>
+            /// The default <see cref="{@api.name}.{@call.methodName}"/> and
+            /// <see cref="{@api.name}.{@call.methodName}Async"/> <see cref="RetrySettings"/> are:
+            /// <list type="bullet">
+            /// <item><description>Initial retry delay: {@call.retryParamsView.initialRetryDelay.getMillis} milliseconds</description></item>
+            /// <item><description>Retry delay multiplier: {@call.retryParamsView.retryDelayMultiplier}</description></item>
+            /// <item><description>Retry maximum delay: {@call.retryParamsView.maxRetryDelay.getMillis} milliseconds</description></item>
+            /// <item><description>Initial timeout: {@call.retryParamsView.initialRpcTimeout.getMillis} milliseconds</description></item>
+            /// <item><description>Timeout multiplier: {@call.retryParamsView.rpcTimeoutMultiplier}</description></item>
+            /// <item><description>Timeout maximum delay: {@call.retryParamsView.maxRpcTimeout.getMillis} milliseconds</description></item>
+            /// </list>
+            /// Retry will be attempted on the following response status codes:
+            /// <list>
+            @if call.retryCodesView.codeNames
+                @join code : call.retryCodesView.codeNames
+                    /// <item><description><see cref="StatusCode.{@code}"/></description></item>
+                @end
+            @else
+                /// <item><description>No status codes</description></item>
+            @end
+            /// </list>
+            /// Default RPC expiration is {@call.retryParamsView.totalTimeout.getMillis} milliseconds.
+            /// </remarks>
+            public CallSettings {@call.methodName}Settings { get; set; } = new CallSettings
+            {
+                Timing = CallTiming.FromRetry(new RetrySettings
+                {
+                    RetryBackoff = Get{@call.retryParamsName}RetryBackoff(),
+                    TimeoutBackoff = Get{@call.retryParamsName}TimeoutBackoff(),
+                    RetryFilter = {@call.retryCodesName}RetryFilter,
+                    TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.getMillis})),
+                }),
+            };
+
+        @end
+        /// <summary>
+        /// Creates a deep clone of this object, with all the same property values.
+        /// </summary>
+        /// <returns>A deep clone of this <see cref="{@settings.name}"/> object.</returns>
+        public {@settings.name} Clone() => new {@settings.name}(this);
+    }
+@end
+
+@private abstractClient(api, settings)
+    /// <summary>
+    /// {@api.name} client wrapper, for convenient use.
+    /// </summary>
+    public abstract partial class {@api.name}
+    {
+        /// <summary>
+        /// The default endpoint for {@api.name}. Host "{@settings.serviceAddress}", port {@settings.servicePort}.
+        /// </summary>
+        public static ServiceEndpoint DefaultEndpoint { get; } = new ServiceEndPoint("{@settings.serviceAddress}", {@settings.servicePort});
+
+        /// <summary>
+        /// The default {@api.name} scopes.
+        /// </summary>
+        /// <remarks>
+        /// The default {@api.name} scopes are:
+        /// <list type="bullet">
+        @join scope : settings.authScopes
+            /// <item><description>"{@scope}"</description></item>
+        @end
+        /// </list>
+        /// </remarks>
+        public static IReadOnlyList<string> DefaultScopes { get; } = new ReadOnlyCollection<string>(new string[] {
+        @join scope : settings.authScopes
+            {@""}    "{@scope}",
+        @end
+        });
+
+        private static readonly ChannelPool s_channelPool = new ChannelPool(DefaultScopes);
+
+        @join format : api.formatResourceFunctions
+            /// <summary>
+            /// Path template for a {@format.entityName} resource. Parameters:
+            /// <list type="bullet">
+            @join param : format.resourceIdParams
+                /// <item><description>{@param.name}</description></item>
+            @end
+            /// </list>
+            /// </summary>
+            public static PathTemplate {@format.pathTemplateName} { get; } = new PathTemplate("{@format.pattern}");
+        
+            /// <summary>
+            /// Creates a {@format.entityName} resource name from its component IDs.
+            /// </summary>
+            @join param : format.resourceIdParams
+                /// <param name="{@param.name}Id">The {@param.name} ID.</param>
+            @end
+            /// <returns>
+            /// The full {@format.entityName} resource name.
+            /// </returns>
+            public static string {@format.name}({@formatResourceParams(format.resourceIdParams)}) => {@format.pathTemplateName}.Expand({@formatResourceArgs(format.resourceIdParams)});
+
+        @end
+        // Note: we could have parameterless overloads of Create and CreateAsync,
+        // documented to just use the default endpoint, settings and credentials.
+        // Pros:
+        // - Might be more reassuring on first use
+        // - Allows method group conversions
+        // Con: overloads!
+
+        @join method : api.apiMethods
+            {@xmlDoc(method.doc)}
+            {@method(method, FALSE)}
+
+        @end
+    }
+@end
+
+@private implClient(api)
+    public sealed partial class {@api.name}Impl : {@api.name}
+    {
+        private readonly ClientHelper _clientHelper;
+    }
+@end
+
+@private method(method, isImpl)
+    @switch method.type.toString
+    @case "FlattenedMethod"
+        {@flattenedMethodSync(method, isImpl)}
+    @case "FlattenedMethodAsyncCallSettings"
+        {@flattenedMethodAsyncCallSettings(method, isImpl)}
+    @case "FlattenedMethodAsyncCancellationToken"
+        {@flattenedMethodAsyncCancellationToken(method, isImpl)}
+    @default
+        *** ERROR: Cannot handle method type '{@method.type.toString}' ***
+    @end
+@end
+
+@private flattenedMethodSync(method, isImpl)
+    public virtual {@method.responseTypeName} {@method.name}(
+        {@objectParams(method.methodParamsWithExtras)})
+    {
+    @if isImpl
+    @else
+        {@""}    throw new NotImplementedException();
+    @end
+    }
+@end
+
+@private flattenedMethodAsyncCallSettings(method, isImpl)
+    public virtual {@method.responseTypeName} {@method.name}(
+        {@objectParams(method.methodParamsWithExtras)})
+    {
+    @if isImpl
+    @else
+        {@""}    throw new NotImplementedException();
+    @end
+    }
+@end
+
+@private flattenedMethodAsyncCancellationToken(method, isImpl)
+    @if isImpl
+    @else
+        public virtual {@method.responseTypeName} {@method.name}(
+            {@objectParams(method.methodParamsWithExtras)}) => {@method.name}(
+                {@objectArgs(method.methodParams)},
+                new CallSettings { CancellationToken = cancellationToken });
+    @end
+@end

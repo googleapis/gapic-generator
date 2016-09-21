@@ -36,10 +36,12 @@ import com.google.api.codegen.py.PythonSnippetSetRunner;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.ruby.RubyGapicContext;
 import com.google.api.codegen.ruby.RubySnippetSetRunner;
+import com.google.api.codegen.transformer.csharp.CSharpGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
+import com.google.api.codegen.util.csharp.CSharpRenderingUtil;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.tools.framework.model.Interface;
@@ -88,7 +90,7 @@ public class MainGapicProviderFactory
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
     } else if (id.equals(CSHARP)) {
-      GapicProvider<? extends Object> provider =
+      /*GapicProvider<? extends Object> provider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
               .setView(new InterfaceView())
@@ -98,7 +100,20 @@ public class MainGapicProviderFactory
               .setSnippetFileNames(Arrays.asList("csharp/wrapper.snip"))
               .setCodePathMapper(new CSharpCodePathMapper())
               .build();
-      return Arrays.<GapicProvider<? extends Object>>asList(provider);
+      return Arrays.<GapicProvider<? extends Object>>asList(provider);*/
+      GapicCodePathMapper pathMapper =
+          CommonGapicCodePathMapper.newBuilder()
+              .setPrefix("")
+              .setShouldAppendPackage(true)
+              .build();
+      GapicProvider<? extends Object> mainProvider =
+          ViewModelGapicProvider.newBuilder()
+              .setModel(model)
+              .setApiConfig(apiConfig)
+              .setSnippetSetRunner(new CommonSnippetSetRunner(new CSharpRenderingUtil()))
+              .setModelToViewTransformer(new CSharpGapicSurfaceTransformer(pathMapper))
+              .build();
+      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);
 
     } else if (id.equals(GO)) {
       GapicProvider<? extends Object> provider =

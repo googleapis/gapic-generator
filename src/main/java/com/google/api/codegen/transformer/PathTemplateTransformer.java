@@ -53,6 +53,7 @@ public class PathTemplateTransformer {
       function.name(namer.getFormatFunctionName(collectionConfig));
       function.pathTemplateName(namer.getPathTemplateName(collectionConfig));
       function.pathTemplateGetterName(namer.getPathTemplateNameGetter(collectionConfig));
+      function.pattern(collectionConfig.getNamePattern());
       List<ResourceIdParamView> resourceIdParams = new ArrayList<>();
       for (String var : collectionConfig.getNameTemplate().vars()) {
         ResourceIdParamView param =

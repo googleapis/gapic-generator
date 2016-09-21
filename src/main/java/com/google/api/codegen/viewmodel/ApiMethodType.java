@@ -25,5 +25,8 @@ public enum ApiMethodType {
   CallableMethod,
   // PHP
   OptionalArrayMethod,
-  PagedOptionalArrayMethod
+  PagedOptionalArrayMethod,
+  // C#
+  FlattenedMethodAsyncCallSettings,
+  FlattenedMethodAsyncCancellationToken,
 }

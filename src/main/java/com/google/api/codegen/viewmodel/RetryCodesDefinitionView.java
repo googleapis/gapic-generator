@@ -18,12 +18,20 @@ import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
 
 import io.grpc.Status.Code;
+import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class RetryCodesDefinitionView {
   public abstract String key();
 
+  @Nullable // Used in C#
+  public abstract String name();
+
   public abstract ImmutableSet<Code> codes();
+
+  @Nullable // Used in C#
+  public abstract List<String> codeNames();
 
   public static Builder newBuilder() {
     return new AutoValue_RetryCodesDefinitionView.Builder();
@@ -33,7 +41,11 @@ public abstract class RetryCodesDefinitionView {
   public static abstract class Builder {
     public abstract Builder key(String val);
 
+    public abstract Builder name(String val);
+
     public abstract Builder codes(ImmutableSet<Code> val);
+
+    public abstract Builder codeNames(List<String> val);
 
     public abstract RetryCodesDefinitionView build();
   }
