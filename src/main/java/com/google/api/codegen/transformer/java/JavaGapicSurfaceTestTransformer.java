@@ -289,13 +289,10 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = context.getNamer();
     String outputPath = pathMapper.getOutputPath(service, context.getApiConfig());
     String name = namer.getMockServiceClassName(context.getInterface());
-    String grpcContainerName =
-        context.getTypeTable().getAndSaveNicknameFor(namer.getGrpcContainerTypeName(service));
     return MockServiceView.newBuilder()
         .name(name)
         .serviceImplClassName(namer.getMockGrpcServiceImplName(context.getInterface()))
         .packageName(context.getApiConfig().getPackageName())
-        .grpcContainerName(grpcContainerName)
         .outputPath(namer.getSourceFilePath(outputPath, name))
         .templateFileName(MOCK_SERVICE_FILE)
         // Imports must be done as the last step to catch all imports.

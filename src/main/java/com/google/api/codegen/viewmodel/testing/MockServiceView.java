@@ -29,8 +29,6 @@ public abstract class MockServiceView implements ViewModel {
 
   public abstract String serviceImplClassName();
 
-  public abstract String grpcContainerName();
-
   public abstract List<ImportTypeView> imports();
 
   @Override
@@ -55,8 +53,6 @@ public abstract class MockServiceView implements ViewModel {
     public abstract Builder name(String val);
 
     public abstract Builder serviceImplClassName(String val);
-
-    public abstract Builder grpcContainerName(String val);
 
     public abstract Builder imports(List<ImportTypeView> val);
 
