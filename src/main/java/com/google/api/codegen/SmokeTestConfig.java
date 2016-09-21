@@ -24,11 +24,11 @@ import java.util.List;
 /** SmokeTestConfig represents the smoke test configuration for a method. */
 public class SmokeTestConfig {
   private final Method method;
-  private final List<String> initFields;
+  private final List<String> initFieldConfigStrings;
 
-  private SmokeTestConfig(Method method, List<String> initFields) {
-    this.initFields = initFields;
+  private SmokeTestConfig(Method method, List<String> initFieldConfigStrings) {
     this.method = method;
+    this.initFieldConfigStrings = initFieldConfigStrings;
   }
 
   public static SmokeTestConfig createSmokeTestConfig(
@@ -40,7 +40,6 @@ public class SmokeTestConfig {
         break;
       }
     }
-
     if (testedMethod != null) {
       return new SmokeTestConfig(testedMethod, smokeTestConfigProto.getInitFieldsList());
     } else {
@@ -51,8 +50,8 @@ public class SmokeTestConfig {
   }
 
   /** Returns a list of initialized fields configuration. */
-  public List<String> getInitFields() {
-    return initFields;
+  public List<String> getInitFieldConfigStrings() {
+    return initFieldConfigStrings;
   }
 
   /** Returns the method that is used in the smoke test. */
