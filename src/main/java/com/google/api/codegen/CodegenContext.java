@@ -42,6 +42,10 @@ public class CodegenContext {
     return list.get(list.size() - 1);
   }
 
+  public boolean isSingleton(List list) {
+    return list.size() == 1;
+  }
+
   public String getTODO() {
     return LanguageUtil.getTODO();
   }
