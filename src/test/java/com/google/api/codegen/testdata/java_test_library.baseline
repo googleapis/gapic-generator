@@ -21,6 +21,7 @@ import com.google.api.gax.testing.MockServiceHelper;
 import com.google.common.collect.Lists;
 import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.Book;
+import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.Comment.Stage;
 import com.google.example.library.v1.CreateBookRequest;
@@ -41,6 +42,7 @@ import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.Shelf;
+import com.google.example.library.v1.ShelfName;
 import com.google.example.library.v1.SomeMessage;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
@@ -100,11 +102,11 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void createShelfTest() {
-    String name = "name3373707";
+    ShelfName name = "name3373707";
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setName(name)
+      .setNameWithResource(name)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
@@ -128,11 +130,11 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getShelfTest() {
-    String formattedName2 = LibraryServiceApi.formatShelfName("[SHELF]");
+    ShelfName formattedName2 = ShelfName.create("[SHELF]");
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setName(formattedName2)
+      .setNameWithResource(formattedName2)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
@@ -140,7 +142,7 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+    ShelfName formattedName = ShelfName.create("[SHELF]");
 
     Shelf actualResponse =
         api.getShelf(formattedName);
@@ -156,11 +158,11 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getShelfTest2() {
-    String formattedName2 = LibraryServiceApi.formatShelfName("[SHELF]");
+    ShelfName formattedName2 = ShelfName.create("[SHELF]");
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setName(formattedName2)
+      .setNameWithResource(formattedName2)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
@@ -168,7 +170,7 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+    ShelfName formattedName = ShelfName.create("[SHELF]");
     SomeMessage message = SomeMessage.newBuilder().build();
 
     Shelf actualResponse =
@@ -186,11 +188,11 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getShelfTest3() {
-    String formattedName2 = LibraryServiceApi.formatShelfName("[SHELF]");
+    ShelfName formattedName2 = ShelfName.create("[SHELF]");
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setName(formattedName2)
+      .setNameWithResource(formattedName2)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
@@ -198,7 +200,7 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+    ShelfName formattedName = ShelfName.create("[SHELF]");
     SomeMessage message = SomeMessage.newBuilder().build();
     com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
 
@@ -251,7 +253,7 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+    ShelfName formattedName = ShelfName.create("[SHELF]");
 
     api.deleteShelf(formattedName);
 
@@ -265,11 +267,11 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void mergeShelvesTest() {
-    String formattedName2 = LibraryServiceApi.formatShelfName("[SHELF]");
+    ShelfName formattedName2 = ShelfName.create("[SHELF]");
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setName(formattedName2)
+      .setNameWithResource(formattedName2)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
@@ -277,8 +279,8 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
-    String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
+    ShelfName formattedName = ShelfName.create("[SHELF]");
+    ShelfName formattedOtherShelfName = ShelfName.create("[SHELF]");
 
     Shelf actualResponse =
         api.mergeShelves(formattedName, formattedOtherShelfName);
@@ -295,12 +297,12 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void createBookTest() {
-    String formattedName2 = LibraryServiceApi.formatShelfName("[SHELF]");
+    BookName formattedName2 = BookName.create("[SHELF]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setName(formattedName2)
+      .setNameWithResource(formattedName2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -309,7 +311,7 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+    ShelfName formattedName = ShelfName.create("[SHELF]");
     Book book = Book.newBuilder().build();
 
     Book actualResponse =
@@ -336,7 +338,7 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    Shelf shelf = Shelf.newBuilder().build();
+    ShelfName shelf = Shelf.newBuilder().build();
     List<Book> books = new ArrayList<>();
     int edition = -1887963714;
 
@@ -356,12 +358,12 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getBookTest() {
-    String formattedName2 = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+    BookName formattedName2 = BookName.create("[SHELF]", "[BOOK]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setName(formattedName2)
+      .setNameWithResource(formattedName2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -370,7 +372,7 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+    BookName formattedName = BookName.create("[SHELF]", "[BOOK]");
 
     Book actualResponse =
         api.getBook(formattedName);
@@ -397,7 +399,7 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+    ShelfName formattedName = ShelfName.create("[SHELF]");
     String filter = "filter-1274492040";
 
     PagedListResponse<ListBooksRequest, ListBooksResponse, Book> pagedListResponse = api.listBooks(formattedName, filter);
@@ -422,7 +424,7 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+    BookName formattedName = BookName.create("[SHELF]", "[BOOK]");
 
     api.deleteBook(formattedName);
 
@@ -436,12 +438,12 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void updateBookTest() {
-    String formattedName2 = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+    BookName formattedName2 = BookName.create("[SHELF]", "[BOOK]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setName(formattedName2)
+      .setNameWithResource(formattedName2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -450,7 +452,7 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+    BookName formattedName = BookName.create("[SHELF]", "[BOOK]");
     Book book = Book.newBuilder().build();
 
     Book actualResponse =
@@ -468,12 +470,12 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void updateBookTest2() {
-    String formattedName2 = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+    BookName formattedName2 = BookName.create("[SHELF]", "[BOOK]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setName(formattedName2)
+      .setNameWithResource(formattedName2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -482,7 +484,7 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+    BookName formattedName = BookName.create("[SHELF]", "[BOOK]");
     Book book = Book.newBuilder().build();
     FieldMask updateMask = FieldMask.newBuilder().build();
     com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
@@ -504,12 +506,12 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void moveBookTest() {
-    String formattedName2 = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+    BookName formattedName2 = BookName.create("[SHELF]", "[BOOK]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setName(formattedName2)
+      .setNameWithResource(formattedName2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -518,8 +520,8 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
-    String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
+    BookName formattedName = BookName.create("[SHELF]", "[BOOK]");
+    ShelfName formattedOtherShelfName = ShelfName.create("[SHELF]");
 
     Book actualResponse =
         api.moveBook(formattedName, formattedOtherShelfName);
@@ -571,7 +573,7 @@ public class LibraryServiceTest {
 
     String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
     ByteString comment = ByteString.copyFromUtf8("95");
-    Stage stage = Stage.UNSET;
+    Comment.Stage stage = Comment.Stage.UNSET;
     Comment commentsElement = Comment.newBuilder()
       .setComment(comment)
       .setStage(stage)
@@ -591,12 +593,12 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getBookFromArchiveTest() {
-    String formattedName2 = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
+    BookName formattedName2 = BookName.create("[ARCHIVE_PATH]", "[BOOK]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setName(formattedName2)
+      .setNameWithResource(formattedName2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -605,7 +607,7 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    String formattedName = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
+    BookName formattedName = BookName.create("[ARCHIVE_PATH]", "[BOOK]");
 
     Book actualResponse =
         api.getBookFromArchive(formattedName);
@@ -626,7 +628,7 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+    BookName formattedName = BookName.create("[SHELF]", "[BOOK]");
     String indexName = "default index";
     String indexMapItem = "indexMapItem1918721251";
     Map<String, String> indexMap = new HashMap<>();
