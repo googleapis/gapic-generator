@@ -164,7 +164,11 @@
          params = context.getFlatMethodParams(method)
         @if params
 
-            @# {@TODO()} Change placeholders below to desired parameter values for the `{@methodName}` method:
+            @if context.isSingleton(params)
+                @# {@TODO()} Change placeholder below to desired parameter value for the `{@methodName}` method:
+            @else
+                @# {@TODO()} Change placeholders below to desired parameter values for the `{@methodName}` method:
+            @end
 
             @join param : params
                 @let paramField = context.getField(signatureType, param), \
@@ -173,9 +177,9 @@
                      paramDescription = context.getDescription(signatureType.getName, param)
                     {@description(paramDescription)}
                     @if paramSample
-                      {@param} = {@paramValue}  @# {@paramSample}
+                        {@param} = {@paramValue}  @# {@paramSample}
                     @else
-                      {@param} = {@paramValue}
+                        {@param} = {@paramValue}
                     @end
 
                 @end
