@@ -50,9 +50,9 @@ public class CommonAcronyms {
     for (String acronym : ACRONYMS.keySet()) {
       int priorIndex = 0;
       while (str.substring(priorIndex).contains(acronym)) {
-        int newIndex = str.substring(priorIndex).indexOf(acronym) + priorIndex;
-        acronymIndices.add(new AcronymIndex(acronym, newIndex));
-        priorIndex = str.substring(priorIndex).indexOf(acronym) + priorIndex + acronym.length();
+        int nextIndex = str.indexOf(acronym, priorIndex);
+        acronymIndices.add(new AcronymIndex(acronym, nextIndex));
+        priorIndex = nextIndex + acronym.length();
       }
     }
 
