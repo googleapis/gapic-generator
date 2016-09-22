@@ -64,6 +64,13 @@ public class DiscoveryFragmentGeneratorTool {
             .hasArg()
             .argName("OUTPUT-DIRECTORY")
             .build());
+    options.addOption(
+        Option.builder()
+            .longOpt("auth_instructions")
+            .desc("An @-delimited map of language to auth instructions URL: lang:URL@lang:URL@...")
+            .hasArg()
+            .argName("AUTH-INSTRUCTIONS")
+            .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
     if (cl.hasOption("help")) {
@@ -75,11 +82,16 @@ public class DiscoveryFragmentGeneratorTool {
         cl.getOptionValue("discovery_doc"),
         cl.getOptionValues("gapic_yaml"),
         cl.getOptionValue("overrides", ""),
-        cl.getOptionValue("output", ""));
+        cl.getOptionValue("output", ""),
+        cl.getOptionValue("auth_instructions", ""));
   }
 
   private static void generate(
-      String discoveryDoc, String[] generatorConfigs, String overridesFile, String outputDirectory)
+      String discoveryDoc,
+      String[] generatorConfigs,
+      String overridesFile,
+      String outputDirectory,
+      String authInstructions)
       throws Exception {
 
     ToolOptions options = ToolOptions.create();
@@ -88,6 +100,7 @@ public class DiscoveryFragmentGeneratorTool {
         DiscoveryFragmentGeneratorApi.GENERATOR_CONFIG_FILES, Arrays.asList(generatorConfigs));
     options.set(DiscoveryFragmentGeneratorApi.OVERRIDES_FILE, overridesFile);
     options.set(DiscoveryFragmentGeneratorApi.OUTPUT_FILE, outputDirectory);
+    options.set(DiscoveryFragmentGeneratorApi.AUTH_INSTRUCTIONS_URL, authInstructions);
     DiscoveryFragmentGeneratorApi generator = new DiscoveryFragmentGeneratorApi(options);
     generator.run();
   }

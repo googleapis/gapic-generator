@@ -6,18 +6,16 @@ package main
 // 1. If not already done, enable the Translate API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/translate
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install and update the Go dependencies by running `go get -u` in the
+// 2. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "errors"
+  "fmt"
   "log"
+  "net/http"
 
   "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
 
   "google.golang.org/api/translate/v2"
 )
@@ -25,30 +23,33 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
-  // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx)
+  c, err := getClient(ctx)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := translate.New(hc)
+  translateService, err := translate.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // The text to detect
-  q := []string{} // TODO: Update placeholder value(s).
+  q := []string{}
+  // TODO: Change placeholder value above.
 
-  resp, err := s.Detections.List(q).Context(ctx).Do()
+  resp, err := translateService.Detections.List(q).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+
+func getClient(ctx Context) (*http.Client, error) {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  return nil, errors.New("Not implemented")
 }
 package main
 
@@ -57,18 +58,16 @@ package main
 // 1. If not already done, enable the Translate API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/translate
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install and update the Go dependencies by running `go get -u` in the
+// 2. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "errors"
+  "fmt"
   "log"
+  "net/http"
 
   "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
 
   "google.golang.org/api/translate/v2"
 )
@@ -76,27 +75,30 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
-  // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx)
+  c, err := getClient(ctx)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := translate.New(hc)
+  translateService, err := translate.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  resp, err := s.Languages.List().Context(ctx).Do()
+
+  resp, err := translateService.Languages.List().Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+
+func getClient(ctx Context) (*http.Client, error) {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  return nil, errors.New("Not implemented")
 }
 package main
 
@@ -105,18 +107,16 @@ package main
 // 1. If not already done, enable the Translate API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/translate
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install and update the Go dependencies by running `go get -u` in the
+// 2. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
 import (
+  "errors"
+  "fmt"
   "log"
+  "net/http"
 
   "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
 
   "google.golang.org/api/translate/v2"
 )
@@ -124,31 +124,35 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
-  // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx)
+  c, err := getClient(ctx)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := translate.New(hc)
+  translateService, err := translate.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // The text to translate
-  q := []string{} // TODO: Update placeholder value(s).
+  q := []string{}
+  // TODO: Change placeholder value above.
 
   // The target language into which the text should be translated
-  target := "{MY-TARGET}" // TODO: Update placeholder value(s).
+  target := "{MY-TARGET}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.Translations.List(q, target).Context(ctx).Do()
+  resp, err := translateService.Translations.List(q, target).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+
+func getClient(ctx Context) (*http.Client, error) {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  return nil, errors.New("Not implemented")
 }

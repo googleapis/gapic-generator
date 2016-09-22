@@ -12,14 +12,12 @@
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -28,13 +26,18 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_CloudTrace($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `patchTraces` method:
+
 // ID of the Cloud project where the trace data is stored.
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
-// TODO: Assign values to the desired properties to be changed.
-$postBody = new Google_Service_CloudTrace_Traces($client);
 
-$service->projects->patchTraces($projectId, $postBody);
+$requestBody = new Google_Service_CloudTrace_Traces($client);
+// TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
+
+$service->projects->patchTraces($projectId, $requestBody);
 <?php
 /*
  * BEFORE RUNNING:
@@ -48,14 +51,12 @@ $service->projects->patchTraces($projectId, $postBody);
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -64,15 +65,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_CloudTrace($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // ID of the Cloud project where the trace data is stored.
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
 // ID of the trace to return.
-$traceId = '{MY-TRACE-ID}'; // TODO: Update placeholder value(s).
+$traceId = '{MY-TRACE-ID}';
+
 
 $response = $service->projects_traces->get($projectId, $traceId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -87,14 +92,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -103,15 +106,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_CloudTrace($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listProjectsTraces` method:
+
 // ID of the Cloud project where the trace data is stored.
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
+
 
 $optParams = array();
 do {
   $response = $service->projects_traces->listProjectsTraces($projectId, $optParams);
 
   foreach ($response['traces'] as $trace) {
-    // TODO: Use trace
+    // TODO: Change code below to process each `trace` resource:
     echo '<pre>', var_export($trace, true), '</pre>', "\n";
   }
 

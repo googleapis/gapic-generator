@@ -27,14 +27,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -46,19 +42,24 @@ namespace PubsubSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The subscription whose message is being acknowledged.
-            string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Acknowledge` method:
+
+            // The subscription whose message is being acknowledged.
+            string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
+
+
             Data.AcknowledgeRequest requestBody = new Data.AcknowledgeRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ProjectsResource.SubscriptionsResource.AcknowledgeRequest request = pubsubService.Projects.Subscriptions.Acknowledge(requestBody, subscription);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Empty response = request.Execute();
             // Data.Empty response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -91,14 +92,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -109,24 +106,29 @@ namespace PubsubSample
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
+
+
+            // TODO: Change placeholders below to desired parameter values for the `Create` method:
 
             // The name of the subscription. It must have the format
             // `"projects/{project}/subscriptions/{subscription}"`. `{subscription}` must start with a letter, and
             // contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`), underscores (`_`), periods
             // (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be between 3 and 255 characters in
             // length, and it must not start with `"goog"`.
-            string name = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"; // TODO: Update placeholder value(s).
+            string name = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.Subscription requestBody = new Data.Subscription();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ProjectsResource.SubscriptionsResource.CreateRequest request = pubsubService.Projects.Subscriptions.Create(requestBody, name);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Subscription response = request.Execute();
             // Data.Subscription response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -159,14 +161,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -178,16 +176,20 @@ namespace PubsubSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // The subscription to delete.
-            string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"; // TODO: Update placeholder value(s).
+            string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
+
 
             ProjectsResource.SubscriptionsResource.DeleteRequest request = pubsubService.Projects.Subscriptions.Delete(subscription);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Empty response = request.Execute();
             // Data.Empty response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -220,14 +222,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -239,16 +237,20 @@ namespace PubsubSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // The name of the subscription to get.
-            string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"; // TODO: Update placeholder value(s).
+            string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
+
 
             ProjectsResource.SubscriptionsResource.GetRequest request = pubsubService.Projects.Subscriptions.Get(subscription);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Subscription response = request.Execute();
             // Data.Subscription response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -281,14 +283,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -300,19 +298,22 @@ namespace PubsubSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // REQUIRED: The resource for which policy is being requested. `resource` is usually specified as a
-            // path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in
-            // this value is resource specific and is specified in the documentation for the respective
-            // GetIamPolicy rpc.
-            string resource = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"; // TODO: Update placeholder value(s).
+
+            // TODO: Change placeholders below to desired parameter values for the `GetIamPolicy` method:
+
+            // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
+            // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
+            // this value is resource specific and is specified in the `getIamPolicy` documentation.
+            string resource = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
+
 
             ProjectsResource.SubscriptionsResource.GetIamPolicyRequest request = pubsubService.Projects.Subscriptions.GetIamPolicy(resource);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Policy response = request.Execute();
             // Data.Policy response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -345,14 +346,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -364,15 +361,19 @@ namespace PubsubSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // The name of the cloud project that subscriptions belong to.
-            string project = "projects/{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "projects/{MY-PROJECT}";
+
 
             ProjectsResource.SubscriptionsResource.ListRequest request = pubsubService.Projects.Subscriptions.List(project);
 
             Data.ListSubscriptionsResponse response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -382,7 +383,7 @@ namespace PubsubSample
                 }
                 foreach (Data.Subscription subscription in response.Subscriptions)
                 {
-                    // TODO: Use subscription
+                    // TODO: Change code below to process each `subscription` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(subscription));
                 }
                 request.PageToken = response.NextPageToken;
@@ -418,14 +419,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -437,19 +434,24 @@ namespace PubsubSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The name of the subscription.
-            string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `ModifyAckDeadline` method:
+
+            // The name of the subscription.
+            string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
+
+
             Data.ModifyAckDeadlineRequest requestBody = new Data.ModifyAckDeadlineRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ProjectsResource.SubscriptionsResource.ModifyAckDeadlineRequest request = pubsubService.Projects.Subscriptions.ModifyAckDeadline(requestBody, subscription);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Empty response = request.Execute();
             // Data.Empty response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -482,14 +484,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -501,19 +499,24 @@ namespace PubsubSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The name of the subscription.
-            string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `ModifyPushConfig` method:
+
+            // The name of the subscription.
+            string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
+
+
             Data.ModifyPushConfigRequest requestBody = new Data.ModifyPushConfigRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ProjectsResource.SubscriptionsResource.ModifyPushConfigRequest request = pubsubService.Projects.Subscriptions.ModifyPushConfig(requestBody, subscription);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Empty response = request.Execute();
             // Data.Empty response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -546,14 +549,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -565,19 +564,24 @@ namespace PubsubSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The subscription from which messages should be pulled.
-            string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Pull` method:
+
+            // The subscription from which messages should be pulled.
+            string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
+
+
             Data.PullRequest requestBody = new Data.PullRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ProjectsResource.SubscriptionsResource.PullRequest request = pubsubService.Projects.Subscriptions.Pull(requestBody, subscription);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.PullResponse response = request.Execute();
             // Data.PullResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -610,14 +614,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -629,22 +629,26 @@ namespace PubsubSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // REQUIRED: The resource for which policy is being specified. `resource` is usually specified as a
-            // path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in
-            // this value is resource specific and is specified in the documentation for the respective
-            // SetIamPolicy rpc.
-            string resource = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `SetIamPolicy` method:
+
+            // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
+            // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
+            // this value is resource specific and is specified in the `setIamPolicy` documentation.
+            string resource = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
+
+
             Data.SetIamPolicyRequest requestBody = new Data.SetIamPolicyRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ProjectsResource.SubscriptionsResource.SetIamPolicyRequest request = pubsubService.Projects.Subscriptions.SetIamPolicy(requestBody, resource);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Policy response = request.Execute();
             // Data.Policy response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -677,14 +681,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -696,22 +696,27 @@ namespace PubsubSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // REQUIRED: The resource for which policy detail is being requested. `resource` is usually specified
-            // as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path
-            // specified in this value is resource specific and is specified in the documentation for the
-            // respective TestIamPermissions rpc.
-            string resource = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `TestIamPermissions` method:
+
+            // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
+            // specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path
+            // specified in this value is resource specific and is specified in the `testIamPermissions`
+            // documentation.
+            string resource = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
+
+
             Data.TestIamPermissionsRequest requestBody = new Data.TestIamPermissionsRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ProjectsResource.SubscriptionsResource.TestIamPermissionsRequest request = pubsubService.Projects.Subscriptions.TestIamPermissions(requestBody, resource);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.TestIamPermissionsResponse response = request.Execute();
             // Data.TestIamPermissionsResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -744,14 +749,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -762,23 +763,28 @@ namespace PubsubSample
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
+
+
+            // TODO: Change placeholders below to desired parameter values for the `Create` method:
 
             // The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}` must
             // start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`),
             // underscores (`_`), periods (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be
             // between 3 and 255 characters in length, and it must not start with `"goog"`.
-            string name = "projects/{MY-PROJECT}/topics/{MY-TOPIC}"; // TODO: Update placeholder value(s).
+            string name = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.Topic requestBody = new Data.Topic();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ProjectsResource.TopicsResource.CreateRequest request = pubsubService.Projects.Topics.Create(requestBody, name);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Topic response = request.Execute();
             // Data.Topic response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -811,14 +817,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -830,16 +832,20 @@ namespace PubsubSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // Name of the topic to delete.
-            string topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}"; // TODO: Update placeholder value(s).
+            string topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
+
 
             ProjectsResource.TopicsResource.DeleteRequest request = pubsubService.Projects.Topics.Delete(topic);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Empty response = request.Execute();
             // Data.Empty response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -872,14 +878,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -891,16 +893,20 @@ namespace PubsubSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // The name of the topic to get.
-            string topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}"; // TODO: Update placeholder value(s).
+            string topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
+
 
             ProjectsResource.TopicsResource.GetRequest request = pubsubService.Projects.Topics.Get(topic);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Topic response = request.Execute();
             // Data.Topic response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -933,14 +939,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -952,19 +954,22 @@ namespace PubsubSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // REQUIRED: The resource for which policy is being requested. `resource` is usually specified as a
-            // path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in
-            // this value is resource specific and is specified in the documentation for the respective
-            // GetIamPolicy rpc.
-            string resource = "projects/{MY-PROJECT}/topics/{MY-TOPIC}"; // TODO: Update placeholder value(s).
+
+            // TODO: Change placeholders below to desired parameter values for the `GetIamPolicy` method:
+
+            // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
+            // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
+            // this value is resource specific and is specified in the `getIamPolicy` documentation.
+            string resource = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
+
 
             ProjectsResource.TopicsResource.GetIamPolicyRequest request = pubsubService.Projects.Topics.GetIamPolicy(resource);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Policy response = request.Execute();
             // Data.Policy response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -997,14 +1002,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1016,15 +1017,19 @@ namespace PubsubSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // The name of the cloud project that topics belong to.
-            string project = "projects/{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "projects/{MY-PROJECT}";
+
 
             ProjectsResource.TopicsResource.ListRequest request = pubsubService.Projects.Topics.List(project);
 
             Data.ListTopicsResponse response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -1034,7 +1039,7 @@ namespace PubsubSample
                 }
                 foreach (Data.Topic topic in response.Topics)
                 {
-                    // TODO: Use topic
+                    // TODO: Change code below to process each `topic` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(topic));
                 }
                 request.PageToken = response.NextPageToken;
@@ -1070,14 +1075,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1089,19 +1090,24 @@ namespace PubsubSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The messages in the request will be published on this topic.
-            string topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Publish` method:
+
+            // The messages in the request will be published on this topic.
+            string topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
+
+
             Data.PublishRequest requestBody = new Data.PublishRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ProjectsResource.TopicsResource.PublishRequest request = pubsubService.Projects.Topics.Publish(requestBody, topic);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.PublishResponse response = request.Execute();
             // Data.PublishResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1134,14 +1140,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1153,22 +1155,26 @@ namespace PubsubSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // REQUIRED: The resource for which policy is being specified. `resource` is usually specified as a
-            // path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in
-            // this value is resource specific and is specified in the documentation for the respective
-            // SetIamPolicy rpc.
-            string resource = "projects/{MY-PROJECT}/topics/{MY-TOPIC}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `SetIamPolicy` method:
+
+            // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
+            // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
+            // this value is resource specific and is specified in the `setIamPolicy` documentation.
+            string resource = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
+
+
             Data.SetIamPolicyRequest requestBody = new Data.SetIamPolicyRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ProjectsResource.TopicsResource.SetIamPolicyRequest request = pubsubService.Projects.Topics.SetIamPolicy(requestBody, resource);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Policy response = request.Execute();
             // Data.Policy response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1201,14 +1207,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1220,15 +1222,19 @@ namespace PubsubSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // The name of the topic that subscriptions are attached to.
-            string topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}"; // TODO: Update placeholder value(s).
+            string topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
+
 
             ProjectsResource.TopicsResource.SubscriptionsResource.ListRequest request = pubsubService.Projects.Topics.Subscriptions.List(topic);
 
             Data.ListTopicSubscriptionsResponse response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -1238,7 +1244,7 @@ namespace PubsubSample
                 }
                 foreach (string string_ in response.Subscriptions)
                 {
-                    // TODO: Use string_
+                    // TODO: Change code below to process each `string_` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(string_));
                 }
                 request.PageToken = response.NextPageToken;
@@ -1274,14 +1280,10 @@ namespace PubsubSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1293,22 +1295,27 @@ namespace PubsubSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // REQUIRED: The resource for which policy detail is being requested. `resource` is usually specified
-            // as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path
-            // specified in this value is resource specific and is specified in the documentation for the
-            // respective TestIamPermissions rpc.
-            string resource = "projects/{MY-PROJECT}/topics/{MY-TOPIC}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `TestIamPermissions` method:
+
+            // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
+            // specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path
+            // specified in this value is resource specific and is specified in the `testIamPermissions`
+            // documentation.
+            string resource = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
+
+
             Data.TestIamPermissionsRequest requestBody = new Data.TestIamPermissionsRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ProjectsResource.TopicsResource.TestIamPermissionsRequest request = pubsubService.Projects.Topics.TestIamPermissions(requestBody, resource);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.TestIamPermissionsResponse response = request.Execute();
             // Data.TestIamPermissionsResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }

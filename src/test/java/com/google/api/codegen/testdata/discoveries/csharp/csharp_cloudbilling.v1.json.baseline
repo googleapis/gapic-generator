@@ -27,14 +27,10 @@ namespace CloudbillingSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -46,17 +42,21 @@ namespace CloudbillingSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // The resource name of the billing account to retrieve. For example,
             // `billingAccounts/012345-567890-ABCDEF`.
-            string name = "billingAccounts/{MY-BILLINGACCOUNT}"; // TODO: Update placeholder value(s).
+            string name = "billingAccounts/{MY-BILLINGACCOUNT}";
+
 
             BillingAccountsResource.GetRequest request = cloudbillingService.BillingAccounts.Get(name);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.BillingAccount response = request.Execute();
             // Data.BillingAccount response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -89,14 +89,10 @@ namespace CloudbillingSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -113,7 +109,7 @@ namespace CloudbillingSample
             Data.ListBillingAccountsResponse response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -123,7 +119,7 @@ namespace CloudbillingSample
                 }
                 foreach (Data.BillingAccount billingAccount in response.BillingAccounts)
                 {
-                    // TODO: Use billingAccount
+                    // TODO: Change code below to process each `billingAccount` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(billingAccount));
                 }
                 request.PageToken = response.NextPageToken;
@@ -159,14 +155,10 @@ namespace CloudbillingSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -178,16 +170,20 @@ namespace CloudbillingSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // The resource name of the billing account associated with the projects that you want to list. For
             // example, `billingAccounts/012345-567890-ABCDEF`.
-            string name = "billingAccounts/{MY-BILLINGACCOUNT}"; // TODO: Update placeholder value(s).
+            string name = "billingAccounts/{MY-BILLINGACCOUNT}";
+
 
             BillingAccountsResource.ProjectsResource.ListRequest request = cloudbillingService.BillingAccounts.Projects.List(name);
 
             Data.ListProjectBillingInfoResponse response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -197,7 +193,7 @@ namespace CloudbillingSample
                 }
                 foreach (Data.ProjectBillingInfo projectBillingInfo in response.ProjectBillingInfo)
                 {
-                    // TODO: Use projectBillingInfo
+                    // TODO: Change code below to process each `projectBillingInfo` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(projectBillingInfo));
                 }
                 request.PageToken = response.NextPageToken;
@@ -233,14 +229,10 @@ namespace CloudbillingSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -252,17 +244,21 @@ namespace CloudbillingSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `GetBillingInfo` method:
+
             // The resource name of the project for which billing information is retrieved. For example,
             // `projects/tokyo-rain-123`.
-            string name = "projects/{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string name = "projects/{MY-PROJECT}";
+
 
             ProjectsResource.GetBillingInfoRequest request = cloudbillingService.Projects.GetBillingInfo(name);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ProjectBillingInfo response = request.Execute();
             // Data.ProjectBillingInfo response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -295,14 +291,10 @@ namespace CloudbillingSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -314,20 +306,25 @@ namespace CloudbillingSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `UpdateBillingInfo` method:
+
             // The resource name of the project associated with the billing information that you want to update.
             // For example, `projects/tokyo-rain-123`.
-            string name = "projects/{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string name = "projects/{MY-PROJECT}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.ProjectBillingInfo requestBody = new Data.ProjectBillingInfo();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ProjectsResource.UpdateBillingInfoRequest request = cloudbillingService.Projects.UpdateBillingInfo(requestBody, name);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ProjectBillingInfo response = request.Execute();
             // Data.ProjectBillingInfo response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }

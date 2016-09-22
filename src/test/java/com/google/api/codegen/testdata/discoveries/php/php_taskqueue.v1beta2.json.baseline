@@ -6,38 +6,40 @@
  * 1. If not already done, enable the TaskQueue API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/taskqueue
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Taskqueue($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // The project under which the queue lies.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // The id of the taskqueue to get the properties of.
-$taskqueue = '{MY-TASKQUEUE}'; // TODO: Update placeholder value(s).
+$taskqueue = '{MY-TASKQUEUE}';
+
 
 $response = $service->taskqueues->get($project, $taskqueue);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `get` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/taskqueue
+  //   https://www.googleapis.com/auth/taskqueue.consumer
+  return null;
+}
 <?php
 /*
  * BEFORE RUNNING:
@@ -45,38 +47,40 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the TaskQueue API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/taskqueue
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Taskqueue($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // The project under which the queue lies.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // The taskqueue to delete a task from.
-$taskqueue = '{MY-TASKQUEUE}'; // TODO: Update placeholder value(s).
+$taskqueue = '{MY-TASKQUEUE}';
 
 // The id of the task to delete.
-$task = '{MY-TASK}'; // TODO: Update placeholder value(s).
+$task = '{MY-TASK}';
+
 
 $service->tasks->delete($project, $taskqueue, $task);
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `delete` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/taskqueue
+  //   https://www.googleapis.com/auth/taskqueue.consumer
+  return null;
+}
 <?php
 /*
  * BEFORE RUNNING:
@@ -84,41 +88,43 @@ $service->tasks->delete($project, $taskqueue, $task);
  * 1. If not already done, enable the TaskQueue API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/taskqueue
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Taskqueue($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // The project under which the queue lies.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // The taskqueue in which the task belongs.
-$taskqueue = '{MY-TASKQUEUE}'; // TODO: Update placeholder value(s).
+$taskqueue = '{MY-TASKQUEUE}';
 
 // The task to get properties of.
-$task = '{MY-TASK}'; // TODO: Update placeholder value(s).
+$task = '{MY-TASK}';
+
 
 $response = $service->tasks->get($project, $taskqueue, $task);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `get` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/taskqueue
+  //   https://www.googleapis.com/auth/taskqueue.consumer
+  return null;
+}
 <?php
 /*
  * BEFORE RUNNING:
@@ -126,41 +132,44 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the TaskQueue API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/taskqueue
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Taskqueue($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 // The project under which the queue lies
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // The taskqueue to insert the task into
-$taskqueue = '{MY-TASKQUEUE}'; // TODO: Update placeholder value(s).
+$taskqueue = '{MY-TASKQUEUE}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Taskqueue_Task($client);
 
-$response = $service->tasks->insert($project, $taskqueue, $postBody);
+$requestBody = new Google_Service_Taskqueue_Task($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->tasks->insert($project, $taskqueue, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `insert` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/taskqueue
+  //   https://www.googleapis.com/auth/taskqueue.consumer
+  return null;
+}
 <?php
 /*
  * BEFORE RUNNING:
@@ -168,44 +177,46 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the TaskQueue API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/taskqueue
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Taskqueue($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `lease` method:
+
 // The project under which the queue lies.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // The taskqueue to lease a task from.
-$taskqueue = '{MY-TASKQUEUE}'; // TODO: Update placeholder value(s).
+$taskqueue = '{MY-TASKQUEUE}';
 
 // The number of tasks to lease.
-$numTasks = 0; // TODO: Update placeholder value(s).
+$numTasks = 0;
 
 // The lease in seconds.
-$leaseSecs = 0; // TODO: Update placeholder value(s).
+$leaseSecs = 0;
+
 
 $response = $service->tasks->lease($project, $taskqueue, $numTasks, $leaseSecs);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `lease` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/taskqueue
+  //   https://www.googleapis.com/auth/taskqueue.consumer
+  return null;
+}
 <?php
 /*
  * BEFORE RUNNING:
@@ -213,38 +224,40 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the TaskQueue API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/taskqueue
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Taskqueue($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listTasks` method:
+
 // The project under which the queue lies.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // The id of the taskqueue to list tasks from.
-$taskqueue = '{MY-TASKQUEUE}'; // TODO: Update placeholder value(s).
+$taskqueue = '{MY-TASKQUEUE}';
+
 
 $response = $service->tasks->listTasks($project, $taskqueue);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `listTasks` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/taskqueue
+  //   https://www.googleapis.com/auth/taskqueue.consumer
+  return null;
+}
 <?php
 /*
  * BEFORE RUNNING:
@@ -252,47 +265,50 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the TaskQueue API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/taskqueue
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Taskqueue($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
+
 // The project under which the queue lies.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
+// taskqueue
+$taskqueue = '{MY-TASKQUEUE}';
 
-$taskqueue = '{MY-TASKQUEUE}'; // TODO: Update placeholder value(s).
-
-
-$task = '{MY-TASK}'; // TODO: Update placeholder value(s).
+// task
+$task = '{MY-TASK}';
 
 // The new lease in seconds.
-$newLeaseSeconds = 0; // TODO: Update placeholder value(s).
+$newLeaseSeconds = 0;
 
-// TODO: Assign values to the desired properties to be changed.
-$postBody = new Google_Service_Taskqueue_Task($client);
 
-$response = $service->tasks->patch($project, $taskqueue, $task, $newLeaseSeconds, $postBody);
+$requestBody = new Google_Service_Taskqueue_Task($client);
+// TODO: Assign values to desired properties of the `requestBody` object to be changed.
 
-// TODO: Use $response
+
+$response = $service->tasks->patch($project, $taskqueue, $task, $newLeaseSeconds, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `patch` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/taskqueue
+  //   https://www.googleapis.com/auth/taskqueue.consumer
+  return null;
+}
 <?php
 /*
  * BEFORE RUNNING:
@@ -300,44 +316,47 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the TaskQueue API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/taskqueue
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Taskqueue($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
+
 // The project under which the queue lies.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
+// taskqueue
+$taskqueue = '{MY-TASKQUEUE}';
 
-$taskqueue = '{MY-TASKQUEUE}'; // TODO: Update placeholder value(s).
-
-
-$task = '{MY-TASK}'; // TODO: Update placeholder value(s).
+// task
+$task = '{MY-TASK}';
 
 // The new lease in seconds.
-$newLeaseSeconds = 0; // TODO: Update placeholder value(s).
+$newLeaseSeconds = 0;
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Taskqueue_Task($client);
 
-$response = $service->tasks->update($project, $taskqueue, $task, $newLeaseSeconds, $postBody);
+$requestBody = new Google_Service_Taskqueue_Task($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->tasks->update($project, $taskqueue, $task, $newLeaseSeconds, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `update` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/taskqueue
+  //   https://www.googleapis.com/auth/taskqueue.consumer
+  return null;
+}

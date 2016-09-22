@@ -42,6 +42,11 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
           .build();
 
   @Override
+  public String getMethodName(Method method) {
+    return lowerCamelToUpperCamel(super.getMethodName(method));
+  }
+
+  @Override
   protected String arrayTypeName(String elementName) {
     return String.format("%sArray", elementName);
   }

@@ -31,10 +31,8 @@ import com.google.protobuf.Field;
 import com.google.protobuf.Field.Kind;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
-
 import java.util.Collections;
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpContext {
@@ -351,18 +349,18 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
 
   public SampleInfo getSampleInfo0(Method method) {
     final ApiaryConfig apiary = getApiaryConfig();
-    String rawMethodName = method.getName();
     String packageName =
         CSharpContextCommon.s_underscoresToPascalCase(apiary.getServiceCanonicalName());
     String namespace = packageName + "Sample";
     String serviceTypeName = using(serviceNamespace + "." + packageName + "Service");
     String serviceVarName = CSharpContextCommon.s_underscoresToCamelCase(packageName) + "Service";
-    String methodName = CSharpContextCommon.s_underscoresToPascalCase(getSimpleName(rawMethodName));
+    String methodName =
+        CSharpContextCommon.s_underscoresToPascalCase(getSimpleName(method.getName()));
     boolean hasRequestField = hasRequestField(method);
     final Type methodType = apiary.getType(method.getRequestTypeUrl());
 
     final String requestTypeName =
-        FluentIterable.from(apiary.getResources(rawMethodName))
+        FluentIterable.from(apiary.getResources(method.getName()))
             .transform(
                 new Function<String, String>() {
                   @Override
@@ -406,7 +404,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
             .join(Joiner.on(", "));
 
     String resourcePath =
-        FluentIterable.from(apiary.getResources(rawMethodName))
+        FluentIterable.from(apiary.getResources(method.getName()))
             .transform(
                 new Function<String, String>() {
                   @Override

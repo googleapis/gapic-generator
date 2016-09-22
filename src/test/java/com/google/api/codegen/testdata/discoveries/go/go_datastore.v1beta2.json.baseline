@@ -14,6 +14,8 @@ package main
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -29,30 +31,45 @@ func main() {
   // and by built-in service accounts when running on GAE, GCE, or GKE.
   // For more information, see
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := datastore.New(hc)
+  // Construct the datastore service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := datastore.New(client)
   if err != nil {
     log.Fatal(err)
   }
 
+  // TODO: Change placeholders below to desired parameter values for the `AllocateIds` method:
+
+  // * Identifies the dataset.
+  datasetId := ""
+
+  allocateIdsRequestBody := datastore.AllocateIdsRequest{
+    // TODO: Add desired fields of the `allocateIdsRequestBody` variable.
+  }
+
+<<<<<<< 51f8f4f3d39d21fcc22dbbe6f829c792246e560f
   // Identifies the dataset.
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
-
-  resource := &datastore.AllocateIdsRequest{
-    // TODO: Add the desired fields.
-  }
-
-  resp, err := s.Datasets.AllocateIds(datasetId, resource).Context(ctx).Do()
+  // TODO: Update placeholder value.
+  datasetId := "{MY-DATASET-ID}"
+=======
+  res, err := service.Datasets.AllocateIds(datasetId, &allocateIdsRequestBody).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
+>>>>>>> Update discovery sample gen across languages.
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -69,6 +86,8 @@ package main
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -84,30 +103,45 @@ func main() {
   // and by built-in service accounts when running on GAE, GCE, or GKE.
   // For more information, see
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := datastore.New(hc)
+  // Construct the datastore service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := datastore.New(client)
   if err != nil {
     log.Fatal(err)
   }
 
+<<<<<<< 51f8f4f3d39d21fcc22dbbe6f829c792246e560f
   // Identifies the dataset.
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  // TODO: Update placeholder value.
+  datasetId := "{MY-DATASET-ID}"
+=======
+  // TODO: Change placeholders below to desired parameter values for the `BeginTransaction` method:
 
-  resource := &datastore.BeginTransactionRequest{
-    // TODO: Add the desired fields.
+  // * Identifies the dataset.
+  datasetId := ""
+>>>>>>> Update discovery sample gen across languages.
+
+  beginTransactionRequestBody := datastore.BeginTransactionRequest{
+    // TODO: Add desired fields of the `beginTransactionRequestBody` variable.
   }
 
-  resp, err := s.Datasets.BeginTransaction(datasetId, resource).Context(ctx).Do()
+  res, err := service.Datasets.BeginTransaction(datasetId, &beginTransactionRequestBody).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -124,6 +158,8 @@ package main
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -139,30 +175,45 @@ func main() {
   // and by built-in service accounts when running on GAE, GCE, or GKE.
   // For more information, see
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := datastore.New(hc)
+  // Construct the datastore service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := datastore.New(client)
   if err != nil {
     log.Fatal(err)
   }
 
+<<<<<<< 51f8f4f3d39d21fcc22dbbe6f829c792246e560f
   // Identifies the dataset.
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  // TODO: Update placeholder value.
+  datasetId := "{MY-DATASET-ID}"
+=======
+  // TODO: Change placeholders below to desired parameter values for the `Commit` method:
 
-  resource := &datastore.CommitRequest{
-    // TODO: Add the desired fields.
+  // * Identifies the dataset.
+  datasetId := ""
+
+  commitRequestBody := datastore.CommitRequest{
+    // TODO: Add desired fields of the `commitRequestBody` variable.
   }
 
-  resp, err := s.Datasets.Commit(datasetId, resource).Context(ctx).Do()
+  res, err := service.Datasets.Commit(datasetId, &commitRequestBody).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
+>>>>>>> Update discovery sample gen across languages.
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -179,6 +230,8 @@ package main
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -194,30 +247,45 @@ func main() {
   // and by built-in service accounts when running on GAE, GCE, or GKE.
   // For more information, see
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := datastore.New(hc)
+  // Construct the datastore service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := datastore.New(client)
   if err != nil {
     log.Fatal(err)
   }
 
+  // TODO: Change placeholders below to desired parameter values for the `Lookup` method:
+
+  // * Identifies the dataset.
+  datasetId := ""
+
+  lookupRequestBody := datastore.LookupRequest{
+    // TODO: Add desired fields of the `lookupRequestBody` variable.
+  }
+
+<<<<<<< 51f8f4f3d39d21fcc22dbbe6f829c792246e560f
   // Identifies the dataset.
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
-
-  resource := &datastore.LookupRequest{
-    // TODO: Add the desired fields.
-  }
-
-  resp, err := s.Datasets.Lookup(datasetId, resource).Context(ctx).Do()
+  // TODO: Update placeholder value.
+  datasetId := "{MY-DATASET-ID}"
+=======
+  res, err := service.Datasets.Lookup(datasetId, &lookupRequestBody).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
+>>>>>>> Update discovery sample gen across languages.
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -234,6 +302,8 @@ package main
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -249,30 +319,45 @@ func main() {
   // and by built-in service accounts when running on GAE, GCE, or GKE.
   // For more information, see
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := datastore.New(hc)
+  // Construct the datastore service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := datastore.New(client)
   if err != nil {
     log.Fatal(err)
   }
 
+<<<<<<< 51f8f4f3d39d21fcc22dbbe6f829c792246e560f
   // Identifies the dataset.
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  // TODO: Update placeholder value.
+  datasetId := "{MY-DATASET-ID}"
+=======
+  // TODO: Change placeholders below to desired parameter values for the `Rollback` method:
 
-  resource := &datastore.RollbackRequest{
-    // TODO: Add the desired fields.
+  // * Identifies the dataset.
+  datasetId := ""
+>>>>>>> Update discovery sample gen across languages.
+
+  rollbackRequestBody := datastore.RollbackRequest{
+    // TODO: Add desired fields of the `rollbackRequestBody` variable.
   }
 
-  resp, err := s.Datasets.Rollback(datasetId, resource).Context(ctx).Do()
+  res, err := service.Datasets.Rollback(datasetId, &rollbackRequestBody).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }
 package main
 
@@ -289,6 +374,8 @@ package main
 //    project directory.
 
 import (
+  "encoding/json"
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -304,28 +391,43 @@ func main() {
   // and by built-in service accounts when running on GAE, GCE, or GKE.
   // For more information, see
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := datastore.New(hc)
+  // Construct the datastore service object for interacting with the API.
+  // You can browse other available API services and versions at
+  // https://github.com/google/google-api-go-client
+  service, err := datastore.New(client)
   if err != nil {
     log.Fatal(err)
   }
 
+<<<<<<< 51f8f4f3d39d21fcc22dbbe6f829c792246e560f
   // Identifies the dataset.
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  // TODO: Update placeholder value.
+  datasetId := "{MY-DATASET-ID}"
+=======
+  // TODO: Change placeholders below to desired parameter values for the `RunQuery` method:
 
-  resource := &datastore.RunQueryRequest{
-    // TODO: Add the desired fields.
+  // * Identifies the dataset.
+  datasetId := ""
+
+  runQueryRequestBody := datastore.RunQueryRequest{
+    // TODO: Add desired fields of the `runQueryRequestBody` variable.
   }
 
-  resp, err := s.Datasets.RunQuery(datasetId, resource).Context(ctx).Do()
+  res, err := service.Datasets.RunQuery(datasetId, &runQueryRequestBody).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
+>>>>>>> Update discovery sample gen across languages.
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `res` object:
+  out, err := json.MarshalIndent(res, "", "  ")
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(out)
 }

@@ -14,6 +14,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -25,36 +26,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := replicapoolupdater.New(hc)
+  replicapoolupdaterService, err := replicapoolupdater.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // The Google Developers Console project name.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
+  // TODO: Change placeholder value above.
 
   // The name of the zone in which the update's target resides.
-  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
+  zone := "{MY-ZONE}"
+  // TODO: Change placeholder value above.
 
   // The name of the update.
-  rollingUpdate := "{MY-ROLLING-UPDATE}" // TODO: Update placeholder value(s).
+  rollingUpdate := "{MY-ROLLING-UPDATE}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.RollingUpdates.Cancel(project, zone, rollingUpdate).Context(ctx).Do()
+  resp, err := replicapoolupdaterService.RollingUpdates.Cancel(project, zone, rollingUpdate).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -71,6 +74,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -82,36 +86,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := replicapoolupdater.New(hc)
+  replicapoolupdaterService, err := replicapoolupdater.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // The Google Developers Console project name.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
+  // TODO: Change placeholder value above.
 
   // The name of the zone in which the update's target resides.
-  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
+  zone := "{MY-ZONE}"
+  // TODO: Change placeholder value above.
 
   // The name of the update.
-  rollingUpdate := "{MY-ROLLING-UPDATE}" // TODO: Update placeholder value(s).
+  rollingUpdate := "{MY-ROLLING-UPDATE}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.RollingUpdates.Get(project, zone, rollingUpdate).Context(ctx).Do()
+  resp, err := replicapoolupdaterService.RollingUpdates.Get(project, zone, rollingUpdate).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -128,6 +134,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -139,37 +146,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := replicapoolupdater.New(hc)
+  replicapoolupdaterService, err := replicapoolupdater.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // The Google Developers Console project name.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
+  // TODO: Change placeholder value above.
 
   // The name of the zone in which the update's target resides.
-  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
+  zone := "{MY-ZONE}"
+  // TODO: Change placeholder value above.
 
-  resource := &replicapoolupdater.RollingUpdate{
-    // TODO: Add the desired fields.
+  rb := replicapoolupdater.RollingUpdate{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.RollingUpdates.Insert(project, zone, resource).Context(ctx).Do()
+  resp, err := replicapoolupdaterService.RollingUpdates.Insert(project, zone, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -186,6 +194,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -197,33 +206,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := replicapoolupdater.New(hc)
+  replicapoolupdaterService, err := replicapoolupdater.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // The Google Developers Console project name.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
+  // TODO: Change placeholder value above.
 
   // The name of the zone in which the update's target resides.
-  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
+  zone := "{MY-ZONE}"
+  // TODO: Change placeholder value above.
 
-  call := s.RollingUpdates.List(project, zone)
-  if err := call.Pages(ctx, func(page *replicapoolupdater.RollingUpdateList) error {
+  req := replicapoolupdaterService.RollingUpdates.List(project, zone)
+  if err := req.Pages(ctx, func(page *replicapoolupdater.RollingUpdateList) error {
     for _, rollingUpdate := range page.Items {
-      // TODO: Use rollingUpdate
-      log.Printf("%#v\n", rollingUpdate)
+      // TODO: Change code below to process each `rollingUpdate` resource:
+      fmt.Printf("%#v\n", rollingUpdate)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -243,6 +253,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -254,36 +265,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := replicapoolupdater.New(hc)
+  replicapoolupdaterService, err := replicapoolupdater.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // The Google Developers Console project name.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
+  // TODO: Change placeholder value above.
 
   // The name of the zone in which the update's target resides.
-  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
+  zone := "{MY-ZONE}"
+  // TODO: Change placeholder value above.
 
   // The name of the update.
-  rollingUpdate := "{MY-ROLLING-UPDATE}" // TODO: Update placeholder value(s).
+  rollingUpdate := "{MY-ROLLING-UPDATE}"
+  // TODO: Change placeholder value above.
 
-  call := s.RollingUpdates.ListInstanceUpdates(project, zone, rollingUpdate)
-  if err := call.Pages(ctx, func(page *replicapoolupdater.InstanceUpdateList) error {
+  req := replicapoolupdaterService.RollingUpdates.ListInstanceUpdates(project, zone, rollingUpdate)
+  if err := req.Pages(ctx, func(page *replicapoolupdater.InstanceUpdateList) error {
     for _, instanceUpdate := range page.Items {
-      // TODO: Use instanceUpdate
-      log.Printf("%#v\n", instanceUpdate)
+      // TODO: Change code below to process each `instanceUpdate` resource:
+      fmt.Printf("%#v\n", instanceUpdate)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -303,6 +316,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -314,36 +328,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := replicapoolupdater.New(hc)
+  replicapoolupdaterService, err := replicapoolupdater.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // The Google Developers Console project name.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
+  // TODO: Change placeholder value above.
 
   // The name of the zone in which the update's target resides.
-  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
+  zone := "{MY-ZONE}"
+  // TODO: Change placeholder value above.
 
   // The name of the update.
-  rollingUpdate := "{MY-ROLLING-UPDATE}" // TODO: Update placeholder value(s).
+  rollingUpdate := "{MY-ROLLING-UPDATE}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.RollingUpdates.Pause(project, zone, rollingUpdate).Context(ctx).Do()
+  resp, err := replicapoolupdaterService.RollingUpdates.Pause(project, zone, rollingUpdate).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -360,6 +376,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -371,36 +388,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := replicapoolupdater.New(hc)
+  replicapoolupdaterService, err := replicapoolupdater.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // The Google Developers Console project name.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
+  // TODO: Change placeholder value above.
 
   // The name of the zone in which the update's target resides.
-  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
+  zone := "{MY-ZONE}"
+  // TODO: Change placeholder value above.
 
   // The name of the update.
-  rollingUpdate := "{MY-ROLLING-UPDATE}" // TODO: Update placeholder value(s).
+  rollingUpdate := "{MY-ROLLING-UPDATE}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.RollingUpdates.Resume(project, zone, rollingUpdate).Context(ctx).Do()
+  resp, err := replicapoolupdaterService.RollingUpdates.Resume(project, zone, rollingUpdate).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -417,6 +436,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -428,36 +448,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := replicapoolupdater.New(hc)
+  replicapoolupdaterService, err := replicapoolupdater.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // The Google Developers Console project name.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
+  // TODO: Change placeholder value above.
 
   // The name of the zone in which the update's target resides.
-  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
+  zone := "{MY-ZONE}"
+  // TODO: Change placeholder value above.
 
   // The name of the update.
-  rollingUpdate := "{MY-ROLLING-UPDATE}" // TODO: Update placeholder value(s).
+  rollingUpdate := "{MY-ROLLING-UPDATE}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.RollingUpdates.Rollback(project, zone, rollingUpdate).Context(ctx).Do()
+  resp, err := replicapoolupdaterService.RollingUpdates.Rollback(project, zone, rollingUpdate).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -474,6 +496,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -485,36 +508,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := replicapoolupdater.New(hc)
+  replicapoolupdaterService, err := replicapoolupdater.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Name of the project scoping this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
+  // TODO: Change placeholder value above.
 
   // Name of the zone scoping this request.
-  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
+  zone := "{MY-ZONE}"
+  // TODO: Change placeholder value above.
 
   // Name of the operation resource to return.
-  operation := "{MY-OPERATION}" // TODO: Update placeholder value(s).
+  operation := "{MY-OPERATION}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.ZoneOperations.Get(project, zone, operation).Context(ctx).Do()
+  resp, err := replicapoolupdaterService.ZoneOperations.Get(project, zone, operation).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -531,6 +556,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -542,33 +568,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := replicapoolupdater.New(hc)
+  replicapoolupdaterService, err := replicapoolupdater.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Name of the project scoping this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
+  // TODO: Change placeholder value above.
 
   // Name of the zone scoping this request.
-  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
+  zone := "{MY-ZONE}"
+  // TODO: Change placeholder value above.
 
-  call := s.ZoneOperations.List(project, zone)
-  if err := call.Pages(ctx, func(page *replicapoolupdater.OperationList) error {
+  req := replicapoolupdaterService.ZoneOperations.List(project, zone)
+  if err := req.Pages(ctx, func(page *replicapoolupdater.OperationList) error {
     for _, operation := range page.Items {
-      // TODO: Use operation
-      log.Printf("%#v\n", operation)
+      // TODO: Change code below to process each `operation` resource:
+      fmt.Printf("%#v\n", operation)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }

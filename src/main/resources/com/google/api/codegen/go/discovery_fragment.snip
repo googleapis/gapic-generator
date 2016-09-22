@@ -12,7 +12,9 @@
   @let api = context.getApi, \
        apiName = api.getName, \
        apiVersion = api.getVersion, \
-       serviceTitle = context.getService.getTitle
+       serviceTitle = context.getService.getTitle, \
+       apiaryConfig = context.getApiaryConfig, \
+       authType = apiaryConfig.getAuthType
     package main
 
     // BEFORE RUNNING:
@@ -20,38 +22,61 @@
     // 1. If not already done, enable the {@serviceTitle}
     //    and check the quota for your project at
     //    https://console.developers.google.com/apis/api/{@apiName}
-    // 2. This sample uses Application Default Credentials for authentication.
-    //    If not already done, install the gcloud CLI from
-    //    https://cloud.google.com/sdk/ and run
-    //    `gcloud beta auth application-default login`
-    // 3. Install and update the Go dependencies by running `go get -u` in the
-    //    project directory.
+    @if authType == "APPLICATION_DEFAULT_CREDENTIALS"
+      // 2. This sample uses Application Default Credentials for authentication.
+      //    If not already done, install the gcloud CLI from
+      //    https://cloud.google.com/sdk/ and run
+      //    `gcloud beta auth application-default login`
+      // 3. Install and update the Go dependencies by running `go get -u` in the
+      //    project directory.
+    @else
+      // 2. Install and update the Go dependencies by running `go get -u` in the
+      //    project directory.
+    @end
 
     import (
+      @if authType != "APPLICATION_DEFAULT_CREDENTIALS"
+        "errors"
+      @end
+      "fmt"
       "log"
+      @if authType != "APPLICATION_DEFAULT_CREDENTIALS"
+        "net/http"
+      @end
 
       "golang.org/x/net/context"
-      "golang.org/x/oauth2/google"
+      @if authType == "APPLICATION_DEFAULT_CREDENTIALS"
+        "golang.org/x/oauth2/google"
+      @end
 
       "google.golang.org/api/{@apiName}/{@apiVersion}"
     )
 
     func main() {
       ctx := context.Background()
+      # TODO(pongad): Every API except autoscaler has the string as API.CloudPlatformScope, find out why
 
-      // Authentication is provided by the `gcloud` tool when running locally
-      // and by built-in service accounts when running on GAE, GCE, or GKE.
-      // For more information, see
-      // https://developers.google.com/identity/protocols/application-default-credentials
-      {@clientName()}, err := google.DefaultClient(ctx{@scopeArg(method)})
-      if err != nil {
-        log.Fatal(err)
-      }
+      @switch authType
+      @case "APPLICATION_DEFAULT_CREDENTIALS"
+        // Use Application Default Credentials for authentication when running locally.
+        // For more information, see:
+        // https://developers.google.com/identity/protocols/application-default-credentials
+        {@clientName()}, err := google.DefaultClient(ctx{@scopeArg(method)})
+        if err != nil {
+          log.Fatal(err)
+        }
+      @default
+        {@clientName()}, err := getClient(ctx)
+        if err != nil {
+          log.Fatal(err)
+        }
+      @end
 
       {@serviceName()}, err := {@apiName}.New({@clientName()})
       if err != nil {
         log.Fatal(err)
       }
+
       {@initialize(method)}
       @if context.isPageStreaming(method)
         {@iterableCall(method)}
@@ -59,6 +84,27 @@
         {@compactCall(method)}
       @end
     }
+    @if authType != "APPLICATION_DEFAULT_CREDENTIALS"
+
+      func getClient(ctx Context) (*http.Client, error) {
+        // {@TODO()} Change placeholder below to get authentication credentials.
+        @let authInstructionsUrl = apiaryConfig.getAuthInstructionsUrl
+          @if authInstructionsUrl
+            // See: {@authInstructionsUrl}
+          @end
+        @end
+        @if context.hasAuthScopes(method)
+          @let methodName = context.getMethodName(method)
+            //
+            // To use the `{@methodName}` method, authorize using one of the following scopes:
+            @join scope : context.getAuthScopes(method)
+              //   {@scope}
+            @end
+          @end
+        @end
+        return nil, errors.New("Not implemented")
+      }
+    @end
   @end
 @end
 
@@ -72,17 +118,17 @@
 
 @private compactCall(method)
   @if context.isResponseEmpty(method)
-    if err := {@request(method)}.Context(ctx).Do(); err != nil {
+    if err := {@methodCall(method)}.Context(ctx).Do(); err != nil {
       log.Fatal(err)
     }
   @else
-    {@responseName()}, err := {@request(method)}.Context(ctx).Do()
+    {@responseName()}, err := {@methodCall(method)}.Context(ctx).Do()
     if err != nil {
       log.Fatal(err)
     }
 
-    // {@TODO()} Use {@responseName()}
-    log.Printf("%#v\n", {@responseName()})
+    // {@TODO()} Change code below to process the `{@responseName()}` object:
+    fmt.Printf("%#v\n", {@responseName()})
   @end
 @end
 
@@ -91,33 +137,33 @@
        responseTypeRef = context.getApiaryConfig.getType(responseType), \
        resourceField = context.getFirstRepeatedField(responseTypeRef), \
        resources = context.lowerCamelToUpperCamel(resourceField.getName)
-    {@requestName()} := {@request(method)}
+    {@requestName()} := {@methodCall(method)}
     if err := {@requestName()}.Pages(ctx, func(page *{@context.getApi.getName}.{@responseType}) error {
       @if context.isMapField(responseTypeRef, resourceField.getName)
         @let keyName = context.keyTypeName(resourceField), \
              valueName = context.valueTypeName(resourceField)
           for {@keyName}, {@valueName} := range page.{@resources} {
-            // {@TODO()} Use {@keyName}, {@valueName}
-            log.Printf("%v: %#v\n", {@keyName}, {@valueName})
+            // {@TODO()} Change code below to process each ({@keyName}: {@valueName}) element:
+            fmt.Printf("%v: %#v\n", {@keyName}, {@valueName})
           }
         @end
       @else
         @let resourceName = context.elementTypeName(resourceField)
           for _, {@resourceName} := range page.{@resources} {
-            // {@TODO()} Use {@resourceName}
-            log.Printf("%#v\n", {@resourceName})
+            // {@TODO()} Change code below to process each `{@resourceName}` resource:
+            fmt.Printf("%#v\n", {@resourceName})
           }
         @end
       @end
-      return nil // NOTE: Returning a non-nil error stops pagination.
+      return nil
     }); err != nil {
       log.Fatal(err)
     }
   @end
 @end
 
-@private request(method)
-  @let methodName = context.lowerCamelToUpperCamel(context.getMethodName(method))
+@private methodCall(method)
+  @let methodName = context.getMethodName(method)
     {@serviceName()}.{@resourcePath(method)}.{@methodName}({@arguments(method)})
   @end
 @end
@@ -129,18 +175,22 @@
 @end
 
 @private initialize(method)
-  @let methodName = context.lowerCamelToUpperCamel(context.getMethodName(method)), \
+  @let methodName = context.getMethodName(method), \
        signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
        params = context.getFlatMethodParams(method)
     @if params
-
       @join param : params
         @let paramField = context.getField(signatureType, param), \
              paramValue = context.typeDefaultValue(signatureType, paramField), \
              paramSample = context.getDefaultSample(signatureType, paramField), \
              paramDescription = context.getDescription(signatureType.getName, param)
           {@description(paramDescription)}
-          {@unclashVar(param)} := {@paramValue} // {@TODO()} Update placeholder value(s).{@paramSample}
+          @if paramSample
+            {@unclashVar(param)} := {@paramValue}  // {@paramSample}
+          @else
+            {@unclashVar(param)} := {@paramValue}
+          @end
+          // {@TODO()} Change placeholder value above.
 
         @end
       @end
@@ -148,11 +198,11 @@
   @end
   @if context.hasRequestField(method)
 
-    {@requestBodyName(method)} := &{@context.getApi.getName}.{@context.getRequestField(method).getTypeUrl}{
+    {@requestBodyName()} := {@context.getApi.getName}.{@context.getRequestField(method).getTypeUrl}{
       @if context.isPatch(method)
-        // {@TODO()} Add the desired fields to be changed.
+        // {@TODO()} Add desired fields of the request body to be changed.
       @else
-        // {@TODO()} Add the desired fields.
+        // {@TODO()} Add desired fields of the request body.
       @end
     }
 
@@ -163,9 +213,9 @@
   @let params = context.getFlatMethodParams(method)
     @if context.hasRequestField(method)
       @if params
-        {@argumentList(params)}, {@requestBodyName(method)}
+        {@argumentList(params)}, &{@requestBodyName()}
       @else
-        {@requestBodyName(method)}
+        &{@requestBodyName()}
       @end
     @else
       {@argumentList(params)}
@@ -174,27 +224,25 @@
 @end
 
 @private clientName()
-  hc
+  c
 @end
 
 @private serviceName()
-  s
+  @let apiName = context.getApi.getName
+    {@apiName}Service
+  @end
 @end
 
 @private requestName()
-  call
+  req
 @end
 
-@private requestBodyName(method)
-  resource
+@private requestBodyName()
+  rb
 @end
 
 @private responseName()
   resp
-@end
-
-@private printName()
-  out
 @end
 
 @private argumentList(params)

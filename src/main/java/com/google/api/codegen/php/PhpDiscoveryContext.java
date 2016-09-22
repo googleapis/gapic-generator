@@ -117,21 +117,10 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
   }
 
   /**
-   * Returns a list of parameters that includes "postBody" if the method has a request.
-   */
-  public List<String> getFlatMethodParamsWithRequest(Method method) {
-    List<String> params = getFlatMethodParams(method);
-    if (hasRequestField(method)) {
-      params.add("postBody");
-    }
-    return params;
-  }
-
-  /**
    * Returns a simple name represents the API in camel case.
    */
   public String getSimpleApiName() {
-    return getRename(lowerCamelToUpperCamel(this.getApi().getName()), RENAMED_PACKAGE_MAP);
+    return getRename(lowerCamelToUpperCamel(getApi().getName()), RENAMED_PACKAGE_MAP);
   }
 
   /**
@@ -155,6 +144,11 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
    */
   public String getServiceClassName() {
     return GOOGLE_SERVICE_PREFIX + getSimpleApiName();
+  }
+
+  @Override
+  protected String mapTypeName(String keyName, String valueName) {
+    return String.format("%s_to_%s_array", keyName, valueName);
   }
 
   /**
