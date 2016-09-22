@@ -1,0 +1,130 @@
+@snippet generate(sampleClass)
+  //
+  // BEFORE RUNNING:
+  // ---------------
+  // 1. If not already done, enable the {@sampleClass.apiTitle}
+  //    and check the quota for your project at
+  //    https://console.developers.google.com/apis/api/{@sampleClass.apiName}
+  // 2. Install the Node.js client library by running
+  //    `npm install googleapis --save`
+  // 3. This sample uses Application Default Credentials for authentication.
+  //    If not already done, install the gcloud CLI from
+  //    https://cloud.google.com/sdk and run
+  //    `gcloud beta auth application-default login`
+
+  var google = require('googleapis');
+  var GoogleAuth = require('google-auth-library');
+
+  var {@sampleClass.body.serviceVarName} = google.{@sampleClass.body.serviceTypeName}('{@sampleClass.apiVersion}');
+
+  {@mainFunc(sampleClass.body)}
+
+  {@authFunc()}
+@end
+
+@private mainFunc(sampleBody)
+  authorize(function(authClient) {
+    @if sampleBody.hasRequestBody
+      var {@sampleBody.requestVarName} = {
+        @join field : sampleBody.fields if sampleBody.fields
+          @if field.description
+            @join line : util.getDocLines(field.description, 100)
+              // {@line}
+            @end
+
+
+          @end
+          {@field.name}: {@field.defaultValue}, // TODO: Update placeholder value(s).
+
+        @end
+        @if sampleBody.hasRequestBody
+          resource: {
+            // TODO: Add desired properties of the request body.
+            @if sampleBody.methodVerb == "PATCH"
+              // Only added properties will be changed.
+            @end
+          },
+
+        @end
+        @if sampleBody.hasMediaUpload
+            media: {
+          // TODO: Change placeholders below to add desired media content for upload.
+          // For more information, see:
+          // https://github.com/google/google-api-nodejs-client#media-uploads
+          mimeType: '',  // See https://www.w3.org/Protocols/rfc1341/4_Content-Type.html
+          body: {}
+        },
+
+        @end
+        auth: authClient
+      }
+
+    @end
+    @if sampleBody.isPageStreaming
+      var handlePage = function(err, {@sampleBody.responseVarName}) {
+        if (err) {
+          console.log(err);
+          return;
+        }
+
+        var {@sampleBody.pageVarName} = {@sampleBody.responseVarName}['{@sampleBody.resourceFieldName}'];
+        if (!page) {
+          return;
+        }
+        @if sampleBody.isResourceMap
+          Object.keys({@sampleBody.pageVarName}).forEach(function ({@keyName}) {
+          });
+        @else
+          for (var i = 0; i < {@sampleBody.pageVarName}.length; i++) {
+            console.log({@sampleBody.pageVarName}[i]);
+          }
+        @end
+        if ({@sampleBody.responseVarName}.nextPageToken) {
+          request.pageToken = {@sampleBody.responseVarName}.nextPageToken;
+          {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}(request, handlePage);
+        }
+      };
+
+      {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}(request, handlePage);
+    @else
+      @if sampleBody.hasResponse
+        {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}(request, function(err, {@sampleBody.responseVarName}) {
+          if (err) {
+            console.log(err);
+            return;
+          }
+          console.log({@sampleBody.responseVarName});
+        });
+      @else
+        {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}(request, function(err) {
+          if (err) {
+            console.log(err);
+            return;
+          }
+        });
+      @end
+    @end
+  });
+@end
+
+@private authFunc()
+  function authorize(callback) {
+    new GoogleAuth().getApplicationDefault(function(err, authClient)) {
+      if (err) {
+        console.log('authentication failed: ', err);
+        return;
+      }
+      if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+        var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+        authClient = authClient.createScoped(scopes);
+      }
+      callback(authClient);
+    });
+  }
+@end
+
+@private callChain(methodNameComponents)
+  @join resource : methodNameComponents on "."
+    {@resource}
+  @end
+@end

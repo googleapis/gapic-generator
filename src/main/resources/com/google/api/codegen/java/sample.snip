@@ -48,7 +48,7 @@
       {@field.typeName} {@field.name} = {@field.defaultValue}; {@placeholderTodo(field.isPlaceholderSingular)}
 
     @end
-    @if sampleBody.hasInputRequest
+    @if sampleBody.hasRequestBody
       // TODO: Assign values to desired fields of `{@sampleBody.requestBodyVarName}`.
       @if sampleBody.methodVerb == "PATCH"
         // Only assigned fields will be changed.
@@ -84,7 +84,7 @@
         @end
       } while ({@sampleBody.responseVarName}.getNextPageToken() != null);
     @else
-      @if sampleBody.hasOutput
+      @if sampleBody.hasResponse
         {@sampleBody.responseTypeName} {@sampleBody.responseVarName} = {@sampleBody.requestVarName}.execute();
         System.out.println({@sampleBody.responseVarName});
       @else

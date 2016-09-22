@@ -33,13 +33,13 @@ public abstract class SampleBodyView {
 
   public abstract String requestTypeName();
 
-  public abstract boolean hasInputRequest();
+  public abstract boolean hasRequestBody();
 
   public abstract String requestBodyVarName();
 
   public abstract String requestBodyTypeName();
 
-  public abstract boolean hasOutput();
+  public abstract boolean hasResponse();
 
   public abstract String responseVarName();
 
@@ -51,11 +51,15 @@ public abstract class SampleBodyView {
 
   public abstract boolean isPageStreaming();
 
+  public abstract String resourceFieldName();
+
   public abstract String resourceGetterName();
 
   public abstract String resourceVarName();
 
   public abstract String resourceTypeName();
+
+  public abstract String pageVarName();
 
   public abstract boolean isResourceMap();
 
@@ -88,17 +92,21 @@ public abstract class SampleBodyView {
 
     public abstract Builder requestTypeName(String val);
 
-    public abstract Builder hasInputRequest(boolean val);
+    public abstract Builder hasRequestBody(boolean val);
 
     public abstract Builder requestBodyVarName(String val);
 
     public abstract Builder requestBodyTypeName(String val);
 
-    public abstract Builder hasOutput(boolean val);
+    public abstract Builder hasResponse(boolean val);
+
+    public abstract Builder resourceFieldName(String val);
 
     public abstract Builder responseVarName(String val);
 
     public abstract Builder responseTypeName(String val);
+
+    public abstract Builder pageVarName(String val);
 
     public abstract Builder fields(List<SampleFieldView> val);
 
