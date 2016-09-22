@@ -1,5 +1,5 @@
 @snippet generate(sampleClass)
-  /**
+  /*
    * BEFORE RUNNING:
    * ---------------
    * 1. If not already done, enable the {@sampleClass.apiTitle}
@@ -9,6 +9,10 @@
    *    instructions at https://github.com/google/google-api-java-client.
    *    On other build systems, you can add the jar files to your project from
    *    https://developers.google.com/resources/api-libraries/download/{@sampleClass.apiName}/{@sampleClass.apiVersion}/java
+   * 3. This sample uses Application Default Credentials for authentication.
+   *    If not already done, install the gcloud CLI from
+   *    https://cloud.google.com/sdk and run
+   *    `gcloud beta auth application-default login`
    */
   @join import : sampleClass.imports
     import {@import};
@@ -26,28 +30,32 @@
 @private runFunc(sampleBody)
   public void run() throws IOException, GeneralSecurityException {
     @if sampleBody.hasInputRequest
-      // TODO: Assign desired fields.
+      // TODO: Assign values to the desired fields of `{@sampleBody.requestBodyVarName}`.
       {@sampleBody.requestBodyTypeName} {@sampleBody.requestBodyVarName} = new {@sampleBody.requestBodyTypeName}();
 
     @end
     @join field : sampleBody.fields if sampleBody.fields
-      @join line : util.getDocLines(field.description, 100)
-        // {@line}
-      @end
+      @if field.description
+        @join line : util.getDocLines(field.description, 100)
+          // {@line}
+        @end
 
-      {@field.typeName} {@field.name} = {@field.defaultValue}; // TODO: Update field(s).
+
+      @end
+      {@field.typeName} {@field.name} = {@field.defaultValue}; // TODO: Update placeholder value(s).
 
     @end
     {@sampleBody.serviceTypeName} {@sampleBody.serviceVarName} = createService();
     {@sampleBody.requestTypeName} {@sampleBody.requestVarName} = {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}({@paramList(sampleBody.fieldVarNames)});
-    @if {@sampleBody.isPageStreaming}
+
+    @if sampleBody.isPageStreaming
       {@sampleBody.responseTypeName} {@sampleBody.responseVarName};
       do {
         {@sampleBody.responseVarName} = {@sampleBody.requestVarName}.execute();
         if ({@sampleBody.responseVarName}.{@sampleBody.resourceGetterName}() == null) {
           continue;
         }
-        @if {@sampleBody.isResourceMap}
+        @if sampleBody.isResourceMap
           for ({@sampleBody.resourceTypeName} item : response.{@sampleBody.resourceGetterName}().entrySet()) {
             System.out.println(item.getKey() + ": " + item.getValue());
           }
@@ -58,7 +66,7 @@
         @end
       } while ({@sampleBody.responseVarName}.getNextPageToken() != null);
     @else
-      @if {@sampleBody.hasOutput}
+      @if sampleBody.hasOutput
         {@sampleBody.responseTypeName} {@sampleBody.responseVarName} = {@sampleBody.requestVarName}.execute();
         System.out.println({@sampleBody.responseVarName});
       @else
@@ -70,9 +78,6 @@
 
 @private createServiceFunc(sampleBody)
   public {@sampleBody.serviceTypeName} createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
     if (credential.createScopedRequired()) {
