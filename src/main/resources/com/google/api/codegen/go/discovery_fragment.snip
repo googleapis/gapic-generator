@@ -175,7 +175,10 @@
 @end
 
 @private initialize(method)
-  @let methodName = context.getMethodName(method), \
+  @let api = context.getApi, \
+       apiName = api.getName, \
+       apiVersion = api.getVersion, \
+       methodName = context.getMethodName(method), \
        signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
        params = context.getFlatMethodParams(method)
     @if params
@@ -195,17 +198,23 @@
         @end
       @end
     @end
-  @end
-  @if context.hasRequestField(method)
+    @if context.hasRequestField(method)
 
-    {@requestBodyName()} := {@context.getApi.getName}.{@context.getRequestField(method).getTypeUrl}{
-      @if context.isPatch(method)
-        // {@TODO()} Add desired fields of the request body to be changed.
-      @else
-        // {@TODO()} Add desired fields of the request body.
-      @end
-    }
+      {@requestBodyName()} := {@apiName}.{@context.getRequestField(method).getTypeUrl}{
+        @if context.isPatch(method)
+          // {@TODO()} Add desired fields of the request body to be changed.
+        @else
+          // {@TODO()} Add desired fields of the request body.
+        @end
+      }
 
+    @end
+    @if context.hasMediaUpload(method)
+
+      // {@TODO()} Add desired media content for upload. For more information, see:
+      // https://godoc.org/google.golang.org/api/{@apiName}/{@apiVersion}
+
+    @end
   @end
 @end
 

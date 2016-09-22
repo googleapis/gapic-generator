@@ -38,6 +38,7 @@
     @end
 
     {@body}
+    ?>
   @end
 @end
 
@@ -140,6 +141,10 @@
        resourceField = context.getFirstRepeatedField(responseTypeRef), \
        resources = resourceField.getName
     ${@optParamsName()} = array();
+    @if context.hasMediaUpload(method)
+      {@mediaUpload()}
+
+    @end
     do {
       ${@responseName()} = {@methodCall(method)};
 
@@ -166,6 +171,12 @@
 @end
 
 @private compactCall(method)
+  @if context.hasMediaUpload(method)
+    {@mediaUpload()}
+
+
+
+  @end
   @if context.isResponseEmpty(method)
     {@methodCall(method)};
   @else
@@ -174,6 +185,11 @@
     // {@TODO()} Change code below to process the `{@responseName()}` object:
     {@print(responseName())}
   @end
+@end
+
+@private mediaUpload()
+  // {@TODO()} Add desired media content for upload. For more information, see:
+  // https://developers.google.com/api-client-library/php/guide/media_upload
 @end
 
 @private methodCall(method)
