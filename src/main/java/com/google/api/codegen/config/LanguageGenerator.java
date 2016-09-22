@@ -40,12 +40,14 @@ public class LanguageGenerator {
         Arrays.asList(
             new RewriteRule("^google", "com.google.cloud"),
             new RewriteRule("(.v[^.]+)$", ".spi$1"));
+    List<RewriteRule> pythonRewriteRules =
+        Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud.gapic"));
     List<RewriteRule> commonRewriteRules =
         Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud"));
     LANGUAGE_FORMATTERS =
         ImmutableMap.<String, LanguageFormatter>builder()
             .put("java", new SimpleLanguageFormatter(".", javaRewriteRules, false))
-            .put("python", new SimpleLanguageFormatter(".", commonRewriteRules, false))
+            .put("python", new SimpleLanguageFormatter(".", pythonRewriteRules, false))
             .put("go", new GoLanguageFormatter())
             .put("csharp", new SimpleLanguageFormatter(".", null, true))
             .put("ruby", new SimpleLanguageFormatter("::", commonRewriteRules, true))

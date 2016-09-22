@@ -23,17 +23,13 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.base.Strings;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import javax.annotation.Nullable;
 
-/**
- * Common GapicProvider which runs code generation.
- */
+/** Common GapicProvider which runs code generation. */
 public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
   private final Model model;
   private final InputElementView<ElementT> view;
@@ -83,7 +79,9 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
       return docs;
     }
     for (GeneratedResult result : generatedOutput) {
-      docs.put(result.getFilename(), result.getDoc());
+      if (!result.getDoc().isWhitespace()) {
+        docs.put(result.getFilename(), result.getDoc());
+      }
     }
     return docs;
   }

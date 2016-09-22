@@ -119,10 +119,10 @@
     var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
 
     var DEFAULT_TIMEOUT = 30;
-    @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service))
+    @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service))
 
       var PAGE_DESCRIPTORS = {
-        @join method : context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service)) on {@", "}.add(BREAK)
+        @join method : context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service)) on {@", "}.add(BREAK)
           @let pageStreaming = ifaceConfig.getMethodConfig(method).getPageStreaming(), \
                requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
                responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
@@ -155,12 +155,12 @@
         configData,
         clientConfig,
         timeout,
-        @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service))
+        @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service))
           PAGE_DESCRIPTORS,
         @else
           null,
         @end
-        @if context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service))
+        @if context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service))
           bundleDescriptors,
         @else
           null,
@@ -220,10 +220,10 @@
         'gax/' + gax.version,
         'nodejs/' + process.version].join(' ');
 
-      @if context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service))
+      @if context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service))
 
         var bundleDescriptors = {
-          @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service)) on {@", "}.add(BREAK)
+          @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service)) on {@", "}.add(BREAK)
             @let bundling = ifaceConfig.getMethodConfig(method).getBundling()
               {@methodName(method)}: new gax.BundleDescriptor(
                   '{@bundling.getBundledField().getSimpleName()}',
@@ -347,7 +347,7 @@
 
 @private serviceMethodsSection(service)
   // Service calls
-  @join method : context.getNonStreamingMethodsV2(service)
+  @join method : context.getSupportedMethodsV2(service)
 
     {@flattenedMethod(service, method)}
   @end

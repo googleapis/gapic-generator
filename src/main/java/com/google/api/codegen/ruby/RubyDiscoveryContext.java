@@ -46,6 +46,11 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
           .put(Field.Kind.TYPE_DOUBLE, "0.0")
           .build();
 
+  @Override
+  protected String mapTypeName(String keyName, String valueName) {
+    return String.format("%s_to_%s_hash", keyName, valueName);
+  }
+
   /**
    * Generates placeholder assignment (to end of line) for field of type based on field kind and,
    * for explicitly-formatted strings, format type in {@link ApiaryConfig#stringFormat}.

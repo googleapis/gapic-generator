@@ -37,10 +37,6 @@ public class RubyDiscoveryFragmentGeneratorTest extends DiscoveryGeneratorTestBa
     super(name, discoveryDocFileName, gapicConfigFileNames);
   }
 
-  // Skip this test, because the Ruby client library doesn't create client library for it.
-  private static ImmutableSet<String> SKIP_TEST =
-      ImmutableSet.<String>builder().add("dataflow.v1b3.json").build();
-
   /**
    * Declares test parameters, each one an array of values passed to the constructor, with the
    * first element a name, the second a discovery doc, and the third a partial GAPIC config.
@@ -54,9 +50,6 @@ public class RubyDiscoveryFragmentGeneratorTest extends DiscoveryGeneratorTestBa
     ImmutableList.Builder<Object[]> builder = ImmutableList.<Object[]>builder();
     for (File file : dir.listFiles(new DiscoveryFile())) {
       String fileName = file.getName();
-      if (SKIP_TEST.contains(fileName)) {
-        continue;
-      }
       builder.add(
           new Object[] {
             "ruby_" + fileName,

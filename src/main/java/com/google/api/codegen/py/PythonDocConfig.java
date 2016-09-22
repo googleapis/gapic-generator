@@ -29,13 +29,12 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
-/**
- * Represents the Python documentation settings for an Api method.
- */
+/** Represents the Python documentation settings for an Api method. */
 @AutoValue
 abstract class PythonDocConfig extends DocConfig {
   public static PythonDocConfig.Builder newBuilder() {
@@ -48,26 +47,32 @@ abstract class PythonDocConfig extends DocConfig {
 
   public abstract Interface getInterface();
 
-  public abstract PythonImportHandler getImportHandler();
+  abstract PythonImportHandler getImportHandler();
 
   @Override
   public String getMethodName() {
     return LanguageUtil.upperCamelToLowerUnderscore(getMethod().getSimpleName());
   }
 
-  /**
-   * Does this method return an iterable response?
-   */
-  public boolean isIterableResponse() {
+  /** Does this method return an iterable response? */
+  public boolean isPageStreaming() {
     Method method = getMethod();
     MethodConfig methodConfig =
         getApiConfig().getInterfaceConfig(getInterface()).getMethodConfig(method);
     return methodConfig.isPageStreaming();
   }
 
-  /**
-   * Get list of import statements for this method's code sample.
-   */
+  /** Is this method gRPC-response streaming? */
+  public boolean isResponseGrpcStreaming() {
+    return getMethod().getResponseStreaming();
+  }
+
+  /** Is this method gRPC-request streaming? */
+  public boolean isRequestGrpcStreaming() {
+    return getMethod().getRequestStreaming();
+  }
+
+  /** Get list of import statements for this method's code sample. */
   public List<String> getAppImports() {
     List<String> importStrings = new ArrayList<>();
     importStrings.add(apiImport(getApiName()));
@@ -77,11 +82,12 @@ abstract class PythonDocConfig extends DocConfig {
 
   private String apiImport(String apiName) {
     String packageName = getApiConfig().getPackageName();
-    String moduleName = packageName + "." + LanguageUtil.lowerCamelToLowerUnderscore(apiName);
-    return PythonImport.create(ImportType.APP, moduleName, apiName).importString();
+    String moduleName = LanguageUtil.upperCamelToLowerUnderscore(apiName);
+    return PythonImport.create(ImportType.APP, packageName, moduleName).importString();
   }
 
-  private List<String> addProtoImports(List<String> importStrings) {
+  private void addProtoImports(List<String> importStrings) {
+    Set<String> protoImports = new TreeSet<>();
     for (InitCodeLine line : getInitCode().getLines()) {
       TypeRef lineType = null;
       switch (line.getLineType()) {
@@ -95,39 +101,31 @@ abstract class PythonDocConfig extends DocConfig {
           // nothing to do
       }
 
-      if (lineType != null && lineType.isMessage()) {
-        importStrings.addAll(getImportHandler().calculateImports());
-        break;
+      if (lineType != null) {
+        if (lineType.isMessage()) {
+          // TODO: What if a file is not imported in the main GAPIC codegen, but is needed for
+          // samplegen? For example, subfields of request messages.
+          protoImports.add(getImportHandler().fileToImport(lineType.getMessageType().getFile()));
+        } else if (lineType.isEnum()) {
+          protoImports.add(
+              (PythonImport.create(
+                      PythonImport.ImportType.APP, getApiConfig().getPackageName(), "enums"))
+                  .importString());
+        }
       }
     }
-    return importStrings;
+    importStrings.addAll(protoImports);
   }
 
   @AutoValue.Builder
   abstract static class Builder extends DocConfig.Builder<Builder> {
-    abstract PythonDocConfig autoBuild();
-
-    abstract Method getMethod();
-
-    abstract Interface getInterface();
-
-    abstract ApiConfig getApiConfig();
-
-    abstract Builder setImportHandler(PythonImportHandler importHandler);
-
-    public PythonDocConfig build() {
-      setImportHandler(
-          new PythonImportHandler(
-              getApiConfig()
-                  .getInterfaceConfig(getInterface())
-                  .getMethodConfig(getMethod())
-                  .getRequiredFields()));
-      return autoBuild();
-    }
+    abstract PythonDocConfig build();
 
     public abstract Builder setApiConfig(ApiConfig apiConfig);
 
     public abstract Builder setApiName(String serviceName);
+
+    public abstract Builder setImportHandler(PythonImportHandler importHandler);
 
     public abstract Builder setMethod(Method method);
 

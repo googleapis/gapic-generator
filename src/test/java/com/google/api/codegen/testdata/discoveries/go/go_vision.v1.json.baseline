@@ -3,7 +3,7 @@ package main
 
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Cloud Vision API
+// 1. If not already done, enable the Google Cloud Vision API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/vision
 // 2. This sample uses Application Default Credentials for authentication.
@@ -14,6 +14,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -25,29 +26,29 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, vision.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, vision.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := vision.New(hc)
+  visionService, err := vision.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  resource := &vision.BatchAnnotateImagesRequest{
-    // TODO: Add the desired fields.
+
+  rb := vision.BatchAnnotateImagesRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Images.Annotate(resource).Context(ctx).Do()
+  resp, err := visionService.Images.Annotate(&rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }

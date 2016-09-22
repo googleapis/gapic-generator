@@ -11,12 +11,10 @@
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var appengine = google.appengine('v1beta5');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -29,8 +27,58 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // Part of `name`. Name of the application to get. For example: "apps/myapp".
-    appsId: "{MY-APPS-ID}", // TODO: Update placeholder value(s).
+
+    resource: {
+      // TODO: Add desired properties of the request body.
+    },
+
+    auth: authClient
+  };
+
+  appengine.apps.create(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+var appengine = google.appengine('v1beta5');
+
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // Part of `name`. Name of the application to get. Example: `apps/myapp`.
+    appsId: '{MY-APPS-ID}',
+
 
     auth: authClient
   };
@@ -41,7 +89,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -57,12 +105,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var appengine = google.appengine('v1beta5');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -75,11 +121,127 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // Part of `name`. The name of the operation resource.
-    appsId: "{MY-APPS-ID}", // TODO: Update placeholder value(s).
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // Part of `name`. Resource name for the location.
+    appsId: '{MY-APPS-ID}',
 
     // Part of `name`. See documentation of `appsId`.
-    operationsId: "{MY-OPERATIONS-ID}", // TODO: Update placeholder value(s).
+    locationsId: '{MY-LOCATIONS-ID}',
+
+
+    auth: authClient
+  };
+
+  appengine.apps.locations.get(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+var appengine = google.appengine('v1beta5');
+
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // Part of `name`. The resource that owns the locations collection, if applicable.
+    appsId: '{MY-APPS-ID}',
+
+
+    auth: authClient
+  };
+
+  var handlePage = function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var locationsPage = response['locations'];
+    if (!locationsPage) {
+      return;
+    }
+    for (var i = 0; i < locationsPage.length; i++) {
+      // TODO: Change code below to process each resource in `locationsPage`:
+      console.log(JSON.stringify(locationsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      appengine.apps.locations.list(request, handlePage);
+    }
+  };
+
+  appengine.apps.locations.list(request, handlePage);
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+var appengine = google.appengine('v1beta5');
+
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // Part of `name`. The name of the operation resource.
+    appsId: '{MY-APPS-ID}',
+
+    // Part of `name`. See documentation of `appsId`.
+    operationsId: '{MY-OPERATIONS-ID}',
+
 
     auth: authClient
   };
@@ -90,7 +252,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -106,12 +268,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var appengine = google.appengine('v1beta5');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -124,13 +284,17 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
     // Part of `name`. The name of the operation collection.
-    appsId: "{MY-APPS-ID}", // TODO: Update placeholder value(s).
+    appsId: '{MY-APPS-ID}',
+
 
     auth: authClient
   };
 
-  appengine.apps.operations.list(request, function handlePage(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -138,11 +302,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     var operationsPage = response['operations'];
     if (!operationsPage) {
-      console.log('{}');
       return;
     }
     for (var i = 0; i < operationsPage.length; i++) {
-      // TODO: Use operationsPage
+      // TODO: Change code below to process each resource in `operationsPage`:
       console.log(JSON.stringify(operationsPage[i], null, 2));
     }
 
@@ -150,7 +313,9 @@ google.auth.getApplicationDefault(function(err, authClient) {
       request.pageToken = response.nextPageToken;
       appengine.apps.operations.list(request, handlePage);
     }
-  });
+  };
+
+  appengine.apps.operations.list(request, handlePage);
 });
 // BEFORE RUNNING:
 // ---------------
@@ -164,12 +329,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var appengine = google.appengine('v1beta5');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -182,11 +345,15 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
-    appsId: "{MY-APPS-ID}", // TODO: Update placeholder value(s).
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
+    // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default`.
+    appsId: '{MY-APPS-ID}',
 
     // Part of `name`. See documentation of `appsId`.
-    servicesId: "{MY-SERVICES-ID}", // TODO: Update placeholder value(s).
+    servicesId: '{MY-SERVICES-ID}',
+
 
     auth: authClient
   };
@@ -197,7 +364,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -213,12 +380,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var appengine = google.appengine('v1beta5');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -231,11 +396,15 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
-    appsId: "{MY-APPS-ID}", // TODO: Update placeholder value(s).
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default`.
+    appsId: '{MY-APPS-ID}',
 
     // Part of `name`. See documentation of `appsId`.
-    servicesId: "{MY-SERVICES-ID}", // TODO: Update placeholder value(s).
+    servicesId: '{MY-SERVICES-ID}',
+
 
     auth: authClient
   };
@@ -246,7 +415,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -262,12 +431,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var appengine = google.appengine('v1beta5');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -280,13 +447,17 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // Part of `name`. Name of the resource requested. For example: "apps/myapp".
-    appsId: "{MY-APPS-ID}", // TODO: Update placeholder value(s).
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // Part of `name`. Name of the resource requested. Example: `apps/myapp`.
+    appsId: '{MY-APPS-ID}',
+
 
     auth: authClient
   };
 
-  appengine.apps.services.list(request, function handlePage(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -294,11 +465,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     var servicesPage = response['services'];
     if (!servicesPage) {
-      console.log('{}');
       return;
     }
     for (var i = 0; i < servicesPage.length; i++) {
-      // TODO: Use servicesPage
+      // TODO: Change code below to process each resource in `servicesPage`:
       console.log(JSON.stringify(servicesPage[i], null, 2));
     }
 
@@ -306,7 +476,9 @@ google.auth.getApplicationDefault(function(err, authClient) {
       request.pageToken = response.nextPageToken;
       appengine.apps.services.list(request, handlePage);
     }
-  });
+  };
+
+  appengine.apps.services.list(request, handlePage);
 });
 // BEFORE RUNNING:
 // ---------------
@@ -320,12 +492,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var appengine = google.appengine('v1beta5');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -338,14 +508,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
-    appsId: "{MY-APPS-ID}", // TODO: Update placeholder value(s).
+
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
+
+    // Part of `name`. Name of the resource to update. Example: `apps/myapp/services/default`.
+    appsId: '{MY-APPS-ID}',
 
     // Part of `name`. See documentation of `appsId`.
-    servicesId: "{MY-SERVICES-ID}", // TODO: Update placeholder value(s).
+    servicesId: '{MY-SERVICES-ID}',
+
 
     resource: {
-      // TODO: Add the desired properties to be changed.
+      // TODO: Add desired properties of the request body to be changed.
     },
 
     auth: authClient
@@ -357,7 +531,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -373,12 +547,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var appengine = google.appengine('v1beta5');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -391,14 +563,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `create` method:
+
     // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
-    appsId: "{MY-APPS-ID}", // TODO: Update placeholder value(s).
+    appsId: '{MY-APPS-ID}',
 
     // Part of `name`. See documentation of `appsId`.
-    servicesId: "{MY-SERVICES-ID}", // TODO: Update placeholder value(s).
+    servicesId: '{MY-SERVICES-ID}',
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -410,7 +586,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -426,12 +602,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var appengine = google.appengine('v1beta5');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -444,15 +618,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // Part of `name`. Name of the resource requested. For example:
-    // "apps/myapp/services/default/versions/v1".
-    appsId: "{MY-APPS-ID}", // TODO: Update placeholder value(s).
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
+    // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default/versions/v1`.
+    appsId: '{MY-APPS-ID}',
 
     // Part of `name`. See documentation of `appsId`.
-    servicesId: "{MY-SERVICES-ID}", // TODO: Update placeholder value(s).
+    servicesId: '{MY-SERVICES-ID}',
 
     // Part of `name`. See documentation of `appsId`.
-    versionsId: "{MY-VERSIONS-ID}", // TODO: Update placeholder value(s).
+    versionsId: '{MY-VERSIONS-ID}',
+
 
     auth: authClient
   };
@@ -463,7 +640,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -479,12 +656,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var appengine = google.appengine('v1beta5');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -497,15 +672,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // Part of `name`. Name of the resource requested. For example:
-    // "apps/myapp/services/default/versions/v1".
-    appsId: "{MY-APPS-ID}", // TODO: Update placeholder value(s).
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default/versions/v1`.
+    appsId: '{MY-APPS-ID}',
 
     // Part of `name`. See documentation of `appsId`.
-    servicesId: "{MY-SERVICES-ID}", // TODO: Update placeholder value(s).
+    servicesId: '{MY-SERVICES-ID}',
 
     // Part of `name`. See documentation of `appsId`.
-    versionsId: "{MY-VERSIONS-ID}", // TODO: Update placeholder value(s).
+    versionsId: '{MY-VERSIONS-ID}',
+
 
     auth: authClient
   };
@@ -516,7 +694,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -532,12 +710,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var appengine = google.appengine('v1beta5');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -550,20 +726,201 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // Part of `name`. Name of the resource requested. For example:
-    // "apps/myapp/services/default/versions/v1".
-    appsId: "{MY-APPS-ID}", // TODO: Update placeholder value(s).
+
+    // TODO: Change placeholders below to desired parameter values for the `debug` method:
+
+    // Part of `name`. Name of the resource requested. Example:
+    // `apps/myapp/services/default/versions/v1/instances/instance-1`.
+    appsId: '{MY-APPS-ID}',
 
     // Part of `name`. See documentation of `appsId`.
-    servicesId: "{MY-SERVICES-ID}", // TODO: Update placeholder value(s).
+    servicesId: '{MY-SERVICES-ID}',
 
     // Part of `name`. See documentation of `appsId`.
-    versionsId: "{MY-VERSIONS-ID}", // TODO: Update placeholder value(s).
+    versionsId: '{MY-VERSIONS-ID}',
+
+    // Part of `name`. See documentation of `appsId`.
+    instancesId: '{MY-INSTANCES-ID}',
+
+
+    resource: {
+      // TODO: Add desired properties of the request body.
+    },
 
     auth: authClient
   };
 
-  appengine.apps.services.versions.instances.list(request, function handlePage(err, response) {
+  appengine.apps.services.versions.instances.debug(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+var appengine = google.appengine('v1beta5');
+
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
+    // Part of `name`. Name of the resource requested. For example:
+    // "apps/myapp/services/default/versions/v1/instances/instance-1".
+    appsId: '{MY-APPS-ID}',
+
+    // Part of `name`. See documentation of `appsId`.
+    servicesId: '{MY-SERVICES-ID}',
+
+    // Part of `name`. See documentation of `appsId`.
+    versionsId: '{MY-VERSIONS-ID}',
+
+    // Part of `name`. See documentation of `appsId`.
+    instancesId: '{MY-INSTANCES-ID}',
+
+
+    auth: authClient
+  };
+
+  appengine.apps.services.versions.instances.delete(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+var appengine = google.appengine('v1beta5');
+
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // Part of `name`. Name of the resource requested. Example:
+    // `apps/myapp/services/default/versions/v1/instances/instance-1`.
+    appsId: '{MY-APPS-ID}',
+
+    // Part of `name`. See documentation of `appsId`.
+    servicesId: '{MY-SERVICES-ID}',
+
+    // Part of `name`. See documentation of `appsId`.
+    versionsId: '{MY-VERSIONS-ID}',
+
+    // Part of `name`. See documentation of `appsId`.
+    instancesId: '{MY-INSTANCES-ID}',
+
+
+    auth: authClient
+  };
+
+  appengine.apps.services.versions.instances.get(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+var appengine = google.appengine('v1beta5');
+
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default/versions/v1`.
+    appsId: '{MY-APPS-ID}',
+
+    // Part of `name`. See documentation of `appsId`.
+    servicesId: '{MY-SERVICES-ID}',
+
+    // Part of `name`. See documentation of `appsId`.
+    versionsId: '{MY-VERSIONS-ID}',
+
+
+    auth: authClient
+  };
+
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -571,11 +928,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     var instancesPage = response['instances'];
     if (!instancesPage) {
-      console.log('{}');
       return;
     }
     for (var i = 0; i < instancesPage.length; i++) {
-      // TODO: Use instancesPage
+      // TODO: Change code below to process each resource in `instancesPage`:
       console.log(JSON.stringify(instancesPage[i], null, 2));
     }
 
@@ -583,7 +939,9 @@ google.auth.getApplicationDefault(function(err, authClient) {
       request.pageToken = response.nextPageToken;
       appengine.apps.services.versions.instances.list(request, handlePage);
     }
-  });
+  };
+
+  appengine.apps.services.versions.instances.list(request, handlePage);
 });
 // BEFORE RUNNING:
 // ---------------
@@ -597,12 +955,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var appengine = google.appengine('v1beta5');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -615,16 +971,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
-    appsId: "{MY-APPS-ID}", // TODO: Update placeholder value(s).
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default`.
+    appsId: '{MY-APPS-ID}',
 
     // Part of `name`. See documentation of `appsId`.
-    servicesId: "{MY-SERVICES-ID}", // TODO: Update placeholder value(s).
+    servicesId: '{MY-SERVICES-ID}',
+
 
     auth: authClient
   };
 
-  appengine.apps.services.versions.list(request, function handlePage(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -632,11 +992,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     var versionsPage = response['versions'];
     if (!versionsPage) {
-      console.log('{}');
       return;
     }
     for (var i = 0; i < versionsPage.length; i++) {
-      // TODO: Use versionsPage
+      // TODO: Change code below to process each resource in `versionsPage`:
       console.log(JSON.stringify(versionsPage[i], null, 2));
     }
 
@@ -644,7 +1003,9 @@ google.auth.getApplicationDefault(function(err, authClient) {
       request.pageToken = response.nextPageToken;
       appengine.apps.services.versions.list(request, handlePage);
     }
-  });
+  };
+
+  appengine.apps.services.versions.list(request, handlePage);
 });
 // BEFORE RUNNING:
 // ---------------
@@ -658,12 +1019,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var appengine = google.appengine('v1beta5');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -676,18 +1035,21 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // Part of `name`. Name of the resource to update. For example:
-    // "apps/myapp/services/default/versions/1".
-    appsId: "{MY-APPS-ID}", // TODO: Update placeholder value(s).
+
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
+
+    // Part of `name`. Name of the resource to update. Example: `apps/myapp/services/default/versions/1`.
+    appsId: '{MY-APPS-ID}',
 
     // Part of `name`. See documentation of `appsId`.
-    servicesId: "{MY-SERVICES-ID}", // TODO: Update placeholder value(s).
+    servicesId: '{MY-SERVICES-ID}',
 
     // Part of `name`. See documentation of `appsId`.
-    versionsId: "{MY-VERSIONS-ID}", // TODO: Update placeholder value(s).
+    versionsId: '{MY-VERSIONS-ID}',
+
 
     resource: {
-      // TODO: Add the desired properties to be changed.
+      // TODO: Add desired properties of the request body to be changed.
     },
 
     auth: authClient
@@ -699,7 +1061,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });

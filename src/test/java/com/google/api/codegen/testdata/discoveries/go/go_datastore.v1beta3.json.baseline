@@ -14,45 +14,46 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
-  "google.golang.org/api/datastore/v1beta2"
+  "google.golang.org/api/datastore/v1beta3"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := datastore.New(hc)
+  datastoreService, err := datastore.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  // Identifies the dataset.
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  // The ID of the project against which to make the request.
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
-  resource := &datastore.AllocateIdsRequest{
-    // TODO: Add the desired fields.
+  rb := datastore.AllocateIdsRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Datasets.AllocateIds(datasetId, resource).Context(ctx).Do()
+  resp, err := datastoreService.Projects.AllocateIds(projectId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -69,45 +70,46 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
-  "google.golang.org/api/datastore/v1beta2"
+  "google.golang.org/api/datastore/v1beta3"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := datastore.New(hc)
+  datastoreService, err := datastore.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  // Identifies the dataset.
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  // The ID of the project against which to make the request.
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
-  resource := &datastore.BeginTransactionRequest{
-    // TODO: Add the desired fields.
+  rb := datastore.BeginTransactionRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Datasets.BeginTransaction(datasetId, resource).Context(ctx).Do()
+  resp, err := datastoreService.Projects.BeginTransaction(projectId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -124,45 +126,46 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
-  "google.golang.org/api/datastore/v1beta2"
+  "google.golang.org/api/datastore/v1beta3"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := datastore.New(hc)
+  datastoreService, err := datastore.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  // Identifies the dataset.
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  // The ID of the project against which to make the request.
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
-  resource := &datastore.CommitRequest{
-    // TODO: Add the desired fields.
+  rb := datastore.CommitRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Datasets.Commit(datasetId, resource).Context(ctx).Do()
+  resp, err := datastoreService.Projects.Commit(projectId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -179,45 +182,46 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
-  "google.golang.org/api/datastore/v1beta2"
+  "google.golang.org/api/datastore/v1beta3"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := datastore.New(hc)
+  datastoreService, err := datastore.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  // Identifies the dataset.
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  // The ID of the project against which to make the request.
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
-  resource := &datastore.LookupRequest{
-    // TODO: Add the desired fields.
+  rb := datastore.LookupRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Datasets.Lookup(datasetId, resource).Context(ctx).Do()
+  resp, err := datastoreService.Projects.Lookup(projectId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -234,45 +238,46 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
-  "google.golang.org/api/datastore/v1beta2"
+  "google.golang.org/api/datastore/v1beta3"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := datastore.New(hc)
+  datastoreService, err := datastore.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  // Identifies the dataset.
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  // The ID of the project against which to make the request.
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
-  resource := &datastore.RollbackRequest{
-    // TODO: Add the desired fields.
+  rb := datastore.RollbackRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Datasets.Rollback(datasetId, resource).Context(ctx).Do()
+  resp, err := datastoreService.Projects.Rollback(projectId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -289,43 +294,44 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
-  "google.golang.org/api/datastore/v1beta2"
+  "google.golang.org/api/datastore/v1beta3"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := datastore.New(hc)
+  datastoreService, err := datastore.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  // Identifies the dataset.
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  // The ID of the project against which to make the request.
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
-  resource := &datastore.RunQueryRequest{
-    // TODO: Add the desired fields.
+  rb := datastore.RunQueryRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Datasets.RunQuery(datasetId, resource).Context(ctx).Do()
+  resp, err := datastoreService.Projects.RunQuery(projectId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }

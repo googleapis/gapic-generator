@@ -2,64 +2,58 @@
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Cloud Vision API
+ * 1. If not already done, enable the Google Cloud Vision API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/vision
- * 2. Install the Java client library on Maven or Gradle. Check installation
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/vision/v1/java
  */
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.vision.v1.Vision;
-import com.google.api.services.vision.v1.Vision.Images.Annotate;
 import com.google.api.services.vision.v1.model.BatchAnnotateImagesRequest;
 import com.google.api.services.vision.v1.model.BatchAnnotateImagesResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class VisionExample {
-  public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    BatchAnnotateImagesRequest requestBody = new BatchAnnotateImagesRequest();
-
-    Vision service = createService();
-    Annotate request = service.images().annotate(requestBody);
-    BatchAnnotateImagesResponse response = request.execute();
-    System.out.println(response);
-  }
-
-  public Vision createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Vision.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
+    Vision visionService = new Vision.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
 
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new VisionExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
+
+    BatchAnnotateImagesRequest requestBody = new BatchAnnotateImagesRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Vision.Images.Annotate request = visionService.images().annotate(requestBody);
+    BatchAnnotateImagesResponse response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
   }
 }

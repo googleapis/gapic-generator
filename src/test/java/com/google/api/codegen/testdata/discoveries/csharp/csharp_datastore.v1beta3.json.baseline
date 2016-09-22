@@ -13,12 +13,12 @@
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Datastore.v1beta2;
+using Google.Apis.Datastore.v1beta3;
 using Google.Apis.Services;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
-using Data = Google.Apis.Datastore.v1beta2.Data;
+using Data = Google.Apis.Datastore.v1beta3.Data;
 
 
 namespace DatastoreSample
@@ -27,14 +27,10 @@ namespace DatastoreSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -46,19 +42,24 @@ namespace DatastoreSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Identifies the dataset.
-            string datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `AllocateIds` method:
+
+            // The ID of the project against which to make the request.
+            string projectId = "{MY-PROJECT-ID}";
+
+
             Data.AllocateIdsRequest requestBody = new Data.AllocateIdsRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
 
-            DatasetsResource.AllocateIdsRequest request = datastoreService.Datasets.AllocateIds(requestBody, datasetId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            ProjectsResource.AllocateIdsRequest request = datastoreService.Projects.AllocateIds(requestBody, projectId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.AllocateIdsResponse response = request.Execute();
             // Data.AllocateIdsResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -77,12 +78,12 @@ namespace DatastoreSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Datastore.v1beta2;
+using Google.Apis.Datastore.v1beta3;
 using Google.Apis.Services;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
-using Data = Google.Apis.Datastore.v1beta2.Data;
+using Data = Google.Apis.Datastore.v1beta3.Data;
 
 
 namespace DatastoreSample
@@ -91,14 +92,10 @@ namespace DatastoreSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -110,19 +107,24 @@ namespace DatastoreSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Identifies the dataset.
-            string datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `BeginTransaction` method:
+
+            // The ID of the project against which to make the request.
+            string projectId = "{MY-PROJECT-ID}";
+
+
             Data.BeginTransactionRequest requestBody = new Data.BeginTransactionRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
 
-            DatasetsResource.BeginTransactionRequest request = datastoreService.Datasets.BeginTransaction(requestBody, datasetId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            ProjectsResource.BeginTransactionRequest request = datastoreService.Projects.BeginTransaction(requestBody, projectId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.BeginTransactionResponse response = request.Execute();
             // Data.BeginTransactionResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -141,12 +143,12 @@ namespace DatastoreSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Datastore.v1beta2;
+using Google.Apis.Datastore.v1beta3;
 using Google.Apis.Services;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
-using Data = Google.Apis.Datastore.v1beta2.Data;
+using Data = Google.Apis.Datastore.v1beta3.Data;
 
 
 namespace DatastoreSample
@@ -155,14 +157,10 @@ namespace DatastoreSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -174,19 +172,24 @@ namespace DatastoreSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Identifies the dataset.
-            string datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Commit` method:
+
+            // The ID of the project against which to make the request.
+            string projectId = "{MY-PROJECT-ID}";
+
+
             Data.CommitRequest requestBody = new Data.CommitRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
 
-            DatasetsResource.CommitRequest request = datastoreService.Datasets.Commit(requestBody, datasetId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            ProjectsResource.CommitRequest request = datastoreService.Projects.Commit(requestBody, projectId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.CommitResponse response = request.Execute();
             // Data.CommitResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -205,12 +208,12 @@ namespace DatastoreSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Datastore.v1beta2;
+using Google.Apis.Datastore.v1beta3;
 using Google.Apis.Services;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
-using Data = Google.Apis.Datastore.v1beta2.Data;
+using Data = Google.Apis.Datastore.v1beta3.Data;
 
 
 namespace DatastoreSample
@@ -219,14 +222,10 @@ namespace DatastoreSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -238,19 +237,24 @@ namespace DatastoreSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Identifies the dataset.
-            string datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Lookup` method:
+
+            // The ID of the project against which to make the request.
+            string projectId = "{MY-PROJECT-ID}";
+
+
             Data.LookupRequest requestBody = new Data.LookupRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
 
-            DatasetsResource.LookupRequest request = datastoreService.Datasets.Lookup(requestBody, datasetId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            ProjectsResource.LookupRequest request = datastoreService.Projects.Lookup(requestBody, projectId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.LookupResponse response = request.Execute();
             // Data.LookupResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -269,12 +273,12 @@ namespace DatastoreSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Datastore.v1beta2;
+using Google.Apis.Datastore.v1beta3;
 using Google.Apis.Services;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
-using Data = Google.Apis.Datastore.v1beta2.Data;
+using Data = Google.Apis.Datastore.v1beta3.Data;
 
 
 namespace DatastoreSample
@@ -283,14 +287,10 @@ namespace DatastoreSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -302,19 +302,24 @@ namespace DatastoreSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Identifies the dataset.
-            string datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Rollback` method:
+
+            // The ID of the project against which to make the request.
+            string projectId = "{MY-PROJECT-ID}";
+
+
             Data.RollbackRequest requestBody = new Data.RollbackRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
 
-            DatasetsResource.RollbackRequest request = datastoreService.Datasets.Rollback(requestBody, datasetId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            ProjectsResource.RollbackRequest request = datastoreService.Projects.Rollback(requestBody, projectId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.RollbackResponse response = request.Execute();
             // Data.RollbackResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -333,12 +338,12 @@ namespace DatastoreSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Datastore.v1beta2;
+using Google.Apis.Datastore.v1beta3;
 using Google.Apis.Services;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
-using Data = Google.Apis.Datastore.v1beta2.Data;
+using Data = Google.Apis.Datastore.v1beta3.Data;
 
 
 namespace DatastoreSample
@@ -347,14 +352,10 @@ namespace DatastoreSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -366,19 +367,24 @@ namespace DatastoreSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Identifies the dataset.
-            string datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `RunQuery` method:
+
+            // The ID of the project against which to make the request.
+            string projectId = "{MY-PROJECT-ID}";
+
+
             Data.RunQueryRequest requestBody = new Data.RunQueryRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
 
-            DatasetsResource.RunQueryRequest request = datastoreService.Datasets.RunQuery(requestBody, datasetId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            ProjectsResource.RunQueryRequest request = datastoreService.Projects.RunQuery(requestBody, projectId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.RunQueryResponse response = request.Execute();
             // Data.RunQueryResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }

@@ -14,6 +14,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -25,27 +26,28 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Project ID of the dataset being deleted
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
   // Dataset ID of dataset being deleted
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  datasetId := "{MY-DATASET-ID}"
+  // TODO: Change placeholder value above.
 
-  if err := s.Datasets.Delete(projectId, datasetId).Context(ctx).Do(); err != nil {
+  if err := bigqueryService.Datasets.Delete(projectId, datasetId).Context(ctx).Do(); err != nil {
     log.Fatal(err)
   }
 }
@@ -64,6 +66,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -75,33 +78,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Project ID of the requested dataset
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
   // Dataset ID of the requested dataset
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  datasetId := "{MY-DATASET-ID}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.Datasets.Get(projectId, datasetId).Context(ctx).Do()
+  resp, err := bigqueryService.Datasets.Get(projectId, datasetId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -118,6 +122,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -129,34 +134,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Project ID of the new dataset
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
-  resource := &bigquery.Dataset{
-    // TODO: Add the desired fields.
+  rb := bigquery.Dataset{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Datasets.Insert(projectId, resource).Context(ctx).Do()
+  resp, err := bigqueryService.Datasets.Insert(projectId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -173,6 +178,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -184,30 +190,30 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Project ID of the datasets to be listed
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
-  call := s.Datasets.List(projectId)
-  if err := call.Pages(ctx, func(page *bigquery.DatasetList) error {
+  req := bigqueryService.Datasets.List(projectId)
+  if err := req.Pages(ctx, func(page *bigquery.DatasetList) error {
     for _, datasetList.Datasets := range page.Datasets {
-      // TODO: Use datasetList.Datasets
-      log.Printf("%#v\n", datasetList.Datasets)
+      // TODO: Change code below to process each `datasetList.Datasets` resource:
+      fmt.Printf("%#v\n", datasetList.Datasets)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -227,6 +233,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -238,37 +245,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Project ID of the dataset being updated
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
   // Dataset ID of the dataset being updated
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  datasetId := "{MY-DATASET-ID}"
+  // TODO: Change placeholder value above.
 
-  resource := &bigquery.Dataset{
-    // TODO: Add the desired fields to be changed.
+  rb := bigquery.Dataset{
+    // TODO: Add desired fields of the request body to be changed.
   }
 
-  resp, err := s.Datasets.Patch(projectId, datasetId, resource).Context(ctx).Do()
+  resp, err := bigqueryService.Datasets.Patch(projectId, datasetId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -285,6 +293,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -296,37 +305,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Project ID of the dataset being updated
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
   // Dataset ID of the dataset being updated
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  datasetId := "{MY-DATASET-ID}"
+  // TODO: Change placeholder value above.
 
-  resource := &bigquery.Dataset{
-    // TODO: Add the desired fields.
+  rb := bigquery.Dataset{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Datasets.Update(projectId, datasetId, resource).Context(ctx).Do()
+  resp, err := bigqueryService.Datasets.Update(projectId, datasetId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -343,6 +353,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -354,33 +365,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // [Required] Project ID of the job to cancel
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
   // [Required] Job ID of the job to cancel
-  jobId := "{MY-JOB-ID}" // TODO: Update placeholder value(s).
+  jobId := "{MY-JOB-ID}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.Jobs.Cancel(projectId, jobId).Context(ctx).Do()
+  resp, err := bigqueryService.Jobs.Cancel(projectId, jobId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -397,6 +409,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -408,33 +421,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // [Required] Project ID of the requested job
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
   // [Required] Job ID of the requested job
-  jobId := "{MY-JOB-ID}" // TODO: Update placeholder value(s).
+  jobId := "{MY-JOB-ID}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.Jobs.Get(projectId, jobId).Context(ctx).Do()
+  resp, err := bigqueryService.Jobs.Get(projectId, jobId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -451,6 +465,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -462,33 +477,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // [Required] Project ID of the query job
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
   // [Required] Job ID of the query job
-  jobId := "{MY-JOB-ID}" // TODO: Update placeholder value(s).
+  jobId := "{MY-JOB-ID}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.Jobs.GetQueryResults(projectId, jobId).Context(ctx).Do()
+  resp, err := bigqueryService.Jobs.GetQueryResults(projectId, jobId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -505,6 +521,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -516,34 +533,37 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Project ID of the project that will be billed for the job
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
-  resource := &bigquery.Job{
-    // TODO: Add the desired fields.
+  rb := bigquery.Job{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Jobs.Insert(projectId, resource).Context(ctx).Do()
+  // TODO: Add desired media content for upload. For more information, see:
+  // https://godoc.org/google.golang.org/api/bigquery/v2
+
+  resp, err := bigqueryService.Jobs.Insert(projectId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -560,6 +580,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -571,30 +592,30 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Project ID of the jobs to list
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
-  call := s.Jobs.List(projectId)
-  if err := call.Pages(ctx, func(page *bigquery.JobList) error {
+  req := bigqueryService.Jobs.List(projectId)
+  if err := req.Pages(ctx, func(page *bigquery.JobList) error {
     for _, jobList.Jobs := range page.Jobs {
-      // TODO: Use jobList.Jobs
-      log.Printf("%#v\n", jobList.Jobs)
+      // TODO: Change code below to process each `jobList.Jobs` resource:
+      fmt.Printf("%#v\n", jobList.Jobs)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -614,6 +635,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -625,34 +647,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Project ID of the project billed for the query
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
-  resource := &bigquery.QueryRequest{
-    // TODO: Add the desired fields.
+  rb := bigquery.QueryRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Jobs.Query(projectId, resource).Context(ctx).Do()
+  resp, err := bigqueryService.Jobs.Query(projectId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -669,6 +691,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -680,27 +703,27 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  call := s.Projects.List()
-  if err := call.Pages(ctx, func(page *bigquery.ProjectList) error {
+
+  req := bigqueryService.Projects.List()
+  if err := req.Pages(ctx, func(page *bigquery.ProjectList) error {
     for _, projectList.Projects := range page.Projects {
-      // TODO: Use projectList.Projects
-      log.Printf("%#v\n", projectList.Projects)
+      // TODO: Change code below to process each `projectList.Projects` resource:
+      fmt.Printf("%#v\n", projectList.Projects)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -720,6 +743,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -731,40 +755,42 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Project ID of the destination table.
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
   // Dataset ID of the destination table.
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  datasetId := "{MY-DATASET-ID}"
+  // TODO: Change placeholder value above.
 
   // Table ID of the destination table.
-  tableId := "{MY-TABLE-ID}" // TODO: Update placeholder value(s).
+  tableId := "{MY-TABLE-ID}"
+  // TODO: Change placeholder value above.
 
-  resource := &bigquery.TableDataInsertAllRequest{
-    // TODO: Add the desired fields.
+  rb := bigquery.TableDataInsertAllRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Tabledata.InsertAll(projectId, datasetId, tableId, resource).Context(ctx).Do()
+  resp, err := bigqueryService.Tabledata.InsertAll(projectId, datasetId, tableId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -781,6 +807,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -792,36 +819,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Project ID of the table to read
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
   // Dataset ID of the table to read
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  datasetId := "{MY-DATASET-ID}"
+  // TODO: Change placeholder value above.
 
   // Table ID of the table to read
-  tableId := "{MY-TABLE-ID}" // TODO: Update placeholder value(s).
+  tableId := "{MY-TABLE-ID}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.Tabledata.List(projectId, datasetId, tableId).Context(ctx).Do()
+  resp, err := bigqueryService.Tabledata.List(projectId, datasetId, tableId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -838,6 +867,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -849,30 +879,32 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Project ID of the table to delete
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
   // Dataset ID of the table to delete
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  datasetId := "{MY-DATASET-ID}"
+  // TODO: Change placeholder value above.
 
   // Table ID of the table to delete
-  tableId := "{MY-TABLE-ID}" // TODO: Update placeholder value(s).
+  tableId := "{MY-TABLE-ID}"
+  // TODO: Change placeholder value above.
 
-  if err := s.Tables.Delete(projectId, datasetId, tableId).Context(ctx).Do(); err != nil {
+  if err := bigqueryService.Tables.Delete(projectId, datasetId, tableId).Context(ctx).Do(); err != nil {
     log.Fatal(err)
   }
 }
@@ -891,6 +923,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -902,36 +935,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Project ID of the requested table
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
   // Dataset ID of the requested table
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  datasetId := "{MY-DATASET-ID}"
+  // TODO: Change placeholder value above.
 
   // Table ID of the requested table
-  tableId := "{MY-TABLE-ID}" // TODO: Update placeholder value(s).
+  tableId := "{MY-TABLE-ID}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.Tables.Get(projectId, datasetId, tableId).Context(ctx).Do()
+  resp, err := bigqueryService.Tables.Get(projectId, datasetId, tableId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -948,6 +983,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -959,37 +995,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Project ID of the new table
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
   // Dataset ID of the new table
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  datasetId := "{MY-DATASET-ID}"
+  // TODO: Change placeholder value above.
 
-  resource := &bigquery.Table{
-    // TODO: Add the desired fields.
+  rb := bigquery.Table{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Tables.Insert(projectId, datasetId, resource).Context(ctx).Do()
+  resp, err := bigqueryService.Tables.Insert(projectId, datasetId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1006,6 +1043,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1017,33 +1055,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Project ID of the tables to list
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
   // Dataset ID of the tables to list
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  datasetId := "{MY-DATASET-ID}"
+  // TODO: Change placeholder value above.
 
-  call := s.Tables.List(projectId, datasetId)
-  if err := call.Pages(ctx, func(page *bigquery.TableList) error {
+  req := bigqueryService.Tables.List(projectId, datasetId)
+  if err := req.Pages(ctx, func(page *bigquery.TableList) error {
     for _, tableList.Tables := range page.Tables {
-      // TODO: Use tableList.Tables
-      log.Printf("%#v\n", tableList.Tables)
+      // TODO: Change code below to process each `tableList.Tables` resource:
+      fmt.Printf("%#v\n", tableList.Tables)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -1063,6 +1102,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1074,40 +1114,42 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Project ID of the table to update
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
   // Dataset ID of the table to update
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  datasetId := "{MY-DATASET-ID}"
+  // TODO: Change placeholder value above.
 
   // Table ID of the table to update
-  tableId := "{MY-TABLE-ID}" // TODO: Update placeholder value(s).
+  tableId := "{MY-TABLE-ID}"
+  // TODO: Change placeholder value above.
 
-  resource := &bigquery.Table{
-    // TODO: Add the desired fields to be changed.
+  rb := bigquery.Table{
+    // TODO: Add desired fields of the request body to be changed.
   }
 
-  resp, err := s.Tables.Patch(projectId, datasetId, tableId, resource).Context(ctx).Do()
+  resp, err := bigqueryService.Tables.Patch(projectId, datasetId, tableId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1124,6 +1166,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1135,38 +1178,40 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
+  c, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := bigquery.New(hc)
+  bigqueryService, err := bigquery.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Project ID of the table to update
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
   // Dataset ID of the table to update
-  datasetId := "{MY-DATASET-ID}" // TODO: Update placeholder value(s).
+  datasetId := "{MY-DATASET-ID}"
+  // TODO: Change placeholder value above.
 
   // Table ID of the table to update
-  tableId := "{MY-TABLE-ID}" // TODO: Update placeholder value(s).
+  tableId := "{MY-TABLE-ID}"
+  // TODO: Change placeholder value above.
 
-  resource := &bigquery.Table{
-    // TODO: Add the desired fields.
+  rb := bigquery.Table{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Tables.Update(projectId, datasetId, tableId, resource).Context(ctx).Do()
+  resp, err := bigqueryService.Tables.Update(projectId, datasetId, tableId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
