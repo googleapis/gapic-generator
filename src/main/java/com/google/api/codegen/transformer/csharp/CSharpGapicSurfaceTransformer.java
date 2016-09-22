@@ -48,6 +48,7 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import io.grpc.Status.Code;
 import java.io.File;
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
 
@@ -95,7 +97,6 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
       
       surfaceDocs.add(StaticLangXCommonView.newBuilder()
           .api(xapi).settings(xsettings).build());
-
     }
     
     return surfaceDocs;
@@ -115,6 +116,7 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
   private StaticLangXApiView generateXApi(SurfaceTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
     StaticLangXApiView.Builder xapiClass = StaticLangXApiView.newBuilder();
+    List<StaticLangApiMethodView> methods = generateApiMethods(context);
 
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, null));
 
@@ -139,7 +141,6 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
         pathTemplateTransformer.generateFormatResourceFunctions(context));
     xapiClass.parseResourceFunctions(
         pathTemplateTransformer.generateParseResourceFunctions(context));
-    List<StaticLangApiMethodView> methods = generateApiMethods(context);
     xapiClass.apiMethods(methods);
     xapiClass.apiMethodsImpl(FluentIterable.from(methods)
         .filter(new Predicate<StaticLangApiMethodView>() {
@@ -194,8 +195,15 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private void addCommonImports(SurfaceTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
-    // Common imports
-    //typeTable.saveNicknameFor("java.util.List");
+    // Common imports, only one class per required namespace is needed.
+    typeTable.saveNicknameFor("Google.Protobuf.WellKnownTypes.SomeSortOfWellKnownType");
+    typeTable.saveNicknameFor("Grpc.Core.ByteString");
+    typeTable.saveNicknameFor("System.Collections.ObjectModel.ReadOnlyCollection");
+    typeTable.saveNicknameFor("System.Threading.Tasks.Task");
+    typeTable.saveNicknameFor("System.Threading.Thread");
+    typeTable.saveNicknameFor("System.NotImplementedException");
+    typeTable.saveNicknameFor("System.Collections.IEnumerable");
+    typeTable.saveNicknameFor("System.Collections.Generic.IEnumerable");
   }
 
   private List<StaticLangApiMethodView> generateApiMethods(SurfaceTransformerContext context) {
@@ -208,21 +216,25 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
     for (Method method : context.getNonStreamingMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
+      if (methodConfig.getRerouteToGrpcInterface() != null) {
+        // Temporary hack to exclude mixins for the moment. To be removed.
+        continue;
+      }
       MethodTransformerContext methodContext = context.asMethodContext(method);
 
       if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
           for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
-            apiMethods.add(transformPagedMethod(apiMethodTransformer.generatePagedFlattenedMethod(methodContext, fields, ApiMethodType.PagedFlattenedMethod), pagedByName));
             apiMethods.add(transformPagedMethod(apiMethodTransformer.generatePagedFlattenedMethod(methodContext, fields, ApiMethodType.PagedFlattenedMethodAsync), pagedByName));
+            apiMethods.add(transformPagedMethod(apiMethodTransformer.generatePagedFlattenedMethod(methodContext, fields, ApiMethodType.PagedFlattenedMethod), pagedByName));
           }
         }
       } else {
         if (methodConfig.isFlattening()) {
           for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
-            apiMethods.add(transformFlattenedMethod(apiMethodTransformer.generateFlattenedMethod(methodContext, fields, ApiMethodType.FlattenedMethod)));
             apiMethods.add(transformFlattenedMethod(apiMethodTransformer.generateFlattenedMethod(methodContext, fields, ApiMethodType.FlattenedMethodAsyncCallSettings)));
             apiMethods.add(transformFlattenedMethod(apiMethodTransformer.generateFlattenedMethod(methodContext, fields, ApiMethodType.FlattenedMethodAsyncCancellationToken)));
+            apiMethods.add(transformFlattenedMethod(apiMethodTransformer.generateFlattenedMethod(methodContext, fields, ApiMethodType.FlattenedMethod)));
           }
         }
       }

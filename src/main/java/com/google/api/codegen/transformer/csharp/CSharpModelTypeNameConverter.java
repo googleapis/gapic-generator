@@ -33,7 +33,7 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
           .put(Type.TYPE_FIXED32, "int")
           .put(Type.TYPE_SFIXED32, "int")
           .put(Type.TYPE_STRING, "string")
-          .put(Type.TYPE_BYTES, "ByteString") // TODO: Full path
+          .put(Type.TYPE_BYTES, "Google.Protobuf.ByteString")
           .build();
 
   private TypeNameConverter typeNameConverter;

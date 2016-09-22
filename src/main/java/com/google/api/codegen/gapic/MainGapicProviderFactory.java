@@ -90,17 +90,6 @@ public class MainGapicProviderFactory
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
     } else if (id.equals(CSHARP)) {
-      /*GapicProvider<? extends Object> provider =
-          CommonGapicProvider.<Interface>newBuilder()
-              .setModel(model)
-              .setView(new InterfaceView())
-              .setContext(new CSharpGapicContext(model, apiConfig))
-              .setSnippetSetRunner(
-                  new CSharpSnippetSetRunner<Interface>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-              .setSnippetFileNames(Arrays.asList("csharp/wrapper.snip"))
-              .setCodePathMapper(new CSharpCodePathMapper())
-              .build();
-      return Arrays.<GapicProvider<? extends Object>>asList(provider);*/
       GapicCodePathMapper pathMapper =
           CommonGapicCodePathMapper.newBuilder()
               .setPrefix("")

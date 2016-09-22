@@ -16,6 +16,21 @@ import java.util.Map;
 
 public class CSharpApiCallableTransformer extends ApiCallableTransformer {
 
+  @Override
+  public List<ApiCallableView> generateStaticLangApiCallables(SurfaceTransformerContext context) {
+    List<ApiCallableView> callableMembers = new ArrayList<>();
+
+    for (Method method : context.getNonStreamingMethods()) {
+      if (context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
+        // Temporary hack to exclude mixins for the moment. To be removed.
+        continue;
+      }
+      callableMembers.addAll(generateStaticLangApiCallables(context.asMethodContext(method)));
+    }
+
+    return callableMembers;
+  }
+
   public List<ApiCallSettingsView> generateCallSettings(SurfaceTransformerContext context,
       List<RetryCodesDefinitionView> retryCodes, List<RetryParamsDefinitionView> retryParams) {
     final Map<String, RetryCodesDefinitionView> retryCodesByKey = Maps.uniqueIndex(retryCodes, new Function<RetryCodesDefinitionView, String>() {
@@ -31,6 +46,10 @@ public class CSharpApiCallableTransformer extends ApiCallableTransformer {
     
     List<ApiCallSettingsView> settingsMembers = new ArrayList<>();
     for (Method method : context.getNonStreamingMethods()) {
+      if (context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
+        // Temporary hack to exclude mixins for the moment. To be removed.
+        continue;
+      }
       List<ApiCallSettingsView> calls = FluentIterable.from(generateApiCallableSettings(context.asMethodContext(method)))
           .transform(new Function<ApiCallSettingsView, ApiCallSettingsView>() {
             @Override public ApiCallSettingsView apply(ApiCallSettingsView call) {

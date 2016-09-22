@@ -1,5 +1,6 @@
 package com.google.api.codegen.transformer.csharp;
 
+import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
@@ -48,6 +49,16 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getPathTemplateName(CollectionConfig collectionConfig) {
+    return inittedConstantName(Name.from(collectionConfig.getEntityName(), "template"));
+  }
+
+  @Override
+  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
+    return methodName(identifier);
+  }
+
+  @Override
   public String getAndSavePagedResponseTypeName(
       ModelTypeTable typeTable, TypeRef... parameterizedTypes) {
     String[] typeList = new String[parameterizedTypes.length];
@@ -55,7 +66,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
       typeList[i] = typeTable.getFullNameForElementType(parameterizedTypes[i]);
     }
     return typeTable.getAndSaveNicknameForContainer(
-        "PagedEnumerable", typeList);
+        "Google.Api.Gax.PagedEnumerable", typeList);
   }
 
 }

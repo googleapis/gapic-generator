@@ -54,7 +54,7 @@ public class ApiCallableTransformer {
     return settingsMembers;
   }
 
-  private List<ApiCallableView> generateStaticLangApiCallables(MethodTransformerContext context) {
+  protected List<ApiCallableView> generateStaticLangApiCallables(MethodTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
     MethodConfig methodConfig = context.getMethodConfig();

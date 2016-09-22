@@ -31,7 +31,7 @@
         
         {@partialPageStreaming(common.api, common.settings)}
     }
-
+{@""}
 @end
 
 @private settings(api, settings)
@@ -53,7 +53,7 @@
         /// </summary>
         public {@settings.name}() { }
         
-        private {@settings.name}({@settings.name} existing) : base (existing)
+        private {@settings.name}({@settings.name} existing) : base(existing)
         {
             GaxPreconditions.CheckNotNull(existing, nameof(existing));
             @join call : settings.callSettings
@@ -63,7 +63,7 @@
         
         @join retry : settings.retryCodesDefinitions
             /// <summary>
-            /// The filter specifying which RPC <see cref="StatusCode">s are eligible for retry
+            /// The filter specifying which RPC <see cref="StatusCode"/>s are eligible for retry
             /// for "{@retry.name}" <see cref="{@api.name}"/> RPC methods.
             /// </summary>
             /// <remarks>
@@ -113,9 +113,9 @@
             /// <remarks>
             /// The "{@retry.name}" timeout backoff for <see cref="{@api.name}"/> RPC methods is defined as:
             /// <list type="bullet">
-            /// <item><description>Initial delay: {@retry.initialRpcTimeout.getMillis} milliseconds</description></item>
-            /// <item><description>Delay multiplier: {@retry.rpcTimeoutMultiplier}</description></item>
-            /// <item><description>Maximum delay: {@retry.maxRpcTimeout.getMillis} milliseconds</description></item>
+            /// <item><description>Initial timeout: {@retry.initialRpcTimeout.getMillis} milliseconds</description></item>
+            /// <item><description>Timeout multiplier: {@retry.rpcTimeoutMultiplier}</description></item>
+            /// <item><description>Maximum timeout: {@retry.maxRpcTimeout.getMillis} milliseconds</description></item>
             /// </list>
             /// </remarks>
             public static BackoffSettings Get{@retry.name}TimeoutBackoff() => new BackoffSettings
@@ -158,9 +158,9 @@
             {
                 Timing = CallTiming.FromRetry(new RetrySettings
                 {
-                    RetryBackoff = Get{@call.retryParamsName}RetryBackoff(),
-                    TimeoutBackoff = Get{@call.retryParamsName}TimeoutBackoff(),
-                    RetryFilter = {@call.retryCodesName}RetryFilter,
+                    RetryBackoff = Get{@call.retryParamsView.name}RetryBackoff(),
+                    TimeoutBackoff = Get{@call.retryParamsView.name}TimeoutBackoff(),
+                    RetryFilter = {@call.retryCodesView.name}RetryFilter,
                     TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.getMillis})),
                 }),
             };
@@ -176,20 +176,20 @@
 
 @private abstractClient(api, settings)
     /// <summary>
-    /// {@api.name} client wrapper, for convenient use.
+    /// {@api.grpcName} client wrapper, for convenient use.
     /// </summary>
     public abstract partial class {@api.name}
     {
         /// <summary>
-        /// The default endpoint for {@api.name}. Host "{@settings.serviceAddress}", port {@settings.servicePort}.
+        /// The default endpoint for the {@api.grpcName} service, which is a host of "{@settings.serviceAddress}" and a port of {@settings.servicePort}.
         /// </summary>
-        public static ServiceEndpoint DefaultEndpoint { get; } = new ServiceEndPoint("{@settings.serviceAddress}", {@settings.servicePort});
+        public static ServiceEndpoint DefaultEndpoint { get; } = new ServiceEndpoint("{@settings.serviceAddress}", {@settings.servicePort});
 
         /// <summary>
-        /// The default {@api.name} scopes.
+        /// The default {@api.grpcName} scopes.
         /// </summary>
         /// <remarks>
-        /// The default {@api.name} scopes are:
+        /// The default {@api.grpcName} scopes are:
         /// <list type="bullet">
         @join scope : settings.authScopes
             /// <item><description>"{@scope}"</description></item>
@@ -349,17 +349,16 @@
 @end
 
 @private flattenedMethodSync(method, isImpl)
-    public virtual {@method.responseTypeName} {@method.name}(
     @if isImpl
+        public override {@method.responseTypeName} {@method.name}(
         {@""}    {@objectParams(method.methodParamsWithExtras)}) => {@method.callableName}.Sync(
         {@""}        new {@method.apiRequestTypeName}
         {@""}        {
-        @join param : method.methodParams
-            {@""}            {@param.nameAsMethodName} = {@param.name},
-        @end
+                    {@requestProperties(method.methodParams)}
         {@""}        },
         {@""}        callSettings);
     @else
+        public virtual {@method.responseTypeName} {@method.name}(
         {@""}    {@objectParams(method.methodParamsWithExtras)})
         {
             throw new NotImplementedException();
@@ -368,17 +367,16 @@
 @end
 
 @private flattenedMethodAsyncCallSettings(method, isImpl)
-    public virtual {@method.responseTypeName} {@method.name}(
     @if isImpl
+        public override {@method.responseTypeName} {@method.name}(
         {@""}    {@objectParams(method.methodParamsWithExtras)}) => {@method.callableName}.Async(
         {@""}        new {@method.apiRequestTypeName}
         {@""}        {
-        @join param : method.methodParams
-            {@""}            {@param.nameAsMethodName} = {@param.name},
-        @end
+                    {@requestProperties(method.methodParams)}
         {@""}        },
         {@""}        callSettings);
     @else
+        public virtual {@method.responseTypeName} {@method.name}(
         {@""}    {@objectParams(method.methodParamsWithExtras)})
         {
             throw new NotImplementedException();
@@ -398,20 +396,19 @@
 @end
 
 @private pagedFlattenedMethodSync(method, isImpl)
-    public virtual IPagedEnumerable<{@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}> {@method.name}(
     @if isImpl
+        public override IPagedEnumerable<{@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}> {@method.name}(
         {@""}    {@objectParams(method.methodParamsWithExtras)}) => new PagedEnumerable<{@method.pagedView.requestTypeName}, {@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}>(
         {@""}        {@method.callableName},
         {@""}        new {@method.apiRequestTypeName}
         {@""}        {
-        @join param : method.methodParams
-            {@""}            {@param.nameAsMethodName} = {@param.name},
-        @end
+                    {@requestProperties(method.methodParams)}
         {@""}            PageToken = pageToken ?? "",
         {@""}            PageSize = pageSize ?? 0,
         {@""}        },
         {@""}        callSettings);
     @else
+        public virtual IPagedEnumerable<{@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}> {@method.name}(
         {@""}    {@objectParams(method.methodParamsWithExtras)})
         {
             throw new NotImplementedException();
@@ -420,24 +417,33 @@
 @end
 
 @private pagedFlattenedMethodAsync(method, isImpl)
-    public virtual IPagedAsyncEnumerable<{@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}> {@method.name}(
     @if isImpl
+        public override IPagedAsyncEnumerable<{@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}> {@method.name}(
         {@""}    {@objectParams(method.methodParamsWithExtras)}) => new PagedAsyncEnumerable<{@method.pagedView.requestTypeName}, {@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}>(
         {@""}        {@method.callableName},
         {@""}        new {@method.apiRequestTypeName}
         {@""}        {
-        @join param : method.methodParams
-            {@""}            {@param.nameAsMethodName} = {@param.name},
-        @end
+                    {@requestProperties(method.methodParams)}
         {@""}            PageToken = pageToken ?? "",
         {@""}            PageSize = pageSize ?? 0,
         {@""}        },
         {@""}        callSettings);
     @else
+        public virtual IPagedAsyncEnumerable<{@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}> {@method.name}(
         {@""}    {@objectParams(method.methodParamsWithExtras)})
         {
             throw new NotImplementedException();
         }
+    @end
+@end
+
+@private requestProperties(params)
+    @join param : params
+        @if param.isArray
+            {@param.nameAsMethodName} = { {@param.name} },
+        @else
+            {@param.nameAsMethodName} = {@param.name},
+        @end
     @end
 @end
 
@@ -448,7 +454,7 @@
         public partial class {@method.pagedView.requestTypeName} : IPageRequest { }
         public partial class {@method.pagedView.responseTypeName} : IPageResponse<{@method.pagedView.resourceTypeName}>
         {
-            public IEnumerator<{@method.pagedView.resourceTypeName}> GetEnumerator() => Topics.GetEnumerator();
+            public IEnumerator<{@method.pagedView.resourceTypeName}> GetEnumerator() => {@method.pagedView.resourcesFieldGetFunction}.GetEnumerator();
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
 
