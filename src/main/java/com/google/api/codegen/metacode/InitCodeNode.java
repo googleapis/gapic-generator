@@ -21,7 +21,6 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -95,7 +94,8 @@ public class InitCodeNode {
   }
 
   /*
-   * Get the TypeRef of the node.
+   * Get the Field of the node. For nodes that are not the child of a Structure node, the field will
+   * be null.
    */
   public Field getField() {
     return nodeField;
