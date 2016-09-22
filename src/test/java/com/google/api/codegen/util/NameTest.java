@@ -123,10 +123,20 @@ public class NameTest {
 
   @Test
   public void combinedAcronyms() {
-    Name name = Name.lowerCamel("dogIAMHTTPXML");
-    Truth.assertThat(name.toLowerUnderscore()).isEqualTo("dog_iam_http_xml");
-    Truth.assertThat(name.toUpperUnderscore()).isEqualTo("DOG_IAM_HTTP_XML");
-    Truth.assertThat(name.toLowerCamel()).isEqualTo("dogIamHttpXml");
-    Truth.assertThat(name.toUpperCamel()).isEqualTo("DogIamHttpXml");
+    Name name = Name.upperCamel("IAMHTTPXML");
+    Truth.assertThat(name.toLowerUnderscore()).isEqualTo("iam_http_xml");
+    Truth.assertThat(name.toUpperUnderscore()).isEqualTo("IAM_HTTP_XML");
+    Truth.assertThat(name.toLowerCamel()).isEqualTo("iamHttpXml");
+    Truth.assertThat(name.toUpperCamel()).isEqualTo("IamHttpXml");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void ambiguousAcronym() {
+    System.out.println(Name.upperCamel("APIAMName").toLowerUnderscore());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void ambiguousRepeatedAcronym() {
+    System.out.println(Name.upperCamel("APIDogAPIAMName").toLowerUnderscore());
   }
 }

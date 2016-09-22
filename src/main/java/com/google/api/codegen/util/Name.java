@@ -64,6 +64,7 @@ public class Name {
     List<NamePiece> namePieces = new ArrayList<>();
     for (String piece : pieces) {
       validateCamel(piece, true);
+      piece = CommonAcronyms.replaceAcronyms(piece);
       namePieces.add(new NamePiece(piece, CaseFormat.UPPER_CAMEL));
     }
     return new Name(namePieces);
@@ -136,7 +137,6 @@ public class Name {
   private String toUnderscore(CaseFormat caseFormat) {
     List<String> newPieces = new ArrayList<>();
     for (NamePiece namePiece : namePieces) {
-      namePiece = replaceAcronyms(namePiece);
       newPieces.add(namePiece.caseFormat.to(caseFormat, namePiece.identifier));
     }
     return Joiner.on('_').join(newPieces);
@@ -160,7 +160,6 @@ public class Name {
     StringBuffer buffer = new StringBuffer();
     boolean firstPiece = true;
     for (NamePiece namePiece : namePieces) {
-      namePiece = replaceAcronyms(namePiece);
       if (firstPiece && caseFormat.equals(CaseFormat.LOWER_CAMEL)) {
         buffer.append(namePiece.caseFormat.to(CaseFormat.LOWER_CAMEL, namePiece.identifier));
       } else {
@@ -224,17 +223,5 @@ public class Name {
       this.identifier = identifier;
       this.caseFormat = caseFormat;
     }
-  }
-
-  private NamePiece replaceAcronyms(NamePiece namePiece) {
-    if (namePiece.caseFormat != CaseFormat.LOWER_CAMEL
-        && namePiece.caseFormat != CaseFormat.UPPER_CAMEL) {
-      return namePiece;
-    }
-
-    String identifier = CommonAcronyms.replaceAcronyms(namePiece.identifier);
-    return identifier.equals(namePiece.identifier)
-        ? namePiece
-        : new NamePiece(identifier, namePiece.caseFormat);
   }
 }
