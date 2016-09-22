@@ -82,7 +82,7 @@ abstract class PythonDocConfig extends DocConfig {
 
   private String apiImport(String apiName) {
     String packageName = getApiConfig().getPackageName();
-    String moduleName = LanguageUtil.lowerCamelToLowerUnderscore(apiName);
+    String moduleName = LanguageUtil.upperCamelToLowerUnderscore(apiName);
     return PythonImport.create(ImportType.APP, packageName, moduleName).importString();
   }
 
