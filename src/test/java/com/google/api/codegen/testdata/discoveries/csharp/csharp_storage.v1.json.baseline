@@ -24,14 +24,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -43,16 +39,20 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
+            string entity = "{MY-ENTITY}";
+
 
             BucketAccessControlsResource.DeleteRequest request = storageService.BucketAccessControls.Delete(bucket, entity);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
         }
@@ -86,14 +86,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -105,20 +101,24 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
+            string entity = "{MY-ENTITY}";
+
 
             BucketAccessControlsResource.GetRequest request = storageService.BucketAccessControls.Get(bucket, entity);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.BucketAccessControl response = request.Execute();
             // Data.BucketAccessControl response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -151,14 +151,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -170,19 +166,24 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+            // Name of a bucket.
+            string bucket = "{MY-BUCKET}";
+
+
             Data.BucketAccessControl requestBody = new Data.BucketAccessControl();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             BucketAccessControlsResource.InsertRequest request = storageService.BucketAccessControls.Insert(requestBody, bucket);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.BucketAccessControl response = request.Execute();
             // Data.BucketAccessControl response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -215,14 +216,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -234,16 +231,20 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
+
 
             BucketAccessControlsResource.ListRequest request = storageService.BucketAccessControls.List(bucket);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.BucketAccessControls response = request.Execute();
             // Data.BucketAccessControls response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -276,14 +277,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -295,23 +292,28 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
+            string entity = "{MY-ENTITY}";
 
-            // TODO: Assign values to the desired properties to be changed.
+
             Data.BucketAccessControl requestBody = new Data.BucketAccessControl();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
 
             BucketAccessControlsResource.PatchRequest request = storageService.BucketAccessControls.Patch(requestBody, bucket, entity);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.BucketAccessControl response = request.Execute();
             // Data.BucketAccessControl response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -344,14 +346,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -363,23 +361,28 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
+            string entity = "{MY-ENTITY}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.BucketAccessControl requestBody = new Data.BucketAccessControl();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             BucketAccessControlsResource.UpdateRequest request = storageService.BucketAccessControls.Update(requestBody, bucket, entity);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.BucketAccessControl response = request.Execute();
             // Data.BucketAccessControl response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -409,14 +412,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -428,12 +427,16 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
+
 
             BucketsResource.DeleteRequest request = storageService.Buckets.Delete(bucket);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
         }
@@ -467,14 +470,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -486,16 +485,20 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
+
 
             BucketsResource.GetRequest request = storageService.Buckets.Get(bucket);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Bucket response = request.Execute();
             // Data.Bucket response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -528,14 +531,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -547,19 +546,24 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // A valid API project identifier.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+            // A valid API project identifier.
+            string project = "{MY-PROJECT}";
+
+
             Data.Bucket requestBody = new Data.Bucket();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             BucketsResource.InsertRequest request = storageService.Buckets.Insert(requestBody, project);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Bucket response = request.Execute();
             // Data.Bucket response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -592,14 +596,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -611,15 +611,19 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // A valid API project identifier.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
+
 
             BucketsResource.ListRequest request = storageService.Buckets.List(project);
 
             Data.Buckets response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -629,7 +633,7 @@ namespace StorageSample
                 }
                 foreach (Data.Bucket bucket in response.Items)
                 {
-                    // TODO: Use bucket
+                    // TODO: Change code below to process each `bucket` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(bucket));
                 }
                 request.PageToken = response.NextPageToken;
@@ -665,14 +669,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -684,19 +684,24 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties to be changed.
+            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
+            // Name of a bucket.
+            string bucket = "{MY-BUCKET}";
+
+
             Data.Bucket requestBody = new Data.Bucket();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
 
             BucketsResource.PatchRequest request = storageService.Buckets.Patch(requestBody, bucket);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Bucket response = request.Execute();
             // Data.Bucket response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -729,14 +734,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -748,19 +749,24 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
+            // Name of a bucket.
+            string bucket = "{MY-BUCKET}";
+
+
             Data.Bucket requestBody = new Data.Bucket();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             BucketsResource.UpdateRequest request = storageService.Buckets.Update(requestBody, bucket);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Bucket response = request.Execute();
             // Data.Bucket response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -792,14 +798,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -811,12 +813,13 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Assign values to the desired properties.
             Data.Channel requestBody = new Data.Channel();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ChannelsResource.StopRequest request = storageService.Channels.Stop(requestBody);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
         }
@@ -847,14 +850,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -866,16 +865,20 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
+            string entity = "{MY-ENTITY}";
+
 
             DefaultObjectAccessControlsResource.DeleteRequest request = storageService.DefaultObjectAccessControls.Delete(bucket, entity);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
         }
@@ -909,14 +912,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -928,20 +927,24 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
+            string entity = "{MY-ENTITY}";
+
 
             DefaultObjectAccessControlsResource.GetRequest request = storageService.DefaultObjectAccessControls.Get(bucket, entity);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ObjectAccessControl response = request.Execute();
             // Data.ObjectAccessControl response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -974,14 +977,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -993,19 +992,24 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+            // Name of a bucket.
+            string bucket = "{MY-BUCKET}";
+
+
             Data.ObjectAccessControl requestBody = new Data.ObjectAccessControl();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             DefaultObjectAccessControlsResource.InsertRequest request = storageService.DefaultObjectAccessControls.Insert(requestBody, bucket);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ObjectAccessControl response = request.Execute();
             // Data.ObjectAccessControl response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1038,14 +1042,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1057,16 +1057,20 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
+
 
             DefaultObjectAccessControlsResource.ListRequest request = storageService.DefaultObjectAccessControls.List(bucket);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ObjectAccessControls response = request.Execute();
             // Data.ObjectAccessControls response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1099,14 +1103,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1118,23 +1118,28 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
+            string entity = "{MY-ENTITY}";
 
-            // TODO: Assign values to the desired properties to be changed.
+
             Data.ObjectAccessControl requestBody = new Data.ObjectAccessControl();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
 
             DefaultObjectAccessControlsResource.PatchRequest request = storageService.DefaultObjectAccessControls.Patch(requestBody, bucket, entity);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ObjectAccessControl response = request.Execute();
             // Data.ObjectAccessControl response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1167,14 +1172,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1186,23 +1187,28 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
+            string entity = "{MY-ENTITY}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.ObjectAccessControl requestBody = new Data.ObjectAccessControl();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             DefaultObjectAccessControlsResource.UpdateRequest request = storageService.DefaultObjectAccessControls.Update(requestBody, bucket, entity);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ObjectAccessControl response = request.Execute();
             // Data.ObjectAccessControl response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1232,14 +1238,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1251,20 +1253,24 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
 
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
+            string object_ = "{MY-OBJECT}";
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
+            string entity = "{MY-ENTITY}";
+
 
             ObjectAccessControlsResource.DeleteRequest request = storageService.ObjectAccessControls.Delete(bucket, object_, entity);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
         }
@@ -1298,14 +1304,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1317,24 +1319,28 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
 
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
+            string object_ = "{MY-OBJECT}";
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
+            string entity = "{MY-ENTITY}";
+
 
             ObjectAccessControlsResource.GetRequest request = storageService.ObjectAccessControls.Get(bucket, object_, entity);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ObjectAccessControl response = request.Execute();
             // Data.ObjectAccessControl response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1367,14 +1373,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1386,23 +1388,28 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
 
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
+            string object_ = "{MY-OBJECT}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.ObjectAccessControl requestBody = new Data.ObjectAccessControl();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ObjectAccessControlsResource.InsertRequest request = storageService.ObjectAccessControls.Insert(requestBody, bucket, object_);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ObjectAccessControl response = request.Execute();
             // Data.ObjectAccessControl response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1435,14 +1442,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1454,20 +1457,24 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
 
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
+            string object_ = "{MY-OBJECT}";
+
 
             ObjectAccessControlsResource.ListRequest request = storageService.ObjectAccessControls.List(bucket, object_);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ObjectAccessControls response = request.Execute();
             // Data.ObjectAccessControls response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1500,14 +1507,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1519,27 +1522,32 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
 
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
+            string object_ = "{MY-OBJECT}";
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
+            string entity = "{MY-ENTITY}";
 
-            // TODO: Assign values to the desired properties to be changed.
+
             Data.ObjectAccessControl requestBody = new Data.ObjectAccessControl();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
 
             ObjectAccessControlsResource.PatchRequest request = storageService.ObjectAccessControls.Patch(requestBody, bucket, object_, entity);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ObjectAccessControl response = request.Execute();
             // Data.ObjectAccessControl response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1572,14 +1580,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1591,27 +1595,32 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
 
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
+            string object_ = "{MY-OBJECT}";
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}"; // TODO: Update placeholder value(s).
+            string entity = "{MY-ENTITY}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.ObjectAccessControl requestBody = new Data.ObjectAccessControl();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ObjectAccessControlsResource.UpdateRequest request = storageService.ObjectAccessControls.Update(requestBody, bucket, object_, entity);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ObjectAccessControl response = request.Execute();
             // Data.ObjectAccessControl response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1644,14 +1653,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1663,23 +1668,28 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Compose` method:
+
             // Name of the bucket in which to store the new object.
-            string destinationBucket = "{MY-DESTINATION-BUCKET}"; // TODO: Update placeholder value(s).
+            string destinationBucket = "{MY-DESTINATION-BUCKET}";
 
             // Name of the new object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string destinationObject = "{MY-DESTINATION-OBJECT}"; // TODO: Update placeholder value(s).
+            string destinationObject = "{MY-DESTINATION-OBJECT}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.ComposeRequest requestBody = new Data.ComposeRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ObjectsResource.ComposeRequest request = storageService.Objects.Compose(requestBody, destinationBucket, destinationObject);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Object response = request.Execute();
             // Data.Object response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1712,14 +1722,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1731,32 +1737,37 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Copy` method:
+
             // Name of the bucket in which to find the source object.
-            string sourceBucket = "{MY-SOURCE-BUCKET}"; // TODO: Update placeholder value(s).
+            string sourceBucket = "{MY-SOURCE-BUCKET}";
 
             // Name of the source object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string sourceObject = "{MY-SOURCE-OBJECT}"; // TODO: Update placeholder value(s).
+            string sourceObject = "{MY-SOURCE-OBJECT}";
 
             // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
             // value, if any.For information about how to URL encode object names to be path safe, see Encoding URI
             // Path Parts.
-            string destinationBucket = "{MY-DESTINATION-BUCKET}"; // TODO: Update placeholder value(s).
+            string destinationBucket = "{MY-DESTINATION-BUCKET}";
 
             // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
             // object metadata's name value, if any.
-            string destinationObject = "{MY-DESTINATION-OBJECT}"; // TODO: Update placeholder value(s).
+            string destinationObject = "{MY-DESTINATION-OBJECT}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.Object requestBody = new Data.Object();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ObjectsResource.CopyRequest request = storageService.Objects.Copy(requestBody, sourceBucket, sourceObject, destinationBucket, destinationObject);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Object response = request.Execute();
             // Data.Object response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1786,14 +1797,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1805,16 +1812,20 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // Name of the bucket in which the object resides.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
 
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
+            string object_ = "{MY-OBJECT}";
+
 
             ObjectsResource.DeleteRequest request = storageService.Objects.Delete(bucket, object_);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
         }
@@ -1848,14 +1859,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1867,20 +1874,24 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // Name of the bucket in which the object resides.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
 
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
+            string object_ = "{MY-OBJECT}";
+
 
             ObjectsResource.GetRequest request = storageService.Objects.Get(bucket, object_);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Object response = request.Execute();
             // Data.Object response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1913,14 +1924,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1931,21 +1938,26 @@ namespace StorageSample
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
+
+
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
 
             // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
             // value, if any.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.Object requestBody = new Data.Object();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ObjectsResource.InsertRequest request = storageService.Objects.Insert(requestBody, bucket);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Object response = request.Execute();
             // Data.Object response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1978,14 +1990,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1997,15 +2005,19 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // Name of the bucket in which to look for objects.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
+
 
             ObjectsResource.ListRequest request = storageService.Objects.List(bucket);
 
             Data.Objects response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -2015,7 +2027,7 @@ namespace StorageSample
                 }
                 foreach (Data.Object object_ in response.Items)
                 {
-                    // TODO: Use object_
+                    // TODO: Change code below to process each `object_` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(object_));
                 }
                 request.PageToken = response.NextPageToken;
@@ -2051,14 +2063,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -2070,23 +2078,28 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
             // Name of the bucket in which the object resides.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
 
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
+            string object_ = "{MY-OBJECT}";
 
-            // TODO: Assign values to the desired properties to be changed.
+
             Data.Object requestBody = new Data.Object();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
 
             ObjectsResource.PatchRequest request = storageService.Objects.Patch(requestBody, bucket, object_);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Object response = request.Execute();
             // Data.Object response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -2119,14 +2132,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -2138,32 +2147,37 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Rewrite` method:
+
             // Name of the bucket in which to find the source object.
-            string sourceBucket = "{MY-SOURCE-BUCKET}"; // TODO: Update placeholder value(s).
+            string sourceBucket = "{MY-SOURCE-BUCKET}";
 
             // Name of the source object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string sourceObject = "{MY-SOURCE-OBJECT}"; // TODO: Update placeholder value(s).
+            string sourceObject = "{MY-SOURCE-OBJECT}";
 
             // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
             // value, if any.
-            string destinationBucket = "{MY-DESTINATION-BUCKET}"; // TODO: Update placeholder value(s).
+            string destinationBucket = "{MY-DESTINATION-BUCKET}";
 
             // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
             // object metadata's name value, if any. For information about how to URL encode object names to be
             // path safe, see Encoding URI Path Parts.
-            string destinationObject = "{MY-DESTINATION-OBJECT}"; // TODO: Update placeholder value(s).
+            string destinationObject = "{MY-DESTINATION-OBJECT}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.Object requestBody = new Data.Object();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ObjectsResource.RewriteRequest request = storageService.Objects.Rewrite(requestBody, sourceBucket, sourceObject, destinationBucket, destinationObject);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.RewriteResponse response = request.Execute();
             // Data.RewriteResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -2196,14 +2210,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -2215,23 +2225,28 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
             // Name of the bucket in which the object resides.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
+            string bucket = "{MY-BUCKET}";
 
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}"; // TODO: Update placeholder value(s).
+            string object_ = "{MY-OBJECT}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.Object requestBody = new Data.Object();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ObjectsResource.UpdateRequest request = storageService.Objects.Update(requestBody, bucket, object_);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Object response = request.Execute();
             // Data.Object response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -2264,14 +2279,10 @@ namespace StorageSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -2283,19 +2294,24 @@ namespace StorageSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Name of the bucket in which to look for objects.
-            string bucket = "{MY-BUCKET}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `WatchAll` method:
+
+            // Name of the bucket in which to look for objects.
+            string bucket = "{MY-BUCKET}";
+
+
             Data.Channel requestBody = new Data.Channel();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ObjectsResource.WatchAllRequest request = storageService.Objects.WatchAll(requestBody, bucket);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Channel response = request.Execute();
             // Data.Channel response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }

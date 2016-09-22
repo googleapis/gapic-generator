@@ -11,12 +11,10 @@
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudbilling = google.cloudbilling('v1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -29,9 +27,13 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
     // The resource name of the billing account to retrieve. For example,
     // `billingAccounts/012345-567890-ABCDEF`.
-    name: "billingAccounts/{MY-BILLINGACCOUNT}", // TODO: Update placeholder value(s).
+    name: 'billingAccounts/{MY-BILLINGACCOUNT}',
+
 
     auth: authClient
   };
@@ -42,7 +44,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -58,12 +60,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudbilling = google.cloudbilling('v1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -80,7 +80,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
     auth: authClient
   };
 
-  cloudbilling.billingAccounts.list(request, function handlePage(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -88,11 +88,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     var billingAccountsPage = response['billingAccounts'];
     if (!billingAccountsPage) {
-      console.log('{}');
       return;
     }
     for (var i = 0; i < billingAccountsPage.length; i++) {
-      // TODO: Use billingAccountsPage
+      // TODO: Change code below to process each resource in `billingAccountsPage`:
       console.log(JSON.stringify(billingAccountsPage[i], null, 2));
     }
 
@@ -100,7 +99,9 @@ google.auth.getApplicationDefault(function(err, authClient) {
       request.pageToken = response.nextPageToken;
       cloudbilling.billingAccounts.list(request, handlePage);
     }
-  });
+  };
+
+  cloudbilling.billingAccounts.list(request, handlePage);
 });
 // BEFORE RUNNING:
 // ---------------
@@ -114,12 +115,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudbilling = google.cloudbilling('v1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -132,14 +131,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
     // The resource name of the billing account associated with the projects that you want to list. For
     // example, `billingAccounts/012345-567890-ABCDEF`.
-    name: "billingAccounts/{MY-BILLINGACCOUNT}", // TODO: Update placeholder value(s).
+    name: 'billingAccounts/{MY-BILLINGACCOUNT}',
+
 
     auth: authClient
   };
 
-  cloudbilling.billingAccounts.projects.list(request, function handlePage(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -147,11 +150,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     var projectBillingInfoPage = response['projectBillingInfo'];
     if (!projectBillingInfoPage) {
-      console.log('{}');
       return;
     }
     for (var i = 0; i < projectBillingInfoPage.length; i++) {
-      // TODO: Use projectBillingInfoPage
+      // TODO: Change code below to process each resource in `projectBillingInfoPage`:
       console.log(JSON.stringify(projectBillingInfoPage[i], null, 2));
     }
 
@@ -159,7 +161,9 @@ google.auth.getApplicationDefault(function(err, authClient) {
       request.pageToken = response.nextPageToken;
       cloudbilling.billingAccounts.projects.list(request, handlePage);
     }
-  });
+  };
+
+  cloudbilling.billingAccounts.projects.list(request, handlePage);
 });
 // BEFORE RUNNING:
 // ---------------
@@ -173,12 +177,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudbilling = google.cloudbilling('v1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -191,9 +193,13 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `getBillingInfo` method:
+
     // The resource name of the project for which billing information is retrieved. For example,
     // `projects/tokyo-rain-123`.
-    name: "projects/{MY-PROJECT}", // TODO: Update placeholder value(s).
+    name: 'projects/{MY-PROJECT}',
+
 
     auth: authClient
   };
@@ -204,7 +210,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -220,12 +226,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudbilling = google.cloudbilling('v1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -238,12 +242,16 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `updateBillingInfo` method:
+
     // The resource name of the project associated with the billing information that you want to update.
     // For example, `projects/tokyo-rain-123`.
-    name: "projects/{MY-PROJECT}", // TODO: Update placeholder value(s).
+    name: 'projects/{MY-PROJECT}',
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -255,7 +263,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });

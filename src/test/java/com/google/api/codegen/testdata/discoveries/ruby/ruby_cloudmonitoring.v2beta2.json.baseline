@@ -17,23 +17,27 @@ require 'json'
 
 service = Google::Apis::CloudmonitoringV2beta2::CloudMonitoringService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# The project id. The value can be the numeric project ID or string-based project name.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
 
-# TODO: Assign values to the desired members.
-metric_descriptor_body = Google::Apis::CloudmonitoringV2beta2::MetricDescriptor.new
+# TODO: Change placeholders below to desired parameter values for the `create_metric_descriptor` method:
+
+# The project id. The value can be the numeric project ID or string-based project name.
+project = '{MY-PROJECT}'
+
+
+request_body = Google::Apis::CloudmonitoringV2beta2::MetricDescriptor.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.create_metric_descriptor(project, metric_descriptor_body)
+response = service.create_metric_descriptor(project, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -53,23 +57,26 @@ require 'json'
 
 service = Google::Apis::CloudmonitoringV2beta2::CloudMonitoringService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `delete_metric_descriptor` method:
+
 # The project ID to which the metric belongs.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Name of the metric.
-metric = '{MY-METRIC}'  # TODO: Update placeholder value(s).
+metric = '{MY-METRIC}'
+
 
 # Perform the call
 response = service.delete_metric_descriptor(project, metric)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -89,26 +96,30 @@ require 'json'
 
 service = Google::Apis::CloudmonitoringV2beta2::CloudMonitoringService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# The project id. The value can be the numeric project ID or string-based project name.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
 
-# TODO: Assign values to the desired members.
-list_metric_descriptors_request_body = Google::Apis::CloudmonitoringV2beta2::ListMetricDescriptorsRequest.new
+# TODO: Change placeholders below to desired parameter values for the `list_metric_descriptors` method:
+
+# The project id. The value can be the numeric project ID or string-based project name.
+project = '{MY-PROJECT}'
+
+
+request_body = Google::Apis::CloudmonitoringV2beta2::ListMetricDescriptorsRequest.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
 metrics = service.fetch_all(items: :metrics) do |token|
-  service.list_metric_descriptors(project, list_metric_descriptors_request_body, page_token: token)
+  service.list_metric_descriptors(project, request_body, page_token: token)
 end
 
 metrics.each do |metric_descriptor|
-  # TODO: Use metric_descriptor
+  # TODO: Change code below to process each `metric_descriptor` resource:
   puts JSON.pretty_generate(metric_descriptor)
 end
 # BEFORE RUNNING:
@@ -129,34 +140,38 @@ require 'json'
 
 service = Google::Apis::CloudmonitoringV2beta2::CloudMonitoringService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `list_timeseries` method:
+
 # The project ID to which this time series belongs. The value can be the numeric project ID or
 # string-based project name.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
 # compute.googleapis.com/instance/disk/read_ops_count.
-metric = '{MY-METRIC}'  # TODO: Update placeholder value(s).
+metric = '{MY-METRIC}'
 
 # End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
-youngest = '{MY-YOUNGEST}'  # TODO: Update placeholder value(s).
+youngest = '{MY-YOUNGEST}'
 
-# TODO: Assign values to the desired members.
-list_timeseries_request_body = Google::Apis::CloudmonitoringV2beta2::ListTimeseriesRequest.new
+
+request_body = Google::Apis::CloudmonitoringV2beta2::ListTimeseriesRequest.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
 timeseries = service.fetch_all(items: :timeseries) do |token|
-  service.list_timeseries(project, metric, youngest, list_timeseries_request_body, page_token: token)
+  service.list_timeseries(project, metric, youngest, request_body, page_token: token)
 end
 
 timeseries.each do |timeseries|
-  # TODO: Use timeseries
+  # TODO: Change code below to process each `timeseries` resource:
   puts JSON.pretty_generate(timeseries)
 end
 # BEFORE RUNNING:
@@ -177,23 +192,27 @@ require 'json'
 
 service = Google::Apis::CloudmonitoringV2beta2::CloudMonitoringService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# The project ID. The value can be the numeric project ID or string-based project name.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
 
-# TODO: Assign values to the desired members.
-write_timeseries_request_body = Google::Apis::CloudmonitoringV2beta2::WriteTimeseriesRequest.new
+# TODO: Change placeholders below to desired parameter values for the `write_timeseries` method:
+
+# The project ID. The value can be the numeric project ID or string-based project name.
+project = '{MY-PROJECT}'
+
+
+request_body = Google::Apis::CloudmonitoringV2beta2::WriteTimeseriesRequest.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.write_timeseries(project, write_timeseries_request_body)
+response = service.write_timeseries(project, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -213,33 +232,37 @@ require 'json'
 
 service = Google::Apis::CloudmonitoringV2beta2::CloudMonitoringService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `list_timeseries_descriptors` method:
+
 # The project ID to which this time series belongs. The value can be the numeric project ID or
 # string-based project name.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
 # compute.googleapis.com/instance/disk/read_ops_count.
-metric = '{MY-METRIC}'  # TODO: Update placeholder value(s).
+metric = '{MY-METRIC}'
 
 # End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
-youngest = '{MY-YOUNGEST}'  # TODO: Update placeholder value(s).
+youngest = '{MY-YOUNGEST}'
 
-# TODO: Assign values to the desired members.
-list_timeseries_descriptors_request_body = Google::Apis::CloudmonitoringV2beta2::ListTimeseriesDescriptorsRequest.new
+
+request_body = Google::Apis::CloudmonitoringV2beta2::ListTimeseriesDescriptorsRequest.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
 timeseries = service.fetch_all(items: :timeseries) do |token|
-  service.list_timeseries_descriptors(project, metric, youngest, list_timeseries_descriptors_request_body, page_token: token)
+  service.list_timeseries_descriptors(project, metric, youngest, request_body, page_token: token)
 end
 
 timeseries.each do |timeseries_descriptor|
-  # TODO: Use timeseries_descriptor
+  # TODO: Change code below to process each `timeseries_descriptor` resource:
   puts JSON.pretty_generate(timeseries_descriptor)
 end

@@ -14,6 +14,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -25,37 +26,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dns.New(hc)
+  dnsService, err := dns.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Identifies the project addressed by this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
+  // TODO: Change placeholder value above.
 
   // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-  managedZone := "{MY-MANAGED-ZONE}" // TODO: Update placeholder value(s).
+  managedZone := "{MY-MANAGED-ZONE}"
+  // TODO: Change placeholder value above.
 
-  resource := &dns.Change{
-    // TODO: Add the desired fields.
+  rb := dns.Change{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Changes.Create(project, managedZone, resource).Context(ctx).Do()
+  resp, err := dnsService.Changes.Create(project, managedZone, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -72,6 +74,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -83,36 +86,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dns.New(hc)
+  dnsService, err := dns.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Identifies the project addressed by this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
+  // TODO: Change placeholder value above.
 
   // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-  managedZone := "{MY-MANAGED-ZONE}" // TODO: Update placeholder value(s).
+  managedZone := "{MY-MANAGED-ZONE}"
+  // TODO: Change placeholder value above.
 
   // The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
-  changeId := "{MY-CHANGE-ID}" // TODO: Update placeholder value(s).
+  changeId := "{MY-CHANGE-ID}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.Changes.Get(project, managedZone, changeId).Context(ctx).Do()
+  resp, err := dnsService.Changes.Get(project, managedZone, changeId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -129,6 +134,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -140,33 +146,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dns.New(hc)
+  dnsService, err := dns.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Identifies the project addressed by this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
+  // TODO: Change placeholder value above.
 
   // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-  managedZone := "{MY-MANAGED-ZONE}" // TODO: Update placeholder value(s).
+  managedZone := "{MY-MANAGED-ZONE}"
+  // TODO: Change placeholder value above.
 
-  call := s.Changes.List(project, managedZone)
-  if err := call.Pages(ctx, func(page *dns.ChangesListResponse) error {
+  req := dnsService.Changes.List(project, managedZone)
+  if err := req.Pages(ctx, func(page *dns.ChangesListResponse) error {
     for _, change := range page.Changes {
-      // TODO: Use change
-      log.Printf("%#v\n", change)
+      // TODO: Change code below to process each `change` resource:
+      fmt.Printf("%#v\n", change)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -186,6 +193,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -197,34 +205,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dns.New(hc)
+  dnsService, err := dns.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Identifies the project addressed by this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
+  // TODO: Change placeholder value above.
 
-  resource := &dns.ManagedZone{
-    // TODO: Add the desired fields.
+  rb := dns.ManagedZone{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.ManagedZones.Create(project, resource).Context(ctx).Do()
+  resp, err := dnsService.ManagedZones.Create(project, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -241,6 +249,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -252,27 +261,28 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dns.New(hc)
+  dnsService, err := dns.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Identifies the project addressed by this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
+  // TODO: Change placeholder value above.
 
   // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-  managedZone := "{MY-MANAGED-ZONE}" // TODO: Update placeholder value(s).
+  managedZone := "{MY-MANAGED-ZONE}"
+  // TODO: Change placeholder value above.
 
-  if err := s.ManagedZones.Delete(project, managedZone).Context(ctx).Do(); err != nil {
+  if err := dnsService.ManagedZones.Delete(project, managedZone).Context(ctx).Do(); err != nil {
     log.Fatal(err)
   }
 }
@@ -291,6 +301,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -302,33 +313,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dns.New(hc)
+  dnsService, err := dns.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Identifies the project addressed by this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
+  // TODO: Change placeholder value above.
 
   // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-  managedZone := "{MY-MANAGED-ZONE}" // TODO: Update placeholder value(s).
+  managedZone := "{MY-MANAGED-ZONE}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.ManagedZones.Get(project, managedZone).Context(ctx).Do()
+  resp, err := dnsService.ManagedZones.Get(project, managedZone).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -345,6 +357,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -356,30 +369,30 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dns.New(hc)
+  dnsService, err := dns.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Identifies the project addressed by this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
+  // TODO: Change placeholder value above.
 
-  call := s.ManagedZones.List(project)
-  if err := call.Pages(ctx, func(page *dns.ManagedZonesListResponse) error {
+  req := dnsService.ManagedZones.List(project)
+  if err := req.Pages(ctx, func(page *dns.ManagedZonesListResponse) error {
     for _, managedZone := range page.ManagedZones {
-      // TODO: Use managedZone
-      log.Printf("%#v\n", managedZone)
+      // TODO: Change code below to process each `managedZone` resource:
+      fmt.Printf("%#v\n", managedZone)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -399,6 +412,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -410,30 +424,30 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dns.New(hc)
+  dnsService, err := dns.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Identifies the project addressed by this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.Projects.Get(project).Context(ctx).Do()
+  resp, err := dnsService.Projects.Get(project).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -450,6 +464,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -461,33 +476,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dns.New(hc)
+  dnsService, err := dns.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // Identifies the project addressed by this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
+  // TODO: Change placeholder value above.
 
   // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-  managedZone := "{MY-MANAGED-ZONE}" // TODO: Update placeholder value(s).
+  managedZone := "{MY-MANAGED-ZONE}"
+  // TODO: Change placeholder value above.
 
-  call := s.ResourceRecordSets.List(project, managedZone)
-  if err := call.Pages(ctx, func(page *dns.ResourceRecordSetsListResponse) error {
+  req := dnsService.ResourceRecordSets.List(project, managedZone)
+  if err := req.Pages(ctx, func(page *dns.ResourceRecordSetsListResponse) error {
     for _, resourceRecordSet := range page.Rrsets {
-      // TODO: Use resourceRecordSet
-      log.Printf("%#v\n", resourceRecordSet)
+      // TODO: Change code below to process each `resourceRecordSet` resource:
+      fmt.Printf("%#v\n", resourceRecordSet)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }

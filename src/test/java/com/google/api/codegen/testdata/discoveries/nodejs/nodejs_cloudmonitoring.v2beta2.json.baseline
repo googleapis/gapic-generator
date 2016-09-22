@@ -11,12 +11,10 @@
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudmonitoring = google.cloudmonitoring('v2beta2');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -29,11 +27,15 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `create` method:
+
     // The project id. The value can be the numeric project ID or string-based project name.
-    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+    project: '{MY-PROJECT}',
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -45,7 +47,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -61,12 +63,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudmonitoring = google.cloudmonitoring('v2beta2');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -79,11 +79,15 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
     // The project ID to which the metric belongs.
-    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+    project: '{MY-PROJECT}',
 
     // Name of the metric.
-    metric: "{MY-METRIC}", // TODO: Update placeholder value(s).
+    metric: '{MY-METRIC}',
+
 
     auth: authClient
   };
@@ -94,7 +98,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -110,12 +114,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudmonitoring = google.cloudmonitoring('v2beta2');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -128,17 +130,21 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
     // The project id. The value can be the numeric project ID or string-based project name.
-    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+    project: '{MY-PROJECT}',
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
   };
 
-  cloudmonitoring.metricDescriptors.list(request, function handlePage(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -146,11 +152,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     var metricsPage = response['metrics'];
     if (!metricsPage) {
-      console.log('{}');
       return;
     }
     for (var i = 0; i < metricsPage.length; i++) {
-      // TODO: Use metricsPage
+      // TODO: Change code below to process each resource in `metricsPage`:
       console.log(JSON.stringify(metricsPage[i], null, 2));
     }
 
@@ -158,7 +163,9 @@ google.auth.getApplicationDefault(function(err, authClient) {
       request.pageToken = response.nextPageToken;
       cloudmonitoring.metricDescriptors.list(request, handlePage);
     }
-  });
+  };
+
+  cloudmonitoring.metricDescriptors.list(request, handlePage);
 });
 // BEFORE RUNNING:
 // ---------------
@@ -172,12 +179,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudmonitoring = google.cloudmonitoring('v2beta2');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -190,25 +195,29 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
     // The project ID to which this time series belongs. The value can be the numeric project ID or
     // string-based project name.
-    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+    project: '{MY-PROJECT}',
 
     // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
     // compute.googleapis.com/instance/disk/read_ops_count.
-    metric: "{MY-METRIC}", // TODO: Update placeholder value(s).
+    metric: '{MY-METRIC}',
 
     // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
-    youngest: "{MY-YOUNGEST}", // TODO: Update placeholder value(s).
+    youngest: '{MY-YOUNGEST}',
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
   };
 
-  cloudmonitoring.timeseries.list(request, function handlePage(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -216,11 +225,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     var timeseriesPage = response['timeseries'];
     if (!timeseriesPage) {
-      console.log('{}');
       return;
     }
     for (var i = 0; i < timeseriesPage.length; i++) {
-      // TODO: Use timeseriesPage
+      // TODO: Change code below to process each resource in `timeseriesPage`:
       console.log(JSON.stringify(timeseriesPage[i], null, 2));
     }
 
@@ -228,7 +236,9 @@ google.auth.getApplicationDefault(function(err, authClient) {
       request.pageToken = response.nextPageToken;
       cloudmonitoring.timeseries.list(request, handlePage);
     }
-  });
+  };
+
+  cloudmonitoring.timeseries.list(request, handlePage);
 });
 // BEFORE RUNNING:
 // ---------------
@@ -242,12 +252,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudmonitoring = google.cloudmonitoring('v2beta2');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -260,11 +268,15 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `write` method:
+
     // The project ID. The value can be the numeric project ID or string-based project name.
-    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+    project: '{MY-PROJECT}',
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -276,7 +288,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -292,12 +304,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudmonitoring = google.cloudmonitoring('v2beta2');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -310,25 +320,29 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
     // The project ID to which this time series belongs. The value can be the numeric project ID or
     // string-based project name.
-    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+    project: '{MY-PROJECT}',
 
     // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
     // compute.googleapis.com/instance/disk/read_ops_count.
-    metric: "{MY-METRIC}", // TODO: Update placeholder value(s).
+    metric: '{MY-METRIC}',
 
     // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
-    youngest: "{MY-YOUNGEST}", // TODO: Update placeholder value(s).
+    youngest: '{MY-YOUNGEST}',
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
   };
 
-  cloudmonitoring.timeseriesDescriptors.list(request, function handlePage(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -336,11 +350,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     var timeseriesPage = response['timeseries'];
     if (!timeseriesPage) {
-      console.log('{}');
       return;
     }
     for (var i = 0; i < timeseriesPage.length; i++) {
-      // TODO: Use timeseriesPage
+      // TODO: Change code below to process each resource in `timeseriesPage`:
       console.log(JSON.stringify(timeseriesPage[i], null, 2));
     }
 
@@ -348,5 +361,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       request.pageToken = response.nextPageToken;
       cloudmonitoring.timeseriesDescriptors.list(request, handlePage);
     }
-  });
+  };
+
+  cloudmonitoring.timeseriesDescriptors.list(request, handlePage);
 });

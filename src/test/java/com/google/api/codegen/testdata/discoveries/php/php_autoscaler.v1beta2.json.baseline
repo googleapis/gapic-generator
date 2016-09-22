@@ -17,9 +17,8 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -28,18 +27,22 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Autoscaler($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // Project ID of Autoscaler resource.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Zone name of Autoscaler resource.
-$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
+$zone = '{MY-ZONE}';
 
 // Name of the Autoscaler resource.
-$autoscaler = '{MY-AUTOSCALER}'; // TODO: Update placeholder value(s).
+$autoscaler = '{MY-AUTOSCALER}';
+
 
 $response = $service->autoscalers->delete($project, $zone, $autoscaler);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -59,9 +62,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -70,18 +72,22 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Autoscaler($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // Project ID of Autoscaler resource.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Zone name of Autoscaler resource.
-$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
+$zone = '{MY-ZONE}';
 
 // Name of the Autoscaler resource.
-$autoscaler = '{MY-AUTOSCALER}'; // TODO: Update placeholder value(s).
+$autoscaler = '{MY-AUTOSCALER}';
+
 
 $response = $service->autoscalers->get($project, $zone, $autoscaler);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -101,9 +107,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -112,18 +117,23 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Autoscaler($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
+
 // Project ID of Autoscaler resource.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Zone name of Autoscaler resource.
-$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
+$zone = '{MY-ZONE}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Autoscaler_Autoscaler($client);
 
-$response = $service->autoscalers->insert($project, $zone, $postBody);
+$requestBody = new Google_Service_Autoscaler_Autoscaler($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->autoscalers->insert($project, $zone, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -143,9 +153,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -154,18 +163,22 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Autoscaler($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listAutoscalers` method:
+
 // Project ID of Autoscaler resource.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Zone name of Autoscaler resource.
-$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
+$zone = '{MY-ZONE}';
+
 
 $optParams = array();
 do {
   $response = $service->autoscalers->listAutoscalers($project, $zone, $optParams);
 
   foreach ($response['items'] as $autoscaler) {
-    // TODO: Use autoscaler
+    // TODO: Change code below to process each `autoscaler` resource:
     echo '<pre>', var_export($autoscaler, true), '</pre>', "\n";
   }
 
@@ -189,9 +202,8 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -200,21 +212,26 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Autoscaler($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
+
 // Project ID of Autoscaler resource.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Zone name of Autoscaler resource.
-$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
+$zone = '{MY-ZONE}';
 
 // Name of the Autoscaler resource.
-$autoscaler = '{MY-AUTOSCALER}'; // TODO: Update placeholder value(s).
+$autoscaler = '{MY-AUTOSCALER}';
 
-// TODO: Assign values to the desired properties to be changed.
-$postBody = new Google_Service_Autoscaler_Autoscaler($client);
 
-$response = $service->autoscalers->patch($project, $zone, $autoscaler, $postBody);
+$requestBody = new Google_Service_Autoscaler_Autoscaler($client);
+// TODO: Assign values to desired properties of the `requestBody` object to be changed.
 
-// TODO: Use $response
+
+$response = $service->autoscalers->patch($project, $zone, $autoscaler, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -234,9 +251,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -245,21 +261,26 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Autoscaler($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
+
 // Project ID of Autoscaler resource.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Zone name of Autoscaler resource.
-$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
+$zone = '{MY-ZONE}';
 
 // Name of the Autoscaler resource.
-$autoscaler = '{MY-AUTOSCALER}'; // TODO: Update placeholder value(s).
+$autoscaler = '{MY-AUTOSCALER}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Autoscaler_Autoscaler($client);
 
-$response = $service->autoscalers->update($project, $zone, $autoscaler, $postBody);
+$requestBody = new Google_Service_Autoscaler_Autoscaler($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->autoscalers->update($project, $zone, $autoscaler, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -279,9 +300,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -291,13 +311,21 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 $service = new Google_Service_Autoscaler($client);
 
 
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
 
+<<<<<<< e199ef123dc787d193bdd6e13ee92dc514de6f48
+// project
+$project = '{MY-PROJECT}';
+=======
+$zone = '{MY-ZONE}';
+>>>>>>> Add Go 3LO and API key auth support (#453)
 
-$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s). eg. 'us-central1-f'
+// zone
+$zone = '{MY-ZONE}';  // ex: 'us-central1-f'
 
+// operation
+$operation = '{MY-OPERATION}';
 
-$operation = '{MY-OPERATION}'; // TODO: Update placeholder value(s).
 
 $service->zoneOperations->delete($project, $zone, $operation);
 <?php
@@ -318,9 +346,8 @@ $service->zoneOperations->delete($project, $zone, $operation);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -330,17 +357,25 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 $service = new Google_Service_Autoscaler($client);
 
 
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+// TODO: Change placeholders below to desired parameter values for the `get` method:
 
+<<<<<<< e199ef123dc787d193bdd6e13ee92dc514de6f48
+// project
+$project = '{MY-PROJECT}';
+=======
+$zone = '{MY-ZONE}';
+>>>>>>> Add Go 3LO and API key auth support (#453)
 
-$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s). eg. 'us-central1-f'
+// zone
+$zone = '{MY-ZONE}';  // ex: 'us-central1-f'
 
+// operation
+$operation = '{MY-OPERATION}';
 
-$operation = '{MY-OPERATION}'; // TODO: Update placeholder value(s).
 
 $response = $service->zoneOperations->get($project, $zone, $operation);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -360,9 +395,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -372,17 +406,25 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 $service = new Google_Service_Autoscaler($client);
 
 
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+// TODO: Change placeholders below to desired parameter values for the `listZoneOperations` method:
 
+// project
+$project = '{MY-PROJECT}';
 
-$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s). eg. 'us-central1-f'
+// zone
+$zone = '{MY-ZONE}';  // ex: 'us-central1-f'
+
+<<<<<<< e199ef123dc787d193bdd6e13ee92dc514de6f48
+=======
+$zone = '{MY-ZONE}';
+>>>>>>> Add Go 3LO and API key auth support (#453)
 
 $optParams = array();
 do {
   $response = $service->zoneOperations->listZoneOperations($project, $zone, $optParams);
 
   foreach ($response['items'] as $operation) {
-    // TODO: Use operation
+    // TODO: Change code below to process each `operation` resource:
     echo '<pre>', var_export($operation, true), '</pre>', "\n";
   }
 
@@ -406,9 +448,8 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -418,14 +459,18 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 $service = new Google_Service_Autoscaler($client);
 
 
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+// TODO: Change placeholders below to desired parameter values for the `listZones` method:
+
+// project
+$project = '{MY-PROJECT}';
+
 
 $optParams = array();
 do {
   $response = $service->zones->listZones($project, $optParams);
 
   foreach ($response['items'] as $zone) {
-    // TODO: Use zone
+    // TODO: Change code below to process each `zone` resource:
     echo '<pre>', var_export($zone, true), '</pre>', "\n";
   }
 

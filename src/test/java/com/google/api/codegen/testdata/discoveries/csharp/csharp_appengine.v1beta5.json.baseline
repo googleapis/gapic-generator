@@ -27,14 +27,10 @@ namespace AppengineSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -46,80 +42,17 @@ namespace AppengineSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Part of `name`. Name of the application to get. For example: "apps/myapp".
-            string appsId = "{MY-APPS-ID}"; // TODO: Update placeholder value(s).
-
-            AppsResource.GetRequest request = appengineService.Apps.Get(appsId);
-
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
-            Data.Application response = request.Execute();
-            // Data.Application response = await request.ExecuteAsync();
-
-            // TODO: Use response
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
-        }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google App Engine Admin API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/appengine
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
-
-using Google.Apis.Appengine.v1beta5;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Services;
-using System.Threading.Tasks;
-using System.Web.Script.Serialization;
-
-using Data = Google.Apis.Appengine.v1beta5.Data;
+            Data.Application requestBody = new Data.Application();
+            // TODO: Assign values to desired properties of the `requestBody` object.
 
 
-namespace AppengineSample
-{
-    public class AppengineServiceExample
-    {
-        public static void Main(string[] args)
-        {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            AppsResource.CreateRequest request = appengineService.Apps.Create(requestBody);
 
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
-            AppengineService appengineService = new AppengineService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
-            });
-
-            // Part of `name`. The name of the operation resource.
-            string appsId = "{MY-APPS-ID}"; // TODO: Update placeholder value(s).
-
-            // Part of `name`. See documentation of `appsId`.
-            string operationsId = "{MY-OPERATIONS-ID}"; // TODO: Update placeholder value(s).
-
-            AppsResource.OperationsResource.GetRequest request = appengineService.Apps.Operations.Get(appsId, operationsId);
-
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -152,14 +85,10 @@ namespace AppengineSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -171,15 +100,281 @@ namespace AppengineSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // Part of `name`. Name of the application to get. Example: `apps/myapp`.
+            string appsId = "{MY-APPS-ID}";
+
+
+            AppsResource.GetRequest request = appengineService.Apps.Get(appsId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Application response = request.Execute();
+            // Data.Application response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Appengine.v1beta5;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
+
+
+namespace AppengineSample
+{
+    public class AppengineServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AppengineService appengineService = new AppengineService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // Part of `name`. Resource name for the location.
+            string appsId = "{MY-APPS-ID}";
+
+            // Part of `name`. See documentation of `appsId`.
+            string locationsId = "{MY-LOCATIONS-ID}";
+
+
+            AppsResource.LocationsResource.GetRequest request = appengineService.Apps.Locations.Get(appsId, locationsId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Location response = request.Execute();
+            // Data.Location response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Appengine.v1beta5;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
+
+
+namespace AppengineSample
+{
+    public class AppengineServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AppengineService appengineService = new AppengineService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // Part of `name`. The resource that owns the locations collection, if applicable.
+            string appsId = "{MY-APPS-ID}";
+
+
+            AppsResource.LocationsResource.ListRequest request = appengineService.Apps.Locations.List(appsId);
+
+            Data.ListLocationsResponse response;
+            do
+            {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+                response = request.Execute();
+                // response = await request.ExecuteAsync();
+
+                if (response.Locations == null)
+                {
+                    continue;
+                }
+                foreach (Data.Location location in response.Locations)
+                {
+                    // TODO: Change code below to process each `location` resource:
+                    Console.WriteLine(new JavaScriptSerializer().Serialize(location));
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Appengine.v1beta5;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
+
+
+namespace AppengineSample
+{
+    public class AppengineServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AppengineService appengineService = new AppengineService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // Part of `name`. The name of the operation resource.
+            string appsId = "{MY-APPS-ID}";
+
+            // Part of `name`. See documentation of `appsId`.
+            string operationsId = "{MY-OPERATIONS-ID}";
+
+
+            AppsResource.OperationsResource.GetRequest request = appengineService.Apps.Operations.Get(appsId, operationsId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Appengine.v1beta5;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
+
+
+namespace AppengineSample
+{
+    public class AppengineServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AppengineService appengineService = new AppengineService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // Part of `name`. The name of the operation collection.
-            string appsId = "{MY-APPS-ID}"; // TODO: Update placeholder value(s).
+            string appsId = "{MY-APPS-ID}";
+
 
             AppsResource.OperationsResource.ListRequest request = appengineService.Apps.Operations.List(appsId);
 
             Data.ListOperationsResponse response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -189,7 +384,7 @@ namespace AppengineSample
                 }
                 foreach (Data.Operation operation in response.Operations)
                 {
-                    // TODO: Use operation
+                    // TODO: Change code below to process each `operation` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(operation));
                 }
                 request.PageToken = response.NextPageToken;
@@ -225,14 +420,10 @@ namespace AppengineSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -244,19 +435,23 @@ namespace AppengineSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
-            string appsId = "{MY-APPS-ID}"; // TODO: Update placeholder value(s).
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+            // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default`.
+            string appsId = "{MY-APPS-ID}";
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "{MY-SERVICES-ID}"; // TODO: Update placeholder value(s).
+            string servicesId = "{MY-SERVICES-ID}";
+
 
             AppsResource.ServicesResource.DeleteRequest request = appengineService.Apps.Services.Delete(appsId, servicesId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -289,14 +484,10 @@ namespace AppengineSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -308,19 +499,23 @@ namespace AppengineSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
-            string appsId = "{MY-APPS-ID}"; // TODO: Update placeholder value(s).
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default`.
+            string appsId = "{MY-APPS-ID}";
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "{MY-SERVICES-ID}"; // TODO: Update placeholder value(s).
+            string servicesId = "{MY-SERVICES-ID}";
+
 
             AppsResource.ServicesResource.GetRequest request = appengineService.Apps.Services.Get(appsId, servicesId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Service response = request.Execute();
             // Data.Service response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -353,14 +548,10 @@ namespace AppengineSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -372,15 +563,19 @@ namespace AppengineSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Part of `name`. Name of the resource requested. For example: "apps/myapp".
-            string appsId = "{MY-APPS-ID}"; // TODO: Update placeholder value(s).
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // Part of `name`. Name of the resource requested. Example: `apps/myapp`.
+            string appsId = "{MY-APPS-ID}";
+
 
             AppsResource.ServicesResource.ListRequest request = appengineService.Apps.Services.List(appsId);
 
             Data.ListServicesResponse response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -390,7 +585,7 @@ namespace AppengineSample
                 }
                 foreach (Data.Service service in response.Services)
                 {
-                    // TODO: Use service
+                    // TODO: Change code below to process each `service` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(service));
                 }
                 request.PageToken = response.NextPageToken;
@@ -426,14 +621,10 @@ namespace AppengineSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -445,22 +636,27 @@ namespace AppengineSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
-            string appsId = "{MY-APPS-ID}"; // TODO: Update placeholder value(s).
+
+            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
+            // Part of `name`. Name of the resource to update. Example: `apps/myapp/services/default`.
+            string appsId = "{MY-APPS-ID}";
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "{MY-SERVICES-ID}"; // TODO: Update placeholder value(s).
+            string servicesId = "{MY-SERVICES-ID}";
 
-            // TODO: Assign values to the desired properties to be changed.
+
             Data.Service requestBody = new Data.Service();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
 
             AppsResource.ServicesResource.PatchRequest request = appengineService.Apps.Services.Patch(requestBody, appsId, servicesId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -493,14 +689,10 @@ namespace AppengineSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -512,22 +704,27 @@ namespace AppengineSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Create` method:
+
             // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
-            string appsId = "{MY-APPS-ID}"; // TODO: Update placeholder value(s).
+            string appsId = "{MY-APPS-ID}";
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "{MY-SERVICES-ID}"; // TODO: Update placeholder value(s).
+            string servicesId = "{MY-SERVICES-ID}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.Version requestBody = new Data.Version();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             AppsResource.ServicesResource.VersionsResource.CreateRequest request = appengineService.Apps.Services.Versions.Create(requestBody, appsId, servicesId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -560,14 +757,10 @@ namespace AppengineSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -579,23 +772,26 @@ namespace AppengineSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Part of `name`. Name of the resource requested. For example:
-            // "apps/myapp/services/default/versions/v1".
-            string appsId = "{MY-APPS-ID}"; // TODO: Update placeholder value(s).
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+            // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default/versions/v1`.
+            string appsId = "{MY-APPS-ID}";
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "{MY-SERVICES-ID}"; // TODO: Update placeholder value(s).
+            string servicesId = "{MY-SERVICES-ID}";
 
             // Part of `name`. See documentation of `appsId`.
-            string versionsId = "{MY-VERSIONS-ID}"; // TODO: Update placeholder value(s).
+            string versionsId = "{MY-VERSIONS-ID}";
+
 
             AppsResource.ServicesResource.VersionsResource.DeleteRequest request = appengineService.Apps.Services.Versions.Delete(appsId, servicesId, versionsId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -628,14 +824,10 @@ namespace AppengineSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -647,23 +839,26 @@ namespace AppengineSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Part of `name`. Name of the resource requested. For example:
-            // "apps/myapp/services/default/versions/v1".
-            string appsId = "{MY-APPS-ID}"; // TODO: Update placeholder value(s).
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default/versions/v1`.
+            string appsId = "{MY-APPS-ID}";
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "{MY-SERVICES-ID}"; // TODO: Update placeholder value(s).
+            string servicesId = "{MY-SERVICES-ID}";
 
             // Part of `name`. See documentation of `appsId`.
-            string versionsId = "{MY-VERSIONS-ID}"; // TODO: Update placeholder value(s).
+            string versionsId = "{MY-VERSIONS-ID}";
+
 
             AppsResource.ServicesResource.VersionsResource.GetRequest request = appengineService.Apps.Services.Versions.Get(appsId, servicesId, versionsId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Version response = request.Execute();
             // Data.Version response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -696,14 +891,10 @@ namespace AppengineSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -715,22 +906,242 @@ namespace AppengineSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Debug` method:
+
+            // Part of `name`. Name of the resource requested. Example:
+            // `apps/myapp/services/default/versions/v1/instances/instance-1`.
+            string appsId = "{MY-APPS-ID}";
+
+            // Part of `name`. See documentation of `appsId`.
+            string servicesId = "{MY-SERVICES-ID}";
+
+            // Part of `name`. See documentation of `appsId`.
+            string versionsId = "{MY-VERSIONS-ID}";
+
+            // Part of `name`. See documentation of `appsId`.
+            string instancesId = "{MY-INSTANCES-ID}";
+
+
+            Data.DebugInstanceRequest requestBody = new Data.DebugInstanceRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            AppsResource.ServicesResource.VersionsResource.InstancesResource.DebugRequest request = appengineService.Apps.Services.Versions.Instances.Debug(requestBody, appsId, servicesId, versionsId, instancesId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Appengine.v1beta5;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
+
+
+namespace AppengineSample
+{
+    public class AppengineServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AppengineService appengineService = new AppengineService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // Part of `name`. Name of the resource requested. For example:
-            // "apps/myapp/services/default/versions/v1".
-            string appsId = "{MY-APPS-ID}"; // TODO: Update placeholder value(s).
+            // "apps/myapp/services/default/versions/v1/instances/instance-1".
+            string appsId = "{MY-APPS-ID}";
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "{MY-SERVICES-ID}"; // TODO: Update placeholder value(s).
+            string servicesId = "{MY-SERVICES-ID}";
 
             // Part of `name`. See documentation of `appsId`.
-            string versionsId = "{MY-VERSIONS-ID}"; // TODO: Update placeholder value(s).
+            string versionsId = "{MY-VERSIONS-ID}";
+
+            // Part of `name`. See documentation of `appsId`.
+            string instancesId = "{MY-INSTANCES-ID}";
+
+
+            AppsResource.ServicesResource.VersionsResource.InstancesResource.DeleteRequest request = appengineService.Apps.Services.Versions.Instances.Delete(appsId, servicesId, versionsId, instancesId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Appengine.v1beta5;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
+
+
+namespace AppengineSample
+{
+    public class AppengineServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AppengineService appengineService = new AppengineService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
+            // Part of `name`. Name of the resource requested. Example:
+            // `apps/myapp/services/default/versions/v1/instances/instance-1`.
+            string appsId = "{MY-APPS-ID}";
+
+            // Part of `name`. See documentation of `appsId`.
+            string servicesId = "{MY-SERVICES-ID}";
+
+            // Part of `name`. See documentation of `appsId`.
+            string versionsId = "{MY-VERSIONS-ID}";
+
+            // Part of `name`. See documentation of `appsId`.
+            string instancesId = "{MY-INSTANCES-ID}";
+
+
+            AppsResource.ServicesResource.VersionsResource.InstancesResource.GetRequest request = appengineService.Apps.Services.Versions.Instances.Get(appsId, servicesId, versionsId, instancesId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Instance response = request.Execute();
+            // Data.Instance response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Appengine.v1beta5;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
+
+
+namespace AppengineSample
+{
+    public class AppengineServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AppengineService appengineService = new AppengineService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default/versions/v1`.
+            string appsId = "{MY-APPS-ID}";
+
+            // Part of `name`. See documentation of `appsId`.
+            string servicesId = "{MY-SERVICES-ID}";
+
+            // Part of `name`. See documentation of `appsId`.
+            string versionsId = "{MY-VERSIONS-ID}";
+
 
             AppsResource.ServicesResource.VersionsResource.InstancesResource.ListRequest request = appengineService.Apps.Services.Versions.Instances.List(appsId, servicesId, versionsId);
 
             Data.ListInstancesResponse response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -740,7 +1151,7 @@ namespace AppengineSample
                 }
                 foreach (Data.Instance instance in response.Instances)
                 {
-                    // TODO: Use instance
+                    // TODO: Change code below to process each `instance` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(instance));
                 }
                 request.PageToken = response.NextPageToken;
@@ -776,14 +1187,10 @@ namespace AppengineSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -795,18 +1202,22 @@ namespace AppengineSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
-            string appsId = "{MY-APPS-ID}"; // TODO: Update placeholder value(s).
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default`.
+            string appsId = "{MY-APPS-ID}";
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "{MY-SERVICES-ID}"; // TODO: Update placeholder value(s).
+            string servicesId = "{MY-SERVICES-ID}";
+
 
             AppsResource.ServicesResource.VersionsResource.ListRequest request = appengineService.Apps.Services.Versions.List(appsId, servicesId);
 
             Data.ListVersionsResponse response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -816,7 +1227,7 @@ namespace AppengineSample
                 }
                 foreach (Data.Version version in response.Versions)
                 {
-                    // TODO: Use version
+                    // TODO: Change code below to process each `version` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(version));
                 }
                 request.PageToken = response.NextPageToken;
@@ -852,14 +1263,10 @@ namespace AppengineSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -871,26 +1278,30 @@ namespace AppengineSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Part of `name`. Name of the resource to update. For example:
-            // "apps/myapp/services/default/versions/1".
-            string appsId = "{MY-APPS-ID}"; // TODO: Update placeholder value(s).
+
+            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
+            // Part of `name`. Name of the resource to update. Example: `apps/myapp/services/default/versions/1`.
+            string appsId = "{MY-APPS-ID}";
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "{MY-SERVICES-ID}"; // TODO: Update placeholder value(s).
+            string servicesId = "{MY-SERVICES-ID}";
 
             // Part of `name`. See documentation of `appsId`.
-            string versionsId = "{MY-VERSIONS-ID}"; // TODO: Update placeholder value(s).
+            string versionsId = "{MY-VERSIONS-ID}";
 
-            // TODO: Assign values to the desired properties to be changed.
+
             Data.Version requestBody = new Data.Version();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
 
             AppsResource.ServicesResource.VersionsResource.PatchRequest request = appengineService.Apps.Services.Versions.Patch(requestBody, appsId, servicesId, versionsId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }

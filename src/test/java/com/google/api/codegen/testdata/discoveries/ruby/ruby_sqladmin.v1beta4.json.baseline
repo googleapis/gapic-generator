@@ -17,26 +17,29 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `delete_backup_run` method:
+
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
 # The ID of the Backup Run to delete. To find a Backup Run ID, use the list method.
-id = ''  # TODO: Update placeholder value(s).
+id = ''
+
 
 # Perform the call
 response = service.delete_backup_run(project, instance, id)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -56,26 +59,29 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `get_backup_run` method:
+
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
 # The ID of this Backup Run.
-id = ''  # TODO: Update placeholder value(s).
+id = ''
+
 
 # Perform the call
 response = service.get_backup_run(project, instance, id)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -95,18 +101,64 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `insert_backup_run` method:
+
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
+
+
+request_body = Google::Apis::SqladminV1beta4::BackupRun.new
+# TODO: Assign values to desired members of the `request_body` object.
+
+
+# Perform the call
+response = service.insert_backup_run(project, instance, request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Cloud SQL Administration API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/sqladmin
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run
+#    `gcloud beta auth application-default login`
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+require 'googleauth'
+require 'google/apis/sqladmin_v1beta4'
+require 'json'
+
+service = Google::Apis::SqladminV1beta4::SQLAdminService.new
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
+# https://developers.google.com/identity/protocols/application-default-credentials
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+# TODO: Change placeholders below to desired parameter values for the `list_backup_runs` method:
+
+# Project ID of the project that contains the instance.
+project = '{MY-PROJECT}'
+
+# Cloud SQL instance ID. This does not include the project ID.
+instance = '{MY-INSTANCE}'
+
 
 # Perform the call
 items = service.fetch_all(items: :items) do |token|
@@ -114,7 +166,7 @@ items = service.fetch_all(items: :items) do |token|
 end
 
 items.each do |backup_run|
-  # TODO: Use backup_run
+  # TODO: Change code below to process each `backup_run` resource:
   puts JSON.pretty_generate(backup_run)
 end
 # BEFORE RUNNING:
@@ -135,26 +187,29 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `delete_database` method:
+
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Database instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
 # Name of the database to be deleted in the instance.
-database = '{MY-DATABASE}'  # TODO: Update placeholder value(s).
+database = '{MY-DATABASE}'
+
 
 # Perform the call
 response = service.delete_database(project, instance, database)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -174,26 +229,29 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `get_database` method:
+
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Database instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
 # Name of the database in the instance.
-database = '{MY-DATABASE}'  # TODO: Update placeholder value(s).
+database = '{MY-DATABASE}'
+
 
 # Perform the call
 response = service.get_database(project, instance, database)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -213,26 +271,30 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+# TODO: Change placeholders below to desired parameter values for the `insert_database` method:
 
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Database instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
-# TODO: Assign values to the desired members.
-database_body = Google::Apis::SqladminV1beta4::Database.new
+
+request_body = Google::Apis::SqladminV1beta4::Database.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.insert_database(project, instance, database_body)
+response = service.insert_database(project, instance, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -252,23 +314,26 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `list_databases` method:
+
 # Project ID of the project for which to list Cloud SQL instances.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
+
 
 # Perform the call
 response = service.list_databases(project, instance)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -288,29 +353,33 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `patch_database` method:
+
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Database instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
 # Name of the database to be updated in the instance.
-database = '{MY-DATABASE}'  # TODO: Update placeholder value(s).
+database = '{MY-DATABASE}'
 
-# TODO: Assign values to the desired members to be changed.
-database_body = Google::Apis::SqladminV1beta4::Database.new
+
+request_body = Google::Apis::SqladminV1beta4::Database.new
+# TODO: Assign values to desired members of the `request_body` object to be changed.
+
 
 # Perform the call
-response = service.patch_database(project, instance, database, database_body)
+response = service.patch_database(project, instance, database, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -330,29 +399,33 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `update_database` method:
+
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Database instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
 # Name of the database to be updated in the instance.
-database = '{MY-DATABASE}'  # TODO: Update placeholder value(s).
+database = '{MY-DATABASE}'
 
-# TODO: Assign values to the desired members.
-database_body = Google::Apis::SqladminV1beta4::Database.new
+
+request_body = Google::Apis::SqladminV1beta4::Database.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.update_database(project, instance, database, database_body)
+response = service.update_database(project, instance, database, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -372,9 +445,8 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
@@ -383,7 +455,7 @@ service.authorization = \
 # Perform the call
 response = service.list_flags()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -403,26 +475,30 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+# TODO: Change placeholders below to desired parameter values for the `clone_instance` method:
 
 # Project ID of the source as well as the clone Cloud SQL instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
-# TODO: Assign values to the desired members.
-clone_instances_request_body = Google::Apis::SqladminV1beta4::CloneInstancesRequest.new
+
+request_body = Google::Apis::SqladminV1beta4::CloneInstancesRequest.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.clone_instance(project, instance, clone_instances_request_body)
+response = service.clone_instance(project, instance, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -442,23 +518,26 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `delete_instance` method:
+
 # Project ID of the project that contains the instance to be deleted.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
+
 
 # Perform the call
 response = service.delete_instance(project, instance)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -478,26 +557,30 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+# TODO: Change placeholders below to desired parameter values for the `export_instance` method:
 
 # Project ID of the project that contains the instance to be exported.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
-# TODO: Assign values to the desired members.
-export_instances_request_body = Google::Apis::SqladminV1beta4::ExportInstancesRequest.new
+
+request_body = Google::Apis::SqladminV1beta4::ExportInstancesRequest.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.export_instance(project, instance, export_instances_request_body)
+response = service.export_instance(project, instance, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -517,26 +600,30 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+# TODO: Change placeholders below to desired parameter values for the `failover_instance` method:
 
 # ID of the project that contains the read replica.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
-# TODO: Assign values to the desired members.
-instances_failover_request_body = Google::Apis::SqladminV1beta4::InstancesFailoverRequest.new
+
+request_body = Google::Apis::SqladminV1beta4::InstancesFailoverRequest.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.failover_instance(project, instance, instances_failover_request_body)
+response = service.failover_instance(project, instance, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -556,23 +643,26 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `get_instance` method:
+
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Database instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
+
 
 # Perform the call
 response = service.get_instance(project, instance)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -592,26 +682,30 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+# TODO: Change placeholders below to desired parameter values for the `import_instance` method:
 
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
-# TODO: Assign values to the desired members.
-import_instances_request_body = Google::Apis::SqladminV1beta4::ImportInstancesRequest.new
+
+request_body = Google::Apis::SqladminV1beta4::ImportInstancesRequest.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.import_instance(project, instance, import_instances_request_body)
+response = service.import_instance(project, instance, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -631,23 +725,27 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+# TODO: Change placeholders below to desired parameter values for the `insert_instance` method:
 
 # Project ID of the project to which the newly created Cloud SQL instances should belong.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
-# TODO: Assign values to the desired members.
-database_instance_body = Google::Apis::SqladminV1beta4::DatabaseInstance.new
+
+request_body = Google::Apis::SqladminV1beta4::DatabaseInstance.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.insert_instance(project, database_instance_body)
+response = service.insert_instance(project, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -667,15 +765,18 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `list_instances` method:
+
 # Project ID of the project for which to list Cloud SQL instances.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
+
 
 # Perform the call
 items = service.fetch_all(items: :items) do |token|
@@ -683,7 +784,7 @@ items = service.fetch_all(items: :items) do |token|
 end
 
 items.each do |database_instance|
-  # TODO: Use database_instance
+  # TODO: Change code below to process each `database_instance` resource:
   puts JSON.pretty_generate(database_instance)
 end
 # BEFORE RUNNING:
@@ -704,26 +805,30 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `patch_instance` method:
+
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
-# TODO: Assign values to the desired members to be changed.
-database_instance_body = Google::Apis::SqladminV1beta4::DatabaseInstance.new
+
+request_body = Google::Apis::SqladminV1beta4::DatabaseInstance.new
+# TODO: Assign values to desired members of the `request_body` object to be changed.
+
 
 # Perform the call
-response = service.patch_instance(project, instance, database_instance_body)
+response = service.patch_instance(project, instance, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -743,23 +848,26 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `promote_instance_replica` method:
+
 # ID of the project that contains the read replica.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL read replica instance name.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
+
 
 # Perform the call
 response = service.promote_instance_replica(project, instance)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -779,23 +887,26 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `reset_instance_ssl_config` method:
+
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
+
 
 # Perform the call
 response = service.reset_instance_ssl_config(project, instance)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -815,23 +926,26 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `restart_instance` method:
+
 # Project ID of the project that contains the instance to be restarted.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
+
 
 # Perform the call
 response = service.restart_instance(project, instance)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -851,26 +965,30 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+# TODO: Change placeholders below to desired parameter values for the `restore_instance_backup` method:
 
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
-# TODO: Assign values to the desired members.
-restore_instances_backup_request_body = Google::Apis::SqladminV1beta4::RestoreInstancesBackupRequest.new
+
+request_body = Google::Apis::SqladminV1beta4::RestoreInstancesBackupRequest.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.restore_instance_backup(project, instance, restore_instances_backup_request_body)
+response = service.restore_instance_backup(project, instance, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -890,23 +1008,26 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `start_instance_replica` method:
+
 # ID of the project that contains the read replica.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL read replica instance name.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
+
 
 # Perform the call
 response = service.start_instance_replica(project, instance)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -926,23 +1047,26 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `stop_instance_replica` method:
+
 # ID of the project that contains the read replica.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL read replica instance name.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
+
 
 # Perform the call
 response = service.stop_instance_replica(project, instance)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -962,26 +1086,30 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `update_instance` method:
+
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
-# TODO: Assign values to the desired members.
-database_instance_body = Google::Apis::SqladminV1beta4::DatabaseInstance.new
+
+request_body = Google::Apis::SqladminV1beta4::DatabaseInstance.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.update_instance(project, instance, database_instance_body)
+response = service.update_instance(project, instance, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -1001,23 +1129,26 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `get_operation` method:
+
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Instance operation ID.
-operation = '{MY-OPERATION}'  # TODO: Update placeholder value(s).
+operation = '{MY-OPERATION}'
+
 
 # Perform the call
 response = service.get_operation(project, operation)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -1037,18 +1168,21 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `list_operations` method:
+
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
+
 
 # Perform the call
 items = service.fetch_all(items: :items) do |token|
@@ -1056,7 +1190,7 @@ items = service.fetch_all(items: :items) do |token|
 end
 
 items.each do |operation|
-  # TODO: Use operation
+  # TODO: Change code below to process each `operation` resource:
   puts JSON.pretty_generate(operation)
 end
 # BEFORE RUNNING:
@@ -1077,26 +1211,30 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `create_ssl_cert_ephemeral` method:
+
 # Project ID of the Cloud SQL project.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
-# TODO: Assign values to the desired members.
-ssl_certs_create_ephemeral_request_body = Google::Apis::SqladminV1beta4::SslCertsCreateEphemeralRequest.new
+
+request_body = Google::Apis::SqladminV1beta4::SslCertsCreateEphemeralRequest.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.create_ssl_cert_ephemeral(project, instance, ssl_certs_create_ephemeral_request_body)
+response = service.create_ssl_cert_ephemeral(project, instance, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -1116,26 +1254,29 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `delete_ssl_cert` method:
+
 # Project ID of the project that contains the instance to be deleted.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
 # Sha1 FingerPrint.
-sha1_fingerprint = '{MY-SHA1-FINGERPRINT}'  # TODO: Update placeholder value(s).
+sha1_fingerprint = '{MY-SHA1-FINGERPRINT}'
+
 
 # Perform the call
 response = service.delete_ssl_cert(project, instance, sha1_fingerprint)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -1155,26 +1296,29 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `get_ssl_cert` method:
+
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
 # Sha1 FingerPrint.
-sha1_fingerprint = '{MY-SHA1-FINGERPRINT}'  # TODO: Update placeholder value(s).
+sha1_fingerprint = '{MY-SHA1-FINGERPRINT}'
+
 
 # Perform the call
 response = service.get_ssl_cert(project, instance, sha1_fingerprint)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -1194,26 +1338,30 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+# TODO: Change placeholders below to desired parameter values for the `insert_ssl_cert` method:
 
 # Project ID of the project to which the newly created Cloud SQL instances should belong.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
-# TODO: Assign values to the desired members.
-insert_ssl_certs_request_body = Google::Apis::SqladminV1beta4::InsertSslCertsRequest.new
+
+request_body = Google::Apis::SqladminV1beta4::InsertSslCertsRequest.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.insert_ssl_cert(project, instance, insert_ssl_certs_request_body)
+response = service.insert_ssl_cert(project, instance, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -1233,23 +1381,26 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `list_ssl_certs` method:
+
 # Project ID of the project for which to list Cloud SQL instances.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
+
 
 # Perform the call
 response = service.list_ssl_certs(project, instance)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -1269,20 +1420,23 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `list_tiers` method:
+
 # Project ID of the project for which to list tiers.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
+
 
 # Perform the call
 response = service.list_tiers(project)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -1302,29 +1456,32 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `delete_user` method:
+
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Database instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
 # Host of the user in the instance.
-host = '{MY-HOST}'  # TODO: Update placeholder value(s).
+host = '{MY-HOST}'
 
 # Name of the user in the instance.
-name = '{MY-NAME}'  # TODO: Update placeholder value(s).
+name = '{MY-NAME}'
+
 
 # Perform the call
 response = service.delete_user(project, instance, host, name)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -1344,26 +1501,30 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `insert_user` method:
+
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Database instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
-# TODO: Assign values to the desired members.
-user_body = Google::Apis::SqladminV1beta4::User.new
+
+request_body = Google::Apis::SqladminV1beta4::User.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.insert_user(project, instance, user_body)
+response = service.insert_user(project, instance, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -1383,23 +1544,26 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `list_users` method:
+
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Database instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
+
 
 # Perform the call
 response = service.list_users(project, instance)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -1419,30 +1583,34 @@ require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `update_user` method:
+
 # Project ID of the project that contains the instance.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Database instance ID. This does not include the project ID.
-instance = '{MY-INSTANCE}'  # TODO: Update placeholder value(s).
+instance = '{MY-INSTANCE}'
 
 # Host of the user in the instance.
-host = '{MY-HOST}'  # TODO: Update placeholder value(s).
+host = '{MY-HOST}'
 
 # Name of the user in the instance.
-name = '{MY-NAME}'  # TODO: Update placeholder value(s).
+name = '{MY-NAME}'
 
-# TODO: Assign values to the desired members.
-user_body = Google::Apis::SqladminV1beta4::User.new
+
+request_body = Google::Apis::SqladminV1beta4::User.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.update_user(project, instance, host, name, user_body)
+response = service.update_user(project, instance, host, name, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)

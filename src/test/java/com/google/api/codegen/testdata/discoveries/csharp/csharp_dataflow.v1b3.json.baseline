@@ -27,14 +27,10 @@ namespace DataflowSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -46,19 +42,24 @@ namespace DataflowSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The project which owns the job.
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Create` method:
+
+            // The project which owns the job.
+            string projectId = "{MY-PROJECT-ID}";
+
+
             Data.Job requestBody = new Data.Job();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ProjectsResource.JobsResource.CreateRequest request = dataflowService.Projects.Jobs.Create(requestBody, projectId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Job response = request.Execute();
             // Data.Job response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -91,14 +92,10 @@ namespace DataflowSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -110,19 +107,159 @@ namespace DataflowSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `GetConfig` method:
+
+            // The project id.
+            string projectId = "{MY-PROJECT-ID}";
+
+            // The job id.
+            string jobId = "{MY-JOB-ID}";
+
+
+            Data.GetDebugConfigRequest requestBody = new Data.GetDebugConfigRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.JobsResource.DebugResource.GetConfigRequest request = dataflowService.Projects.Jobs.Debug.GetConfig(requestBody, projectId, jobId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.GetDebugConfigResponse response = request.Execute();
+            // Data.GetDebugConfigResponse response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Dataflow API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dataflow
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Dataflow.v1b3;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
+
+
+namespace DataflowSample
+{
+    public class DataflowServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            DataflowService dataflowService = new DataflowService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
+            // TODO: Change placeholders below to desired parameter values for the `SendCapture` method:
+
+            // The project id.
+            string projectId = "{MY-PROJECT-ID}";
+
+            // The job id.
+            string jobId = "{MY-JOB-ID}";
+
+
+            Data.SendDebugCaptureRequest requestBody = new Data.SendDebugCaptureRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.JobsResource.DebugResource.SendCaptureRequest request = dataflowService.Projects.Jobs.Debug.SendCapture(requestBody, projectId, jobId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.SendDebugCaptureResponse response = request.Execute();
+            // Data.SendDebugCaptureResponse response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Dataflow API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dataflow
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Dataflow.v1b3;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
+
+
+namespace DataflowSample
+{
+    public class DataflowServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            DataflowService dataflowService = new DataflowService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // The project which owns the job.
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // Identifies a single job.
-            string jobId = "{MY-JOB-ID}"; // TODO: Update placeholder value(s).
+            string jobId = "{MY-JOB-ID}";
+
 
             ProjectsResource.JobsResource.GetRequest request = dataflowService.Projects.Jobs.Get(projectId, jobId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Job response = request.Execute();
             // Data.Job response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -155,14 +292,10 @@ namespace DataflowSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -174,19 +307,23 @@ namespace DataflowSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `GetMetrics` method:
+
             // A project id.
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // The job to get messages for.
-            string jobId = "{MY-JOB-ID}"; // TODO: Update placeholder value(s).
+            string jobId = "{MY-JOB-ID}";
+
 
             ProjectsResource.JobsResource.GetMetricsRequest request = dataflowService.Projects.Jobs.GetMetrics(projectId, jobId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.JobMetrics response = request.Execute();
             // Data.JobMetrics response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -219,14 +356,10 @@ namespace DataflowSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -238,15 +371,19 @@ namespace DataflowSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // The project which owns the jobs.
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
+
 
             ProjectsResource.JobsResource.ListRequest request = dataflowService.Projects.Jobs.List(projectId);
 
             Data.ListJobsResponse response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -256,7 +393,7 @@ namespace DataflowSample
                 }
                 foreach (Data.Job job in response.Jobs)
                 {
-                    // TODO: Use job
+                    // TODO: Change code below to process each `job` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(job));
                 }
                 request.PageToken = response.NextPageToken;
@@ -292,14 +429,10 @@ namespace DataflowSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -311,18 +444,22 @@ namespace DataflowSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // A project id.
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // The job to get messages about.
-            string jobId = "{MY-JOB-ID}"; // TODO: Update placeholder value(s).
+            string jobId = "{MY-JOB-ID}";
+
 
             ProjectsResource.JobsResource.MessagesResource.ListRequest request = dataflowService.Projects.Jobs.Messages.List(projectId, jobId);
 
             Data.ListJobMessagesResponse response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -332,7 +469,7 @@ namespace DataflowSample
                 }
                 foreach (Data.JobMessage jobMessage in response.JobMessages)
                 {
-                    // TODO: Use jobMessage
+                    // TODO: Change code below to process each `jobMessage` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(jobMessage));
                 }
                 request.PageToken = response.NextPageToken;
@@ -368,14 +505,10 @@ namespace DataflowSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -387,22 +520,27 @@ namespace DataflowSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
             // The project which owns the job.
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // Identifies a single job.
-            string jobId = "{MY-JOB-ID}"; // TODO: Update placeholder value(s).
+            string jobId = "{MY-JOB-ID}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.Job requestBody = new Data.Job();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ProjectsResource.JobsResource.UpdateRequest request = dataflowService.Projects.Jobs.Update(requestBody, projectId, jobId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Job response = request.Execute();
             // Data.Job response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -435,14 +573,10 @@ namespace DataflowSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -454,22 +588,27 @@ namespace DataflowSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Lease` method:
+
             // Identifies the project this worker belongs to.
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // Identifies the workflow job this worker belongs to.
-            string jobId = "{MY-JOB-ID}"; // TODO: Update placeholder value(s).
+            string jobId = "{MY-JOB-ID}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.LeaseWorkItemRequest requestBody = new Data.LeaseWorkItemRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ProjectsResource.JobsResource.WorkItemsResource.LeaseRequest request = dataflowService.Projects.Jobs.WorkItems.Lease(requestBody, projectId, jobId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.LeaseWorkItemResponse response = request.Execute();
             // Data.LeaseWorkItemResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -502,14 +641,10 @@ namespace DataflowSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -521,22 +656,27 @@ namespace DataflowSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `ReportStatus` method:
+
             // The project which owns the WorkItem's job.
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // The job which the WorkItem is part of.
-            string jobId = "{MY-JOB-ID}"; // TODO: Update placeholder value(s).
+            string jobId = "{MY-JOB-ID}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.ReportWorkItemStatusRequest requestBody = new Data.ReportWorkItemStatusRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ProjectsResource.JobsResource.WorkItemsResource.ReportStatusRequest request = dataflowService.Projects.Jobs.WorkItems.ReportStatus(requestBody, projectId, jobId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ReportWorkItemStatusResponse response = request.Execute();
             // Data.ReportWorkItemStatusResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -569,14 +709,10 @@ namespace DataflowSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -588,19 +724,89 @@ namespace DataflowSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The project to send the WorkerMessages to.
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Create` method:
+
+            // The project which owns the job.
+            string projectId = "{MY-PROJECT-ID}";
+
+
+            Data.CreateJobFromTemplateRequest requestBody = new Data.CreateJobFromTemplateRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.TemplatesResource.CreateRequest request = dataflowService.Projects.Templates.Create(requestBody, projectId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Job response = request.Execute();
+            // Data.Job response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Dataflow API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dataflow
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Dataflow.v1b3;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
+
+
+namespace DataflowSample
+{
+    public class DataflowServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            DataflowService dataflowService = new DataflowService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
+            // TODO: Change placeholders below to desired parameter values for the `WorkerMessages` method:
+
+            // The project to send the WorkerMessages to.
+            string projectId = "{MY-PROJECT-ID}";
+
+
             Data.SendWorkerMessagesRequest requestBody = new Data.SendWorkerMessagesRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ProjectsResource.WorkerMessagesRequest request = dataflowService.Projects.WorkerMessages(requestBody, projectId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.SendWorkerMessagesResponse response = request.Execute();
             // Data.SendWorkerMessagesResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }

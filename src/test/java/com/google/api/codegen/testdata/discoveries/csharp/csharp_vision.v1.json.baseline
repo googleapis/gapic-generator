@@ -1,7 +1,7 @@
 
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Cloud Vision API
+// 1. If not already done, enable the Google Cloud Vision API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/vision
 // 2. This sample uses Application Default Credentials for authentication.
@@ -27,14 +27,10 @@ namespace VisionSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -46,16 +42,17 @@ namespace VisionSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Assign values to the desired properties.
             Data.BatchAnnotateImagesRequest requestBody = new Data.BatchAnnotateImagesRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ImagesResource.AnnotateRequest request = visionService.Images.Annotate(requestBody);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.BatchAnnotateImagesResponse response = request.Execute();
             // Data.BatchAnnotateImagesResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }

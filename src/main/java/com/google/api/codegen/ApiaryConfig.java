@@ -85,18 +85,12 @@ public class ApiaryConfig {
    */
   private final Set<String> mediaUpload = new HashSet<>();
 
-  /*
+  /**
    * Maps type name to type (from {@link DiscoveryImporter}).
    */
   private final Map<String, Type> types = new HashMap<>();
 
-  /*
-   * Maps method name to set of auth scope URLs, eg https://www.googleapis.com/auth/cloud-platform.
-   */
-  private final ListMultimap<String, String> authScopes =
-      ArrayListMultimap.<String, String>create();
-
-  /*
+  /**
    * Maps (type, field name) to field.
    */
   private final Table<Type, String, Field> fields = HashBasedTable.<Type, String, Field>create();
@@ -116,15 +110,70 @@ public class ApiaryConfig {
    */
   private String apiVersion;
 
-  /*
-   * The service canonical name, or name if no canonical name
+  /**
+   * Maps method name to set of auth scope URLs, e.g., https://www.googleapis.com/auth/cloud-platform.
+   */
+  private final ListMultimap<String, String> authScopes =
+      ArrayListMultimap.<String, String>create();
+
+  /**
+   * The service canonical name, or name if no canonical name.
    */
   private String serviceCanonicalName;
 
-  /*
-   * The service version string
+  /**
+   * The service version string.
    */
   private String serviceVersion;
+
+  /**
+   * The auth instructions URL.
+   */
+  private String authInstructionsUrl;
+
+  /**
+   * Maps API names to an AuthType override.
+   */
+  private Map<String, AuthType> authOverrides = new HashMap<>();
+
+  /**
+   * If present in the scope list, indicates that the API supports application default credentials
+   * based auth.
+   */
+  private static final String CLOUD_PLATFORM_SCOPE =
+      "https://www.googleapis.com/auth/cloud-platform";
+
+  /**
+   * Possible auth types supported by discovery.
+   */
+  public enum AuthType {
+    APPLICATION_DEFAULT_CREDENTIALS,
+    OAUTH_3L,
+    API_KEY,
+  }
+
+  /**
+   * Returns the auth type supported by the service.
+   */
+  public AuthType getAuthType() {
+    String key = getServiceCanonicalName();
+    if (!Strings.isNullOrEmpty(key) && authOverrides.containsKey(key)) {
+      return authOverrides.get(key);
+    }
+    // If the API has no scopes, then we know it's API key-based.
+    if (getAuthScopes().isEmpty()) {
+      return AuthType.API_KEY;
+    }
+    // If there are scopes and cloud platform is one of them, then we can use ADC.
+    if (getAuthScopes().containsValue(CLOUD_PLATFORM_SCOPE)) {
+      return AuthType.APPLICATION_DEFAULT_CREDENTIALS;
+    }
+    return AuthType.OAUTH_3L;
+  }
+
+  public String getAuthInstructionsUrl() {
+    return Strings.nullToEmpty(authInstructionsUrl);
+  }
 
   public ListMultimap<String, String> getMethodParams() {
     return methodParams;
@@ -160,6 +209,10 @@ public class ApiaryConfig {
 
   public Table<Type, String, Field> getFields() {
     return fields;
+  }
+
+  public ListMultimap<String, String> getAuthScopes() {
+    return authScopes;
   }
 
   public Set<String> getMediaUpload() {
@@ -206,6 +259,10 @@ public class ApiaryConfig {
     this.serviceVersion = serviceVersion;
   }
 
+  public void setAuthInstructionsUrl(String authInstructionsUrl) {
+    this.authInstructionsUrl = authInstructionsUrl;
+  }
+
   /**
    * @return the ordered list of parameters accepted by the given method
    */
@@ -217,7 +274,7 @@ public class ApiaryConfig {
    * @return the textual description corresponding to the given type name and field name
    */
   public String getDescription(String typeName, String fieldName) {
-    return Strings.nullToEmpty(fieldDescription.get(typeName, fieldName));
+    return fieldDescription.get(typeName, fieldName);
   }
 
   /**
@@ -256,17 +313,24 @@ public class ApiaryConfig {
     return types.get(typeName);
   }
 
-  /*
+  /**
    * @return field of given type with given field name
    */
   public Field getField(Type type, String fieldName) {
     return fields.get(type, fieldName);
   }
 
-  /*
-   * @return set of auth scopes
+  /**
+   * @return true if method has any auth scopes
    */
-  public ListMultimap<String, String> getAuthScopes() {
-    return authScopes;
+  public boolean hasAuthScopes(String methodName) {
+    return authScopes.containsKey(methodName);
+  }
+
+  /**
+   * @return list of auth scopes for method of given name
+   */
+  public List<String> getAuthScopes(String methodName) {
+    return authScopes.get(methodName);
   }
 }

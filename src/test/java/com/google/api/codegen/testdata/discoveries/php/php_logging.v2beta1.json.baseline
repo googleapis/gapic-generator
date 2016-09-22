@@ -12,14 +12,12 @@
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -29,15 +27,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 $service = new Google_Service_Logging($client);
 
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Logging_ListLogEntriesRequest($client);
+$requestBody = new Google_Service_Logging_ListLogEntriesRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
+
 
 $optParams = array();
 do {
-  $response = $service->entries->listEntries($postBody, $optParams);
+  $response = $service->entries->listEntries($requestBody, $optParams);
 
   foreach ($response['entries'] as $log_entry) {
-    // TODO: Use log_entry
+    // TODO: Change code below to process each `log_entry` resource:
     echo '<pre>', var_export($log_entry, true), '</pre>', "\n";
   }
 
@@ -56,14 +55,12 @@ do {
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -73,12 +70,13 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 $service = new Google_Service_Logging($client);
 
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Logging_WriteLogEntriesRequest($client);
+$requestBody = new Google_Service_Logging_WriteLogEntriesRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-$response = $service->entries->write($postBody);
 
-// TODO: Use $response
+$response = $service->entries->write($requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -93,14 +91,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -115,7 +111,7 @@ do {
   $response = $service->monitoredResourceDescriptors->listMonitoredResourceDescriptors($optParams);
 
   foreach ($response['resourceDescriptors'] as $monitored_resource_descriptor) {
-    // TODO: Use monitored_resource_descriptor
+    // TODO: Change code below to process each `monitored_resource_descriptor` resource:
     echo '<pre>', var_export($monitored_resource_descriptor, true), '</pre>', "\n";
   }
 
@@ -134,14 +130,12 @@ do {
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -150,8 +144,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Logging($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
-$logName = 'projects/{MY-PROJECT}/logs/{MY-LOG}'; // TODO: Update placeholder value(s).
+$logName = 'projects/{MY-PROJECT}/logs/{MY-LOG}';
+
 
 $service->projects_logs->delete($logName);
 <?php
@@ -167,14 +165,12 @@ $service->projects_logs->delete($logName);
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -183,16 +179,21 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Logging($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `create` method:
+
 // The resource name of the project in which to create the metric. Example: `"projects/my-project-id"`.
 // The new metric must be provided in the request.
-$projectName = 'projects/{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$projectName = 'projects/{MY-PROJECT}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Logging_LogMetric($client);
 
-$response = $service->projects_metrics->create($projectName, $postBody);
+$requestBody = new Google_Service_Logging_LogMetric($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->projects_metrics->create($projectName, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -207,14 +208,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -223,8 +222,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Logging($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // The resource name of the metric to delete. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-$metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'; // TODO: Update placeholder value(s).
+$metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}';
+
 
 $service->projects_metrics->delete($metricName);
 <?php
@@ -240,14 +243,12 @@ $service->projects_metrics->delete($metricName);
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -256,12 +257,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Logging($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-$metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'; // TODO: Update placeholder value(s).
+$metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}';
+
 
 $response = $service->projects_metrics->get($metricName);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -276,14 +281,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -292,16 +295,20 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Logging($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listProjectsMetrics` method:
+
 // Required. The resource name of the project containing the metrics. Example:
 // `"projects/my-project-id"`.
-$projectName = 'projects/{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$projectName = 'projects/{MY-PROJECT}';
+
 
 $optParams = array();
 do {
   $response = $service->projects_metrics->listProjectsMetrics($projectName, $optParams);
 
   foreach ($response['metrics'] as $log_metric) {
-    // TODO: Use log_metric
+    // TODO: Change code below to process each `log_metric` resource:
     echo '<pre>', var_export($log_metric, true), '</pre>', "\n";
   }
 
@@ -320,14 +327,12 @@ do {
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -335,18 +340,23 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Logging($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
 
 // The resource name of the metric to update. Example: `"projects/my-project-id/metrics/my-metric-id"`.
 // The updated metric must be provided in the request and have the same identifier that is specified in
 // `metricName`. If the metric does not exist, it is created.
-$metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'; // TODO: Update placeholder value(s).
+$metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Logging_LogMetric($client);
 
-$response = $service->projects_metrics->update($metricName, $postBody);
+$requestBody = new Google_Service_Logging_LogMetric($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->projects_metrics->update($metricName, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -361,14 +371,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -376,17 +384,22 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Logging($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `create` method:
 
 // The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`.
 // The new sink must be provided in the request.
-$projectName = 'projects/{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$projectName = 'projects/{MY-PROJECT}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Logging_LogSink($client);
 
-$response = $service->projects_sinks->create($projectName, $postBody);
+$requestBody = new Google_Service_Logging_LogSink($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->projects_sinks->create($projectName, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -401,14 +414,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -417,8 +428,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Logging($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
-$sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'; // TODO: Update placeholder value(s).
+$sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}';
+
 
 $service->projects_sinks->delete($sinkName);
 <?php
@@ -434,14 +449,12 @@ $service->projects_sinks->delete($sinkName);
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -450,12 +463,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Logging($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
-$sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'; // TODO: Update placeholder value(s).
+$sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}';
+
 
 $response = $service->projects_sinks->get($sinkName);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -470,14 +487,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -486,16 +501,20 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Logging($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listProjectsSinks` method:
+
 // Required. The resource name of the project containing the sinks. Example:
-// `"projects/my-logging-project"`, `"projects/01234567890"`.
-$projectName = 'projects/{MY-PROJECT}'; // TODO: Update placeholder value(s).
+// `"projects/my-logging-project"`.
+$projectName = 'projects/{MY-PROJECT}';
+
 
 $optParams = array();
 do {
   $response = $service->projects_sinks->listProjectsSinks($projectName, $optParams);
 
   foreach ($response['sinks'] as $log_sink) {
-    // TODO: Use log_sink
+    // TODO: Change code below to process each `log_sink` resource:
     echo '<pre>', var_export($log_sink, true), '</pre>', "\n";
   }
 
@@ -514,14 +533,12 @@ do {
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -530,15 +547,20 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Logging($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
+
 // The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The
 // updated sink must be provided in the request and have the same name that is specified in `sinkName`.
 // If the sink does not exist, it is created.
-$sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'; // TODO: Update placeholder value(s).
+$sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Logging_LogSink($client);
 
-$response = $service->projects_sinks->update($sinkName, $postBody);
+$requestBody = new Google_Service_Logging_LogSink($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->projects_sinks->update($sinkName, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";

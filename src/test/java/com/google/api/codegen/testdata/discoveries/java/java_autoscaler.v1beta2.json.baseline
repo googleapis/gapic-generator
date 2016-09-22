@@ -5,67 +5,61 @@
  * 1. If not already done, enable the Google Compute Engine Autoscaler API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/autoscaler
- * 2. Install the Java client library on Maven or Gradle. Check installation
+ * 2. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/autoscaler/v1beta2/java
  */
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler.Autoscalers.Delete;
-import com.google.api.services.autoscaler.v1beta2.model.Operation;
+import com.google.api.services.autoscaler.Autoscaler;
+import com.google.api.services.autoscaler.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class AutoscalerExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< e24e89d63168ca6c7db4f9e2399df60d65078cbe
+=======
+
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+    // TODO: Implement this function to get authentication credentials.
+    // See https://foo.com/bar
+    // Authorize using one of the following scopes in order to use this method:
+    //   https://www.googleapis.com/auth/compute
+    Credential credential = getAuth();
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Autoscaler autoscalerService = new Autoscaler.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
     // Project ID of Autoscaler resource.
-    String project = ""; // TODO: Update field(s).
+    String project = "{MY-PROJECT}";
 
     // Zone name of Autoscaler resource.
-    String zone = ""; // TODO: Update field(s).
+    String zone = "{MY-ZONE}";
 
     // Name of the Autoscaler resource.
-    String autoscaler = ""; // TODO: Update field(s).
+    String autoscaler = "{MY-AUTOSCALER}";
 
-    Autoscaler service = createService();
-    Delete request = service.autoscalers().delete(project, zone, autoscaler);
+
+    Autoscaler.Autoscalers.Delete request = autoscalerService.autoscalers().delete(project, zone, autoscaler);
     Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
-  }
-
-  public Autoscaler createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    return new Autoscaler.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new AutoscalerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
   }
 }
 /**
@@ -74,66 +68,61 @@ public class AutoscalerExample {
  * 1. If not already done, enable the Google Compute Engine Autoscaler API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/autoscaler
- * 2. Install the Java client library on Maven or Gradle. Check installation
+ * 2. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/autoscaler/v1beta2/java
  */
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler.Autoscalers.Get;
+import com.google.api.services.autoscaler.Autoscaler;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class AutoscalerExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< e24e89d63168ca6c7db4f9e2399df60d65078cbe
+=======
+
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+    // TODO: Implement this function to get authentication credentials.
+    // See https://foo.com/bar
+    // Authorize using one of the following scopes in order to use this method:
+    //   https://www.googleapis.com/auth/compute
+    //   https://www.googleapis.com/auth/compute.readonly
+    Credential credential = getAuth();
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Autoscaler autoscalerService = new Autoscaler.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
     // Project ID of Autoscaler resource.
-    String project = ""; // TODO: Update field(s).
+    String project = "{MY-PROJECT}";
 
     // Zone name of Autoscaler resource.
-    String zone = ""; // TODO: Update field(s).
+    String zone = "{MY-ZONE}";
 
     // Name of the Autoscaler resource.
-    String autoscaler = ""; // TODO: Update field(s).
+    String autoscaler = "{MY-AUTOSCALER}";
 
-    Autoscaler service = createService();
-    Get request = service.autoscalers().get(project, zone, autoscaler);
-    com.google.api.services.autoscaler.v1beta2.model.Autoscaler response = request.execute();
+
+    Autoscaler.Autoscalers.Get request = autoscalerService.autoscalers().get(project, zone, autoscaler);
+    com.google.api.services.autoscaler.model.Autoscaler response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
-  }
-
-  public Autoscaler createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    return new Autoscaler.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new AutoscalerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
   }
 }
 /**
@@ -142,67 +131,62 @@ public class AutoscalerExample {
  * 1. If not already done, enable the Google Compute Engine Autoscaler API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/autoscaler
- * 2. Install the Java client library on Maven or Gradle. Check installation
+ * 2. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/autoscaler/v1beta2/java
  */
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler.Autoscalers.Insert;
-import com.google.api.services.autoscaler.v1beta2.model.Operation;
+import com.google.api.services.autoscaler.Autoscaler;
+import com.google.api.services.autoscaler.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class AutoscalerExample {
-  public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    com.google.api.services.autoscaler.v1beta2.model.Autoscaler requestBody = new com.google.api.services.autoscaler.v1beta2.model.Autoscaler();
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< e24e89d63168ca6c7db4f9e2399df60d65078cbe
+=======
+
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+    // TODO: Implement this function to get authentication credentials.
+    // See https://foo.com/bar
+    // Authorize using one of the following scopes in order to use this method:
+    //   https://www.googleapis.com/auth/compute
+    Credential credential = getAuth();
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Autoscaler autoscalerService = new Autoscaler.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
 
     // Project ID of Autoscaler resource.
-    String project = ""; // TODO: Update field(s).
+    String project = "{MY-PROJECT}";
 
     // Zone name of Autoscaler resource.
-    String zone = ""; // TODO: Update field(s).
+    String zone = "{MY-ZONE}";
 
-    Autoscaler service = createService();
-    Insert request = service.autoscalers().insert(project, zone, requestBody);
+
+    com.google.api.services.autoscaler.model.Autoscaler requestBody = new com.google.api.services.autoscaler.model.Autoscaler();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Autoscaler.Autoscalers.Insert request = autoscalerService.autoscalers().insert(project, zone, requestBody);
     Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
-  }
-
-  public Autoscaler createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    return new Autoscaler.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new AutoscalerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
   }
 }
 /**
@@ -211,73 +195,69 @@ public class AutoscalerExample {
  * 1. If not already done, enable the Google Compute Engine Autoscaler API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/autoscaler
- * 2. Install the Java client library on Maven or Gradle. Check installation
+ * 2. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/autoscaler/v1beta2/java
  */
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler.Autoscalers.List;
-import com.google.api.services.autoscaler.v1beta2.model.AutoscalerListResponse;
+import com.google.api.services.autoscaler.Autoscaler;
+import com.google.api.services.autoscaler.model.AutoscalerListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class AutoscalerExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< e24e89d63168ca6c7db4f9e2399df60d65078cbe
+=======
+
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+    // TODO: Implement this function to get authentication credentials.
+    // See https://foo.com/bar
+    // Authorize using one of the following scopes in order to use this method:
+    //   https://www.googleapis.com/auth/compute
+    //   https://www.googleapis.com/auth/compute.readonly
+    Credential credential = getAuth();
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Autoscaler autoscalerService = new Autoscaler.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
     // Project ID of Autoscaler resource.
-    String project = ""; // TODO: Update field(s).
+    String project = "{MY-PROJECT}";
 
     // Zone name of Autoscaler resource.
-    String zone = ""; // TODO: Update field(s).
+    String zone = "{MY-ZONE}";
 
-    Autoscaler service = createService();
-    List request = service.autoscalers().list(project, zone);
+
+    Autoscaler.Autoscalers.List request = autoscalerService.autoscalers().list(project, zone);
     AutoscalerListResponse response;
     do {
       response = request.execute();
-      if (response.getItems() == null) {
+      if (response.getItems() == null)
         continue;
+
+      for (com.google.api.services.autoscaler.model.Autoscaler autoscaler : response.getItems()) {
+        // TODO: Change code below to process each `autoscaler` resource:
+        System.out.println(autoscaler);
       }
-      for (com.google.api.services.autoscaler.v1beta2.model.Autoscaler item : response.getItems()) {
-        System.out.println(item);
-      }
+
+      request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
-
-  public Autoscaler createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    return new Autoscaler.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new AutoscalerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
 /**
  * BEFORE RUNNING:
@@ -285,70 +265,65 @@ public class AutoscalerExample {
  * 1. If not already done, enable the Google Compute Engine Autoscaler API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/autoscaler
- * 2. Install the Java client library on Maven or Gradle. Check installation
+ * 2. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/autoscaler/v1beta2/java
  */
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler.Autoscalers.Patch;
-import com.google.api.services.autoscaler.v1beta2.model.Operation;
+import com.google.api.services.autoscaler.Autoscaler;
+import com.google.api.services.autoscaler.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class AutoscalerExample {
-  public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    com.google.api.services.autoscaler.v1beta2.model.Autoscaler requestBody = new com.google.api.services.autoscaler.v1beta2.model.Autoscaler();
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< e24e89d63168ca6c7db4f9e2399df60d65078cbe
+=======
+
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+    // TODO: Implement this function to get authentication credentials.
+    // See https://foo.com/bar
+    // Authorize using one of the following scopes in order to use this method:
+    //   https://www.googleapis.com/auth/compute
+    Credential credential = getAuth();
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Autoscaler autoscalerService = new Autoscaler.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
 
     // Project ID of Autoscaler resource.
-    String project = ""; // TODO: Update field(s).
+    String project = "{MY-PROJECT}";
 
     // Zone name of Autoscaler resource.
-    String zone = ""; // TODO: Update field(s).
+    String zone = "{MY-ZONE}";
 
     // Name of the Autoscaler resource.
-    String autoscaler = ""; // TODO: Update field(s).
+    String autoscaler = "{MY-AUTOSCALER}";
 
-    Autoscaler service = createService();
-    Patch request = service.autoscalers().patch(project, zone, autoscaler, requestBody);
+
+    com.google.api.services.autoscaler.model.Autoscaler requestBody = new com.google.api.services.autoscaler.model.Autoscaler();
+    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
+
+
+    Autoscaler.Autoscalers.Patch request = autoscalerService.autoscalers().patch(project, zone, autoscaler, requestBody);
     Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
-  }
-
-  public Autoscaler createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    return new Autoscaler.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new AutoscalerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
   }
 }
 /**
@@ -357,70 +332,65 @@ public class AutoscalerExample {
  * 1. If not already done, enable the Google Compute Engine Autoscaler API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/autoscaler
- * 2. Install the Java client library on Maven or Gradle. Check installation
+ * 2. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/autoscaler/v1beta2/java
  */
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler.Autoscalers.Update;
-import com.google.api.services.autoscaler.v1beta2.model.Operation;
+import com.google.api.services.autoscaler.Autoscaler;
+import com.google.api.services.autoscaler.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class AutoscalerExample {
-  public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign desired fields.
-    com.google.api.services.autoscaler.v1beta2.model.Autoscaler requestBody = new com.google.api.services.autoscaler.v1beta2.model.Autoscaler();
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< e24e89d63168ca6c7db4f9e2399df60d65078cbe
+=======
+
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+    // TODO: Implement this function to get authentication credentials.
+    // See https://foo.com/bar
+    // Authorize using one of the following scopes in order to use this method:
+    //   https://www.googleapis.com/auth/compute
+    Credential credential = getAuth();
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Autoscaler autoscalerService = new Autoscaler.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
 
     // Project ID of Autoscaler resource.
-    String project = ""; // TODO: Update field(s).
+    String project = "{MY-PROJECT}";
 
     // Zone name of Autoscaler resource.
-    String zone = ""; // TODO: Update field(s).
+    String zone = "{MY-ZONE}";
 
     // Name of the Autoscaler resource.
-    String autoscaler = ""; // TODO: Update field(s).
+    String autoscaler = "{MY-AUTOSCALER}";
 
-    Autoscaler service = createService();
-    Update request = service.autoscalers().update(project, zone, autoscaler, requestBody);
+
+    com.google.api.services.autoscaler.model.Autoscaler requestBody = new com.google.api.services.autoscaler.model.Autoscaler();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Autoscaler.Autoscalers.Update request = autoscalerService.autoscalers().update(project, zone, autoscaler, requestBody);
     Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
-  }
-
-  public Autoscaler createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    return new Autoscaler.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new AutoscalerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
   }
 }
 /**
@@ -429,66 +399,64 @@ public class AutoscalerExample {
  * 1. If not already done, enable the Google Compute Engine Autoscaler API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/autoscaler
- * 2. Install the Java client library on Maven or Gradle. Check installation
+ * 2. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/autoscaler/v1beta2/java
  */
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler.ZoneOperations.Delete;
+import com.google.api.services.autoscaler.Autoscaler;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class AutoscalerExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< e24e89d63168ca6c7db4f9e2399df60d65078cbe
+=======
 
-    String project = ""; // TODO: Update field(s).
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+    // TODO: Implement this function to get authentication credentials.
+    // See https://foo.com/bar
+    // Authorize using one of the following scopes in order to use this method:
+    //   https://www.googleapis.com/auth/compute
+    Credential credential = getAuth();
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Autoscaler autoscalerService = new Autoscaler.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
 
 
-    String zone = ""; // TODO: Update field(s).
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
+    // project
+    String project = "{MY-PROJECT}";
+
+    // zone
+    String zone = "{MY-ZONE}";  // ex: "us-central1-f"
+
+<<<<<<< e199ef123dc787d193bdd6e13ee92dc514de6f48
+    // operation
+=======
+    String zone = "{MY-ZONE}";
 
 
-    String operation = ""; // TODO: Update field(s).
+>>>>>>> Add Go 3LO and API key auth support (#453)
+    String operation = "{MY-OPERATION}";
 
-    Autoscaler service = createService();
-    Delete request = service.zoneOperations().delete(project, zone, operation);
+
+    Autoscaler.ZoneOperations.Delete request = autoscalerService.zoneOperations().delete(project, zone, operation);
     request.execute();
   }
-
-  public Autoscaler createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    return new Autoscaler.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new AutoscalerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
 /**
  * BEFORE RUNNING:
@@ -496,68 +464,69 @@ public class AutoscalerExample {
  * 1. If not already done, enable the Google Compute Engine Autoscaler API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/autoscaler
- * 2. Install the Java client library on Maven or Gradle. Check installation
+ * 2. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/autoscaler/v1beta2/java
  */
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler.ZoneOperations.Get;
-import com.google.api.services.autoscaler.v1beta2.model.Operation;
+import com.google.api.services.autoscaler.Autoscaler;
+import com.google.api.services.autoscaler.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class AutoscalerExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< e24e89d63168ca6c7db4f9e2399df60d65078cbe
+=======
 
-    String project = ""; // TODO: Update field(s).
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+    // TODO: Implement this function to get authentication credentials.
+    // See https://foo.com/bar
+    // Authorize using one of the following scopes in order to use this method:
+    //   https://www.googleapis.com/auth/compute
+    //   https://www.googleapis.com/auth/compute.readonly
+    Credential credential = getAuth();
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Autoscaler autoscalerService = new Autoscaler.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
 
 
-    String zone = ""; // TODO: Update field(s).
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // project
+    String project = "{MY-PROJECT}";
+
+    // zone
+    String zone = "{MY-ZONE}";  // ex: "us-central1-f"
+
+<<<<<<< e199ef123dc787d193bdd6e13ee92dc514de6f48
+    // operation
+=======
+    String zone = "{MY-ZONE}";
 
 
-    String operation = ""; // TODO: Update field(s).
+>>>>>>> Add Go 3LO and API key auth support (#453)
+    String operation = "{MY-OPERATION}";
 
-    Autoscaler service = createService();
-    Get request = service.zoneOperations().get(project, zone, operation);
+
+    Autoscaler.ZoneOperations.Get request = autoscalerService.zoneOperations().get(project, zone, operation);
     Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
-
-  public Autoscaler createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    return new Autoscaler.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new AutoscalerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
 /**
  * BEFORE RUNNING:
@@ -565,73 +534,73 @@ public class AutoscalerExample {
  * 1. If not already done, enable the Google Compute Engine Autoscaler API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/autoscaler
- * 2. Install the Java client library on Maven or Gradle. Check installation
+ * 2. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/autoscaler/v1beta2/java
  */
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler.ZoneOperations.List;
-import com.google.api.services.autoscaler.v1beta2.model.Operation;
-import com.google.api.services.autoscaler.v1beta2.model.OperationList;
+import com.google.api.services.autoscaler.Autoscaler;
+import com.google.api.services.autoscaler.model.Operation;
+import com.google.api.services.autoscaler.model.OperationList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class AutoscalerExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< e24e89d63168ca6c7db4f9e2399df60d65078cbe
+=======
 
-    String project = ""; // TODO: Update field(s).
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+    // TODO: Implement this function to get authentication credentials.
+    // See https://foo.com/bar
+    // Authorize using one of the following scopes in order to use this method:
+    //   https://www.googleapis.com/auth/compute
+    //   https://www.googleapis.com/auth/compute.readonly
+    Credential credential = getAuth();
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Autoscaler autoscalerService = new Autoscaler.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
 
 
-    String zone = ""; // TODO: Update field(s).
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
 
-    Autoscaler service = createService();
-    List request = service.zoneOperations().list(project, zone);
+    // project
+    String project = "{MY-PROJECT}";
+
+    // zone
+    String zone = "{MY-ZONE}";  // ex: "us-central1-f"
+
+<<<<<<< e199ef123dc787d193bdd6e13ee92dc514de6f48
+=======
+    String zone = "{MY-ZONE}";
+>>>>>>> Add Go 3LO and API key auth support (#453)
+
+    Autoscaler.ZoneOperations.List request = autoscalerService.zoneOperations().list(project, zone);
     OperationList response;
     do {
       response = request.execute();
-      if (response.getItems() == null) {
+      if (response.getItems() == null)
         continue;
+
+      for (Operation operation : response.getItems()) {
+        // TODO: Change code below to process each `operation` resource:
+        System.out.println(operation);
       }
-      for (Operation item : response.getItems()) {
-        System.out.println(item);
-      }
+
+      request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
-  }
-
-  public Autoscaler createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    return new Autoscaler.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new AutoscalerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
   }
 }
 /**
@@ -640,69 +609,65 @@ public class AutoscalerExample {
  * 1. If not already done, enable the Google Compute Engine Autoscaler API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/autoscaler
- * 2. Install the Java client library on Maven or Gradle. Check installation
+ * 2. Install the Java client library on maven or gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/autoscaler/v1beta2/java
  */
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler;
-import com.google.api.services.autoscaler.v1beta2.Autoscaler.Zones.List;
-import com.google.api.services.autoscaler.v1beta2.model.Zone;
-import com.google.api.services.autoscaler.v1beta2.model.ZoneList;
+import com.google.api.services.autoscaler.Autoscaler;
+import com.google.api.services.autoscaler.model.Zone;
+import com.google.api.services.autoscaler.model.ZoneList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
+
 
 public class AutoscalerExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< e24e89d63168ca6c7db4f9e2399df60d65078cbe
+=======
 
-    String project = ""; // TODO: Update field(s).
-
-    Autoscaler service = createService();
-    List request = service.zones().list(project);
-    ZoneList response;
-    do {
-      response = request.execute();
-      if (response.getItems() == null) {
-        continue;
-      }
-      for (Zone item : response.getItems()) {
-        System.out.println(item);
-      }
-    } while (response.getNextPageToken() != null);
-  }
-
-  public Autoscaler createService() throws IOException, GeneralSecurityException {
-    // TODO: This sample uses Application Default Credentials for authentication.
-    // Install the gcloud CLI from https://cloud.google.com/sdk and run
-    // `gcloud beta auth application-default login`
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+>>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+    // TODO: Implement this function to get authentication credentials.
+    // See https://foo.com/bar
+    // Authorize using one of the following scopes in order to use this method:
+    //   https://www.googleapis.com/auth/compute
+    //   https://www.googleapis.com/auth/compute.readonly
+    Credential credential = getAuth();
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    return new Autoscaler.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
-        .build();
-  }
+    Autoscaler autoscalerService = new Autoscaler.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
 
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new AutoscalerExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // project
+    String project = "{MY-PROJECT}";
+
+
+    Autoscaler.Zones.List request = autoscalerService.zones().list(project);
+    ZoneList response;
+    do {
+      response = request.execute();
+      if (response.getItems() == null)
+        continue;
+
+      for (Zone zone : response.getItems()) {
+        // TODO: Change code below to process each `zone` resource:
+        System.out.println(zone);
+      }
+
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
   }
 }
