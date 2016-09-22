@@ -148,6 +148,9 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getApiMethodExampleName(Interface service, Method method) {
+    // We use "unsafe" string concatenation here.
+    // Godoc expects the name to be in format "ExampleMyType_MyMethod";
+    // it is the only place we have mixed camel and underscore names.
     return methodName(Name.from("example").join(clientNamePrefix(service)).join("client"))
         + "_"
         + getApiMethodName(method);

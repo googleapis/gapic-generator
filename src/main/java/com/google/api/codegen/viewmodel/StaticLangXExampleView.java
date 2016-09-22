@@ -45,7 +45,7 @@ public abstract class StaticLangXExampleView implements ViewModel {
   public abstract String clientConstructorExampleName();
 
   /** Type of the client */
-  public abstract String clientName();
+  public abstract String clientTypeName();
 
   /** Imports for the example */
   public abstract List<String> imports();
@@ -71,7 +71,7 @@ public abstract class StaticLangXExampleView implements ViewModel {
 
     public abstract Builder clientConstructorExampleName(String val);
 
-    public abstract Builder clientName(String val);
+    public abstract Builder clientTypeName(String val);
 
     public abstract Builder imports(List<String> val);
 

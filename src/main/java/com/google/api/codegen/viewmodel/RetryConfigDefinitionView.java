@@ -46,20 +46,20 @@ public abstract class RetryConfigDefinitionView {
 
   @AutoValue
   public static abstract class Name implements Comparable<Name> {
-    public abstract String params();
+    public abstract String retrySettingsConfigName();
 
-    public abstract String codes();
+    public abstract String retryCodesConfigName();
 
     public static Name create(String paramsName, String codesName) {
       return new AutoValue_RetryConfigDefinitionView_Name(paramsName, codesName);
     }
 
     public int compareTo(Name other) {
-      int c = params().compareTo(other.params());
+      int c = retrySettingsConfigName().compareTo(other.retrySettingsConfigName());
       if (c != 0) {
         return c;
       }
-      return codes().compareTo(other.codes());
+      return retryCodesConfigName().compareTo(other.retryCodesConfigName());
     }
   }
 }

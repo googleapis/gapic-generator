@@ -47,7 +47,7 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
 
   public abstract List<StaticLangApiMethodView> apiMethods();
 
-  public abstract String clientName();
+  public abstract String clientTypeName();
 
   public abstract String clientConstructorName();
 
@@ -88,7 +88,7 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
 
     public abstract Builder authScopes(Iterable<String> val);
 
-    public abstract Builder clientName(String val);
+    public abstract Builder clientTypeName(String val);
 
     public abstract Builder clientConstructorName(String val);
 

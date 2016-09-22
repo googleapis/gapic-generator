@@ -326,13 +326,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * Original name of the service, taken from protobuf.
-   */
-  public String getServiceOriginalName(Interface service) {
-    return service.getSimpleName();
-  }
-
-  /**
    * Human-friendly name of this service
    */
   public String getServicePhraseName(Interface service) {

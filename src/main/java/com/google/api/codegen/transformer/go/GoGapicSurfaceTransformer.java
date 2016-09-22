@@ -108,12 +108,12 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.templateFileName(XAPI_TEMPLATE_FILENAME);
     view.serviceDoc(doc(service));
     view.localPackageName(namer.getLocalPackageName());
-    view.clientName(namer.getApiWrapperClassName(service));
+    view.clientTypeName(namer.getApiWrapperClassName(service));
     view.clientConstructorName(namer.getApiWrapperClassConstructorName(service));
     view.defaultClientOptionFunctionName(namer.getDefaultApiSettingsFunctionName(service));
     view.defaultCallOptionFunctionName(namer.getDefaultCallSettingsFunctionName(service));
     view.callOptionsTypeName(namer.getCallSettingsTypeName(service));
-    view.serviceOriginalName(namer.getServiceOriginalName(service));
+    view.serviceOriginalName(model.getServiceConfig().getTitle());
     view.servicePhraseName(namer.getServicePhraseName(service));
     view.grpcClientTypeName(namer.getGrpcClientTypeName(service));
     view.grpcClientConstructorName(namer.getGrpcClientConstructorName(service));
@@ -159,7 +159,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
     view.exampleLocalPackageName(namer.getLocalPackageName() + "_test");
     view.libLocalPackageName(namer.getLocalPackageName());
-    view.clientName(namer.getApiWrapperClassName(service));
+    view.clientTypeName(namer.getApiWrapperClassName(service));
     view.clientConstructorName(namer.getApiWrapperClassConstructorName(service));
     view.clientConstructorExampleName(namer.getApiWrapperClassConstructorExampleName(service));
     view.apiMethods(generateApiMethods(context, Collections.<String>emptyList()));
@@ -178,7 +178,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     return PackageInfoView.newBuilder()
         .templateFileName(DOC_TEMPLATE_FILENAME)
         .outputPath(outputPath + File.separator + fileName)
-        .serviceTitle("")
+        .serviceTitle(model.getServiceConfig().getTitle())
         .importPath(apiConfig.getPackageName())
         .packageName(namer.getLocalPackageName())
         .serviceDocs(Collections.<ServiceDocView>emptyList())
@@ -240,7 +240,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     Map<String, RetrySettings> retryParamsDef =
         context.getInterfaceConfig().getRetrySettingsDefinition();
     for (RetryConfigDefinitionView.Name name : retryNames) {
-      ImmutableSet<Code> codes = retryCodesDef.get(name.codes());
+      ImmutableSet<Code> codes = retryCodesDef.get(name.retryCodesConfigName());
       if (codes.isEmpty()) {
         continue;
       }
@@ -253,7 +253,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
           RetryConfigDefinitionView.newBuilder()
               .name(name)
               .retryCodes(retryCodeNames)
-              .params(retryParamsDef.get(name.params()))
+              .params(retryParamsDef.get(name.retrySettingsConfigName()))
               .build());
     }
     if (!retryDef.isEmpty()) {
