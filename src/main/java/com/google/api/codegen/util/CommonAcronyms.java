@@ -30,6 +30,7 @@ public class CommonAcronyms {
           .put("HTTP", "Http")
           .put("XML", "Xml")
           .put("API", "Api")
+          .put("TEST", "Test")
           .build();
 
   private static final ImmutableSet<String> AMBIGUOUS_CASES =
