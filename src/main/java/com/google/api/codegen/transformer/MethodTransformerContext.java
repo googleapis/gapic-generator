@@ -21,9 +21,7 @@ import com.google.api.codegen.MethodConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
-
 import java.util.Collection;
-
 import javax.annotation.Nullable;
 
 /**
@@ -37,9 +35,10 @@ public abstract class MethodTransformerContext {
       ModelTypeTable typeTable,
       SurfaceNamer namer,
       Method method,
-      MethodConfig methodConfig) {
+      MethodConfig methodConfig,
+      boolean resourceNameTypesEnabled) {
     return new AutoValue_MethodTransformerContext(
-        interfaze, apiConfig, typeTable, namer, method, methodConfig);
+        interfaze, apiConfig, typeTable, namer, method, methodConfig, resourceNameTypesEnabled);
   }
 
   public abstract Interface getInterface();
@@ -54,6 +53,8 @@ public abstract class MethodTransformerContext {
 
   @Nullable
   public abstract MethodConfig getMethodConfig();
+
+  public abstract boolean resourceNameTypesEnabled();
 
   public Interface getTargetInterface() {
     return InterfaceConfig.getTargetInterface(
@@ -79,6 +80,7 @@ public abstract class MethodTransformerContext {
         getTypeTable().cloneEmpty(),
         getNamer(),
         getMethod(),
-        getMethodConfig());
+        getMethodConfig(),
+        resourceNameTypesEnabled());
   }
 }

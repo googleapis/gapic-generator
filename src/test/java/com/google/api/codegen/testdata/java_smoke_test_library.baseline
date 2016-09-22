@@ -41,9 +41,9 @@ public class LibraryServiceSmokeTest {
 
   public static void executeNoCatch(String args[]) throws Exception {
     try (LibraryServiceApi api = LibraryServiceApi.create()) {
-      BookName formattedName = BookName.create("testShelf", "testBook");
+      BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
 
-      Book response = api.getBook(formattedName);
+      Book response = api.getBook(name);
       System.out.println(ReflectionToStringBuilder.toString(response, ToStringStyle.MULTI_LINE_STYLE));
     }
   }

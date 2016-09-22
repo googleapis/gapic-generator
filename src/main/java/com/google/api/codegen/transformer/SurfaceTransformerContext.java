@@ -22,7 +22,6 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.auto.value.AutoValue;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,8 +30,13 @@ import java.util.List;
 @AutoValue
 public abstract class SurfaceTransformerContext {
   public static SurfaceTransformerContext create(
-      Interface interfaze, ApiConfig apiConfig, ModelTypeTable typeTable, SurfaceNamer namer) {
-    return new AutoValue_SurfaceTransformerContext(interfaze, apiConfig, typeTable, namer);
+      Interface interfaze,
+      ApiConfig apiConfig,
+      ModelTypeTable typeTable,
+      SurfaceNamer namer,
+      boolean resourceNameTypesEnabled) {
+    return new AutoValue_SurfaceTransformerContext(
+        interfaze, apiConfig, typeTable, namer, resourceNameTypesEnabled);
   }
 
   public Model getModel() {
@@ -47,8 +51,15 @@ public abstract class SurfaceTransformerContext {
 
   public abstract SurfaceNamer getNamer();
 
+  public abstract boolean resourceNameTypesEnabled();
+
   public SurfaceTransformerContext withNewTypeTable() {
-    return create(getInterface(), getApiConfig(), getTypeTable().cloneEmpty(), getNamer());
+    return create(
+        getInterface(),
+        getApiConfig(),
+        getTypeTable().cloneEmpty(),
+        getNamer(),
+        resourceNameTypesEnabled());
   }
 
   public InterfaceConfig getInterfaceConfig() {
@@ -78,7 +89,8 @@ public abstract class SurfaceTransformerContext {
         getTypeTable(),
         getNamer(),
         method,
-        getMethodConfig(method));
+        getMethodConfig(method),
+        resourceNameTypesEnabled());
   }
 
   /**

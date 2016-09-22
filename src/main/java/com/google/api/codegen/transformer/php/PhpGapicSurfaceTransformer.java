@@ -35,7 +35,6 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -77,7 +76,11 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
               new PhpModelTypeNameConverter(apiConfig.getPackageName()));
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(
-              service, apiConfig, modelTypeTable, new PhpSurfaceNamer(apiConfig.getPackageName()));
+              service,
+              apiConfig,
+              modelTypeTable,
+              new PhpSurfaceNamer(apiConfig.getPackageName()),
+              true);
 
       surfaceDocs.addAll(transform(context));
     }

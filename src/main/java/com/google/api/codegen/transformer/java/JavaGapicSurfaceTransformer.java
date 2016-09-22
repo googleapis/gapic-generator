@@ -50,9 +50,7 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-
 import io.grpc.Status.Code;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,7 +100,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(
-              service, apiConfig, createTypeTable(apiConfig.getPackageName()), namer);
+              service, apiConfig, createTypeTable(apiConfig.getPackageName()), namer, true);
       StaticLangXApiView xapi = generateXApi(context);
       surfaceDocs.add(xapi);
 
@@ -110,7 +108,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
       context =
           SurfaceTransformerContext.create(
-              service, apiConfig, createTypeTable(apiConfig.getPackageName()), namer);
+              service, apiConfig, createTypeTable(apiConfig.getPackageName()), namer, true);
       StaticLangApiMethodView exampleApiMethod = getExampleApiMethod(xapi.apiMethods());
       StaticLangXSettingsView xsettings = generateXSettings(context, exampleApiMethod);
       surfaceDocs.add(xsettings);

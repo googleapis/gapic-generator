@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.MethodConfig;
-import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
@@ -30,11 +29,6 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.collect.Lists;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.ExtensionRegistry;
-import com.google.protobuf.UnknownFieldSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -125,25 +119,27 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return varName(Name.upperCamel(interfaze.getSimpleName(), "SettingsBuilder"));
   }
 
+  /** The variable name for the given identifier. */
+  public String getVariableName(Name identifier) {
+    return varName(identifier);
+  }
+
+  /** The variable name for the given identifier that is formatted. */
+  public String getFormattedVariableName(Name identifier) {
+    return varName(Name.from("formatted").join(identifier));
+  }
+
   /**
-   * The variable name for the given identifier. If it has formatting config
-   * (specified by initValueConfig), then its name reflects that.
+   * The name of a variable to hold a value for the given proto message field (such as a flattened
+   * parameter).
    */
-  public String getVariableName(Name identifier, InitValueConfig initValueConfig) {
-    if (initValueConfig == null || !initValueConfig.hasFormattingConfig()) {
-      return varName(identifier);
-    } else {
-      return varName(Name.from("formatted").join(identifier));
-    }
+  public String getVariableName(Field field) {
+    return varName(Name.from(field.getSimpleName()));
   }
 
   /** The function name to set the given proto field. */
   public String getFieldSetFunctionName(Field field) {
-    if (useResourceNameFormatOption(field)) {
-      return getResourceNameFieldSetFunctionName(Name.from(field.getSimpleName()));
-    } else {
-      return getFieldSetFunctionName(field.getType(), Name.from(field.getSimpleName()));
-    }
+    return getFieldSetFunctionName(field.getType(), Name.from(field.getSimpleName()));
   }
 
   /** The function name to set a field having the given type and name. */
@@ -163,11 +159,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to get the given proto field. */
   public String getFieldGetFunctionName(Field field) {
-    if (useResourceNameFormatOption(field)) {
-      return getResourceNameFieldGetFunctionName(Name.from(field.getSimpleName()));
-    } else {
-      return getFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
-    }
+    return getFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
   }
 
   /** The function name to get a field having the given type and name. */
@@ -344,14 +336,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * The name of a variable to hold a value for the given proto message field
-   * (such as a flattened parameter).
-   */
-  public String getVariableName(Field field) {
-    return varName(Name.from(field.getSimpleName()));
-  }
-
-  /**
    * Returns true if the request object param type for the given field should be imported.
    */
   public boolean shouldImportRequestObjectParamType(Field field) {
@@ -363,10 +347,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public boolean shouldImportRequestObjectParamElementType(Field field) {
     return true;
-  }
-
-  public boolean useResourceNameFormatOption(Field field) {
-    return false;
   }
 
   /** Converts the given text to doc lines in the format of the current language. */

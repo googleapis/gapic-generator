@@ -45,9 +45,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 /**
@@ -97,7 +95,8 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
         service,
         getApiConfig(),
         modelTypeTable,
-        new NodeJSSurfaceNamer(getApiConfig().getPackageName()));
+        new NodeJSSurfaceNamer(getApiConfig().getPackageName()),
+        false);
   }
 
   public String filePath(ProtoFile file) {

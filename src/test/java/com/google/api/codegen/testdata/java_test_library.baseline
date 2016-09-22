@@ -102,11 +102,11 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void createShelfTest() {
-    ShelfName name = "name3373707";
+    ShelfName name = ShelfName.create("[SHELF_ID]");
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setNameWithResource(name)
+      .setName(name)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
@@ -130,11 +130,11 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getShelfTest() {
-    ShelfName formattedName2 = ShelfName.create("[SHELF]");
+    ShelfName name2 = ShelfName.create("[SHELF_ID]");
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setNameWithResource(formattedName2)
+      .setName(name2)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
@@ -142,27 +142,27 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    ShelfName formattedName = ShelfName.create("[SHELF]");
+    ShelfName name = ShelfName.create("[SHELF_ID]");
 
     Shelf actualResponse =
-        api.getShelf(formattedName);
+        api.getShelf(name);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
+    Assert.assertEquals(name, actualRequest.getNameAsResource());
   }
 
   @Test
   @SuppressWarnings("all")
   public void getShelfTest2() {
-    ShelfName formattedName2 = ShelfName.create("[SHELF]");
+    ShelfName name2 = ShelfName.create("[SHELF_ID]");
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setNameWithResource(formattedName2)
+      .setName(name2)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
@@ -170,29 +170,29 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    ShelfName formattedName = ShelfName.create("[SHELF]");
+    ShelfName name = ShelfName.create("[SHELF_ID]");
     SomeMessage message = SomeMessage.newBuilder().build();
 
     Shelf actualResponse =
-        api.getShelf(formattedName, message);
+        api.getShelf(name, message);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
+    Assert.assertEquals(name, actualRequest.getNameAsResource());
     Assert.assertEquals(message, actualRequest.getMessage());
   }
 
   @Test
   @SuppressWarnings("all")
   public void getShelfTest3() {
-    ShelfName formattedName2 = ShelfName.create("[SHELF]");
+    ShelfName name2 = ShelfName.create("[SHELF_ID]");
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setNameWithResource(formattedName2)
+      .setName(name2)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
@@ -200,19 +200,19 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    ShelfName formattedName = ShelfName.create("[SHELF]");
+    ShelfName name = ShelfName.create("[SHELF_ID]");
     SomeMessage message = SomeMessage.newBuilder().build();
     com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
 
     Shelf actualResponse =
-        api.getShelf(formattedName, message, stringBuilder);
+        api.getShelf(name, message, stringBuilder);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
+    Assert.assertEquals(name, actualRequest.getNameAsResource());
     Assert.assertEquals(message, actualRequest.getMessage());
     Assert.assertEquals(stringBuilder, actualRequest.getStringBuilder());
   }
@@ -253,25 +253,25 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    ShelfName formattedName = ShelfName.create("[SHELF]");
+    ShelfName name = ShelfName.create("[SHELF_ID]");
 
-    api.deleteShelf(formattedName);
+    api.deleteShelf(name);
 
     List<GeneratedMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     DeleteShelfRequest actualRequest = (DeleteShelfRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
+    Assert.assertEquals(name, actualRequest.getNameAsResource());
   }
 
   @Test
   @SuppressWarnings("all")
   public void mergeShelvesTest() {
-    ShelfName formattedName2 = ShelfName.create("[SHELF]");
+    ShelfName name2 = ShelfName.create("[SHELF_ID]");
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setNameWithResource(formattedName2)
+      .setName(name2)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
@@ -279,30 +279,30 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    ShelfName formattedName = ShelfName.create("[SHELF]");
-    ShelfName formattedOtherShelfName = ShelfName.create("[SHELF]");
+    ShelfName name = ShelfName.create("[SHELF_ID]");
+    ShelfName otherShelfName = ShelfName.create("[SHELF_ID]");
 
     Shelf actualResponse =
-        api.mergeShelves(formattedName, formattedOtherShelfName);
+        api.mergeShelves(name, otherShelfName);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     MergeShelvesRequest actualRequest = (MergeShelvesRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
-    Assert.assertEquals(formattedOtherShelfName, actualRequest.getOtherShelfName());
+    Assert.assertEquals(name, actualRequest.getNameAsResource());
+    Assert.assertEquals(otherShelfName, actualRequest.getOtherShelfNameAsResource());
   }
 
   @Test
   @SuppressWarnings("all")
   public void createBookTest() {
-    BookName formattedName2 = BookName.create("[SHELF]");
+    BookName name2 = BookName.create("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setNameWithResource(formattedName2)
+      .setName(name2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -311,18 +311,18 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    ShelfName formattedName = ShelfName.create("[SHELF]");
+    ShelfName name = ShelfName.create("[SHELF_ID]");
     Book book = Book.newBuilder().build();
 
     Book actualResponse =
-        api.createBook(formattedName, book);
+        api.createBook(name, book);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     CreateBookRequest actualRequest = (CreateBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
+    Assert.assertEquals(name, actualRequest.getNameAsResource());
     Assert.assertEquals(book, actualRequest.getBook());
   }
 
@@ -338,7 +338,7 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    ShelfName shelf = Shelf.newBuilder().build();
+    Shelf shelf = Shelf.newBuilder().build();
     List<Book> books = new ArrayList<>();
     int edition = -1887963714;
 
@@ -358,12 +358,12 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getBookTest() {
-    BookName formattedName2 = BookName.create("[SHELF]", "[BOOK]");
+    BookName name2 = BookName.create("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setNameWithResource(formattedName2)
+      .setName(name2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -372,17 +372,17 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    BookName formattedName = BookName.create("[SHELF]", "[BOOK]");
+    BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
 
     Book actualResponse =
-        api.getBook(formattedName);
+        api.getBook(name);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
+    Assert.assertEquals(name, actualRequest.getNameAsResource());
   }
 
   @Test
@@ -399,10 +399,10 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    ShelfName formattedName = ShelfName.create("[SHELF]");
+    ShelfName name = ShelfName.create("[SHELF_ID]");
     String filter = "filter-1274492040";
 
-    PagedListResponse<ListBooksRequest, ListBooksResponse, Book> pagedListResponse = api.listBooks(formattedName, filter);
+    PagedListResponse<ListBooksRequest, ListBooksResponse, Book> pagedListResponse = api.listBooks(name, filter);
 
     List<Book> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
@@ -412,7 +412,7 @@ public class LibraryServiceTest {
     Assert.assertEquals(1, actualRequests.size());
     ListBooksRequest actualRequest = (ListBooksRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
+    Assert.assertEquals(name, actualRequest.getNameAsResource());
     Assert.assertEquals(filter, actualRequest.getFilter());
   }
 
@@ -424,26 +424,26 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    BookName formattedName = BookName.create("[SHELF]", "[BOOK]");
+    BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
 
-    api.deleteBook(formattedName);
+    api.deleteBook(name);
 
     List<GeneratedMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     DeleteBookRequest actualRequest = (DeleteBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
+    Assert.assertEquals(name, actualRequest.getNameAsResource());
   }
 
   @Test
   @SuppressWarnings("all")
   public void updateBookTest() {
-    BookName formattedName2 = BookName.create("[SHELF]", "[BOOK]");
+    BookName name2 = BookName.create("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setNameWithResource(formattedName2)
+      .setName(name2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -452,30 +452,30 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    BookName formattedName = BookName.create("[SHELF]", "[BOOK]");
+    BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
     Book book = Book.newBuilder().build();
 
     Book actualResponse =
-        api.updateBook(formattedName, book);
+        api.updateBook(name, book);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookRequest actualRequest = (UpdateBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
+    Assert.assertEquals(name, actualRequest.getNameAsResource());
     Assert.assertEquals(book, actualRequest.getBook());
   }
 
   @Test
   @SuppressWarnings("all")
   public void updateBookTest2() {
-    BookName formattedName2 = BookName.create("[SHELF]", "[BOOK]");
+    BookName name2 = BookName.create("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setNameWithResource(formattedName2)
+      .setName(name2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -484,20 +484,20 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    BookName formattedName = BookName.create("[SHELF]", "[BOOK]");
+    BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
     Book book = Book.newBuilder().build();
     FieldMask updateMask = FieldMask.newBuilder().build();
     com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
 
     Book actualResponse =
-        api.updateBook(formattedName, book, updateMask, physicalMask);
+        api.updateBook(name, book, updateMask, physicalMask);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookRequest actualRequest = (UpdateBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
+    Assert.assertEquals(name, actualRequest.getNameAsResource());
     Assert.assertEquals(book, actualRequest.getBook());
     Assert.assertEquals(updateMask, actualRequest.getUpdateMask());
     Assert.assertEquals(physicalMask, actualRequest.getPhysicalMask());
@@ -506,12 +506,12 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void moveBookTest() {
-    BookName formattedName2 = BookName.create("[SHELF]", "[BOOK]");
+    BookName name2 = BookName.create("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setNameWithResource(formattedName2)
+      .setName(name2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -520,19 +520,19 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    BookName formattedName = BookName.create("[SHELF]", "[BOOK]");
-    ShelfName formattedOtherShelfName = ShelfName.create("[SHELF]");
+    BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+    ShelfName otherShelfName = ShelfName.create("[SHELF_ID]");
 
     Book actualResponse =
-        api.moveBook(formattedName, formattedOtherShelfName);
+        api.moveBook(name, otherShelfName);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     MoveBookRequest actualRequest = (MoveBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
-    Assert.assertEquals(formattedOtherShelfName, actualRequest.getOtherShelfName());
+    Assert.assertEquals(name, actualRequest.getNameAsResource());
+    Assert.assertEquals(otherShelfName, actualRequest.getOtherShelfNameAsResource());
   }
 
   @Test
@@ -593,12 +593,12 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getBookFromArchiveTest() {
-    BookName formattedName2 = BookName.create("[ARCHIVE_PATH]", "[BOOK]");
+    BookName name2 = BookName.create("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setNameWithResource(formattedName2)
+      .setName(name2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -607,17 +607,17 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    BookName formattedName = BookName.create("[ARCHIVE_PATH]", "[BOOK]");
+    BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
 
     Book actualResponse =
-        api.getBookFromArchive(formattedName);
+        api.getBookFromArchive(name);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetBookFromArchiveRequest actualRequest = (GetBookFromArchiveRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
+    Assert.assertEquals(name, actualRequest.getNameAsResource());
   }
 
   @Test
@@ -628,19 +628,19 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    BookName formattedName = BookName.create("[SHELF]", "[BOOK]");
+    BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
     String indexName = "default index";
     String indexMapItem = "indexMapItem1918721251";
     Map<String, String> indexMap = new HashMap<>();
     indexMap.put("default_key", indexMapItem);
 
-    api.updateBookIndex(formattedName, indexName, indexMap);
+    api.updateBookIndex(name, indexName, indexMap);
 
     List<GeneratedMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookIndexRequest actualRequest = (UpdateBookIndexRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
+    Assert.assertEquals(name, actualRequest.getNameAsResource());
     Assert.assertEquals(indexName, actualRequest.getIndexName());
     Assert.assertEquals(indexMap, actualRequest.getIndexMap());
   }

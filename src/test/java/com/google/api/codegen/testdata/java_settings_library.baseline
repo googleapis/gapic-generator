@@ -444,7 +444,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       new BundlingDescriptor<PublishSeriesRequest, PublishSeriesResponse>() {
         @Override
         public String getBundlePartitionKey(PublishSeriesRequest request) {
-          return request.getEdition() + "|" + request.getNameAsResource() + "|";
+          return request.getEdition() + "|" + request.getName() + "|";
         }
 
         @Override
@@ -459,7 +459,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
           PublishSeriesRequest bundleRequest =
               PublishSeriesRequest.newBuilder()
                   .setEdition(firstRequest.getEdition())
-                  .setNameWithResource(firstRequest.getNameAsResource())
+                  .setName(firstRequest.getName())
                   .addAllBooks(elements)
                   .build();
           return bundleRequest;

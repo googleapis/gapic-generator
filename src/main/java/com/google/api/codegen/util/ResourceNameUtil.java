@@ -14,41 +14,39 @@
  */
 package com.google.api.codegen.util;
 
+import com.google.api.gax.protobuf.PathTemplate;
 import com.google.api.tools.framework.model.Field;
-import com.google.common.base.Ascii;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
-
-import java.util.ArrayList;
+import com.google.gapic.Format;
+import com.google.gapic.ResourceNameFormatProto;
 import java.util.List;
 
-/**
- * NamePath represents a fully-qualified name, separated by something like
- * dots or slashes.
- */
+/** NamePath represents a fully-qualified name, separated by something like dots or slashes. */
 public class ResourceNameUtil {
 
   public static String getResourceName(Field field) {
-    // TODO(michaelbausor): do this in a less horrific way
-    return field
-        .getProto()
-        .getOptions()
-        .getUnknownFields()
-        .getField(50000)
-        .getLengthDelimitedList()
-        .get(0)
-        .toStringUtf8();
+    return field.getProto().getOptions().getExtension(ResourceNameFormatProto.formatName);
   }
 
   public static boolean hasResourceName(Field field) {
-    // TODO(michaelbausor): do this check in a less horrific way
-    return field
-            .getProto()
-            .getOptions()
-            .getUnknownFields()
-            .getField(50000)
-            .getLengthDelimitedList()
-            .size()
-        > 0;
+    if (field == null) {
+      return false;
+    }
+    return field.getProto().getOptions().hasExtension(ResourceNameFormatProto.formatName);
+  }
+
+  public static PathTemplate getResourceNamePathTemplate(Field field) {
+    String resourceName = getResourceName(field);
+    List<Format> formatList =
+        field.getFile().getProto().getOptions().getExtension(ResourceNameFormatProto.format);
+    for (Format format : formatList) {
+      if (format.getFormatName().equals(resourceName)) {
+        return PathTemplate.create(format.getFormatString());
+      }
+    }
+    throw new IllegalArgumentException(
+        "Invalid proto: could not find format named "
+            + resourceName
+            + " expected by field "
+            + field);
   }
 }

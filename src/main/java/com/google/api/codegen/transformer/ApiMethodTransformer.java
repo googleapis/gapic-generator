@@ -40,7 +40,6 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -282,7 +281,9 @@ public class ApiMethodTransformer {
       MethodTransformerContext context, ImmutableList<Field> fields) {
     List<PathTemplateCheckView> pathTemplateChecks = new ArrayList<>();
     for (Field field : fields) {
-      if (context.getNamer().useResourceNameFormatOption(field)) {
+      boolean useResourceNameFormatOption =
+          context.resourceNameTypesEnabled() && ResourceNameUtil.hasResourceName(field);
+      if (useResourceNameFormatOption) {
         // Don't generate a path template check when using a ResourceName type instead of a string
         continue;
       }
@@ -414,8 +415,14 @@ public class ApiMethodTransformer {
     RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
     param.name(namer.getVariableName(field));
 
+    boolean useResourceNameFormatOption =
+        context.resourceNameTypesEnabled() && ResourceNameUtil.hasResourceName(field);
+
+    //System.out.println(
+    //    "generateRequestObjectParam useResourceNameFormatOptionVar " + useResourceNameFormatOption);
+
     if (namer.shouldImportRequestObjectParamType(field)) {
-      if (namer.useResourceNameFormatOption(field)) {
+      if (useResourceNameFormatOption) {
         String resourceName = ResourceNameUtil.getResourceName(field);
         param.typeName(
             context.getTypeTable().getAndSaveNicknameForTypedResourceName(field, resourceName));
@@ -437,7 +444,12 @@ public class ApiMethodTransformer {
               "ApiMethodTransformer.generateRequestObjectParam - elementTypeName"));
     }
 
-    param.setCallName(namer.getFieldSetFunctionName(field));
+    if (useResourceNameFormatOption) {
+      param.setCallName(
+          namer.getResourceNameFieldSetFunctionName(Name.from(field.getSimpleName())));
+    } else {
+      param.setCallName(namer.getFieldSetFunctionName(field));
+    }
     param.isMap(field.getType().isMap());
     param.isArray(!field.getType().isMap() && field.getType().isRepeated());
     return param.build();

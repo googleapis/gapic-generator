@@ -48,10 +48,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 /**
@@ -373,7 +371,8 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
         service,
         getApiConfig(),
         modelTypeTable,
-        new RubySurfaceNamer(getApiConfig().getPackageName()));
+        new RubySurfaceNamer(getApiConfig().getPackageName()),
+        false);
   }
 
   // Constants
