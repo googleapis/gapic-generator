@@ -16,9 +16,8 @@
 package com.google.api.codegen.util;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,6 +32,9 @@ public class CommonAcronyms {
           .put("API", "Api")
           .build();
 
+  private static final ImmutableSet<String> AMBIGUOUS_CASES =
+      ImmutableSet.<String>builder().add("APIAM").build();
+
   public static String replaceAcronyms(String str) {
     if (hasAmbiguousReplacements(str)) {
       throw new IllegalArgumentException(
@@ -46,35 +48,11 @@ public class CommonAcronyms {
   }
 
   private static boolean hasAmbiguousReplacements(String str) {
-    List<AcronymIndex> acronymIndices = new ArrayList<>();
-    for (String acronym : ACRONYMS.keySet()) {
-      int priorIndex = 0;
-      while (str.substring(priorIndex).contains(acronym)) {
-        int nextIndex = str.indexOf(acronym, priorIndex);
-        acronymIndices.add(new AcronymIndex(acronym, nextIndex));
-        priorIndex = nextIndex + acronym.length();
-      }
-    }
-
-    for (AcronymIndex acronym1 : acronymIndices) {
-      for (AcronymIndex acronym2 : acronymIndices) {
-        if (acronym1 == acronym2) continue;
-        if (acronym1.index >= acronym2.index
-            && acronym1.index < acronym2.index + acronym2.acronym.length()) {
-          return true;
-        }
+    for (String ambiguousCase : AMBIGUOUS_CASES) {
+      if (str.contains(ambiguousCase)) {
+        return true;
       }
     }
     return false;
-  }
-
-  private static class AcronymIndex {
-    private final String acronym;
-    private final int index;
-
-    private AcronymIndex(String acronym, int index) {
-      this.acronym = acronym;
-      this.index = index;
-    }
   }
 }

@@ -68,17 +68,14 @@ public class LanguageUtil {
   }
 
   public static String lowerCamelToUpperCamel(String name) {
-    name = CommonAcronyms.replaceAcronyms(name);
     return CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, name);
   }
 
   public static String lowerCamelToLowerUnderscore(String name) {
-    name = CommonAcronyms.replaceAcronyms(name);
     return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
   }
 
   public static String lowerCamelToUpperUnderscore(String name) {
-    name = CommonAcronyms.replaceAcronyms(name);
     return CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, name);
   }
 }
