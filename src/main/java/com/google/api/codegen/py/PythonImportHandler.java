@@ -62,7 +62,7 @@ public class PythonImportHandler {
 
     // only if add enum import if there are enums
     if (!Iterables.isEmpty(new PythonContextCommon().getEnumTypes(service.getModel()))) {
-      addImportLocal(service.getFile().getProto().getPackage(), "enums");
+      addImportLocal(apiConfig.getPackageName(), "enums");
     }
 
     // Add method request-type imports.
