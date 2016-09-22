@@ -207,7 +207,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
       SurfaceTransformerContext context, List<String> pageStreamImports) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
 
-    for (Method method : context.getNonStreamingMethods()) {
+    for (Method method : context.getSupportedMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       MethodTransformerContext methodContext = context.asMethodContext(method);
 
@@ -227,7 +227,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private List<RetryConfigDefinitionView> generateRetryConfigDefinitions(
       SurfaceNamer namer, SurfaceTransformerContext context) {
     Set<RetryConfigDefinitionView.Name> retryNames = new HashSet<>();
-    for (Method method : context.getNonStreamingMethods()) {
+    for (Method method : context.getSupportedMethods()) {
       MethodConfig conf = context.getMethodConfig(method);
       retryNames.add(
           RetryConfigDefinitionView.Name.create(
@@ -265,7 +265,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private Set<RetryConfigDefinitionView.Name> getRetryNames(SurfaceTransformerContext context) {
     Set<RetryConfigDefinitionView.Name> retryNames = new HashSet<>();
-    for (Method method : context.getNonStreamingMethods()) {
+    for (Method method : context.getSupportedMethods()) {
       MethodConfig conf = context.getMethodConfig(method);
       retryNames.add(
           RetryConfigDefinitionView.Name.create(
