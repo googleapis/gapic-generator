@@ -44,6 +44,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -97,6 +98,9 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     return models;
   }
 
+  private static final ImmutableList<String> PAGE_STREAM_IMPORTS =
+      ImmutableList.<String>of("math;;;");
+
   private StaticLangXCombinedSurfaceView generate(SurfaceTransformerContext context) {
     StaticLangXCombinedSurfaceView.Builder view = StaticLangXCombinedSurfaceView.newBuilder();
 
@@ -122,13 +126,15 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     String fileName = GoSurfaceNamer.getReducedServiceName(service) + "_client.go";
     view.outputPath(outputPath + File.separator + fileName);
 
-    List<RetryConfigDefinitionView> retryDef = generateRetryConfigDefinitions(namer, context);
+    List<RetryConfigDefinitionView> retryDef =
+        generateRetryConfigDefinitions(context, context.getSupportedMethods());
     view.retryPairDefinitions(retryDef);
 
     view.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
     view.pathTemplateGetters(pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
     view.callSettings(apiCallableTransformer.generateCallSettings(context));
-    view.apiMethods(generateApiMethods(context, Collections.singletonList("math;;;")));
+    view.apiMethods(
+        generateApiMethods(context, context.getSupportedMethods(), PAGE_STREAM_IMPORTS));
     view.pageStreamingDescriptorClasses(
         pageStreamingTransformer.generateDescriptorClasses(context));
 
@@ -162,7 +168,9 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.clientTypeName(namer.getApiWrapperClassName(service));
     view.clientConstructorName(namer.getApiWrapperClassConstructorName(service));
     view.clientConstructorExampleName(namer.getApiWrapperClassConstructorExampleName(service));
-    view.apiMethods(generateApiMethods(context, Collections.<String>emptyList()));
+    view.apiMethods(
+        generateApiMethods(
+            context, context.getSupportedMethods(), Collections.<String>emptyList()));
 
     addXExampleImports(context);
     view.imports(GoTypeTable.formatImports(context.getTypeTable().getImports()));
@@ -187,7 +195,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
         .build();
   }
 
-  private ModelTypeTable createTypeTable() {
+  @VisibleForTesting
+  static ModelTypeTable createTypeTable() {
     return new ModelTypeTable(new GoTypeTable(), new GoModelTypeNameConverter());
   }
 
@@ -203,31 +212,31 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     return new GoContextCommon().getCommentLines(DocumentationUtil.getScopedDescription(element));
   }
 
-  private List<StaticLangApiMethodView> generateApiMethods(
-      SurfaceTransformerContext context, List<String> pageStreamImports) {
+  @VisibleForTesting
+  List<StaticLangApiMethodView> generateApiMethods(
+      SurfaceTransformerContext context, List<Method> methods, List<String> pageStreamImports) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
-
-    for (Method method : context.getSupportedMethods()) {
+    for (Method method : methods) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       MethodTransformerContext methodContext = context.asMethodContext(method);
 
       if (methodConfig.isPageStreaming()) {
-        apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext));
         for (String imp : pageStreamImports) {
           context.getTypeTable().saveNicknameFor(imp);
         }
+        apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext));
       } else {
         apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(methodContext));
       }
     }
-
     return apiMethods;
   }
 
-  private List<RetryConfigDefinitionView> generateRetryConfigDefinitions(
-      SurfaceNamer namer, SurfaceTransformerContext context) {
+  @VisibleForTesting
+  List<RetryConfigDefinitionView> generateRetryConfigDefinitions(
+      SurfaceTransformerContext context, List<Method> methods) {
     Set<RetryConfigDefinitionView.Name> retryNames = new HashSet<>();
-    for (Method method : context.getSupportedMethods()) {
+    for (Method method : methods) {
       MethodConfig conf = context.getMethodConfig(method);
       retryNames.add(
           RetryConfigDefinitionView.Name.create(
@@ -246,7 +255,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
       }
       List<String> retryCodeNames = new ArrayList<>();
       for (Code code : codes) {
-        retryCodeNames.add(namer.getStatusCodeName(code));
+        retryCodeNames.add(context.getNamer().getStatusCodeName(code));
       }
       retryDef.put(
           name,
