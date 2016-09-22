@@ -256,9 +256,9 @@ public class PythonGapicContext extends GapicContext {
   private String getTrimmedDocs(ProtoElement elt) {
     String description = "";
     if (elt.hasAttribute(ElementDocumentationAttribute.KEY)) {
-      description = getSphinxifiedScopedDescription(elt);
+      description = getSphinxifiedScopedDescription(elt).replaceAll("\\s*\\n\\s*", "\n");
     }
-    return description.replaceAll("\\s*\\n\\s*", "\n");
+    return description;
   }
 
   /** Generate comments lines for a given method's description. */
