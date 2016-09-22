@@ -1,4 +1,4 @@
-============== file: src/no_templates_test_service_api.js ==============
+============== file: src/no_templates_api_service_api.js ==============
 /*
  * Copyright 2016 Google Inc. All rights reserved.
  *
@@ -29,7 +29,7 @@
 'use strict';
 
 var arguejs = require('arguejs');
-var configData = require('./no_templates_test_service_client_config');
+var configData = require('./no_templates_api_service_client_config');
 var extend = require('extend');
 var gax = require('google-gax');
 
@@ -51,17 +51,17 @@ var ALL_SCOPES = [
 /**
  * This will be created through a builder function which can be obtained by the module.
  * See the following example of how to initialize the module and how to access to the builder.
- * @see {@link noTemplatesTestServiceApi}
+ * @see {@link noTemplatesApiServiceApi}
  *
  * @example
  * var exampleV1 = require('google-example-no-path-template')({
  *   // optional auth parameters.
  * });
- * var api = exampleV1.noTemplatesTestServiceApi();
+ * var api = exampleV1.noTemplatesApiServiceApi();
  *
  * @class
  */
-function NoTemplatesTESTServiceApi(gaxGrpc, grpcClients, opts) {
+function NoTemplatesAPIServiceApi(gaxGrpc, grpcClients, opts) {
   opts = opts || {};
   var servicePath = opts.servicePath || SERVICE_ADDRESS;
   var port = opts.port || DEFAULT_SERVICE_PORT;
@@ -78,7 +78,7 @@ function NoTemplatesTESTServiceApi(gaxGrpc, grpcClients, opts) {
     'nodejs/' + process.version].join(' ');
 
   var defaults = gaxGrpc.constructSettings(
-      'google.cloud.example.v1.NoTemplatesTESTService',
+      'google.cloud.example.v1.NoTemplatesAPIService',
       configData,
       clientConfig,
       timeout,
@@ -86,18 +86,18 @@ function NoTemplatesTESTServiceApi(gaxGrpc, grpcClients, opts) {
       null,
       {'x-goog-api-client': googleApiClient});
 
-  var noTemplatesTestServiceStub = gaxGrpc.createStub(
+  var noTemplatesApiServiceStub = gaxGrpc.createStub(
       servicePath,
       port,
-      grpcClients.noTemplatesTestServiceClient.google.cloud.example.v1.NoTemplatesTESTService,
+      grpcClients.noTemplatesApiServiceClient.google.cloud.example.v1.NoTemplatesAPIService,
       {sslCreds: sslCreds});
-  var noTemplatesTestServiceStubMethods = [
+  var noTemplatesApiServiceStubMethods = [
     'increment'
   ];
-  noTemplatesTestServiceStubMethods.forEach(function(methodName) {
+  noTemplatesApiServiceStubMethods.forEach(function(methodName) {
     this['_' + methodName] = gax.createApiCall(
-      noTemplatesTestServiceStub.then(function(noTemplatesTestServiceStub) {
-        return noTemplatesTestServiceStub[methodName].bind(noTemplatesTestServiceStub);
+      noTemplatesApiServiceStub.then(function(noTemplatesApiServiceStub) {
+        return noTemplatesApiServiceStub[methodName].bind(noTemplatesApiServiceStub);
       }),
       defaults[methodName]);
   }.bind(this));
@@ -123,7 +123,7 @@ function NoTemplatesTESTServiceApi(gaxGrpc, grpcClients, opts) {
  *
  * @example
  *
- * var api = exampleV1.noTemplatesTestServiceApi();
+ * var api = exampleV1.noTemplatesApiServiceApi();
  *
  * api.increment(function(err) {
  *     if (err) {
@@ -131,7 +131,7 @@ function NoTemplatesTESTServiceApi(gaxGrpc, grpcClients, opts) {
  *     }
  * });
  */
-NoTemplatesTESTServiceApi.prototype.increment = function increment() {
+NoTemplatesAPIServiceApi.prototype.increment = function increment() {
   var args = arguejs({
     options: [gax.CallOptions],
     callback: [Function]
@@ -141,20 +141,20 @@ NoTemplatesTESTServiceApi.prototype.increment = function increment() {
   return this._increment(req, args.options, args.callback);
 };
 
-function NoTemplatesTESTServiceApiBuilder(gaxGrpc) {
-  if (!(this instanceof NoTemplatesTESTServiceApiBuilder)) {
-    return new NoTemplatesTESTServiceApiBuilder(gaxGrpc);
+function NoTemplatesAPIServiceApiBuilder(gaxGrpc) {
+  if (!(this instanceof NoTemplatesAPIServiceApiBuilder)) {
+    return new NoTemplatesAPIServiceApiBuilder(gaxGrpc);
   }
 
-  var noTemplatesTestServiceClient = require('grpc-google-cloud-example-v1').client;
-  extend(this, noTemplatesTestServiceClient.google.cloud.example.v1);
+  var noTemplatesApiServiceClient = require('grpc-google-cloud-example-v1').client;
+  extend(this, noTemplatesApiServiceClient.google.cloud.example.v1);
 
   var grpcClients = {
-    noTemplatesTestServiceClient: noTemplatesTestServiceClient
+    noTemplatesApiServiceClient: noTemplatesApiServiceClient
   };
 
   /**
-   * Build a new instance of {@link NoTemplatesTESTServiceApi}.
+   * Build a new instance of {@link NoTemplatesAPIServiceApi}.
    *
    * @param {Object=} opts - The optional parameters.
    * @param {String=} opts.servicePath
@@ -173,11 +173,11 @@ function NoTemplatesTESTServiceApiBuilder(gaxGrpc) {
    * @param {String=} opts.appVersion
    *   The version of the calling service.
    */
-  this.noTemplatesTestServiceApi = function(opts) {
-    return new NoTemplatesTESTServiceApi(gaxGrpc, grpcClients, opts);
+  this.noTemplatesApiServiceApi = function(opts) {
+    return new NoTemplatesAPIServiceApi(gaxGrpc, grpcClients, opts);
   };
-  extend(this.noTemplatesTestServiceApi, NoTemplatesTESTServiceApi);
+  extend(this.noTemplatesApiServiceApi, NoTemplatesAPIServiceApi);
 }
-module.exports = NoTemplatesTESTServiceApiBuilder;
+module.exports = NoTemplatesAPIServiceApiBuilder;
 module.exports.SERVICE_ADDRESS = SERVICE_ADDRESS;
 module.exports.ALL_SCOPES = ALL_SCOPES;
