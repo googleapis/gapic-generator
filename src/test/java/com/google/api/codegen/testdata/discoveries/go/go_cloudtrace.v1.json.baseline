@@ -14,6 +14,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -25,34 +26,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudtrace.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudtrace.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudtrace.New(hc)
+  cloudtraceService, err := cloudtrace.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // ID of the Cloud project where the trace data is stored.
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
-  resource := &cloudtrace.Traces{
-    // TODO: Add the desired fields to be changed.
+  rb := cloudtrace.Traces{
+    // TODO: Add desired fields of the request body to be changed.
   }
 
-  resp, err := s.Projects.PatchTraces(projectId, resource).Context(ctx).Do()
+  resp, err := cloudtraceService.Projects.PatchTraces(projectId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -69,6 +70,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -80,33 +82,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudtrace.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudtrace.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudtrace.New(hc)
+  cloudtraceService, err := cloudtrace.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // ID of the Cloud project where the trace data is stored.
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
   // ID of the trace to return.
-  traceId := "{MY-TRACE-ID}" // TODO: Update placeholder value(s).
+  traceId := "{MY-TRACE-ID}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.Projects.Traces.Get(projectId, traceId).Context(ctx).Do()
+  resp, err := cloudtraceService.Projects.Traces.Get(projectId, traceId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -123,6 +126,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -134,30 +138,30 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudtrace.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudtrace.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudtrace.New(hc)
+  cloudtraceService, err := cloudtrace.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // ID of the Cloud project where the trace data is stored.
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
-  call := s.Projects.Traces.List(projectId)
-  if err := call.Pages(ctx, func(page *cloudtrace.ListTracesResponse) error {
+  req := cloudtraceService.Projects.Traces.List(projectId)
+  if err := req.Pages(ctx, func(page *cloudtrace.ListTracesResponse) error {
     for _, trace := range page.Traces {
-      // TODO: Use trace
-      log.Printf("%#v\n", trace)
+      // TODO: Change code below to process each `trace` resource:
+      fmt.Printf("%#v\n", trace)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }

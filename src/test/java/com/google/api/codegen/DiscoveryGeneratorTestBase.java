@@ -102,6 +102,9 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
 
     String id = generator.getId();
 
+    // This field is manually populated to test the end-to-end behavior of the
+    // "auth_instructions" flag.
+    discoveryImporter.getConfig().setAuthInstructionsUrl("https://foo.com/bar");
     DiscoveryProvider provider =
         MainDiscoveryProviderFactory.defaultCreate(
             discoveryImporter.getService(), discoveryImporter.getConfig(), overridesJson, id);

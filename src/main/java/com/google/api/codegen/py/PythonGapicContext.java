@@ -253,14 +253,17 @@ public class PythonGapicContext extends GapicContext {
     return Splitter.on("\n").splitToList(s);
   }
 
+  private String getTrimmedDocs(ProtoElement elt) {
+    String description = "";
+    if (elt.hasAttribute(ElementDocumentationAttribute.KEY)) {
+      description = getSphinxifiedScopedDescription(elt).replaceAll("\\s*\\n\\s*", "\n");
+    }
+    return description;
+  }
+
   /** Generate comments lines for a given method's description. */
   public List<String> methodDescriptionComments(Method method) {
-    String description = "";
-    if (method.hasAttribute(ElementDocumentationAttribute.KEY)) {
-      String sphinxified = getSphinxifiedScopedDescription(method);
-      description = sphinxified.replaceAll("\\s*\\n\\s*", "\n");
-    }
-    return splitToLines(description);
+    return splitToLines(getTrimmedDocs(method));
   }
 
   /**
@@ -322,14 +325,11 @@ public class PythonGapicContext extends GapicContext {
   }
 
   public List<String> enumValueComment(EnumValue value) {
-    String description = "";
-    if (value.hasAttribute(ElementDocumentationAttribute.KEY)) {
-      String sphinxified = getSphinxifiedScopedDescription(value);
-      description = sphinxified.replaceAll("\\s*\\n\\s*", "\n");
-    }
-    description =
+    String description =
         fieldComment(
-            pythonCommon.wrapIfKeywordOrBuiltIn(value.getSimpleName()), "int", description);
+            pythonCommon.wrapIfKeywordOrBuiltIn(value.getSimpleName()),
+            "int",
+            getTrimmedDocs(value));
     return splitToLines(description);
   }
 

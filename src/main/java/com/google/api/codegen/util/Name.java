@@ -97,6 +97,7 @@ public class Name {
     List<NamePiece> namePieces = new ArrayList<>();
     for (String piece : pieces) {
       validateCamel(piece, CheckCase.UPPER);
+      piece = CommonAcronyms.replaceAcronyms(piece);
       namePieces.add(new NamePiece(piece, CaseFormat.UPPER_CAMEL));
     }
     return new Name(namePieces);

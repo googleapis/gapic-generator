@@ -6,99 +6,149 @@
 
 @snippet generateBody(method)
   @let api = context.getApi, \
-      apiName = api.getName, \
-      apiVersion = api.getVersion
+       apiName = api.getName, \
+       apiVersion = api.getVersion, \
+       serviceTitle = context.getService.getTitle, \
+       apiaryConfig = context.getApiaryConfig, \
+       authType = apiaryConfig.getAuthType
     // BEFORE RUNNING:
     // ---------------
-    // 1. If not already done, enable the {@context.getService.getTitle}
+    // 1. If not already done, enable the {@serviceTitle}
     //    and check the quota for your project at
     //    https://console.developers.google.com/apis/api/{@apiName}
-    // 2. This sample uses Application Default Credentials for authentication.
-    //    If not already done, install the gcloud CLI from
-    //    https://cloud.google.com/sdk/ and run
-    //    `gcloud beta auth application-default login`
-    // 3. Install the Node.js client library and Application Default Credentials
-    //    library by running `npm install googleapis --save`
+    @if authType == "APPLICATION_DEFAULT_CREDENTIALS"
+      // 2. This sample uses Application Default Credentials for authentication.
+      //    If not already done, install the gcloud CLI from
+      //    https://cloud.google.com/sdk/ and run
+      //    `gcloud beta auth application-default login`
+      // 3. Install the Node.js client library and Application Default Credentials
+      //    library by running `npm install googleapis --save`
+    @else
+      // 2. Install the Node.js client library by running
+      //    `npm install googleapis --save`
+    @end
     var google = require('googleapis');
-
     var {@apiName} = google.{@apiName}('{@apiVersion}');
 
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    google.auth.getApplicationDefault(function({@errorName()}, authClient) {
-      {@handleError(errorName(), @TRUE)}
-      if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-        var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-        authClient = authClient.createScoped(scopes);
-      }
+    @switch authType
+    @case "APPLICATION_DEFAULT_CREDENTIALS"
+      // Use Application Default Credentials for authentication when running locally.
+      // For more information, see:
+      // https://developers.google.com/identity/protocols/application-default-credentials
+      google.auth.getApplicationDefault(function({@errorName()}, {@authClientName()}) {
+        {@handleError(errorName(), @TRUE)}
+        if ({@authClientName()}.createScopedRequired && {@authClientName()}.createScopedRequired()) {
+          var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+          {@authClientName()} = {@authClientName()}.createScoped(scopes);
+        }
 
-      var {@requestName()} = {
-        {@initialize(method)}
-        auth: authClient
+        {@mainBody(method, authType)}
+      });
+    @case "OAUTH_3L"
+      getAuth(function(err, {@authClientName()}) {
+        {@handleError(errorName(), @TRUE)}
+
+        {@mainBody(method, authType)}
+      });
+
+      function getAuth(callback) {
+        // {@TODO()} Change placeholder below to get authentication credentials.
+        @let authInstructionsUrl = apiaryConfig.getAuthInstructionsUrl
+          @if authInstructionsUrl
+            // See: {@authInstructionsUrl}
+          @end
+        @end
+        @if context.hasAuthScopes(method)
+          @let methodName = context.getMethodName(method)
+            //
+            // To use the `{@methodName}` method, authorize using one of the following scopes:
+            @join scope : context.getAuthScopes(method)
+              //   {@scope}
+            @end
+          @end
+        @end
+        return callback(new Error("Not implemented"), null);
       };
+    @case "API_KEY"
+      {@mainBody(method, authType)}
+    @end
+  @end
+@end
 
-      @if context.isPageStreaming(method)
-        {@iterableCall(method)}
-      @else
-        {@compactCall(method)}
-      @end
-    });
+@private mainBody(method, authType)
+  var {@requestName()} = {
+    {@initialize(method)}
+    @if authType == "API_KEY"
+      // {@TODO()} Change placeholder below to desired API key:
+      auth: '{MY-API-KEY}'
+    @else
+      auth: {@authClientName()}
+    @end
+  };
+
+  @if context.isPageStreaming(method)
+    {@iterableCall(method)}
+  @else
+    {@compactCall(method)}
   @end
 @end
 
 @private initialize(method)
   @let methodName = context.getMethodName(method), \
-        signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
-        params = context.getFlatMethodParams(method)
+       signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
+       params = context.getFlatMethodParams(method)
     @if params
+
+      // {@TODO()} Change placeholders below to desired parameter values for the `{@methodName}` method:
+
       @join param : params
         @let paramField = context.getField(signatureType, param), \
              paramValue = context.typeDefaultValue(signatureType, paramField, method), \
              paramSample = context.getDefaultSample(signatureType, paramField), \
              paramDescription = context.getDescription(signatureType.getName, param)
           {@description(paramDescription)}
-          {@context.mapParamName(param)}: {@paramValue}, // {@TODO()} Update placeholder value(s).{@paramSample}
+          @if paramSample
+            {@context.mapParamName(param)}: {@paramValue},  // {@paramSample}
+          @else
+            {@context.mapParamName(param)}: {@paramValue},
+          @end
 
         @end
       @end
 
     @end
-    @if context.hasRequestField(method)
+  @end
+  @if context.hasRequestField(method)
 
-      resource: {
-        @if context.isPatch(method)
-          // {@TODO()} Add the desired properties to be changed.
-        @else
-          // {@TODO()} Add the desired properties.
-        @end
-      },
+    resource: {
+      @if context.isPatch(method)
+        // {@TODO()} Add desired properties of the request body to be changed.
+      @else
+        // {@TODO()} Add desired properties of the request body.
+      @end
+    },
 
-    @end
-    @if context.hasMediaUpload(method)
+  @end
+  @if context.hasMediaUpload(method)
 
-      media: {
-        // {@TODO()} Add desired media content for upload. See:
-        // https://github.com/google/google-api-nodejs-client#media-uploads
-        mimeType: 'text/plain',
-        body: ''
-      },
 
-    @end
+    // {@TODO()} Add desired media content for upload. For more information, see:
+    // https://github.com/google/google-api-nodejs-client#media-uploads
+
+
   @end
 @end
 
 @private compactCall(method)
   @if context.isResponseEmpty(method)
-    {@request(method)}({@requestName()}, function({@errorName()}) {
+    {@methodCall(method)}({@requestName()}, function({@errorName()}) {
       {@handleError(errorName(), @FALSE)}
     });
   @else
-    {@request(method)}({@requestName()}, function({@errorName()}, {@responseName()}) {
+    {@methodCall(method)}({@requestName()}, function({@errorName()}, {@responseName()}) {
       {@handleError(errorName(), @TRUE)}
 
-      // {@TODO()} Use {@responseName()}
+      // {@TODO()} Change code below to process the `{@responseName()}` object:
       {@print(responseName())}
     });
   @end
@@ -113,24 +163,23 @@
        resourceField = context.getFirstRepeatedField(responseTypeRef), \
        resources = resourceField.getName, \
        resourcesPage = pageName(resources)
-    {@apiName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, function {@handlePageName()}({@errorName()}, {@responseName()}) {
+    var {@handlePageName()} = function({@errorName()}, {@responseName()}) {
       {@handleError(errorName(), @TRUE)}
 
       var {@resourcesPage} = {@responseName()}['{@resources}'];
       if (!{@resourcesPage}) {
-        console.log('{}');
         return;
       }
       @if context.isMapField(responseTypeRef, resourceField.getName)
         @let keyName = context.keyTypeName(resourceField)
           Object.keys({@resourcesPage}).forEach(function ({@keyName}) {
-            // {@TODO()} Use {@keyName}
+            // {@TODO()} Change code below to process each `{@keyName}` property:
             {@printEntry(resourcesPage, keyName)}
           });
         @end
       @else
         for (var {@indexName()} = 0; {@indexName()} < {@resourcesPage}.length; {@indexName()}++) {
-          // {@TODO()} Use {@resourcesPage}
+          // {@TODO()} Change code below to process each resource in `{@resourcesPage}`:
           {@print(index(resourcesPage, indexName()))}
         }
       @end
@@ -139,11 +188,13 @@
         {@requestName()}.pageToken = {@responseName()}.nextPageToken;
         {@apiName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, {@handlePageName()});
       }
-    });
+    };
+
+    {@apiName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, {@handlePageName()});
   @end
 @end
 
-@private request(method)
+@private methodCall(method)
   @let apiName = context.getApi.getName, \
        methodName = context.getMethodName(method), \
        resourcesPath = context.getApiaryConfig.getResources(method.getName)
@@ -162,6 +213,10 @@
 
 @private errorName()
   err
+@end
+
+@private authClientName()
+  authClient
 @end
 
 @private handlePageName()

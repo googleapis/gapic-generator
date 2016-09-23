@@ -17,18 +17,21 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `delete_dataset` method:
+
 # Project ID of the dataset being deleted
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+project_id = '{MY-PROJECT-ID}'
 
 # Dataset ID of dataset being deleted
-dataset_id = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+dataset_id = '{MY-DATASET-ID}'
+
 
 # Perform the call
 service.delete_dataset(project_id, dataset_id)
@@ -50,23 +53,26 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `get_dataset` method:
+
 # Project ID of the requested dataset
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+project_id = '{MY-PROJECT-ID}'
 
 # Dataset ID of the requested dataset
-dataset_id = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+dataset_id = '{MY-DATASET-ID}'
+
 
 # Perform the call
 response = service.get_dataset(project_id, dataset_id)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -86,23 +92,27 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+# TODO: Change placeholders below to desired parameter values for the `insert_dataset` method:
 
 # Project ID of the new dataset
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+project_id = '{MY-PROJECT-ID}'
 
-# TODO: Assign values to the desired members.
-dataset_body = Google::Apis::BigqueryV2::Dataset.new
+
+request_body = Google::Apis::BigqueryV2::Dataset.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.insert_dataset(project_id, dataset_body)
+response = service.insert_dataset(project_id, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -122,15 +132,18 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `list_datasets` method:
+
 # Project ID of the datasets to be listed
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+project_id = '{MY-PROJECT-ID}'
+
 
 # Perform the call
 datasets = service.fetch_all(items: :datasets) do |token|
@@ -138,7 +151,7 @@ datasets = service.fetch_all(items: :datasets) do |token|
 end
 
 datasets.each do |dataset_list._datasets|
-  # TODO: Use dataset_list._datasets
+  # TODO: Change code below to process each `dataset_list._datasets` resource:
   puts JSON.pretty_generate(dataset_list._datasets)
 end
 # BEFORE RUNNING:
@@ -159,26 +172,30 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `patch_dataset` method:
+
 # Project ID of the dataset being updated
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+project_id = '{MY-PROJECT-ID}'
 
 # Dataset ID of the dataset being updated
-dataset_id = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+dataset_id = '{MY-DATASET-ID}'
 
-# TODO: Assign values to the desired members to be changed.
-dataset_body = Google::Apis::BigqueryV2::Dataset.new
+
+request_body = Google::Apis::BigqueryV2::Dataset.new
+# TODO: Assign values to desired members of the `request_body` object to be changed.
+
 
 # Perform the call
-response = service.patch_dataset(project_id, dataset_id, dataset_body)
+response = service.patch_dataset(project_id, dataset_id, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -198,26 +215,30 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `update_dataset` method:
+
 # Project ID of the dataset being updated
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+project_id = '{MY-PROJECT-ID}'
 
 # Dataset ID of the dataset being updated
-dataset_id = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+dataset_id = '{MY-DATASET-ID}'
 
-# TODO: Assign values to the desired members.
-dataset_body = Google::Apis::BigqueryV2::Dataset.new
+
+request_body = Google::Apis::BigqueryV2::Dataset.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.update_dataset(project_id, dataset_id, dataset_body)
+response = service.update_dataset(project_id, dataset_id, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -237,23 +258,26 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+# TODO: Change placeholders below to desired parameter values for the `cancel_job` method:
 
 # [Required] Project ID of the job to cancel
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+project_id = '{MY-PROJECT-ID}'
 
 # [Required] Job ID of the job to cancel
-job_id = '{MY-JOB-ID}'  # TODO: Update placeholder value(s).
+job_id = '{MY-JOB-ID}'
+
 
 # Perform the call
 response = service.cancel_job(project_id, job_id)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -273,23 +297,26 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `get_job` method:
+
 # [Required] Project ID of the requested job
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+project_id = '{MY-PROJECT-ID}'
 
 # [Required] Job ID of the requested job
-job_id = '{MY-JOB-ID}'  # TODO: Update placeholder value(s).
+job_id = '{MY-JOB-ID}'
+
 
 # Perform the call
 response = service.get_job(project_id, job_id)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -309,23 +336,26 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `get_job_query_results` method:
+
 # [Required] Project ID of the query job
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+project_id = '{MY-PROJECT-ID}'
 
 # [Required] Job ID of the query job
-job_id = '{MY-JOB-ID}'  # TODO: Update placeholder value(s).
+job_id = '{MY-JOB-ID}'
+
 
 # Perform the call
 response = service.get_job_query_results(project_id, job_id)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -345,23 +375,32 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+# TODO: Change placeholders below to desired parameter values for the `insert_job` method:
 
 # Project ID of the project that will be billed for the job
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+project_id = '{MY-PROJECT-ID}'
 
-# TODO: Assign values to the desired members.
-job_body = Google::Apis::BigqueryV2::Job.new
+
+request_body = Google::Apis::BigqueryV2::Job.new
+# TODO: Assign values to desired members of the `request_body` object.
+
+
+# TODO: Add desired media content for upload. For more information, see:
+# https://github.com/google/google-api-ruby-client#basic-usage
+# https://github.com/google/google-api-ruby-client#media
+
 
 # Perform the call
-response = service.insert_job(project_id, job_body)
+response = service.insert_job(project_id, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -381,15 +420,18 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `list_jobs` method:
+
 # Project ID of the jobs to list
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+project_id = '{MY-PROJECT-ID}'
+
 
 # Perform the call
 jobs = service.fetch_all(items: :jobs) do |token|
@@ -397,7 +439,7 @@ jobs = service.fetch_all(items: :jobs) do |token|
 end
 
 jobs.each do |job_list._jobs|
-  # TODO: Use job_list._jobs
+  # TODO: Change code below to process each `job_list._jobs` resource:
   puts JSON.pretty_generate(job_list._jobs)
 end
 # BEFORE RUNNING:
@@ -418,23 +460,27 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# Project ID of the project billed for the query
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
 
-# TODO: Assign values to the desired members.
-query_request_body = Google::Apis::BigqueryV2::QueryRequest.new
+# TODO: Change placeholders below to desired parameter values for the `query_job` method:
+
+# Project ID of the project billed for the query
+project_id = '{MY-PROJECT-ID}'
+
+
+request_body = Google::Apis::BigqueryV2::QueryRequest.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.query_job(project_id, query_request_body)
+response = service.query_job(project_id, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -454,9 +500,8 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
@@ -468,7 +513,7 @@ projects = service.fetch_all(items: :projects) do |token|
 end
 
 projects.each do |project_list._projects|
-  # TODO: Use project_list._projects
+  # TODO: Change code below to process each `project_list._projects` resource:
   puts JSON.pretty_generate(project_list._projects)
 end
 # BEFORE RUNNING:
@@ -489,29 +534,33 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `insert_all_table_data` method:
+
 # Project ID of the destination table.
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+project_id = '{MY-PROJECT-ID}'
 
 # Dataset ID of the destination table.
-dataset_id = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+dataset_id = '{MY-DATASET-ID}'
 
 # Table ID of the destination table.
-table_id = '{MY-TABLE-ID}'  # TODO: Update placeholder value(s).
+table_id = '{MY-TABLE-ID}'
 
-# TODO: Assign values to the desired members.
-insert_all_table_data_request_body = Google::Apis::BigqueryV2::InsertAllTableDataRequest.new
+
+request_body = Google::Apis::BigqueryV2::InsertAllTableDataRequest.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.insert_all_table_data(project_id, dataset_id, table_id, insert_all_table_data_request_body)
+response = service.insert_all_table_data(project_id, dataset_id, table_id, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -531,26 +580,29 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `list_table_data` method:
+
 # Project ID of the table to read
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+project_id = '{MY-PROJECT-ID}'
 
 # Dataset ID of the table to read
-dataset_id = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+dataset_id = '{MY-DATASET-ID}'
 
 # Table ID of the table to read
-table_id = '{MY-TABLE-ID}'  # TODO: Update placeholder value(s).
+table_id = '{MY-TABLE-ID}'
+
 
 # Perform the call
 response = service.list_table_data(project_id, dataset_id, table_id)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -570,21 +622,24 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `delete_table` method:
+
 # Project ID of the table to delete
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+project_id = '{MY-PROJECT-ID}'
 
 # Dataset ID of the table to delete
-dataset_id = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+dataset_id = '{MY-DATASET-ID}'
 
 # Table ID of the table to delete
-table_id = '{MY-TABLE-ID}'  # TODO: Update placeholder value(s).
+table_id = '{MY-TABLE-ID}'
+
 
 # Perform the call
 service.delete_table(project_id, dataset_id, table_id)
@@ -606,26 +661,29 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `get_table` method:
+
 # Project ID of the requested table
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+project_id = '{MY-PROJECT-ID}'
 
 # Dataset ID of the requested table
-dataset_id = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+dataset_id = '{MY-DATASET-ID}'
 
 # Table ID of the requested table
-table_id = '{MY-TABLE-ID}'  # TODO: Update placeholder value(s).
+table_id = '{MY-TABLE-ID}'
+
 
 # Perform the call
 response = service.get_table(project_id, dataset_id, table_id)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -645,26 +703,30 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+# TODO: Change placeholders below to desired parameter values for the `insert_table` method:
 
 # Project ID of the new table
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+project_id = '{MY-PROJECT-ID}'
 
 # Dataset ID of the new table
-dataset_id = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+dataset_id = '{MY-DATASET-ID}'
 
-# TODO: Assign values to the desired members.
-table_body = Google::Apis::BigqueryV2::Table.new
+
+request_body = Google::Apis::BigqueryV2::Table.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.insert_table(project_id, dataset_id, table_body)
+response = service.insert_table(project_id, dataset_id, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -684,18 +746,21 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `list_tables` method:
+
 # Project ID of the tables to list
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+project_id = '{MY-PROJECT-ID}'
 
 # Dataset ID of the tables to list
-dataset_id = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+dataset_id = '{MY-DATASET-ID}'
+
 
 # Perform the call
 tables = service.fetch_all(items: :tables) do |token|
@@ -703,7 +768,7 @@ tables = service.fetch_all(items: :tables) do |token|
 end
 
 tables.each do |table_list._tables|
-  # TODO: Use table_list._tables
+  # TODO: Change code below to process each `table_list._tables` resource:
   puts JSON.pretty_generate(table_list._tables)
 end
 # BEFORE RUNNING:
@@ -724,29 +789,33 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `patch_table` method:
+
 # Project ID of the table to update
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+project_id = '{MY-PROJECT-ID}'
 
 # Dataset ID of the table to update
-dataset_id = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+dataset_id = '{MY-DATASET-ID}'
 
 # Table ID of the table to update
-table_id = '{MY-TABLE-ID}'  # TODO: Update placeholder value(s).
+table_id = '{MY-TABLE-ID}'
 
-# TODO: Assign values to the desired members to be changed.
-table_body = Google::Apis::BigqueryV2::Table.new
+
+request_body = Google::Apis::BigqueryV2::Table.new
+# TODO: Assign values to desired members of the `request_body` object to be changed.
+
 
 # Perform the call
-response = service.patch_table(project_id, dataset_id, table_id, table_body)
+response = service.patch_table(project_id, dataset_id, table_id, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -766,27 +835,31 @@ require 'json'
 
 service = Google::Apis::BigqueryV2::BigqueryService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `update_table` method:
+
 # Project ID of the table to update
-project_id = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+project_id = '{MY-PROJECT-ID}'
 
 # Dataset ID of the table to update
-dataset_id = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+dataset_id = '{MY-DATASET-ID}'
 
 # Table ID of the table to update
-table_id = '{MY-TABLE-ID}'  # TODO: Update placeholder value(s).
+table_id = '{MY-TABLE-ID}'
 
-# TODO: Assign values to the desired members.
-table_body = Google::Apis::BigqueryV2::Table.new
+
+request_body = Google::Apis::BigqueryV2::Table.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.update_table(project_id, dataset_id, table_id, table_body)
+response = service.update_table(project_id, dataset_id, table_id, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)

@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -75,6 +76,13 @@ public class DiscoveryFragmentGeneratorApi {
           "The list of YAML configuration files for the fragment generator.",
           ImmutableList.<String>of());
 
+  public static final Option<String> AUTH_INSTRUCTIONS_URL =
+      ToolOptions.createOption(
+          String.class,
+          "auth_instructions",
+          "An @-delimited map of language to auth instructions URL: lang:URL@lang:URL@...",
+          "");
+
   private final ToolOptions options;
   private final String dataPath;
 
@@ -119,9 +127,13 @@ public class DiscoveryFragmentGeneratorApi {
     String factory = generator.getFactory();
     String id = generator.getId();
 
+    String authInstructions = options.get(AUTH_INSTRUCTIONS_URL);
+    ApiaryConfig apiaryConfig = discovery.getConfig();
+    apiaryConfig.setAuthInstructionsUrl(parseAuthInstructionsUrl(authInstructions, id));
+
     DiscoveryProviderFactory providerFactory = createProviderFactory(factory);
     DiscoveryProvider provider =
-        providerFactory.create(discovery.getService(), discovery.getConfig(), overridesJson, id);
+        providerFactory.create(discovery.getService(), apiaryConfig, overridesJson, id);
 
     for (Api api : discovery.getService().getApisList()) {
       for (Method method : api.getMethodsList()) {
@@ -129,6 +141,28 @@ public class DiscoveryFragmentGeneratorApi {
         ToolUtil.writeFiles(files, options.get(OUTPUT_FILE));
       }
     }
+  }
+
+  /*
+   * Parses strings of the format
+   * "go:https://www.hello.com@java:https://www.world.com" and returns the value
+   * of the key corresponding to the key id.
+   */
+  private String parseAuthInstructionsUrl(String authInstructionsUrl, String id) {
+    if (Strings.isNullOrEmpty(authInstructionsUrl)) {
+      return "";
+    }
+    // Split on '@'
+    Iterable<String> it = Splitter.on('@').split(authInstructionsUrl);
+    for (String item : it) {
+      // Split on only the first ':' and return if there are two values and the
+      // language matches.
+      String[] pair = item.split(":", 2);
+      if (pair[0].equals(id) && pair.length == 2) {
+        return pair[1];
+      }
+    }
+    return "";
   }
 
   private static DiscoveryProviderFactory createProviderFactory(String factory) {
