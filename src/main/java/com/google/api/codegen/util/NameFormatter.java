@@ -26,9 +26,14 @@ public interface NameFormatter {
   String className(Name name);
 
   /**
-   * Formats the name as a variable name.
+   * Formats the name as a public variable name.
    */
-  String varName(Name name);
+  String publicVarName(Name name);
+
+  /**
+   * Formats the name as a private variable name.
+   */
+  String privateVarName(Name name);
 
   /**
    * Formats the name as a reference to a variable name.
@@ -36,14 +41,14 @@ public interface NameFormatter {
   String varReference(Name name);
 
   /**
-   * Formats the name as a method name.
+   * Formats the name as a public method name.
    */
-  String methodName(Name name);
+  String publicMethodName(Name name);
 
   /**
-   * Formats the name as a field name.
+   * Formats the name as a private method name.
    */
-  String fieldName(Name name);
+  String privateMethodName(Name name);
 
   /**
    * Formats the name as a static function name.

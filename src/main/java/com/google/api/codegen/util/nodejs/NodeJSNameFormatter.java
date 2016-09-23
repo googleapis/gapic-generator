@@ -29,22 +29,27 @@ public class NodeJSNameFormatter implements NameFormatter {
   }
 
   @Override
-  public String varName(Name name) {
+  public String privateVarName(Name name) {
+    return name.toLowerCamel();
+  }
+
+  @Override
+  public String publicVarName(Name name) {
     return name.toLowerCamel();
   }
 
   @Override
   public String varReference(Name name) {
-    return varName(name);
+    return privateVarName(name);
   }
 
   @Override
-  public String methodName(Name name) {
+  public String publicMethodName(Name name) {
     return name.toLowerCamel();
   }
 
   @Override
-  public String fieldName(Name name) {
+  public String privateMethodName(Name name) {
     return name.toLowerCamel();
   }
 

@@ -123,7 +123,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.grpcClientConstructorName(namer.getGrpcClientConstructorName(service));
 
     String outputPath = pathMapper.getOutputPath(service, apiConfig);
-    String fileName = GoSurfaceNamer.getReducedServiceName(service) + "_client.go";
+    String fileName = namer.getReducedServiceName(service).toLowerCamel() + "_client.go";
     view.outputPath(outputPath + File.separator + fileName);
 
     List<RetryConfigDefinitionView> retryDef =
@@ -160,7 +160,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.templateFileName(SAMPLE_TEMPLATE_FILENAME);
 
     String outputPath = pathMapper.getOutputPath(service, apiConfig);
-    String fileName = GoSurfaceNamer.getReducedServiceName(service) + "_client_example_test.go";
+    String fileName =
+        namer.getReducedServiceName(service).toLowerCamel() + "_client_example_test.go";
     view.outputPath(outputPath + File.separator + fileName);
 
     view.exampleLocalPackageName(namer.getLocalPackageName() + "_test");

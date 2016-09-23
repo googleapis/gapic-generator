@@ -29,23 +29,28 @@ public class GoNameFormatter implements NameFormatter {
   }
 
   @Override
-  public String varName(Name name) {
+  public String privateVarName(Name name) {
     return name.toLowerCamel();
   }
 
   @Override
+  public String publicVarName(Name name) {
+    return name.toUpperCamel();
+  }
+
+  @Override
   public String varReference(Name name) {
-    return varName(name);
+    return privateVarName(name);
   }
 
   @Override
-  public String methodName(Name name) {
+  public String publicMethodName(Name name) {
     return name.toUpperCamel();
   }
 
   @Override
-  public String fieldName(Name name) {
-    return name.toUpperCamel();
+  public String privateMethodName(Name name) {
+    return name.toLowerCamel();
   }
 
   @Override

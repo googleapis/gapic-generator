@@ -110,7 +110,7 @@ public class PathTemplateTransformer {
 
       List<PathTemplateArgumentView> args = new ArrayList<>();
       for (String templateKey : collectionConfig.getNameTemplate().vars()) {
-        String name = context.getNamer().varName(Name.from(templateKey));
+        String name = context.getNamer().privateVarName(Name.from(templateKey));
         args.add(PathTemplateArgumentView.newBuilder().templateKey(templateKey).name(name).build());
       }
       function.args(args);

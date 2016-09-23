@@ -53,14 +53,16 @@ public class GoSurfaceNamer extends SurfaceNamer {
   @Override
   public String getPathTemplateName(Interface service, CollectionConfig collectionConfig) {
     return inittedConstantName(
-        Name.from(
-            getReducedServiceName(service), collectionConfig.getEntityName(), "path", "template"));
+        getReducedServiceName(service)
+            .join(collectionConfig.getEntityName())
+            .join("path")
+            .join("template"));
   }
 
   @Override
   public String getPathTemplateNameGetter(Interface service, CollectionConfig collectionConfig) {
-    return methodName(
-        Name.from(getReducedServiceName(service), collectionConfig.getEntityName(), "path"));
+    return publicMethodName(
+        getReducedServiceName(service).join(collectionConfig.getEntityName()).join("path"));
   }
 
   @Override
@@ -114,20 +116,14 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getDefaultApiSettingsFunctionName(Interface service) {
-    return Name.from("default")
-        .join(clientNamePrefix(service))
-        .join("client")
-        .join("options")
-        .toLowerCamel();
+    return privateVarName(
+        Name.from("default").join(clientNamePrefix(service)).join("client").join("options"));
   }
 
   @Override
   public String getDefaultCallSettingsFunctionName(Interface service) {
-    return Name.from("default")
-        .join(clientNamePrefix(service))
-        .join("call")
-        .join("options")
-        .toLowerCamel();
+    return privateVarName(
+        Name.from("default").join(clientNamePrefix(service)).join("call").join("options"));
   }
 
   @Override
@@ -137,12 +133,12 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getApiWrapperClassConstructorName(Interface service) {
-    return methodName(Name.from("new").join(clientNamePrefix(service)).join("client"));
+    return publicMethodName(Name.from("new").join(clientNamePrefix(service)).join("client"));
   }
 
   @Override
   public String getApiWrapperClassConstructorExampleName(Interface service) {
-    return methodName(
+    return publicMethodName(
         Name.from("example").join("new").join(clientNamePrefix(service)).join("client"));
   }
 
@@ -151,7 +147,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
     // We use "unsafe" string concatenation here.
     // Godoc expects the name to be in format "ExampleMyType_MyMethod";
     // it is the only place we have mixed camel and underscore names.
-    return methodName(Name.from("example").join(clientNamePrefix(service)).join("client"))
+    return publicMethodName(Name.from("example").join(clientNamePrefix(service)).join("client"))
         + "_"
         + getApiMethodName(method);
   }
@@ -165,29 +161,19 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   private Name clientNamePrefix(Interface service) {
-    String name = getReducedServiceName(service);
+    Name name = getReducedServiceName(service);
     // If there's only one service, or the service name matches the package name, don't prefix with
     // the service name.
-    if (model.getSymbolTable().getInterfaces().size() == 1 || name.equals(getLocalPackageName())) {
-      name = "";
+    if (model.getSymbolTable().getInterfaces().size() == 1
+        || Name.from(getLocalPackageName()).equals(name)) {
+      return Name.from();
     }
-    return Name.upperCamel(name);
+    return name;
   }
 
-  /**
-   * Returns the service name with common suffixes removed.
-   *
-   * For example:
-   *  "LoggingServiceV2" becomes "logging"
-   */
-  public static String getReducedServiceName(Interface service) {
-    String name = service.getSimpleName().replaceAll("V[0-9]+$", "");
-    name = name.replaceAll("Service$", "");
-    return Name.upperCamel(name).toLowerUnderscore();
-  }
-
+  @Override
   public String getStatusCodeName(Status.Code code) {
-    return Name.upperUnderscore(code.toString()).toUpperCamel();
+    return publicVarName(Name.upperUnderscore(code.toString()));
   }
 
   @Override

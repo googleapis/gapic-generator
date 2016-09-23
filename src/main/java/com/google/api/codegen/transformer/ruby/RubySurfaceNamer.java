@@ -42,7 +42,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   /** The function name to set a field having the given type and name. */
   @Override
   public String getFieldSetFunctionName(TypeRef type, Name identifier) {
-    return methodName(identifier);
+    return publicMethodName(identifier);
   }
 
   /** The function name to format the entity for the given collection. */

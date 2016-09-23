@@ -63,9 +63,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFieldSetFunctionName(TypeRef type, Name identifier) {
     if (type.isMap() || type.isRepeated()) {
-      return methodName(Name.from("add").join(identifier));
+      return publicMethodName(Name.from("add").join(identifier));
     } else {
-      return methodName(Name.from("set").join(identifier));
+      return publicMethodName(Name.from("set").join(identifier));
     }
   }
 

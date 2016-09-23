@@ -38,8 +38,13 @@ public abstract class NameFormatterDelegator implements NameFormatter {
   }
 
   @Override
-  public String varName(Name name) {
-    return formatter.varName(name);
+  public String publicVarName(Name name) {
+    return formatter.publicVarName(name);
+  }
+
+  @Override
+  public String privateVarName(Name name) {
+    return formatter.privateVarName(name);
   }
 
   @Override
@@ -48,13 +53,13 @@ public abstract class NameFormatterDelegator implements NameFormatter {
   }
 
   @Override
-  public String methodName(Name name) {
-    return formatter.methodName(name);
+  public String publicMethodName(Name name) {
+    return formatter.publicMethodName(name);
   }
 
   @Override
-  public String fieldName(Name name) {
-    return formatter.fieldName(name);
+  public String privateMethodName(Name name) {
+    return formatter.privateMethodName(name);
   }
 
   @Override

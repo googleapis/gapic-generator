@@ -411,7 +411,7 @@ public class ApiMethodTransformer {
 
     DynamicLangDefaultableParamView.Builder optionalArgs =
         DynamicLangDefaultableParamView.newBuilder();
-    optionalArgs.name(context.getNamer().varName(Name.from("optional", "args")));
+    optionalArgs.name(context.getNamer().privateVarName(Name.from("optional", "args")));
     optionalArgs.defaultValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(arrayType));
     methodParams.add(optionalArgs.build());
 
@@ -528,7 +528,7 @@ public class ApiMethodTransformer {
 
     Name optionalArgsName = Name.from("optional", "args");
 
-    paramDoc.paramName(context.getNamer().varName(optionalArgsName));
+    paramDoc.paramName(context.getNamer().privateVarName(optionalArgsName));
     paramDoc.typeName(context.getNamer().getOptionalArrayTypeName());
 
     List<String> docLines = Arrays.asList("Optional.");
@@ -553,7 +553,7 @@ public class ApiMethodTransformer {
     Name retrySettingsName = Name.from("retry", "settings");
     Name timeoutMillisName = Name.from("timeout", "millis");
 
-    retrySettingsDoc.paramName(context.getNamer().varName(retrySettingsName));
+    retrySettingsDoc.paramName(context.getNamer().privateVarName(retrySettingsName));
     // TODO figure out a reliable way to line-wrap comments across all languages
     // instead of encoding it in the transformer
     String retrySettingsDocText =
@@ -567,7 +567,7 @@ public class ApiMethodTransformer {
 
     SimpleParamDocView.Builder timeoutDoc = SimpleParamDocView.newBuilder();
     timeoutDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(TypeRef.of(Type.TYPE_INT32)));
-    timeoutDoc.paramName(context.getNamer().varName(timeoutMillisName));
+    timeoutDoc.paramName(context.getNamer().privateVarName(timeoutMillisName));
     // TODO figure out a reliable way to line-wrap comments across all languages
     // instead of encoding it in the transformer
     String timeoutMillisDocText =
