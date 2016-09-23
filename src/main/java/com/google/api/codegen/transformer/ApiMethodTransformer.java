@@ -282,7 +282,8 @@ public class ApiMethodTransformer {
     List<PathTemplateCheckView> pathTemplateChecks = new ArrayList<>();
     for (Field field : fields) {
       boolean useResourceNameFormatOption =
-          context.resourceNameTypesEnabled() && ResourceNameUtil.hasResourceName(field);
+          context.getFeatureConfig().resourceNameTypesEnabled()
+              && ResourceNameUtil.hasResourceName(field);
       if (useResourceNameFormatOption) {
         // Don't generate a path template check when using a ResourceName type instead of a string
         continue;
@@ -412,44 +413,44 @@ public class ApiMethodTransformer {
   private RequestObjectParamView generateRequestObjectParam(
       MethodTransformerContext context, Field field) {
     SurfaceNamer namer = context.getNamer();
-    RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
-    param.name(namer.getVariableName(field));
 
     boolean useResourceNameFormatOption =
-        context.resourceNameTypesEnabled() && ResourceNameUtil.hasResourceName(field);
+        context.getFeatureConfig().resourceNameTypesEnabled()
+            && ResourceNameUtil.hasResourceName(field);
 
-    //System.out.println(
-    //    "generateRequestObjectParam useResourceNameFormatOptionVar " + useResourceNameFormatOption);
-
-    if (namer.shouldImportRequestObjectParamType(field)) {
-      if (useResourceNameFormatOption) {
-        String resourceName = ResourceNameUtil.getResourceName(field);
-        param.typeName(
-            context.getTypeTable().getAndSaveNicknameForTypedResourceName(field, resourceName));
-      } else {
-        param.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getType()));
-      }
-    } else {
-      param.typeName(
-          namer.getNotImplementedString(
-              "ApiMethodTransformer.generateRequestObjectParam - typeName"));
-    }
-
-    if (namer.shouldImportRequestObjectParamElementType(field)) {
-      param.elementTypeName(
-          context.getTypeTable().getAndSaveNicknameForElementType(field.getType()));
-    } else {
-      param.elementTypeName(
-          namer.getNotImplementedString(
-              "ApiMethodTransformer.generateRequestObjectParam - elementTypeName"));
-    }
+    String typeName =
+        namer.getNotImplementedString("ApiMethodTransformer.generateRequestObjectParam - typeName");
+    String elementTypeName =
+        namer.getNotImplementedString(
+            "ApiMethodTransformer.generateRequestObjectParam - elementTypeName");
+    String setCallName = null;
 
     if (useResourceNameFormatOption) {
-      param.setCallName(
-          namer.getResourceNameFieldSetFunctionName(Name.from(field.getSimpleName())));
+      String resourceName = ResourceNameUtil.getResourceName(field);
+      if (namer.shouldImportRequestObjectParamType(field)) {
+        typeName =
+            context.getTypeTable().getAndSaveNicknameForTypedResourceName(field, resourceName);
+      }
+      if (namer.shouldImportRequestObjectParamElementType(field)) {
+        elementTypeName =
+            context.getTypeTable().getAndSaveNicknameForTypedResourceName(field, resourceName);
+      }
+      setCallName = namer.getResourceNameFieldSetFunctionName(Name.from(field.getSimpleName()));
     } else {
-      param.setCallName(namer.getFieldSetFunctionName(field));
+      if (namer.shouldImportRequestObjectParamType(field)) {
+        typeName = context.getTypeTable().getAndSaveNicknameFor(field.getType());
+      }
+      if (namer.shouldImportRequestObjectParamElementType(field)) {
+        elementTypeName = context.getTypeTable().getAndSaveNicknameForElementType(field.getType());
+      }
+      setCallName = namer.getFieldSetFunctionName(field);
     }
+
+    RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
+    param.name(namer.getVariableName(field));
+    param.typeName(typeName);
+    param.elementTypeName(elementTypeName);
+    param.setCallName(setCallName);
     param.isMap(field.getType().isMap());
     param.isArray(!field.getType().isMap() && field.getType().isRepeated());
     return param.build();

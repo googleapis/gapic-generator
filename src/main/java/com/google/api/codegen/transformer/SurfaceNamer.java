@@ -119,11 +119,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return varName(Name.upperCamel(interfaze.getSimpleName(), "SettingsBuilder"));
   }
 
-  /** The variable name for the given identifier. */
-  public String getVariableName(Name identifier) {
-    return varName(identifier);
-  }
-
   /** The variable name for the given identifier that is formatted. */
   public String getFormattedVariableName(Name identifier) {
     return varName(Name.from("formatted").join(identifier));

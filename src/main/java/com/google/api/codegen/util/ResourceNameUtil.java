@@ -20,7 +20,6 @@ import com.google.gapic.Format;
 import com.google.gapic.ResourceNameFormatProto;
 import java.util.List;
 
-/** NamePath represents a fully-qualified name, separated by something like dots or slashes. */
 public class ResourceNameUtil {
 
   public static String getResourceName(Field field) {

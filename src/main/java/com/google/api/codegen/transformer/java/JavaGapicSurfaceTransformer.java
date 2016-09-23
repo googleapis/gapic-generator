@@ -100,7 +100,11 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(
-              service, apiConfig, createTypeTable(apiConfig.getPackageName()), namer, true);
+              service,
+              apiConfig,
+              createTypeTable(apiConfig.getPackageName()),
+              namer,
+              new JavaFeatureConfig());
       StaticLangXApiView xapi = generateXApi(context);
       surfaceDocs.add(xapi);
 
@@ -108,7 +112,11 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
       context =
           SurfaceTransformerContext.create(
-              service, apiConfig, createTypeTable(apiConfig.getPackageName()), namer, true);
+              service,
+              apiConfig,
+              createTypeTable(apiConfig.getPackageName()),
+              namer,
+              new JavaFeatureConfig());
       StaticLangApiMethodView exampleApiMethod = getExampleApiMethod(xapi.apiMethods());
       StaticLangXSettingsView xsettings = generateXSettings(context, exampleApiMethod);
       surfaceDocs.add(xsettings);

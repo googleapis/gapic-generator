@@ -80,7 +80,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
               apiConfig,
               modelTypeTable,
               new PhpSurfaceNamer(apiConfig.getPackageName()),
-              false);
+              new PhpFeatureConfig());
 
       surfaceDocs.addAll(transform(context));
     }

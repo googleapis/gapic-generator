@@ -34,9 +34,9 @@ public abstract class SurfaceTransformerContext {
       ApiConfig apiConfig,
       ModelTypeTable typeTable,
       SurfaceNamer namer,
-      boolean resourceNameTypesEnabled) {
+      FeatureConfig featureConfig) {
     return new AutoValue_SurfaceTransformerContext(
-        interfaze, apiConfig, typeTable, namer, resourceNameTypesEnabled);
+        interfaze, apiConfig, typeTable, namer, featureConfig);
   }
 
   public Model getModel() {
@@ -51,7 +51,7 @@ public abstract class SurfaceTransformerContext {
 
   public abstract SurfaceNamer getNamer();
 
-  public abstract boolean resourceNameTypesEnabled();
+  public abstract FeatureConfig getFeatureConfig();
 
   public SurfaceTransformerContext withNewTypeTable() {
     return create(
@@ -59,7 +59,7 @@ public abstract class SurfaceTransformerContext {
         getApiConfig(),
         getTypeTable().cloneEmpty(),
         getNamer(),
-        resourceNameTypesEnabled());
+        getFeatureConfig());
   }
 
   public InterfaceConfig getInterfaceConfig() {
@@ -90,7 +90,7 @@ public abstract class SurfaceTransformerContext {
         getNamer(),
         method,
         getMethodConfig(method),
-        resourceNameTypesEnabled());
+        getFeatureConfig());
   }
 
   /**

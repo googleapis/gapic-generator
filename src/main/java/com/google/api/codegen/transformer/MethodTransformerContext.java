@@ -18,6 +18,8 @@ import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.metacode.InitCodeNode;
+import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
@@ -36,9 +38,9 @@ public abstract class MethodTransformerContext {
       SurfaceNamer namer,
       Method method,
       MethodConfig methodConfig,
-      boolean resourceNameTypesEnabled) {
+      FeatureConfig featureConfig) {
     return new AutoValue_MethodTransformerContext(
-        interfaze, apiConfig, typeTable, namer, method, methodConfig, resourceNameTypesEnabled);
+        interfaze, apiConfig, typeTable, namer, method, methodConfig, featureConfig);
   }
 
   public abstract Interface getInterface();
@@ -54,7 +56,7 @@ public abstract class MethodTransformerContext {
   @Nullable
   public abstract MethodConfig getMethodConfig();
 
-  public abstract boolean resourceNameTypesEnabled();
+  public abstract FeatureConfig getFeatureConfig();
 
   public Interface getTargetInterface() {
     return InterfaceConfig.getTargetInterface(
@@ -73,6 +75,11 @@ public abstract class MethodTransformerContext {
     return getInterfaceConfig().getCollectionConfig(entityName);
   }
 
+  public boolean useResourceNameFormatOption(InitCodeNode item) {
+    return getFeatureConfig().resourceNameTypesEnabled()
+        && ResourceNameUtil.hasResourceName(item.getField());
+  }
+
   public MethodTransformerContext cloneWithEmptyTypeTable() {
     return create(
         getInterface(),
@@ -81,6 +88,6 @@ public abstract class MethodTransformerContext {
         getNamer(),
         getMethod(),
         getMethodConfig(),
-        resourceNameTypesEnabled());
+        getFeatureConfig());
   }
 }
