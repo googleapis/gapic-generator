@@ -126,7 +126,7 @@ public class ApiMethodTransformer {
       MethodTransformerContext context, ImmutableList<Field> fields) {
     return generateFlattenedMethod(context, fields, ApiMethodType.FlattenedMethod);
   }
-  
+
   public StaticLangApiMethodView generateFlattenedMethod(
       MethodTransformerContext context, ImmutableList<Field> fields, ApiMethodType type) {
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -420,7 +420,7 @@ public class ApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
     param.name(namer.getVariableName(field));
-    param.nameAsMethodName(namer.methodName(Name.lowerCamel(namer.getVariableName(field))));
+    param.nameAsMethodName(namer.getFieldAsMethodName(field));
 
     if (namer.shouldImportRequestObjectParamType(field)) {
       param.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getType()));

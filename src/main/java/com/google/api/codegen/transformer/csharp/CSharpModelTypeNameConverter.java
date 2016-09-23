@@ -1,3 +1,17 @@
+/* Copyright 2016 Google Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
@@ -5,7 +19,6 @@ import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
-import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
@@ -39,15 +52,27 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   private TypeNameConverter typeNameConverter;
 
   public CSharpModelTypeNameConverter(String implicitPackageName) {
-    this.typeNameConverter = new CSharpTypeTable(implicitPackageName); // TODO: Is it really OK to create a new instance here?
+    this.typeNameConverter =
+        new CSharpTypeTable(
+            implicitPackageName); // TODO: Is it really OK to create a new instance here?
   }
 
   @Override
   public TypeName getTypeName(TypeRef type) {
     if (type.isMap()) {
-      throw new RuntimeException();
+      TypeName mapTypeName =
+          typeNameConverter.getTypeName("System.Collections.Generic.IDictionary");
+      TypeName keyTypeName = getTypeNameForElementType(type.getMapKeyField().getType());
+      TypeName valueTypeName = getTypeNameForElementType(type.getMapValueField().getType());
+      return new TypeName(
+          mapTypeName.getFullName(),
+          mapTypeName.getNickname(),
+          "%s<%i, %i>",
+          keyTypeName,
+          valueTypeName);
     } else if (type.isRepeated()) {
-      TypeName listTypeName = typeNameConverter.getTypeName("System.Collections.Generic.IEnumerable");
+      TypeName listTypeName =
+          typeNameConverter.getTypeName("System.Collections.Generic.IEnumerable");
       TypeName elementTypeName = getTypeNameForElementType(type);
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
@@ -84,12 +109,34 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypedValue getZeroValue(TypeRef type) {
-return TypedValue.create(getTypeName(type), "ZERO_VALUE"); // TODO: Generate correctly
+    return TypedValue.create(getTypeName(type), "ZERO_VALUE"); // TODO: Generate correctly
   }
 
   @Override
   public String renderPrimitiveValue(TypeRef type, String value) {
-    throw new RuntimeException();
+    Type primitiveType = type.getKind();
+    if (!PRIMITIVE_TYPE_MAP.containsKey(primitiveType)) {
+      throw new IllegalArgumentException(
+          "Initial values are only supported for primitive types, got type "
+              + type
+              + ", with value "
+              + value);
+    }
+    switch (primitiveType) {
+      case TYPE_BOOL:
+        return value.toLowerCase();
+      case TYPE_FLOAT:
+        return value + "f";
+      case TYPE_INT64:
+      case TYPE_UINT64:
+        return value + "L";
+      case TYPE_STRING:
+        return "\"" + value + "\"";
+      case TYPE_BYTES:
+        return "ByteString.copyFromUtf8(\"" + value + "\")";
+      default:
+        // Types that do not need to be modified (e.g. TYPE_INT32) are handled here
+        return value;
+    }
   }
-
 }

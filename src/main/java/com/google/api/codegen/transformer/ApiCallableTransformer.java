@@ -106,7 +106,8 @@ public class ApiCallableTransformer {
     return apiCallables;
   }
 
-  protected List<ApiCallSettingsView> generateApiCallableSettings(MethodTransformerContext context) {
+  protected List<ApiCallSettingsView> generateApiCallableSettings(
+      MethodTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();

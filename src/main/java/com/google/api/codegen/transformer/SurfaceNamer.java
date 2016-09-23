@@ -332,6 +332,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
+   * The name of a field as a method.
+   */
+  public String getFieldAsMethodName(Field field) {
+    return methodName(Name.from(field.getSimpleName()));
+  }
+
+  /**
    * Returns true if the request object param type for the given field should be imported.
    */
   public boolean shouldImportRequestObjectParamType(Field field) {
