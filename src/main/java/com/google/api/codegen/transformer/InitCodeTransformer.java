@@ -155,8 +155,10 @@ public class InitCodeTransformer {
     for (InitCodeNode fieldItemTree : rootNode.getChildren().values()) {
 
       String getterMethod;
-      if (context.useResourceNameFormatOption(fieldItemTree)) {
-        getterMethod = namer.getResourceNameFieldGetFunctionName(Name.from(fieldItemTree.getKey()));
+      if (context.getFeatureConfig().useResourceNameFormatOption(fieldItemTree.getField())) {
+        getterMethod =
+            namer.getResourceNameFieldGetFunctionName(
+                fieldItemTree.getType(), Name.from(fieldItemTree.getKey()));
       } else {
         getterMethod =
             namer.getFieldGetFunctionName(
@@ -289,7 +291,7 @@ public class InitCodeTransformer {
     ModelTypeTable typeTable = context.getTypeTable();
     surfaceLine.lineType(InitCodeLineType.SimpleInitLine);
 
-    if (context.useResourceNameFormatOption(item)) {
+    if (context.getFeatureConfig().useResourceNameFormatOption(item.getField())) {
       Field field = item.getField();
       String resourceName = ResourceNameUtil.getResourceName(field);
       surfaceLine.typeName(typeTable.getAndSaveNicknameForTypedResourceName(field, resourceName));
@@ -327,8 +329,16 @@ public class InitCodeTransformer {
     surfaceLine.lineType(InitCodeLineType.ListInitLine);
     surfaceLine.identifier(namer.varName(item.getIdentifier()));
 
-    surfaceLine.elementTypeName(
-        typeTable.getAndSaveNicknameForElementType(item.getType().makeOptional()));
+    if (context.getFeatureConfig().useResourceNameFormatOption(item.getField())) {
+      Field field = item.getField();
+      String resourceName = ResourceNameUtil.getResourceName(field);
+      surfaceLine.elementTypeName(
+          typeTable.getAndSaveNicknameForTypedResourceName(field, resourceName));
+    } else {
+      surfaceLine.elementTypeName(
+          typeTable.getAndSaveNicknameForElementType(item.getType().makeOptional()));
+    }
+
     List<String> entries = new ArrayList<>();
     for (InitCodeNode child : item.getChildren().values()) {
       entries.add(namer.varName(child.getIdentifier()));
@@ -371,7 +381,7 @@ public class InitCodeTransformer {
     InitValueConfig initValueConfig = item.getInitValueConfig();
     Field field = item.getField();
 
-    if (context.useResourceNameFormatOption(item)) {
+    if (context.getFeatureConfig().useResourceNameFormatOption(item.getField())) {
       ResourceNameInitValueView.Builder initValue = ResourceNameInitValueView.newBuilder();
 
       initValue.resourceTypeName(ResourceNameUtil.getResourceName(field));
@@ -432,9 +442,9 @@ public class InitCodeTransformer {
     for (InitCodeNode item : childItems) {
       FieldSettingView.Builder fieldSetting = FieldSettingView.newBuilder();
 
-      if (context.useResourceNameFormatOption(item)) {
+      if (context.getFeatureConfig().useResourceNameFormatOption(item.getField())) {
         fieldSetting.fieldSetFunction(
-            namer.getResourceNameFieldSetFunctionName(Name.from(item.getKey())));
+            namer.getResourceNameFieldSetFunctionName(item.getType(), Name.from(item.getKey())));
       } else {
         fieldSetting.fieldSetFunction(
             namer.getFieldSetFunctionName(item.getType(), Name.from(item.getKey())));
@@ -448,7 +458,7 @@ public class InitCodeTransformer {
   }
 
   private static String getVariableName(MethodTransformerContext context, InitCodeNode item) {
-    if (!context.useResourceNameFormatOption(item)
+    if (!context.getFeatureConfig().useResourceNameFormatOption(item.getField())
         && item.getInitValueConfig().hasFormattingConfig()) {
       return context.getNamer().getFormattedVariableName(item.getIdentifier());
     }

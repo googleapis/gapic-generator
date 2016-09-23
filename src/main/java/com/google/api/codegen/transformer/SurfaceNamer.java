@@ -148,8 +148,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  public String getResourceNameFieldSetFunctionName(Name identifier) {
-    return methodName(Name.from("set").join(identifier).join("with_resource"));
+  public String getResourceNameFieldSetFunctionName(TypeRef type, Name identifier) {
+    if (type.isMap()) {
+      return getNotImplementedString("SurfaceNamer.getResourceNameFieldSetFunctionName:map-type");
+    } else if (type.isRepeated()) {
+      return methodName(Name.from("add", "all").join(identifier).join("with_resources"));
+    } else {
+      return methodName(Name.from("set").join(identifier).join("with_resource"));
+    }
   }
 
   /** The function name to get the given proto field. */
@@ -166,9 +172,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  /** The function name to get a field having the given type and name. */
-  public String getResourceNameFieldGetFunctionName(Name identifier) {
-    return methodName(Name.from("get").join(identifier).join("as_resource"));
+  public String getResourceNameFieldGetFunctionName(TypeRef type, Name identifier) {
+    if (type.isMap()) {
+      return getNotImplementedString("SurfaceNamer.getResourceNameFieldGetFunctionName:map-type");
+    } else if (type.isRepeated()) {
+      return methodName(Name.from("get").join(identifier).join("list").join("as_resources"));
+    } else {
+      return methodName(Name.from("get").join(identifier).join("as_resource"));
+    }
   }
 
   /**

@@ -414,10 +414,6 @@ public class ApiMethodTransformer {
       MethodTransformerContext context, Field field) {
     SurfaceNamer namer = context.getNamer();
 
-    boolean useResourceNameFormatOption =
-        context.getFeatureConfig().resourceNameTypesEnabled()
-            && ResourceNameUtil.hasResourceName(field);
-
     String typeName =
         namer.getNotImplementedString("ApiMethodTransformer.generateRequestObjectParam - typeName");
     String elementTypeName =
@@ -425,7 +421,7 @@ public class ApiMethodTransformer {
             "ApiMethodTransformer.generateRequestObjectParam - elementTypeName");
     String setCallName = null;
 
-    if (useResourceNameFormatOption) {
+    if (context.getFeatureConfig().useResourceNameFormatOption(field)) {
       String resourceName = ResourceNameUtil.getResourceName(field);
       if (namer.shouldImportRequestObjectParamType(field)) {
         typeName =
@@ -435,7 +431,9 @@ public class ApiMethodTransformer {
         elementTypeName =
             context.getTypeTable().getAndSaveNicknameForTypedResourceName(field, resourceName);
       }
-      setCallName = namer.getResourceNameFieldSetFunctionName(Name.from(field.getSimpleName()));
+      setCallName =
+          namer.getResourceNameFieldSetFunctionName(
+              field.getType(), Name.from(field.getSimpleName()));
     } else {
       if (namer.shouldImportRequestObjectParamType(field)) {
         typeName = context.getTypeTable().getAndSaveNicknameFor(field.getType());

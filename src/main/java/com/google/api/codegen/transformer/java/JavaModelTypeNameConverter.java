@@ -21,7 +21,6 @@ import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
@@ -29,7 +28,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
 import java.io.File;
 
 /**
@@ -206,20 +204,19 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeName(ProtoElement elem) {
+    return getTypeNameForTypedResourceName(elem, getShortName(elem));
+  }
+
+  @Override
+  public TypeName getTypeNameForTypedResourceName(ProtoElement elem, String shortName) {
     String packageName = getProtoElementPackage(elem);
-    String shortName = elem.getFullName().substring(elem.getFile().getFullName().length() + 1);
     String longName = packageName + "." + shortName;
 
     return new TypeName(longName, shortName);
   }
 
-  @Override
-  public TypeName getTypeNameForTypedResourceName(
-      ProtoElement elem, String typedResourceShortName) {
-    String packageName = getProtoElementPackage(elem);
-    String longName = packageName + "." + typedResourceShortName;
-
-    return new TypeName(longName, typedResourceShortName);
+  private static String getShortName(ProtoElement elem) {
+    return elem.getFullName().substring(elem.getFile().getFullName().length() + 1);
   }
 
   private static String getProtoElementPackage(ProtoElement elem) {

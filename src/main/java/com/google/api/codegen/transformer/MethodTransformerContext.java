@@ -18,8 +18,6 @@ import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.MethodConfig;
-import com.google.api.codegen.metacode.InitCodeNode;
-import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
@@ -73,11 +71,6 @@ public abstract class MethodTransformerContext {
 
   public CollectionConfig getCollectionConfig(String entityName) {
     return getInterfaceConfig().getCollectionConfig(entityName);
-  }
-
-  public boolean useResourceNameFormatOption(InitCodeNode item) {
-    return getFeatureConfig().resourceNameTypesEnabled()
-        && ResourceNameUtil.hasResourceName(item.getField());
   }
 
   public MethodTransformerContext cloneWithEmptyTypeTable() {

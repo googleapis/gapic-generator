@@ -14,8 +14,16 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.util.ResourceNameUtil;
+import com.google.api.tools.framework.model.Field;
+
 public class FeatureConfig {
+
   public boolean resourceNameTypesEnabled() {
     return false;
+  }
+
+  public boolean useResourceNameFormatOption(Field field) {
+    return resourceNameTypesEnabled() && ResourceNameUtil.hasResourceName(field);
   }
 }
