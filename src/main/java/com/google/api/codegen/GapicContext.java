@@ -112,12 +112,21 @@ public class GapicContext extends CodegenContext {
   }
 
   /**
-   * Returns a list of simple RPC methods.
+   * Returns true when the method is supported by the current codegen context. By default, only non
+   * stremaing methods are supported unless subclass explicitly allows.
+   * TODO: remove this method when all languages support gRPC streaming.
    */
-  public List<Method> getNonStreamingMethods(Interface service) {
+  protected boolean isSupported(Method method) {
+    return !method.getRequestStreaming() && !method.getResponseStreaming();
+  }
+
+  /**
+   * Returns a list of RPC methods supported by the context.
+   */
+  public List<Method> getSupportedMethods(Interface service) {
     List<Method> simples = new ArrayList<>(service.getMethods().size());
     for (Method method : service.getMethods()) {
-      if (!method.getRequestStreaming() && !method.getResponseStreaming()) {
+      if (isSupported(method)) {
         simples.add(method);
       }
     }
@@ -125,10 +134,11 @@ public class GapicContext extends CodegenContext {
   }
 
   /**
-   * Returns a list of simple RPC methods, taking into account GRPC interface rerouting.
-   * TODO replace getNonStreamingMethods with this when all languages are migrated.
+   * Returns a list of RPC methods supported by the context, taking into account GRPC interface
+   * rerouting.
+   * TODO replace getSupportedMethods with this when all languages are migrated.
    */
-  public List<Method> getNonStreamingMethodsV2(Interface service) {
+  public List<Method> getSupportedMethodsV2(Interface service) {
     InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
     if (interfaceConfig == null) {
       throw new IllegalStateException(
@@ -137,7 +147,7 @@ public class GapicContext extends CodegenContext {
     List<Method> methods = new ArrayList<>(interfaceConfig.getMethodConfigs().size());
     for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
       Method method = methodConfig.getMethod();
-      if (!method.getRequestStreaming() && !method.getResponseStreaming()) {
+      if (isSupported(method)) {
         methods.add(method);
       }
     }

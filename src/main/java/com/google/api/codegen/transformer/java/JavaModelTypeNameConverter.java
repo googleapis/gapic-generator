@@ -64,7 +64,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
           .build();
 
   /**
-   * A map from primitive types in proto to zero value in Java
+   * A map from primitive types in proto to zero values in Java.
    */
   private static final ImmutableMap<Type, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Type, String>builder()

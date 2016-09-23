@@ -1,7 +1,7 @@
 
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Debugger API
+# 1. If not already done, enable the Stackdriver Debugger API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/clouddebugger
 # 2. This sample uses Application Default Credentials for authentication.
@@ -17,24 +17,27 @@ require 'json'
 
 service = Google::Apis::ClouddebuggerV2::CloudDebuggerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `list_controller_debuggee_breakpoints` method:
+
 # Identifies the debuggee.
-debuggee_id = '{MY-DEBUGGEE-ID}'  # TODO: Update placeholder value(s).
+debuggee_id = '{MY-DEBUGGEE-ID}'
+
 
 # Perform the call
 response = service.list_controller_debuggee_breakpoints(debuggee_id)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Debugger API
+# 1. If not already done, enable the Stackdriver Debugger API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/clouddebugger
 # 2. This sample uses Application Default Credentials for authentication.
@@ -50,30 +53,34 @@ require 'json'
 
 service = Google::Apis::ClouddebuggerV2::CloudDebuggerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+# TODO: Change placeholders below to desired parameter values for the `update_active_breakpoint` method:
 
 # Identifies the debuggee being debugged.
-debuggee_id = '{MY-DEBUGGEE-ID}'  # TODO: Update placeholder value(s).
+debuggee_id = '{MY-DEBUGGEE-ID}'
 
 # Breakpoint identifier, unique in the scope of the debuggee.
-id = '{MY-ID}'  # TODO: Update placeholder value(s).
+id = '{MY-ID}'
 
-# TODO: Assign values to the desired members.
-update_active_breakpoint_request_body = Google::Apis::ClouddebuggerV2::UpdateActiveBreakpointRequest.new
+
+request_body = Google::Apis::ClouddebuggerV2::UpdateActiveBreakpointRequest.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.update_active_breakpoint(debuggee_id, id, update_active_breakpoint_request_body)
+response = service.update_active_breakpoint(debuggee_id, id, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Debugger API
+# 1. If not already done, enable the Stackdriver Debugger API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/clouddebugger
 # 2. This sample uses Application Default Credentials for authentication.
@@ -89,25 +96,25 @@ require 'json'
 
 service = Google::Apis::ClouddebuggerV2::CloudDebuggerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 
-# TODO: Assign values to the desired members.
-register_debuggee_request_body = Google::Apis::ClouddebuggerV2::RegisterDebuggeeRequest.new
+request_body = Google::Apis::ClouddebuggerV2::RegisterDebuggeeRequest.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.register_debuggee(register_debuggee_request_body)
+response = service.register_debuggee(request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Debugger API
+# 1. If not already done, enable the Stackdriver Debugger API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/clouddebugger
 # 2. This sample uses Application Default Credentials for authentication.
@@ -123,24 +130,27 @@ require 'json'
 
 service = Google::Apis::ClouddebuggerV2::CloudDebuggerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+# TODO: Change placeholders below to desired parameter values for the `delete_debugger_debuggee_breakpoint` method:
 
 # ID of the debuggee whose breakpoint to delete.
-debuggee_id = '{MY-DEBUGGEE-ID}'  # TODO: Update placeholder value(s).
+debuggee_id = '{MY-DEBUGGEE-ID}'
 
 # ID of the breakpoint to delete.
-breakpoint_id = '{MY-BREAKPOINT-ID}'  # TODO: Update placeholder value(s).
+breakpoint_id = '{MY-BREAKPOINT-ID}'
+
 
 # Perform the call
 service.delete_debugger_debuggee_breakpoint(debuggee_id, breakpoint_id)
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Debugger API
+# 1. If not already done, enable the Stackdriver Debugger API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/clouddebugger
 # 2. This sample uses Application Default Credentials for authentication.
@@ -156,27 +166,30 @@ require 'json'
 
 service = Google::Apis::ClouddebuggerV2::CloudDebuggerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `get_debugger_debuggee_breakpoint` method:
+
 # ID of the debuggee whose breakpoint to get.
-debuggee_id = '{MY-DEBUGGEE-ID}'  # TODO: Update placeholder value(s).
+debuggee_id = '{MY-DEBUGGEE-ID}'
 
 # ID of the breakpoint to get.
-breakpoint_id = '{MY-BREAKPOINT-ID}'  # TODO: Update placeholder value(s).
+breakpoint_id = '{MY-BREAKPOINT-ID}'
+
 
 # Perform the call
 response = service.get_debugger_debuggee_breakpoint(debuggee_id, breakpoint_id)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Debugger API
+# 1. If not already done, enable the Stackdriver Debugger API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/clouddebugger
 # 2. This sample uses Application Default Credentials for authentication.
@@ -192,24 +205,27 @@ require 'json'
 
 service = Google::Apis::ClouddebuggerV2::CloudDebuggerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `list_debugger_debuggee_breakpoints` method:
+
 # ID of the debuggee whose breakpoints to list.
-debuggee_id = '{MY-DEBUGGEE-ID}'  # TODO: Update placeholder value(s).
+debuggee_id = '{MY-DEBUGGEE-ID}'
+
 
 # Perform the call
 response = service.list_debugger_debuggee_breakpoints(debuggee_id)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Debugger API
+# 1. If not already done, enable the Stackdriver Debugger API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/clouddebugger
 # 2. This sample uses Application Default Credentials for authentication.
@@ -225,27 +241,31 @@ require 'json'
 
 service = Google::Apis::ClouddebuggerV2::CloudDebuggerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# ID of the debuggee where the breakpoint is to be set.
-debuggee_id = '{MY-DEBUGGEE-ID}'  # TODO: Update placeholder value(s).
 
-# TODO: Assign values to the desired members.
-breakpoint_body = Google::Apis::ClouddebuggerV2::Breakpoint.new
+# TODO: Change placeholders below to desired parameter values for the `set_debugger_debuggee_breakpoint` method:
+
+# ID of the debuggee where the breakpoint is to be set.
+debuggee_id = '{MY-DEBUGGEE-ID}'
+
+
+request_body = Google::Apis::ClouddebuggerV2::Breakpoint.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.set_debugger_debuggee_breakpoint(debuggee_id, breakpoint_body)
+response = service.set_debugger_debuggee_breakpoint(debuggee_id, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Debugger API
+# 1. If not already done, enable the Stackdriver Debugger API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/clouddebugger
 # 2. This sample uses Application Default Credentials for authentication.
@@ -261,9 +281,8 @@ require 'json'
 
 service = Google::Apis::ClouddebuggerV2::CloudDebuggerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
@@ -272,5 +291,5 @@ service.authorization = \
 # Perform the call
 response = service.list_debugger_debuggees()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)

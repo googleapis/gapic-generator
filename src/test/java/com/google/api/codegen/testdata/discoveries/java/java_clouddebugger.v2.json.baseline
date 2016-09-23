@@ -2,14 +2,14 @@
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Debugger API
+ * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouddebugger/v2/java
@@ -22,8 +22,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.clouddebugger.v2.CloudDebugger;
 import com.google.api.services.clouddebugger.v2.model.ListActiveBreakpointsResponse;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -31,15 +29,10 @@ import java.util.Collections;
 
 public class CloudDebuggerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -51,28 +44,31 @@ public class CloudDebuggerExample {
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
+
+    // TODO: Change placeholder below to desired parameter value for the `list` method:
+
     // Identifies the debuggee.
-    String debuggeeId = "{MY-DEBUGGEE-ID}"; // TODO: Update placeholder value(s).
+    String debuggeeId = "{MY-DEBUGGEE-ID}";
+
 
     CloudDebugger.Controller.Debuggees.Breakpoints.List request = clouddebuggerService.controller().debuggees().breakpoints().list(debuggeeId);
     ListActiveBreakpointsResponse response = request.execute();
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
   }
 }
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Debugger API
+ * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouddebugger/v2/java
@@ -86,8 +82,6 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.clouddebugger.v2.CloudDebugger;
 import com.google.api.services.clouddebugger.v2.model.UpdateActiveBreakpointRequest;
 import com.google.api.services.clouddebugger.v2.model.UpdateActiveBreakpointResponse;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -95,15 +89,10 @@ import java.util.Collections;
 
 public class CloudDebuggerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -115,35 +104,38 @@ public class CloudDebuggerExample {
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
+
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
+
     // Identifies the debuggee being debugged.
-    String debuggeeId = "{MY-DEBUGGEE-ID}"; // TODO: Update placeholder value(s).
+    String debuggeeId = "{MY-DEBUGGEE-ID}";
 
     // Breakpoint identifier, unique in the scope of the debuggee.
-    String id = "{MY-ID}"; // TODO: Update placeholder value(s).
+    String id = "{MY-ID}";
 
-    // TODO: Assign values to the desired fields.
+
     UpdateActiveBreakpointRequest requestBody = new UpdateActiveBreakpointRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
 
 
     CloudDebugger.Controller.Debuggees.Breakpoints.Update request = clouddebuggerService.controller().debuggees().breakpoints().update(debuggeeId, id, requestBody);
     UpdateActiveBreakpointResponse response = request.execute();
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
   }
 }
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Debugger API
+ * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouddebugger/v2/java
@@ -157,8 +149,6 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.clouddebugger.v2.CloudDebugger;
 import com.google.api.services.clouddebugger.v2.model.RegisterDebuggeeRequest;
 import com.google.api.services.clouddebugger.v2.model.RegisterDebuggeeResponse;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -166,15 +156,10 @@ import java.util.Collections;
 
 public class CloudDebuggerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -187,29 +172,28 @@ public class CloudDebuggerExample {
       .build();
 
 
-    // TODO: Assign values to the desired fields.
     RegisterDebuggeeRequest requestBody = new RegisterDebuggeeRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
 
 
     CloudDebugger.Controller.Debuggees.Register request = clouddebuggerService.controller().debuggees().register(requestBody);
     RegisterDebuggeeResponse response = request.execute();
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
   }
 }
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Debugger API
+ * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouddebugger/v2/java
@@ -228,15 +212,10 @@ import java.util.Collections;
 
 public class CloudDebuggerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -248,11 +227,15 @@ public class CloudDebuggerExample {
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
     // ID of the debuggee whose breakpoint to delete.
-    String debuggeeId = "{MY-DEBUGGEE-ID}"; // TODO: Update placeholder value(s).
+    String debuggeeId = "{MY-DEBUGGEE-ID}";
 
     // ID of the breakpoint to delete.
-    String breakpointId = "{MY-BREAKPOINT-ID}"; // TODO: Update placeholder value(s).
+    String breakpointId = "{MY-BREAKPOINT-ID}";
+
 
     CloudDebugger.Debugger.Debuggees.Breakpoints.Delete request = clouddebuggerService.debugger().debuggees().breakpoints().delete(debuggeeId, breakpointId);
     request.execute();
@@ -261,14 +244,14 @@ public class CloudDebuggerExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Debugger API
+ * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouddebugger/v2/java
@@ -281,8 +264,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.clouddebugger.v2.CloudDebugger;
 import com.google.api.services.clouddebugger.v2.model.GetBreakpointResponse;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -290,15 +271,10 @@ import java.util.Collections;
 
 public class CloudDebuggerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -310,31 +286,34 @@ public class CloudDebuggerExample {
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
     // ID of the debuggee whose breakpoint to get.
-    String debuggeeId = "{MY-DEBUGGEE-ID}"; // TODO: Update placeholder value(s).
+    String debuggeeId = "{MY-DEBUGGEE-ID}";
 
     // ID of the breakpoint to get.
-    String breakpointId = "{MY-BREAKPOINT-ID}"; // TODO: Update placeholder value(s).
+    String breakpointId = "{MY-BREAKPOINT-ID}";
+
 
     CloudDebugger.Debugger.Debuggees.Breakpoints.Get request = clouddebuggerService.debugger().debuggees().breakpoints().get(debuggeeId, breakpointId);
     GetBreakpointResponse response = request.execute();
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
   }
 }
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Debugger API
+ * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouddebugger/v2/java
@@ -347,8 +326,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.clouddebugger.v2.CloudDebugger;
 import com.google.api.services.clouddebugger.v2.model.ListBreakpointsResponse;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -356,15 +333,10 @@ import java.util.Collections;
 
 public class CloudDebuggerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -376,28 +348,31 @@ public class CloudDebuggerExample {
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
+
+    // TODO: Change placeholder below to desired parameter value for the `list` method:
+
     // ID of the debuggee whose breakpoints to list.
-    String debuggeeId = "{MY-DEBUGGEE-ID}"; // TODO: Update placeholder value(s).
+    String debuggeeId = "{MY-DEBUGGEE-ID}";
+
 
     CloudDebugger.Debugger.Debuggees.Breakpoints.List request = clouddebuggerService.debugger().debuggees().breakpoints().list(debuggeeId);
     ListBreakpointsResponse response = request.execute();
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
   }
 }
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Debugger API
+ * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouddebugger/v2/java
@@ -411,8 +386,6 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.clouddebugger.v2.CloudDebugger;
 import com.google.api.services.clouddebugger.v2.model.Breakpoint;
 import com.google.api.services.clouddebugger.v2.model.SetBreakpointResponse;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -420,15 +393,10 @@ import java.util.Collections;
 
 public class CloudDebuggerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -440,32 +408,35 @@ public class CloudDebuggerExample {
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // ID of the debuggee where the breakpoint is to be set.
-    String debuggeeId = "{MY-DEBUGGEE-ID}"; // TODO: Update placeholder value(s).
 
-    // TODO: Assign values to the desired fields.
+    // TODO: Change placeholder below to desired parameter value for the `set` method:
+
+    // ID of the debuggee where the breakpoint is to be set.
+    String debuggeeId = "{MY-DEBUGGEE-ID}";
+
+
     Breakpoint requestBody = new Breakpoint();
+    // TODO: Assign values to desired fields of the `requestBody` object.
 
 
     CloudDebugger.Debugger.Debuggees.Breakpoints.Set request = clouddebuggerService.debugger().debuggees().breakpoints().set(debuggeeId, requestBody);
     SetBreakpointResponse response = request.execute();
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
   }
 }
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Debugger API
+ * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouddebugger/v2/java
@@ -478,8 +449,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.clouddebugger.v2.CloudDebugger;
 import com.google.api.services.clouddebugger.v2.model.ListDebuggeesResponse;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -487,15 +456,10 @@ import java.util.Collections;
 
 public class CloudDebuggerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -511,8 +475,7 @@ public class CloudDebuggerExample {
     CloudDebugger.Debugger.Debuggees.List request = clouddebuggerService.debugger().debuggees().list();
     ListDebuggeesResponse response = request.execute();
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
   }
 }

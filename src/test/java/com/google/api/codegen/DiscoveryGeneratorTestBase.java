@@ -14,6 +14,9 @@
  */
 package com.google.api.codegen;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.google.api.codegen.discovery.DiscoveryProvider;
 import com.google.api.codegen.discovery.MainDiscoveryProviderFactory;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
@@ -26,8 +29,10 @@ import com.google.protobuf.Method;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -45,6 +50,7 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
   private final String name;
   private final String discoveryDocFileName;
   private final String[] gapicConfigFileNames;
+  private final JsonNode overridesJson;
   protected ConfigProto config;
   protected DiscoveryImporter discoveryImporter;
 
@@ -53,6 +59,22 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
     this.name = name;
     this.discoveryDocFileName = discoveryDocFileName;
     this.gapicConfigFileNames = gapicConfigFileNames;
+
+    // Look for a overrides json based on the filename of the discovery doc.
+    // For example, for "logging.v1.json" we look for "logging.v1.json.overrides"
+    JsonNode tree = null;
+    String overridesFilename = discoveryDocFileName + ".overrides";
+    try {
+      URL url = getTestDataLocator().findTestData(overridesFilename);
+      if (url != null) {
+        tree =
+            new ObjectMapper().readTree(new StringReader(getTestDataLocator().readTestData(url)));
+      }
+    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
+      throw new IllegalArgumentException("failed to parse overrides file: " + overridesFilename);
+    }
+    this.overridesJson = tree;
   }
 
   protected void setupDiscovery() {
@@ -78,12 +100,14 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
   protected Object run() {
     GeneratorProto generator = config.getGenerator();
 
-    String factory = generator.getFactory();
     String id = generator.getId();
 
+    // This field is manually populated to test the end-to-end behavior of the
+    // "auth_instructions" flag.
+    discoveryImporter.getConfig().setAuthInstructionsUrl("https://foo.com/bar");
     DiscoveryProvider provider =
         MainDiscoveryProviderFactory.defaultCreate(
-            discoveryImporter.getService(), discoveryImporter.getConfig(), id);
+            discoveryImporter.getService(), discoveryImporter.getConfig(), overridesJson, id);
 
     Doc output = Doc.EMPTY;
     for (Api api : discoveryImporter.getService().getApisList()) {

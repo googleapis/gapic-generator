@@ -1,4 +1,4 @@
-============== file: example/no_templates_service_api.py ==============
+============== file: example/no_templates_api_service_api.py ==============
 # Copyright 2016 Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@
 # The only allowed edits are to method and file documentation. A 3-way
 # merge preserves those additions if the generated source changes.
 
-"""Accesses the google.cloud.example.v1 NoTemplatesService API."""
+"""Accesses the google.cloud.example.v1 NoTemplatesAPIService API."""
 
 import json
 import os
@@ -37,7 +37,7 @@ import google.gax
 from google.cloud.example.v1 import no_path_templates_pb2
 
 
-class NoTemplatesServiceApi(object):
+class NoTemplatesAPIServiceApi(object):
     SERVICE_ADDRESS = 'no-path-templates.googleapis.com'
     """The default address of the service."""
 
@@ -85,7 +85,7 @@ class NoTemplatesServiceApi(object):
           app_version (string): The version of the calling service.
 
         Returns:
-          A NoTemplatesServiceApi object.
+          A NoTemplatesAPIServiceApi object.
         """
         if scopes is None:
             scopes = self._ALL_SCOPES
@@ -100,23 +100,24 @@ class NoTemplatesServiceApi(object):
         )
         metadata = [('x-goog-api-client', goog_api_client)]
         default_client_config = json.loads(pkg_resources.resource_string(
-            __name__, 'no_templates_service_client_config.json').decode())
+            __name__, 'no_templates_api_service_client_config.json').decode())
         defaults = api_callable.construct_settings(
-            'google.cloud.example.v1.NoTemplatesService',
+            'google.cloud.example.v1.NoTemplatesAPIService',
             default_client_config,
             client_config,
             config.STATUS_CODE_NAMES,
             kwargs={'metadata': metadata})
-        self.stub = config.create_stub(
-            no_path_templates_pb2.NoTemplatesServiceStub,
+        self.no_templates_api_service_stub = config.create_stub(
+            no_path_templates_pb2.NoTemplatesAPIServiceStub,
             service_path,
             port,
             ssl_creds=ssl_creds,
             channel=channel,
             metadata_transformer=metadata_transformer,
             scopes=scopes)
+
         self._increment = api_callable.create_api_call(
-            self.stub.Increment,
+            self.no_templates_api_service_stub.Increment,
             settings=defaults['increment'])
 
     # Service calls
@@ -132,8 +133,8 @@ class NoTemplatesServiceApi(object):
         whitespace.
 
         Example:
-          >>> from example.no_templates_service_api import NoTemplatesServiceApi
-          >>> api = NoTemplatesServiceApi()
+          >>> from example import no_templates_api_service_api
+          >>> api = no_templates_api_service_api.NoTemplatesAPIServiceApi()
           >>> api.increment()
 
         Args:

@@ -1156,9 +1156,9 @@ LibraryServiceApi.prototype.addTag = function addTag(
  *   projects/{project}/zones/{zone}/disks/{disk}.
  * @param {string} label
  *   REQUIRED: The label to add.
- * @param {gax.CallOptions=} options
- *   Overrides the default settings for this call, e.g, timeout,
- *   retries, etc.
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
@@ -1179,18 +1179,20 @@ LibraryServiceApi.prototype.addTag = function addTag(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.addLabel = function addLabel() {
-  var args = arguejs({
-    resource: String,
-    label: String,
-    options: [gax.CallOptions],
-    callback: [Function]
-  }, arguments);
+LibraryServiceApi.prototype.addLabel = function addLabel(
+    resource,
+    label,
+    options,
+    callback) {
+  if (options instanceof Function && callback === undefined) {
+    callback = options;
+    options = {};
+  }
   var req = {
-    resource: args.resource,
-    label: args.label
+    resource: resource,
+    label: label
   };
-  return this._addLabel(req, args.options, args.callback);
+  return this._addLabel(req, options, callback);
 };
 
 function LibraryServiceApiBuilder(gaxGrpc) {

@@ -9,7 +9,7 @@
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudbilling/v1/java
@@ -22,8 +22,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudbilling.Cloudbilling;
 import com.google.api.services.cloudbilling.model.BillingAccount;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -31,15 +29,10 @@ import java.util.Collections;
 
 public class CloudbillingExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -51,16 +44,19 @@ public class CloudbillingExample {
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
+
+    // TODO: Change placeholder below to desired parameter value for the `get` method:
+
     // The resource name of the billing account to retrieve. For example,
     // `billingAccounts/012345-567890-ABCDEF`.
-    String name = "billingAccounts/{MY-BILLINGACCOUNT}"; // TODO: Update placeholder value(s).
+    String name = "billingAccounts/{MY-BILLINGACCOUNT}";
+
 
     Cloudbilling.BillingAccounts.Get request = cloudbillingService.billingAccounts().get(name);
     BillingAccount response = request.execute();
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
   }
 }
 /**
@@ -73,7 +69,7 @@ public class CloudbillingExample {
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudbilling/v1/java
@@ -87,8 +83,6 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudbilling.Cloudbilling;
 import com.google.api.services.cloudbilling.model.BillingAccount;
 import com.google.api.services.cloudbilling.model.ListBillingAccountsResponse;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -96,15 +90,10 @@ import java.util.Collections;
 
 public class CloudbillingExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -118,9 +107,6 @@ public class CloudbillingExample {
 
 
     Cloudbilling.BillingAccounts.List request = cloudbillingService.billingAccounts().list();
-
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
     ListBillingAccountsResponse response;
     do {
       response = request.execute();
@@ -128,8 +114,8 @@ public class CloudbillingExample {
         continue;
 
       for (BillingAccount billingAccount : response.getBillingAccounts()) {
-        // TODO: Use billingAccount
-        System.out.println(gson.toJson(new JsonParser().parse(billingAccount.toString())));
+        // TODO: Change code below to process each `billingAccount` resource:
+        System.out.println(billingAccount);
       }
 
       request.setPageToken(response.getNextPageToken());
@@ -146,7 +132,7 @@ public class CloudbillingExample {
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudbilling/v1/java
@@ -160,8 +146,6 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudbilling.Cloudbilling;
 import com.google.api.services.cloudbilling.model.ListProjectBillingInfoResponse;
 import com.google.api.services.cloudbilling.model.ProjectBillingInfo;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -169,15 +153,10 @@ import java.util.Collections;
 
 public class CloudbillingExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -189,14 +168,15 @@ public class CloudbillingExample {
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
+
+    // TODO: Change placeholder below to desired parameter value for the `list` method:
+
     // The resource name of the billing account associated with the projects that you want to list. For
     // example, `billingAccounts/012345-567890-ABCDEF`.
-    String name = "billingAccounts/{MY-BILLINGACCOUNT}"; // TODO: Update placeholder value(s).
+    String name = "billingAccounts/{MY-BILLINGACCOUNT}";
+
 
     Cloudbilling.BillingAccounts.Projects.List request = cloudbillingService.billingAccounts().projects().list(name);
-
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
     ListProjectBillingInfoResponse response;
     do {
       response = request.execute();
@@ -204,8 +184,8 @@ public class CloudbillingExample {
         continue;
 
       for (ProjectBillingInfo projectBillingInfo : response.getProjectBillingInfo()) {
-        // TODO: Use projectBillingInfo
-        System.out.println(gson.toJson(new JsonParser().parse(projectBillingInfo.toString())));
+        // TODO: Change code below to process each `projectBillingInfo` resource:
+        System.out.println(projectBillingInfo);
       }
 
       request.setPageToken(response.getNextPageToken());
@@ -222,7 +202,7 @@ public class CloudbillingExample {
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudbilling/v1/java
@@ -235,8 +215,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudbilling.Cloudbilling;
 import com.google.api.services.cloudbilling.model.ProjectBillingInfo;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -244,15 +222,10 @@ import java.util.Collections;
 
 public class CloudbillingExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -264,16 +237,19 @@ public class CloudbillingExample {
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
+
+    // TODO: Change placeholder below to desired parameter value for the `getBillingInfo` method:
+
     // The resource name of the project for which billing information is retrieved. For example,
     // `projects/tokyo-rain-123`.
-    String name = "projects/{MY-PROJECT}"; // TODO: Update placeholder value(s).
+    String name = "projects/{MY-PROJECT}";
+
 
     Cloudbilling.Projects.GetBillingInfo request = cloudbillingService.projects().getBillingInfo(name);
     ProjectBillingInfo response = request.execute();
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
   }
 }
 /**
@@ -286,7 +262,7 @@ public class CloudbillingExample {
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudbilling/v1/java
@@ -299,8 +275,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudbilling.Cloudbilling;
 import com.google.api.services.cloudbilling.model.ProjectBillingInfo;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -308,15 +282,10 @@ import java.util.Collections;
 
 public class CloudbillingExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -328,19 +297,22 @@ public class CloudbillingExample {
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
+
+    // TODO: Change placeholder below to desired parameter value for the `updateBillingInfo` method:
+
     // The resource name of the project associated with the billing information that you want to update.
     // For example, `projects/tokyo-rain-123`.
-    String name = "projects/{MY-PROJECT}"; // TODO: Update placeholder value(s).
+    String name = "projects/{MY-PROJECT}";
 
-    // TODO: Assign values to the desired fields.
+
     ProjectBillingInfo requestBody = new ProjectBillingInfo();
+    // TODO: Assign values to desired fields of the `requestBody` object.
 
 
     Cloudbilling.Projects.UpdateBillingInfo request = cloudbillingService.projects().updateBillingInfo(name, requestBody);
     ProjectBillingInfo response = request.execute();
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
   }
 }

@@ -82,13 +82,22 @@ public abstract class SurfaceTransformerContext {
   }
 
   /**
+   * Returns true if the method is supported by the current context.
+   * Currently no streaming methods are supported.
+   * TODO: integrate with GapicContext for this method.
+   */
+  private boolean isSupported(Method method) {
+    return !method.getResponseStreaming() && !method.getRequestStreaming();
+  }
+
+  /**
    * Returns a list of simple RPC methods.
    */
-  public List<Method> getNonStreamingMethods() {
+  public List<Method> getSupportedMethods() {
     List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
     for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
       Method method = methodConfig.getMethod();
-      if (!method.getRequestStreaming() && !method.getResponseStreaming()) {
+      if (isSupported(method)) {
         methods.add(method);
       }
     }
@@ -97,7 +106,7 @@ public abstract class SurfaceTransformerContext {
 
   public List<Method> getPageStreamingMethods() {
     List<Method> methods = new ArrayList<>();
-    for (Method method : getNonStreamingMethods()) {
+    for (Method method : getSupportedMethods()) {
       if (getMethodConfig(method).isPageStreaming()) {
         methods.add(method);
       }

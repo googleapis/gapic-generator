@@ -24,14 +24,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -43,15 +39,19 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // Project ID of the dataset being deleted
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // Dataset ID of dataset being deleted
-            string datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
+            string datasetId = "{MY-DATASET-ID}";
+
 
             DatasetsResource.DeleteRequest request = bigqueryService.Datasets.Delete(projectId, datasetId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
         }
@@ -85,14 +85,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -104,19 +100,23 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // Project ID of the requested dataset
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // Dataset ID of the requested dataset
-            string datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
+            string datasetId = "{MY-DATASET-ID}";
+
 
             DatasetsResource.GetRequest request = bigqueryService.Datasets.Get(projectId, datasetId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Dataset response = request.Execute();
             // Data.Dataset response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -149,14 +149,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -168,19 +164,24 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Project ID of the new dataset
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+            // Project ID of the new dataset
+            string projectId = "{MY-PROJECT-ID}";
+
+
             Data.Dataset requestBody = new Data.Dataset();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             DatasetsResource.InsertRequest request = bigqueryService.Datasets.Insert(requestBody, projectId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Dataset response = request.Execute();
             // Data.Dataset response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -213,14 +214,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -232,15 +229,19 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // Project ID of the datasets to be listed
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
+
 
             DatasetsResource.ListRequest request = bigqueryService.Datasets.List(projectId);
 
             Data.DatasetList response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -250,7 +251,7 @@ namespace BigquerySample
                 }
                 foreach (Data.DatasetList.Datasets datasets in response.Datasets)
                 {
-                    // TODO: Use datasets
+                    // TODO: Change code below to process each `datasets` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(datasets));
                 }
                 request.PageToken = response.NextPageToken;
@@ -286,14 +287,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -305,22 +302,27 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
             // Project ID of the dataset being updated
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // Dataset ID of the dataset being updated
-            string datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
+            string datasetId = "{MY-DATASET-ID}";
 
-            // TODO: Assign values to the desired properties to be changed.
+
             Data.Dataset requestBody = new Data.Dataset();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
 
             DatasetsResource.PatchRequest request = bigqueryService.Datasets.Patch(requestBody, projectId, datasetId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Dataset response = request.Execute();
             // Data.Dataset response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -353,14 +355,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -372,22 +370,27 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
             // Project ID of the dataset being updated
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // Dataset ID of the dataset being updated
-            string datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
+            string datasetId = "{MY-DATASET-ID}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.Dataset requestBody = new Data.Dataset();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             DatasetsResource.UpdateRequest request = bigqueryService.Datasets.Update(requestBody, projectId, datasetId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Dataset response = request.Execute();
             // Data.Dataset response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -420,14 +423,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -439,19 +438,23 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Cancel` method:
+
             // [Required] Project ID of the job to cancel
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // [Required] Job ID of the job to cancel
-            string jobId = "{MY-JOB-ID}"; // TODO: Update placeholder value(s).
+            string jobId = "{MY-JOB-ID}";
+
 
             JobsResource.CancelRequest request = bigqueryService.Jobs.Cancel(projectId, jobId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.JobCancelResponse response = request.Execute();
             // Data.JobCancelResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -484,14 +487,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -503,19 +502,23 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // [Required] Project ID of the requested job
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // [Required] Job ID of the requested job
-            string jobId = "{MY-JOB-ID}"; // TODO: Update placeholder value(s).
+            string jobId = "{MY-JOB-ID}";
+
 
             JobsResource.GetRequest request = bigqueryService.Jobs.Get(projectId, jobId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Job response = request.Execute();
             // Data.Job response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -548,14 +551,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -567,19 +566,23 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `GetQueryResults` method:
+
             // [Required] Project ID of the query job
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // [Required] Job ID of the query job
-            string jobId = "{MY-JOB-ID}"; // TODO: Update placeholder value(s).
+            string jobId = "{MY-JOB-ID}";
+
 
             JobsResource.GetQueryResultsRequest request = bigqueryService.Jobs.GetQueryResults(projectId, jobId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.GetQueryResultsResponse response = request.Execute();
             // Data.GetQueryResultsResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -612,14 +615,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -631,19 +630,28 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Project ID of the project that will be billed for the job
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+            // Project ID of the project that will be billed for the job
+            string projectId = "{MY-PROJECT-ID}";
+
+
             Data.Job requestBody = new Data.Job();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            // TODO: Add desired media content for upload. For more information, see:
+            // https://developers.google.com/api-client-library/dotnet/guide/media_upload
+
 
             JobsResource.InsertRequest request = bigqueryService.Jobs.Insert(requestBody, projectId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Job response = request.Execute();
             // Data.Job response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -676,14 +684,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -695,15 +699,19 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // Project ID of the jobs to list
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
+
 
             JobsResource.ListRequest request = bigqueryService.Jobs.List(projectId);
 
             Data.JobList response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -713,7 +721,7 @@ namespace BigquerySample
                 }
                 foreach (Data.JobList.Jobs jobs in response.Jobs)
                 {
-                    // TODO: Use jobs
+                    // TODO: Change code below to process each `jobs` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(jobs));
                 }
                 request.PageToken = response.NextPageToken;
@@ -749,14 +757,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -768,19 +772,24 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Project ID of the project billed for the query
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Query` method:
+
+            // Project ID of the project billed for the query
+            string projectId = "{MY-PROJECT-ID}";
+
+
             Data.QueryRequest requestBody = new Data.QueryRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             JobsResource.QueryRequest request = bigqueryService.Jobs.Query(requestBody, projectId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.QueryResponse response = request.Execute();
             // Data.QueryResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -813,14 +822,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -837,7 +842,7 @@ namespace BigquerySample
             Data.ProjectList response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -847,7 +852,7 @@ namespace BigquerySample
                 }
                 foreach (Data.ProjectList.Projects projects in response.Projects)
                 {
-                    // TODO: Use projects
+                    // TODO: Change code below to process each `projects` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(projects));
                 }
                 request.PageToken = response.NextPageToken;
@@ -883,14 +888,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -902,25 +903,30 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `InsertAll` method:
+
             // Project ID of the destination table.
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // Dataset ID of the destination table.
-            string datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
+            string datasetId = "{MY-DATASET-ID}";
 
             // Table ID of the destination table.
-            string tableId = "{MY-TABLE-ID}"; // TODO: Update placeholder value(s).
+            string tableId = "{MY-TABLE-ID}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.TableDataInsertAllRequest requestBody = new Data.TableDataInsertAllRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             TabledataResource.InsertAllRequest request = bigqueryService.Tabledata.InsertAll(requestBody, projectId, datasetId, tableId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.TableDataInsertAllResponse response = request.Execute();
             // Data.TableDataInsertAllResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -953,14 +959,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -972,22 +974,26 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // Project ID of the table to read
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // Dataset ID of the table to read
-            string datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
+            string datasetId = "{MY-DATASET-ID}";
 
             // Table ID of the table to read
-            string tableId = "{MY-TABLE-ID}"; // TODO: Update placeholder value(s).
+            string tableId = "{MY-TABLE-ID}";
+
 
             TabledataResource.ListRequest request = bigqueryService.Tabledata.List(projectId, datasetId, tableId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.TableDataList response = request.Execute();
             // Data.TableDataList response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1017,14 +1023,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1036,18 +1038,22 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // Project ID of the table to delete
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // Dataset ID of the table to delete
-            string datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
+            string datasetId = "{MY-DATASET-ID}";
 
             // Table ID of the table to delete
-            string tableId = "{MY-TABLE-ID}"; // TODO: Update placeholder value(s).
+            string tableId = "{MY-TABLE-ID}";
+
 
             TablesResource.DeleteRequest request = bigqueryService.Tables.Delete(projectId, datasetId, tableId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
         }
@@ -1081,14 +1087,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1100,22 +1102,26 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // Project ID of the requested table
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // Dataset ID of the requested table
-            string datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
+            string datasetId = "{MY-DATASET-ID}";
 
             // Table ID of the requested table
-            string tableId = "{MY-TABLE-ID}"; // TODO: Update placeholder value(s).
+            string tableId = "{MY-TABLE-ID}";
+
 
             TablesResource.GetRequest request = bigqueryService.Tables.Get(projectId, datasetId, tableId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Table response = request.Execute();
             // Data.Table response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1148,14 +1154,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1167,22 +1169,27 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
             // Project ID of the new table
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // Dataset ID of the new table
-            string datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
+            string datasetId = "{MY-DATASET-ID}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.Table requestBody = new Data.Table();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             TablesResource.InsertRequest request = bigqueryService.Tables.Insert(requestBody, projectId, datasetId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Table response = request.Execute();
             // Data.Table response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1215,14 +1222,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1234,18 +1237,22 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // Project ID of the tables to list
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // Dataset ID of the tables to list
-            string datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
+            string datasetId = "{MY-DATASET-ID}";
+
 
             TablesResource.ListRequest request = bigqueryService.Tables.List(projectId, datasetId);
 
             Data.TableList response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -1255,7 +1262,7 @@ namespace BigquerySample
                 }
                 foreach (Data.TableList.Tables tables in response.Tables)
                 {
-                    // TODO: Use tables
+                    // TODO: Change code below to process each `tables` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(tables));
                 }
                 request.PageToken = response.NextPageToken;
@@ -1291,14 +1298,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1310,25 +1313,30 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
             // Project ID of the table to update
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // Dataset ID of the table to update
-            string datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
+            string datasetId = "{MY-DATASET-ID}";
 
             // Table ID of the table to update
-            string tableId = "{MY-TABLE-ID}"; // TODO: Update placeholder value(s).
+            string tableId = "{MY-TABLE-ID}";
 
-            // TODO: Assign values to the desired properties to be changed.
+
             Data.Table requestBody = new Data.Table();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
 
             TablesResource.PatchRequest request = bigqueryService.Tables.Patch(requestBody, projectId, datasetId, tableId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Table response = request.Execute();
             // Data.Table response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1361,14 +1369,10 @@ namespace BigquerySample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1380,25 +1384,30 @@ namespace BigquerySample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
             // Project ID of the table to update
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
 
             // Dataset ID of the table to update
-            string datasetId = "{MY-DATASET-ID}"; // TODO: Update placeholder value(s).
+            string datasetId = "{MY-DATASET-ID}";
 
             // Table ID of the table to update
-            string tableId = "{MY-TABLE-ID}"; // TODO: Update placeholder value(s).
+            string tableId = "{MY-TABLE-ID}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.Table requestBody = new Data.Table();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             TablesResource.UpdateRequest request = bigqueryService.Tables.Update(requestBody, projectId, datasetId, tableId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Table response = request.Execute();
             // Data.Table response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }

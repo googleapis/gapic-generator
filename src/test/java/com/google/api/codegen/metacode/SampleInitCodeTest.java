@@ -26,17 +26,16 @@ import com.google.api.tools.framework.setup.StandardSetup;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.truth.Truth;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SampleInitCodeTest {
 
@@ -106,7 +105,7 @@ public class SampleInitCodeTest {
     InitCodeNode expectedStructure = InitCodeNode.create("myfield");
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
-    Truth.assertThat(checkEquals(actualStructure, expectedStructure));
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
   }
 
   @Test
@@ -119,7 +118,7 @@ public class SampleInitCodeTest {
             "myobj", InitCodeLineType.StructureInitLine, innerStructure);
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
-    Truth.assertThat(checkEquals(actualStructure, expectedStructure));
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
   }
 
   @Test
@@ -131,7 +130,7 @@ public class SampleInitCodeTest {
         InitCodeNode.createWithChildren("mylist", InitCodeLineType.ListInitLine, innerStructure);
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
-    Truth.assertThat(checkEquals(actualStructure, expectedStructure));
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
   }
 
   @Test
@@ -143,7 +142,7 @@ public class SampleInitCodeTest {
         InitCodeNode.createWithChildren("mymap", InitCodeLineType.MapInitLine, innerStructure);
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
-    Truth.assertThat(checkEquals(actualStructure, expectedStructure));
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
   }
 
   @Test
@@ -157,7 +156,54 @@ public class SampleInitCodeTest {
         InitCodeNode.createWithChildren("mylist", InitCodeLineType.ListInitLine, outerList);
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
-    Truth.assertThat(checkEquals(actualStructure, expectedStructure));
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
+  }
+
+  @Test
+  public void testFormattedField() throws Exception {
+    String fieldSpec = "name%entity";
+
+    HashMap<String, InitValueConfig> initValueMap = new HashMap<>();
+    InitValueConfig initValueConfig = InitValueConfig.create("test-api", null);
+    initValueMap.put("name", initValueConfig);
+
+    InitCodeNode expectedStructure = InitCodeNode.createWithValue("name", initValueConfig);
+
+    InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec, initValueMap);
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
+  }
+
+  @Test
+  public void testFormattedFieldWithValues() throws Exception {
+    List<String> fieldSpecs =
+        Arrays.asList("formatted_field%entity1=test1", "formatted_field%entity2=test2");
+
+    HashMap<String, InitValueConfig> initValueMap = new HashMap<>();
+    InitValueConfig initValueConfig = InitValueConfig.create("test-api", null);
+    initValueMap.put("formatted_field", initValueConfig);
+
+    HashMap<String, String> expectedCollectionValues = new HashMap<>();
+    expectedCollectionValues.put("entity1", "test1");
+    expectedCollectionValues.put("entity2", "test2");
+
+    InitCodeNode actualStructure =
+        InitCodeNode.createTree(
+            getContextBuilder()
+                .initFieldConfigStrings(fieldSpecs)
+                .initValueConfigMap(initValueMap)
+                .build());
+    Truth.assertThat(actualStructure.getChildren().isEmpty()).isFalse();
+    InitCodeNode actualFormattedFieldNode = actualStructure.getChildren().get("formatted_field");
+    Truth.assertThat(actualFormattedFieldNode.getInitValueConfig()).isNotNull();
+    Truth.assertThat(
+            actualFormattedFieldNode.getInitValueConfig().hasFormattingConfigInitialValues())
+        .isTrue();
+    Truth.assertThat(
+            actualFormattedFieldNode
+                .getInitValueConfig()
+                .getCollectionValues()
+                .equals(expectedCollectionValues))
+        .isTrue();
   }
 
   @Test
@@ -166,12 +212,12 @@ public class SampleInitCodeTest {
 
     InitCodeNode innerMap = InitCodeNode.create("key");
     InitCodeNode innerList =
-        InitCodeNode.createWithChildren("0", InitCodeLineType.ListInitLine, innerMap);
+        InitCodeNode.createWithChildren("0", InitCodeLineType.MapInitLine, innerMap);
     InitCodeNode expectedStructure =
         InitCodeNode.createWithChildren("mylist", InitCodeLineType.ListInitLine, innerList);
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
-    Truth.assertThat(checkEquals(actualStructure, expectedStructure));
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
   }
 
   @Test
@@ -179,10 +225,10 @@ public class SampleInitCodeTest {
     String fieldSpec = "myfield=\"default\"";
 
     InitCodeNode expectedStructure =
-        InitCodeNode.createWithValue("myfield", InitValueConfig.createWithValue("\"default\""));
+        InitCodeNode.createWithValue("myfield", InitValueConfig.createWithValue("default"));
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
-    Truth.assertThat(checkEquals(actualStructure, expectedStructure));
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
   }
 
   @Test
@@ -196,7 +242,7 @@ public class SampleInitCodeTest {
         InitCodeNode.createWithChildren("mylist", InitCodeLineType.ListInitLine, innerList);
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
-    Truth.assertThat(checkEquals(actualStructure, expectedStructure));
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
   }
 
   @Test
@@ -211,61 +257,73 @@ public class SampleInitCodeTest {
             "myfield", InitCodeLineType.StructureInitLine, innerStructure);
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
-    Truth.assertThat(checkEquals(actualStructure, expectedStructure));
+    Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testFormattedFieldBadField() throws Exception {
+    String fieldSpec = "name%entity";
+    FieldStructureParser.parse(fieldSpec);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testFormattedFieldBadFieldWithValue() throws Exception {
+    String fieldSpec = "name%entity=test";
+    FieldStructureParser.parse(fieldSpec);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testListFieldBadIndex() throws Exception {
     List<String> fieldSpecs = Arrays.asList("mylist[1]");
-    InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
+    InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testListFieldIndexGap() throws Exception {
     List<String> fieldSpecs = Arrays.asList("mylist[0]", "mylist[2]");
-    InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
+    InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testListFieldMismatchedListThenField() throws Exception {
     List<String> fieldSpecs = Arrays.asList("myfield[0]", "myfield.subfield");
-    InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
+    InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testListFieldMismatchedFieldThenList() throws Exception {
     List<String> fieldSpecs = Arrays.asList("myfield.subfield", "myfield[0]");
-    InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
+    InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testBadField() throws Exception {
     List<String> fieldSpecs = Arrays.asList("notafield");
-    InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
+    InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testBadSubField() throws Exception {
     List<String> fieldSpecs = Arrays.asList("myfield.notafield");
-    InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
+    InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testMapFieldBadStringIndexUnclosedDoubleQuotes() throws Exception {
     List<String> fieldSpecs = Arrays.asList("stringmap{\"key}");
-    InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
+    InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testMapFieldBadStringIndexUnclosedSingleQuotes() throws Exception {
     List<String> fieldSpecs = Arrays.asList("stringmap{'key}");
-    InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
+    InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testMapFieldBadIntIndex() throws Exception {
     List<String> fieldSpecs = Arrays.asList("intmap{\"key\"}");
-    InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
+    InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
   }
 
   @Test
@@ -277,12 +335,12 @@ public class SampleInitCodeTest {
         Lists.newArrayList("mylist", "myfield", "secondfield", "stringmap", "intmap", "root");
 
     InitCodeNode rootNode =
-        InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
+        InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
     List<String> actualKeyList = new ArrayList<>();
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
     }
-    Truth.assertThat(actualKeyList.equals(expectedKeyList));
+    Truth.assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
   }
 
   @Test
@@ -292,12 +350,12 @@ public class SampleInitCodeTest {
     List<String> expectedKeyList = Arrays.asList("0", "1", "mylist", "root");
 
     InitCodeNode rootNode =
-        InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
+        InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
     List<String> actualKeyList = new ArrayList<>();
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
     }
-    Truth.assertThat(actualKeyList.equals(expectedKeyList));
+    Truth.assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
   }
 
   @Test
@@ -309,12 +367,37 @@ public class SampleInitCodeTest {
         Arrays.asList("key1", "key2", "stringmap", "123", "456", "intmap", "root");
 
     InitCodeNode rootNode =
-        InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
+        InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
     List<String> actualKeyList = new ArrayList<>();
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
     }
-    Truth.assertThat(actualKeyList.equals(expectedKeyList));
+    Truth.assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
+  }
+
+  @Test
+  public void testMultipleFormattedEntries() throws Exception {
+    List<String> fieldSpecs =
+        Arrays.asList(
+            "formatted_field%entity1", "formatted_field%entity2", "formatted_field%entity3");
+
+    List<String> expectedKeyList = Arrays.asList("formatted_field", "root");
+
+    HashMap<String, InitValueConfig> initValueMap = new HashMap<>();
+    InitValueConfig initValueConfig = InitValueConfig.create("test-api", null);
+    initValueMap.put("formatted_field", initValueConfig);
+
+    InitCodeNode rootNode =
+        InitCodeNode.createTree(
+            getContextBuilder()
+                .initFieldConfigStrings(fieldSpecs)
+                .initValueConfigMap(initValueMap)
+                .build());
+    List<String> actualKeyList = new ArrayList<>();
+    for (InitCodeNode node : rootNode.listInInitializationOrder()) {
+      actualKeyList.add(node.getKey());
+    }
+    Truth.assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
   }
 
   @Test
@@ -325,12 +408,12 @@ public class SampleInitCodeTest {
         Arrays.asList("subfield", "subsecondfield", "0", "mylist", "root");
 
     InitCodeNode rootNode =
-        InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
+        InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
     List<String> actualKeyList = new ArrayList<>();
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
     }
-    Truth.assertThat(actualKeyList.equals(expectedKeyList));
+    Truth.assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
   }
 
   @Test
@@ -340,12 +423,12 @@ public class SampleInitCodeTest {
     List<String> expectedKeyList = Arrays.asList("subfield", "myfield", "root");
 
     InitCodeNode rootNode =
-        InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
+        InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
     List<String> actualKeyList = new ArrayList<>();
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
     }
-    Truth.assertThat(actualKeyList.equals(expectedKeyList));
+    Truth.assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
   }
 
   @Test
@@ -355,22 +438,22 @@ public class SampleInitCodeTest {
     List<String> expectedKeyList = Arrays.asList("subfield", "0", "mylist", "root");
 
     InitCodeNode rootNode =
-        InitCodeNode.createTree(getContextBuilder().dottedPathStrings(fieldSpecs).build());
+        InitCodeNode.createTree(getContextBuilder().initFieldConfigStrings(fieldSpecs).build());
     List<String> actualKeyList = new ArrayList<>();
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());
     }
-    Truth.assertThat(actualKeyList.equals(expectedKeyList));
+    Truth.assertThat(actualKeyList.equals(expectedKeyList)).isTrue();
   }
 
   private static boolean checkEquals(InitCodeNode first, InitCodeNode second) {
     if (first == second) {
       return true;
     }
-    return first.getKey().equals(second.getKey())
+    if (!(first.getKey().equals(second.getKey())
         && first.getLineType().equals(second.getLineType())
         && first.getInitValueConfig().equals(second.getInitValueConfig())
-        && first.getChildren().equals(second.getChildren())
+        && first.getChildren().keySet().equals(second.getChildren().keySet())
         && (first.getType() == null
             ? second.getType() == null
             : first.getType().equals(second.getType()))
@@ -379,6 +462,14 @@ public class SampleInitCodeTest {
             : first.getIdentifier().equals(second.getIdentifier()))
         && (first.getInitCodeLine() == null
             ? second.getInitCodeLine() == null
-            : first.getInitCodeLine().equals(second.getInitCodeLine()));
+            : first.getInitCodeLine().equals(second.getInitCodeLine())))) {
+      return false;
+    }
+    for (String key : first.getChildren().keySet()) {
+      if (!checkEquals(first.getChildren().get(key), second.getChildren().get(key))) {
+        return false;
+      }
+    }
+    return true;
   }
 }

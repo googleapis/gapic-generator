@@ -9,7 +9,7 @@
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dns/v1/java
@@ -22,8 +22,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dns.Dns;
 import com.google.api.services.dns.model.Change;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -31,15 +29,10 @@ import java.util.Collections;
 
 public class DnsExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -51,22 +44,25 @@ public class DnsExample {
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
+
+    // TODO: Change placeholders below to desired parameter values for the `create` method:
+
     // Identifies the project addressed by this request.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+    String project = "{MY-PROJECT}";
 
     // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    String managedZone = "{MY-MANAGED-ZONE}"; // TODO: Update placeholder value(s).
+    String managedZone = "{MY-MANAGED-ZONE}";
 
-    // TODO: Assign values to the desired fields.
+
     Change requestBody = new Change();
+    // TODO: Assign values to desired fields of the `requestBody` object.
 
 
     Dns.Changes.Create request = dnsService.changes().create(project, managedZone, requestBody);
     Change response = request.execute();
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
   }
 }
 /**
@@ -79,7 +75,7 @@ public class DnsExample {
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dns/v1/java
@@ -92,8 +88,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dns.Dns;
 import com.google.api.services.dns.model.Change;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -101,15 +95,10 @@ import java.util.Collections;
 
 public class DnsExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -121,21 +110,24 @@ public class DnsExample {
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
     // Identifies the project addressed by this request.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+    String project = "{MY-PROJECT}";
 
     // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    String managedZone = "{MY-MANAGED-ZONE}"; // TODO: Update placeholder value(s).
+    String managedZone = "{MY-MANAGED-ZONE}";
 
     // The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
-    String changeId = "{MY-CHANGE-ID}"; // TODO: Update placeholder value(s).
+    String changeId = "{MY-CHANGE-ID}";
+
 
     Dns.Changes.Get request = dnsService.changes().get(project, managedZone, changeId);
     Change response = request.execute();
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
   }
 }
 /**
@@ -148,7 +140,7 @@ public class DnsExample {
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dns/v1/java
@@ -162,8 +154,6 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dns.Dns;
 import com.google.api.services.dns.model.Change;
 import com.google.api.services.dns.model.ChangesListResponse;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -171,15 +161,10 @@ import java.util.Collections;
 
 public class DnsExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -191,16 +176,17 @@ public class DnsExample {
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
     // Identifies the project addressed by this request.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+    String project = "{MY-PROJECT}";
 
     // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    String managedZone = "{MY-MANAGED-ZONE}"; // TODO: Update placeholder value(s).
+    String managedZone = "{MY-MANAGED-ZONE}";
+
 
     Dns.Changes.List request = dnsService.changes().list(project, managedZone);
-
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
     ChangesListResponse response;
     do {
       response = request.execute();
@@ -208,8 +194,8 @@ public class DnsExample {
         continue;
 
       for (Change change : response.getChanges()) {
-        // TODO: Use change
-        System.out.println(gson.toJson(new JsonParser().parse(change.toString())));
+        // TODO: Change code below to process each `change` resource:
+        System.out.println(change);
       }
 
       request.setPageToken(response.getNextPageToken());
@@ -226,7 +212,7 @@ public class DnsExample {
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dns/v1/java
@@ -239,8 +225,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dns.Dns;
 import com.google.api.services.dns.model.ManagedZone;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -248,15 +232,10 @@ import java.util.Collections;
 
 public class DnsExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -268,19 +247,22 @@ public class DnsExample {
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // Identifies the project addressed by this request.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-    // TODO: Assign values to the desired fields.
+    // TODO: Change placeholder below to desired parameter value for the `create` method:
+
+    // Identifies the project addressed by this request.
+    String project = "{MY-PROJECT}";
+
+
     ManagedZone requestBody = new ManagedZone();
+    // TODO: Assign values to desired fields of the `requestBody` object.
 
 
     Dns.ManagedZones.Create request = dnsService.managedZones().create(project, requestBody);
     ManagedZone response = request.execute();
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
   }
 }
 /**
@@ -293,7 +275,7 @@ public class DnsExample {
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dns/v1/java
@@ -312,15 +294,10 @@ import java.util.Collections;
 
 public class DnsExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -332,11 +309,15 @@ public class DnsExample {
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
     // Identifies the project addressed by this request.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+    String project = "{MY-PROJECT}";
 
     // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    String managedZone = "{MY-MANAGED-ZONE}"; // TODO: Update placeholder value(s).
+    String managedZone = "{MY-MANAGED-ZONE}";
+
 
     Dns.ManagedZones.Delete request = dnsService.managedZones().delete(project, managedZone);
     request.execute();
@@ -352,7 +333,7 @@ public class DnsExample {
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dns/v1/java
@@ -365,8 +346,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dns.Dns;
 import com.google.api.services.dns.model.ManagedZone;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -374,15 +353,10 @@ import java.util.Collections;
 
 public class DnsExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -394,18 +368,21 @@ public class DnsExample {
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
     // Identifies the project addressed by this request.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+    String project = "{MY-PROJECT}";
 
     // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    String managedZone = "{MY-MANAGED-ZONE}"; // TODO: Update placeholder value(s).
+    String managedZone = "{MY-MANAGED-ZONE}";
+
 
     Dns.ManagedZones.Get request = dnsService.managedZones().get(project, managedZone);
     ManagedZone response = request.execute();
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
   }
 }
 /**
@@ -418,7 +395,7 @@ public class DnsExample {
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dns/v1/java
@@ -432,8 +409,6 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dns.Dns;
 import com.google.api.services.dns.model.ManagedZone;
 import com.google.api.services.dns.model.ManagedZonesListResponse;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -441,15 +416,10 @@ import java.util.Collections;
 
 public class DnsExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -461,13 +431,14 @@ public class DnsExample {
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
+
+    // TODO: Change placeholder below to desired parameter value for the `list` method:
+
     // Identifies the project addressed by this request.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+    String project = "{MY-PROJECT}";
+
 
     Dns.ManagedZones.List request = dnsService.managedZones().list(project);
-
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
     ManagedZonesListResponse response;
     do {
       response = request.execute();
@@ -475,8 +446,8 @@ public class DnsExample {
         continue;
 
       for (ManagedZone managedZone : response.getManagedZones()) {
-        // TODO: Use managedZone
-        System.out.println(gson.toJson(new JsonParser().parse(managedZone.toString())));
+        // TODO: Change code below to process each `managedZone` resource:
+        System.out.println(managedZone);
       }
 
       request.setPageToken(response.getNextPageToken());
@@ -493,7 +464,7 @@ public class DnsExample {
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dns/v1/java
@@ -506,8 +477,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dns.Dns;
 import com.google.api.services.dns.model.Project;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -515,15 +484,10 @@ import java.util.Collections;
 
 public class DnsExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -535,15 +499,18 @@ public class DnsExample {
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
+
+    // TODO: Change placeholder below to desired parameter value for the `get` method:
+
     // Identifies the project addressed by this request.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+    String project = "{MY-PROJECT}";
+
 
     Dns.Projects.Get request = dnsService.projects().get(project);
     Project response = request.execute();
 
-    // TODO: Use response
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
   }
 }
 /**
@@ -556,7 +523,7 @@ public class DnsExample {
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
  *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on maven or gradle. Check installation
+ * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/dns/v1/java
@@ -570,8 +537,6 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dns.Dns;
 import com.google.api.services.dns.model.ResourceRecordSet;
 import com.google.api.services.dns.model.ResourceRecordSetsListResponse;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -579,15 +544,10 @@ import java.util.Collections;
 
 public class DnsExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
@@ -599,16 +559,17 @@ public class DnsExample {
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
     // Identifies the project addressed by this request.
-    String project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+    String project = "{MY-PROJECT}";
 
     // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    String managedZone = "{MY-MANAGED-ZONE}"; // TODO: Update placeholder value(s).
+    String managedZone = "{MY-MANAGED-ZONE}";
+
 
     Dns.ResourceRecordSets.List request = dnsService.resourceRecordSets().list(project, managedZone);
-
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
     ResourceRecordSetsListResponse response;
     do {
       response = request.execute();
@@ -616,8 +577,8 @@ public class DnsExample {
         continue;
 
       for (ResourceRecordSet resourceRecordSet : response.getRrsets()) {
-        // TODO: Use resourceRecordSet
-        System.out.println(gson.toJson(new JsonParser().parse(resourceRecordSet.toString())));
+        // TODO: Change code below to process each `resourceRecordSet` resource:
+        System.out.println(resourceRecordSet);
       }
 
       request.setPageToken(response.getNextPageToken());

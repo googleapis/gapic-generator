@@ -16,9 +16,12 @@ package com.google.api.codegen.py;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
+import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
+import com.google.api.tools.framework.model.EnumType;
+import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
@@ -33,12 +36,13 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 /** A GapicContext specialized for Python. */
@@ -95,6 +99,11 @@ public class PythonGapicContext extends GapicContext {
     return pythonCommon;
   }
 
+  @Override
+  protected boolean isSupported(Method method) {
+    return true;
+  }
+
   // Snippet Helpers
   // ===============
 
@@ -138,12 +147,20 @@ public class PythonGapicContext extends GapicContext {
     return typeComment(field.getType(), importHandler);
   }
 
+  private String enumClassName(EnumType enumType) {
+    return "enums." + pythonCommon.wrapIfKeywordOrBuiltIn(enumType.getSimpleName());
+  }
+
   private String typeComment(TypeRef type, PythonImportHandler importHandler) {
     switch (type.getKind()) {
       case TYPE_MESSAGE:
         return ":class:`" + importHandler.elementPath(type.getMessageType(), true) + "`";
       case TYPE_ENUM:
-        return ":class:`" + importHandler.elementPath(type.getEnumType(), true) + "`";
+        return "enum :class:`"
+            + getApiConfig().getPackageName()
+            + "."
+            + enumClassName(type.getEnumType())
+            + "`";
       default:
         if (type.isPrimitive()) {
           return PRIMITIVE_TYPE_NAMES.get(type.getKind());
@@ -154,13 +171,8 @@ public class PythonGapicContext extends GapicContext {
   }
 
   /** Returns a comment string for field, consisting of type information and proto comment. */
-  private String fieldComment(
-      String name, Field field, PythonImportHandler importHandler, String paramComment) {
-    String comment =
-        String.format("  %s (%s)", name, fieldTypeCardinalityComment(field, importHandler));
-    if (paramComment == null) {
-      paramComment = getSphinxifiedScopedDescription(field);
-    }
+  private String fieldComment(String name, String type, String paramComment) {
+    String comment = String.format("  %s (%s)", name, type);
     if (!Strings.isNullOrEmpty(paramComment)) {
       if (paramComment.charAt(paramComment.length() - 1) == '\n') {
         paramComment = paramComment.substring(0, paramComment.length() - 1);
@@ -168,6 +180,15 @@ public class PythonGapicContext extends GapicContext {
       comment += ": " + paramComment.replaceAll("(\\r?\\n)", "\n    ");
     }
     return comment + "\n";
+  }
+
+  /** Alternative way of calling fieldComment for proto fields. */
+  private String fieldComment(
+      String name, Field field, PythonImportHandler importHandler, String paramComment) {
+    if (paramComment == null) {
+      paramComment = getSphinxifiedScopedDescription(field);
+    }
+    return fieldComment(name, fieldTypeCardinalityComment(field, importHandler), paramComment);
   }
 
   /**
@@ -207,9 +228,11 @@ public class PythonGapicContext extends GapicContext {
     }
 
     String path = importHandler.elementPath(returnMessageType, true);
-    String classInfo = ":class:`" + path + "` instance";
+    String classInfo = ":class:`" + path + "`";
 
-    if (config.isPageStreaming()) {
+    if (method.getResponseStreaming()) {
+      return "Returns:\n" + "  iterator[" + classInfo + "].";
+    } else if (config.isPageStreaming()) {
       return "Returns:"
           + "\n  A :class:`google.gax.PageIterator` instance. By default, this"
           + "\n  is an iterable of "
@@ -217,9 +240,8 @@ public class PythonGapicContext extends GapicContext {
           + " instances."
           + "\n  This object can also be configured to iterate over the pages"
           + "\n  of the response through the `CallOptions` parameter.";
-
     } else {
-      return "Returns:\n  A " + classInfo + ".";
+      return "Returns:\n  A " + classInfo + " instance.";
     }
   }
 
@@ -227,46 +249,59 @@ public class PythonGapicContext extends GapicContext {
     return PythonDocConfig.newBuilder();
   }
 
+  public List<String> splitToLines(String s) {
+    return Splitter.on("\n").splitToList(s);
+  }
+
+  private String getTrimmedDocs(ProtoElement elt) {
+    String description = "";
+    if (elt.hasAttribute(ElementDocumentationAttribute.KEY)) {
+      description = getSphinxifiedScopedDescription(elt).replaceAll("\\s*\\n\\s*", "\n");
+    }
+    return description;
+  }
+
   /** Generate comments lines for a given method's description. */
   public List<String> methodDescriptionComments(Method method) {
-    String description = "";
-    if (method.hasAttribute(ElementDocumentationAttribute.KEY)) {
-      String sphinxified = getSphinxifiedScopedDescription(method);
-      sphinxified = sphinxified.trim();
-      description = sphinxified.replaceAll("\\s*\\n\\s*", "\n");
-    }
-    return Splitter.on("\n").splitToList(description);
+    return splitToLines(getTrimmedDocs(method));
   }
 
   /**
    * Generate comments lines for a given method's signature, consisting of proto doc and parameter
    * type documentation.
    */
-  public List<String> methodSignatureComments(Method method, PythonImportHandler importHandler) {
-    MethodConfig config =
-        getApiConfig().getInterfaceConfig((Interface) method.getParent()).getMethodConfig(method);
+  public List<String> methodSignatureComments(
+      Interface service, Method method, PythonImportHandler importHandler) {
+    MethodConfig config = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
 
     StringBuilder contentBuilder = new StringBuilder();
 
     // parameter types
     contentBuilder.append("Args:\n");
-    for (Field field :
-        removePageTokenFromFields(method.getInputType().getMessageType().getFields(), config)) {
-      String name = pythonCommon.wrapIfKeywordOrBuiltIn(field.getSimpleName());
-      if (config.isPageStreaming()
-          && field.equals((config.getPageStreaming().getPageSizeField()))) {
-        contentBuilder.append(
-            fieldComment(
-                name,
-                field,
-                importHandler,
-                "The maximum number of resources contained in the\n"
-                    + "underlying API response. If page streaming is performed per-\n"
-                    + "resource, this parameter does not affect the return value. If page\n"
-                    + "streaming is performed per-page, this determines the maximum number\n"
-                    + "of resources in a page."));
-      } else {
-        contentBuilder.append(fieldComment(name, field, importHandler, null));
+    if (method.getRequestStreaming()) {
+      contentBuilder.append(
+          "  requests (iterator["
+              + typeComment(method.getInputType(), importHandler)
+              + "]): The input objects.\n");
+    } else {
+      for (Field field :
+          removePageTokenFromFields(method.getInputType().getMessageType().getFields(), config)) {
+        String name = pythonCommon.wrapIfKeywordOrBuiltIn(field.getSimpleName());
+        if (config.isPageStreaming()
+            && field.equals((config.getPageStreaming().getPageSizeField()))) {
+          contentBuilder.append(
+              fieldComment(
+                  name,
+                  field,
+                  importHandler,
+                  "The maximum number of resources contained in the\n"
+                      + "underlying API response. If page streaming is performed per-\n"
+                      + "resource, this parameter does not affect the return value. If page\n"
+                      + "streaming is performed per-page, this determines the maximum number\n"
+                      + "of resources in a page."));
+        } else {
+          contentBuilder.append(fieldComment(name, field, importHandler, null));
+        }
       }
     }
     contentBuilder.append(
@@ -282,13 +317,24 @@ public class PythonGapicContext extends GapicContext {
     // exception types
     contentBuilder.append(
         "\n\nRaises:\n  :exc:`google.gax.errors.GaxError` if the RPC is aborted.");
+    if (Iterables.size(config.getRequiredFields()) > 0
+        || Iterables.size(removePageTokenFromFields(config.getOptionalFields(), config)) > 0) {
+      contentBuilder.append("\n  :exc:`ValueError` if the parameters are invalid.");
+    }
+    return splitToLines(contentBuilder.toString());
+  }
 
-    return Splitter.on("\n").splitToList(contentBuilder.toString());
+  public List<String> enumValueComment(EnumValue value) {
+    String description =
+        fieldComment(
+            pythonCommon.wrapIfKeywordOrBuiltIn(value.getSimpleName()),
+            "int",
+            getTrimmedDocs(value));
+    return splitToLines(description);
   }
 
   /** Get required (non-optional) fields. */
-  public List<Field> getRequiredFields(Method method) {
-    Interface service = (Interface) method.getParent();
+  public List<Field> getRequiredFields(Interface service, Method method) {
     MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
     return Lists.newArrayList(methodConfig.getRequiredFields());
   }
@@ -318,7 +364,11 @@ public class PythonGapicContext extends GapicContext {
       case TYPE_ENUM:
         Preconditions.checkArgument(
             type.getEnumType().getValues().size() > 0, "enum must have a value");
-        return importHandler.elementPath(type.getEnumType().getValues().get(0), false);
+        // TODO:multiple enums of same name?
+        return "enums."
+            + type.getEnumType().getSimpleName()
+            + "."
+            + type.getEnumType().getValues().get(0).getSimpleName();
       default:
         if (type.isPrimitive()) {
           return DEFAULT_VALUE_MAP.get(type.getKind());
@@ -342,7 +392,7 @@ public class PythonGapicContext extends GapicContext {
     }
   }
 
-  private String getSphinxifiedScopedDescription(ProtoElement element) {
+  public String getSphinxifiedScopedDescription(ProtoElement element) {
     return PythonSphinxCommentFixer.sphinxify(DocumentationUtil.getScopedDescription(element));
   }
 
@@ -371,5 +421,27 @@ public class PythonGapicContext extends GapicContext {
         // Types that do not need to be modified (e.g. TYPE_INT32) are handled here
         return value;
     }
+  }
+
+  public List<Interface> getStubInterfaces(Interface service) {
+    Map<String, Interface> interfaces = new TreeMap<>();
+    for (MethodConfig methodConfig :
+        getApiConfig().getInterfaceConfig(service).getMethodConfigs()) {
+      String rerouteToGrpcInterface = methodConfig.getRerouteToGrpcInterface();
+      Interface target = InterfaceConfig.getTargetInterface(service, rerouteToGrpcInterface);
+      interfaces.put(target.getFullName(), target);
+    }
+    return new ArrayList<>(interfaces.values());
+  }
+
+  public String stubName(Interface service) {
+    return upperCamelToLowerUnderscore(service.getSimpleName()) + "_stub";
+  }
+
+  public String stubNameForMethod(Interface service, Method method) {
+    MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+    String rerouteToGrpcInterface = methodConfig.getRerouteToGrpcInterface();
+    Interface target = InterfaceConfig.getTargetInterface(service, rerouteToGrpcInterface);
+    return stubName(target);
   }
 }

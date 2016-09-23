@@ -18,18 +18,18 @@
     }
 
     @@Override
-    public List<GeneratedMessage> getRequests() {
+    public List<GeneratedMessageV3> getRequests() {
       return serviceImpl.getRequests();
     }
 
     @@Override
-    public void setResponses(List<GeneratedMessage> responses) {
+    public void setResponses(List<GeneratedMessageV3> responses) {
       serviceImpl.setResponses(responses);
     }
 
     @@Override
     public ServerServiceDefinition getServiceDefinition() {
-      return {@mockService.grpcContainerName}.bindService(serviceImpl);
+      return serviceImpl.bindService();
     }
 
     @@Override

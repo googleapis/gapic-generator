@@ -14,11 +14,16 @@
  */
 package com.google.api.codegen.discovery;
 
+import org.apache.commons.lang3.NotImplementedException;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.csharp.CSharpDiscoveryContext;
 import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
+import com.google.api.codegen.discovery.config.java.JavaTypeNameGenerator;
+import com.google.api.codegen.discovery.transformer.java.JavaSampleMethodToViewTransformer;
 import com.google.api.codegen.go.GoDiscoveryContext;
 import com.google.api.codegen.go.GoSnippetSetRunner;
 import com.google.api.codegen.java.JavaDiscoveryContext;
@@ -30,14 +35,14 @@ import com.google.api.codegen.php.PhpSnippetSetRunner;
 import com.google.api.codegen.py.PythonDiscoveryContext;
 import com.google.api.codegen.py.PythonDiscoveryInitializer;
 import com.google.api.codegen.py.PythonSnippetSetRunner;
+import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.ruby.RubyDiscoveryContext;
 import com.google.api.codegen.ruby.RubySnippetSetRunner;
+import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.protobuf.Method;
 
-import org.apache.commons.lang3.NotImplementedException;
-
-/**
- * MainDiscoveryProviderFactory creates DiscoveryProvider instances based on an id.
+/*
+ * Creates DiscoveryProvider instances based on an ID.
  */
 public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
 
@@ -52,7 +57,13 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
   private static final String DEFAULT_SNIPPET_FILE = "discovery_fragment.snip";
 
   public static DiscoveryProvider defaultCreate(
-      Service service, ApiaryConfig apiaryConfig, String id) {
+      Service service, ApiaryConfig apiaryConfig, JsonNode sampleConfigOverrides, String id) {
+    // If the JSON object has a language field at root that matches the current
+    // language, use that node instead. Conversely, if there is no language
+    // field, don't adjust the node.
+    if (sampleConfigOverrides != null && sampleConfigOverrides.has(id)) {
+      sampleConfigOverrides = sampleConfigOverrides.get(id);
+    }
     if (id.equals(CSHARP)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new CSharpDiscoveryContext(service, apiaryConfig))
@@ -116,7 +127,8 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
   }
 
   @Override
-  public DiscoveryProvider create(Service service, ApiaryConfig apiaryConfig, String id) {
-    return defaultCreate(service, apiaryConfig, id);
+  public DiscoveryProvider create(
+      Service service, ApiaryConfig apiaryConfig, JsonNode sampleConfigOverrides, String id) {
+    return defaultCreate(service, apiaryConfig, sampleConfigOverrides, id);
   }
 }

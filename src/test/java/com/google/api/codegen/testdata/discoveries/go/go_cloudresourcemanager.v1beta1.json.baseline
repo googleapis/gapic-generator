@@ -14,6 +14,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -25,30 +26,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudresourcemanager.New(hc)
+  cloudresourcemanagerService, err := cloudresourcemanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  // The id of the Organization resource to fetch.
-  organizationId := "{MY-ORGANIZATION-ID}" // TODO: Update placeholder value(s).
+  // The resource name of the Organization to fetch. Its format is "organizations/[organization_id]". For
+  // example, "organizations/1234".
+  name := "organizations/{MY-ORGANIZATION}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.Organizations.Get(organizationId).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Organizations.Get(name).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -65,6 +67,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -76,16 +79,15 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudresourcemanager.New(hc)
+  cloudresourcemanagerService, err := cloudresourcemanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
@@ -93,19 +95,20 @@ func main() {
   // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
   // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
   // this value is resource specific and is specified in the `getIamPolicy` documentation.
-  resource := "{MY-RESOURCE}" // TODO: Update placeholder value(s).
+  resource := "organizations/{MY-ORGANIZATION}"
+  // TODO: Change placeholder value above.
 
-  resource := &cloudresourcemanager.GetIamPolicyRequest{
-    // TODO: Add the desired fields.
+  rb := cloudresourcemanager.GetIamPolicyRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Organizations.GetIamPolicy(resource, resource).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Organizations.GetIamPolicy(resource, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -122,6 +125,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -133,27 +137,27 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudresourcemanager.New(hc)
+  cloudresourcemanagerService, err := cloudresourcemanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  call := s.Organizations.List()
-  if err := call.Pages(ctx, func(page *cloudresourcemanager.ListOrganizationsResponse) error {
+
+  req := cloudresourcemanagerService.Organizations.List()
+  if err := req.Pages(ctx, func(page *cloudresourcemanager.ListOrganizationsResponse) error {
     for _, organization := range page.Organizations {
-      // TODO: Use organization
-      log.Printf("%#v\n", organization)
+      // TODO: Change code below to process each `organization` resource:
+      fmt.Printf("%#v\n", organization)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -173,6 +177,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -184,16 +189,15 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudresourcemanager.New(hc)
+  cloudresourcemanagerService, err := cloudresourcemanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
@@ -201,19 +205,20 @@ func main() {
   // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
   // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
   // this value is resource specific and is specified in the `setIamPolicy` documentation.
-  resource := "{MY-RESOURCE}" // TODO: Update placeholder value(s).
+  resource := "organizations/{MY-ORGANIZATION}"
+  // TODO: Change placeholder value above.
 
-  resource := &cloudresourcemanager.SetIamPolicyRequest{
-    // TODO: Add the desired fields.
+  rb := cloudresourcemanager.SetIamPolicyRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Organizations.SetIamPolicy(resource, resource).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Organizations.SetIamPolicy(resource, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -230,6 +235,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -241,16 +247,15 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudresourcemanager.New(hc)
+  cloudresourcemanagerService, err := cloudresourcemanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
@@ -259,19 +264,20 @@ func main() {
   // specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path
   // specified in this value is resource specific and is specified in the `testIamPermissions`
   // documentation.
-  resource := "{MY-RESOURCE}" // TODO: Update placeholder value(s).
+  resource := "organizations/{MY-ORGANIZATION}"
+  // TODO: Change placeholder value above.
 
-  resource := &cloudresourcemanager.TestIamPermissionsRequest{
-    // TODO: Add the desired fields.
+  rb := cloudresourcemanager.TestIamPermissionsRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Organizations.TestIamPermissions(resource, resource).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Organizations.TestIamPermissions(resource, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -288,6 +294,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -299,35 +306,35 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudresourcemanager.New(hc)
+  cloudresourcemanagerService, err := cloudresourcemanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  // An immutable id for the Organization that is assigned on creation. This should be omitted when
-  // creating a new Organization. This field is read-only.
-  organizationId := "{MY-ORGANIZATION-ID}" // TODO: Update placeholder value(s).
+  // Output Only. The resource name of the organization. This is the organization's relative path in the
+  // API. Its format is "organizations/[organization_id]". For example, "organizations/1234".
+  name := "organizations/{MY-ORGANIZATION}"
+  // TODO: Change placeholder value above.
 
-  resource := &cloudresourcemanager.Organization{
-    // TODO: Add the desired fields.
+  rb := cloudresourcemanager.Organization{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Organizations.Update(organizationId, resource).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Organizations.Update(name, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -344,6 +351,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -355,31 +363,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudresourcemanager.New(hc)
+  cloudresourcemanagerService, err := cloudresourcemanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  resource := &cloudresourcemanager.Project{
-    // TODO: Add the desired fields.
+
+  rb := cloudresourcemanager.Project{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Projects.Create(resource).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Projects.Create(&rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -396,6 +404,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -407,30 +416,30 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudresourcemanager.New(hc)
+  cloudresourcemanagerService, err := cloudresourcemanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // The Project ID (for example, `foo-bar-123`). Required.
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.Projects.Delete(projectId).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Projects.Delete(projectId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -447,6 +456,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -458,30 +468,30 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudresourcemanager.New(hc)
+  cloudresourcemanagerService, err := cloudresourcemanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // The Project ID (for example, `my-project-123`). Required.
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
-  resp, err := s.Projects.Get(projectId).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Projects.Get(projectId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -498,6 +508,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -509,16 +520,71 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudresourcemanager.New(hc)
+  cloudresourcemanagerService, err := cloudresourcemanager.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The Project ID (for example, `my-project-123`). Required.
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
+
+  rb := cloudresourcemanager.GetAncestryRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := cloudresourcemanagerService.Projects.GetAncestry(projectId, &rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/cloudresourcemanager/v1beta1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  cloudresourcemanagerService, err := cloudresourcemanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
@@ -526,19 +592,20 @@ func main() {
   // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
   // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
   // this value is resource specific and is specified in the `getIamPolicy` documentation.
-  resource := "{MY-RESOURCE}" // TODO: Update placeholder value(s).
+  resource := "{MY-RESOURCE}"
+  // TODO: Change placeholder value above.
 
-  resource := &cloudresourcemanager.GetIamPolicyRequest{
-    // TODO: Add the desired fields.
+  rb := cloudresourcemanager.GetIamPolicyRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Projects.GetIamPolicy(resource, resource).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Projects.GetIamPolicy(resource, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -555,6 +622,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -566,27 +634,27 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudresourcemanager.New(hc)
+  cloudresourcemanagerService, err := cloudresourcemanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  call := s.Projects.List()
-  if err := call.Pages(ctx, func(page *cloudresourcemanager.ListProjectsResponse) error {
+
+  req := cloudresourcemanagerService.Projects.List()
+  if err := req.Pages(ctx, func(page *cloudresourcemanager.ListProjectsResponse) error {
     for _, project := range page.Projects {
-      // TODO: Use project
-      log.Printf("%#v\n", project)
+      // TODO: Change code below to process each `project` resource:
+      fmt.Printf("%#v\n", project)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -606,6 +674,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -617,16 +686,15 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudresourcemanager.New(hc)
+  cloudresourcemanagerService, err := cloudresourcemanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
@@ -634,19 +702,20 @@ func main() {
   // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
   // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
   // this value is resource specific and is specified in the `setIamPolicy` documentation.
-  resource := "{MY-RESOURCE}" // TODO: Update placeholder value(s).
+  resource := "{MY-RESOURCE}"
+  // TODO: Change placeholder value above.
 
-  resource := &cloudresourcemanager.SetIamPolicyRequest{
-    // TODO: Add the desired fields.
+  rb := cloudresourcemanager.SetIamPolicyRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Projects.SetIamPolicy(resource, resource).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Projects.SetIamPolicy(resource, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -663,6 +732,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -674,16 +744,15 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudresourcemanager.New(hc)
+  cloudresourcemanagerService, err := cloudresourcemanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
@@ -692,19 +761,20 @@ func main() {
   // specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path
   // specified in this value is resource specific and is specified in the `testIamPermissions`
   // documentation.
-  resource := "{MY-RESOURCE}" // TODO: Update placeholder value(s).
+  resource := "{MY-RESOURCE}"
+  // TODO: Change placeholder value above.
 
-  resource := &cloudresourcemanager.TestIamPermissionsRequest{
-    // TODO: Add the desired fields.
+  rb := cloudresourcemanager.TestIamPermissionsRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Projects.TestIamPermissions(resource, resource).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Projects.TestIamPermissions(resource, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -721,6 +791,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -732,34 +803,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudresourcemanager.New(hc)
+  cloudresourcemanagerService, err := cloudresourcemanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // The project ID (for example, `foo-bar-123`). Required.
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
-  resource := &cloudresourcemanager.UndeleteProjectRequest{
-    // TODO: Add the desired fields.
+  rb := cloudresourcemanager.UndeleteProjectRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Projects.Undelete(projectId, resource).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Projects.Undelete(projectId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -776,6 +847,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -787,32 +859,32 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudresourcemanager.New(hc)
+  cloudresourcemanagerService, err := cloudresourcemanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
   // The project ID (for example, `my-project-123`). Required.
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
+  // TODO: Change placeholder value above.
 
-  resource := &cloudresourcemanager.Project{
-    // TODO: Add the desired fields.
+  rb := cloudresourcemanager.Project{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Projects.Update(projectId, resource).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Projects.Update(projectId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
