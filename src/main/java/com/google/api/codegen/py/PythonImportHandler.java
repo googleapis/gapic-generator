@@ -47,8 +47,13 @@ public class PythonImportHandler {
    */
   private final BiMap<ProtoFile, String> fileImports = HashBiMap.create();
 
+  private final PythonEnumSymbolTable enumTable;
+
   /** This constructor is for the main imports of a generated service file */
-  public PythonImportHandler(Interface service, ApiConfig apiConfig) {
+  public PythonImportHandler(
+      Interface service, ApiConfig apiConfig, PythonEnumSymbolTable enumTable) {
+    this.enumTable = enumTable;
+
     // Add non-service-specific imports.
     addImportStandard("json");
     addImportStandard("os");
@@ -61,7 +66,7 @@ public class PythonImportHandler {
     addImportExternal("google.gax", "path_template");
 
     // only if add enum import if there are enums
-    if (!Iterables.isEmpty(new PythonContextCommon().getEnumTypes(service.getModel()))) {
+    if (!Iterables.isEmpty(enumTable.getEnums())) {
       addImportLocal(apiConfig.getPackageName(), "enums");
     }
 
@@ -87,7 +92,8 @@ public class PythonImportHandler {
   }
 
   /** This constructor is used for doc messages. */
-  public PythonImportHandler(ProtoFile file) {
+  public PythonImportHandler(ProtoFile file, PythonEnumSymbolTable enumTable) {
+    this.enumTable = enumTable;
     for (MessageType message : file.getMessages()) {
       for (Field field : message.getMessageFields()) {
         MessageType messageType = field.getType().getMessageType();
@@ -105,7 +111,13 @@ public class PythonImportHandler {
   }
 
   // Independent import handler to support fragment generation from discovery sources
-  public PythonImportHandler() {}
+  public PythonImportHandler() {
+    enumTable = null;
+  }
+
+  public PythonEnumSymbolTable getEnumTable() {
+    return enumTable;
+  }
 
   /**
    * Returns the path to a proto element. If fullyQualified is false, returns the fully qualified

@@ -21,7 +21,7 @@ public class PythonProtoFileInitializer implements PythonSnippetSetInputInitiali
 
   @Override
   public PythonImportHandler getImportHandler(ProtoFile file) {
-    return new PythonImportHandler(file);
+    return new PythonImportHandler(file, new PythonEnumSymbolTable(file.getModel()));
   }
 
   @Override

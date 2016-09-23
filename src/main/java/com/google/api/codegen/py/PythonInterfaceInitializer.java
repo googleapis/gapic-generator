@@ -28,7 +28,7 @@ public class PythonInterfaceInitializer implements PythonSnippetSetInputInitiali
 
   @Override
   public PythonImportHandler getImportHandler(Interface iface) {
-    return new PythonImportHandler(iface, apiConfig);
+    return new PythonImportHandler(iface, apiConfig, new PythonEnumSymbolTable(iface.getModel()));
   }
 
   @Override

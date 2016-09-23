@@ -147,8 +147,8 @@ public class PythonGapicContext extends GapicContext {
     return typeComment(field.getType(), importHandler);
   }
 
-  private String enumClassName(EnumType enumType) {
-    return "enums." + pythonCommon.wrapIfKeywordOrBuiltIn(enumType.getSimpleName());
+  private String enumClassName(EnumType enumType, PythonEnumSymbolTable enumTable) {
+    return "enums." + pythonCommon.wrapIfKeywordOrBuiltIn(enumTable.lookupName(enumType));
   }
 
   private String typeComment(TypeRef type, PythonImportHandler importHandler) {
@@ -159,7 +159,7 @@ public class PythonGapicContext extends GapicContext {
         return "enum :class:`"
             + getApiConfig().getPackageName()
             + "."
-            + enumClassName(type.getEnumType())
+            + enumClassName(type.getEnumType(), importHandler.getEnumTable())
             + "`";
       default:
         if (type.isPrimitive()) {
@@ -364,9 +364,8 @@ public class PythonGapicContext extends GapicContext {
       case TYPE_ENUM:
         Preconditions.checkArgument(
             type.getEnumType().getValues().size() > 0, "enum must have a value");
-        // TODO:multiple enums of same name?
         return "enums."
-            + type.getEnumType().getSimpleName()
+            + importHandler.getEnumTable().lookupName(type.getEnumType())
             + "."
             + type.getEnumType().getValues().get(0).getSimpleName();
       default:
