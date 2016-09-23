@@ -32,6 +32,7 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class MethodTransformerContext {
   public static MethodTransformerContext create(
+      SurfaceTransformerContext surfaceTransformerContext,
       Interface interfaze,
       ApiConfig apiConfig,
       ModelTypeTable typeTable,
@@ -39,8 +40,10 @@ public abstract class MethodTransformerContext {
       Method method,
       MethodConfig methodConfig) {
     return new AutoValue_MethodTransformerContext(
-        interfaze, apiConfig, typeTable, namer, method, methodConfig);
+        surfaceTransformerContext, interfaze, apiConfig, typeTable, namer, method, methodConfig);
   }
+
+  public abstract SurfaceTransformerContext getSurfaceTransformerContext();
 
   public abstract Interface getInterface();
 
@@ -74,6 +77,7 @@ public abstract class MethodTransformerContext {
 
   public MethodTransformerContext cloneWithEmptyTypeTable() {
     return create(
+        getSurfaceTransformerContext(),
         getInterface(),
         getApiConfig(),
         getTypeTable().cloneEmpty(),

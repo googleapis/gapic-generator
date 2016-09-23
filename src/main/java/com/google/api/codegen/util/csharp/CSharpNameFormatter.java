@@ -52,7 +52,7 @@ public class CSharpNameFormatter implements NameFormatter {
 
   @Override
   public String keyName(Name name) {
-    throw new RuntimeException();
+    return name.toUpperCamel();
   }
 
   @Override
@@ -67,6 +67,6 @@ public class CSharpNameFormatter implements NameFormatter {
 
   @Override
   public String classFileNameBase(Name name) {
-    throw new RuntimeException();
+    return className(name);
   }
 }

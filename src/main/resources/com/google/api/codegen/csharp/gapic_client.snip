@@ -400,19 +400,19 @@
 
 @private pagedFlattenedMethodSync(method, isImpl)
     @if isImpl
-        public override IPagedEnumerable<{@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}> {@method.name}(
-        {@""}    {@objectParams(method.methodParams)}) => new PagedEnumerable<{@method.pagedView.requestTypeName}, {@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}>(
-        {@""}        {@method.callableName},
-        {@""}        new {@method.apiRequestTypeName}
-        {@""}        {
+        public override IPagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
+            {@objectParams(method.methodParams)}) => new PagedEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>(
+                {@method.callableName},
+                new {@method.apiRequestTypeName}
+                {
                     {@requestProperties(method.forwardingMethodParams)}
-        {@""}            PageToken = pageToken ?? "",
-        {@""}            PageSize = pageSize ?? 0,
-        {@""}        },
-        {@""}        callSettings);
+                    PageToken = pageToken ?? "",
+                    PageSize = pageSize ?? 0,
+                },
+                callSettings);
     @else
-        public virtual IPagedEnumerable<{@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}> {@method.name}(
-        {@""}    {@objectParams(method.methodParams)})
+        public virtual IPagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
+            {@objectParams(method.methodParams)})
         {
             throw new NotImplementedException();
         }
@@ -421,8 +421,8 @@
 
 @private pagedFlattenedMethodAsync(method, isImpl)
     @if isImpl
-        public override IPagedAsyncEnumerable<{@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}> {@method.name}(
-        {@""}    {@objectParams(method.methodParams)}) => new PagedAsyncEnumerable<{@method.pagedView.requestTypeName}, {@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}>(
+        public override IPagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
+        {@""}    {@objectParams(method.methodParams)}) => new PagedAsyncEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>(
         {@""}        {@method.callableName},
         {@""}        new {@method.apiRequestTypeName}
         {@""}        {
@@ -432,7 +432,7 @@
         {@""}        },
         {@""}        callSettings);
     @else
-        public virtual IPagedAsyncEnumerable<{@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}> {@method.name}(
+        public virtual IPagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
         {@""}    {@objectParams(method.methodParams)})
         {
             throw new NotImplementedException();
@@ -454,10 +454,10 @@
     // Partial classes to enable page-streaming
 
     @join method : api.apiMethods if method.type.toString == "PagedFlattenedMethod"
-        public partial class {@method.pagedView.requestTypeName} : IPageRequest { }
-        public partial class {@method.pagedView.responseTypeName} : IPageResponse<{@method.pagedView.resourceTypeName}>
+        public partial class {@method.listMethod.requestTypeName} : IPageRequest { }
+        public partial class {@method.listMethod.responseTypeName} : IPageResponse<{@method.listMethod.resourceTypeName}>
         {
-            public IEnumerator<{@method.pagedView.resourceTypeName}> GetEnumerator() => {@method.pagedView.resourcesFieldGetFunction}.GetEnumerator();
+            public IEnumerator<{@method.listMethod.resourceTypeName}> GetEnumerator() => {@method.listMethod.resourcesFieldGetFunction}.GetEnumerator();
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
 

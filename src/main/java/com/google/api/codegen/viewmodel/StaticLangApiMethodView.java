@@ -71,8 +71,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
   @Nullable
   public abstract RequestObjectMethodDetailView requestObjectMethod();
 
-  @Nullable
-  public abstract PageStreamingDescriptorClassView pagedView();
+  //@Nullable
+  //public abstract PageStreamingDescriptorClassView pagedView();
 
   public abstract Builder toBuilder();
 
@@ -119,8 +119,6 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
     public abstract Builder callableMethod(CallableMethodDetailView details);
 
     public abstract Builder requestObjectMethod(RequestObjectMethodDetailView details);
-
-    public abstract Builder pagedView(PageStreamingDescriptorClassView details);
 
     public abstract StaticLangApiMethodView build();
   }

@@ -102,7 +102,11 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(
-              service, apiConfig, createTypeTable(apiConfig.getPackageName()), namer);
+              service,
+              apiConfig,
+              createTypeTable(apiConfig.getPackageName()),
+              namer,
+              new JavaFeatureConfig());
       StaticLangXApiView xapi = generateXApi(context);
       surfaceDocs.add(xapi);
 
@@ -110,7 +114,11 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
       context =
           SurfaceTransformerContext.create(
-              service, apiConfig, createTypeTable(apiConfig.getPackageName()), namer);
+              service,
+              apiConfig,
+              createTypeTable(apiConfig.getPackageName()),
+              namer,
+              new JavaFeatureConfig());
       StaticLangApiMethodView exampleApiMethod = getExampleApiMethod(xapi.apiMethods());
       StaticLangXSettingsView xsettings = generateXSettings(context, exampleApiMethod);
       surfaceDocs.add(xsettings);
@@ -145,8 +153,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     String name = context.getNamer().getApiWrapperClassName(context.getInterface());
     xapiClass.name(name);
     xapiClass.settingsClassName(context.getNamer().getApiSettingsClassName(context.getInterface()));
-    xapiClass.apiCallableMembers(
-        apiCallableTransformer.generateStaticLangApiCallables(context, false));
+    xapiClass.apiCallableMembers(apiCallableTransformer.generateStaticLangApiCallables(context));
     xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
     xapiClass.formatResourceFunctions(
         pathTemplateTransformer.generateFormatResourceFunctions(context));
@@ -289,15 +296,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
         if (methodConfig.isFlattening()) {
           for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
             apiMethods.add(
-                apiMethodTransformer.generatePagedFlattenedMethod(
-                    methodContext,
-                    fields,
-                    ApiMethodType.PagedFlattenedMethod,
-                    null,
-                    null,
-                    null,
-                    false,
-                    null));
+                apiMethodTransformer.generatePagedFlattenedMethod(methodContext, fields, null));
           }
         }
         apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext));
@@ -307,8 +306,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
         if (methodConfig.isFlattening()) {
           for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
             apiMethods.add(
-                apiMethodTransformer.generateFlattenedMethod(
-                    methodContext, fields, ApiMethodType.FlattenedMethod, null, null, null, false));
+                apiMethodTransformer.generateFlattenedMethod(methodContext, fields, null));
           }
         }
         apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(methodContext));

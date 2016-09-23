@@ -43,7 +43,13 @@
 
 @snippet objectParams(params)
     @join param : params on ",".add(BREAK)
-        {@param.typeName} {@param.name}{@param.defaultValue(" = %s")}
+        {@param.typeName} {@param.name}{@paramDefault(param)}
+    @end
+@end
+
+@private paramDefault(param)
+    @if param.hasDefaultValue
+        {@""} = {@param.defaultValue}
     @end
 @end
 

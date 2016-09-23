@@ -97,7 +97,8 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
         service,
         getApiConfig(),
         modelTypeTable,
-        new NodeJSSurfaceNamer(getApiConfig().getPackageName()));
+        new NodeJSSurfaceNamer(getApiConfig().getPackageName()),
+        new NodeJSFeatureConfig());
   }
 
   public String filePath(ProtoFile file) {

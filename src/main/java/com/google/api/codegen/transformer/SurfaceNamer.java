@@ -328,6 +328,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return methodName(Name.upperCamel(method.getSimpleName()));
   }
 
+  /** The name of the surface async surface method which can call the given API method. */
+  public String getAsyncApiMethodName(Method method) {
+    return getNotImplementedString("SurfaceNamer.getAsyncApiMethodName");
+  }
+
   /**
    * The name of a variable to hold a value for the given proto message field
    * (such as a flattened parameter).
@@ -372,6 +377,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return new ArrayList<>();
   }
 
+  public List<String> getReturnDocLines(
+      SurfaceTransformerContext context, MethodConfig methodConfig, boolean isAsync) {
+    return new ArrayList<>();
+  }
+
   /** The public access modifier for the current language. */
   public String getPublicAccessModifier() {
     return "public";
@@ -409,7 +419,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The return type name in a static language for the given method. */
   public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
-    return getNotImplementedString("SurfaceNamer.getStaticReturnTypeName");
+    return getNotImplementedString("SurfaceNamer.getStaticLangReturnTypeName");
+  }
+
+  /** The async return type name in a static language for the given method. */
+  public String getStaticLangAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
+    return getNotImplementedString("SurfaceNamer.getStaticLangAsyncReturnTypeName");
   }
 
   /** The name of the paged callable variant of the given method. */
@@ -569,15 +584,5 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /* The name of a retry definition */
   public String getRetryDefinitionName(String retryDefinitionKey) {
     return methodName(Name.from(retryDefinitionKey));
-  }
-
-  /** Transform a sync method name to async (this is a bit hacky) */
-  public String transformMethodNameToAsync(String name) {
-    return getNotImplementedString("SurfaceNamer.transformNameToAsync");
-  }
-
-  /** Transform a sync type to an async type (this is a bit hacky) */
-  public String transformTypeToAsync(String name) {
-    return getNotImplementedString("SurfaceNamer.transformToAsync");
   }
 }

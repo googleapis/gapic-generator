@@ -20,6 +20,7 @@ import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
@@ -27,6 +28,9 @@ import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CSharpSurfaceNamer extends SurfaceNamer {
 
@@ -48,6 +52,14 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
       return "void";
     }
     return getModelTypeFormatter().getFullNameFor(method.getOutputType());
+  }
+
+  @Override
+  public String getStaticLangAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
+    if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
+      return "Task";
+    }
+    return "Task<" + getModelTypeFormatter().getFullNameFor(method.getOutputType()) + ">";
   }
 
   @Override
@@ -98,20 +110,32 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String transformMethodNameToAsync(String name) {
-    return name + "Async";
+  public String getAsyncApiMethodName(Method method) {
+    return getApiMethodName(method) + "Async";
   }
 
   @Override
-  public String transformTypeToAsync(String name) {
-    if (name.equals("void")) {
-      return "Task";
-    } else {
-      return "Task<" + name + ">";
-    }
-  }
-
   public String getPageStreamingDescriptorConstName(Method method) {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()));
+  }
+
+  @Override
+  public List<String> getReturnDocLines(
+      SurfaceTransformerContext context, MethodConfig methodConfig, boolean isAsync) {
+    if (methodConfig.isPageStreaming()) {
+      TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
+      String resourceTypeName =
+          context.getTypeTable().getAndSaveNicknameForElementType(resourceType);
+      String line =
+          isAsync
+              ? "A pageable asynchronous sequence of <see cref=\""
+                  + resourceTypeName
+                  + "\"/> resources."
+              : "A pageable sequence of <see cref=\"" + resourceTypeName + "\"/> resources.";
+      return ImmutableList.of(line);
+    } else {
+      String line = isAsync ? "A Task containing the RPC response." : "The RPC response.";
+      return ImmutableList.of(line);
+    }
   }
 }

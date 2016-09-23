@@ -34,13 +34,11 @@ public class ApiCallableTransformer {
     this.bundlingTransformer = new BundlingTransformer();
   }
 
-  public List<ApiCallableView> generateStaticLangApiCallables(
-      SurfaceTransformerContext context, boolean excludeMixins) {
+  public List<ApiCallableView> generateStaticLangApiCallables(SurfaceTransformerContext context) {
     List<ApiCallableView> callableMembers = new ArrayList<>();
+    boolean excludeMixins = !context.getFeatureConfig().enableMixins();
 
     for (Method method : context.getNonStreamingMethods()) {
-      // excludeMixins a temporary workaround for C#.
-      // Will be removed when C# properly supports mixins.
       if (excludeMixins && context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
         continue;
       }

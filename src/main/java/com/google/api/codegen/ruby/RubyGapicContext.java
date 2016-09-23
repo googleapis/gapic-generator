@@ -23,6 +23,7 @@ import com.google.api.codegen.transformer.ImportTypeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.transformer.ruby.RubyFeatureConfig;
 import com.google.api.codegen.transformer.ruby.RubyModelTypeNameConverter;
 import com.google.api.codegen.transformer.ruby.RubySurfaceNamer;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
@@ -373,7 +374,8 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
         service,
         getApiConfig(),
         modelTypeTable,
-        new RubySurfaceNamer(getApiConfig().getPackageName()));
+        new RubySurfaceNamer(getApiConfig().getPackageName()),
+        new RubyFeatureConfig());
   }
 
   // Constants
