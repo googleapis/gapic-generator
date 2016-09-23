@@ -30,7 +30,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
-
+import io.grpc.Status.Code;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,12 +73,17 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The full path to the source file  */
   public String getSourceFilePath(String path, String className) {
-    return getNotImplementedString("SurfaceNamer:getSourceFilePath");
+    return getNotImplementedString("SurfaceNamer.getSourceFilePath");
   }
 
   /** The name of the class that implements a particular proto interface. */
   public String getApiWrapperClassName(Interface interfaze) {
     return className(Name.upperCamel(interfaze.getSimpleName(), "Api"));
+  }
+
+  /** The name of the implementation class that implements a particular proto interface. */
+  public String getApiWrapperClassImplName(Interface interfaze) {
+    return getNotImplementedString("SurfaceNamer.getApiWrapperClassImplName");
   }
 
   /**
@@ -95,7 +100,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * just NodeJS.
    */
   public String getApiWrapperModuleName(Interface interfaze) {
-    return getNotImplementedString("SurfaceNamer:getApiWrapperModuleName");
+    return getNotImplementedString("SurfaceNamer.getApiWrapperModuleName");
   }
 
   /**
@@ -276,7 +281,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The path to the client config for the given interface. */
   public String getClientConfigPath(Interface service) {
-    return getNotImplementedString("SurfaceNamer:getClientConfigPath");
+    return getNotImplementedString("SurfaceNamer.getClientConfigPath");
   }
 
   /**
@@ -389,22 +394,22 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The type name for retry settings. */
   public String getRetrySettingsTypeName() {
-    return getNotImplementedString("SurfaceNamer:getRetrySettingsClassName");
+    return getNotImplementedString("SurfaceNamer.getRetrySettingsClassName");
   }
 
   /** The type name for an optional array argument; not used in most languages. */
   public String getOptionalArrayTypeName() {
-    return getNotImplementedString("SurfaceNamer:getOptionalArrayTypeName");
+    return getNotImplementedString("SurfaceNamer.getOptionalArrayTypeName");
   }
 
   /** The return type name in a dynamic language for the given method. */
   public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
-    return getNotImplementedString("SurfaceNamer:getDynamicReturnTypeName");
+    return getNotImplementedString("SurfaceNamer.getDynamicReturnTypeName");
   }
 
   /** The return type name in a static language for the given method. */
   public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
-    return getNotImplementedString("SurfaceNamer:getStaticReturnTypeName");
+    return getNotImplementedString("SurfaceNamer.getStaticReturnTypeName");
   }
 
   /** The name of the paged callable variant of the given method. */
@@ -442,7 +447,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * For example, in Java, this will be the type used for ListenableFuture&lt;...&gt;.
    */
   public String getGenericAwareResponseTypeName(TypeRef outputType) {
-    return getNotImplementedString("SurfaceNamer:getGenericAwareResponseType");
+    return getNotImplementedString("SurfaceNamer.getGenericAwareResponseType");
   }
 
   /**
@@ -467,7 +472,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getAndSavePagedResponseTypeName(
       ModelTypeTable typeTable, TypeRef... parameterizedTypes) {
-    return getNotImplementedString("SurfaceNamer:getAndSavePagedResponseTypeName");
+    return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeName");
   }
 
   /**
@@ -505,7 +510,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The file name for an API service. */
   public String getServiceFileName(Interface service, String packageName) {
-    return getNotImplementedString("SurfaceNamer:getApiName");
+    return getNotImplementedString("SurfaceNamer.getApiName");
   }
 
   /**
@@ -513,7 +518,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * TODO: Support the general pattern of package + class name in NameFormatter.
    */
   public String getFullyQualifiedApiWrapperClassName(Interface interfaze, String packageName) {
-    return getNotImplementedString("SurfaceNamer:getFullyQualifiedApiWrapperClassName");
+    return getNotImplementedString("SurfaceNamer.getFullyQualifiedApiWrapperClassName");
   }
 
   /** The name of the variable that will hold the stub for a service. */
@@ -533,12 +538,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the import for a specific grpcClient */
   public String getGrpcClientImportName(Interface service) {
-    return getNotImplementedString("SurfaceNamer:getGrpcClientImportName");
+    return getNotImplementedString("SurfaceNamer.getGrpcClientImportName");
   }
 
   /** The fully qualified type name for the stub of a service. */
   public String getFullyQualifiedStubType(Interface service) {
-    return getNotImplementedString("SurfaceNamer:getFullyQualifiedStubType");
+    return getNotImplementedString("SurfaceNamer.getFullyQualifiedStubType");
   }
 
   /** The name of the variable to hold the grpc client of a service. */
@@ -553,6 +558,26 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   public String getProtoFileImportFromService(Interface service) {
-    return getNotImplementedString("SurfaceNamer:getProtoFileImportFromService");
+    return getNotImplementedString("SurfaceNamer.getProtoFileImportFromService");
+  }
+
+  /** The name of an RPC status code */
+  public String getStatusCodeName(Code code) {
+    return methodName(Name.upperUnderscore(code.toString()));
+  }
+
+  /* The name of a retry definition */
+  public String getRetryDefinitionName(String retryDefinitionKey) {
+    return methodName(Name.from(retryDefinitionKey));
+  }
+
+  /** Transform a sync method name to async (this is a bit hacky) */
+  public String transformMethodNameToAsync(String name) {
+    return getNotImplementedString("SurfaceNamer.transformNameToAsync");
+  }
+
+  /** Transform a sync type to an async type (this is a bit hacky) */
+  public String transformTypeToAsync(String name) {
+    return getNotImplementedString("SurfaceNamer.transformToAsync");
   }
 }

@@ -27,7 +27,7 @@ public enum ApiMethodType {
   OptionalArrayMethod,
   PagedOptionalArrayMethod,
   // C#
-  FlattenedMethodAsyncCallSettings,
-  FlattenedMethodAsyncCancellationToken,
-  PagedFlattenedMethodAsync,
+  FlattenedAsyncCallSettingsMethod,
+  FlattenedAsyncCancellationTokenMethod,
+  PagedFlattenedAsyncMethod,
 }

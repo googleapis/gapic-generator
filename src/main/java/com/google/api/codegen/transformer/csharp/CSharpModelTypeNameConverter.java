@@ -52,9 +52,7 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   private TypeNameConverter typeNameConverter;
 
   public CSharpModelTypeNameConverter(String implicitPackageName) {
-    this.typeNameConverter =
-        new CSharpTypeTable(
-            implicitPackageName); // TODO: Is it really OK to create a new instance here?
+    this.typeNameConverter = new CSharpTypeTable(implicitPackageName);
   }
 
   @Override

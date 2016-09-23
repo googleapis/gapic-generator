@@ -32,7 +32,7 @@ import java.util.TreeMap;
 public class CSharpTypeTable implements TypeTable {
 
   private final String implicitPackageName;
-  // Fullname to shortname map
+  // Full name to nickname map
   private final Map<String, String> imports = new HashMap<>();
 
   public CSharpTypeTable(String implicitPackageName) {

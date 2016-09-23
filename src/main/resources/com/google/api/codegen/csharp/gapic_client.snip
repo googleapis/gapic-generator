@@ -176,20 +176,20 @@
 
 @private abstractClient(api, settings)
     /// <summary>
-    /// {@api.grpcName} client wrapper, for convenient use.
+    /// {@api.grpcServiceName} client wrapper, for convenient use.
     /// </summary>
     public abstract partial class {@api.name}
     {
         /// <summary>
-        /// The default endpoint for the {@api.grpcName} service, which is a host of "{@settings.serviceAddress}" and a port of {@settings.servicePort}.
+        /// The default endpoint for the {@api.grpcServiceName} service, which is a host of "{@settings.serviceAddress}" and a port of {@settings.servicePort}.
         /// </summary>
         public static ServiceEndpoint DefaultEndpoint { get; } = new ServiceEndpoint("{@settings.serviceAddress}", {@settings.servicePort});
 
         /// <summary>
-        /// The default {@api.grpcName} scopes.
+        /// The default {@api.grpcServiceName} scopes.
         /// </summary>
         /// <remarks>
-        /// The default {@api.grpcName} scopes are:
+        /// The default {@api.grpcServiceName} scopes are:
         /// <list type="bullet">
         @join scope : settings.authScopes
             /// <item><description>"{@scope}"</description></item>
@@ -272,7 +272,7 @@
         {
             GaxPreconditions.CheckNotNull(channel, nameof(channel));
             {@api.grpcTypeName} grpcClient = new {@api.grpcTypeName}(channel);
-            return new {@api.name}Impl(grpcClient, settings);
+            return new {@api.implName}(grpcClient, settings);
         }
 
         /// <summary>
@@ -287,7 +287,7 @@
         public static Task ShutdownDefaultChannelsAsync() => s_channelPool.ShutdownChannelsAsync();
 
         /// <summary>
-        /// The underlying GRPC {@api.grpcName} client.
+        /// The underlying gRPC {@api.grpcServiceName} client.
         /// </summary>
         public virtual {@api.grpcTypeName} GrpcClient
         {
@@ -303,14 +303,14 @@
 @end
 
 @private implClient(api, settings)
-    public sealed partial class {@api.name}Impl : {@api.name}
+    public sealed partial class {@api.implName} : {@api.name}
     {
         private readonly ClientHelper _clientHelper;
         @join call : api.apiCallableMembers
             private readonly ApiCall<{@call.requestTypeName}, {@call.responseTypeName}> {@call.name};
         @end
 
-        public {@api.name}Impl({@api.grpcTypeName} grpcClient, {@settings.name} settings)
+        public {@api.implName}({@api.grpcTypeName} grpcClient, {@settings.name} settings)
         {
             this.GrpcClient = grpcClient;
             {@settings.name} effectiveSettings = settings ?? {@settings.name}.GetDefault();
@@ -321,6 +321,9 @@
             @end
         }
 
+        /// <summary>
+        /// The underlying gRPC {@api.grpcServiceName} client.
+        /// </summary>
         public override {@api.grpcTypeName} GrpcClient { get; }
         
         @join method : api.apiMethodsImpl
@@ -335,13 +338,13 @@
     @switch method.type.toString
     @case "FlattenedMethod"
         {@flattenedMethodSync(method, isImpl)}
-    @case "FlattenedMethodAsyncCallSettings"
+    @case "FlattenedAsyncCallSettingsMethod"
         {@flattenedMethodAsyncCallSettings(method, isImpl)}
-    @case "FlattenedMethodAsyncCancellationToken"
+    @case "FlattenedAsyncCancellationTokenMethod"
         {@flattenedMethodAsyncCancellationToken(method, isImpl)}
     @case "PagedFlattenedMethod"
         {@pagedFlattenedMethodSync(method, isImpl)}
-    @case "PagedFlattenedMethodAsync" 
+    @case "PagedFlattenedAsyncMethod" 
         {@pagedFlattenedMethodAsync(method, isImpl)}
     @default
         *** ERROR: Cannot handle method type '{@method.type.toString}' ***
@@ -351,15 +354,15 @@
 @private flattenedMethodSync(method, isImpl)
     @if isImpl
         public override {@method.responseTypeName} {@method.name}(
-        {@""}    {@objectParams(method.methodParamsWithExtras)}) => {@method.callableName}.Sync(
+        {@""}    {@objectParams(method.methodParams)}) => {@method.callableName}.Sync(
         {@""}        new {@method.apiRequestTypeName}
         {@""}        {
-                    {@requestProperties(method.methodParams)}
+                    {@requestProperties(method.forwardingMethodParams)}
         {@""}        },
         {@""}        callSettings);
     @else
         public virtual {@method.responseTypeName} {@method.name}(
-        {@""}    {@objectParams(method.methodParamsWithExtras)})
+        {@""}    {@objectParams(method.methodParams)})
         {
             throw new NotImplementedException();
         }
@@ -369,15 +372,15 @@
 @private flattenedMethodAsyncCallSettings(method, isImpl)
     @if isImpl
         public override {@method.responseTypeName} {@method.name}(
-        {@""}    {@objectParams(method.methodParamsWithExtras)}) => {@method.callableName}.Async(
+        {@""}    {@objectParams(method.methodParams)}) => {@method.callableName}.Async(
         {@""}        new {@method.apiRequestTypeName}
         {@""}        {
-                    {@requestProperties(method.methodParams)}
+                    {@requestProperties(method.forwardingMethodParams)}
         {@""}        },
         {@""}        callSettings);
     @else
         public virtual {@method.responseTypeName} {@method.name}(
-        {@""}    {@objectParams(method.methodParamsWithExtras)})
+        {@""}    {@objectParams(method.methodParams)})
         {
             throw new NotImplementedException();
         }
@@ -389,8 +392,8 @@
         *** ERROR: Should never get here ***
     @else
         public virtual {@method.responseTypeName} {@method.name}(
-            {@objectParams(method.methodParamsWithExtras)}) => {@method.name}(
-                {@objectArgs(method.methodParams)},
+            {@objectParams(method.methodParams)}) => {@method.name}(
+                {@objectArgs(method.forwardingMethodParams)},
                 new CallSettings { CancellationToken = cancellationToken });
     @end
 @end
@@ -398,18 +401,18 @@
 @private pagedFlattenedMethodSync(method, isImpl)
     @if isImpl
         public override IPagedEnumerable<{@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}> {@method.name}(
-        {@""}    {@objectParams(method.methodParamsWithExtras)}) => new PagedEnumerable<{@method.pagedView.requestTypeName}, {@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}>(
+        {@""}    {@objectParams(method.methodParams)}) => new PagedEnumerable<{@method.pagedView.requestTypeName}, {@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}>(
         {@""}        {@method.callableName},
         {@""}        new {@method.apiRequestTypeName}
         {@""}        {
-                    {@requestProperties(method.methodParams)}
+                    {@requestProperties(method.forwardingMethodParams)}
         {@""}            PageToken = pageToken ?? "",
         {@""}            PageSize = pageSize ?? 0,
         {@""}        },
         {@""}        callSettings);
     @else
         public virtual IPagedEnumerable<{@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}> {@method.name}(
-        {@""}    {@objectParams(method.methodParamsWithExtras)})
+        {@""}    {@objectParams(method.methodParams)})
         {
             throw new NotImplementedException();
         }
@@ -419,18 +422,18 @@
 @private pagedFlattenedMethodAsync(method, isImpl)
     @if isImpl
         public override IPagedAsyncEnumerable<{@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}> {@method.name}(
-        {@""}    {@objectParams(method.methodParamsWithExtras)}) => new PagedAsyncEnumerable<{@method.pagedView.requestTypeName}, {@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}>(
+        {@""}    {@objectParams(method.methodParams)}) => new PagedAsyncEnumerable<{@method.pagedView.requestTypeName}, {@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}>(
         {@""}        {@method.callableName},
         {@""}        new {@method.apiRequestTypeName}
         {@""}        {
-                    {@requestProperties(method.methodParams)}
+                    {@requestProperties(method.forwardingMethodParams)}
         {@""}            PageToken = pageToken ?? "",
         {@""}            PageSize = pageSize ?? 0,
         {@""}        },
         {@""}        callSettings);
     @else
         public virtual IPagedAsyncEnumerable<{@method.pagedView.responseTypeName}, {@method.pagedView.resourceTypeName}> {@method.name}(
-        {@""}    {@objectParams(method.methodParamsWithExtras)})
+        {@""}    {@objectParams(method.methodParams)})
         {
             throw new NotImplementedException();
         }

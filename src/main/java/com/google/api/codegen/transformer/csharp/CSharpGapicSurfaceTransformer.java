@@ -19,6 +19,7 @@ import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.BundlingTransformer;
 import com.google.api.codegen.transformer.ImportTypeTransformer;
@@ -32,10 +33,12 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
+import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
+import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
@@ -51,6 +54,7 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
@@ -73,7 +77,7 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
   private final ApiMethodTransformer apiMethodTransformer;
   private final ServiceTransformer serviceTransformer;
   private final PathTemplateTransformer pathTemplateTransformer;
-  private final CSharpApiCallableTransformer apiCallableTransformer;
+  private final ApiCallableTransformer apiCallableTransformer;
   private final ImportTypeTransformer importTypeTransformer;
   private final PageStreamingTransformer pageStreamingTransformer;
   private final BundlingTransformer bundlingTransformer;
@@ -82,7 +86,7 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
     this.pathMapper = pathMapper;
     this.serviceTransformer = new ServiceTransformer();
     this.pathTemplateTransformer = new PathTemplateTransformer();
-    this.apiCallableTransformer = new CSharpApiCallableTransformer();
+    this.apiCallableTransformer = new ApiCallableTransformer();
     this.apiMethodTransformer = new ApiMethodTransformer();
     this.pageStreamingTransformer = new PageStreamingTransformer();
     this.bundlingTransformer = new BundlingTransformer();
@@ -129,13 +133,15 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
     xapiClass.packageName(context.getApiConfig().getPackageName());
     String name = namer.getApiWrapperClassName(context.getInterface());
-    String grpcName = namer.className(Name.upperCamel(context.getInterface().getSimpleName()));
+    //String grpcName = namer.className(Name.upperCamel(context.getInterface().getSimpleName()));
     xapiClass.name(name);
-    xapiClass.grpcName(grpcName);
-    xapiClass.grpcTypeName(grpcName + "." + name);
+    xapiClass.implName(namer.getApiWrapperClassImplName(context.getInterface()));
+    xapiClass.grpcServiceName(namer.getGrpcContainerTypeName(context.getInterface())); //(grpcName);
+    xapiClass.grpcTypeName(
+        namer.getGrpcServiceClassName(context.getInterface())); //(grpcName + "." + name);
     xapiClass.settingsClassName(context.getNamer().getApiSettingsClassName(context.getInterface()));
     List<ApiCallableView> callables =
-        FluentIterable.from(apiCallableTransformer.generateStaticLangApiCallables(context))
+        FluentIterable.from(apiCallableTransformer.generateStaticLangApiCallables(context, true))
             .filter(
                 new Predicate<ApiCallableView>() {
                   @Override
@@ -173,7 +179,7 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private boolean methodTypeHasImpl(ApiMethodType type) {
-    return type != ApiMethodType.FlattenedMethodAsyncCancellationToken;
+    return type != ApiMethodType.FlattenedAsyncCancellationTokenMethod;
   }
 
   private StaticLangXSettingsView generateXSettings(SurfaceTransformerContext context) {
@@ -189,8 +195,7 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
     xsettingsClass.serviceAddress(serviceConfig.getServiceAddress(context.getInterface()));
     xsettingsClass.servicePort(serviceConfig.getServicePort());
     xsettingsClass.authScopes(serviceConfig.getAuthScopes(context.getInterface()));
-    xsettingsClass.callSettings(
-        apiCallableTransformer.generateCallSettings(context, retryCodesDefs, retryParamsDefs));
+    xsettingsClass.callSettings(generateCallSettings(context, retryCodesDefs, retryParamsDefs));
     xsettingsClass.pageStreamingDescriptors(
         pageStreamingTransformer.generateDescriptorClasses(context));
     xsettingsClass.bundlingDescriptors(bundlingTransformer.generateDescriptorClasses(context));
@@ -220,6 +225,55 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("System.Collections.Generic.IEnumerable");
   }
 
+  public List<ApiCallSettingsView> generateCallSettings(
+      SurfaceTransformerContext context,
+      List<RetryCodesDefinitionView> retryCodes,
+      List<RetryParamsDefinitionView> retryParams) {
+    final Map<String, RetryCodesDefinitionView> retryCodesByKey =
+        Maps.uniqueIndex(
+            retryCodes,
+            new Function<RetryCodesDefinitionView, String>() {
+              @Override
+              public String apply(RetryCodesDefinitionView v) {
+                return v.key();
+              }
+            });
+    final Map<String, RetryParamsDefinitionView> retryParamsByKey =
+        Maps.uniqueIndex(
+            retryParams,
+            new Function<RetryParamsDefinitionView, String>() {
+              @Override
+              public String apply(RetryParamsDefinitionView v) {
+                return v.key();
+              }
+            });
+
+    List<ApiCallSettingsView> settingsMembers = new ArrayList<>();
+    for (Method method : context.getNonStreamingMethods()) {
+      if (context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
+        // Temporary hack to exclude mixins for the moment. To be removed.
+        continue;
+      }
+      List<ApiCallSettingsView> calls =
+          FluentIterable.from(
+                  apiCallableTransformer.generateApiCallableSettings(
+                      context.asMethodContext(method)))
+              .transform(
+                  new Function<ApiCallSettingsView, ApiCallSettingsView>() {
+                    @Override
+                    public ApiCallSettingsView apply(ApiCallSettingsView call) {
+                      return call.toBuilder()
+                          .retryCodesView(retryCodesByKey.get(call.retryCodesName()))
+                          .retryParamsView(retryParamsByKey.get(call.retryParamsName()))
+                          .build();
+                    }
+                  })
+              .toList();
+      settingsMembers.addAll(calls);
+    }
+    return settingsMembers;
+  }
+
   private List<StaticLangApiMethodView> generateApiMethods(SurfaceTransformerContext context) {
     Map<String, PageStreamingDescriptorClassView> pagedByName =
         Maps.uniqueIndex(
@@ -230,6 +284,43 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
                 return v.name();
               }
             });
+    List<RequestObjectParamView> callSettingsParam =
+        ImmutableList.of(makeParam("CallSettings", "callSettings", "null"));
+    List<ParamDocView> callSettingsParamDoc =
+        ImmutableList.of(
+            makeParamDoc(
+                "CallSettings",
+                "callSettings",
+                "If not null, applies overrides to this RPC call."));
+    List<RequestObjectParamView> cancellationTokenParam =
+        ImmutableList.of(makeParam("CancellationToken", "cancellationToken", null));
+    List<ParamDocView> cancellationTokenParamDoc =
+        ImmutableList.of(
+            makeParamDoc(
+                "CancellationToken",
+                "cancellationToken",
+                "A <see cref=\"CancellationToken\"/> to use for this RPC."));
+    List<RequestObjectParamView> pagedMethodAdditionalParams =
+        ImmutableList.of(
+            makeParam("string", "pageToken", "null"),
+            makeParam("int?", "pageSize", "null"),
+            callSettingsParam.get(0));
+    List<ParamDocView> pagedMethodAdditionalParamDocs =
+        ImmutableList.of(
+            makeParamDoc(
+                "string",
+                "pageToken",
+                "The token returned from the previous request.",
+                "A value of <c>null</c> or an empty string retrieves the first page."),
+            makeParamDoc(
+                "int?",
+                "pageSize",
+                "The size of page to request. The response will not be larger than this, but may be smaller.",
+                "A value of <c>null</c> or 0 uses a server-defined page size."),
+            callSettingsParamDoc.get(0));
+    List<String> returnDocLinesSync = ImmutableList.of("The RPC response.");
+    List<String> returnDocLinesAsync = ImmutableList.of("A Task containing the RPC response.");
+
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
     for (Method method : context.getNonStreamingMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
@@ -238,19 +329,39 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
         continue;
       }
       MethodTransformerContext methodContext = context.asMethodContext(method);
-
       if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
+          TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
+          String resourceTypeName =
+              context.getTypeTable().getAndSaveNicknameForElementType(resourceType);
+          List<String> pagedReturnDocLinesSync =
+              ImmutableList.of(
+                  "A pageable sequence of <see cref=\"" + resourceTypeName + "\"/> resources.");
+          List<String> pagedReturnDocLinesAsync =
+              ImmutableList.of(
+                  "A pageable asynchronous sequence of <see cref=\""
+                      + resourceTypeName
+                      + "\"/> resources.");
           for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
             apiMethods.add(
-                transformPagedMethod(
-                    apiMethodTransformer.generatePagedFlattenedMethod(
-                        methodContext, fields, ApiMethodType.PagedFlattenedMethodAsync),
+                apiMethodTransformer.generatePagedFlattenedMethod(
+                    methodContext,
+                    fields,
+                    ApiMethodType.PagedFlattenedAsyncMethod,
+                    pagedMethodAdditionalParams,
+                    pagedMethodAdditionalParamDocs,
+                    pagedReturnDocLinesAsync,
+                    true,
                     pagedByName));
             apiMethods.add(
-                transformPagedMethod(
-                    apiMethodTransformer.generatePagedFlattenedMethod(
-                        methodContext, fields, ApiMethodType.PagedFlattenedMethod),
+                apiMethodTransformer.generatePagedFlattenedMethod(
+                    methodContext,
+                    fields,
+                    ApiMethodType.PagedFlattenedMethod,
+                    pagedMethodAdditionalParams,
+                    pagedMethodAdditionalParamDocs,
+                    pagedReturnDocLinesSync,
+                    false,
                     pagedByName));
           }
         }
@@ -258,19 +369,32 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
         if (methodConfig.isFlattening()) {
           for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
             apiMethods.add(
-                transformFlattenedMethod(
-                    apiMethodTransformer.generateFlattenedMethod(
-                        methodContext, fields, ApiMethodType.FlattenedMethodAsyncCallSettings)));
+                apiMethodTransformer.generateFlattenedMethod(
+                    methodContext,
+                    fields,
+                    ApiMethodType.FlattenedAsyncCallSettingsMethod,
+                    callSettingsParam,
+                    callSettingsParamDoc,
+                    returnDocLinesAsync,
+                    true));
             apiMethods.add(
-                transformFlattenedMethod(
-                    apiMethodTransformer.generateFlattenedMethod(
-                        methodContext,
-                        fields,
-                        ApiMethodType.FlattenedMethodAsyncCancellationToken)));
+                apiMethodTransformer.generateFlattenedMethod(
+                    methodContext,
+                    fields,
+                    ApiMethodType.FlattenedAsyncCancellationTokenMethod,
+                    cancellationTokenParam,
+                    cancellationTokenParamDoc,
+                    returnDocLinesAsync,
+                    true));
             apiMethods.add(
-                transformFlattenedMethod(
-                    apiMethodTransformer.generateFlattenedMethod(
-                        methodContext, fields, ApiMethodType.FlattenedMethod)));
+                apiMethodTransformer.generateFlattenedMethod(
+                    methodContext,
+                    fields,
+                    ApiMethodType.FlattenedMethod,
+                    callSettingsParam,
+                    callSettingsParamDoc,
+                    returnDocLinesSync,
+                    false));
           }
         }
       }
@@ -279,146 +403,26 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
     return apiMethods;
   }
 
-  private StaticLangApiMethodView transformFlattenedMethod(StaticLangApiMethodView method) {
-    switch (method.type()) {
-      case FlattenedMethod:
-        method =
-            AddParam(
-                method,
-                "CallSettings",
-                "callSettings",
-                "null",
-                "If not null, applies overrides to this RPC call.");
-        method = AddReturnDoc(method, "The RPC response.");
-        break;
-      case FlattenedMethodAsyncCallSettings:
-        method =
-            AddParam(
-                method,
-                "CallSettings",
-                "callSettings",
-                "null",
-                "If not null, applies overrides to this RPC call.");
-        method = MakeAsync(method);
-        method = AddReturnDoc(method, "A Task containing the RPC response.");
-        break;
-      case FlattenedMethodAsyncCancellationToken:
-        method =
-            AddParam(
-                method,
-                "CancellationToken",
-                "cancellationToken",
-                null,
-                "A <see cref=\"CancellationToken\"/> to use for this RPC.");
-        method = MakeAsync(method);
-        method = AddReturnDoc(method, "A Task containing the RPC response.");
-        break;
-      default:
-        throw new RuntimeException("Unexpected method type: '" + method.type() + "'");
-    }
-    return method;
+  private RequestObjectParamView makeParam(String typeName, String name, String defaultValue) {
+    return RequestObjectParamView.newBuilder()
+        .name(name)
+        .elementTypeName("")
+        .typeName(typeName)
+        .setCallName("")
+        .isMap(false)
+        .isArray(false)
+        .defaultValue(defaultValue)
+        .build();
   }
 
-  private StaticLangApiMethodView transformPagedMethod(
-      StaticLangApiMethodView method, Map<String, PageStreamingDescriptorClassView> pagedByName) {
-    method = method.toBuilder().pagedView(pagedByName.get(method.name() + "PageStrDesc")).build();
-    method =
-        AddParam(
-            method,
-            "string",
-            "pageToken",
-            "null",
-            "The token returned from the previous request.",
-            "A value of <c>null</c> or an empty string retrieves the first page.");
-    method =
-        AddParam(
-            method,
-            "int?",
-            "pageSize",
-            "null",
-            "The size of page to request. The response will not be larger than this, but may be smaller.",
-            "A value of <c>null</c> or 0 uses a server-defined page size.");
-    method =
-        AddParam(
-            method,
-            "CallSettings",
-            "callSettings",
-            "null",
-            "If not null, applies overrides to this RPC call.");
-    String resource = method.pagedView().resourceTypeName();
-    switch (method.type()) {
-      case PagedFlattenedMethod:
-        method =
-            AddReturnDoc(
-                method, "A pageable sequence of <see cref=\"" + resource + "\"/> resources.");
-        break;
-      case PagedFlattenedMethodAsync:
-        method =
-            AddReturnDoc(
-                method,
-                "A pageable asynchronous sequence of <see cref=\"" + resource + "\"/> resources.");
-        method = method.toBuilder().name(method.name() + "Async").build();
-        break;
-      default:
-        throw new RuntimeException("Unexpected method type: '" + method.type() + "'");
-    }
-    return method;
-  }
-
-  private StaticLangApiMethodView AddParam(
-      StaticLangApiMethodView method,
-      String typeName,
-      String name,
-      String defaultValue,
-      String... doc) {
+  private ParamDocView makeParamDoc(String typeName, String name, String... doc) {
     List<String> docList = Arrays.asList(doc);
-    return method
-        .toBuilder()
-        .methodParamsWithExtras(
-            FluentIterable.from(method.methodParamsWithExtras())
-                .append(
-                    RequestObjectParamView.newBuilder()
-                        .name(name)
-                        .elementTypeName("")
-                        .typeName(typeName)
-                        .setCallName("")
-                        .isMap(false)
-                        .isArray(false)
-                        .defaultValue(defaultValue)
-                        .build())
-                .toList())
-        .doc(
-            method
-                .doc()
-                .toBuilder()
-                .paramDocs(
-                    FluentIterable.from(method.doc().paramDocs())
-                        .append(
-                            SimpleParamDocView.newBuilder()
-                                .paramName(name)
-                                .typeName(typeName)
-                                .lines(docList)
-                                .firstLine(doc[0])
-                                .remainingLines(docList.subList(1, docList.size()))
-                                .build())
-                        .toList())
-                .build())
-        .build();
-  }
-
-  private StaticLangApiMethodView MakeAsync(StaticLangApiMethodView method) {
-    return method
-        .toBuilder()
-        .name(method.name() + "Async")
-        .responseTypeName(
-            method.hasReturnValue() ? "Task<" + method.responseTypeName() + ">" : "Task")
-        .build();
-  }
-
-  private StaticLangApiMethodView AddReturnDoc(StaticLangApiMethodView method, String... lines) {
-    return method
-        .toBuilder()
-        .doc(method.doc().toBuilder().returnsDocLines(Arrays.asList(lines)).build())
+    return SimpleParamDocView.newBuilder()
+        .paramName(name)
+        .typeName(typeName)
+        .lines(docList)
+        .firstLine(doc[0])
+        .remainingLines(docList.subList(1, docList.size()))
         .build();
   }
 
@@ -450,14 +454,14 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
                   new Function<Code, String>() {
                     @Override
                     public String apply(Code code) {
-                      return namer.methodName(Name.upperUnderscore(code.toString()));
+                      return namer.getStatusCodeName(code);
                     }
                   })
               .toList();
       definitions.add(
           RetryCodesDefinitionView.newBuilder()
               .key(retryCodesDef.getKey())
-              .name(namer.methodName(Name.from(retryCodesDef.getKey())))
+              .name(namer.getRetryDefinitionName(retryCodesDef.getKey()))
               .codes(retryCodesDef.getValue())
               .codeNames(codeNames)
               .build());

@@ -32,7 +32,10 @@ public abstract class StaticLangXApiView implements ViewModel {
   public abstract String name();
 
   @Nullable // Used in C#
-  public abstract String grpcName();
+  public abstract String implName();
+
+  @Nullable // Used in C#
+  public abstract String grpcServiceName();
 
   @Nullable // Used in C#
   public abstract String grpcTypeName();
@@ -76,7 +79,9 @@ public abstract class StaticLangXApiView implements ViewModel {
 
     public abstract Builder name(String val);
 
-    public abstract Builder grpcName(String val);
+    public abstract Builder implName(String val);
+
+    public abstract Builder grpcServiceName(String val);
 
     public abstract Builder grpcTypeName(String val);
 

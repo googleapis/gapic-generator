@@ -145,7 +145,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     String name = context.getNamer().getApiWrapperClassName(context.getInterface());
     xapiClass.name(name);
     xapiClass.settingsClassName(context.getNamer().getApiSettingsClassName(context.getInterface()));
-    xapiClass.apiCallableMembers(apiCallableTransformer.generateStaticLangApiCallables(context));
+    xapiClass.apiCallableMembers(
+        apiCallableTransformer.generateStaticLangApiCallables(context, false));
     xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
     xapiClass.formatResourceFunctions(
         pathTemplateTransformer.generateFormatResourceFunctions(context));
@@ -288,7 +289,15 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
         if (methodConfig.isFlattening()) {
           for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
             apiMethods.add(
-                apiMethodTransformer.generatePagedFlattenedMethod(methodContext, fields));
+                apiMethodTransformer.generatePagedFlattenedMethod(
+                    methodContext,
+                    fields,
+                    ApiMethodType.PagedFlattenedMethod,
+                    null,
+                    null,
+                    null,
+                    false,
+                    null));
           }
         }
         apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext));
@@ -297,7 +306,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       } else {
         if (methodConfig.isFlattening()) {
           for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
-            apiMethods.add(apiMethodTransformer.generateFlattenedMethod(methodContext, fields));
+            apiMethods.add(
+                apiMethodTransformer.generateFlattenedMethod(
+                    methodContext, fields, ApiMethodType.FlattenedMethod, null, null, null, false));
           }
         }
         apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(methodContext));

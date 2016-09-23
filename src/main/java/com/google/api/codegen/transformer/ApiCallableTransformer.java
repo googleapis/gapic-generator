@@ -34,10 +34,16 @@ public class ApiCallableTransformer {
     this.bundlingTransformer = new BundlingTransformer();
   }
 
-  public List<ApiCallableView> generateStaticLangApiCallables(SurfaceTransformerContext context) {
+  public List<ApiCallableView> generateStaticLangApiCallables(
+      SurfaceTransformerContext context, boolean excludeMixins) {
     List<ApiCallableView> callableMembers = new ArrayList<>();
 
     for (Method method : context.getNonStreamingMethods()) {
+      // excludeMixins a temporary workaround for C#.
+      // Will be removed when C# properly supports mixins.
+      if (excludeMixins && context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
+        continue;
+      }
       callableMembers.addAll(generateStaticLangApiCallables(context.asMethodContext(method)));
     }
 
@@ -106,8 +112,7 @@ public class ApiCallableTransformer {
     return apiCallables;
   }
 
-  protected List<ApiCallSettingsView> generateApiCallableSettings(
-      MethodTransformerContext context) {
+  public List<ApiCallSettingsView> generateApiCallableSettings(MethodTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();

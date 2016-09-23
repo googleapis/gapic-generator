@@ -21,6 +21,7 @@ import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.tools.framework.model.Interface;
@@ -77,5 +78,40 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
       typeList[i] = typeTable.getFullNameForElementType(parameterizedTypes[i]);
     }
     return typeTable.getAndSaveNicknameForContainer("Google.Api.Gax.PagedEnumerable", typeList);
+  }
+
+  @Override
+  public String getGrpcContainerTypeName(Interface service) {
+    return className(Name.upperCamel(service.getSimpleName()));
+  }
+
+  @Override
+  public String getGrpcServiceClassName(Interface service) {
+    return className(Name.upperCamel(service.getSimpleName()))
+        + "."
+        + className(Name.upperCamel(service.getSimpleName(), "Client"));
+  }
+
+  @Override
+  public String getApiWrapperClassImplName(Interface interfaze) {
+    return className(Name.upperCamel(interfaze.getSimpleName(), "ClientImpl"));
+  }
+
+  @Override
+  public String transformMethodNameToAsync(String name) {
+    return name + "Async";
+  }
+
+  @Override
+  public String transformTypeToAsync(String name) {
+    if (name.equals("void")) {
+      return "Task";
+    } else {
+      return "Task<" + name + ">";
+    }
+  }
+
+  public String getPageStreamingDescriptorConstName(Method method) {
+    return inittedConstantName(Name.upperCamel(method.getSimpleName()));
   }
 }
