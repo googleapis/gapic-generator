@@ -294,7 +294,8 @@ public class InitCodeTransformer {
     if (context.getFeatureConfig().useResourceNameFormatOption(item.getField())) {
       Field field = item.getField();
       String resourceName = ResourceNameUtil.getResourceName(field);
-      surfaceLine.typeName(typeTable.getAndSaveNicknameForTypedResourceName(field, resourceName));
+      surfaceLine.typeName(
+          typeTable.getAndSaveNicknameForTypedResourceName(field, item.getType(), resourceName));
     } else {
       surfaceLine.typeName(typeTable.getAndSaveNicknameFor(item.getType()));
     }
@@ -333,7 +334,8 @@ public class InitCodeTransformer {
       Field field = item.getField();
       String resourceName = ResourceNameUtil.getResourceName(field);
       surfaceLine.elementTypeName(
-          typeTable.getAndSaveNicknameForTypedResourceName(field, resourceName));
+          typeTable.getAndSaveNicknameForTypedResourceName(
+              field, item.getType().makeOptional(), resourceName));
     } else {
       surfaceLine.elementTypeName(
           typeTable.getAndSaveNicknameForElementType(item.getType().makeOptional()));
@@ -381,7 +383,10 @@ public class InitCodeTransformer {
     InitValueConfig initValueConfig = item.getInitValueConfig();
     Field field = item.getField();
 
-    if (context.getFeatureConfig().useResourceNameFormatOption(item.getField())) {
+    if (context.getFeatureConfig().useResourceNameFormatOption(item.getField())
+        && !item.getType().isRepeated()) {
+      // For a repeated type, we want to use a SimpleInitValueView
+
       ResourceNameInitValueView.Builder initValue = ResourceNameInitValueView.newBuilder();
 
       initValue.resourceTypeName(ResourceNameUtil.getResourceName(field));

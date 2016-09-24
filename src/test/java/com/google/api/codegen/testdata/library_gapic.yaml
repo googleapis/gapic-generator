@@ -339,6 +339,31 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 30000
+  - name: FindRelatedBooks
+    flattening:
+      groups:
+      - parameters:
+        - names
+        - shelves
+    required_fields:
+    - names
+    - shelves
+    page_streaming:
+      request:
+        token_field: page_token
+        page_size_field: page_size
+      response:
+        token_field: next_page_token
+        resources_field: names
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 3000
+    request_object_method: false
+    sample_code_init_fields:
+    - names[0]
+    # TODO(michaelbausor): support %-entity notation for list elements
+    #- names[1]%shelf_id=my_shelf
+    #- names[1]%book_id=my_first_book
   - name: AddTag
     flattening:
       groups:

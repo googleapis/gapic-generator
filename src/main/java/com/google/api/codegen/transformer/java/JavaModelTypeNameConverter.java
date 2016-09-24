@@ -204,15 +204,30 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeName(ProtoElement elem) {
-    return getTypeNameForTypedResourceName(elem, getShortName(elem));
-  }
-
-  @Override
-  public TypeName getTypeNameForTypedResourceName(ProtoElement elem, String shortName) {
     String packageName = getProtoElementPackage(elem);
+    String shortName = getShortName(elem);
     String longName = packageName + "." + shortName;
 
     return new TypeName(longName, shortName);
+  }
+
+  @Override
+  public TypeName getTypeNameForTypedResourceName(
+      ProtoElement elem, TypeRef type, String resourceName) {
+    String packageName = getProtoElementPackage(elem);
+    String longName = packageName + "." + resourceName;
+
+    TypeName simpleTypeName = new TypeName(longName, resourceName);
+
+    if (type.isMap()) {
+      throw new IllegalArgumentException("Map type not supported for typed resource name");
+    } else if (type.isRepeated()) {
+      TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
+      return new TypeName(
+          listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", simpleTypeName);
+    } else {
+      return simpleTypeName;
+    }
   }
 
   private static String getShortName(ProtoElement elem) {

@@ -178,7 +178,7 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeNameForTypedResourceName(
-      ProtoElement elem, String typedResourceShortName) {
+      ProtoElement field, TypeRef type, String typedResourceShortName) {
     throw new UnsupportedOperationException("getTypeNameForTypedResourceName not supported by PHP");
   }
 }

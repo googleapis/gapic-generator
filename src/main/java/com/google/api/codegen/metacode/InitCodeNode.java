@@ -94,8 +94,8 @@ public class InitCodeNode {
   }
 
   /*
-   * Get the Field of the node. For nodes that are not the child of a Structure node, the field will
-   * be null.
+   * Get the Field of the node. Nodes that are children of Map or List nodes will share the same
+   * field as their parent.
    */
   public Field getField() {
     return nodeField;
@@ -253,7 +253,7 @@ public class InitCodeNode {
           context,
           getChildType(type, child.key),
           getChildSuggestedName(suggestedName, lineType, child),
-          getChildField(type, child.key));
+          getChildField(field, type, child.key));
     }
 
     SymbolTable table = context.table();
@@ -426,11 +426,11 @@ public class InitCodeNode {
     }
   }
 
-  private static Field getChildField(TypeRef parentType, String key) {
+  private static Field getChildField(Field parentField, TypeRef parentType, String key) {
     if (parentType.isMap()) {
-      return null;
+      return parentField;
     } else if (parentType.isRepeated()) {
-      return null;
+      return parentField;
     } else if (parentType.isMessage()) {
       for (Field field : parentType.getMessageType().getFields()) {
         if (field.getSimpleName().equals(key)) {

@@ -142,6 +142,10 @@ service LibraryService {
     // gRPC streaming methods don't have HTTP equivalent and need not have google.api.http option.
   }
   
+  rpc FindRelatedBooks(FindRelatedBooksRequest) returns (FindRelatedBooksResponse) {
+    option (google.api.http) = { get: "/v1/bookShelves" };
+  }
+
   // Adds a tag to the book. This RPC is a mixin.
   rpc AddTag(google.tagger.v1.AddTagRequest) returns (google.tagger.v1.AddTagResponse) {
     option (google.api.http) = { post: "/v1/{resource=bookShelves/*/books/*}:addTag" body: "*" };
@@ -457,4 +461,18 @@ message DiscussBookRequest {
 
   // The new comment.
   Comment comment = 2;
+}
+
+// Test repeated field with resource name format in request
+message FindRelatedBooksRequest {
+  repeated string names = 1 [(google.gapic.format_name) = "BookName"];
+  repeated string shelves = 2 [(google.gapic.format_name) = "ShelfName"];
+  int32 page_size = 4;
+  string page_token = 5;
+}
+
+// Test repeated field with resource name format in page streaming response
+message FindRelatedBooksResponse {
+  repeated string names = 1 [(google.gapic.format_name) = "BookName"];
+  string next_page_token = 2;
 }

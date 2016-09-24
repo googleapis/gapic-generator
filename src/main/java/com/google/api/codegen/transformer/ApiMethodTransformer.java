@@ -425,11 +425,15 @@ public class ApiMethodTransformer {
       String resourceName = ResourceNameUtil.getResourceName(field);
       if (namer.shouldImportRequestObjectParamType(field)) {
         typeName =
-            context.getTypeTable().getAndSaveNicknameForTypedResourceName(field, resourceName);
+            context
+                .getTypeTable()
+                .getAndSaveNicknameForTypedResourceName(field, field.getType(), resourceName);
       }
       if (namer.shouldImportRequestObjectParamElementType(field)) {
         elementTypeName =
-            context.getTypeTable().getAndSaveNicknameForTypedResourceName(field, resourceName);
+            context
+                .getTypeTable()
+                .getAndSaveNicknameForTypedResourceName(field, field.getType(), resourceName);
       }
       setCallName =
           namer.getResourceNameFieldSetFunctionName(
