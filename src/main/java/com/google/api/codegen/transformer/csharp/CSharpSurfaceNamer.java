@@ -69,6 +69,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getCallableName(Method method) {
+    // TODO: Use the 'privateFieldName' method when it's available (from Go MVVM PR)
     return "_" + varName(Name.upperCamel("Call", method.getSimpleName()));
   }
 

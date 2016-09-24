@@ -247,7 +247,7 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
             });
 
     List<ApiCallSettingsView> settingsMembers = new ArrayList<>();
-    for (Method method : context.getNonStreamingMethods()) {
+    for (Method method : context.getSupportedMethods()) {
       if (context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
         // Temporary hack to exclude mixins for the moment. To be removed.
         continue;
@@ -304,7 +304,7 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
             callSettingsParam.get(0));
 
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
-    for (Method method : context.getNonStreamingMethods()) {
+    for (Method method : context.getSupportedMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       if (methodConfig.getRerouteToGrpcInterface() != null) {
         // Temporary hack to exclude mixins for the moment. To be removed.
@@ -379,6 +379,7 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private List<RetryCodesDefinitionView> generateRetryCodesDefinitions(
       SurfaceTransformerContext context) {
+    // TODO: Merge this with the equivalent Java method, into a new transformer
     List<RetryCodesDefinitionView> definitions = new ArrayList<>();
 
     final SurfaceNamer namer = context.getNamer();
@@ -408,6 +409,7 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private List<RetryParamsDefinitionView> generateRetryParamsDefinitions(
       SurfaceTransformerContext context) {
+    // TODO: Merge this with the equivalent Java method, into a new transformer
     List<RetryParamsDefinitionView> definitions = new ArrayList<>();
 
     SurfaceNamer namer = context.getNamer();
