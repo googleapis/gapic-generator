@@ -38,7 +38,7 @@ public class ApiCallableTransformer {
     List<ApiCallableView> callableMembers = new ArrayList<>();
     boolean excludeMixins = !context.getFeatureConfig().enableMixins();
 
-    for (Method method : context.getNonStreamingMethods()) {
+    for (Method method : context.getSupportedMethods()) {
       if (excludeMixins && context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
         continue;
       }
@@ -51,7 +51,7 @@ public class ApiCallableTransformer {
   public List<ApiCallSettingsView> generateCallSettings(SurfaceTransformerContext context) {
     List<ApiCallSettingsView> settingsMembers = new ArrayList<>();
 
-    for (Method method : context.getNonStreamingMethods()) {
+    for (Method method : context.getSupportedMethods()) {
       settingsMembers.addAll(generateApiCallableSettings(context.asMethodContext(method)));
     }
 

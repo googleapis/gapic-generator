@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.py;
 
+import com.google.api.codegen.ApiConfig;
+import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.py.PythonImport.ImportType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -24,7 +26,7 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-
+import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,14 +41,14 @@ public class PythonImportHandler {
   private final BiMap<String, PythonImport> stringImports = HashBiMap.create();
 
   /**
-   * Bi-map from proto files to short names for imports. Should only be modified through
-   * addImport() to maintain the invariant that elements of this map are in 1:1 correspondence with
-   * those in stringImports.
+   * Bi-map from proto files to short names for imports. Should only be modified through addImport()
+   * to maintain the invariant that elements of this map are in 1:1 correspondence with those in
+   * stringImports.
    */
   private final BiMap<ProtoFile, String> fileImports = HashBiMap.create();
 
   /** This constructor is for the main imports of a generated service file */
-  public PythonImportHandler(Interface service) {
+  public PythonImportHandler(Interface service, ApiConfig apiConfig) {
     // Add non-service-specific imports.
     addImportStandard("json");
     addImportStandard("os");
@@ -58,15 +60,21 @@ public class PythonImportHandler {
     addImportExternal("google.gax", "config");
     addImportExternal("google.gax", "path_template");
 
+    // only if add enum import if there are enums
+    if (!Iterables.isEmpty(new PythonContextCommon().getEnumTypes(service.getModel()))) {
+      addImportLocal(apiConfig.getPackageName(), "enums");
+    }
+
     // Add method request-type imports.
-    for (Method method : service.getMethods()) {
+    for (MethodConfig methodConfig : apiConfig.getInterfaceConfig(service).getMethodConfigs()) {
+      Method method = methodConfig.getMethod();
       addImport(
-          method.getFile(),
+          method.getInputMessage().getFile(),
           PythonImport.create(
               ImportType.APP,
-              method.getFile().getProto().getPackage(),
+              method.getInputMessage().getFile().getProto().getPackage(),
               PythonProtoElements.getPbFileName(method.getInputMessage())));
-      for (Field field : method.getInputType().getMessageType().getMessageFields()) {
+      for (Field field : method.getInputMessage().getMessageFields()) {
         MessageType messageType = field.getType().getMessageType();
         addImport(
             messageType.getFile(),
@@ -96,25 +104,6 @@ public class PythonImportHandler {
     }
   }
 
-  /**
-   * This constructor is used for sample-gen where only the required fields of a method are needed
-   * to be imported.
-   */
-  public PythonImportHandler(Iterable<Field> requiredFields) {
-    for (Field field : requiredFields) {
-      if (!field.getType().isMessage()) {
-        continue;
-      }
-      MessageType messageType = field.getType().getMessageType();
-      addImport(
-          messageType.getFile(),
-          PythonImport.create(
-              ImportType.APP,
-              messageType.getFile().getProto().getPackage(),
-              PythonProtoElements.getPbFileName(messageType)));
-    }
-  }
-
   // Independent import handler to support fragment generation from discovery sources
   public PythonImportHandler() {}
 
@@ -122,7 +111,7 @@ public class PythonImportHandler {
    * Returns the path to a proto element. If fullyQualified is false, returns the fully qualified
    * path.
    *
-   * For example, with message `Hello.World` under import `hello`, if fullyQualified is true: for
+   * <p>For example, with message `Hello.World` under import `hello`, if fullyQualified is true: for
    * `path.to.hello.Hello.World`, it returns `path.to.hello.Hello.World` false: for
    * `path.to.hello.Hello.World`, it returns `hello.Hello.World`
    */
@@ -156,6 +145,15 @@ public class PythonImportHandler {
   private PythonImport addImport(ProtoFile file, PythonImport imp) {
     // No conflict
     if (stringImports.get(imp.shortName()) == null) {
+      if (file != null && fileImports.containsKey(file)) {
+        throw new IllegalArgumentException(
+            "fileImports already has "
+                + file.getSimpleName()
+                + " for "
+                + fileImports.get(file)
+                + " but adding "
+                + imp.shortName());
+      }
       fileImports.put(file, imp.shortName());
       stringImports.put(imp.shortName(), imp);
       return imp;
@@ -212,9 +210,7 @@ public class PythonImportHandler {
     return addImport(ImportType.APP, moduleName, attributeName).shortName();
   }
 
-  /**
-   * Calculate the imports map and return a sorted set of python import output strings.
-   */
+  /** Calculate the imports map and return a sorted set of python import output strings. */
   public List<String> calculateImports() {
     // Order by import type, then lexicographically
     List<String> stdlibResult = new ArrayList<>();
@@ -253,6 +249,14 @@ public class PythonImportHandler {
   public String fileToModule(ProtoFile file) {
     if (fileImports.containsKey(file)) {
       return fileImports.get(file);
+    } else {
+      return "";
+    }
+  }
+
+  public String fileToImport(ProtoFile file) {
+    if (fileImports.containsKey(file)) {
+      return stringImports.get(fileImports.get(file)).importString();
     } else {
       return "";
     }

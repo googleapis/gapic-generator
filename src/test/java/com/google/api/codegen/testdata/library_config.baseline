@@ -3,7 +3,7 @@ language_settings:
   java:
     package_name: com.google.cloud.example.library.spi.v1
   python:
-    package_name: google.cloud.example.library.v1
+    package_name: google.cloud.gapic.example.library.v1
   go:
     package_name: cloud.google.com/go/example/library/apiv1
   csharp:
@@ -285,14 +285,32 @@ interfaces:
       name: book_2
     timeout_millis: 60000
   - name: StreamShelves
+    request_object_method: false
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    timeout_millis: 60000
+  - name: StreamBooks
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+    - name
+    request_object_method: false
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    timeout_millis: 60000
+  - name: DiscussBook
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - comment
+    required_fields:
+    - name
+    - comment
     request_object_method: true
-    page_streaming:
-      request:
-        token_field: page_token
-      response:
-        token_field: next_page_token
-        resources_field: shelves
-    retry_codes_name: idempotent
+    retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 60000
   - name: AddTag

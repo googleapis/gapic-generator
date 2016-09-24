@@ -3,7 +3,7 @@
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Debugger API
+ * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
  * 2. This sample uses Application Default Credentials for authentication.
@@ -12,14 +12,12 @@
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -28,18 +26,23 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_CloudDebugger($client);
 
+
+// TODO: Change placeholder below to desired parameter value for the `listControllerDebuggeesBreakpoints` method:
+
 // Identifies the debuggee.
-$debuggeeId = '{MY-DEBUGGEE-ID}'; // TODO: Update placeholder value(s).
+$debuggeeId = '{MY-DEBUGGEE-ID}';
+
 
 $response = $service->controller_debuggees_breakpoints->listControllerDebuggeesBreakpoints($debuggeeId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Debugger API
+ * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
  * 2. This sample uses Application Default Credentials for authentication.
@@ -48,14 +51,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -63,25 +64,31 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_CloudDebugger($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
 
 // Identifies the debuggee being debugged.
-$debuggeeId = '{MY-DEBUGGEE-ID}'; // TODO: Update placeholder value(s).
+$debuggeeId = '{MY-DEBUGGEE-ID}';
 
 // Breakpoint identifier, unique in the scope of the debuggee.
-$id = '{MY-ID}'; // TODO: Update placeholder value(s).
+$id = '{MY-ID}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_CloudDebugger_UpdateActiveBreakpointRequest($client);
 
-$response = $service->controller_debuggees_breakpoints->update($debuggeeId, $id, $postBody);
+$requestBody = new Google_Service_CloudDebugger_UpdateActiveBreakpointRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->controller_debuggees_breakpoints->update($debuggeeId, $id, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Debugger API
+ * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
  * 2. This sample uses Application Default Credentials for authentication.
@@ -90,14 +97,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -107,18 +112,20 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 $service = new Google_Service_CloudDebugger($client);
 
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_CloudDebugger_RegisterDebuggeeRequest($client);
+$requestBody = new Google_Service_CloudDebugger_RegisterDebuggeeRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-$response = $service->controller_debuggees->register($postBody);
 
-// TODO: Use $response
+$response = $service->controller_debuggees->register($requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Debugger API
+ * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
  * 2. This sample uses Application Default Credentials for authentication.
@@ -127,14 +134,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -142,19 +147,24 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_CloudDebugger($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 // ID of the debuggee whose breakpoint to delete.
-$debuggeeId = '{MY-DEBUGGEE-ID}'; // TODO: Update placeholder value(s).
+$debuggeeId = '{MY-DEBUGGEE-ID}';
 
 // ID of the breakpoint to delete.
-$breakpointId = '{MY-BREAKPOINT-ID}'; // TODO: Update placeholder value(s).
+$breakpointId = '{MY-BREAKPOINT-ID}';
+
 
 $service->debugger_debuggees_breakpoints->delete($debuggeeId, $breakpointId);
+?>
 <?php
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Debugger API
+ * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
  * 2. This sample uses Application Default Credentials for authentication.
@@ -163,14 +173,12 @@ $service->debugger_debuggees_breakpoints->delete($debuggeeId, $breakpointId);
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -179,21 +187,26 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_CloudDebugger($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // ID of the debuggee whose breakpoint to get.
-$debuggeeId = '{MY-DEBUGGEE-ID}'; // TODO: Update placeholder value(s).
+$debuggeeId = '{MY-DEBUGGEE-ID}';
 
 // ID of the breakpoint to get.
-$breakpointId = '{MY-BREAKPOINT-ID}'; // TODO: Update placeholder value(s).
+$breakpointId = '{MY-BREAKPOINT-ID}';
+
 
 $response = $service->debugger_debuggees_breakpoints->get($debuggeeId, $breakpointId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Debugger API
+ * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
  * 2. This sample uses Application Default Credentials for authentication.
@@ -202,14 +215,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -218,18 +229,23 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_CloudDebugger($client);
 
+
+// TODO: Change placeholder below to desired parameter value for the `listDebuggerDebuggeesBreakpoints` method:
+
 // ID of the debuggee whose breakpoints to list.
-$debuggeeId = '{MY-DEBUGGEE-ID}'; // TODO: Update placeholder value(s).
+$debuggeeId = '{MY-DEBUGGEE-ID}';
+
 
 $response = $service->debugger_debuggees_breakpoints->listDebuggerDebuggeesBreakpoints($debuggeeId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Debugger API
+ * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
  * 2. This sample uses Application Default Credentials for authentication.
@@ -238,14 +254,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -254,21 +268,27 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_CloudDebugger($client);
 
+
+// TODO: Change placeholder below to desired parameter value for the `set` method:
+
 // ID of the debuggee where the breakpoint is to be set.
-$debuggeeId = '{MY-DEBUGGEE-ID}'; // TODO: Update placeholder value(s).
+$debuggeeId = '{MY-DEBUGGEE-ID}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_CloudDebugger_Breakpoint($client);
 
-$response = $service->debugger_debuggees_breakpoints->set($debuggeeId, $postBody);
+$requestBody = new Google_Service_CloudDebugger_Breakpoint($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->debugger_debuggees_breakpoints->set($debuggeeId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Debugger API
+ * 1. If not already done, enable the Stackdriver Debugger API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/clouddebugger
  * 2. This sample uses Application Default Credentials for authentication.
@@ -277,14 +297,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -296,5 +314,6 @@ $service = new Google_Service_CloudDebugger($client);
 
 $response = $service->debugger_debuggees->listDebuggerDebuggees();
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>

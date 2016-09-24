@@ -311,7 +311,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getGrpcServiceClassName(Interface service) {
     NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
     String grpcContainerName = className(Name.upperCamel(namePath.getHead(), "Grpc"));
-    String serviceClassName = className(Name.upperCamel(service.getSimpleName()));
+    String serviceClassName = className(Name.upperCamel(service.getSimpleName(), "ImplBase"));
     return qualifiedName(namePath.withHead(grpcContainerName).append(serviceClassName));
   }
 

@@ -118,10 +118,18 @@ service LibraryService {
   }
 
   // Test server streaming
-  rpc StreamShelves(ListShelvesRequest) returns (stream ListShelvesResponse) {
+  rpc StreamShelves(StreamShelvesRequest) returns (stream StreamShelvesResponse) {
     // gRPC streaming methods don't have HTTP equivalent and need not have google.api.http option.
-    // TODO(jmuk): Delete option once https://github.com/googleapis/toolkit/pull/325 lands.
-    option (google.api.http) = { get: "/v1/StreamShelves" };
+  }
+
+  // Test server streaming, non-paged responses.
+  rpc StreamBooks(StreamBooksRequest) returns (stream Book) {
+    // gRPC streaming methods don't have HTTP equivalent and need not have google.api.http option.
+  }
+
+  // Test bidi-streaming.
+  rpc DiscussBook(stream DiscussBookRequest) returns (stream Comment) {
+    // gRPC streaming methods don't have HTTP equivalent and need not have google.api.http option.
   }
   
   // Adds a tag to the book. This RPC is a mixin.
@@ -237,7 +245,7 @@ message ListShelvesRequest {
   string page_token = 2;
 }
 
-// Request message for LibraryService.ListShelves.
+// Response message for LibraryService.ListShelves.
 message ListShelvesResponse {
   // The list of shelves.
   repeated Shelf shelves = 1;
@@ -248,6 +256,16 @@ message ListShelvesResponse {
   // field in the subsequent call to `ListShelves` method to retrieve the next
   // page of results.
   string next_page_token = 2;
+}
+
+// Request message for LibraryService.StreamShelves.
+message StreamShelvesRequest {
+}
+
+// Response message for LibraryService.StreamShelves.
+message StreamShelvesResponse {
+  // The list of shelves.
+  repeated Shelf shelves = 1;
 }
 
 // Request message for LibraryService.DeleteShelf.
@@ -329,6 +347,12 @@ message ListBooksResponse {
   // field in the subsequent call to `ListBooks` method to retrieve the next
   // page of results.
   string next_page_token = 2;
+}
+
+// Request message for LibraryService.StreamBooks.
+message StreamBooksRequest {
+  // The name of the shelf whose books we'd like to list.
+  string name = 1;
 }
 
 // Request message for LibraryService.UpdateBook.
@@ -413,4 +437,14 @@ message UpdateBookIndexRequest {
 
   // The index to update the book with
   map<string, string> index_map = 3;
+}
+
+message DiscussBookRequest {
+  // The name of the book to be discussed. If this is in the middle
+  // of the stream and this is not specified, the name in the previous
+  // message will be reused.
+  string name = 1;
+
+  // The new comment.
+  Comment comment = 2;
 }

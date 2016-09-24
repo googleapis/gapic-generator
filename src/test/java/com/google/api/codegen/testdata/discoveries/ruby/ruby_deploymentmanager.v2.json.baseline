@@ -17,26 +17,30 @@ require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `cancel_deployment_preview` method:
+
 # The project ID for this request.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'  # TODO: Update placeholder value(s).
+deployment = '{MY-DEPLOYMENT}'
 
-# TODO: Assign values to the desired members.
-deployments_cancel_preview_request_body = Google::Apis::DeploymentmanagerV2::DeploymentsCancelPreviewRequest.new
+
+request_body = Google::Apis::DeploymentmanagerV2::DeploymentsCancelPreviewRequest.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.cancel_deployment_preview(project, deployment, deployments_cancel_preview_request_body)
+response = service.cancel_deployment_preview(project, deployment, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -56,23 +60,26 @@ require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `delete_deployment` method:
+
 # The project ID for this request.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'  # TODO: Update placeholder value(s).
+deployment = '{MY-DEPLOYMENT}'
+
 
 # Perform the call
 response = service.delete_deployment(project, deployment)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -92,23 +99,26 @@ require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `get_deployment` method:
+
 # The project ID for this request.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'  # TODO: Update placeholder value(s).
+deployment = '{MY-DEPLOYMENT}'
+
 
 # Perform the call
 response = service.get_deployment(project, deployment)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -128,23 +138,27 @@ require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# The project ID for this request.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
 
-# TODO: Assign values to the desired members.
-deployment_body = Google::Apis::DeploymentmanagerV2::Deployment.new
+# TODO: Change placeholder below to desired parameter value for the `insert_deployment` method:
+
+# The project ID for this request.
+project = '{MY-PROJECT}'
+
+
+request_body = Google::Apis::DeploymentmanagerV2::Deployment.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.insert_deployment(project, deployment_body)
+response = service.insert_deployment(project, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -164,15 +178,18 @@ require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholder below to desired parameter value for the `list_deployments` method:
+
 # The project ID for this request.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
+
 
 # Perform the call
 deployments = service.fetch_all(items: :deployments) do |token|
@@ -180,7 +197,7 @@ deployments = service.fetch_all(items: :deployments) do |token|
 end
 
 deployments.each do |deployment|
-  # TODO: Use deployment
+  # TODO: Change code below to process each `deployment` resource:
   puts JSON.pretty_generate(deployment)
 end
 # BEFORE RUNNING:
@@ -201,26 +218,30 @@ require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `patch_deployment` method:
+
 # The project ID for this request.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'  # TODO: Update placeholder value(s).
+deployment = '{MY-DEPLOYMENT}'
 
-# TODO: Assign values to the desired members to be changed.
-deployment_body = Google::Apis::DeploymentmanagerV2::Deployment.new
+
+request_body = Google::Apis::DeploymentmanagerV2::Deployment.new
+# TODO: Assign values to desired members of the `request_body` object to be changed.
+
 
 # Perform the call
-response = service.patch_deployment(project, deployment, deployment_body)
+response = service.patch_deployment(project, deployment, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -240,26 +261,30 @@ require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `stop_deployment` method:
+
 # The project ID for this request.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'  # TODO: Update placeholder value(s).
+deployment = '{MY-DEPLOYMENT}'
 
-# TODO: Assign values to the desired members.
-deployments_stop_request_body = Google::Apis::DeploymentmanagerV2::DeploymentsStopRequest.new
+
+request_body = Google::Apis::DeploymentmanagerV2::DeploymentsStopRequest.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.stop_deployment(project, deployment, deployments_stop_request_body)
+response = service.stop_deployment(project, deployment, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -279,26 +304,30 @@ require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `update_deployment` method:
+
 # The project ID for this request.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'  # TODO: Update placeholder value(s).
+deployment = '{MY-DEPLOYMENT}'
 
-# TODO: Assign values to the desired members.
-deployment_body = Google::Apis::DeploymentmanagerV2::Deployment.new
+
+request_body = Google::Apis::DeploymentmanagerV2::Deployment.new
+# TODO: Assign values to desired members of the `request_body` object.
+
 
 # Perform the call
-response = service.update_deployment(project, deployment, deployment_body)
+response = service.update_deployment(project, deployment, request_body)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -318,26 +347,29 @@ require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `get_manifest` method:
+
 # The project ID for this request.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'  # TODO: Update placeholder value(s).
+deployment = '{MY-DEPLOYMENT}'
 
 # The name of the manifest for this request.
-manifest = '{MY-MANIFEST}'  # TODO: Update placeholder value(s).
+manifest = '{MY-MANIFEST}'
+
 
 # Perform the call
 response = service.get_manifest(project, deployment, manifest)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -357,18 +389,21 @@ require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `list_manifests` method:
+
 # The project ID for this request.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'  # TODO: Update placeholder value(s).
+deployment = '{MY-DEPLOYMENT}'
+
 
 # Perform the call
 manifests = service.fetch_all(items: :manifests) do |token|
@@ -376,7 +411,7 @@ manifests = service.fetch_all(items: :manifests) do |token|
 end
 
 manifests.each do |manifest|
-  # TODO: Use manifest
+  # TODO: Change code below to process each `manifest` resource:
   puts JSON.pretty_generate(manifest)
 end
 # BEFORE RUNNING:
@@ -397,23 +432,26 @@ require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `get_operation` method:
+
 # The project ID for this request.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # The name of the operation for this request.
-operation = '{MY-OPERATION}'  # TODO: Update placeholder value(s).
+operation = '{MY-OPERATION}'
+
 
 # Perform the call
 response = service.get_operation(project, operation)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -433,15 +471,18 @@ require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholder below to desired parameter value for the `list_operations` method:
+
 # The project ID for this request.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
+
 
 # Perform the call
 operations = service.fetch_all(items: :operations) do |token|
@@ -449,7 +490,7 @@ operations = service.fetch_all(items: :operations) do |token|
 end
 
 operations.each do |operation|
-  # TODO: Use operation
+  # TODO: Change code below to process each `operation` resource:
   puts JSON.pretty_generate(operation)
 end
 # BEFORE RUNNING:
@@ -470,26 +511,29 @@ require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `get_resource` method:
+
 # The project ID for this request.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'  # TODO: Update placeholder value(s).
+deployment = '{MY-DEPLOYMENT}'
 
 # The name of the resource for this request.
-resource = '{MY-RESOURCE}'  # TODO: Update placeholder value(s).
+resource = '{MY-RESOURCE}'
+
 
 # Perform the call
 response = service.get_resource(project, deployment, resource)
 
-# TODO: Use response
+# TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
@@ -509,18 +553,21 @@ require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholders below to desired parameter values for the `list_resources` method:
+
 # The project ID for this request.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # The name of the deployment for this request.
-deployment = '{MY-DEPLOYMENT}'  # TODO: Update placeholder value(s).
+deployment = '{MY-DEPLOYMENT}'
+
 
 # Perform the call
 resources = service.fetch_all(items: :resources) do |token|
@@ -528,7 +575,7 @@ resources = service.fetch_all(items: :resources) do |token|
 end
 
 resources.each do |resource|
-  # TODO: Use resource
+  # TODO: Change code below to process each `resource` resource:
   puts JSON.pretty_generate(resource)
 end
 # BEFORE RUNNING:
@@ -549,15 +596,18 @@ require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+
+# TODO: Change placeholder below to desired parameter value for the `list_types` method:
+
 # The project ID for this request.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
+
 
 # Perform the call
 types = service.fetch_all(items: :types) do |token|
@@ -565,6 +615,6 @@ types = service.fetch_all(items: :types) do |token|
 end
 
 types.each do |type|
-  # TODO: Use type
+  # TODO: Change code below to process each `type` resource:
   puts JSON.pretty_generate(type)
 end

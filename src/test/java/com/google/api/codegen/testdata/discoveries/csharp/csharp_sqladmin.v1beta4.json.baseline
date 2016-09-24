@@ -27,14 +27,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -46,22 +42,26 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
             // The ID of the Backup Run to delete. To find a Backup Run ID, use the list method.
-            long id = 0L; // TODO: Update placeholder value(s).
+            long id = 0L;
+
 
             BackupRunsResource.DeleteRequest request = sQLAdminService.BackupRuns.Delete(project, instance, id);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -94,14 +94,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -113,22 +109,26 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
             // The ID of this Backup Run.
-            long id = 0L; // TODO: Update placeholder value(s).
+            long id = 0L;
+
 
             BackupRunsResource.GetRequest request = sQLAdminService.BackupRuns.Get(project, instance, id);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.BackupRun response = request.Execute();
             // Data.BackupRun response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -161,14 +161,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -180,18 +176,90 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
+
+
+            Data.BackupRun requestBody = new Data.BackupRun();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            BackupRunsResource.InsertRequest request = sQLAdminService.BackupRuns.Insert(requestBody, project, instance);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
+
+
+namespace SQLAdminSample
+{
+    public class SQLAdminServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // Project ID of the project that contains the instance.
+            string project = "{MY-PROJECT}";
+
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "{MY-INSTANCE}";
+
 
             BackupRunsResource.ListRequest request = sQLAdminService.BackupRuns.List(project, instance);
 
             Data.BackupRunsListResponse response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -201,7 +269,7 @@ namespace SQLAdminSample
                 }
                 foreach (Data.BackupRun backupRun in response.Items)
                 {
-                    // TODO: Use backupRun
+                    // TODO: Change code below to process each `backupRun` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(backupRun));
                 }
                 request.PageToken = response.NextPageToken;
@@ -237,14 +305,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -256,22 +320,26 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Database instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
             // Name of the database to be deleted in the instance.
-            string database = "{MY-DATABASE}"; // TODO: Update placeholder value(s).
+            string database = "{MY-DATABASE}";
+
 
             DatabasesResource.DeleteRequest request = sQLAdminService.Databases.Delete(project, instance, database);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -304,14 +372,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -323,22 +387,26 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Database instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
             // Name of the database in the instance.
-            string database = "{MY-DATABASE}"; // TODO: Update placeholder value(s).
+            string database = "{MY-DATABASE}";
+
 
             DatabasesResource.GetRequest request = sQLAdminService.Databases.Get(project, instance, database);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Database response = request.Execute();
             // Data.Database response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -371,14 +439,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -390,22 +454,27 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Database instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.Database requestBody = new Data.Database();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             DatabasesResource.InsertRequest request = sQLAdminService.Databases.Insert(requestBody, project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -438,14 +507,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -457,19 +522,23 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // Project ID of the project for which to list Cloud SQL instances.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
+
 
             DatabasesResource.ListRequest request = sQLAdminService.Databases.List(project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.DatabasesListResponse response = request.Execute();
             // Data.DatabasesListResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -502,14 +571,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -521,25 +586,30 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Database instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
             // Name of the database to be updated in the instance.
-            string database = "{MY-DATABASE}"; // TODO: Update placeholder value(s).
+            string database = "{MY-DATABASE}";
 
-            // TODO: Assign values to the desired properties to be changed.
+
             Data.Database requestBody = new Data.Database();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
 
             DatabasesResource.PatchRequest request = sQLAdminService.Databases.Patch(requestBody, project, instance, database);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -572,14 +642,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -591,25 +657,30 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Database instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
             // Name of the database to be updated in the instance.
-            string database = "{MY-DATABASE}"; // TODO: Update placeholder value(s).
+            string database = "{MY-DATABASE}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.Database requestBody = new Data.Database();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             DatabasesResource.UpdateRequest request = sQLAdminService.Databases.Update(requestBody, project, instance, database);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -642,14 +713,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -663,11 +730,11 @@ namespace SQLAdminSample
 
             FlagsResource.ListRequest request = sQLAdminService.Flags.List();
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.FlagsListResponse response = request.Execute();
             // Data.FlagsListResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -700,14 +767,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -719,22 +782,27 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Clone` method:
+
             // Project ID of the source as well as the clone Cloud SQL instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.InstancesCloneRequest requestBody = new Data.InstancesCloneRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             InstancesResource.CloneRequest request = sQLAdminService.Instances.Clone(requestBody, project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -767,14 +835,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -786,19 +850,23 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // Project ID of the project that contains the instance to be deleted.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
+
 
             InstancesResource.DeleteRequest request = sQLAdminService.Instances.Delete(project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -831,14 +899,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -850,22 +914,27 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Export` method:
+
             // Project ID of the project that contains the instance to be exported.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.InstancesExportRequest requestBody = new Data.InstancesExportRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             InstancesResource.ExportRequest request = sQLAdminService.Instances.Export(requestBody, project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -898,14 +967,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -917,22 +982,27 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Failover` method:
+
             // ID of the project that contains the read replica.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.InstancesFailoverRequest requestBody = new Data.InstancesFailoverRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             InstancesResource.FailoverRequest request = sQLAdminService.Instances.Failover(requestBody, project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -965,14 +1035,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -984,19 +1050,23 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Database instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
+
 
             InstancesResource.GetRequest request = sQLAdminService.Instances.Get(project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.DatabaseInstance response = request.Execute();
             // Data.DatabaseInstance response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1029,14 +1099,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1048,22 +1114,27 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Import` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.InstancesImportRequest requestBody = new Data.InstancesImportRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             InstancesResource.ImportRequest request = sQLAdminService.Instances.Import(requestBody, project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1096,14 +1167,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1115,19 +1182,24 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Project ID of the project to which the newly created Cloud SQL instances should belong.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholder below to desired parameter value for the `Insert` method:
+
+            // Project ID of the project to which the newly created Cloud SQL instances should belong.
+            string project = "{MY-PROJECT}";
+
+
             Data.DatabaseInstance requestBody = new Data.DatabaseInstance();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             InstancesResource.InsertRequest request = sQLAdminService.Instances.Insert(requestBody, project);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1160,14 +1232,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1179,15 +1247,19 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholder below to desired parameter value for the `List` method:
+
             // Project ID of the project for which to list Cloud SQL instances.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
+
 
             InstancesResource.ListRequest request = sQLAdminService.Instances.List(project);
 
             Data.InstancesListResponse response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -1197,7 +1269,7 @@ namespace SQLAdminSample
                 }
                 foreach (Data.DatabaseInstance databaseInstance in response.Items)
                 {
-                    // TODO: Use databaseInstance
+                    // TODO: Change code below to process each `databaseInstance` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(databaseInstance));
                 }
                 request.PageToken = response.NextPageToken;
@@ -1233,14 +1305,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1252,22 +1320,27 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
-            // TODO: Assign values to the desired properties to be changed.
+
             Data.DatabaseInstance requestBody = new Data.DatabaseInstance();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
 
             InstancesResource.PatchRequest request = sQLAdminService.Instances.Patch(requestBody, project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1300,14 +1373,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1319,19 +1388,23 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `PromoteReplica` method:
+
             // ID of the project that contains the read replica.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL read replica instance name.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
+
 
             InstancesResource.PromoteReplicaRequest request = sQLAdminService.Instances.PromoteReplica(project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1364,14 +1437,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1383,19 +1452,23 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `ResetSslConfig` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
+
 
             InstancesResource.ResetSslConfigRequest request = sQLAdminService.Instances.ResetSslConfig(project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1428,14 +1501,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1447,19 +1516,23 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Restart` method:
+
             // Project ID of the project that contains the instance to be restarted.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
+
 
             InstancesResource.RestartRequest request = sQLAdminService.Instances.Restart(project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1492,14 +1565,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1511,22 +1580,27 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `RestoreBackup` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.InstancesRestoreBackupRequest requestBody = new Data.InstancesRestoreBackupRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             InstancesResource.RestoreBackupRequest request = sQLAdminService.Instances.RestoreBackup(requestBody, project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1559,14 +1633,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1578,19 +1648,23 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `StartReplica` method:
+
             // ID of the project that contains the read replica.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL read replica instance name.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
+
 
             InstancesResource.StartReplicaRequest request = sQLAdminService.Instances.StartReplica(project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1623,14 +1697,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1642,19 +1712,23 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `StopReplica` method:
+
             // ID of the project that contains the read replica.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL read replica instance name.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
+
 
             InstancesResource.StopReplicaRequest request = sQLAdminService.Instances.StopReplica(project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1687,14 +1761,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1706,22 +1776,27 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.DatabaseInstance requestBody = new Data.DatabaseInstance();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             InstancesResource.UpdateRequest request = sQLAdminService.Instances.Update(requestBody, project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1754,14 +1829,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1773,19 +1844,23 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Instance operation ID.
-            string operation = "{MY-OPERATION}"; // TODO: Update placeholder value(s).
+            string operation = "{MY-OPERATION}";
+
 
             OperationsResource.GetRequest request = sQLAdminService.Operations.Get(project, operation);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1818,14 +1893,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1837,18 +1908,22 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
+
 
             OperationsResource.ListRequest request = sQLAdminService.Operations.List(project, instance);
 
             Data.OperationsListResponse response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -1858,7 +1933,7 @@ namespace SQLAdminSample
                 }
                 foreach (Data.Operation operation in response.Items)
                 {
-                    // TODO: Use operation
+                    // TODO: Change code below to process each `operation` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(operation));
                 }
                 request.PageToken = response.NextPageToken;
@@ -1894,14 +1969,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1913,22 +1984,27 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `CreateEphemeral` method:
+
             // Project ID of the Cloud SQL project.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.SslCertsCreateEphemeralRequest requestBody = new Data.SslCertsCreateEphemeralRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             SslCertsResource.CreateEphemeralRequest request = sQLAdminService.SslCerts.CreateEphemeral(requestBody, project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.SslCert response = request.Execute();
             // Data.SslCert response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1961,14 +2037,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1980,22 +2052,26 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // Project ID of the project that contains the instance to be deleted.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
             // Sha1 FingerPrint.
-            string sha1Fingerprint = "{MY-SHA1-FINGERPRINT}"; // TODO: Update placeholder value(s).
+            string sha1Fingerprint = "{MY-SHA1-FINGERPRINT}";
+
 
             SslCertsResource.DeleteRequest request = sQLAdminService.SslCerts.Delete(project, instance, sha1Fingerprint);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -2028,14 +2104,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -2047,22 +2119,26 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
             // Sha1 FingerPrint.
-            string sha1Fingerprint = "{MY-SHA1-FINGERPRINT}"; // TODO: Update placeholder value(s).
+            string sha1Fingerprint = "{MY-SHA1-FINGERPRINT}";
+
 
             SslCertsResource.GetRequest request = sQLAdminService.SslCerts.Get(project, instance, sha1Fingerprint);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.SslCert response = request.Execute();
             // Data.SslCert response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -2095,14 +2171,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -2114,22 +2186,27 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
             // Project ID of the project to which the newly created Cloud SQL instances should belong.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.SslCertsInsertRequest requestBody = new Data.SslCertsInsertRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             SslCertsResource.InsertRequest request = sQLAdminService.SslCerts.Insert(requestBody, project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.SslCertsInsertResponse response = request.Execute();
             // Data.SslCertsInsertResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -2162,14 +2239,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -2181,19 +2254,23 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // Project ID of the project for which to list Cloud SQL instances.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
+
 
             SslCertsResource.ListRequest request = sQLAdminService.SslCerts.List(project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.SslCertsListResponse response = request.Execute();
             // Data.SslCertsListResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -2226,14 +2303,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -2245,16 +2318,20 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholder below to desired parameter value for the `List` method:
+
             // Project ID of the project for which to list tiers.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
+
 
             TiersResource.ListRequest request = sQLAdminService.Tiers.List(project);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.TiersListResponse response = request.Execute();
             // Data.TiersListResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -2287,14 +2364,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -2306,25 +2379,29 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Database instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
             // Host of the user in the instance.
-            string host = "{MY-HOST}"; // TODO: Update placeholder value(s).
+            string host = "{MY-HOST}";
 
             // Name of the user in the instance.
-            string name = "{MY-NAME}"; // TODO: Update placeholder value(s).
+            string name = "{MY-NAME}";
+
 
             UsersResource.DeleteRequest request = sQLAdminService.Users.Delete(project, instance, host, name);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -2357,14 +2434,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -2376,22 +2449,27 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Database instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.User requestBody = new Data.User();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             UsersResource.InsertRequest request = sQLAdminService.Users.Insert(requestBody, project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -2424,14 +2502,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -2443,19 +2517,23 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Database instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
+
 
             UsersResource.ListRequest request = sQLAdminService.Users.List(project, instance);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.UsersListResponse response = request.Execute();
             // Data.UsersListResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -2488,14 +2566,10 @@ namespace SQLAdminSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -2507,28 +2581,33 @@ namespace SQLAdminSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
             // Project ID of the project that contains the instance.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Database instance ID. This does not include the project ID.
-            string instance = "{MY-INSTANCE}"; // TODO: Update placeholder value(s).
+            string instance = "{MY-INSTANCE}";
 
             // Host of the user in the instance.
-            string host = "{MY-HOST}"; // TODO: Update placeholder value(s).
+            string host = "{MY-HOST}";
 
             // Name of the user in the instance.
-            string name = "{MY-NAME}"; // TODO: Update placeholder value(s).
+            string name = "{MY-NAME}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.User requestBody = new Data.User();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             UsersResource.UpdateRequest request = sQLAdminService.Users.Update(requestBody, project, instance, host, name);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }

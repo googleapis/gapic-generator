@@ -6,35 +6,37 @@
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
 
+
+// TODO: Change placeholder below to desired parameter value for the `get` method:
+
 // The account id
-$id = 0; // TODO: Update placeholder value(s).
+$id = 0;
+
 
 $response = $service->accounts->get($id);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `get` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -42,33 +44,31 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
 
 
 $response = $service->accounts->listAccounts();
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `listAccounts` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -76,38 +76,41 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholder below to desired parameter value for the `patch` method:
 
 // The account id
-$id = 0; // TODO: Update placeholder value(s).
+$id = 0;
 
-// TODO: Assign values to the desired properties to be changed.
-$postBody = new Google_Service_Adexchangebuyer_Account($client);
 
-$response = $service->accounts->patch($id, $postBody);
+$requestBody = new Google_Service_Adexchangebuyer_Account($client);
+// TODO: Assign values to desired properties of the `requestBody` object to be changed.
 
-// TODO: Use $response
+
+$response = $service->accounts->patch($id, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `patch` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -115,38 +118,41 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholder below to desired parameter value for the `update` method:
 
 // The account id
-$id = 0; // TODO: Update placeholder value(s).
+$id = 0;
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Adexchangebuyer_Account($client);
 
-$response = $service->accounts->update($id, $postBody);
+$requestBody = new Google_Service_Adexchangebuyer_Account($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->accounts->update($id, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `update` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -154,35 +160,37 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholder below to desired parameter value for the `get` method:
 
 // The account id.
-$accountId = 0; // TODO: Update placeholder value(s).
+$accountId = 0;
+
 
 $response = $service->billingInfo->get($accountId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `get` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -190,33 +198,31 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
 
 
 $response = $service->billingInfo->listBillingInfo();
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `listBillingInfo` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -224,38 +230,40 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // The account id to get the budget information for.
-$accountId = '0'; // TODO: Update placeholder value(s).
+$accountId = '0';
 
 // The billing id to get the budget information for.
-$billingId = '0'; // TODO: Update placeholder value(s).
+$billingId = '0';
+
 
 $response = $service->budget->get($accountId, $billingId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `get` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -263,41 +271,44 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
 
 // The account id associated with the budget being updated.
-$accountId = '0'; // TODO: Update placeholder value(s).
+$accountId = '0';
 
 // The billing id associated with the budget being updated.
-$billingId = '0'; // TODO: Update placeholder value(s).
+$billingId = '0';
 
-// TODO: Assign values to the desired properties to be changed.
-$postBody = new Google_Service_Adexchangebuyer_Budget($client);
 
-$response = $service->budget->patch($accountId, $billingId, $postBody);
+$requestBody = new Google_Service_Adexchangebuyer_Budget($client);
+// TODO: Assign values to desired properties of the `requestBody` object to be changed.
 
-// TODO: Use $response
+
+$response = $service->budget->patch($accountId, $billingId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `patch` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -305,41 +316,44 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
 
 // The account id associated with the budget being updated.
-$accountId = '0'; // TODO: Update placeholder value(s).
+$accountId = '0';
 
 // The billing id associated with the budget being updated.
-$billingId = '0'; // TODO: Update placeholder value(s).
+$billingId = '0';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Adexchangebuyer_Budget($client);
 
-$response = $service->budget->update($accountId, $billingId, $postBody);
+$requestBody = new Google_Service_Adexchangebuyer_Budget($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->budget->update($accountId, $billingId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `update` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -347,38 +361,40 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `addDeal` method:
 
 // The id for the account that will serve this creative.
-$accountId = 0; // TODO: Update placeholder value(s).
+$accountId = 0;
 
 // The buyer-specific id for this creative.
-$buyerCreativeId = '{MY-BUYER-CREATIVE-ID}'; // TODO: Update placeholder value(s).
+$buyerCreativeId = '{MY-BUYER-CREATIVE-ID}';
 
 // The id of the deal id to associate with this creative.
-$dealId = '0'; // TODO: Update placeholder value(s).
+$dealId = '0';
+
 
 $service->creatives->addDeal($accountId, $buyerCreativeId, $dealId);
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `addDeal` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -386,38 +402,40 @@ $service->creatives->addDeal($accountId, $buyerCreativeId, $dealId);
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // The id for the account that will serve this creative.
-$accountId = 0; // TODO: Update placeholder value(s).
+$accountId = 0;
 
 // The buyer-specific id for this creative.
-$buyerCreativeId = '{MY-BUYER-CREATIVE-ID}'; // TODO: Update placeholder value(s).
+$buyerCreativeId = '{MY-BUYER-CREATIVE-ID}';
+
 
 $response = $service->creatives->get($accountId, $buyerCreativeId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `get` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -425,36 +443,35 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
 
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Adexchangebuyer_Creative($client);
+$requestBody = new Google_Service_Adexchangebuyer_Creative($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-$response = $service->creatives->insert($postBody);
 
-// TODO: Use $response
+$response = $service->creatives->insert($requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `insert` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -462,25 +479,13 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
 
@@ -490,12 +495,22 @@ do {
   $response = $service->creatives->listCreatives($optParams);
 
   foreach ($response['items'] as $creative) {
-    // TODO: Use creative
+    // TODO: Change code below to process each `creative` resource:
     echo '<pre>', var_export($creative, true), '</pre>', "\n";
   }
 
   $optParams['pageToken'] = $response->getNextPageToken();
 } while ($optParams['pageToken']);
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `listCreatives` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -503,38 +518,40 @@ do {
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `removeDeal` method:
 
 // The id for the account that will serve this creative.
-$accountId = 0; // TODO: Update placeholder value(s).
+$accountId = 0;
 
 // The buyer-specific id for this creative.
-$buyerCreativeId = '{MY-BUYER-CREATIVE-ID}'; // TODO: Update placeholder value(s).
+$buyerCreativeId = '{MY-BUYER-CREATIVE-ID}';
 
 // The id of the deal id to disassociate with this creative.
-$dealId = '0'; // TODO: Update placeholder value(s).
+$dealId = '0';
+
 
 $service->creatives->removeDeal($accountId, $buyerCreativeId, $dealId);
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `removeDeal` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -542,38 +559,41 @@ $service->creatives->removeDeal($accountId, $buyerCreativeId, $dealId);
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholder below to desired parameter value for the `delete` method:
 
 // The proposalId to delete deals from.
-$proposalId = '{MY-PROPOSAL-ID}'; // TODO: Update placeholder value(s).
+$proposalId = '{MY-PROPOSAL-ID}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Adexchangebuyer_DeleteOrderDealsRequest($client);
 
-$response = $service->marketplacedeals->delete($proposalId, $postBody);
+$requestBody = new Google_Service_Adexchangebuyer_DeleteOrderDealsRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->marketplacedeals->delete($proposalId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `delete` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -581,38 +601,41 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholder below to desired parameter value for the `insert` method:
 
 // proposalId for which deals need to be added.
-$proposalId = '{MY-PROPOSAL-ID}'; // TODO: Update placeholder value(s).
+$proposalId = '{MY-PROPOSAL-ID}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Adexchangebuyer_AddOrderDealsRequest($client);
 
-$response = $service->marketplacedeals->insert($proposalId, $postBody);
+$requestBody = new Google_Service_Adexchangebuyer_AddOrderDealsRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->marketplacedeals->insert($proposalId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `insert` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -620,36 +643,38 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
 
-// The proposalId to get deals for. To search across proposals specify order_id = '-' as part of the
-// URL.
-$proposalId = '{MY-PROPOSAL-ID}'; // TODO: Update placeholder value(s).
+
+// TODO: Change placeholder below to desired parameter value for the `listMarketplacedeals` method:
+
+// The proposalId to get deals for. To search across all proposals specify order_id = '-' as part of
+// the URL.
+$proposalId = '{MY-PROPOSAL-ID}';
+
 
 $response = $service->marketplacedeals->listMarketplacedeals($proposalId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `listMarketplacedeals` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -657,38 +682,41 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholder below to desired parameter value for the `update` method:
 
 // The proposalId to edit deals on.
-$proposalId = '{MY-PROPOSAL-ID}'; // TODO: Update placeholder value(s).
+$proposalId = '{MY-PROPOSAL-ID}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Adexchangebuyer_EditAllOrderDealsRequest($client);
 
-$response = $service->marketplacedeals->update($proposalId, $postBody);
+$requestBody = new Google_Service_Adexchangebuyer_EditAllOrderDealsRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->marketplacedeals->update($proposalId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `update` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -696,38 +724,41 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholder below to desired parameter value for the `insert` method:
 
 // The proposalId to add notes for.
-$proposalId = '{MY-PROPOSAL-ID}'; // TODO: Update placeholder value(s).
+$proposalId = '{MY-PROPOSAL-ID}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Adexchangebuyer_AddOrderNotesRequest($client);
 
-$response = $service->marketplacenotes->insert($proposalId, $postBody);
+$requestBody = new Google_Service_Adexchangebuyer_AddOrderNotesRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->marketplacenotes->insert($proposalId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `insert` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -735,35 +766,38 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
 
-// The proposalId to get notes for.
-$proposalId = '{MY-PROPOSAL-ID}'; // TODO: Update placeholder value(s).
+
+// TODO: Change placeholder below to desired parameter value for the `listMarketplacenotes` method:
+
+// The proposalId to get notes for. To search across all proposals specify order_id = '-' as part of
+// the URL.
+$proposalId = '{MY-PROPOSAL-ID}';
+
 
 $response = $service->marketplacenotes->listMarketplacenotes($proposalId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `listMarketplacenotes` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -771,35 +805,38 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholder below to desired parameter value for the `updateproposal` method:
 
 // The private auction id to be updated.
-$privateAuctionId = '{MY-PRIVATE-AUCTION-ID}'; // TODO: Update placeholder value(s).
+$privateAuctionId = '{MY-PRIVATE-AUCTION-ID}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Adexchangebuyer_UpdatePrivateAuctionProposalRequest($client);
 
-$service->marketplaceprivateauction->updateproposal($privateAuctionId, $postBody);
+$requestBody = new Google_Service_Adexchangebuyer_UpdatePrivateAuctionProposalRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
+
+
+$service->marketplaceprivateauction->updateproposal($privateAuctionId, $requestBody);
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `updateproposal` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -807,41 +844,43 @@ $service->marketplaceprivateauction->updateproposal($privateAuctionId, $postBody
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listPerformanceReport` method:
+
 // The account id to get the reports.
-$accountId = '0'; // TODO: Update placeholder value(s).
+$accountId = '0';
 
 // The end time of the report in ISO 8601 timestamp format using UTC.
-$endDateTime = '{MY-END-DATE-TIME}'; // TODO: Update placeholder value(s).
+$endDateTime = '{MY-END-DATE-TIME}';
 
 // The start time of the report in ISO 8601 timestamp format using UTC.
-$startDateTime = '{MY-START-DATE-TIME}'; // TODO: Update placeholder value(s).
+$startDateTime = '{MY-START-DATE-TIME}';
+
 
 $response = $service->performanceReport->listPerformanceReport($accountId, $endDateTime, $startDateTime);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `listPerformanceReport` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -849,35 +888,37 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 // The account id to delete the pretargeting config for.
-$accountId = '0'; // TODO: Update placeholder value(s).
+$accountId = '0';
 
 // The specific id of the configuration to delete.
-$configId = '0'; // TODO: Update placeholder value(s).
+$configId = '0';
+
 
 $service->pretargetingConfig->delete($accountId, $configId);
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `delete` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -885,38 +926,40 @@ $service->pretargetingConfig->delete($accountId, $configId);
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // The account id to get the pretargeting config for.
-$accountId = '0'; // TODO: Update placeholder value(s).
+$accountId = '0';
 
 // The specific id of the configuration to retrieve.
-$configId = '0'; // TODO: Update placeholder value(s).
+$configId = '0';
+
 
 $response = $service->pretargetingConfig->get($accountId, $configId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `get` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -924,38 +967,41 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholder below to desired parameter value for the `insert` method:
 
 // The account id to insert the pretargeting config for.
-$accountId = '0'; // TODO: Update placeholder value(s).
+$accountId = '0';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Adexchangebuyer_PretargetingConfig($client);
 
-$response = $service->pretargetingConfig->insert($accountId, $postBody);
+$requestBody = new Google_Service_Adexchangebuyer_PretargetingConfig($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->pretargetingConfig->insert($accountId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `insert` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -963,35 +1009,37 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
 
+
+// TODO: Change placeholder below to desired parameter value for the `listPretargetingConfig` method:
+
 // The account id to get the pretargeting configs for.
-$accountId = '0'; // TODO: Update placeholder value(s).
+$accountId = '0';
+
 
 $response = $service->pretargetingConfig->listPretargetingConfig($accountId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `listPretargetingConfig` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -999,41 +1047,44 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
 
 // The account id to update the pretargeting config for.
-$accountId = '0'; // TODO: Update placeholder value(s).
+$accountId = '0';
 
 // The specific id of the configuration to update.
-$configId = '0'; // TODO: Update placeholder value(s).
+$configId = '0';
 
-// TODO: Assign values to the desired properties to be changed.
-$postBody = new Google_Service_Adexchangebuyer_PretargetingConfig($client);
 
-$response = $service->pretargetingConfig->patch($accountId, $configId, $postBody);
+$requestBody = new Google_Service_Adexchangebuyer_PretargetingConfig($client);
+// TODO: Assign values to desired properties of the `requestBody` object to be changed.
 
-// TODO: Use $response
+
+$response = $service->pretargetingConfig->patch($accountId, $configId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `patch` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -1041,41 +1092,44 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
 
 // The account id to update the pretargeting config for.
-$accountId = '0'; // TODO: Update placeholder value(s).
+$accountId = '0';
 
 // The specific id of the configuration to update.
-$configId = '0'; // TODO: Update placeholder value(s).
+$configId = '0';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Adexchangebuyer_PretargetingConfig($client);
 
-$response = $service->pretargetingConfig->update($accountId, $configId, $postBody);
+$requestBody = new Google_Service_Adexchangebuyer_PretargetingConfig($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->pretargetingConfig->update($accountId, $configId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `update` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -1083,35 +1137,37 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholder below to desired parameter value for the `get` method:
 
 // The id for the product to get the head revision for.
-$productId = '{MY-PRODUCT-ID}'; // TODO: Update placeholder value(s).
+$productId = '{MY-PRODUCT-ID}';
+
 
 $response = $service->products->get($productId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `get` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -1119,33 +1175,31 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
 
 
 $response = $service->products->search();
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `search` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -1153,35 +1207,37 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
 
+
+// TODO: Change placeholder below to desired parameter value for the `get` method:
+
 // Id of the proposal to retrieve.
-$proposalId = '{MY-PROPOSAL-ID}'; // TODO: Update placeholder value(s).
+$proposalId = '{MY-PROPOSAL-ID}';
+
 
 $response = $service->proposals->get($proposalId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `get` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -1189,36 +1245,35 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
 
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Adexchangebuyer_CreateOrdersRequest($client);
+$requestBody = new Google_Service_Adexchangebuyer_CreateOrdersRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-$response = $service->proposals->insert($postBody);
 
-// TODO: Use $response
+$response = $service->proposals->insert($requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `insert` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -1226,46 +1281,50 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
 
 // The proposal id to update.
-$proposalId = '{MY-PROPOSAL-ID}'; // TODO: Update placeholder value(s).
+$proposalId = '{MY-PROPOSAL-ID}';
 
 // The last known revision number to update. If the head revision in the marketplace database has since
 // changed, an error will be thrown. The caller should then fetch the latest proposal at head revision
 // and retry the update at that revision.
-$revisionNumber = '0'; // TODO: Update placeholder value(s).
+$revisionNumber = '0';
 
-// The proposed action to take on the proposal.
-$updateAction = '{MY-UPDATE-ACTION}'; // TODO: Update placeholder value(s).
+// The proposed action to take on the proposal. This field is required and it must be set when updating
+// a proposal.
+$updateAction = '{MY-UPDATE-ACTION}';
 
-// TODO: Assign values to the desired properties to be changed.
-$postBody = new Google_Service_Adexchangebuyer_Proposal($client);
 
-$response = $service->proposals->patch($proposalId, $revisionNumber, $updateAction, $postBody);
+$requestBody = new Google_Service_Adexchangebuyer_Proposal($client);
+// TODO: Assign values to desired properties of the `requestBody` object to be changed.
 
-// TODO: Use $response
+
+$response = $service->proposals->patch($proposalId, $revisionNumber, $updateAction, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `patch` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -1273,33 +1332,31 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
 
 
 $response = $service->proposals->search();
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `search` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -1307,32 +1364,34 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
+
+
+// TODO: Change placeholder below to desired parameter value for the `setupcomplete` method:
 
 // The proposal id for which the setup is complete
-$proposalId = '{MY-PROPOSAL-ID}'; // TODO: Update placeholder value(s).
+$proposalId = '{MY-PROPOSAL-ID}';
+
 
 $service->proposals->setupcomplete($proposalId);
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `setupcomplete` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -1340,46 +1399,50 @@ $service->proposals->setupcomplete($proposalId);
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
+
 // The proposal id to update.
-$proposalId = '{MY-PROPOSAL-ID}'; // TODO: Update placeholder value(s).
+$proposalId = '{MY-PROPOSAL-ID}';
 
 // The last known revision number to update. If the head revision in the marketplace database has since
 // changed, an error will be thrown. The caller should then fetch the latest proposal at head revision
 // and retry the update at that revision.
-$revisionNumber = '0'; // TODO: Update placeholder value(s).
+$revisionNumber = '0';
 
-// The proposed action to take on the proposal.
-$updateAction = '{MY-UPDATE-ACTION}'; // TODO: Update placeholder value(s).
+// The proposed action to take on the proposal. This field is required and it must be set when updating
+// a proposal.
+$updateAction = '{MY-UPDATE-ACTION}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Adexchangebuyer_Proposal($client);
 
-$response = $service->proposals->update($proposalId, $revisionNumber, $updateAction, $postBody);
+$requestBody = new Google_Service_Adexchangebuyer_Proposal($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->proposals->update($proposalId, $revisionNumber, $updateAction, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `update` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -1387,32 +1450,34 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  * 1. If not already done, enable the Ad Exchange Buyer API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the PHP client library with Composer. Check installation
+ * 2. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-$client = new Google_Client();
-$client->setApplicationName('Google Cloud Platform Sample');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+$client = getClient();
 
 $service = new Google_Service_Adexchangebuyer($client);
 
+
+// TODO: Change placeholder below to desired parameter value for the `listPubprofiles` method:
+
 // The accountId of the publisher to get profiles for.
-$accountId = 0; // TODO: Update placeholder value(s).
+$accountId = 0;
+
 
 $response = $service->pubprofiles->listPubprofiles($accountId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+
+function getClient() {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `listPubprofiles` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return null;
+}
+?>

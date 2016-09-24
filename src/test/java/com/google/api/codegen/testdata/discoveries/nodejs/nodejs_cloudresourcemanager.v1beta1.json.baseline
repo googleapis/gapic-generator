@@ -11,12 +11,10 @@
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -29,8 +27,13 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // The id of the Organization resource to fetch.
-    organizationId: "{MY-ORGANIZATION-ID}", // TODO: Update placeholder value(s).
+
+    // TODO: Change placeholder below to desired parameter value for the `get` method:
+
+    // The resource name of the Organization to fetch. Its format is "organizations/[organization_id]". For
+    // example, "organizations/1234".
+    name: 'organizations/{MY-ORGANIZATION}',
+
 
     auth: authClient
   };
@@ -41,7 +44,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -57,12 +60,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -75,13 +76,17 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholder below to desired parameter value for the `getIamPolicy` method:
+
     // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
     // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
     // this value is resource specific and is specified in the `getIamPolicy` documentation.
-    resource_: "{MY-RESOURCE}", // TODO: Update placeholder value(s).
+    resource_: 'organizations/{MY-ORGANIZATION}',
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -93,7 +98,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -109,12 +114,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -131,7 +134,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
     auth: authClient
   };
 
-  cloudresourcemanager.organizations.list(request, function handlePage(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -139,11 +142,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     var organizationsPage = response['organizations'];
     if (!organizationsPage) {
-      console.log('{}');
       return;
     }
     for (var i = 0; i < organizationsPage.length; i++) {
-      // TODO: Use organizationsPage
+      // TODO: Change code below to process each resource in `organizationsPage`:
       console.log(JSON.stringify(organizationsPage[i], null, 2));
     }
 
@@ -151,7 +153,9 @@ google.auth.getApplicationDefault(function(err, authClient) {
       request.pageToken = response.nextPageToken;
       cloudresourcemanager.organizations.list(request, handlePage);
     }
-  });
+  };
+
+  cloudresourcemanager.organizations.list(request, handlePage);
 });
 // BEFORE RUNNING:
 // ---------------
@@ -165,12 +169,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -183,13 +185,17 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholder below to desired parameter value for the `setIamPolicy` method:
+
     // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
     // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
     // this value is resource specific and is specified in the `setIamPolicy` documentation.
-    resource_: "{MY-RESOURCE}", // TODO: Update placeholder value(s).
+    resource_: 'organizations/{MY-ORGANIZATION}',
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -201,7 +207,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -217,12 +223,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -235,14 +239,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholder below to desired parameter value for the `testIamPermissions` method:
+
     // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
     // specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path
     // specified in this value is resource specific and is specified in the `testIamPermissions`
     // documentation.
-    resource_: "{MY-RESOURCE}", // TODO: Update placeholder value(s).
+    resource_: 'organizations/{MY-ORGANIZATION}',
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -254,7 +262,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -270,12 +278,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -288,12 +294,16 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // An immutable id for the Organization that is assigned on creation. This should be omitted when
-    // creating a new Organization. This field is read-only.
-    organizationId: "{MY-ORGANIZATION-ID}", // TODO: Update placeholder value(s).
+
+    // TODO: Change placeholder below to desired parameter value for the `update` method:
+
+    // Output Only. The resource name of the organization. This is the organization's relative path in the
+    // API. Its format is "organizations/[organization_id]". For example, "organizations/1234".
+    name: 'organizations/{MY-ORGANIZATION}',
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -305,7 +315,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -321,12 +331,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -341,7 +349,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
   var request = {
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -353,7 +361,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -369,12 +377,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -387,8 +393,12 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholder below to desired parameter value for the `delete` method:
+
     // The Project ID (for example, `foo-bar-123`). Required.
-    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+    projectId: '{MY-PROJECT-ID}',
+
 
     auth: authClient
   };
@@ -411,12 +421,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -429,8 +437,12 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholder below to desired parameter value for the `get` method:
+
     // The Project ID (for example, `my-project-123`). Required.
-    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+    projectId: '{MY-PROJECT-ID}',
+
 
     auth: authClient
   };
@@ -441,7 +453,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -457,12 +469,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -475,13 +485,69 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholder below to desired parameter value for the `getAncestry` method:
+
+    // The Project ID (for example, `my-project-123`). Required.
+    projectId: '{MY-PROJECT-ID}',
+
+
+    resource: {
+      // TODO: Add desired properties of the request body.
+    },
+
+    auth: authClient
+  };
+
+  cloudresourcemanager.projects.getAncestry(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
+
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+
+    // TODO: Change placeholder below to desired parameter value for the `getIamPolicy` method:
+
     // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
     // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
     // this value is resource specific and is specified in the `getIamPolicy` documentation.
-    resource_: "{MY-RESOURCE}", // TODO: Update placeholder value(s).
+    resource_: '{MY-RESOURCE}',
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -493,7 +559,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -509,12 +575,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -531,7 +595,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
     auth: authClient
   };
 
-  cloudresourcemanager.projects.list(request, function handlePage(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -539,11 +603,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     var projectsPage = response['projects'];
     if (!projectsPage) {
-      console.log('{}');
       return;
     }
     for (var i = 0; i < projectsPage.length; i++) {
-      // TODO: Use projectsPage
+      // TODO: Change code below to process each resource in `projectsPage`:
       console.log(JSON.stringify(projectsPage[i], null, 2));
     }
 
@@ -551,7 +614,9 @@ google.auth.getApplicationDefault(function(err, authClient) {
       request.pageToken = response.nextPageToken;
       cloudresourcemanager.projects.list(request, handlePage);
     }
-  });
+  };
+
+  cloudresourcemanager.projects.list(request, handlePage);
 });
 // BEFORE RUNNING:
 // ---------------
@@ -565,12 +630,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -583,13 +646,17 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholder below to desired parameter value for the `setIamPolicy` method:
+
     // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
     // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
     // this value is resource specific and is specified in the `setIamPolicy` documentation.
-    resource_: "{MY-RESOURCE}", // TODO: Update placeholder value(s).
+    resource_: '{MY-RESOURCE}',
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -601,7 +668,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -617,12 +684,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -635,14 +700,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholder below to desired parameter value for the `testIamPermissions` method:
+
     // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
     // specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path
     // specified in this value is resource specific and is specified in the `testIamPermissions`
     // documentation.
-    resource_: "{MY-RESOURCE}", // TODO: Update placeholder value(s).
+    resource_: '{MY-RESOURCE}',
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -654,7 +723,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -670,12 +739,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -688,11 +755,15 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholder below to desired parameter value for the `undelete` method:
+
     // The project ID (for example, `foo-bar-123`). Required.
-    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+    projectId: '{MY-PROJECT-ID}',
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -716,12 +787,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudresourcemanager = google.cloudresourcemanager('v1beta1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -734,11 +803,15 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholder below to desired parameter value for the `update` method:
+
     // The project ID (for example, `my-project-123`). Required.
-    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+    projectId: '{MY-PROJECT-ID}',
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -750,7 +823,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });

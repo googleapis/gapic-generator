@@ -12,23 +12,26 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 # Project ID of the dataset being deleted
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
 
 # Dataset ID of dataset being deleted
-datasetId = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+datasetId = '{MY-DATASET-ID}'
+
 
 request = service.datasets().delete(projectId=projectId, datasetId=datasetId)
 request.execute()
@@ -45,30 +48,33 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `get` method:
+
 # Project ID of the requested dataset
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
 
 # Dataset ID of the requested dataset
-datasetId = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+datasetId = '{MY-DATASET-ID}'
+
 
 request = service.datasets().get(projectId=projectId, datasetId=datasetId)
 response = request.execute()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -83,32 +89,35 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholder below to desired parameter value for the `insert` method:
+
 # Project ID of the new dataset
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
+
 
 dataset_body = {
-    # TODO: Add the desired entries.
+    # TODO: Add desired entries of the request body.
 }
 
 
 request = service.datasets().insert(projectId=projectId, body=dataset_body)
 response = request.execute()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -123,22 +132,25 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholder below to desired parameter value for the `list` method:
+
 # Project ID of the datasets to be listed
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
+
 
 datasets = service.datasets()
 request = datasets.list(projectId=projectId)
@@ -146,7 +158,7 @@ while request is not None:
     response = request.execute()
 
     for dataset_list._datasets in response['datasets']:
-        # TODO: Use dataset_list._datasets
+        # TODO: Change code below to process each `dataset_list._datasets` resource:
         pprint(dataset_list._datasets)
 
     request = datasets.list_next(previous_request=request, previous_response=response)
@@ -163,35 +175,38 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `patch` method:
+
 # Project ID of the dataset being updated
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
 
 # Dataset ID of the dataset being updated
-datasetId = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+datasetId = '{MY-DATASET-ID}'
+
 
 dataset_body = {
-    # TODO: Add the desired entries to be changed.
+    # TODO: Add desired entries of the request body to be changed.
 }
 
 
 request = service.datasets().patch(projectId=projectId, datasetId=datasetId, body=dataset_body)
 response = request.execute()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -206,35 +221,38 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `update` method:
+
 # Project ID of the dataset being updated
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
 
 # Dataset ID of the dataset being updated
-datasetId = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+datasetId = '{MY-DATASET-ID}'
+
 
 dataset_body = {
-    # TODO: Add the desired entries.
+    # TODO: Add desired entries of the request body.
 }
 
 
 request = service.datasets().update(projectId=projectId, datasetId=datasetId, body=dataset_body)
 response = request.execute()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -249,30 +267,33 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `cancel` method:
+
 # [Required] Project ID of the job to cancel
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
 
 # [Required] Job ID of the job to cancel
-jobId = '{MY-JOB-ID}'  # TODO: Update placeholder value(s).
+jobId = '{MY-JOB-ID}'
+
 
 request = service.jobs().cancel(projectId=projectId, jobId=jobId)
 response = request.execute()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -287,30 +308,33 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `get` method:
+
 # [Required] Project ID of the requested job
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
 
 # [Required] Job ID of the requested job
-jobId = '{MY-JOB-ID}'  # TODO: Update placeholder value(s).
+jobId = '{MY-JOB-ID}'
+
 
 request = service.jobs().get(projectId=projectId, jobId=jobId)
 response = request.execute()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -325,30 +349,33 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `getQueryResults` method:
+
 # [Required] Project ID of the query job
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
 
 # [Required] Job ID of the query job
-jobId = '{MY-JOB-ID}'  # TODO: Update placeholder value(s).
+jobId = '{MY-JOB-ID}'
+
 
 request = service.jobs().getQueryResults(projectId=projectId, jobId=jobId)
 response = request.execute()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -363,32 +390,39 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholder below to desired parameter value for the `insert` method:
+
 # Project ID of the project that will be billed for the job
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
+
 
 job_body = {
-    # TODO: Add the desired entries.
+    # TODO: Add desired entries of the request body.
 }
+
+
+# TODO: Add desired media content for upload. For more information, see:
+# https://developers.google.com/api-client-library/python/guide/media_upload
 
 
 request = service.jobs().insert(projectId=projectId, body=job_body)
 response = request.execute()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -403,22 +437,25 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholder below to desired parameter value for the `list` method:
+
 # Project ID of the jobs to list
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
+
 
 jobs = service.jobs()
 request = jobs.list(projectId=projectId)
@@ -426,7 +463,7 @@ while request is not None:
     response = request.execute()
 
     for job_list._jobs in response['jobs']:
-        # TODO: Use job_list._jobs
+        # TODO: Change code below to process each `job_list._jobs` resource:
         pprint(job_list._jobs)
 
     request = jobs.list_next(previous_request=request, previous_response=response)
@@ -443,32 +480,35 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholder below to desired parameter value for the `query` method:
+
 # Project ID of the project billed for the query
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
+
 
 query_request_body = {
-    # TODO: Add the desired entries.
+    # TODO: Add desired entries of the request body.
 }
 
 
 request = service.jobs().query(projectId=projectId, body=query_request_body)
 response = request.execute()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -483,15 +523,14 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
@@ -504,7 +543,7 @@ while request is not None:
     response = request.execute()
 
     for project_list._projects in response['projects']:
-        # TODO: Use project_list._projects
+        # TODO: Change code below to process each `project_list._projects` resource:
         pprint(project_list._projects)
 
     request = projects.list_next(previous_request=request, previous_response=response)
@@ -521,38 +560,41 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `insertAll` method:
+
 # Project ID of the destination table.
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
 
 # Dataset ID of the destination table.
-datasetId = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+datasetId = '{MY-DATASET-ID}'
 
 # Table ID of the destination table.
-tableId = '{MY-TABLE-ID}'  # TODO: Update placeholder value(s).
+tableId = '{MY-TABLE-ID}'
+
 
 table_data_insert_all_request_body = {
-    # TODO: Add the desired entries.
+    # TODO: Add desired entries of the request body.
 }
 
 
 request = service.tabledata().insertAll(projectId=projectId, datasetId=datasetId, tableId=tableId, body=table_data_insert_all_request_body)
 response = request.execute()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -567,33 +609,36 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `list` method:
+
 # Project ID of the table to read
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
 
 # Dataset ID of the table to read
-datasetId = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+datasetId = '{MY-DATASET-ID}'
 
 # Table ID of the table to read
-tableId = '{MY-TABLE-ID}'  # TODO: Update placeholder value(s).
+tableId = '{MY-TABLE-ID}'
+
 
 request = service.tabledata().list(projectId=projectId, datasetId=datasetId, tableId=tableId)
 response = request.execute()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -608,26 +653,29 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 # Project ID of the table to delete
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
 
 # Dataset ID of the table to delete
-datasetId = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+datasetId = '{MY-DATASET-ID}'
 
 # Table ID of the table to delete
-tableId = '{MY-TABLE-ID}'  # TODO: Update placeholder value(s).
+tableId = '{MY-TABLE-ID}'
+
 
 request = service.tables().delete(projectId=projectId, datasetId=datasetId, tableId=tableId)
 request.execute()
@@ -644,33 +692,36 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `get` method:
+
 # Project ID of the requested table
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
 
 # Dataset ID of the requested table
-datasetId = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+datasetId = '{MY-DATASET-ID}'
 
 # Table ID of the requested table
-tableId = '{MY-TABLE-ID}'  # TODO: Update placeholder value(s).
+tableId = '{MY-TABLE-ID}'
+
 
 request = service.tables().get(projectId=projectId, datasetId=datasetId, tableId=tableId)
 response = request.execute()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -685,35 +736,38 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `insert` method:
+
 # Project ID of the new table
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
 
 # Dataset ID of the new table
-datasetId = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+datasetId = '{MY-DATASET-ID}'
+
 
 table_body = {
-    # TODO: Add the desired entries.
+    # TODO: Add desired entries of the request body.
 }
 
 
 request = service.tables().insert(projectId=projectId, datasetId=datasetId, body=table_body)
 response = request.execute()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -728,25 +782,28 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `list` method:
+
 # Project ID of the tables to list
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
 
 # Dataset ID of the tables to list
-datasetId = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+datasetId = '{MY-DATASET-ID}'
+
 
 tables = service.tables()
 request = tables.list(projectId=projectId, datasetId=datasetId)
@@ -754,7 +811,7 @@ while request is not None:
     response = request.execute()
 
     for table_list._tables in response['tables']:
-        # TODO: Use table_list._tables
+        # TODO: Change code below to process each `table_list._tables` resource:
         pprint(table_list._tables)
 
     request = tables.list_next(previous_request=request, previous_response=response)
@@ -771,38 +828,41 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `patch` method:
+
 # Project ID of the table to update
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
 
 # Dataset ID of the table to update
-datasetId = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+datasetId = '{MY-DATASET-ID}'
 
 # Table ID of the table to update
-tableId = '{MY-TABLE-ID}'  # TODO: Update placeholder value(s).
+tableId = '{MY-TABLE-ID}'
+
 
 table_body = {
-    # TODO: Add the desired entries to be changed.
+    # TODO: Add desired entries of the request body to be changed.
 }
 
 
 request = service.tables().patch(projectId=projectId, datasetId=datasetId, tableId=tableId, body=table_body)
 response = request.execute()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -817,36 +877,39 @@ BEFORE RUNNING:
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
-
 from pprint import pprint
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('bigquery', 'v2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `update` method:
+
 # Project ID of the table to update
-projectId = '{MY-PROJECT-ID}'  # TODO: Update placeholder value(s).
+projectId = '{MY-PROJECT-ID}'
 
 # Dataset ID of the table to update
-datasetId = '{MY-DATASET-ID}'  # TODO: Update placeholder value(s).
+datasetId = '{MY-DATASET-ID}'
 
 # Table ID of the table to update
-tableId = '{MY-TABLE-ID}'  # TODO: Update placeholder value(s).
+tableId = '{MY-TABLE-ID}'
+
 
 table_body = {
-    # TODO: Add the desired entries.
+    # TODO: Add desired entries of the request body.
 }
 
 
 request = service.tables().update(projectId=projectId, datasetId=datasetId, tableId=tableId, body=table_body)
 response = request.execute()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` dict:
 pprint(response)

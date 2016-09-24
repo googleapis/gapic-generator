@@ -8,49 +8,59 @@
   @let api = context.getApi, \
        apiName = api.getName, \
        apiVersion = api.getVersion, \
-       serviceTitle = context.getService.getTitle
+       serviceTitle = context.getService.getTitle, \
+       authType = context.getApiaryConfig.getAuthType
     /**
      * BEFORE RUNNING:
      * ---------------
      * 1. If not already done, enable the {@serviceTitle}
      *    and check the quota for your project at
      *    https://console.developers.google.com/apis/api/{@apiName}
-     * 2. This sample uses Application Default Credentials for authentication.
-     *    If not already done, install the gcloud CLI from
-     *    https://cloud.google.com/sdk/ and run
-     *    `gcloud beta auth application-default login`
-     * 3. Install the Java client library on maven or gradle. Check installation
-     *    instructions at https://github.com/google/google-api-java-client.
-     *    On other build systems, you can add the jar files to your project from
-     *    https://developers.google.com/resources/api-libraries/download/{@apiName}/{@apiVersion}/java
+     @if authType == "APPLICATION_DEFAULT_CREDENTIALS"
+       * 2. This sample uses Application Default Credentials for authentication.
+       *    If not already done, install the gcloud CLI from
+       *    https://cloud.google.com/sdk/ and run
+       *    `gcloud beta auth application-default login`
+       * 3. Install the Java client library on Maven or Gradle. Check installation
+       *    instructions at https://github.com/google/google-api-java-client.
+       *    On other build systems, you can add the jar files to your project from
+       *    https://developers.google.com/resources/api-libraries/download/{@apiName}/{@apiVersion}/java
+     @else
+       * 2. Install the Java client library on Maven or Gradle. Check installation
+       *    instructions at https://github.com/google/google-api-java-client.
+       *    On other build systems, you can add the jar files to your project from
+       *    https://developers.google.com/resources/api-libraries/download/{@apiName}/{@apiVersion}/java
+     @end
      */
 
     @join import : imports
       import {@import};
     @end
+
     {@body}
   @end
 @end
 
 @snippet generateBody(method)
   {@alwaysImport()}
-
   @let apiName = context.getApi.getName, \
-       ApiName = context.getApiPackage
+       ApiName = context.getApiPackage, \
+       apiaryConfig = context.getApiaryConfig, \
+       authType = apiaryConfig.getAuthType
     public class {@ApiName}Example {
       public static void main(String[] args) throws IOException, GeneralSecurityException {
-        // Authentication is provided by the `gcloud` tool when running locally
-        // and by built-in service accounts when running on GAE, GCE, or GKE.
-        GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-        // The createScopedRequired method returns true when running on GAE or a local developer
-        // machine. In that case, the desired scopes must be passed in manually. When the code is
-        // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-        // For more information, see
-        // https://developers.google.com/identity/protocols/application-default-credentials
-        if (credential.createScopedRequired()) {
-          credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-        }
+        @switch authType
+        @case "APPLICATION_DEFAULT_CREDENTIALS"
+          // Use Application Default Credentials for authentication when running locally.
+          // For more information, see:
+          // https://developers.google.com/identity/protocols/application-default-credentials
+          {@importGoogleCredential()}GoogleCredential credential = GoogleCredential.getApplicationDefault();
+          if (credential.createScopedRequired()) {
+            credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+          }
+        @default
+          {@importCredential()}Credential credential = getAuth();
+        @end
 
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
@@ -60,13 +70,34 @@
           .build();
 
         {@initialize(method)}
-        {@request(method)}
+        {@methodCall(method)}
         @if context.isPageStreaming(method)
           {@iterableCall(method)}
         @else
           {@compactCall(method)}
         @end
       }
+      @if apiaryConfig.getAuthType != "APPLICATION_DEFAULT_CREDENTIALS"
+
+        public static Credential getAuth() {
+          // {@TODO()} Change placeholder below to get authentication credentials.
+          @let authInstructionsUrl = apiaryConfig.getAuthInstructionsUrl
+            @if authInstructionsUrl
+              // See: {@authInstructionsUrl}
+            @end
+          @end
+          @if context.hasAuthScopes(method)
+            @let methodName = context.getMethodName(method)
+              //
+              // To use the `{@methodName}` method, authorize using one of the following scopes:
+              @join scope : context.getAuthScopes(method)
+                //   {@scope}
+              @end
+            @end
+          @end
+          return null;
+        }
+      @end
     }
   @end
 @end
@@ -78,9 +109,6 @@
        responseTypeRef = context.getApiaryConfig.getType(responseType), \
        resourceField = context.getFirstRepeatedField(responseTypeRef), \
        resources = context.lowerCamelToUpperCamel(resourceField.getName)
-
-    {@printer()}
-
     {@responseType} {@responseName()};
     do {
       {@responseName()} = {@requestName()}.execute();
@@ -90,7 +118,7 @@
       @if context.isMapField(responseTypeRef, resourceField.getName)
         @let resourceType = context.entryTypeName(resourceField)
           for ({@resourceType} {@itemName()} : {@responseName()}.get{@resources}().entrySet()) {
-            // {@TODO()} Use {@itemName()}
+            // {@TODO()} Change code below to process each `{@itemName()}` entry:
             {@printEntry(itemName())}
           }
         @end
@@ -98,7 +126,7 @@
         @let resourceType = context.elementTypeName(resourceField), \
              resourceName = context.getSampleVarName(resourceType)
           for ({@resourceType} {@resourceName} : {@responseName()}.get{@resources}()) {
-            // {@TODO()} Use {@resourceName}
+            // {@TODO()} Change code below to process each `{@resourceName}` resource:
             {@print(resourceName)}
           }
         @end
@@ -122,14 +150,13 @@
     @let responseType = context.objectTypeName(method.getResponseTypeUrl)
       {@responseType} {@responseName()} = {@requestName()}.execute();
 
-      // {@TODO()} Use {@responseName()}
-      {@printer()}
+      // {@TODO()} Change code below to process the `{@responseName()}` object:
       {@print(responseName())}
     @end
   @end
 @end
 
-@private request(method)
+@private methodCall(method)
   @let methodName = context.getMethodName(method), \
        requestType = context.getClientRequestType(method), \
        resourcesPath = context.getApiaryConfig.getResources(method.getName)
@@ -158,6 +185,13 @@
        signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
        params = context.getFlatMethodParams(method)
     @if params
+
+      @if context.isSingleton(params)
+        // {@TODO()} Change placeholder below to desired parameter value for the `{@methodName}` method:
+      @else
+        // {@TODO()} Change placeholders below to desired parameter values for the `{@methodName}` method:
+      @end
+
       @join param : params
         @let paramField = context.getField(signatureType, param), \
              paramType = context.typeName(signatureType, paramField), \
@@ -165,7 +199,11 @@
              paramSample = context.getDefaultSample(signatureType, paramField), \
              paramDescription = context.getDescription(signatureType.getName, param)
           {@description(paramDescription)}
-          {@paramType} {@param} = {@paramValue}; // {@TODO()} Update placeholder value(s).{@paramSample}
+          @if paramSample
+            {@paramType} {@param} = {@paramValue};  // {@paramSample}
+          @else
+            {@paramType} {@param} = {@paramValue};
+          @end
 
         @end
       @end
@@ -175,14 +213,20 @@
   @if context.hasRequestField(method)
 
     @let requestBodyType = context.objectTypeName(context.getRequestField(method))
-      @if context.isPatch(method)
-        // {@TODO()} Assign values to the desired fields to be changed.
-      @else
-        // {@TODO()} Assign values to the desired fields.
-      @end
-
       {@requestBodyType} {@requestBodyName()} = new {@requestBodyType}();
+      @if context.isPatch(method)
+        // {@TODO()} Assign values to desired fields of the `{@requestBodyName()}` object to be changed.
+      @else
+        // {@TODO()} Assign values to desired fields of the `{@requestBodyName()}` object.
+      @end
     @end
+
+
+  @end
+  @if context.hasMediaUpload(method)
+
+    // {@TODO()} Add desired media content for upload. For more information, see:
+    // https://developers.google.com/api-client-library/java/google-api-java-client/media-upload
 
 
   @end
@@ -208,10 +252,6 @@
 
 @private responseName()
   response
-@end
-
-@private gsonName()
-  gson
 @end
 
 @private typePath(types)
@@ -240,30 +280,26 @@
   @end
 @end
 
-@private printer()
-  @let Gson = context.getTypeName("com.google.gson.Gson")
-    {@Gson} {@gsonName()} = new GsonBuilder().setPrettyPrinting().create();
-  @end
-@end
-
-# Assumes element type string form parses as valid JSON: http://www.rfc-editor.org/rfc/rfc7159.txt
 @private print(element)
-  @let JsonParser = context.getTypeName("com.google.gson.JsonParser")
-    System.out.println({@gsonName()}.toJson(new {@JsonParser}().parse({@element}.toString())));
-  @end
+  System.out.println({@element});
 @end
 
 @private printEntry(entry)
-  @let JsonParser = context.getTypeName("com.google.gson.JsonParser")
-    System.out.println({@entry}.getKey() + ": " + {@gsonName()}.toJson(new {@JsonParser}().parse({@entry}.getValue().toString())));
-  @end
+  System.out.println({@entry}.getKey() + ": " + {@entry}.getValue());
+@end
+
+@private importCredential()
+  {@context.addImport("com.google.api.client.auth.oauth2.Credential")}
+@end
+
+@private importGoogleCredential()
+  {@context.addImport("com.google.api.client.googleapis.auth.oauth2.GoogleCredential")}
 @end
 
 @private alwaysImport() fill
   {@context.addImport("java.io.IOException")}
   {@context.addImport("java.security.GeneralSecurityException")}
   {@context.addImport("java.util.Collections")}
-  {@context.addImport("com.google.api.client.googleapis.auth.oauth2.GoogleCredential")}
   {@context.addImport("com.google.api.client.googleapis.javanet.GoogleNetHttpTransport")}
   {@context.addImport("com.google.api.client.http.HttpTransport")}
   {@context.addImport("com.google.api.client.json.JsonFactory")}

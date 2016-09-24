@@ -59,8 +59,8 @@ public class InitCodeTransformer {
             InitTreeParserContext.newBuilder()
                 .table(new SymbolTable())
                 .rootObjectType(context.getMethod().getInputType())
-                .initValueConfigMap(createInitValueMap(context))
-                .dottedPathStrings(context.getMethodConfig().getSampleCodeInitFields())
+                .initValueConfigMap(createCollectionMap(context))
+                .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
                 .initFields(fields)
                 .suggestedName(Name.from("request"))
                 .build());
@@ -73,8 +73,8 @@ public class InitCodeTransformer {
             InitTreeParserContext.newBuilder()
                 .table(new SymbolTable())
                 .rootObjectType(context.getMethod().getInputType())
-                .initValueConfigMap(createInitValueMap(context))
-                .dottedPathStrings(context.getMethodConfig().getSampleCodeInitFields())
+                .initValueConfigMap(createCollectionMap(context))
+                .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
                 .suggestedName(Name.from("request"))
                 .build());
     return buildInitCodeViewRequestObject(context, rootNode);
@@ -91,8 +91,8 @@ public class InitCodeTransformer {
                 .table(table)
                 .valueGenerator(valueGenerator)
                 .rootObjectType(context.getMethod().getInputType())
-                .initValueConfigMap(createInitValueMap(context))
-                .dottedPathStrings(context.getMethodConfig().getSampleCodeInitFields())
+                .initValueConfigMap(createCollectionMap(context))
+                .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
                 .initFields(fields)
                 .suggestedName(Name.from("request"))
                 .build());
@@ -113,7 +113,7 @@ public class InitCodeTransformer {
                 .table(table)
                 .valueGenerator(valueGenerator)
                 .rootObjectType(context.getMethod().getOutputType())
-                .initValueConfigMap(createInitValueMap(context))
+                .initValueConfigMap(createCollectionMap(context))
                 .additionalSubTrees(createMockResponseAdditionalSubTrees(context))
                 .initFields(primitiveFields)
                 .suggestedName(Name.from("expected_response"))
@@ -129,8 +129,8 @@ public class InitCodeTransformer {
             InitTreeParserContext.newBuilder()
                 .table(table)
                 .rootObjectType(testConfig.getMethod().getInputType())
-                .initValueConfigMap(createInitValueMap(context))
-                .dottedPathStrings(testConfig.getInitFields())
+                .initValueConfigMap(createCollectionMap(context))
+                .initFieldConfigStrings(testConfig.getInitFieldConfigStrings())
                 .suggestedName(Name.from("request"))
                 .build());
     return buildInitCodeViewFlattened(context, rootNode);
@@ -144,7 +144,7 @@ public class InitCodeTransformer {
             InitTreeParserContext.newBuilder()
                 .table(new SymbolTable())
                 .rootObjectType(context.getMethod().getInputType())
-                .initValueConfigMap(createInitValueMap(context))
+                .initValueConfigMap(createCollectionMap(context))
                 .initFields(fields)
                 .suggestedName(Name.from("request"))
                 .build());
@@ -233,7 +233,7 @@ public class InitCodeTransformer {
     return additionalSubTrees;
   }
 
-  private ImmutableMap<String, InitValueConfig> createInitValueMap(
+  private ImmutableMap<String, InitValueConfig> createCollectionMap(
       MethodTransformerContext context) {
     Map<String, String> fieldNamePatterns = context.getMethodConfig().getFieldNamePatterns();
     ImmutableMap.Builder<String, InitValueConfig> mapBuilder = ImmutableMap.builder();
@@ -359,8 +359,14 @@ public class InitCodeTransformer {
       initValue.formatFunctionName(
           context.getNamer().getFormatFunctionName(initValueConfig.getCollectionConfig()));
       List<String> formatFunctionArgs = new ArrayList<>();
-      for (String var : initValueConfig.getCollectionConfig().getNameTemplate().vars()) {
-        formatFunctionArgs.add("\"[" + LanguageUtil.lowerUnderscoreToUpperUnderscore(var) + "]\"");
+      for (String entityName : initValueConfig.getCollectionConfig().getNameTemplate().vars()) {
+        String entityValue =
+            "\"[" + LanguageUtil.lowerUnderscoreToUpperUnderscore(entityName) + "]\"";
+        if (initValueConfig.hasFormattingConfigInitialValues()
+            && initValueConfig.getCollectionValues().containsKey(entityName)) {
+          entityValue = initValueConfig.getCollectionValues().get(entityName);
+        }
+        formatFunctionArgs.add(entityValue);
       }
       initValue.formatArgs(formatFunctionArgs);
 
@@ -368,7 +374,7 @@ public class InitCodeTransformer {
     } else {
       SimpleInitValueView.Builder initValue = SimpleInitValueView.newBuilder();
 
-      if (initValueConfig.hasInitialValue()) {
+      if (initValueConfig.hasSimpleInitialValue()) {
         initValue.initialValue(
             context.getTypeTable().renderPrimitiveValue(type, initValueConfig.getInitialValue()));
       } else {

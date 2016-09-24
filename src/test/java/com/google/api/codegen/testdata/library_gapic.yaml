@@ -3,7 +3,7 @@ language_settings:
   java:
     package_name: com.google.gcloud.pubsub.spi
   python:
-    package_name: library
+    package_name: google.cloud.gapic.example.library.v1
   go:
     # Intentionally changed from the gRPC package name.
     # See: https://github.com/googleapis/toolkit/issues/320
@@ -45,9 +45,10 @@ interfaces:
   - name_pattern: archives/{archive_path=**}/books/{book}
     entity_name: archived_book
   smoke_test:
-    method: CreateShelf
+    method: GetBook
     init_fields:
-      - shelf
+      - name%shelf="testShelf"
+      - name%book="testBook"
   methods:
   - name: CreateShelf
     flattening:
@@ -318,13 +319,26 @@ interfaces:
       - index_map{"default_key"}
   - name: StreamShelves
     request_object_method: false
-    page_streaming:
-      request:
-        token_field: page_token
+    grpc_streaming:
       response:
-        token_field: next_page_token
         resources_field: shelves
     retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 30000
+  - name: StreamBooks
+    request_object_method: false
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+    - name
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 30000
+  - name: DiscussBook
+    request_object_method: false
+    retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 30000
   - name: AddTag

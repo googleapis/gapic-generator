@@ -42,6 +42,7 @@ public class MethodConfig {
 
   private final Method method;
   private final PageStreamingConfig pageStreaming;
+  private final PageStreamingConfig grpcStreaming;
   private final FlatteningConfig flattening;
   private final String retryCodesConfigName;
   private final String retrySettingsConfigName;
@@ -77,6 +78,19 @@ public class MethodConfig {
           PageStreamingConfig.createPageStreaming(
               diagCollector, methodConfigProto.getPageStreaming(), method);
       if (pageStreaming == null) {
+        error = true;
+      }
+    }
+
+    PageStreamingConfig grpcStreaming;
+    if (PageStreamingConfigProto.getDefaultInstance()
+        .equals(methodConfigProto.getGrpcStreaming())) {
+      grpcStreaming = null;
+    } else {
+      grpcStreaming =
+          PageStreamingConfig.createGrpcStreaming(
+              diagCollector, methodConfigProto.getGrpcStreaming(), method);
+      if (grpcStreaming == null) {
         error = true;
       }
     }
@@ -183,6 +197,7 @@ public class MethodConfig {
       return new MethodConfig(
           method,
           pageStreaming,
+          grpcStreaming,
           flattening,
           retryCodesName,
           retryParamsName,
@@ -200,6 +215,7 @@ public class MethodConfig {
   private MethodConfig(
       Method method,
       PageStreamingConfig pageStreaming,
+      PageStreamingConfig grpcStreaming,
       FlatteningConfig flattening,
       String retryCodesConfigName,
       String retrySettingsConfigName,
@@ -213,6 +229,7 @@ public class MethodConfig {
       String rerouteToGrpcInterface) {
     this.method = method;
     this.pageStreaming = pageStreaming;
+    this.grpcStreaming = grpcStreaming;
     this.flattening = flattening;
     this.retryCodesConfigName = retryCodesConfigName;
     this.retrySettingsConfigName = retrySettingsConfigName;
@@ -239,6 +256,16 @@ public class MethodConfig {
   /** Returns the page streaming configuration of the method. */
   public PageStreamingConfig getPageStreaming() {
     return pageStreaming;
+  }
+
+  /** Returns true if this method has grpc response streaming configured. */
+  public boolean isGrpcStreaming() {
+    return grpcStreaming != null;
+  }
+
+  /** Returns the configuration for grpc response streaming. */
+  public PageStreamingConfig getGrpcStreaing() {
+    return grpcStreaming;
   }
 
   /** Returns true if this method has flattening configured. */

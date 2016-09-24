@@ -17,7 +17,7 @@
 class FieldMask(object):
     """
     Attributes:
-      materials (list[:class:`google.example.library.v1.field_mask_pb2.FieldMask.Material`])
+      materials (list[enum :class:`google.cloud.gapic.example.library.v1.enums.Material`])
 
     """
     pass
@@ -623,7 +623,7 @@ class Book(object):
       author (string): The name of the book author.
       title (string): The title of the book.
       read (bool): Value indicating whether the book has been read.
-      rating (:class:`google.example.library.v1.library_pb2.Book.Rating`): For testing enums.
+      rating (enum :class:`google.cloud.gapic.example.library.v1.enums.Rating`): For testing enums.
       any_value (:class:`google.protobuf.any_pb2.Any`): For testing all well-known types.
       struct_value (:class:`google.protobuf.struct_pb2.Struct`)
       value_value (:class:`google.protobuf.struct_pb2.Value`)
@@ -733,7 +733,7 @@ class ListShelvesRequest(object):
 
 class ListShelvesResponse(object):
     """
-    Request message for LibraryService.ListShelves.
+    Response message for LibraryService.ListShelves.
 
     Attributes:
       shelves (list[:class:`google.example.library.v1.library_pb2.Shelf`]): The list of shelves.
@@ -742,6 +742,27 @@ class ListShelvesResponse(object):
         ``ListShelvesRequest.page_token``
         field in the subsequent call to ``ListShelves`` method to retrieve the next
         page of results.
+
+    """
+    pass
+
+
+class StreamShelvesRequest(object):
+    """
+    Request message for LibraryService.StreamShelves.
+
+    Attributes:
+
+    """
+    pass
+
+
+class StreamShelvesResponse(object):
+    """
+    Response message for LibraryService.StreamShelves.
+
+    Attributes:
+      shelves (list[:class:`google.example.library.v1.library_pb2.Shelf`]): The list of shelves.
 
     """
     pass
@@ -852,6 +873,17 @@ class ListBooksResponse(object):
     pass
 
 
+class StreamBooksRequest(object):
+    """
+    Request message for LibraryService.StreamBooks.
+
+    Attributes:
+      name (string): The name of the shelf whose books we'd like to list.
+
+    """
+    pass
+
+
 class UpdateBookRequest(object):
     """
     Request message for LibraryService.UpdateBook.
@@ -926,7 +958,7 @@ class Comment(object):
     Attributes:
       user_name (string): won't be filled in by the sample generator
       comment (bytes): should be filled in by the sample generator
-      stage (:class:`google.example.library.v1.library_pb2.Comment.Stage`): should be filled in by the sample generator
+      stage (enum :class:`google.cloud.gapic.example.library.v1.enums.Stage`): should be filled in by the sample generator
 
     """
     pass
@@ -951,6 +983,18 @@ class UpdateBookIndexRequest(object):
       name (string): The name of the book to update.
       index_name (string): The name of the index for the book
       index_map (dict[string -> :class:`google.example.library.v1.library_pb2.UpdateBookIndexRequest.IndexMapEntry`]): The index to update the book with
+
+    """
+    pass
+
+
+class DiscussBookRequest(object):
+    """
+    Attributes:
+      name (string): The name of the book to be discussed. If this is in the middle
+        of the stream and this is not specified, the name in the previous
+        message will be reused.
+      comment (:class:`google.example.library.v1.library_pb2.Comment`): The new comment.
 
     """
     pass

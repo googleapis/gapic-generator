@@ -4,137 +4,88 @@
 // 1. If not already done, enable the Translate API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/translate
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 2. Install the Node.js client library by running
+//    `npm install googleapis --save`
 var google = require('googleapis');
-
 var translate = google.translate('v2');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
+var request = {
+
+  // TODO: Change placeholder below to desired parameter value for the `list` method:
+
+  // The text to detect
+  q: '',
+
+
+  // TODO: Change placeholder below to desired API key:
+  auth: '{MY-API-KEY}'
+};
+
+translate.detections.list(request, function(err, response) {
   if (err) {
     console.log(err);
     return;
   }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
 
-  var request = {
-    // The text to detect
-    q: "", // TODO: Update placeholder value(s).
-
-    auth: authClient
-  };
-
-  translate.detections.list(request, function(err, response) {
-    if (err) {
-      console.log(err);
-      return;
-    }
-
-    // TODO: Use response
-    console.log(JSON.stringify(response, null, 2));
-  });
+  // TODO: Change code below to process the `response` object:
+  console.log(JSON.stringify(response, null, 2));
 });
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Translate API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/translate
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 2. Install the Node.js client library by running
+//    `npm install googleapis --save`
 var google = require('googleapis');
-
 var translate = google.translate('v2');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
+var request = {
+
+  // TODO: Change placeholder below to desired API key:
+  auth: '{MY-API-KEY}'
+};
+
+translate.languages.list(request, function(err, response) {
   if (err) {
     console.log(err);
     return;
   }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
 
-  var request = {
-
-    auth: authClient
-  };
-
-  translate.languages.list(request, function(err, response) {
-    if (err) {
-      console.log(err);
-      return;
-    }
-
-    // TODO: Use response
-    console.log(JSON.stringify(response, null, 2));
-  });
+  // TODO: Change code below to process the `response` object:
+  console.log(JSON.stringify(response, null, 2));
 });
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Translate API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/translate
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 2. Install the Node.js client library by running
+//    `npm install googleapis --save`
 var google = require('googleapis');
-
 var translate = google.translate('v2');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
+var request = {
+
+  // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+  // The text to translate
+  q: '',
+
+  // The target language into which the text should be translated
+  target: '{MY-TARGET}',
+
+
+  // TODO: Change placeholder below to desired API key:
+  auth: '{MY-API-KEY}'
+};
+
+translate.translations.list(request, function(err, response) {
   if (err) {
     console.log(err);
     return;
   }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
 
-  var request = {
-    // The text to translate
-    q: "", // TODO: Update placeholder value(s).
-
-    // The target language into which the text should be translated
-    target: "{MY-TARGET}", // TODO: Update placeholder value(s).
-
-    auth: authClient
-  };
-
-  translate.translations.list(request, function(err, response) {
-    if (err) {
-      console.log(err);
-      return;
-    }
-
-    // TODO: Use response
-    console.log(JSON.stringify(response, null, 2));
-  });
+  // TODO: Change code below to process the `response` object:
+  console.log(JSON.stringify(response, null, 2));
 });

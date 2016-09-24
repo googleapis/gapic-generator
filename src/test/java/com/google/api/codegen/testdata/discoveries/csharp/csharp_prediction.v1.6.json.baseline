@@ -27,14 +27,10 @@ namespace PredictionSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -46,22 +42,27 @@ namespace PredictionSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Predict` method:
+
             // The project associated with the model.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // The name of a hosted model.
-            string hostedModelName = "{MY-HOSTED-MODEL-NAME}"; // TODO: Update placeholder value(s).
+            string hostedModelName = "{MY-HOSTED-MODEL-NAME}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.Input requestBody = new Data.Input();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             HostedmodelsResource.PredictRequest request = predictionService.Hostedmodels.Predict(requestBody, project, hostedModelName);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Output response = request.Execute();
             // Data.Output response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -94,14 +95,10 @@ namespace PredictionSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -113,19 +110,23 @@ namespace PredictionSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Analyze` method:
+
             // The project associated with the model.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // The unique name for the predictive model.
-            string id = "{MY-ID}"; // TODO: Update placeholder value(s).
+            string id = "{MY-ID}";
+
 
             TrainedmodelsResource.AnalyzeRequest request = predictionService.Trainedmodels.Analyze(project, id);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Analyze response = request.Execute();
             // Data.Analyze response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -155,14 +156,10 @@ namespace PredictionSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -174,15 +171,19 @@ namespace PredictionSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // The project associated with the model.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // The unique name for the predictive model.
-            string id = "{MY-ID}"; // TODO: Update placeholder value(s).
+            string id = "{MY-ID}";
+
 
             TrainedmodelsResource.DeleteRequest request = predictionService.Trainedmodels.Delete(project, id);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
         }
@@ -216,14 +217,10 @@ namespace PredictionSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -235,19 +232,23 @@ namespace PredictionSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // The project associated with the model.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // The unique name for the predictive model.
-            string id = "{MY-ID}"; // TODO: Update placeholder value(s).
+            string id = "{MY-ID}";
+
 
             TrainedmodelsResource.GetRequest request = predictionService.Trainedmodels.Get(project, id);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Insert2 response = request.Execute();
             // Data.Insert2 response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -280,14 +281,10 @@ namespace PredictionSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -299,19 +296,24 @@ namespace PredictionSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The project associated with the model.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholder below to desired parameter value for the `Insert` method:
+
+            // The project associated with the model.
+            string project = "{MY-PROJECT}";
+
+
             Data.Insert requestBody = new Data.Insert();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             TrainedmodelsResource.InsertRequest request = predictionService.Trainedmodels.Insert(requestBody, project);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Insert2 response = request.Execute();
             // Data.Insert2 response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -344,14 +346,10 @@ namespace PredictionSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -363,15 +361,19 @@ namespace PredictionSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholder below to desired parameter value for the `List` method:
+
             // The project associated with the model.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
+
 
             TrainedmodelsResource.ListRequest request = predictionService.Trainedmodels.List(project);
 
             Data.List response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -381,7 +383,7 @@ namespace PredictionSample
                 }
                 foreach (Data.Insert2 insert2 in response.Items)
                 {
-                    // TODO: Use insert2
+                    // TODO: Change code below to process each `insert2` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(insert2));
                 }
                 request.PageToken = response.NextPageToken;
@@ -417,14 +419,10 @@ namespace PredictionSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -436,22 +434,27 @@ namespace PredictionSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Predict` method:
+
             // The project associated with the model.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // The unique name for the predictive model.
-            string id = "{MY-ID}"; // TODO: Update placeholder value(s).
+            string id = "{MY-ID}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.Input requestBody = new Data.Input();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             TrainedmodelsResource.PredictRequest request = predictionService.Trainedmodels.Predict(requestBody, project, id);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Output response = request.Execute();
             // Data.Output response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -484,14 +487,10 @@ namespace PredictionSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -503,22 +502,27 @@ namespace PredictionSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
             // The project associated with the model.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // The unique name for the predictive model.
-            string id = "{MY-ID}"; // TODO: Update placeholder value(s).
+            string id = "{MY-ID}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.Update requestBody = new Data.Update();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             TrainedmodelsResource.UpdateRequest request = predictionService.Trainedmodels.Update(requestBody, project, id);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Insert2 response = request.Execute();
             // Data.Insert2 response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }

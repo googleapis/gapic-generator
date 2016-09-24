@@ -26,7 +26,7 @@ public class PythonSphinxCommentFixer {
     comment = comment.replace("\"", "\\\"");
     comment = sphinxifyProtoMarkdownLinks(comment);
     comment = sphinxifyAbsoluteMarkdownLinks(comment);
-    return sphinxifyCloudMarkdownLinks(comment);
+    return sphinxifyCloudMarkdownLinks(comment).trim();
   }
 
   /** Returns a string with all proto markdown links formatted to Sphinx style. */

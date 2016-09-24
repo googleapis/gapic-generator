@@ -12,14 +12,12 @@
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -28,13 +26,18 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // Project ID of the dataset being deleted
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
 // Dataset ID of dataset being deleted
-$datasetId = '{MY-DATASET-ID}'; // TODO: Update placeholder value(s).
+$datasetId = '{MY-DATASET-ID}';
+
 
 $service->datasets->delete($projectId, $datasetId);
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -48,14 +51,12 @@ $service->datasets->delete($projectId, $datasetId);
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -64,16 +65,21 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // Project ID of the requested dataset
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
 // Dataset ID of the requested dataset
-$datasetId = '{MY-DATASET-ID}'; // TODO: Update placeholder value(s).
+$datasetId = '{MY-DATASET-ID}';
+
 
 $response = $service->datasets->get($projectId, $datasetId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -87,14 +93,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -102,17 +106,23 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
+
+
+// TODO: Change placeholder below to desired parameter value for the `insert` method:
 
 // Project ID of the new dataset
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Bigquery_Dataset($client);
 
-$response = $service->datasets->insert($projectId, $postBody);
+$requestBody = new Google_Service_Bigquery_Dataset($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->datasets->insert($projectId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -126,14 +136,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -142,20 +150,25 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
+
+// TODO: Change placeholder below to desired parameter value for the `listDatasets` method:
+
 // Project ID of the datasets to be listed
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
+
 
 $optParams = array();
 do {
   $response = $service->datasets->listDatasets($projectId, $optParams);
 
   foreach ($response['datasets'] as $dataset_list._datasets) {
-    // TODO: Use dataset_list._datasets
+    // TODO: Change code below to process each `dataset_list._datasets` resource:
     echo '<pre>', var_export($dataset_list._datasets, true), '</pre>', "\n";
   }
 
   $optParams['pageToken'] = $response->getNextPageToken();
 } while ($optParams['pageToken']);
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -169,14 +182,12 @@ do {
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -184,20 +195,26 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
 
 // Project ID of the dataset being updated
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
 // Dataset ID of the dataset being updated
-$datasetId = '{MY-DATASET-ID}'; // TODO: Update placeholder value(s).
+$datasetId = '{MY-DATASET-ID}';
 
-// TODO: Assign values to the desired properties to be changed.
-$postBody = new Google_Service_Bigquery_Dataset($client);
 
-$response = $service->datasets->patch($projectId, $datasetId, $postBody);
+$requestBody = new Google_Service_Bigquery_Dataset($client);
+// TODO: Assign values to desired properties of the `requestBody` object to be changed.
 
-// TODO: Use $response
+
+$response = $service->datasets->patch($projectId, $datasetId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -211,14 +228,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -226,20 +241,26 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
 
 // Project ID of the dataset being updated
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
 // Dataset ID of the dataset being updated
-$datasetId = '{MY-DATASET-ID}'; // TODO: Update placeholder value(s).
+$datasetId = '{MY-DATASET-ID}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Bigquery_Dataset($client);
 
-$response = $service->datasets->update($projectId, $datasetId, $postBody);
+$requestBody = new Google_Service_Bigquery_Dataset($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->datasets->update($projectId, $datasetId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -253,14 +274,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -268,17 +287,22 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `cancel` method:
 
 // [Required] Project ID of the job to cancel
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
 // [Required] Job ID of the job to cancel
-$jobId = '{MY-JOB-ID}'; // TODO: Update placeholder value(s).
+$jobId = '{MY-JOB-ID}';
+
 
 $response = $service->jobs->cancel($projectId, $jobId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -292,14 +316,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -308,16 +330,21 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // [Required] Project ID of the requested job
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
 // [Required] Job ID of the requested job
-$jobId = '{MY-JOB-ID}'; // TODO: Update placeholder value(s).
+$jobId = '{MY-JOB-ID}';
+
 
 $response = $service->jobs->get($projectId, $jobId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -331,14 +358,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -347,16 +372,21 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `getQueryResults` method:
+
 // [Required] Project ID of the query job
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
 // [Required] Job ID of the query job
-$jobId = '{MY-JOB-ID}'; // TODO: Update placeholder value(s).
+$jobId = '{MY-JOB-ID}';
+
 
 $response = $service->jobs->getQueryResults($projectId, $jobId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -370,14 +400,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -385,17 +413,27 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
+
+
+// TODO: Change placeholder below to desired parameter value for the `insert` method:
 
 // Project ID of the project that will be billed for the job
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Bigquery_Job($client);
 
-$response = $service->jobs->insert($projectId, $postBody);
+$requestBody = new Google_Service_Bigquery_Job($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+// TODO: Add desired media content for upload. For more information, see:
+// https://developers.google.com/api-client-library/php/guide/media_upload
+
+
+$response = $service->jobs->insert($projectId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -409,14 +447,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -425,20 +461,25 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
+
+// TODO: Change placeholder below to desired parameter value for the `listJobs` method:
+
 // Project ID of the jobs to list
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
+
 
 $optParams = array();
 do {
   $response = $service->jobs->listJobs($projectId, $optParams);
 
   foreach ($response['jobs'] as $job_list._jobs) {
-    // TODO: Use job_list._jobs
+    // TODO: Change code below to process each `job_list._jobs` resource:
     echo '<pre>', var_export($job_list._jobs, true), '</pre>', "\n";
   }
 
   $optParams['pageToken'] = $response->getNextPageToken();
 } while ($optParams['pageToken']);
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -452,14 +493,12 @@ do {
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -468,16 +507,22 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
+
+// TODO: Change placeholder below to desired parameter value for the `query` method:
+
 // Project ID of the project billed for the query
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Bigquery_QueryRequest($client);
 
-$response = $service->jobs->query($projectId, $postBody);
+$requestBody = new Google_Service_Bigquery_QueryRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->jobs->query($projectId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -491,14 +536,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -513,12 +556,13 @@ do {
   $response = $service->projects->listProjects($optParams);
 
   foreach ($response['projects'] as $project_list._projects) {
-    // TODO: Use project_list._projects
+    // TODO: Change code below to process each `project_list._projects` resource:
     echo '<pre>', var_export($project_list._projects, true), '</pre>', "\n";
   }
 
   $optParams['pageToken'] = $response->getNextPageToken();
 } while ($optParams['pageToken']);
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -532,14 +576,12 @@ do {
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -547,23 +589,29 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `insertAll` method:
 
 // Project ID of the destination table.
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
 // Dataset ID of the destination table.
-$datasetId = '{MY-DATASET-ID}'; // TODO: Update placeholder value(s).
+$datasetId = '{MY-DATASET-ID}';
 
 // Table ID of the destination table.
-$tableId = '{MY-TABLE-ID}'; // TODO: Update placeholder value(s).
+$tableId = '{MY-TABLE-ID}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Bigquery_TableDataInsertAllRequest($client);
 
-$response = $service->tabledata->insertAll($projectId, $datasetId, $tableId, $postBody);
+$requestBody = new Google_Service_Bigquery_TableDataInsertAllRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->tabledata->insertAll($projectId, $datasetId, $tableId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -577,14 +625,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -593,19 +639,24 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listTabledata` method:
+
 // Project ID of the table to read
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
 // Dataset ID of the table to read
-$datasetId = '{MY-DATASET-ID}'; // TODO: Update placeholder value(s).
+$datasetId = '{MY-DATASET-ID}';
 
 // Table ID of the table to read
-$tableId = '{MY-TABLE-ID}'; // TODO: Update placeholder value(s).
+$tableId = '{MY-TABLE-ID}';
+
 
 $response = $service->tabledata->listTabledata($projectId, $datasetId, $tableId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -619,14 +670,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -634,17 +683,22 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
 
 // Project ID of the table to delete
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
 // Dataset ID of the table to delete
-$datasetId = '{MY-DATASET-ID}'; // TODO: Update placeholder value(s).
+$datasetId = '{MY-DATASET-ID}';
 
 // Table ID of the table to delete
-$tableId = '{MY-TABLE-ID}'; // TODO: Update placeholder value(s).
+$tableId = '{MY-TABLE-ID}';
+
 
 $service->tables->delete($projectId, $datasetId, $tableId);
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -658,14 +712,12 @@ $service->tables->delete($projectId, $datasetId, $tableId);
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -674,19 +726,24 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // Project ID of the requested table
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
 // Dataset ID of the requested table
-$datasetId = '{MY-DATASET-ID}'; // TODO: Update placeholder value(s).
+$datasetId = '{MY-DATASET-ID}';
 
 // Table ID of the requested table
-$tableId = '{MY-TABLE-ID}'; // TODO: Update placeholder value(s).
+$tableId = '{MY-TABLE-ID}';
+
 
 $response = $service->tables->get($projectId, $datasetId, $tableId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -700,14 +757,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -715,20 +770,26 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 // Project ID of the new table
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
 // Dataset ID of the new table
-$datasetId = '{MY-DATASET-ID}'; // TODO: Update placeholder value(s).
+$datasetId = '{MY-DATASET-ID}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Bigquery_Table($client);
 
-$response = $service->tables->insert($projectId, $datasetId, $postBody);
+$requestBody = new Google_Service_Bigquery_Table($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->tables->insert($projectId, $datasetId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -742,14 +803,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -758,23 +817,28 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listTables` method:
+
 // Project ID of the tables to list
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
 // Dataset ID of the tables to list
-$datasetId = '{MY-DATASET-ID}'; // TODO: Update placeholder value(s).
+$datasetId = '{MY-DATASET-ID}';
+
 
 $optParams = array();
 do {
   $response = $service->tables->listTables($projectId, $datasetId, $optParams);
 
   foreach ($response['tables'] as $table_list._tables) {
-    // TODO: Use table_list._tables
+    // TODO: Change code below to process each `table_list._tables` resource:
     echo '<pre>', var_export($table_list._tables, true), '</pre>', "\n";
   }
 
   $optParams['pageToken'] = $response->getNextPageToken();
 } while ($optParams['pageToken']);
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -788,14 +852,12 @@ do {
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -804,22 +866,28 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
+
 // Project ID of the table to update
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
 // Dataset ID of the table to update
-$datasetId = '{MY-DATASET-ID}'; // TODO: Update placeholder value(s).
+$datasetId = '{MY-DATASET-ID}';
 
 // Table ID of the table to update
-$tableId = '{MY-TABLE-ID}'; // TODO: Update placeholder value(s).
+$tableId = '{MY-TABLE-ID}';
 
-// TODO: Assign values to the desired properties to be changed.
-$postBody = new Google_Service_Bigquery_Table($client);
 
-$response = $service->tables->patch($projectId, $datasetId, $tableId, $postBody);
+$requestBody = new Google_Service_Bigquery_Table($client);
+// TODO: Assign values to desired properties of the `requestBody` object to be changed.
 
-// TODO: Use $response
+
+$response = $service->tables->patch($projectId, $datasetId, $tableId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
 <?php
 /*
  * BEFORE RUNNING:
@@ -833,14 +901,12 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    `gcloud beta auth application-default login`
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
- */
 
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -849,19 +915,25 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
+
 // Project ID of the table to update
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
 // Dataset ID of the table to update
-$datasetId = '{MY-DATASET-ID}'; // TODO: Update placeholder value(s).
+$datasetId = '{MY-DATASET-ID}';
 
 // Table ID of the table to update
-$tableId = '{MY-TABLE-ID}'; // TODO: Update placeholder value(s).
+$tableId = '{MY-TABLE-ID}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Bigquery_Table($client);
 
-$response = $service->tables->update($projectId, $datasetId, $tableId, $postBody);
+$requestBody = new Google_Service_Bigquery_Table($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->tables->update($projectId, $datasetId, $tableId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>

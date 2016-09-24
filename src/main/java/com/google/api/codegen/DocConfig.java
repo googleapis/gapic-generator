@@ -17,10 +17,10 @@ package com.google.api.codegen;
 import com.google.api.codegen.metacode.FieldSetting;
 import com.google.api.codegen.metacode.InitCode;
 import com.google.api.codegen.metacode.InitCodeLine;
-import com.google.api.codegen.metacode.InitValueConfig;
-import com.google.api.codegen.metacode.InputParameter;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitTreeParserContext;
+import com.google.api.codegen.metacode.InitValueConfig;
+import com.google.api.codegen.metacode.InputParameter;
 import com.google.api.codegen.metacode.StructureInitCodeLine;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
@@ -111,7 +111,7 @@ public abstract class DocConfig {
                   .table(new SymbolTable())
                   .rootObjectType(method.getInputType())
                   .initValueConfigMap(initValueConfigMap.build())
-                  .dottedPathStrings(methodConfig.getSampleCodeInitFields())
+                  .initFieldConfigStrings(methodConfig.getSampleCodeInitFields())
                   .initFields(fields)
                   .suggestedName(Name.from("request"))
                   .build());

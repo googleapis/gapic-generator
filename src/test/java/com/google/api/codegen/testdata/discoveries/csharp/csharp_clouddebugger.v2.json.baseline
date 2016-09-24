@@ -1,7 +1,7 @@
 
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API
+// 1. If not already done, enable the Stackdriver Debugger API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
@@ -13,56 +13,56 @@
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Clouddebugger.v2;
+using Google.Apis.CloudDebugger.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
-using Data = Google.Apis.Clouddebugger.v2.Data;
+using Data = Google.Apis.CloudDebugger.v2.Data;
 
 
-namespace ClouddebuggerSample
+namespace CloudDebuggerSample
 {
-    public class ClouddebuggerServiceExample
+    public class CloudDebuggerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
-            ClouddebuggerService clouddebuggerService = new ClouddebuggerService(new BaseClientService.Initializer
+            CloudDebuggerService cloudDebuggerService = new CloudDebuggerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholder below to desired parameter value for the `List` method:
+
             // Identifies the debuggee.
-            string debuggeeId = "{MY-DEBUGGEE-ID}"; // TODO: Update placeholder value(s).
+            string debuggeeId = "{MY-DEBUGGEE-ID}";
 
-            ControllerResource.DebuggeesResource.BreakpointsResource.ListRequest request = clouddebuggerService.Controller.Debuggees.Breakpoints.List(debuggeeId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            ControllerResource.DebuggeesResource.BreakpointsResource.ListRequest request = cloudDebuggerService.Controller.Debuggees.Breakpoints.List(debuggeeId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ListActiveBreakpointsResponse response = request.Execute();
             // Data.ListActiveBreakpointsResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API
+// 1. If not already done, enable the Stackdriver Debugger API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
@@ -74,62 +74,63 @@ namespace ClouddebuggerSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Clouddebugger.v2;
+using Google.Apis.CloudDebugger.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
-using Data = Google.Apis.Clouddebugger.v2.Data;
+using Data = Google.Apis.CloudDebugger.v2.Data;
 
 
-namespace ClouddebuggerSample
+namespace CloudDebuggerSample
 {
-    public class ClouddebuggerServiceExample
+    public class CloudDebuggerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
-            ClouddebuggerService clouddebuggerService = new ClouddebuggerService(new BaseClientService.Initializer
+            CloudDebuggerService cloudDebuggerService = new CloudDebuggerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
             // Identifies the debuggee being debugged.
-            string debuggeeId = "{MY-DEBUGGEE-ID}"; // TODO: Update placeholder value(s).
+            string debuggeeId = "{MY-DEBUGGEE-ID}";
 
             // Breakpoint identifier, unique in the scope of the debuggee.
-            string id = "{MY-ID}"; // TODO: Update placeholder value(s).
+            string id = "{MY-ID}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.UpdateActiveBreakpointRequest requestBody = new Data.UpdateActiveBreakpointRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
 
-            ControllerResource.DebuggeesResource.BreakpointsResource.UpdateRequest request = clouddebuggerService.Controller.Debuggees.Breakpoints.Update(requestBody, debuggeeId, id);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            ControllerResource.DebuggeesResource.BreakpointsResource.UpdateRequest request = cloudDebuggerService.Controller.Debuggees.Breakpoints.Update(requestBody, debuggeeId, id);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.UpdateActiveBreakpointResponse response = request.Execute();
             // Data.UpdateActiveBreakpointResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API
+// 1. If not already done, enable the Stackdriver Debugger API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
@@ -141,56 +142,53 @@ namespace ClouddebuggerSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Clouddebugger.v2;
+using Google.Apis.CloudDebugger.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
-using Data = Google.Apis.Clouddebugger.v2.Data;
+using Data = Google.Apis.CloudDebugger.v2.Data;
 
 
-namespace ClouddebuggerSample
+namespace CloudDebuggerSample
 {
-    public class ClouddebuggerServiceExample
+    public class CloudDebuggerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
-            ClouddebuggerService clouddebuggerService = new ClouddebuggerService(new BaseClientService.Initializer
+            CloudDebuggerService cloudDebuggerService = new CloudDebuggerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Assign values to the desired properties.
             Data.RegisterDebuggeeRequest requestBody = new Data.RegisterDebuggeeRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
 
-            ControllerResource.DebuggeesResource.RegisterRequest request = clouddebuggerService.Controller.Debuggees.Register(requestBody);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            ControllerResource.DebuggeesResource.RegisterRequest request = cloudDebuggerService.Controller.Debuggees.Register(requestBody);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.RegisterDebuggeeResponse response = request.Execute();
             // Data.RegisterDebuggeeResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API
+// 1. If not already done, enable the Stackdriver Debugger API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
@@ -202,59 +200,59 @@ namespace ClouddebuggerSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Clouddebugger.v2;
+using Google.Apis.CloudDebugger.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
-using Data = Google.Apis.Clouddebugger.v2.Data;
+using Data = Google.Apis.CloudDebugger.v2.Data;
 
 
-namespace ClouddebuggerSample
+namespace CloudDebuggerSample
 {
-    public class ClouddebuggerServiceExample
+    public class CloudDebuggerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
-            ClouddebuggerService clouddebuggerService = new ClouddebuggerService(new BaseClientService.Initializer
+            CloudDebuggerService cloudDebuggerService = new CloudDebuggerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // ID of the debuggee whose breakpoint to delete.
-            string debuggeeId = "{MY-DEBUGGEE-ID}"; // TODO: Update placeholder value(s).
+            string debuggeeId = "{MY-DEBUGGEE-ID}";
 
             // ID of the breakpoint to delete.
-            string breakpointId = "{MY-BREAKPOINT-ID}"; // TODO: Update placeholder value(s).
+            string breakpointId = "{MY-BREAKPOINT-ID}";
 
-            DebuggerResource.DebuggeesResource.BreakpointsResource.DeleteRequest request = clouddebuggerService.Debugger.Debuggees.Breakpoints.Delete(debuggeeId, breakpointId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            DebuggerResource.DebuggeesResource.BreakpointsResource.DeleteRequest request = cloudDebuggerService.Debugger.Debuggees.Breakpoints.Delete(debuggeeId, breakpointId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Empty response = request.Execute();
             // Data.Empty response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API
+// 1. If not already done, enable the Stackdriver Debugger API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
@@ -266,59 +264,59 @@ namespace ClouddebuggerSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Clouddebugger.v2;
+using Google.Apis.CloudDebugger.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
-using Data = Google.Apis.Clouddebugger.v2.Data;
+using Data = Google.Apis.CloudDebugger.v2.Data;
 
 
-namespace ClouddebuggerSample
+namespace CloudDebuggerSample
 {
-    public class ClouddebuggerServiceExample
+    public class CloudDebuggerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
-            ClouddebuggerService clouddebuggerService = new ClouddebuggerService(new BaseClientService.Initializer
+            CloudDebuggerService cloudDebuggerService = new CloudDebuggerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // ID of the debuggee whose breakpoint to get.
-            string debuggeeId = "{MY-DEBUGGEE-ID}"; // TODO: Update placeholder value(s).
+            string debuggeeId = "{MY-DEBUGGEE-ID}";
 
             // ID of the breakpoint to get.
-            string breakpointId = "{MY-BREAKPOINT-ID}"; // TODO: Update placeholder value(s).
+            string breakpointId = "{MY-BREAKPOINT-ID}";
 
-            DebuggerResource.DebuggeesResource.BreakpointsResource.GetRequest request = clouddebuggerService.Debugger.Debuggees.Breakpoints.Get(debuggeeId, breakpointId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            DebuggerResource.DebuggeesResource.BreakpointsResource.GetRequest request = cloudDebuggerService.Debugger.Debuggees.Breakpoints.Get(debuggeeId, breakpointId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.GetBreakpointResponse response = request.Execute();
             // Data.GetBreakpointResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API
+// 1. If not already done, enable the Stackdriver Debugger API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
@@ -330,56 +328,56 @@ namespace ClouddebuggerSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Clouddebugger.v2;
+using Google.Apis.CloudDebugger.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
-using Data = Google.Apis.Clouddebugger.v2.Data;
+using Data = Google.Apis.CloudDebugger.v2.Data;
 
 
-namespace ClouddebuggerSample
+namespace CloudDebuggerSample
 {
-    public class ClouddebuggerServiceExample
+    public class CloudDebuggerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
-            ClouddebuggerService clouddebuggerService = new ClouddebuggerService(new BaseClientService.Initializer
+            CloudDebuggerService cloudDebuggerService = new CloudDebuggerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholder below to desired parameter value for the `List` method:
+
             // ID of the debuggee whose breakpoints to list.
-            string debuggeeId = "{MY-DEBUGGEE-ID}"; // TODO: Update placeholder value(s).
+            string debuggeeId = "{MY-DEBUGGEE-ID}";
 
-            DebuggerResource.DebuggeesResource.BreakpointsResource.ListRequest request = clouddebuggerService.Debugger.Debuggees.Breakpoints.List(debuggeeId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            DebuggerResource.DebuggeesResource.BreakpointsResource.ListRequest request = cloudDebuggerService.Debugger.Debuggees.Breakpoints.List(debuggeeId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ListBreakpointsResponse response = request.Execute();
             // Data.ListBreakpointsResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API
+// 1. If not already done, enable the Stackdriver Debugger API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
@@ -391,59 +389,60 @@ namespace ClouddebuggerSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Clouddebugger.v2;
+using Google.Apis.CloudDebugger.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
-using Data = Google.Apis.Clouddebugger.v2.Data;
+using Data = Google.Apis.CloudDebugger.v2.Data;
 
 
-namespace ClouddebuggerSample
+namespace CloudDebuggerSample
 {
-    public class ClouddebuggerServiceExample
+    public class CloudDebuggerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
-            ClouddebuggerService clouddebuggerService = new ClouddebuggerService(new BaseClientService.Initializer
+            CloudDebuggerService cloudDebuggerService = new CloudDebuggerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholder below to desired parameter value for the `Set` method:
+
             // ID of the debuggee where the breakpoint is to be set.
-            string debuggeeId = "{MY-DEBUGGEE-ID}"; // TODO: Update placeholder value(s).
+            string debuggeeId = "{MY-DEBUGGEE-ID}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.Breakpoint requestBody = new Data.Breakpoint();
+            // TODO: Assign values to desired properties of the `requestBody` object.
 
-            DebuggerResource.DebuggeesResource.BreakpointsResource.SetRequest request = clouddebuggerService.Debugger.Debuggees.Breakpoints.Set(requestBody, debuggeeId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            DebuggerResource.DebuggeesResource.BreakpointsResource.SetRequest request = cloudDebuggerService.Debugger.Debuggees.Breakpoints.Set(requestBody, debuggeeId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.SetBreakpointResponse response = request.Execute();
             // Data.SetBreakpointResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API
+// 1. If not already done, enable the Stackdriver Debugger API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
@@ -455,46 +454,42 @@ namespace ClouddebuggerSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Clouddebugger.v2;
+using Google.Apis.CloudDebugger.v2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
-using Data = Google.Apis.Clouddebugger.v2.Data;
+using Data = Google.Apis.CloudDebugger.v2.Data;
 
 
-namespace ClouddebuggerSample
+namespace CloudDebuggerSample
 {
-    public class ClouddebuggerServiceExample
+    public class CloudDebuggerServiceExample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
-            ClouddebuggerService clouddebuggerService = new ClouddebuggerService(new BaseClientService.Initializer
+            CloudDebuggerService cloudDebuggerService = new CloudDebuggerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            DebuggerResource.DebuggeesResource.ListRequest request = clouddebuggerService.Debugger.Debuggees.List();
+            DebuggerResource.DebuggeesResource.ListRequest request = cloudDebuggerService.Debugger.Debuggees.List();
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ListDebuggeesResponse response = request.Execute();
             // Data.ListDebuggeesResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }

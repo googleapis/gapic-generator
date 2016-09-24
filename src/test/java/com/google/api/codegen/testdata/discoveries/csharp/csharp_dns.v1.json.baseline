@@ -27,14 +27,10 @@ namespace DnsSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -46,22 +42,27 @@ namespace DnsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Create` method:
+
             // Identifies the project addressed by this request.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-            string managedZone = "{MY-MANAGED-ZONE}"; // TODO: Update placeholder value(s).
+            string managedZone = "{MY-MANAGED-ZONE}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.Change requestBody = new Data.Change();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ChangesResource.CreateRequest request = dnsService.Changes.Create(requestBody, project, managedZone);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Change response = request.Execute();
             // Data.Change response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -94,14 +95,10 @@ namespace DnsSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -113,22 +110,26 @@ namespace DnsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // Identifies the project addressed by this request.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-            string managedZone = "{MY-MANAGED-ZONE}"; // TODO: Update placeholder value(s).
+            string managedZone = "{MY-MANAGED-ZONE}";
 
             // The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
-            string changeId = "{MY-CHANGE-ID}"; // TODO: Update placeholder value(s).
+            string changeId = "{MY-CHANGE-ID}";
+
 
             ChangesResource.GetRequest request = dnsService.Changes.Get(project, managedZone, changeId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Change response = request.Execute();
             // Data.Change response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -161,14 +162,10 @@ namespace DnsSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -180,18 +177,22 @@ namespace DnsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // Identifies the project addressed by this request.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-            string managedZone = "{MY-MANAGED-ZONE}"; // TODO: Update placeholder value(s).
+            string managedZone = "{MY-MANAGED-ZONE}";
+
 
             ChangesResource.ListRequest request = dnsService.Changes.List(project, managedZone);
 
             Data.ChangesListResponse response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -201,7 +202,7 @@ namespace DnsSample
                 }
                 foreach (Data.Change change in response.Changes)
                 {
-                    // TODO: Use change
+                    // TODO: Change code below to process each `change` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(change));
                 }
                 request.PageToken = response.NextPageToken;
@@ -237,14 +238,10 @@ namespace DnsSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -256,19 +253,24 @@ namespace DnsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // Identifies the project addressed by this request.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholder below to desired parameter value for the `Create` method:
+
+            // Identifies the project addressed by this request.
+            string project = "{MY-PROJECT}";
+
+
             Data.ManagedZone requestBody = new Data.ManagedZone();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ManagedZonesResource.CreateRequest request = dnsService.ManagedZones.Create(requestBody, project);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ManagedZone response = request.Execute();
             // Data.ManagedZone response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -298,14 +300,10 @@ namespace DnsSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -317,15 +315,19 @@ namespace DnsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // Identifies the project addressed by this request.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-            string managedZone = "{MY-MANAGED-ZONE}"; // TODO: Update placeholder value(s).
+            string managedZone = "{MY-MANAGED-ZONE}";
+
 
             ManagedZonesResource.DeleteRequest request = dnsService.ManagedZones.Delete(project, managedZone);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
         }
@@ -359,14 +361,10 @@ namespace DnsSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -378,19 +376,23 @@ namespace DnsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // Identifies the project addressed by this request.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-            string managedZone = "{MY-MANAGED-ZONE}"; // TODO: Update placeholder value(s).
+            string managedZone = "{MY-MANAGED-ZONE}";
+
 
             ManagedZonesResource.GetRequest request = dnsService.ManagedZones.Get(project, managedZone);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ManagedZone response = request.Execute();
             // Data.ManagedZone response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -423,14 +425,10 @@ namespace DnsSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -442,15 +440,19 @@ namespace DnsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholder below to desired parameter value for the `List` method:
+
             // Identifies the project addressed by this request.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
+
 
             ManagedZonesResource.ListRequest request = dnsService.ManagedZones.List(project);
 
             Data.ManagedZonesListResponse response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -460,7 +462,7 @@ namespace DnsSample
                 }
                 foreach (Data.ManagedZone managedZone in response.ManagedZones)
                 {
-                    // TODO: Use managedZone
+                    // TODO: Change code below to process each `managedZone` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(managedZone));
                 }
                 request.PageToken = response.NextPageToken;
@@ -496,14 +498,10 @@ namespace DnsSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -515,16 +513,20 @@ namespace DnsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholder below to desired parameter value for the `Get` method:
+
             // Identifies the project addressed by this request.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
+
 
             ProjectsResource.GetRequest request = dnsService.Projects.Get(project);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Project response = request.Execute();
             // Data.Project response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -557,14 +559,10 @@ namespace DnsSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -576,18 +574,22 @@ namespace DnsSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // Identifies the project addressed by this request.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-            string managedZone = "{MY-MANAGED-ZONE}"; // TODO: Update placeholder value(s).
+            string managedZone = "{MY-MANAGED-ZONE}";
+
 
             ResourceRecordSetsResource.ListRequest request = dnsService.ResourceRecordSets.List(project, managedZone);
 
             Data.ResourceRecordSetsListResponse response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -597,7 +599,7 @@ namespace DnsSample
                 }
                 foreach (Data.ResourceRecordSet resourceRecordSet in response.Rrsets)
                 {
-                    // TODO: Use resourceRecordSet
+                    // TODO: Change code below to process each `resourceRecordSet` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(resourceRecordSet));
                 }
                 request.PageToken = response.NextPageToken;

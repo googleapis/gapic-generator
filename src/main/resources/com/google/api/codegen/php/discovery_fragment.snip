@@ -7,7 +7,8 @@
 @snippet generateClass(method, body, imports)
   @let api = context.getApi, \
        apiName = api.getName, \
-       serviceTitle = context.getService.getTitle
+       serviceTitle = context.getService.getTitle, \
+       authType = context.getApiaryConfig.getAuthType
     <?php
     /*
      * BEFORE RUNNING:
@@ -15,13 +16,17 @@
      * 1. If not already done, enable the {@serviceTitle}
      *    and check the quota for your project at
      *    https://console.developers.google.com/apis/api/{@apiName}
-     * 2. This sample uses Application Default Credentials for authentication.
-     *    If not already done, install the gcloud CLI from
-     *    https://cloud.google.com/sdk/ and run
-     *    `gcloud beta auth application-default login`
-     * 3. Install the PHP client library with Composer. Check installation
-     *    instructions at https://github.com/google/google-api-php-client.
-     */
+     @if authType == "APPLICATION_DEFAULT_CREDENTIALS"
+       * 2. This sample uses Application Default Credentials for authentication.
+       *    If not already done, install the gcloud CLI from
+       *    https://cloud.google.com/sdk/ and run
+       *    `gcloud beta auth application-default login`
+       * 3. Install the PHP client library with Composer. Check installation
+       *    instructions at https://github.com/google/google-api-php-client.
+     @else
+       * 2. Install the PHP client library with Composer. Check installation
+       *    instructions at https://github.com/google/google-api-php-client.
+     @end
 
     // Autoload Composer.
     require_once __DIR__ . '/vendor/autoload.php';
@@ -33,21 +38,34 @@
     @end
 
     {@body}
+    ?>
   @end
 @end
 
 @snippet generateBody(method)
   @let apiName = context.getSimpleApiName, \
-       serviceName = context.getServiceClassName
-    // Authentication is provided by the `gcloud` tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    // For more information, see
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    $client = new Google_Client();
-    $client->setApplicationName('Google Cloud Platform Sample');
-    $client->useApplicationDefaultCredentials();
-    $client->addScope('https://www.googleapis.com/auth/cloud-platform');
+       serviceName = context.getServiceClassName, \
+       apiaryConfig = context.getApiaryConfig, \
+       authType = apiaryConfig.getAuthType
+    @switch authType
+    @case "APPLICATION_DEFAULT_CREDENTIALS"
+      // Use Application Default Credentials for authentication when running locally.
+      // For more information, see:
+      // https://developers.google.com/identity/protocols/application-default-credentials
+      $client = new Google_Client();
+      $client->setApplicationName('Google Cloud Platform Sample');
+      $client->useApplicationDefaultCredentials();
+      $client->addScope('https://www.googleapis.com/auth/cloud-platform');
+    @case "OAUTH_3L"
+      $client = getClient();
+    @default
+      $client = new Google_Client();
+      $client->setApplicationName('Google Cloud Platform Sample');
 
+      // {@TODO()} Change placeholder below to desired API key:
+      $client->setDeveloperKey('{MY-API-KEY}')
+    @end
+    {@BREAK}
     $service = new {@serviceName}($client);
 
     {@initialize(method)}
@@ -55,6 +73,27 @@
       {@iterableCall(method)}
     @else
       {@compactCall(method)}
+    @end
+    @if authType == "OAUTH_3L"
+
+      function getClient() {
+        // {@TODO()} Change placeholder below to get authentication credentials.
+        @let authInstructionsUrl = apiaryConfig.getAuthInstructionsUrl
+          @if authInstructionsUrl
+            // See: {@authInstructionsUrl}
+          @end
+        @end
+        @if context.hasAuthScopes(method)
+          @let methodName = context.getMethodName(method)
+            //
+            // To use the `{@methodName}` method, authorize using one of the following scopes:
+            @join scope : context.getAuthScopes(method)
+              //   {@scope}
+            @end
+          @end
+        @end
+        return null;
+      }
     @end
   @end
 @end
@@ -64,13 +103,24 @@
        signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
        params = context.getFlatMethodParams(method)
     @if params
+
+      @if context.isSingleton(params)
+        // {@TODO()} Change placeholder below to desired parameter value for the `{@methodName}` method:
+      @else
+        // {@TODO()} Change placeholders below to desired parameter values for the `{@methodName}` method:
+      @end
+
       @join param : params
         @let paramField = context.getField(signatureType, param), \
              paramValue = context.typeDefaultValue(signatureType, paramField), \
              paramSample = context.getDefaultSample(signatureType, paramField), \
              paramDescription = context.getDescription(signatureType.getName, param)
           {@description(paramDescription)}
-          ${@param} = {@paramValue}; // {@TODO()} Update placeholder value(s).{@paramSample}
+          @if paramSample
+            ${@param} = {@paramValue};  // {@paramSample}
+          @else
+            ${@param} = {@paramValue};
+          @end
 
         @end
       @end
@@ -79,12 +129,13 @@
   @end
   @if context.hasRequestField(method)
 
+    ${@requestBodyName()} = new {@context.getRequestClassName(method)}($client);
     @if context.isPatch(method)
-      // {@TODO()} Assign values to the desired properties to be changed.
+      // {@TODO()} Assign values to desired properties of the `{@requestBodyName()}` object to be changed.
     @else
-      // {@TODO()} Assign values to the desired properties.
+      // {@TODO()} Assign values to desired properties of the `{@requestBodyName()}` object.
     @end
-    ${@requestBodyName(method)} = new {@context.getRequestClassName(method)}($client);
+
 
   @end
 @end
@@ -94,21 +145,25 @@
        resourceField = context.getFirstRepeatedField(responseTypeRef), \
        resources = resourceField.getName
     ${@optParamsName()} = array();
+    @if context.hasMediaUpload(method)
+      {@mediaUpload()}
+
+    @end
     do {
-      ${@responseName()} = {@request(method)};
+      ${@responseName()} = {@methodCall(method)};
 
       @if context.isMapField(responseTypeRef, resourceField.getName)
         @let keyName = context.keyTypeName(resourceField), \
              valueName = context.valueTypeName(resourceField)
           foreach (${@responseName()}['{@resources}'] as ${@keyName} => ${@valueName}) {
-            // {@TODO()} Use ${@keyName}, ${@valueName}
+            // {@TODO()} Change code below to process each (${@keyName} => ${@valueName}) element:
             {@printEntry(keyName, valueName)}
           }
         @end
       @else
         @let resourceName = context.elementTypeName(resourceField)
           foreach (${@responseName()}['{@resources}'] as ${@resourceName}) {
-            // {@TODO()} Use {@resourceName}
+            // {@TODO()} Change code below to process each `{@resourceName}` resource:
             {@print(resourceName)}
           }
         @end
@@ -120,17 +175,28 @@
 @end
 
 @private compactCall(method)
-  @if context.isResponseEmpty(method)
-    {@request(method)};
-  @else
-    ${@responseName()} = {@request(method)};
+  @if context.hasMediaUpload(method)
+    {@mediaUpload()}
 
-    // {@TODO()} Use ${@responseName()}
+
+
+  @end
+  @if context.isResponseEmpty(method)
+    {@methodCall(method)};
+  @else
+    ${@responseName()} = {@methodCall(method)};
+
+    // {@TODO()} Change code below to process the `{@responseName()}` object:
     {@print(responseName())}
   @end
 @end
 
-@private request(method)
+@private mediaUpload()
+  // {@TODO()} Add desired media content for upload. For more information, see:
+  // https://developers.google.com/api-client-library/php/guide/media_upload
+@end
+
+@private methodCall(method)
   @let methodName = context.getMethodName(method), \
        resourcesPath = context.getApiaryConfig.getResources(method.getName)
     $service->{@methodPath(resourcesPath)}->{@methodName}({@arguments(method)})
@@ -155,9 +221,9 @@
   @let params = context.getFlatMethodParams(method)
     @if context.hasRequestField(method)
       @if params
-        {@argumentList(params)}, ${@requestBodyName(method)}
+        {@argumentList(params)}, ${@requestBodyName()}
       @else
-        ${@requestBodyName(method)}
+        ${@requestBodyName()}
       @end
     @else
       {@argumentList(params)}
@@ -169,8 +235,8 @@
   optParams
 @end
 
-@private requestBodyName(method)
-  postBody
+@private requestBodyName()
+  requestBody
 @end
 
 @private responseName()

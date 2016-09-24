@@ -27,14 +27,10 @@ namespace StoragetransferSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -48,11 +44,11 @@ namespace StoragetransferSample
 
             V1Resource.GetGoogleServiceAccountRequest request = storagetransferService.V1.GetGoogleServiceAccount();
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.GoogleServiceAccount response = request.Execute();
             // Data.GoogleServiceAccount response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -85,14 +81,10 @@ namespace StoragetransferSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -103,18 +95,22 @@ namespace StoragetransferSample
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
+
+
+            // TODO: Change placeholder below to desired parameter value for the `Get` method:
 
             // The ID of the Google Developers Console project that the Google service account is associated with.
             // Required.
-            string projectId = "{MY-PROJECT-ID}"; // TODO: Update placeholder value(s).
+            string projectId = "{MY-PROJECT-ID}";
+
 
             GoogleServiceAccountsResource.GetRequest request = storagetransferService.GoogleServiceAccounts.Get(projectId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.GoogleServiceAccount response = request.Execute();
             // Data.GoogleServiceAccount response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -147,14 +143,10 @@ namespace StoragetransferSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -166,16 +158,17 @@ namespace StoragetransferSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Assign values to the desired properties.
             Data.TransferJob requestBody = new Data.TransferJob();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             TransferJobsResource.CreateRequest request = storagetransferService.TransferJobs.Create(requestBody);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.TransferJob response = request.Execute();
             // Data.TransferJob response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -208,14 +201,10 @@ namespace StoragetransferSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -227,16 +216,20 @@ namespace StoragetransferSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholder below to desired parameter value for the `Get` method:
+
             // The job to get. Required.
-            string jobName = "{MY-JOB-NAME}"; // TODO: Update placeholder value(s).
+            string jobName = "{MY-JOB-NAME}";
+
 
             TransferJobsResource.GetRequest request = storagetransferService.TransferJobs.Get(jobName);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.TransferJob response = request.Execute();
             // Data.TransferJob response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -269,14 +262,10 @@ namespace StoragetransferSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -293,7 +282,7 @@ namespace StoragetransferSample
             Data.ListTransferJobsResponse response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -303,7 +292,7 @@ namespace StoragetransferSample
                 }
                 foreach (Data.TransferJob transferJob in response.TransferJobs)
                 {
-                    // TODO: Use transferJob
+                    // TODO: Change code below to process each `transferJob` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(transferJob));
                 }
                 request.PageToken = response.NextPageToken;
@@ -339,14 +328,10 @@ namespace StoragetransferSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -358,19 +343,24 @@ namespace StoragetransferSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The name of job to update. Required.
-            string jobName = "{MY-JOB-NAME}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties to be changed.
+            // TODO: Change placeholder below to desired parameter value for the `Patch` method:
+
+            // The name of job to update. Required.
+            string jobName = "{MY-JOB-NAME}";
+
+
             Data.UpdateTransferJobRequest requestBody = new Data.UpdateTransferJobRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
 
             TransferJobsResource.PatchRequest request = storagetransferService.TransferJobs.Patch(requestBody, jobName);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.TransferJob response = request.Execute();
             // Data.TransferJob response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -403,14 +393,10 @@ namespace StoragetransferSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -422,16 +408,20 @@ namespace StoragetransferSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholder below to desired parameter value for the `Cancel` method:
+
             // The name of the operation resource to be cancelled.
-            string name = "{MY-NAME}"; // TODO: Update placeholder value(s).
+            string name = "{MY-NAME}";
+
 
             TransferOperationsResource.CancelRequest request = storagetransferService.TransferOperations.Cancel(name);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Empty response = request.Execute();
             // Data.Empty response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -464,14 +454,10 @@ namespace StoragetransferSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -483,16 +469,20 @@ namespace StoragetransferSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholder below to desired parameter value for the `Delete` method:
+
             // The name of the operation resource to be deleted.
-            string name = "{MY-NAME}"; // TODO: Update placeholder value(s).
+            string name = "{MY-NAME}";
+
 
             TransferOperationsResource.DeleteRequest request = storagetransferService.TransferOperations.Delete(name);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Empty response = request.Execute();
             // Data.Empty response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -525,14 +515,10 @@ namespace StoragetransferSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -544,16 +530,20 @@ namespace StoragetransferSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholder below to desired parameter value for the `Get` method:
+
             // The name of the operation resource.
-            string name = "{MY-NAME}"; // TODO: Update placeholder value(s).
+            string name = "{MY-NAME}";
+
 
             TransferOperationsResource.GetRequest request = storagetransferService.TransferOperations.Get(name);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
             // Data.Operation response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -586,14 +576,10 @@ namespace StoragetransferSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -605,15 +591,19 @@ namespace StoragetransferSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholder below to desired parameter value for the `List` method:
+
             // The value `transferOperations`.
-            string name = "{MY-NAME}"; // TODO: Update placeholder value(s).
+            string name = "{MY-NAME}";
+
 
             TransferOperationsResource.ListRequest request = storagetransferService.TransferOperations.List(name);
 
             Data.ListOperationsResponse response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -623,7 +613,7 @@ namespace StoragetransferSample
                 }
                 foreach (Data.Operation operation in response.Operations)
                 {
-                    // TODO: Use operation
+                    // TODO: Change code below to process each `operation` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(operation));
                 }
                 request.PageToken = response.NextPageToken;
@@ -659,14 +649,10 @@ namespace StoragetransferSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -678,19 +664,24 @@ namespace StoragetransferSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The name of the transfer operation. Required.
-            string name = "{MY-NAME}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholder below to desired parameter value for the `Pause` method:
+
+            // The name of the transfer operation. Required.
+            string name = "{MY-NAME}";
+
+
             Data.PauseTransferOperationRequest requestBody = new Data.PauseTransferOperationRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             TransferOperationsResource.PauseRequest request = storagetransferService.TransferOperations.Pause(requestBody, name);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Empty response = request.Execute();
             // Data.Empty response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -723,14 +714,10 @@ namespace StoragetransferSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -742,19 +729,24 @@ namespace StoragetransferSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The name of the transfer operation. Required.
-            string name = "{MY-NAME}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholder below to desired parameter value for the `Resume` method:
+
+            // The name of the transfer operation. Required.
+            string name = "{MY-NAME}";
+
+
             Data.ResumeTransferOperationRequest requestBody = new Data.ResumeTransferOperationRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             TransferOperationsResource.ResumeRequest request = storagetransferService.TransferOperations.Resume(requestBody, name);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Empty response = request.Execute();
             // Data.Empty response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }

@@ -149,6 +149,11 @@ message MethodConfigProto {
   // Specifies the configuration for paging.
   PageStreamingConfigProto page_streaming = 3;
 
+  // Specifies the configuration for gRPC-streaming responses.
+  // Note that this is for configuring paged gRPC-streaming responses.
+  // Some method can be gRPC-streaming even if this field does not exist.
+  PageStreamingConfigProto grpc_streaming = 13;
+
   // Specifies the configuration for retryable codes.
   // The name must be defined in InterfaceConfigProto::retry_codes_def.
   string retry_codes_name = 4;
