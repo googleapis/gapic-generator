@@ -32,7 +32,6 @@
 @end
 
 @private importSection(service)
-  var arguejs = require('arguejs');
   var configData = require('./{@context.upperCamelToLowerUnderscore(service.getSimpleName)}_client_config');
   var extend = require('extend');
   var gax = require('google-gax');
@@ -385,40 +384,33 @@
        */
     @end
 
-    {@serviceName}.prototype.{@methodName(method)} = function {@methodName(method)}() {
-      var args = arguejs({
-        @if requiredParams
-          {@requiredParameterDefs(requiredParams)},
+    {@serviceName}.prototype.{@methodName(method)} = function {@methodName(method)}(
+        @join field : requiredParams
+          {@fieldParameterName(field)},
         @end
-        @if optionalParams
-          otherArgs: [Object, {}],
-        @end
-        options: [gax.CallOptions],
-        callback: [Function]
-      }, arguments);
+        options,
+        callback) {
+      if (options instanceof Function && callback === undefined) {
+        callback = options;
+        options = {};
+      }
       var req = {
         @join field : requiredParams on ",".add(BREAK)
-          {@field.getSimpleName}: args.{@fieldParameterName(field)}
+          {@field.getSimpleName}: {@fieldParameterName(field)}
         @end
       };
       @join field : optionalParams
         @let paramName = fieldParameterName(field)
-          if ('{@paramName}' in args.otherArgs) {
-            req.{@field.getSimpleName} = args.otherArgs.{@paramName};
+          if ('{@paramName}' in options) {
+            req.{@field.getSimpleName} = options.{@paramName};
           }
         @end
       @end
-      return this._{@methodName(method)}(req, args.options, args.callback);
+      return this._{@methodName(method)}(req, options, callback);
     };
   @end
 @end
 
 @private fieldParameterName(field)
   {@context.wrapIfKeywordOrBuiltIn(context.lowerUnderscoreToLowerCamel(field.getSimpleName))}
-@end
-
-@private requiredParameterDefs(params)
-  @join field : params on ",".add(BREAK)
-    {@fieldParameterName(field)}: {@context.getFieldType(field)}
-  @end
 @end
