@@ -40,10 +40,6 @@ public abstract class RequestObjectParamView {
   public boolean hasDefaultValue() {
     return defaultValue() != null;
   }
-  // Work around a limitation in the snippet language
-  public String defaultValue(String template) {
-    return defaultValue() != null ? String.format(template, defaultValue()) : "";
-  }
 
   public static Builder newBuilder() {
     return new AutoValue_RequestObjectParamView.Builder();

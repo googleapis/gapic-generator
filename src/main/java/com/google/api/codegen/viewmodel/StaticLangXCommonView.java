@@ -23,7 +23,6 @@ import javax.annotation.Nullable;
 public abstract class StaticLangXCommonView implements ViewModel {
   public abstract StaticLangXApiView api();
 
-  @Nullable // TODO: Remove
   public abstract StaticLangXSettingsView settings();
 
   public static Builder newBuilder() {

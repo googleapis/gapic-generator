@@ -31,7 +31,7 @@
         
         {@partialPageStreaming(common.api, common.settings)}
     }
-{@""}
+
 @end
 
 @private settings(api, settings)
@@ -57,7 +57,7 @@
         {
             GaxPreconditions.CheckNotNull(existing, nameof(existing));
             @join call : settings.callSettings
-                {@call.methodName}Settings = existing.{@call.methodName}Settings?.Clone();
+                {@call.memberName} = existing.{@call.memberName}?.Clone();
             @end
         }
         
@@ -78,7 +78,7 @@
                 /// There are no RPC <see cref="StatusCode"/>s eligible for retry for "{@retry.name}" RPC methods.
             @end
             /// </remarks>
-            public static Predicate<RpcException> {@retry.name}RetryFilter { get; } =
+            public static Predicate<RpcException> {@retry.retryFilterMethodName} { get; } =
                 RetrySettings.FilterForStatusCodes({@retryCodes(retry.codeNames)});
 
         @end
@@ -97,7 +97,7 @@
             /// <item><description>Maximum delay: {@retry.maxRetryDelay.getMillis} milliseconds</description></item>
             /// </list>
             /// </remarks>
-            public static BackoffSettings Get{@retry.name}RetryBackoff() => new BackoffSettings
+            public static BackoffSettings {@retry.retryBackoffMethodName}() => new BackoffSettings
             {
                 Delay = TimeSpan.FromMilliseconds({@retry.initialRetryDelay.getMillis}),
                 DelayMultiplier = {@retry.retryDelayMultiplier},
@@ -118,7 +118,7 @@
             /// <item><description>Maximum timeout: {@retry.maxRpcTimeout.getMillis} milliseconds</description></item>
             /// </list>
             /// </remarks>
-            public static BackoffSettings Get{@retry.name}TimeoutBackoff() => new BackoffSettings
+            public static BackoffSettings {@retry.timeoutBackoffMethodName}() => new BackoffSettings
             {
                 Delay = TimeSpan.FromMilliseconds({@retry.initialRpcTimeout.getMillis}),
                 DelayMultiplier = {@retry.rpcTimeoutMultiplier},
@@ -129,11 +129,11 @@
         @join call : settings.callSettings
             /// <summary>
             /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-            /// <see cref="{@api.name}.{@call.methodName}"/> and <see cref="{@api.name}.{@call.methodName}Async"/>.
+            /// <see cref="{@api.name}.{@call.methodName}"/> and <see cref="{@api.name}.{@call.asyncMethodName}"/>.
             /// </summary>
             /// <remarks>
             /// The default <see cref="{@api.name}.{@call.methodName}"/> and
-            /// <see cref="{@api.name}.{@call.methodName}Async"/> <see cref="RetrySettings"/> are:
+            /// <see cref="{@api.name}.{@call.asyncMethodName}"/> <see cref="RetrySettings"/> are:
             /// <list type="bullet">
             /// <item><description>Initial retry delay: {@call.retryParamsView.initialRetryDelay.getMillis} milliseconds</description></item>
             /// <item><description>Retry delay multiplier: {@call.retryParamsView.retryDelayMultiplier}</description></item>
@@ -154,13 +154,13 @@
             /// </list>
             /// Default RPC expiration is {@call.retryParamsView.totalTimeout.getMillis} milliseconds.
             /// </remarks>
-            public CallSettings {@call.methodName}Settings { get; set; } = new CallSettings
+            public CallSettings {@call.memberName} { get; set; } = new CallSettings
             {
                 Timing = CallTiming.FromRetry(new RetrySettings
                 {
-                    RetryBackoff = Get{@call.retryParamsView.name}RetryBackoff(),
-                    TimeoutBackoff = Get{@call.retryParamsView.name}TimeoutBackoff(),
-                    RetryFilter = {@call.retryCodesView.name}RetryFilter,
+                    RetryBackoff = {@call.retryParamsView.retryBackoffMethodName}(),
+                    TimeoutBackoff = {@call.retryParamsView.timeoutBackoffMethodName}(),
+                    RetryFilter = {@call.retryCodesView.retryFilterMethodName},
                     TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.getMillis})),
                 }),
             };
@@ -209,7 +209,7 @@
             /// Path template for a {@format.entityName} resource. Parameters:
             /// <list type="bullet">
             @join param : format.resourceIdParams
-                /// <item><description>{@param.name}</description></item>
+                /// <item><description>{@param.docName}</description></item>
             @end
             /// </list>
             /// </summary>
@@ -219,7 +219,7 @@
             /// Creates a {@format.entityName} resource name from its component IDs.
             /// </summary>
             @join param : format.resourceIdParams
-                /// <param name="{@param.name}Id">The {@param.name} ID.</param>
+                /// <param name="{@param.name}">The {@param.docName} ID.</param>
             @end
             /// <returns>
             /// The full {@format.entityName} resource name.
@@ -317,7 +317,7 @@
             _clientHelper = new ClientHelper(effectiveSettings);
             @join call : api.apiCallableMembers
                 {@call.name} = _clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
-                    GrpcClient.{@call.methodName}Async, GrpcClient.{@call.methodName}, effectiveSettings.{@call.methodName}Settings);
+                    GrpcClient.{@call.asyncMethodName}, GrpcClient.{@call.methodName}, effectiveSettings.{@call.memberName});
             @end
         }
 
@@ -354,15 +354,15 @@
 @private flattenedMethodSync(method, isImpl)
     @if isImpl
         public override {@method.responseTypeName} {@method.name}(
-        {@""}    {@objectParams(method.methodParams)}) => {@method.callableName}.Sync(
-        {@""}        new {@method.apiRequestTypeName}
-        {@""}        {
+            {@objectParams(method.methodParams)}) => {@method.callableName}.Sync(
+                new {@method.apiRequestTypeName}
+                {
                     {@requestProperties(method.forwardingMethodParams)}
-        {@""}        },
-        {@""}        callSettings);
+                },
+                callSettings);
     @else
         public virtual {@method.responseTypeName} {@method.name}(
-        {@""}    {@objectParams(method.methodParams)})
+            {@objectParams(method.methodParams)})
         {
             throw new NotImplementedException();
         }
@@ -372,15 +372,15 @@
 @private flattenedMethodAsyncCallSettings(method, isImpl)
     @if isImpl
         public override {@method.responseTypeName} {@method.name}(
-        {@""}    {@objectParams(method.methodParams)}) => {@method.callableName}.Async(
-        {@""}        new {@method.apiRequestTypeName}
-        {@""}        {
+            {@objectParams(method.methodParams)}) => {@method.callableName}.Async(
+                new {@method.apiRequestTypeName}
+                {
                     {@requestProperties(method.forwardingMethodParams)}
-        {@""}        },
-        {@""}        callSettings);
+                },
+                callSettings);
     @else
         public virtual {@method.responseTypeName} {@method.name}(
-        {@""}    {@objectParams(method.methodParams)})
+            {@objectParams(method.methodParams)})
         {
             throw new NotImplementedException();
         }
@@ -422,18 +422,18 @@
 @private pagedFlattenedMethodAsync(method, isImpl)
     @if isImpl
         public override IPagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
-        {@""}    {@objectParams(method.methodParams)}) => new PagedAsyncEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>(
-        {@""}        {@method.callableName},
-        {@""}        new {@method.apiRequestTypeName}
-        {@""}        {
+            {@objectParams(method.methodParams)}) => new PagedAsyncEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>(
+                {@method.callableName},
+                new {@method.apiRequestTypeName}
+                {
                     {@requestProperties(method.forwardingMethodParams)}
-        {@""}            PageToken = pageToken ?? "",
-        {@""}            PageSize = pageSize ?? 0,
-        {@""}        },
-        {@""}        callSettings);
+                    PageToken = pageToken ?? "",
+                    PageSize = pageSize ?? 0,
+                },
+                callSettings);
     @else
         public virtual IPagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
-        {@""}    {@objectParams(method.methodParams)})
+            {@objectParams(method.methodParams)})
         {
             throw new NotImplementedException();
         }

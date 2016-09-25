@@ -18,8 +18,7 @@ import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -28,27 +27,19 @@ public abstract class ParamWithSimpleDoc {
 
   public static List<RequestObjectParamView> asRequestObjectParamViews(
       List<ParamWithSimpleDoc> ps) {
-    return FluentIterable.from(ps)
-        .transform(
-            new Function<ParamWithSimpleDoc, RequestObjectParamView>() {
-              @Override
-              public RequestObjectParamView apply(ParamWithSimpleDoc p) {
-                return p.asRequestObjectParamView();
-              }
-            })
-        .toList();
+    List<RequestObjectParamView> views = new ArrayList<>();
+    for (ParamWithSimpleDoc p : ps) {
+      views.add(p.asRequestObjectParamView());
+    }
+    return views;
   }
 
   public static List<ParamDocView> asParamDocViews(List<ParamWithSimpleDoc> ps) {
-    return FluentIterable.from(ps)
-        .transform(
-            new Function<ParamWithSimpleDoc, ParamDocView>() {
-              @Override
-              public ParamDocView apply(ParamWithSimpleDoc p) {
-                return p.asParamDocView();
-              }
-            })
-        .toList();
+    List<ParamDocView> views = new ArrayList<>();
+    for (ParamWithSimpleDoc p : ps) {
+      views.add(p.asParamDocView());
+    }
+    return views;
   }
 
   public abstract String name();

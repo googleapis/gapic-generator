@@ -26,6 +26,10 @@ public abstract class RetryParamsDefinitionView {
   @Nullable // Used in C#
   public abstract String name();
 
+  public abstract String retryBackoffMethodName();
+
+  public abstract String timeoutBackoffMethodName();
+
   public abstract Duration totalTimeout();
 
   public abstract Duration initialRetryDelay();
@@ -49,6 +53,10 @@ public abstract class RetryParamsDefinitionView {
     public abstract Builder key(String val);
 
     public abstract Builder name(String val);
+
+    public abstract Builder retryBackoffMethodName(String val);
+
+    public abstract Builder timeoutBackoffMethodName(String val);
 
     public abstract Builder initialRetryDelay(Duration initialDelay);
 

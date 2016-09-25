@@ -12,15 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.csharp;
+package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.tools.framework.model.ProtoElement;
-
-public class CSharpCodePathMapper implements GapicCodePathMapper {
-  @Override
-  public String getOutputPath(ProtoElement element, ApiConfig config) {
-    return CSharpGapicContext.s_getNamespace(element.getFile()).replace('.', '/');
-  }
+/** Specifies synchronous or asynchronous. */
+public enum Synchronicity {
+  Sync,
+  Async
 }

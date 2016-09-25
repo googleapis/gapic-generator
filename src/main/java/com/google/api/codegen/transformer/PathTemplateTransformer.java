@@ -57,7 +57,11 @@ public class PathTemplateTransformer {
       List<ResourceIdParamView> resourceIdParams = new ArrayList<>();
       for (String var : collectionConfig.getNameTemplate().vars()) {
         ResourceIdParamView param =
-            ResourceIdParamView.newBuilder().name(namer.getParamName(var)).templateKey(var).build();
+            ResourceIdParamView.newBuilder()
+                .name(namer.getParamName(var))
+                .docName(namer.getParamDocName(var))
+                .templateKey(var)
+                .build();
         resourceIdParams.add(param);
       }
       function.resourceIdParams(resourceIdParams);

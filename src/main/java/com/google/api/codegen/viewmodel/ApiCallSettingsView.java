@@ -25,6 +25,8 @@ public abstract class ApiCallSettingsView {
 
   public abstract String methodName();
 
+  public abstract String asyncMethodName();
+
   public abstract String requestTypeName();
 
   public abstract String responseTypeName();
@@ -47,10 +49,10 @@ public abstract class ApiCallSettingsView {
 
   public abstract String retryParamsName();
 
-  @Nullable // Used in C#
+  @Nullable
   public abstract RetryCodesDefinitionView retryCodesView();
 
-  @Nullable // Used in C#
+  @Nullable
   public abstract RetryParamsDefinitionView retryParamsView();
 
   @Nullable
@@ -67,6 +69,8 @@ public abstract class ApiCallSettingsView {
     public abstract Builder type(ApiCallableType type);
 
     public abstract Builder methodName(String apiMethodName);
+
+    public abstract Builder asyncMethodName(String apiAsyncMethodName);
 
     public abstract Builder requestTypeName(String val);
 

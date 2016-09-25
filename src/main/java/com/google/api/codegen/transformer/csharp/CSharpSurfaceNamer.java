@@ -21,10 +21,12 @@ import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
@@ -121,22 +123,52 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getParamName(String var) {
+    return varName(Name.from(var).join("id"));
+  }
+
+  @Override
+  public String retryFilterMethodName(String key) {
+    return methodName(Name.from(key).join("retry").join("filter"));
+  }
+
+  /** The method name of the retry backoff for the given key */
+  @Override
+  public String retryBackoffMethodName(String key) {
+    return methodName(Name.from("get").join(key).join("retry").join("backoff"));
+  }
+
+  /** The method name of the timeout backoff for the given key */
+  @Override
+  public String timeoutBackoffMethodName(String key) {
+    return methodName(Name.from("get").join(key).join("timeout").join("backoff"));
+  }
+
+  @Override
   public List<String> getReturnDocLines(
-      SurfaceTransformerContext context, MethodConfig methodConfig, boolean isAsync) {
+      SurfaceTransformerContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
     if (methodConfig.isPageStreaming()) {
       TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
       String resourceTypeName =
           context.getTypeTable().getAndSaveNicknameForElementType(resourceType);
-      String line =
-          isAsync
-              ? "A pageable asynchronous sequence of <see cref=\""
+      switch (synchronicity) {
+        case Sync:
+          return ImmutableList.of(
+              "A pageable sequence of <see cref=\"" + resourceTypeName + "\"/> resources.");
+        case Async:
+          return ImmutableList.of(
+              "A pageable asynchronous sequence of <see cref=\""
                   + resourceTypeName
-                  + "\"/> resources."
-              : "A pageable sequence of <see cref=\"" + resourceTypeName + "\"/> resources.";
-      return ImmutableList.of(line);
+                  + "\"/> resources.");
+      }
     } else {
-      String line = isAsync ? "A Task containing the RPC response." : "The RPC response.";
-      return ImmutableList.of(line);
+      switch (synchronicity) {
+        case Sync:
+          return ImmutableList.of("The RPC response.");
+        case Async:
+          return ImmutableList.of("A Task containing the RPC response.");
+      }
     }
+    throw new IllegalStateException("Invalid Synchronicity: " + synchronicity);
   }
 }

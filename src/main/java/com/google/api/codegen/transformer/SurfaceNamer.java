@@ -68,7 +68,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getNotImplementedString(String feature) {
     return "$ NOT IMPLEMENTED: " + feature + " $";
-    //throw new RuntimeException(feature);
   }
 
   /** The full path to the source file  */
@@ -239,6 +238,26 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return varName(Name.from(var));
   }
 
+  /** The documentation name of a parameter for the given lower-case field name. */
+  public String getParamDocName(String var) {
+    return varName(Name.from(var));
+  }
+
+  /** The method name of the retry filter for the given key */
+  public String retryFilterMethodName(String key) {
+    return getNotImplementedString("SurfaceNamer.retryFilterMethodName");
+  }
+
+  /** The method name of the retry backoff for the given key */
+  public String retryBackoffMethodName(String key) {
+    return getNotImplementedString("SurfaceNamer.retryBackoffMethodName");
+  }
+
+  /** The method name of the timeout backoff for the given key */
+  public String timeoutBackoffMethodName(String key) {
+    return getNotImplementedString("SurfaceNamer.timeoutBackoffMethodName");
+  }
+
   /** The page streaming descriptor name for the given method. */
   public String getPageStreamingDescriptorName(Method method) {
     return varName(Name.upperCamel(method.getSimpleName(), "PageStreamingDescriptor"));
@@ -328,7 +347,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return methodName(Name.upperCamel(method.getSimpleName()));
   }
 
-  /** The name of the surface async surface method which can call the given API method. */
+  /** The name of the async surface method which can call the given API method. */
   public String getAsyncApiMethodName(Method method) {
     return getNotImplementedString("SurfaceNamer.getAsyncApiMethodName");
   }
@@ -377,8 +396,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return new ArrayList<>();
   }
 
+  /** The doc lines that describe the return value for an API method. */
   public List<String> getReturnDocLines(
-      SurfaceTransformerContext context, MethodConfig methodConfig, boolean isAsync) {
+      SurfaceTransformerContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
     return new ArrayList<>();
   }
 
