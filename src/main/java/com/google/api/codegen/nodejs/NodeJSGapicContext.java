@@ -89,7 +89,8 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   }
 
   private String getStubNameFor(Interface service, Method method) {
-    String jsMethodName = upperCamelToLowerCamel(method.getSimpleName());
+    NodeJSSurfaceNamer namer = new NodeJSSurfaceNamer(getApiConfig().getPackageName());
+    String jsMethodName = namer.getApiMethodName(method);
     for (GrpcStubView stub : getStubs(service)) {
       for (String methodName : stub.methodNames()) {
         if (jsMethodName.equals(methodName)) {
