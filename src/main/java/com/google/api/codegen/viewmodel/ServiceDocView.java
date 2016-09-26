@@ -17,6 +17,7 @@ package com.google.api.codegen.viewmodel;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class ServiceDocView {
@@ -25,6 +26,7 @@ public abstract class ServiceDocView {
 
   public abstract List<String> remainingLines();
 
+  @Nullable
   public abstract ApiMethodView exampleApiMethod();
 
   public abstract String apiVarName();

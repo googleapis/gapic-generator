@@ -84,6 +84,7 @@ public abstract class SurfaceTransformerContext {
 
   public MethodTransformerContext asMethodContext(Method method) {
     return MethodTransformerContext.create(
+        this,
         getInterface(),
         getApiConfig(),
         getTypeTable(),

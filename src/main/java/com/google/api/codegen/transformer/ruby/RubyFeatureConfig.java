@@ -16,4 +16,9 @@ package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.transformer.FeatureConfig;
 
-public class RubyFeatureConfig extends FeatureConfig {}
+public class RubyFeatureConfig extends FeatureConfig {
+  @Override
+  public boolean enableMixins() {
+    return true;
+  }
+}

@@ -16,7 +16,7 @@ package com.google.api.codegen.util;
 
 import com.google.api.client.util.Joiner;
 import com.google.common.base.CaseFormat;
-
+import com.google.common.base.Splitter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +70,15 @@ public class Name {
     return new Name(namePieces);
   }
 
+  public static Name upperUnderscore(String... pieces) {
+    List<NamePiece> namePieces = new ArrayList<>();
+    for (String piece : pieces) {
+      validateUpperUnderscore(piece);
+      namePieces.add(new NamePiece(piece, CaseFormat.UPPER_UNDERSCORE));
+    }
+    return new Name(namePieces);
+  }
+
   private static void validateLowerUnderscore(String identifier) {
     if (!isLowerUnderscore(identifier)) {
       throw new IllegalArgumentException(
@@ -81,6 +90,23 @@ public class Name {
     Character underscore = Character.valueOf('_');
     for (Character ch : identifier.toCharArray()) {
       if (!Character.isLowerCase(ch) && !ch.equals(underscore) && !Character.isDigit(ch)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private static void validateUpperUnderscore(String identifier) {
+    if (!isUpperUnderscore(identifier)) {
+      throw new IllegalArgumentException(
+          "Name: identifier not in upper-underscore: '" + identifier + "'");
+    }
+  }
+
+  private static boolean isUpperUnderscore(String identifier) {
+    Character underscore = Character.valueOf('_');
+    for (Character ch : identifier.toCharArray()) {
+      if (!Character.isUpperCase(ch) && !ch.equals(underscore) && !Character.isDigit(ch)) {
         return false;
       }
     }

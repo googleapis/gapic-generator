@@ -33,7 +33,7 @@ public class CSharpCodeGeneratorTest extends GapicTestBase {
       String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
     super(name, idForFactory, gapicConfigFileNames, snippetName);
     getTestDataLocator()
-        .addTestDataSource(com.google.api.codegen.csharp.CSharpGapicContext.class, "");
+        .addTestDataSource(com.google.api.codegen.csharp.CSharpContextCommon.class, "");
   }
 
   /**

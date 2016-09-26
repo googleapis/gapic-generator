@@ -19,23 +19,33 @@ import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
+import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
+import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ApiCallableTransformer {
-  private BundlingTransformer bundlingTransformer;
+  private final BundlingTransformer bundlingTransformer;
+  private final RetryDefinitionsTransformer retryDefinitionsTransformer;
 
   public ApiCallableTransformer() {
     this.bundlingTransformer = new BundlingTransformer();
+    this.retryDefinitionsTransformer = new RetryDefinitionsTransformer();
   }
 
   public List<ApiCallableView> generateStaticLangApiCallables(SurfaceTransformerContext context) {
     List<ApiCallableView> callableMembers = new ArrayList<>();
+    boolean excludeMixins = !context.getFeatureConfig().enableMixins();
 
     for (Method method : context.getSupportedMethods()) {
+      if (excludeMixins && context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
+        continue;
+      }
       callableMembers.addAll(generateStaticLangApiCallables(context.asMethodContext(method)));
     }
 
@@ -64,6 +74,9 @@ public class ApiCallableTransformer {
     apiCallableBuilder.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     apiCallableBuilder.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
     apiCallableBuilder.name(context.getNamer().getCallableName(method));
+    apiCallableBuilder.methodName(context.getNamer().getApiMethodName(method));
+    apiCallableBuilder.asyncMethodName(context.getNamer().getAsyncApiMethodName(method));
+    apiCallableBuilder.memberName(context.getNamer().getSettingsMemberName(method));
     apiCallableBuilder.settingsFunctionName(context.getNamer().getSettingsFunctionName(method));
 
     if (methodConfig.isBundling()) {
@@ -94,6 +107,9 @@ public class ApiCallableTransformer {
           typeTable.getAndSaveNicknameFor(method.getInputType()));
       pagedApiCallableBuilder.responseTypeName(pagedResponseTypeName);
       pagedApiCallableBuilder.name(context.getNamer().getPagedCallableName(method));
+      pagedApiCallableBuilder.methodName(context.getNamer().getApiMethodName(method));
+      pagedApiCallableBuilder.asyncMethodName(context.getNamer().getAsyncApiMethodName(method));
+      pagedApiCallableBuilder.memberName(context.getNamer().getSettingsMemberName(method));
       pagedApiCallableBuilder.settingsFunctionName(
           context.getNamer().getSettingsFunctionName(method));
 
@@ -103,15 +119,28 @@ public class ApiCallableTransformer {
     return apiCallables;
   }
 
-  private List<ApiCallSettingsView> generateApiCallableSettings(MethodTransformerContext context) {
+  public List<ApiCallSettingsView> generateApiCallableSettings(MethodTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
     MethodConfig methodConfig = context.getMethodConfig();
+    Map<String, RetryCodesDefinitionView> retryCodesByKey = new HashMap<>();
+    for (RetryCodesDefinitionView retryCodes :
+        retryDefinitionsTransformer.generateRetryCodesDefinitions(
+            context.getSurfaceTransformerContext())) {
+      retryCodesByKey.put(retryCodes.key(), retryCodes);
+    }
+    Map<String, RetryParamsDefinitionView> retryParamsByKey = new HashMap<>();
+    for (RetryParamsDefinitionView retryParams :
+        retryDefinitionsTransformer.generateRetryParamsDefinitions(
+            context.getSurfaceTransformerContext())) {
+      retryParamsByKey.put(retryParams.key(), retryParams);
+    }
 
     ApiCallSettingsView.Builder settings = ApiCallSettingsView.newBuilder();
 
     settings.methodName(namer.getApiMethodName(method));
+    settings.asyncMethodName(namer.getAsyncApiMethodName(method));
     settings.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     settings.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
     settings.grpcTypeName(
@@ -119,7 +148,9 @@ public class ApiCallableTransformer {
             namer.getGrpcContainerTypeName(context.getTargetInterface())));
     settings.grpcMethodConstant(namer.getGrpcMethodConstant(method));
     settings.retryCodesName(methodConfig.getRetryCodesConfigName());
+    settings.retryCodesView(retryCodesByKey.get(methodConfig.getRetryCodesConfigName()));
     settings.retryParamsName(methodConfig.getRetrySettingsConfigName());
+    settings.retryParamsView(retryParamsByKey.get(methodConfig.getRetrySettingsConfigName()));
 
     String notImplementedPrefix = "ApiCallableTransformer.generateApiCallableSettings - ";
     settings.resourceTypeName(

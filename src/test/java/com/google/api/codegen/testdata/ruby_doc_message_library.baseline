@@ -647,11 +647,35 @@ module Google
         #   @return [Integer]
         # @!attribute [rw] field2
         #   @return [Google::Example::Library::V1::SomeMessage2]
-        class SomeMessage; end
+        # @!attribute [rw] alignment
+        #   @return [Google::Example::Library::V1::SomeMessage::Alignment]
+        class SomeMessage
+          # Tests service with two enums of the same simple name
+          module Alignment
+            GOOD = 0
+
+            NEUTRAL = 1
+
+            EVIL = 2
+          end
+        end
 
         # @!attribute [rw] field1
         #   @return [Integer]
-        class SomeMessage2; end
+        # @!attribute [rw] format
+        #   @return [Google::Example::Library::V1::SomeMessage2::Alignment]
+        class SomeMessage2
+          # Another enum with duplicated simple name
+          module Alignment
+            FLUSH_LEFT = 0
+
+            FLUSH_RIGHT = 1
+
+            CENTERED = 2
+
+            JUSTIFIED = 3
+          end
+        end
 
         # A Shelf contains a collection of books with a theme.
         # @!attribute [rw] name

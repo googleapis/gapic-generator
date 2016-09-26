@@ -26,4 +26,8 @@ public class FeatureConfig {
   public boolean useResourceNameFormatOption(Field field) {
     return resourceNameTypesEnabled() && ResourceNameUtil.hasResourceName(field);
   }
+
+  public boolean enableMixins() {
+    return false;
+  }
 }

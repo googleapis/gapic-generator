@@ -26,7 +26,6 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +47,7 @@ public class PythonImportHandler {
   private final BiMap<ProtoFile, String> fileImports = HashBiMap.create();
 
   /** This constructor is for the main imports of a generated service file */
-  public PythonImportHandler(Interface service, ApiConfig apiConfig) {
+  public PythonImportHandler(Interface service, ApiConfig apiConfig, boolean importEnums) {
     // Add non-service-specific imports.
     addImportStandard("json");
     addImportStandard("os");
@@ -61,7 +60,7 @@ public class PythonImportHandler {
     addImportExternal("google.gax", "path_template");
 
     // only if add enum import if there are enums
-    if (!Iterables.isEmpty(new PythonContextCommon().getEnumTypes(service.getModel()))) {
+    if (importEnums) {
       addImportLocal(apiConfig.getPackageName(), "enums");
     }
 
