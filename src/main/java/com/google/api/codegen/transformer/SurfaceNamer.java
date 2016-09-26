@@ -131,8 +131,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The function name to set the given proto field. */
-  public String getFieldSetFunctionName(Field field) {
-    return getFieldSetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+  public String getFieldSetFunctionName(FeatureConfig featureConfig, Field field) {
+    if (featureConfig.useResourceNameFormatOption(field)) {
+      return getResourceNameFieldSetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+    } else {
+      return getFieldSetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+    }
   }
 
   /** The function name to set a field having the given type and name. */
@@ -157,8 +161,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The function name to get the given proto field. */
-  public String getFieldGetFunctionName(Field field) {
-    return getFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+  public String getFieldGetFunctionName(FeatureConfig featureConfig, Field field) {
+    if (featureConfig.useResourceNameFormatOption(field)) {
+      return getResourceNameFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+    } else {
+      return getFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+    }
   }
 
   /** The function name to get a field having the given type and name. */

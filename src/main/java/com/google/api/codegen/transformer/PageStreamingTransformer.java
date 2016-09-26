@@ -21,7 +21,6 @@ import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorView;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +71,7 @@ public class PageStreamingTransformer {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
+    FeatureConfig featureConfig = context.getFeatureConfig();
 
     PageStreamingDescriptorClassView.Builder desc = PageStreamingDescriptorClassView.newBuilder();
 
@@ -79,8 +79,9 @@ public class PageStreamingTransformer {
     desc.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     desc.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
 
-    TypeRef resourceType = pageStreaming.getResourcesField().getType();
-    desc.resourceTypeName(context.getTypeTable().getAndSaveNicknameForElementType(resourceType));
+    desc.resourceTypeName(
+        namer.getAndSaveElementFieldTypeName(
+            featureConfig, typeTable, pageStreaming.getResourcesField()));
 
     TypeRef tokenType = pageStreaming.getResponseTokenField().getType();
     desc.tokenTypeName(typeTable.getAndSaveNicknameFor(tokenType));
@@ -88,17 +89,17 @@ public class PageStreamingTransformer {
     desc.defaultTokenValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(tokenType));
 
     desc.requestTokenSetFunction(
-        namer.getFieldSetFunctionName(pageStreaming.getRequestTokenField()));
+        namer.getFieldSetFunctionName(featureConfig, pageStreaming.getRequestTokenField()));
     if (pageStreaming.hasPageSizeField()) {
       desc.requestPageSizeSetFunction(
-          namer.getFieldSetFunctionName(pageStreaming.getPageSizeField()));
+          namer.getFieldSetFunctionName(featureConfig, pageStreaming.getPageSizeField()));
       desc.requestPageSizeGetFunction(
-          namer.getFieldGetFunctionName(pageStreaming.getPageSizeField()));
+          namer.getFieldGetFunctionName(featureConfig, pageStreaming.getPageSizeField()));
     }
     desc.responseTokenGetFunction(
-        namer.getFieldGetFunctionName(pageStreaming.getResponseTokenField()));
+        namer.getFieldGetFunctionName(featureConfig, pageStreaming.getResponseTokenField()));
     desc.resourcesFieldGetFunction(
-        namer.getFieldGetFunctionName(pageStreaming.getResourcesField()));
+        namer.getFieldGetFunctionName(featureConfig, pageStreaming.getResourcesField()));
 
     return desc.build();
   }

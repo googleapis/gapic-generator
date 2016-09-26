@@ -230,14 +230,9 @@ public class ApiMethodTransformer {
             .getNamer()
             .getAndSaveElementFieldTypeName(
                 context.getFeatureConfig(), context.getTypeTable(), resourceField);
-    String resourceFieldGetFunctionName;
-    if (context.getFeatureConfig().useResourceNameFormatOption(resourceField)) {
-      resourceFieldGetFunctionName =
-          namer.getResourceNameFieldGetFunctionName(
-              resourceField.getType(), Name.from(resourceField.getSimpleName()));
-    } else {
-      resourceFieldGetFunctionName = namer.getFieldGetFunctionName(resourceField);
-    }
+    String resourceFieldGetFunctionName =
+        namer.getFieldGetFunctionName(context.getFeatureConfig(), resourceField);
+
     methodViewBuilder.listMethod(
         ListMethodDetailView.newBuilder()
             .requestTypeName(requestTypeName)
@@ -524,14 +519,7 @@ public class ApiMethodTransformer {
       elementTypeName = namer.getAndSaveElementFieldTypeName(featureConfig, typeTable, field);
     }
 
-    String setCallName;
-    if (featureConfig.useResourceNameFormatOption(field)) {
-      setCallName =
-          namer.getResourceNameFieldSetFunctionName(
-              field.getType(), Name.from(field.getSimpleName()));
-    } else {
-      setCallName = namer.getFieldSetFunctionName(field);
-    }
+    String setCallName = namer.getFieldSetFunctionName(featureConfig, field);
 
     RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
     param.name(namer.getVariableName(field));
