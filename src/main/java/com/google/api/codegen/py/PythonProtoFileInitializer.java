@@ -21,11 +21,12 @@ public class PythonProtoFileInitializer implements PythonSnippetSetInputInitiali
 
   @Override
   public PythonImportHandler getImportHandler(ProtoFile file) {
-    return new PythonImportHandler(file, new PythonEnumSymbolTable(file.getModel()));
+    return new PythonImportHandler(file);
   }
 
   @Override
   public ImmutableMap<String, Object> getGlobalMap(ProtoFile file) {
-    return ImmutableMap.of("file", (Object) file);
+    return ImmutableMap.of(
+        "file", (Object) file, "enumTable", new PythonEnumSymbolTable(file.getModel()));
   }
 }

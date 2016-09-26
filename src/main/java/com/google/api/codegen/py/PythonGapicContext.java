@@ -120,17 +120,20 @@ public class PythonGapicContext extends GapicContext {
   }
 
   /** Returns type information for a field in Sphinx docstring style. */
-  private String fieldTypeCardinalityComment(Field field, PythonImportHandler importHandler) {
-    return typeCardinalityComment(field.getType(), importHandler);
+  private String fieldTypeCardinalityComment(
+      Field field, PythonImportHandler importHandler, PythonEnumSymbolTable enumTable) {
+    return typeCardinalityComment(field.getType(), importHandler, enumTable);
   }
 
-  private String typeCardinalityComment(TypeRef type, PythonImportHandler importHandler) {
+  private String typeCardinalityComment(
+      TypeRef type, PythonImportHandler importHandler, PythonEnumSymbolTable enumTable) {
     boolean closingBrace = false;
     String prefix;
     if (type.getCardinality() == Cardinality.REPEATED) {
       if (type.isMap()) {
         prefix =
-            String.format("dict[%s -> ", fieldTypeComment(type.getMapKeyField(), importHandler));
+            String.format(
+                "dict[%s -> ", fieldTypeComment(type.getMapKeyField(), importHandler, enumTable));
       } else {
         prefix = "list[";
       }
@@ -138,20 +141,22 @@ public class PythonGapicContext extends GapicContext {
     } else {
       prefix = "";
     }
-    String typeComment = typeComment(type, importHandler);
+    String typeComment = typeComment(type, importHandler, enumTable);
     return String.format("%s%s%s", prefix, typeComment, closingBrace ? "]" : "");
   }
 
   /** Returns type information for a field in Sphinx docstring style. */
-  private String fieldTypeComment(Field field, PythonImportHandler importHandler) {
-    return typeComment(field.getType(), importHandler);
+  private String fieldTypeComment(
+      Field field, PythonImportHandler importHandler, PythonEnumSymbolTable enumTable) {
+    return typeComment(field.getType(), importHandler, enumTable);
   }
 
   private String enumClassName(EnumType enumType, PythonEnumSymbolTable enumTable) {
     return "enums." + pythonCommon.wrapIfKeywordOrBuiltIn(enumTable.lookupName(enumType));
   }
 
-  private String typeComment(TypeRef type, PythonImportHandler importHandler) {
+  private String typeComment(
+      TypeRef type, PythonImportHandler importHandler, PythonEnumSymbolTable enumTable) {
     switch (type.getKind()) {
       case TYPE_MESSAGE:
         return ":class:`" + importHandler.elementPath(type.getMessageType(), true) + "`";
@@ -159,7 +164,7 @@ public class PythonGapicContext extends GapicContext {
         return "enum :class:`"
             + getApiConfig().getPackageName()
             + "."
-            + enumClassName(type.getEnumType(), importHandler.getEnumTable())
+            + enumClassName(type.getEnumType(), enumTable)
             + "`";
       default:
         if (type.isPrimitive()) {
@@ -184,23 +189,30 @@ public class PythonGapicContext extends GapicContext {
 
   /** Alternative way of calling fieldComment for proto fields. */
   private String fieldComment(
-      String name, Field field, PythonImportHandler importHandler, String paramComment) {
+      String name,
+      Field field,
+      PythonImportHandler importHandler,
+      PythonEnumSymbolTable enumTable,
+      String paramComment) {
     if (paramComment == null) {
       paramComment = getSphinxifiedScopedDescription(field);
     }
-    return fieldComment(name, fieldTypeCardinalityComment(field, importHandler), paramComment);
+    return fieldComment(
+        name, fieldTypeCardinalityComment(field, importHandler, enumTable), paramComment);
   }
 
   /**
    * Return comments lines for a given message, consisting of proto doc and argument type
    * documentation.
    */
-  public List<String> messageComments(MessageType msg, PythonImportHandler importHandler) {
+  public List<String> messageComments(
+      MessageType msg, PythonImportHandler importHandler, PythonEnumSymbolTable enumTable) {
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
     paramTypesBuilder.append("Attributes:\n");
     for (Field field : msg.getFields()) {
-      paramTypesBuilder.append(fieldComment(field.getSimpleName(), field, importHandler, null));
+      paramTypesBuilder.append(
+          fieldComment(field.getSimpleName(), field, importHandler, enumTable, null));
     }
     String paramTypes = paramTypesBuilder.toString();
     // Generate comment contents
@@ -221,7 +233,10 @@ public class PythonGapicContext extends GapicContext {
    */
   @Nullable
   private String returnTypeComment(
-      Method method, MethodConfig config, PythonImportHandler importHandler) {
+      Method method,
+      MethodConfig config,
+      PythonImportHandler importHandler,
+      PythonEnumSymbolTable enumTable) {
     MessageType returnMessageType = method.getOutputMessage();
     if (PythonProtoElements.isEmptyMessage(returnMessageType)) {
       return null;
@@ -236,7 +251,8 @@ public class PythonGapicContext extends GapicContext {
       return "Returns:"
           + "\n  A :class:`google.gax.PageIterator` instance. By default, this"
           + "\n  is an iterable of "
-          + fieldTypeComment(config.getPageStreaming().getResourcesField(), importHandler)
+          + fieldTypeComment(
+              config.getPageStreaming().getResourcesField(), importHandler, enumTable)
           + " instances."
           + "\n  This object can also be configured to iterate over the pages"
           + "\n  of the response through the `CallOptions` parameter.";
@@ -271,7 +287,10 @@ public class PythonGapicContext extends GapicContext {
    * type documentation.
    */
   public List<String> methodSignatureComments(
-      Interface service, Method method, PythonImportHandler importHandler) {
+      Interface service,
+      Method method,
+      PythonImportHandler importHandler,
+      PythonEnumSymbolTable enumTable) {
     MethodConfig config = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
 
     StringBuilder contentBuilder = new StringBuilder();
@@ -281,7 +300,7 @@ public class PythonGapicContext extends GapicContext {
     if (method.getRequestStreaming()) {
       contentBuilder.append(
           "  requests (iterator["
-              + typeComment(method.getInputType(), importHandler)
+              + typeComment(method.getInputType(), importHandler, enumTable)
               + "]): The input objects.\n");
     } else {
       for (Field field :
@@ -294,13 +313,14 @@ public class PythonGapicContext extends GapicContext {
                   name,
                   field,
                   importHandler,
+                  enumTable,
                   "The maximum number of resources contained in the\n"
                       + "underlying API response. If page streaming is performed per-\n"
                       + "resource, this parameter does not affect the return value. If page\n"
                       + "streaming is performed per-page, this determines the maximum number\n"
                       + "of resources in a page."));
         } else {
-          contentBuilder.append(fieldComment(name, field, importHandler, null));
+          contentBuilder.append(fieldComment(name, field, importHandler, enumTable, null));
         }
       }
     }
@@ -309,7 +329,7 @@ public class PythonGapicContext extends GapicContext {
             + "Overrides the default\n    settings for this call, e.g, timeout, retries etc.");
 
     // return type
-    String returnType = returnTypeComment(method, config, importHandler);
+    String returnType = returnTypeComment(method, config, importHandler, enumTable);
     if (returnType != null) {
       contentBuilder.append("\n\n" + returnType);
     }
@@ -340,20 +360,23 @@ public class PythonGapicContext extends GapicContext {
   }
 
   /** Get return type string, or an empty string if there is no return type. */
-  public String returnTypeOrEmpty(Method method, PythonImportHandler importHandler) {
+  public String returnTypeOrEmpty(
+      Method method, PythonImportHandler importHandler, PythonEnumSymbolTable enumTable) {
     TypeRef returnType = method.getOutputType();
     return messages().isEmptyType(returnType)
         ? ""
-        : typeCardinalityComment(returnType, importHandler);
+        : typeCardinalityComment(returnType, importHandler, enumTable);
   }
 
   /** Return the default value for the given field. Return null if there is no default value. */
-  public String defaultValue(Field field, PythonImportHandler importHandler) {
-    return defaultValue(field.getType(), importHandler);
+  public String defaultValue(
+      Field field, PythonImportHandler importHandler, PythonEnumSymbolTable enumTable) {
+    return defaultValue(field.getType(), importHandler, enumTable);
   }
 
   /** Return the default value for the given type. Return null if there is no default value. */
-  public String defaultValue(TypeRef type, PythonImportHandler importHandler) {
+  public String defaultValue(
+      TypeRef type, PythonImportHandler importHandler, PythonEnumSymbolTable enumTable) {
     // Return empty array if the type is repeated.
     if (type.getCardinality() == Cardinality.REPEATED) {
       return "[]";
@@ -365,7 +388,7 @@ public class PythonGapicContext extends GapicContext {
         Preconditions.checkArgument(
             type.getEnumType().getValues().size() > 0, "enum must have a value");
         return "enums."
-            + importHandler.getEnumTable().lookupName(type.getEnumType())
+            + enumTable.lookupName(type.getEnumType())
             + "."
             + type.getEnumType().getValues().get(0).getSimpleName();
       default:

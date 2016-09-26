@@ -62,7 +62,7 @@
 @end
 
 @private enumSection(enum)
-    class {@context.python.wrapIfKeywordOrBuiltIn(importHandler.getEnumTable.lookupName(enum))}(object):
+    class {@context.python.wrapIfKeywordOrBuiltIn(enumTable.lookupName(enum))}(object):
         {@enumComments(enum)}
         @join value : enum.getValues
             {@context.python.wrapIfKeywordOrBuiltIn(value.getSimpleName)} = {@value.getNumber}
@@ -70,7 +70,7 @@
 @end
 
 @private enumConstants()
-    @join enum : importHandler.getEnumTable.getEnums on BREAK.add(BREAK).add(BREAK)
+    @join enum : enumTable.getEnums on BREAK.add(BREAK).add(BREAK)
         {@enumSection(enum)}
     @end
 @end
