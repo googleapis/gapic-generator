@@ -53,7 +53,11 @@ var PAGE_DESCRIPTORS = {
   listStrings: new gax.PageDescriptor(
       'page_token',
       'next_page_token',
-      'strings')
+      'strings'),
+  findRelatedBooks: new gax.PageDescriptor(
+      'page_token',
+      'next_page_token',
+      'names')
 };
 
 /**
@@ -149,6 +153,7 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
     'addComments',
     'getBookFromArchive',
     'updateBookIndex',
+    'findRelatedBooks',
     'addTag'
   ];
   libraryServiceStubMethods.forEach(function(methodName) {
@@ -996,6 +1001,52 @@ LibraryServiceApi.prototype.updateBookIndex = function updateBookIndex() {
     index_map: args.indexMap
   };
   return this._updateBookIndex(req, args.options, args.callback);
+};
+
+/**
+ * @param {string[]} names
+ * @param {string[]} shelves
+ * @param {Object=} otherArgs
+ * @param {number=} otherArgs.pageSize
+ *   The maximum number of resources contained in the underlying API
+ *   response. If page streaming is performed per-resource, this
+ *   parameter does not affect the return value. If page streaming is
+ *   performed per-page, this determines the maximum number of
+ *   resources in a page.
+ * @param {gax.CallOptions=} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @returns {Stream}
+ *   An object stream. By default, this emits a string on 'data' event.
+ *   This object can also be configured to emit
+ *   pages of the responses through the options parameter.
+ *
+ * @example
+ *
+ * var api = libraryV1.libraryServiceApi();
+ * var namesElement = '';
+ * var names = [namesElement];
+ * var shelves = [];
+ * api.findRelatedBooks(names, shelves).on('data', function(element) {
+ *     // doThingsWith(element)
+ * });
+ */
+LibraryServiceApi.prototype.findRelatedBooks = function findRelatedBooks() {
+  var args = arguejs({
+    names: Array,
+    shelves: Array,
+    otherArgs: [Object, {}],
+    options: [gax.CallOptions],
+    callback: [Function]
+  }, arguments);
+  var req = {
+    names: args.names,
+    shelves: args.shelves
+  };
+  if ('pageSize' in args.otherArgs) {
+    req.page_size = args.otherArgs.pageSize;
+  }
+  return this._findRelatedBooks(req, args.options, args.callback);
 };
 
 /**

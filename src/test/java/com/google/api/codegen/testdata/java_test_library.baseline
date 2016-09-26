@@ -28,6 +28,8 @@ import com.google.example.library.v1.CreateBookRequest;
 import com.google.example.library.v1.CreateShelfRequest;
 import com.google.example.library.v1.DeleteBookRequest;
 import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.FindRelatedBooksResponse;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
@@ -643,6 +645,38 @@ public class LibraryServiceTest {
     Assert.assertEquals(name, actualRequest.getNameAsResource());
     Assert.assertEquals(indexName, actualRequest.getIndexName());
     Assert.assertEquals(indexMap, actualRequest.getIndexMap());
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void findRelatedBooksTest() {
+    String nextPageToken = "";
+    BookName namesElement2 = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+    List<BookName> names2 = Arrays.asList(namesElement2);
+    FindRelatedBooksResponse expectedResponse = FindRelatedBooksResponse.newBuilder()
+      .setNextPageToken(nextPageToken)
+      .addAllNamesWithResources(names2)
+      .build();
+    List<GeneratedMessageV3> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    mockLibraryService.setResponses(expectedResponses);
+
+    BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+    List<BookName> names = Arrays.asList(namesElement);
+    List<ShelfName> shelves = new ArrayList<>();
+
+    PagedListResponse<FindRelatedBooksRequest, FindRelatedBooksResponse, String> pagedListResponse = api.findRelatedBooks(names, shelves);
+
+    List<String> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
+    Assert.assertEquals(1, resources.size());
+    Assert.assertEquals(expectedResponse.getNamesList().get(0), resources.get(0));
+
+    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    FindRelatedBooksRequest actualRequest = (FindRelatedBooksRequest)actualRequests.get(0);
+
+    Assert.assertEquals(names, actualRequest.getNamesListAsResources());
+    Assert.assertEquals(shelves, actualRequest.getShelvesListAsResources());
   }
 
   @Test

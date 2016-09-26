@@ -84,6 +84,7 @@ namespace Google.Example.Library.V1
             AddCommentsSettings = existing.AddCommentsSettings?.Clone();
             GetBookFromArchiveSettings = existing.GetBookFromArchiveSettings?.Clone();
             UpdateBookIndexSettings = existing.UpdateBookIndexSettings?.Clone();
+            FindRelatedBooksSettings = existing.FindRelatedBooksSettings?.Clone();
             AddTagSettings = existing.AddTagSettings?.Clone();
         }
 
@@ -661,6 +662,39 @@ namespace Google.Example.Library.V1
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
         public CallSettings UpdateBookIndexSettings { get; set; } = new CallSettings
+        {
+            Timing = CallTiming.FromRetry(new RetrySettings
+            {
+                RetryBackoff = GetDefaultRetryBackoff(),
+                TimeoutBackoff = GetDefaultTimeoutBackoff(),
+                RetryFilter = IdempotentRetryFilter,
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
+        };
+
+        /// <summary>
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
+        /// <see cref="LibraryServiceClient.FindRelatedBooks"/> and <see cref="LibraryServiceClient.FindRelatedBooksAsync"/>.
+        /// </summary>
+        /// <remarks>
+        /// The default <see cref="LibraryServiceClient.FindRelatedBooks"/> and
+        /// <see cref="LibraryServiceClient.FindRelatedBooksAsync"/> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description><see cref="StatusCode.DeadlineExceeded"/></description></item>
+        /// <item><description><see cref="StatusCode.Unavailable"/></description></item>
+        /// </list>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public CallSettings FindRelatedBooksSettings { get; set; } = new CallSettings
         {
             Timing = CallTiming.FromRetry(new RetrySettings
             {
@@ -1690,6 +1724,50 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
+        ///
+        /// </summary>
+        /// <param name="names"></param>
+        /// <param name="shelves"></param>
+        /// <param name="pageToken">The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.</param>
+        /// <param name="pageSize">The size of page to request.
+        /// The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A pageable asynchronous sequence of string resources.</returns>
+        public virtual IPagedAsyncEnumerable<FindRelatedBooksResponse, string> FindRelatedBooksAsync(
+            IEnumerable<string> names,
+            IEnumerable<string> shelves,
+            string pageToken = null,
+            int? pageSize = null,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="names"></param>
+        /// <param name="shelves"></param>
+        /// <param name="pageToken">The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.</param>
+        /// <param name="pageSize">The size of page to request.
+        /// The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A pageable sequence of string resources.</returns>
+        public virtual IPagedEnumerable<FindRelatedBooksResponse, string> FindRelatedBooks(
+            IEnumerable<string> names,
+            IEnumerable<string> shelves,
+            string pageToken = null,
+            int? pageSize = null,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Adds a tag to the book. This RPC is a mixin.
         /// </summary>
         /// <param name="resource">
@@ -1767,6 +1845,7 @@ namespace Google.Example.Library.V1
         private readonly ApiCall<AddCommentsRequest, Empty> _callAddComments;
         private readonly ApiCall<GetBookFromArchiveRequest, Book> _callGetBookFromArchive;
         private readonly ApiCall<UpdateBookIndexRequest, Empty> _callUpdateBookIndex;
+        private readonly ApiCall<FindRelatedBooksRequest, FindRelatedBooksResponse> _callFindRelatedBooks;
         private readonly ApiCall<AddTagRequest, AddTagResponse> _callAddTag;
 
         public LibraryServiceClientImpl(LibraryService.LibraryServiceClient grpcClient, LibraryServiceSettings settings)
@@ -1806,6 +1885,8 @@ namespace Google.Example.Library.V1
                 GrpcClient.GetBookFromArchiveAsync, GrpcClient.GetBookFromArchive, effectiveSettings.GetBookFromArchiveSettings);
             _callUpdateBookIndex = _clientHelper.BuildApiCall<UpdateBookIndexRequest, Empty>(
                 GrpcClient.UpdateBookIndexAsync, GrpcClient.UpdateBookIndex, effectiveSettings.UpdateBookIndexSettings);
+            _callFindRelatedBooks = _clientHelper.BuildApiCall<FindRelatedBooksRequest, FindRelatedBooksResponse>(
+                GrpcClient.FindRelatedBooksAsync, GrpcClient.FindRelatedBooks, effectiveSettings.FindRelatedBooksSettings);
             _callAddTag = _clientHelper.BuildApiCall<AddTagRequest, AddTagResponse>(
                 GrpcClient.AddTagAsync, GrpcClient.AddTag, effectiveSettings.AddTagSettings);
         }
@@ -2531,6 +2612,62 @@ namespace Google.Example.Library.V1
                 callSettings);
 
         /// <summary>
+        ///
+        /// </summary>
+        /// <param name="names"></param>
+        /// <param name="shelves"></param>
+        /// <param name="pageToken">The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.</param>
+        /// <param name="pageSize">The size of page to request.
+        /// The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A pageable asynchronous sequence of string resources.</returns>
+        public override IPagedAsyncEnumerable<FindRelatedBooksResponse, string> FindRelatedBooksAsync(
+            IEnumerable<string> names,
+            IEnumerable<string> shelves,
+            string pageToken = null,
+            int? pageSize = null,
+            CallSettings callSettings = null) => new PagedAsyncEnumerable<FindRelatedBooksRequest, FindRelatedBooksResponse, string>(
+                _callFindRelatedBooks,
+                new FindRelatedBooksRequest
+                {
+                    Names = { names },
+                    Shelves = { shelves },
+                    PageToken = pageToken ?? "",
+                    PageSize = pageSize ?? 0,
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="names"></param>
+        /// <param name="shelves"></param>
+        /// <param name="pageToken">The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.</param>
+        /// <param name="pageSize">The size of page to request.
+        /// The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A pageable sequence of string resources.</returns>
+        public override IPagedEnumerable<FindRelatedBooksResponse, string> FindRelatedBooks(
+            IEnumerable<string> names,
+            IEnumerable<string> shelves,
+            string pageToken = null,
+            int? pageSize = null,
+            CallSettings callSettings = null) => new PagedEnumerable<FindRelatedBooksRequest, FindRelatedBooksResponse, string>(
+                _callFindRelatedBooks,
+                new FindRelatedBooksRequest
+                {
+                    Names = { names },
+                    Shelves = { shelves },
+                    PageToken = pageToken ?? "",
+                    PageSize = pageSize ?? 0,
+                },
+                callSettings);
+
+        /// <summary>
         /// Adds a tag to the book. This RPC is a mixin.
         /// </summary>
         /// <param name="resource">
@@ -2596,6 +2733,13 @@ namespace Google.Example.Library.V1
     public partial class ListStringsResponse : IPageResponse<string>
     {
         public IEnumerator<string> GetEnumerator() => Strings.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    }
+
+    public partial class FindRelatedBooksRequest : IPageRequest { }
+    public partial class FindRelatedBooksResponse : IPageResponse<string>
+    {
+        public IEnumerator<string> GetEnumerator() => Names.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 

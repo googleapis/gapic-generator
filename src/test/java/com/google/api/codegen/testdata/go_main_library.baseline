@@ -58,6 +58,7 @@ type CallOptions struct {
     AddComments []gax.CallOption
     GetBookFromArchive []gax.CallOption
     UpdateBookIndex []gax.CallOption
+    FindRelatedBooks []gax.CallOption
     AddTag []gax.CallOption
 }
 
@@ -104,6 +105,7 @@ func defaultCallOptions() *CallOptions {
         AddComments: retry[[2]string{"default", "non_idempotent"}],
         GetBookFromArchive: retry[[2]string{"default", "idempotent"}],
         UpdateBookIndex: retry[[2]string{"default", "idempotent"}],
+        FindRelatedBooks: retry[[2]string{"default", "idempotent"}],
         AddTag: retry[[2]string{"default", "non_idempotent"}],
     }
 }
@@ -478,6 +480,33 @@ func (c *Client) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBookI
         return err
     }, c.CallOptions.UpdateBookIndex...)
     return err
+}
+
+
+
+func (c *Client) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelatedBooksRequest) *StringIterator {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    it := &StringIterator{}
+    it.apiCall = func() error {
+        var resp *librarypb.FindRelatedBooksResponse
+        err := gax.Invoke(ctx, func (ctx context.Context) error {
+            var err error
+            req.PageToken = it.nextPageToken
+            req.PageSize = it.pageSize
+            resp, err = c.client.FindRelatedBooks(ctx, req)
+            return err
+        }, c.CallOptions.FindRelatedBooks...)
+        if err != nil {
+            return err
+        }
+        if resp.NextPageToken == "" {
+            it.atLastPage = true
+        }
+        it.nextPageToken = resp.NextPageToken
+        it.items = resp.Names
+        return nil
+    }
+    return it
 }
 
 

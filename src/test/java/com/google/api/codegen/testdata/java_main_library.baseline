@@ -25,6 +25,8 @@ import com.google.example.library.v1.CreateBookRequest;
 import com.google.example.library.v1.CreateShelfRequest;
 import com.google.example.library.v1.DeleteBookRequest;
 import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.FindRelatedBooksResponse;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
@@ -146,6 +148,8 @@ public class LibraryServiceApi implements AutoCloseable {
   private final ApiCallable<AddCommentsRequest, Empty> addCommentsCallable;
   private final ApiCallable<GetBookFromArchiveRequest, Book> getBookFromArchiveCallable;
   private final ApiCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable;
+  private final ApiCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable;
+  private final ApiCallable<FindRelatedBooksRequest, PagedListResponse<FindRelatedBooksRequest,FindRelatedBooksResponse,String>> findRelatedBooksPagedCallable;
   private final ApiCallable<AddTagRequest, AddTagResponse> addTagCallable;
   private final ApiCallable<AddLabelRequest, AddLabelResponse> addLabelCallable;
 
@@ -282,6 +286,9 @@ public class LibraryServiceApi implements AutoCloseable {
     this.addCommentsCallable = ApiCallable.create(settings.addCommentsSettings(), this.channel, this.executor);
     this.getBookFromArchiveCallable = ApiCallable.create(settings.getBookFromArchiveSettings(), this.channel, this.executor);
     this.updateBookIndexCallable = ApiCallable.create(settings.updateBookIndexSettings(), this.channel, this.executor);
+    this.findRelatedBooksCallable = ApiCallable.create(settings.findRelatedBooksSettings(), this.channel, this.executor);
+    this.findRelatedBooksPagedCallable =
+        ApiCallable.createPagedVariant(settings.findRelatedBooksSettings(), this.channel, this.executor);
     this.addTagCallable = ApiCallable.create(settings.addTagSettings(), this.channel, this.executor);
     this.addLabelCallable = ApiCallable.create(settings.addLabelSettings(), this.channel, this.executor);
 
@@ -1632,6 +1639,122 @@ public class LibraryServiceApi implements AutoCloseable {
    */
   public final ApiCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable() {
     return updateBookIndexCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
+   *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
+   *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
+   *   for (String element : libraryServiceApi.findRelatedBooks(names, shelves).iterateAllElements()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param names
+   * @param shelves
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final PagedListResponse<FindRelatedBooksRequest,FindRelatedBooksResponse,String> findRelatedBooks(List<BookName> names, List<ShelfName> shelves) {
+    FindRelatedBooksRequest request =
+        FindRelatedBooksRequest.newBuilder()
+        .addAllNamesWithResources(names)
+        .addAllShelvesWithResources(shelves)
+        .build();
+    return findRelatedBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
+   *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
+   *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
+   *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
+   *     .addAllNamesWithResources(names)
+   *     .addAllShelvesWithResources(shelves)
+   *     .build();
+   *   for (String element : libraryServiceApi.findRelatedBooks(request).iterateAllElements()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  private final PagedListResponse<FindRelatedBooksRequest,FindRelatedBooksResponse,String> findRelatedBooks(FindRelatedBooksRequest request) {
+    return findRelatedBooksPagedCallable()
+        .call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
+   *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
+   *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
+   *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
+   *     .addAllNamesWithResources(names)
+   *     .addAllShelvesWithResources(shelves)
+   *     .build();
+   *   ListenableFuture&lt;PagedListResponse&lt;FindRelatedBooksRequest,FindRelatedBooksResponse,String&gt;&gt; future = libraryServiceApi.findRelatedBooksPagedCallable().futureCall(request);
+   *   // Do something
+   *   for (String element : future.get().iterateAllElements()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<FindRelatedBooksRequest, PagedListResponse<FindRelatedBooksRequest,FindRelatedBooksResponse,String>> findRelatedBooksPagedCallable() {
+    return findRelatedBooksPagedCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
+   *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
+   *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
+   *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
+   *     .addAllNamesWithResources(names)
+   *     .addAllShelvesWithResources(shelves)
+   *     .build();
+   *   while (true) {
+   *     FindRelatedBooksResponse response = libraryServiceApi.findRelatedBooksCallable().call(request);
+   *     for (String element : response.getNamesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable() {
+    return findRelatedBooksCallable;
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
