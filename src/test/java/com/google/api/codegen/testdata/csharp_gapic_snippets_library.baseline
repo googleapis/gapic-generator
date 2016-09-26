@@ -1,0 +1,696 @@
+============== file: Google/Example/Library/V1/LibraryServiceClientSnippets.g.cs ==============
+// Copyright 2016 Google Inc. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Generated code. DO NOT EDIT!
+
+using Google.Api.Gax;
+using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading;
+using System.Threading.Tasks;
+using UpdateBookIndexRequest.Types;
+
+namespace Google.Example.Library.V1.Snippets
+{
+    public class LibraryServiceClient
+    {
+        public async Task CreateShelfAsync()
+        {
+            // Snippet: CreateShelfAsync(Shelf,CallSettings)
+            // Additional: CreateShelfAsync(Shelf,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            Shelf shelf = new Shelf();
+            // Make the request
+            Shelf response = await libraryServiceClient.CreateShelfAsync(shelf);
+            // End snippet
+        }
+
+        public void CreateShelf()
+        {
+            // Snippet: CreateShelf(Shelf,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            Shelf shelf = new Shelf();
+            // Make the request
+            Shelf response = libraryServiceClient.CreateShelf(shelf);
+            // End snippet
+        }
+
+        public async Task GetShelfAsync()
+        {
+            // Snippet: GetShelfAsync(string,CallSettings)
+            // Additional: GetShelfAsync(string,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            // Make the request
+            Shelf response = await libraryServiceClient.GetShelfAsync(formattedName);
+            // End snippet
+        }
+
+        public void GetShelf()
+        {
+            // Snippet: GetShelf(string,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            // Make the request
+            Shelf response = libraryServiceClient.GetShelf(formattedName);
+            // End snippet
+        }
+
+        public async Task GetShelfAsync()
+        {
+            // Snippet: GetShelfAsync(string,SomeMessage,CallSettings)
+            // Additional: GetShelfAsync(string,SomeMessage,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            SomeMessage message = new SomeMessage();
+            // Make the request
+            Shelf response = await libraryServiceClient.GetShelfAsync(formattedName, message);
+            // End snippet
+        }
+
+        public void GetShelf()
+        {
+            // Snippet: GetShelf(string,SomeMessage,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            SomeMessage message = new SomeMessage();
+            // Make the request
+            Shelf response = libraryServiceClient.GetShelf(formattedName, message);
+            // End snippet
+        }
+
+        public async Task GetShelfAsync()
+        {
+            // Snippet: GetShelfAsync(string,SomeMessage,StringBuilder,CallSettings)
+            // Additional: GetShelfAsync(string,SomeMessage,StringBuilder,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            SomeMessage message = new SomeMessage();
+            StringBuilder stringBuilder = new StringBuilder();
+            // Make the request
+            Shelf response = await libraryServiceClient.GetShelfAsync(formattedName, message, stringBuilder);
+            // End snippet
+        }
+
+        public void GetShelf()
+        {
+            // Snippet: GetShelf(string,SomeMessage,StringBuilder,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            SomeMessage message = new SomeMessage();
+            StringBuilder stringBuilder = new StringBuilder();
+            // Make the request
+            Shelf response = libraryServiceClient.GetShelf(formattedName, message, stringBuilder);
+            // End snippet
+        }
+
+        public async Task ListShelvesAsync()
+        {
+            // Snippet: ListShelvesAsync(string,int?,CallSettings)
+            // Additional: ListShelvesAsync(string,int?,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+
+            // Make the request
+            IPagedAsyncEnumerable<ListShelvesResponse,Shelf> response = await libraryServiceClient.ListShelvesAsync();
+
+            // Iterate over all response items, lazily performing RPCs as required
+            foreach (Shelf item in response)
+            {
+                // Do something with each item
+                Console.Writeline(item);
+            }
+
+            // Or iterate over fixed-sized pages, lazily performing RPCs as required
+            int pageSize = 10;
+            foreach (FixedSizePage<Shelf> page in response.AsPages().WithFixedSize(pageSize))
+            {
+                // Do something with each page of items
+                Console.Writeline("A page of results:");
+                foreach (Shelf item in page) {
+                    Console.Writeline(item);
+                }
+            }
+            // End snippet
+        }
+
+        public void ListShelves()
+        {
+            // Snippet: ListShelves(string,int?,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+
+            // Make the request
+            IPagedEnumerable<ListShelvesResponse,Shelf> response = libraryServiceClient.ListShelves();
+
+            // Iterate over all response items, lazily performing RPCs as required
+            foreach (Shelf item in response)
+            {
+                // Do something with each item
+                Console.Writeline(item);
+            }
+
+            // Or iterate over fixed-sized pages, lazily performing RPCs as required
+            int pageSize = 10;
+            foreach (FixedSizePage<Shelf> page in response.AsPages().WithFixedSize(pageSize))
+            {
+                // Do something with each page of items
+                Console.Writeline("A page of results:");
+                foreach (Shelf item in page) {
+                    Console.Writeline(item);
+                }
+            }
+            // End snippet
+        }
+
+        public async Task DeleteShelfAsync()
+        {
+            // Snippet: DeleteShelfAsync(string,CallSettings)
+            // Additional: DeleteShelfAsync(string,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            // Make the request
+            await libraryServiceClient.DeleteShelfAsync(formattedName);
+            // End snippet
+        }
+
+        public void DeleteShelf()
+        {
+            // Snippet: DeleteShelf(string,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            // Make the request
+            libraryServiceClient.DeleteShelf(formattedName);
+            // End snippet
+        }
+
+        public async Task MergeShelvesAsync()
+        {
+            // Snippet: MergeShelvesAsync(string,string,CallSettings)
+            // Additional: MergeShelvesAsync(string,string,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string formattedOtherShelfName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            // Make the request
+            Shelf response = await libraryServiceClient.MergeShelvesAsync(formattedName, formattedOtherShelfName);
+            // End snippet
+        }
+
+        public void MergeShelves()
+        {
+            // Snippet: MergeShelves(string,string,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string formattedOtherShelfName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            // Make the request
+            Shelf response = libraryServiceClient.MergeShelves(formattedName, formattedOtherShelfName);
+            // End snippet
+        }
+
+        public async Task CreateBookAsync()
+        {
+            // Snippet: CreateBookAsync(string,Book,CallSettings)
+            // Additional: CreateBookAsync(string,Book,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            Book book = new Book();
+            // Make the request
+            Book response = await libraryServiceClient.CreateBookAsync(formattedName, book);
+            // End snippet
+        }
+
+        public void CreateBook()
+        {
+            // Snippet: CreateBook(string,Book,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            Book book = new Book();
+            // Make the request
+            Book response = libraryServiceClient.CreateBook(formattedName, book);
+            // End snippet
+        }
+
+        public async Task PublishSeriesAsync()
+        {
+            // Snippet: PublishSeriesAsync(Shelf,IEnumerable<Book>,uint,CallSettings)
+            // Additional: PublishSeriesAsync(Shelf,IEnumerable<Book>,uint,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            Shelf shelf = new Shelf();
+            IEnumerable<Book> books = new List<???>();
+            uint edition = 0;
+            // Make the request
+            PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(shelf, books, edition);
+            // End snippet
+        }
+
+        public void PublishSeries()
+        {
+            // Snippet: PublishSeries(Shelf,IEnumerable<Book>,uint,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            Shelf shelf = new Shelf();
+            IEnumerable<Book> books = new List<???>();
+            uint edition = 0;
+            // Make the request
+            PublishSeriesResponse response = libraryServiceClient.PublishSeries(shelf, books, edition);
+            // End snippet
+        }
+
+        public async Task GetBookAsync()
+        {
+            // Snippet: GetBookAsync(string,CallSettings)
+            // Additional: GetBookAsync(string,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            // Make the request
+            Book response = await libraryServiceClient.GetBookAsync(formattedName);
+            // End snippet
+        }
+
+        public void GetBook()
+        {
+            // Snippet: GetBook(string,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            // Make the request
+            Book response = libraryServiceClient.GetBook(formattedName);
+            // End snippet
+        }
+
+        public async Task ListBooksAsync()
+        {
+            // Snippet: ListBooksAsync(string,string,string,int?,CallSettings)
+            // Additional: ListBooksAsync(string,string,string,int?,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string filter = "";
+            // Make the request
+            IPagedAsyncEnumerable<ListBooksResponse,Book> response = await libraryServiceClient.ListBooksAsync(formattedName, filter);
+
+            // Iterate over all response items, lazily performing RPCs as required
+            foreach (Book item in response)
+            {
+                // Do something with each item
+                Console.Writeline(item);
+            }
+
+            // Or iterate over fixed-sized pages, lazily performing RPCs as required
+            int pageSize = 10;
+            foreach (FixedSizePage<Book> page in response.AsPages().WithFixedSize(pageSize))
+            {
+                // Do something with each page of items
+                Console.Writeline("A page of results:");
+                foreach (Book item in page) {
+                    Console.Writeline(item);
+                }
+            }
+            // End snippet
+        }
+
+        public void ListBooks()
+        {
+            // Snippet: ListBooks(string,string,string,int?,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string filter = "";
+            // Make the request
+            IPagedEnumerable<ListBooksResponse,Book> response = libraryServiceClient.ListBooks(formattedName, filter);
+
+            // Iterate over all response items, lazily performing RPCs as required
+            foreach (Book item in response)
+            {
+                // Do something with each item
+                Console.Writeline(item);
+            }
+
+            // Or iterate over fixed-sized pages, lazily performing RPCs as required
+            int pageSize = 10;
+            foreach (FixedSizePage<Book> page in response.AsPages().WithFixedSize(pageSize))
+            {
+                // Do something with each page of items
+                Console.Writeline("A page of results:");
+                foreach (Book item in page) {
+                    Console.Writeline(item);
+                }
+            }
+            // End snippet
+        }
+
+        public async Task DeleteBookAsync()
+        {
+            // Snippet: DeleteBookAsync(string,CallSettings)
+            // Additional: DeleteBookAsync(string,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            // Make the request
+            await libraryServiceClient.DeleteBookAsync(formattedName);
+            // End snippet
+        }
+
+        public void DeleteBook()
+        {
+            // Snippet: DeleteBook(string,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            // Make the request
+            libraryServiceClient.DeleteBook(formattedName);
+            // End snippet
+        }
+
+        public async Task UpdateBookAsync()
+        {
+            // Snippet: UpdateBookAsync(string,Book,CallSettings)
+            // Additional: UpdateBookAsync(string,Book,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            Book book = new Book();
+            // Make the request
+            Book response = await libraryServiceClient.UpdateBookAsync(formattedName, book);
+            // End snippet
+        }
+
+        public void UpdateBook()
+        {
+            // Snippet: UpdateBook(string,Book,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            Book book = new Book();
+            // Make the request
+            Book response = libraryServiceClient.UpdateBook(formattedName, book);
+            // End snippet
+        }
+
+        public async Task UpdateBookAsync()
+        {
+            // Snippet: UpdateBookAsync(string,Book,FieldMask,FieldMask,CallSettings)
+            // Additional: UpdateBookAsync(string,Book,FieldMask,FieldMask,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            Book book = new Book();
+            FieldMask updateMask = new FieldMask();
+            FieldMask physicalMask = new FieldMask();
+            // Make the request
+            Book response = await libraryServiceClient.UpdateBookAsync(formattedName, book, updateMask, physicalMask);
+            // End snippet
+        }
+
+        public void UpdateBook()
+        {
+            // Snippet: UpdateBook(string,Book,FieldMask,FieldMask,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            Book book = new Book();
+            FieldMask updateMask = new FieldMask();
+            FieldMask physicalMask = new FieldMask();
+            // Make the request
+            Book response = libraryServiceClient.UpdateBook(formattedName, book, updateMask, physicalMask);
+            // End snippet
+        }
+
+        public async Task MoveBookAsync()
+        {
+            // Snippet: MoveBookAsync(string,string,CallSettings)
+            // Additional: MoveBookAsync(string,string,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string formattedOtherShelfName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            // Make the request
+            Book response = await libraryServiceClient.MoveBookAsync(formattedName, formattedOtherShelfName);
+            // End snippet
+        }
+
+        public void MoveBook()
+        {
+            // Snippet: MoveBook(string,string,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string formattedOtherShelfName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            // Make the request
+            Book response = libraryServiceClient.MoveBook(formattedName, formattedOtherShelfName);
+            // End snippet
+        }
+
+        public async Task ListStringsAsync()
+        {
+            // Snippet: ListStringsAsync(string,int?,CallSettings)
+            // Additional: ListStringsAsync(string,int?,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+
+            // Make the request
+            IPagedAsyncEnumerable<ListStringsResponse,string> response = await libraryServiceClient.ListStringsAsync();
+
+            // Iterate over all response items, lazily performing RPCs as required
+            foreach (string item in response)
+            {
+                // Do something with each item
+                Console.Writeline(item);
+            }
+
+            // Or iterate over fixed-sized pages, lazily performing RPCs as required
+            int pageSize = 10;
+            foreach (FixedSizePage<string> page in response.AsPages().WithFixedSize(pageSize))
+            {
+                // Do something with each page of items
+                Console.Writeline("A page of results:");
+                foreach (string item in page) {
+                    Console.Writeline(item);
+                }
+            }
+            // End snippet
+        }
+
+        public void ListStrings()
+        {
+            // Snippet: ListStrings(string,int?,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+
+            // Make the request
+            IPagedEnumerable<ListStringsResponse,string> response = libraryServiceClient.ListStrings();
+
+            // Iterate over all response items, lazily performing RPCs as required
+            foreach (string item in response)
+            {
+                // Do something with each item
+                Console.Writeline(item);
+            }
+
+            // Or iterate over fixed-sized pages, lazily performing RPCs as required
+            int pageSize = 10;
+            foreach (FixedSizePage<string> page in response.AsPages().WithFixedSize(pageSize))
+            {
+                // Do something with each page of items
+                Console.Writeline("A page of results:");
+                foreach (string item in page) {
+                    Console.Writeline(item);
+                }
+            }
+            // End snippet
+        }
+
+        public async Task AddCommentsAsync()
+        {
+            // Snippet: AddCommentsAsync(string,IEnumerable<Comment>,CallSettings)
+            // Additional: AddCommentsAsync(string,IEnumerable<Comment>,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            IEnumerable<Comment> comments = new []
+            {
+                new Comment
+                {
+                    Comment = ByteString.CopyFromUtf8(""),
+                    Stage = Stage.UNSET,
+                },
+            };
+            // Make the request
+            await libraryServiceClient.AddCommentsAsync(formattedName, comments);
+            // End snippet
+        }
+
+        public void AddComments()
+        {
+            // Snippet: AddComments(string,IEnumerable<Comment>,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            IEnumerable<Comment> comments = new []
+            {
+                new Comment
+                {
+                    Comment = ByteString.CopyFromUtf8(""),
+                    Stage = Stage.UNSET,
+                },
+            };
+            // Make the request
+            libraryServiceClient.AddComments(formattedName, comments);
+            // End snippet
+        }
+
+        public async Task GetBookFromArchiveAsync()
+        {
+            // Snippet: GetBookFromArchiveAsync(string,CallSettings)
+            // Additional: GetBookFromArchiveAsync(string,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
+            // Make the request
+            Book response = await libraryServiceClient.GetBookFromArchiveAsync(formattedName);
+            // End snippet
+        }
+
+        public void GetBookFromArchive()
+        {
+            // Snippet: GetBookFromArchive(string,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
+            // Make the request
+            Book response = libraryServiceClient.GetBookFromArchive(formattedName);
+            // End snippet
+        }
+
+        public async Task UpdateBookIndexAsync()
+        {
+            // Snippet: UpdateBookIndexAsync(string,string,IDictionary<string, string>,CallSettings)
+            // Additional: UpdateBookIndexAsync(string,string,IDictionary<string, string>,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string indexName = "default index";
+            IDictionary<string, string> indexMap = new Dictionary<string, string> {
+                { "default_key", "" },
+            };
+            // Make the request
+            await libraryServiceClient.UpdateBookIndexAsync(formattedName, indexName, indexMap);
+            // End snippet
+        }
+
+        public void UpdateBookIndex()
+        {
+            // Snippet: UpdateBookIndex(string,string,IDictionary<string, string>,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string indexName = "default index";
+            IDictionary<string, string> indexMap = new Dictionary<string, string> {
+                { "default_key", "" },
+            };
+            // Make the request
+            libraryServiceClient.UpdateBookIndex(formattedName, indexName, indexMap);
+            // End snippet
+        }
+
+        public async Task AddTagAsync()
+        {
+            // Snippet: AddTagAsync(string,string,CallSettings)
+            // Additional: AddTagAsync(string,string,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedResource = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string tag = "";
+            // Make the request
+            AddTagResponse response = await libraryServiceClient.AddTagAsync(formattedResource, tag);
+            // End snippet
+        }
+
+        public void AddTag()
+        {
+            // Snippet: AddTag(string,string,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedResource = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string tag = "";
+            // Make the request
+            AddTagResponse response = libraryServiceClient.AddTag(formattedResource, tag);
+            // End snippet
+        }
+
+    }
+}
+

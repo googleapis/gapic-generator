@@ -19,6 +19,7 @@ import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
+import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
@@ -47,6 +48,28 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
           .put(Type.TYPE_SFIXED32, "int")
           .put(Type.TYPE_STRING, "string")
           .put(Type.TYPE_BYTES, "Google.Protobuf.ByteString")
+          .build();
+
+  /**
+   * A map from primitive types in proto to zero values in C#.
+   */
+  private static final ImmutableMap<Type, String> PRIMITIVE_ZERO_VALUE =
+      ImmutableMap.<Type, String>builder()
+          .put(Type.TYPE_BOOL, "false")
+          .put(Type.TYPE_DOUBLE, "0.0")
+          .put(Type.TYPE_FLOAT, "0.0f")
+          .put(Type.TYPE_INT64, "0L")
+          .put(Type.TYPE_UINT64, "0L")
+          .put(Type.TYPE_SINT64, "0L")
+          .put(Type.TYPE_FIXED64, "0L")
+          .put(Type.TYPE_SFIXED64, "0L")
+          .put(Type.TYPE_INT32, "0")
+          .put(Type.TYPE_UINT32, "0")
+          .put(Type.TYPE_SINT32, "0")
+          .put(Type.TYPE_FIXED32, "0")
+          .put(Type.TYPE_SFIXED32, "0")
+          .put(Type.TYPE_STRING, "\"\"")
+          .put(Type.TYPE_BYTES, "ByteString.CopyFromUtf8(\"\")")
           .build();
 
   private TypeNameConverter typeNameConverter;
@@ -107,7 +130,21 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypedValue getZeroValue(TypeRef type) {
-    return TypedValue.create(getTypeName(type), "ZERO_VALUE"); // TODO: Generate correctly
+    if (type.isMap()) {
+      return TypedValue.create(
+          typeNameConverter.getTypeName("System.Collections.Generic.Dictionary"),
+          "new %s<???, ???>()");
+    } else if (type.isRepeated()) {
+      return TypedValue.create(
+          typeNameConverter.getTypeName("System.Collections.Generic.List"), "new %s<???>()");
+    } else if (type.isMessage()) {
+      return TypedValue.create(getTypeName(type), "new %s()");
+    } else if (type.isEnum()) {
+      EnumValue enumValue = type.getEnumType().getValues().get(0);
+      return TypedValue.create(getTypeName(type), "%s." + enumValue.getSimpleName());
+    } else {
+      return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
+    }
   }
 
   @Override

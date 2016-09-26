@@ -22,6 +22,8 @@ public abstract class MapEntryView {
 
   public abstract String value();
 
+  public abstract InitCodeLineView valueView();
+
   public static Builder newBuilder() {
     return new AutoValue_MapEntryView.Builder();
   }
@@ -31,6 +33,8 @@ public abstract class MapEntryView {
     public abstract Builder key(String key);
 
     public abstract Builder value(String value);
+
+    public abstract Builder valueView(InitCodeLineView view);
 
     public abstract MapEntryView build();
   }

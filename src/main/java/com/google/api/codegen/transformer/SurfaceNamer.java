@@ -442,9 +442,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getStaticLangReturnTypeName");
   }
 
+  /** The return type name in a static language that is used by the caller */
+  public String getStaticLangCallerReturnTypeName(Method method, MethodConfig methodConfig) {
+    return getStaticLangReturnTypeName(method, methodConfig);
+  }
+
   /** The async return type name in a static language for the given method. */
   public String getStaticLangAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getStaticLangAsyncReturnTypeName");
+  }
+
+  /** The async return type name in a static language that is used by the caller */
+  public String getStaticLangCallerAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
+    return getStaticLangAsyncReturnTypeName(method, methodConfig);
   }
 
   /** The name of the paged callable variant of the given method. */
@@ -508,6 +518,33 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getAndSavePagedResponseTypeName(
       ModelTypeTable typeTable, TypeRef... parameterizedTypes) {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeName");
+  }
+
+  /**
+   * Computes the nickname of the async response type name for the given resource type, saves it in the
+   * given type table, and returns it.
+   */
+  public String getAndSaveAsyncPagedResponseTypeName(
+      ModelTypeTable typeTable, TypeRef... parameterizedTypes) {
+    return getNotImplementedString("SurfaceNamer.getAndSavePagedAsyncResponseTypeName");
+  }
+
+  /**
+   * Computes the nickname of the response type name for the given resource type, as used by the caller, saves it in the
+   * given type table, and returns it.
+   */
+  public String getAndSaveCallerPagedResponseTypeName(
+      ModelTypeTable typeTable, TypeRef... parameterizedTypes) {
+    return getAndSavePagedResponseTypeName(typeTable, parameterizedTypes);
+  }
+
+  /**
+   * Computes the nickname of the response type name for the given resource type, as used by the caller, saves it in the
+   * given type table, and returns it.
+   */
+  public String getAndSaveCallerAsyncPagedResponseTypeName(
+      ModelTypeTable typeTable, TypeRef... parameterizedTypes) {
+    return getAndSaveAsyncPagedResponseTypeName(typeTable, parameterizedTypes);
   }
 
   /**

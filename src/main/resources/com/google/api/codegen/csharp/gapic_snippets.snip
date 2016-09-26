@@ -1,0 +1,229 @@
+@extends "csharp/common.snip"
+
+@snippet generate(common)
+    // Copyright 2016 Google Inc. All Rights Reserved.
+    //
+    // Licensed under the Apache License, Version 2.0 (the "License");
+    // you may not use this file except in compliance with the License.
+    // You may obtain a copy of the License at
+    //
+    //     http://www.apache.org/licenses/LICENSE-2.0
+    //
+    // Unless required by applicable law or agreed to in writing, software
+    // distributed under the License is distributed on an "AS IS" BASIS,
+    // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    // See the License for the specific language governing permissions and
+    // limitations under the License.
+
+    // Generated code. DO NOT EDIT!
+
+    @join import : common.api.imports
+        using {@import.fullName};
+    @end
+
+    namespace {@common.api.packageName}
+    {
+        {@snippets(common.api, common.settings)}
+    }
+
+@end
+
+@private snippets(api, settings)
+    public class {@api.name}
+    {
+        @join method : api.apiMethods if method.type.toString != "FlattenedAsyncCancellationTokenMethod"
+            {@method(api, method)}
+
+        @end
+    }
+@end
+
+@private method(api, method)
+    @switch method.type.toString
+    @case "FlattenedMethod"
+        {@flattenedMethodSync(api, method)}
+    @case "FlattenedAsyncCallSettingsMethod"
+        {@flattenedMethodAsyncCallSettings(api, method)}
+    @case "PagedFlattenedMethod"
+        {@pagedFlattenedMethodSync(api, method)}
+    @case "PagedFlattenedAsyncMethod" 
+        {@pagedFlattenedMethodAsync(api, method)}
+    @default
+        *** ERROR: Cannot handle method type '{@method.type.toString}' ***
+    @end
+@end
+
+@private flattenedMethodSync(api, method)
+    public void {@method.name}()
+    {
+        // Snippet: {@method.name}({@snippetArgTypes(method.methodParams)},CallSettings)
+        {@preparations(api, method)}
+        @if method.hasReturnValue
+            {@method.callerResponseTypeName} response = {@sampleMethodCall(method)};
+        @else
+            {@sampleMethodCall(method)};
+        @end
+        // End snippet
+    }
+@end
+
+@private flattenedMethodAsyncCallSettings(api, method)
+    public async Task {@method.name}()
+    {
+        // Snippet: {@method.name}({@snippetArgTypes(method.methodParams)},CallSettings)
+        // Additional: {@method.name}({@snippetArgTypes(method.methodParams)},CancellationToken)
+        {@preparations(api, method)}
+        @if method.hasReturnValue
+            {@method.callerResponseTypeName} response = await {@sampleMethodCall(method)};
+        @else
+            await {@sampleMethodCall(method)};
+        @end
+        // End snippet
+    }
+@end
+
+@private pagedFlattenedMethodSync(api, method)
+    public void {@method.name}()
+    {
+        // Snippet: {@method.name}({@snippetArgTypes(method.methodParams)},CallSettings)
+        {@preparations(api, method)}
+        {@method.callerResponseTypeName} response = {@sampleMethodCall(method)};
+
+        // Iterate over all response items, lazily performing RPCs as required
+        foreach ({@method.listMethod.resourceTypeName} item in response)
+        {
+            // Do something with each item
+            Console.Writeline(item);
+        }
+        
+        // Or iterate over fixed-sized pages, lazily performing RPCs as required
+        int pageSize = 10;
+        foreach (FixedSizePage<{@method.listMethod.resourceTypeName}> page in response.AsPages().WithFixedSize(pageSize))
+        {
+            // Do something with each page of items
+            Console.Writeline("A page of results:");
+            foreach ({@method.listMethod.resourceTypeName} item in page) {
+                Console.Writeline(item);
+            }
+        }
+        // End snippet
+    }
+@end
+
+@private pagedFlattenedMethodAsync(api, method)
+    public async Task {@method.name}()
+    {
+        // Snippet: {@method.name}({@snippetArgTypes(method.methodParams)},CallSettings)
+        // Additional: {@method.name}({@snippetArgTypes(method.methodParams)},CancellationToken)
+        {@preparations(api, method)}
+        {@method.callerResponseTypeName} response = await {@sampleMethodCall(method)};
+
+        // Iterate over all response items, lazily performing RPCs as required
+        foreach ({@method.listMethod.resourceTypeName} item in response)
+        {
+            // Do something with each item
+            Console.Writeline(item);
+        }
+        
+        // Or iterate over fixed-sized pages, lazily performing RPCs as required
+        int pageSize = 10;
+        foreach (FixedSizePage<{@method.listMethod.resourceTypeName}> page in response.AsPages().WithFixedSize(pageSize))
+        {
+            // Do something with each page of items
+            Console.Writeline("A page of results:");
+            foreach ({@method.listMethod.resourceTypeName} item in page) {
+                Console.Writeline(item);
+            }
+        }
+        // End snippet
+    }
+@end
+
+@private preparations(api, method)
+    // Create client
+    {@api.name} {@method.apiVariableName} = {@api.name}.Create();
+    // Initialize request argument(s)
+    {@topLevelInitCode(method.initCode)}
+    // Make the request
+@end
+
+@private snippetArgTypes(params)
+    @join param : params if param.typeName != "CallSettings" on ","
+        {@param.typeName}
+    @end
+@end
+
+@private sampleMethodCall(apiMethod)
+    {@apiMethod.apiVariableName}.{@apiMethod.name}({@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+@end
+
+@private sampleMethodCallArgList(fieldSettings)
+    @join fieldSetting : fieldSettings on ", "
+        {@fieldSetting.identifier}
+    @end
+@end
+
+@private topLevelInitCode(initCodeSpec)
+    @join line : initCodeSpec.topLevelLines
+        {@initCode(initCodeType(line).add(" ").add(line.identifier).add(" = "), line)};
+    @end
+@end
+
+@private test(a)
+    {@a}
+@end
+
+@private initCodeType(line)
+    @switch line.lineType.toString
+    @case "StructureInitLine"
+        {@line.typeName}
+    @case "ListInitLine"
+        IEnumerable<{@line.elementTypeName}>
+    @case "MapInitLine"
+        IDictionary<{@line.keyTypeName}, {@line.valueTypeName}>
+    @case "SimpleInitLine"
+        {@line.typeName}
+    @default
+        $unhandledCase: {@line.lineType.toString}$
+    @end
+@end
+
+@private initCode(prefix, line)
+    @switch line.lineType.toString
+    @case "StructureInitLine"
+        {@prefix}new {@line.typeName}
+        {
+        @join fieldSetting : line.fieldSettings
+            {@EMPTY}    {@fieldSetting.fieldSetFunction} = {@initCode("", fieldSetting.initCodeLine)},
+        @end
+        }
+    @case "ListInitLine"
+        {@prefix}new []
+        {
+            @join child : line.elementViews
+                {@initCode("", child)},
+            @end
+        }
+    @case "MapInitLine"
+        {@prefix}new Dictionary<{@line.keyTypeName}, {@line.valueTypeName}> {
+            @join mapEntry : line.initEntries vertical
+                { {@mapEntry.key}, {@initCode("", mapEntry.valueView)} },
+            @end
+        }
+    @case "SimpleInitLine"
+        {@prefix}{@renderInitValue(line.initValue)}
+    @default
+        $unhandledCase: {@line.lineType.toString}$
+    @end
+@end
+
+@private renderInitValue(initValue)
+    @switch initValue.type
+    @case "SimpleInitValueView"
+        {@initValue.initialValue}
+    @case "FormattedInitValueView"
+        {@initValue.apiWrapperName}.{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
+    @default
+        $unhandledCase: {@initValue.type}$
+    @end
+@end

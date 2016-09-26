@@ -18,7 +18,6 @@ import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.ServiceConfig;
-import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.BundlingTransformer;
@@ -49,16 +48,12 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
+public abstract class CSharpGapicSurfaceCommonTransformer implements ModelToViewTransformer {
 
-  private static final String XAPI_TEMPLATE_FILENAME = "csharp/gapic_client.snip";
-
-  private final GapicCodePathMapper pathMapper;
   private final ApiMethodTransformer apiMethodTransformer;
   private final ServiceTransformer serviceTransformer;
   private final PathTemplateTransformer pathTemplateTransformer;
@@ -68,8 +63,7 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
   private final BundlingTransformer bundlingTransformer;
   private final RetryDefinitionsTransformer retryDefinitionsTransformer;
 
-  public CSharpGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
-    this.pathMapper = pathMapper;
+  public CSharpGapicSurfaceCommonTransformer() {
     this.serviceTransformer = new ServiceTransformer();
     this.pathTemplateTransformer = new PathTemplateTransformer();
     this.apiCallableTransformer = new ApiCallableTransformer();
@@ -80,17 +74,23 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
     this.retryDefinitionsTransformer = new RetryDefinitionsTransformer();
   }
 
+  protected abstract String getTemplateFileName();
+
+  protected abstract String getOutputPath(SurfaceTransformerContext context);
+
+  protected abstract String getPackageName(ApiConfig apiConfig);
+
   @Override
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
-    SurfaceNamer namer = new CSharpSurfaceNamer(apiConfig.getPackageName());
+    SurfaceNamer namer = new CSharpSurfaceNamer(getPackageName(apiConfig));
 
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(
               service,
               apiConfig,
-              createTypeTable(apiConfig.getPackageName()),
+              createTypeTable(getPackageName(apiConfig)),
               namer,
               new CSharpFeatureConfig());
       addCommonImports(context);
@@ -105,7 +105,7 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(XAPI_TEMPLATE_FILENAME);
+    return Arrays.asList(getTemplateFileName());
   }
 
   private ModelTypeTable createTypeTable(String implicitPackageName) {
@@ -121,8 +121,8 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, null));
 
-    xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
-    xapiClass.packageName(context.getApiConfig().getPackageName());
+    xapiClass.templateFileName(getTemplateFileName());
+    xapiClass.packageName(getPackageName(context.getApiConfig()));
     String name = namer.getApiWrapperClassName(context.getInterface());
     xapiClass.name(name);
     xapiClass.implName(namer.getApiWrapperClassImplName(context.getInterface()));
@@ -154,8 +154,7 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
     // must be done as the last step to catch all imports
     xapiClass.imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()));
 
-    String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
-    xapiClass.outputPath(outputPath + File.separator + name + ".cs");
+    xapiClass.outputPath(getOutputPath(context));
 
     return xapiClass.build();
   }
@@ -167,7 +166,7 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
   private StaticLangXSettingsView generateXSettings(SurfaceTransformerContext context) {
     StaticLangXSettingsView.Builder xsettingsClass = StaticLangXSettingsView.newBuilder();
     xsettingsClass.templateFileName(""); // Unused in C#
-    xsettingsClass.packageName(context.getApiConfig().getPackageName());
+    xsettingsClass.packageName(getPackageName(context.getApiConfig()));
     xsettingsClass.doc(generateSettingsDoc(context));
     String name = context.getNamer().getApiSettingsClassName(context.getInterface());
     xsettingsClass.name(name);
@@ -197,6 +196,7 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
     ModelTypeTable typeTable = context.getTypeTable();
     // Common imports, only one class per required namespace is needed.
     typeTable.saveNicknameFor("Google.Protobuf.WellKnownTypes.SomeSortOfWellKnownType");
+    typeTable.saveNicknameFor("Google.Protobuf.ByteString");
     typeTable.saveNicknameFor("Grpc.Core.ByteString");
     typeTable.saveNicknameFor("System.Collections.ObjectModel.ReadOnlyCollection");
     typeTable.saveNicknameFor("System.Threading.Tasks.Task");

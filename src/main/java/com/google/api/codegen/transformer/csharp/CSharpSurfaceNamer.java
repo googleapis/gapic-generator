@@ -49,6 +49,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getApiWrapperVariableName(Interface interfaze) {
+    return varName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+  }
+
+  @Override
   public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
     if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
       return "void";
@@ -62,6 +67,12 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
       return "Task";
     }
     return "Task<" + getModelTypeFormatter().getFullNameFor(method.getOutputType()) + ">";
+  }
+
+  @Override
+  public String getStaticLangCallerAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
+    // Same as sync because of 'await'
+    return getStaticLangReturnTypeName(method, methodConfig);
   }
 
   @Override
@@ -93,6 +104,38 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
       typeList[i] = typeTable.getFullNameForElementType(parameterizedTypes[i]);
     }
     return typeTable.getAndSaveNicknameForContainer("Google.Api.Gax.PagedEnumerable", typeList);
+  }
+
+  @Override
+  public String getAndSaveCallerPagedResponseTypeName(
+      ModelTypeTable typeTable, TypeRef... parameterizedTypes) {
+    String[] typeList = new String[parameterizedTypes.length - 1];
+    for (int i = 0; i < typeList.length; i++) {
+      typeList[i] = typeTable.getFullNameForElementType(parameterizedTypes[i + 1]);
+    }
+    return typeTable.getAndSaveNicknameForContainer("Google.Api.Gax.IPagedEnumerable", typeList);
+  }
+
+  @Override
+  public String getAndSaveAsyncPagedResponseTypeName(
+      ModelTypeTable typeTable, TypeRef... parameterizedTypes) {
+    String[] typeList = new String[parameterizedTypes.length];
+    for (int i = 0; i < typeList.length; i++) {
+      typeList[i] = typeTable.getFullNameForElementType(parameterizedTypes[i]);
+    }
+    return typeTable.getAndSaveNicknameForContainer(
+        "Google.Api.Gax.PagedAsyncEnumerable", typeList);
+  }
+
+  @Override
+  public String getAndSaveCallerAsyncPagedResponseTypeName(
+      ModelTypeTable typeTable, TypeRef... parameterizedTypes) {
+    String[] typeList = new String[parameterizedTypes.length - 1];
+    for (int i = 0; i < typeList.length; i++) {
+      typeList[i] = typeTable.getFullNameForElementType(parameterizedTypes[i + 1]);
+    }
+    return typeTable.getAndSaveNicknameForContainer(
+        "Google.Api.Gax.IPagedAsyncEnumerable", typeList);
   }
 
   @Override
@@ -170,5 +213,10 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
       }
     }
     throw new IllegalStateException("Invalid Synchronicity: " + synchronicity);
+  }
+
+  @Override
+  public String getFieldSetFunctionName(TypeRef type, Name identifier) {
+    return methodName(identifier);
   }
 }

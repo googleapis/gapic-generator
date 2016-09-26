@@ -67,7 +67,7 @@ public class ApiMethodTransformer {
 
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(context.getNamer().getApiMethodName(context.getMethod()));
-    setListMethodFields(context, methodViewBuilder);
+    setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
     setFlattenedMethodFields(
         context, fields, additionalParams, Synchronicity.Sync, methodViewBuilder);
 
@@ -82,7 +82,7 @@ public class ApiMethodTransformer {
 
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(context.getNamer().getAsyncApiMethodName(context.getMethod()));
-    setListMethodFields(context, methodViewBuilder);
+    setListMethodFields(context, Synchronicity.Async, methodViewBuilder);
     setFlattenedMethodFields(
         context, fields, additionalParams, Synchronicity.Async, methodViewBuilder);
 
@@ -96,7 +96,7 @@ public class ApiMethodTransformer {
 
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(namer.getApiMethodName(context.getMethod()));
-    setListMethodFields(context, methodViewBuilder);
+    setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
     setRequestObjectMethodFields(
         context, namer.getPagedCallableMethodName(context.getMethod()), methodViewBuilder);
 
@@ -109,7 +109,7 @@ public class ApiMethodTransformer {
 
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(namer.getPagedCallableMethodName(context.getMethod()));
-    setListMethodFields(context, methodViewBuilder);
+    setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
     setCallableMethodFields(
         context, namer.getPagedCallableName(context.getMethod()), methodViewBuilder);
 
@@ -123,7 +123,7 @@ public class ApiMethodTransformer {
 
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(namer.getCallableMethodName(context.getMethod()));
-    setListMethodFields(context, methodViewBuilder);
+    setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
     setCallableMethodFields(context, namer.getCallableName(context.getMethod()), methodViewBuilder);
 
     String getResourceListCallName =
@@ -201,6 +201,8 @@ public class ApiMethodTransformer {
     setCallableMethodFields(context, namer.getCallableName(context.getMethod()), methodViewBuilder);
     methodViewBuilder.responseTypeName(
         context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType()));
+    methodViewBuilder.callerResponseTypeName(
+        context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType()));
     methodViewBuilder.hasReturnValue(
         !ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
 
@@ -219,7 +221,9 @@ public class ApiMethodTransformer {
   }
 
   private void setListMethodFields(
-      MethodTransformerContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
+      MethodTransformerContext context,
+      Synchronicity synchronicity,
+      StaticLangApiMethodView.Builder methodViewBuilder) {
     ModelTypeTable typeTable = context.getTypeTable();
     SurfaceNamer namer = context.getNamer();
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
@@ -235,14 +239,36 @@ public class ApiMethodTransformer {
             .resourcesFieldGetFunction(
                 namer.getFieldGetFunctionName(pageStreaming.getResourcesField()))
             .build());
-    methodViewBuilder.responseTypeName(
-        context
-            .getNamer()
-            .getAndSavePagedResponseTypeName(
+    switch (synchronicity) {
+      case Sync:
+        methodViewBuilder.responseTypeName(
+            namer.getAndSavePagedResponseTypeName(
                 context.getTypeTable(),
                 context.getMethod().getInputType(),
                 context.getMethod().getOutputType(),
                 resourceType));
+        methodViewBuilder.callerResponseTypeName(
+            namer.getAndSaveCallerPagedResponseTypeName(
+                context.getTypeTable(),
+                context.getMethod().getInputType(),
+                context.getMethod().getOutputType(),
+                resourceType));
+        break;
+      case Async:
+        methodViewBuilder.responseTypeName(
+            namer.getAndSaveAsyncPagedResponseTypeName(
+                context.getTypeTable(),
+                context.getMethod().getInputType(),
+                context.getMethod().getOutputType(),
+                resourceType));
+        methodViewBuilder.callerResponseTypeName(
+            namer.getAndSaveCallerAsyncPagedResponseTypeName(
+                context.getTypeTable(),
+                context.getMethod().getInputType(),
+                context.getMethod().getOutputType(),
+                resourceType));
+        break;
+    }
     methodViewBuilder.hasReturnValue(true);
   }
 
@@ -345,16 +371,27 @@ public class ApiMethodTransformer {
     String syncReturnTypeFullName =
         namer.getStaticLangReturnTypeName(context.getMethod(), context.getMethodConfig());
     String syncNickname = context.getTypeTable().getAndSaveNicknameFor(syncReturnTypeFullName);
+    String syncCallerReturnTypeFullName =
+        namer.getStaticLangCallerReturnTypeName(context.getMethod(), context.getMethodConfig());
+    String syncCallerNickname =
+        context.getTypeTable().getAndSaveNicknameFor(syncCallerReturnTypeFullName);
     switch (synchronicity) {
       case Async:
         String asyncReturnTypeFullName =
             namer.getStaticLangAsyncReturnTypeName(context.getMethod(), context.getMethodConfig());
         String asyncNickname =
             context.getTypeTable().getAndSaveNicknameFor(asyncReturnTypeFullName);
+        String asyncCallerReturnTypeFullName =
+            namer.getStaticLangCallerAsyncReturnTypeName(
+                context.getMethod(), context.getMethodConfig());
+        String asyncCallerNickname =
+            context.getTypeTable().getAndSaveNicknameFor(asyncCallerReturnTypeFullName);
         methodViewBuilder.responseTypeName(asyncNickname);
+        methodViewBuilder.callerResponseTypeName(asyncCallerNickname);
         break;
       case Sync:
         methodViewBuilder.responseTypeName(syncNickname);
+        methodViewBuilder.callerResponseTypeName(syncCallerNickname);
         break;
     }
     methodViewBuilder.hasReturnValue(
