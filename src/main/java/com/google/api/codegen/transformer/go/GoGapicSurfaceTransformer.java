@@ -121,8 +121,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.callOptionsTypeName(namer.getCallSettingsTypeName(service));
     view.serviceOriginalName(model.getServiceConfig().getTitle());
     view.servicePhraseName(namer.getServicePhraseName(service));
-    view.grpcClientTypeName(namer.getGrpcClientTypeName(service));
-    view.grpcClientConstructorName(namer.getGrpcClientConstructorName(service));
 
     String outputPath = pathMapper.getOutputPath(service, apiConfig);
     String fileName = namer.getServiceFileName(service, apiConfig.getPackageName());

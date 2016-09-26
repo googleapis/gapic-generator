@@ -105,11 +105,6 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcClientConstructorName(Interface service) {
-    return getGrpcClientTypeName(service).replace(".", ".New");
-  }
-
-  @Override
   public String getCallSettingsTypeName(Interface service) {
     return className(clientNamePrefix(service).join("call").join("options"));
   }

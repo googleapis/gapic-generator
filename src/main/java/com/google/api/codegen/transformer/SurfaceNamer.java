@@ -350,14 +350,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * Name of the Grpc client constructor.
-   * This needs to match what Grpc generates for the particular language.
-   */
-  public String getGrpcClientConstructorName(Interface service) {
-    return getGrpcClientTypeName(service);
-  }
-
-  /**
    * The type name of the Grpc container class.
    * This needs to match what Grpc generates for the particular language.
    */
