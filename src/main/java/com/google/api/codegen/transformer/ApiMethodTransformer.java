@@ -434,7 +434,10 @@ public class ApiMethodTransformer {
 
     docBuilder.mainDocLines(context.getNamer().getDocLines(context.getMethod()));
     List<ParamDocView> paramDocs =
-        getMethodParamDocs(context, context.getMethodConfig().getRequiredFields(), null);
+        getMethodParamDocs(
+            context,
+            context.getMethodConfig().getRequiredFields(),
+            Collections.<ParamWithSimpleDoc>emptyList());
     paramDocs.add(getOptionalArrayParamDoc(context, context.getMethodConfig().getOptionalFields()));
     docBuilder.paramDocs(paramDocs);
     docBuilder.returnTypeName(
@@ -559,9 +562,7 @@ public class ApiMethodTransformer {
 
       allDocs.add(paramDoc.build());
     }
-    if (additionalParamDocs != null) {
-      allDocs.addAll(ParamWithSimpleDoc.asParamDocViews(additionalParamDocs));
-    }
+    allDocs.addAll(ParamWithSimpleDoc.asParamDocViews(additionalParamDocs));
     return allDocs;
   }
 
@@ -591,7 +592,8 @@ public class ApiMethodTransformer {
 
     paramDoc.arrayKeyDocs(
         ImmutableList.<ParamDocView>builder()
-            .addAll(getMethodParamDocs(context, fields, null))
+            .addAll(
+                getMethodParamDocs(context, fields, Collections.<ParamWithSimpleDoc>emptyList()))
             .addAll(getCallSettingsParamDocList(context))
             .build());
 
