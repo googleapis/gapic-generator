@@ -26,14 +26,51 @@
 @end
 
 @private pagedOptionalArrayMethodSampleCode(apiMethod)
+    // Iterate over all elements.
     {@methodCallSampleCode(apiMethod)}.on('data', function(element) {
         // doThingsWith(element)
     });
+
+    // Or obtain the paged response through the callback.
+    {@methodCallSampleCodeForPagedResponse(apiMethod)}
 @end
 
 @private methodCallSampleCode(apiMethod)
     api.{@apiMethod.name}(\
         {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+@end
+
+@private methodCallSampleCodeForPagedResponse(apiMethod)
+    @if sampleMethodCallArgList(apiMethod.initCode.fieldSettings)
+        function callback(err, response, nextPageToken) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            // doThingsWith(response)
+            if (nextPageToken) {
+                // fetch the next page.
+                api.{@apiMethod.name}(\
+                    {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)}, {pageToken: nextPageToken}, callback);
+            }
+        }
+        api.{@apiMethod.name}(\
+            {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)}, {flattenPages: false}, callback);
+    @else
+        function callback(err, response, nextPageToken) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            // doThingsWith(response)
+            if (nextPageToken) {
+                // fetch the next page.
+                api.{@apiMethod.name}({pageToken: nextPageToken}, callback);
+            }
+        }
+        api.{@apiMethod.name}({flattenPages: false}, callback);
+        api.{@apiMethod.name}(function(err, response) {
+    @end
 @end
 
 @private methodCallSampleCodeWithReturnValue(apiMethod)

@@ -28,7 +28,6 @@
 /* jscs: disable maximumLineLength */
 'use strict';
 
-var arguejs = require('arguejs');
 var configData = require('./no_templates_api_service_client_config');
 var extend = require('extend');
 var gax = require('google-gax');
@@ -113,9 +112,9 @@ function NoTemplatesAPIServiceApi(gaxGrpc, grpcClients, opts) {
  *         and trailing
  *    whitespace.
  *
- * @param {gax.CallOptions=} options
- *   Overrides the default settings for this call, e.g, timeout,
- *   retries, etc.
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
  * @returns {gax.EventEmitter} - the event emitter to handle the call
@@ -131,14 +130,16 @@ function NoTemplatesAPIServiceApi(gaxGrpc, grpcClients, opts) {
  *     }
  * });
  */
-NoTemplatesAPIServiceApi.prototype.increment = function increment() {
-  var args = arguejs({
-    options: [gax.CallOptions],
-    callback: [Function]
-  }, arguments);
+NoTemplatesAPIServiceApi.prototype.increment = function increment(
+    options,
+    callback) {
+  if (options instanceof Function && callback === undefined) {
+    callback = options;
+    options = {};
+  }
   var req = {
   };
-  return this._increment(req, args.options, args.callback);
+  return this._increment(req, options, callback);
 };
 
 function NoTemplatesAPIServiceApiBuilder(gaxGrpc) {
