@@ -665,11 +665,11 @@ public class LibraryServiceTest {
     List<BookName> names = Arrays.asList(namesElement);
     List<ShelfName> shelves = new ArrayList<>();
 
-    PagedListResponse<FindRelatedBooksRequest, FindRelatedBooksResponse, String> pagedListResponse = api.findRelatedBooks(names, shelves);
+    PagedListResponse<FindRelatedBooksRequest, FindRelatedBooksResponse, BookName> pagedListResponse = api.findRelatedBooks(names, shelves);
 
-    List<String> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
+    List<BookName> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
-    Assert.assertEquals(expectedResponse.getNamesList().get(0), resources.get(0));
+    Assert.assertEquals(expectedResponse.getNamesListAsResources().get(0), resources.get(0));
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
