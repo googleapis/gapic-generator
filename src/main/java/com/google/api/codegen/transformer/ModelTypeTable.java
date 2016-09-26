@@ -91,7 +91,7 @@ public class ModelTypeTable implements ModelTypeFormatter {
   }
 
   /*
-   * Computes the nickname for the given ProtoElement and typed ResourceName, add the full name to
+   * Computes the nickname for the given ProtoElement, Type, and ResourceName. Adds the full name to
    * the import set, and returns the nickname.
    */
   public String getAndSaveNicknameForTypedResourceName(

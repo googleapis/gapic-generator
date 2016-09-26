@@ -19,7 +19,6 @@ import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.CallableMethodDetailView;
@@ -169,18 +168,24 @@ public class ApiMethodTransformer {
   private void setListMethodFields(
       MethodTransformerContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
-    TypeRef resourceType = pageStreaming.getResourcesField().getType();
-    String resourceTypeName = context.getTypeTable().getAndSaveNicknameForElementType(resourceType);
+    Field resourceField = pageStreaming.getResourcesField();
+    String resourceTypeName =
+        context
+            .getNamer()
+            .getAndSaveElementFieldTypeName(
+                context.getFeatureConfig(), context.getTypeTable(), resourceField);
     methodViewBuilder.listMethod(
         ListMethodDetailView.newBuilder().resourceTypeName(resourceTypeName).build());
+
     methodViewBuilder.responseTypeName(
         context
             .getNamer()
             .getAndSavePagedResponseTypeName(
+                context.getFeatureConfig(),
                 context.getTypeTable(),
                 context.getMethod().getInputType(),
                 context.getMethod().getOutputType(),
-                resourceType));
+                resourceField));
     methodViewBuilder.hasReturnValue(true);
   }
 
@@ -281,10 +286,7 @@ public class ApiMethodTransformer {
       MethodTransformerContext context, ImmutableList<Field> fields) {
     List<PathTemplateCheckView> pathTemplateChecks = new ArrayList<>();
     for (Field field : fields) {
-      boolean useResourceNameFormatOption =
-          context.getFeatureConfig().resourceNameTypesEnabled()
-              && ResourceNameUtil.hasResourceName(field);
-      if (useResourceNameFormatOption) {
+      if (context.getFeatureConfig().useResourceNameFormatOption(field)) {
         // Don't generate a path template check when using a ResourceName type instead of a string
         continue;
       }
@@ -413,38 +415,28 @@ public class ApiMethodTransformer {
   private RequestObjectParamView generateRequestObjectParam(
       MethodTransformerContext context, Field field) {
     SurfaceNamer namer = context.getNamer();
+    FeatureConfig featureConfig = context.getFeatureConfig();
+    ModelTypeTable typeTable = context.getTypeTable();
 
     String typeName =
         namer.getNotImplementedString("ApiMethodTransformer.generateRequestObjectParam - typeName");
     String elementTypeName =
         namer.getNotImplementedString(
             "ApiMethodTransformer.generateRequestObjectParam - elementTypeName");
-    String setCallName = null;
 
-    if (context.getFeatureConfig().useResourceNameFormatOption(field)) {
-      String resourceName = ResourceNameUtil.getResourceName(field);
-      if (namer.shouldImportRequestObjectParamType(field)) {
-        typeName =
-            context
-                .getTypeTable()
-                .getAndSaveNicknameForTypedResourceName(field, field.getType(), resourceName);
-      }
-      if (namer.shouldImportRequestObjectParamElementType(field)) {
-        elementTypeName =
-            context
-                .getTypeTable()
-                .getAndSaveNicknameForTypedResourceName(field, field.getType(), resourceName);
-      }
+    if (namer.shouldImportRequestObjectParamType(field)) {
+      typeName = namer.getAndSaveFieldTypeName(featureConfig, typeTable, field);
+    }
+    if (namer.shouldImportRequestObjectParamElementType(field)) {
+      elementTypeName = namer.getAndSaveElementFieldTypeName(featureConfig, typeTable, field);
+    }
+
+    String setCallName;
+    if (featureConfig.useResourceNameFormatOption(field)) {
       setCallName =
           namer.getResourceNameFieldSetFunctionName(
               field.getType(), Name.from(field.getSimpleName()));
     } else {
-      if (namer.shouldImportRequestObjectParamType(field)) {
-        typeName = context.getTypeTable().getAndSaveNicknameFor(field.getType());
-      }
-      if (namer.shouldImportRequestObjectParamElementType(field)) {
-        elementTypeName = context.getTypeTable().getAndSaveNicknameForElementType(field.getType());
-      }
       setCallName = namer.getFieldSetFunctionName(field);
     }
 

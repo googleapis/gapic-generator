@@ -21,7 +21,6 @@ import com.google.api.codegen.viewmodel.ApiCallableType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -85,10 +84,11 @@ public class ApiCallableTransformer {
           context
               .getNamer()
               .getAndSavePagedResponseTypeName(
+                  context.getFeatureConfig(),
                   typeTable,
                   method.getInputType(),
                   method.getOutputType(),
-                  pageStreaming.getResourcesField().getType());
+                  pageStreaming.getResourcesField());
 
       pagedApiCallableBuilder.requestTypeName(
           typeTable.getAndSaveNicknameFor(method.getInputType()));
