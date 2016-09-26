@@ -22,6 +22,7 @@ import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.ServiceConfig;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -30,6 +31,7 @@ import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.go.GoTypeTable;
+import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
 import com.google.api.codegen.viewmodel.RetryConfigDefinitionView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
@@ -142,6 +144,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.serviceAddress(serviceConfig.getServiceAddress(service));
     view.servicePort(serviceConfig.getServicePort());
     view.authScopes(serviceConfig.getAuthScopes(service));
+
+    view.stubs(new GrpcStubTransformer().generateGrpcStubs(context));
 
     addXApiImports(context);
     view.imports(GoTypeTable.formatImports(context.getTypeTable().getImports()));

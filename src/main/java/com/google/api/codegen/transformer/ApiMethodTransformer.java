@@ -195,6 +195,7 @@ public class ApiMethodTransformer {
     methodViewBuilder.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
     methodViewBuilder.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
     methodViewBuilder.settingsGetterName(namer.getCallSettingsFunctionName(context.getMethod()));
+    methodViewBuilder.stubName(namer.getStubName(context.getTargetInterface()));
   }
 
   private void setListMethodFields(

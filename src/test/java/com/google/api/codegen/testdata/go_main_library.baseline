@@ -117,6 +117,7 @@ type Client struct {
 
     // The gRPC API client.
     client librarypb.LibraryServiceClient
+    labelerClient taggerpb.LabelerClient
 
     // The call options for this service.
     CallOptions *CallOptions
@@ -146,8 +147,10 @@ func NewClient(ctx context.Context, opts ...option.ClientOption) (*Client, error
     }
     c := &Client {
         conn: conn,
-        client: librarypb.NewLibraryServiceClient(conn),
         CallOptions: defaultCallOptions(),
+
+        client: librarypb.NewLibraryServiceClient(conn),
+        labelerClient: taggerpb.NewLabelerClient(conn),
     }
     c.SetGoogleClientInfo("gax", gax.Version)
     return c, nil
@@ -516,7 +519,7 @@ func (c *Client) AddLabel(ctx context.Context, req *taggerpb.AddLabelRequest) (*
     var resp *taggerpb.AddLabelResponse
     err := gax.Invoke(ctx, func(ctx context.Context) error {
         var err error
-        resp, err = c.client.AddLabel(ctx, req)
+        resp, err = c.labelerClient.AddLabel(ctx, req)
         return err
     }, c.CallOptions.AddLabel...)
     if err != nil {

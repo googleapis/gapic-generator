@@ -204,4 +204,19 @@ public class GoSurfaceNamer extends SurfaceNamer {
     return classFileNameBase(
         getReducedServiceName(service).join("client").join("example").join("test"));
   }
+
+  @Override
+  public String getStubName(Interface service) {
+    return privateFieldName(clientNamePrefix(service).join("client"));
+  }
+
+  @Override
+  public String getCreateStubFunctionName(Interface service) {
+    return getGrpcClientTypeName(service).replace(".", ".New");
+  }
+
+  @Override
+  public String getApiWrapperVariableName(Interface service) {
+    return getStubName(service);
+  }
 }

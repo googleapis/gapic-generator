@@ -51,6 +51,8 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
 
   public abstract String clientConstructorName();
 
+  public abstract List<GrpcStubView> stubs();
+
   public abstract String callOptionsTypeName();
 
   public abstract String defaultClientOptionFunctionName();
@@ -91,6 +93,8 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
     public abstract Builder clientTypeName(String val);
 
     public abstract Builder clientConstructorName(String val);
+
+    public abstract Builder stubs(List<GrpcStubView> val);
 
     public abstract Builder callOptionsTypeName(String val);
 

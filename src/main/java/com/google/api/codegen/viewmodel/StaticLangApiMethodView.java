@@ -59,6 +59,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract List<RequestObjectParamView> requestObjectParams();
 
+  public abstract String stubName();
+
   @Nullable
   public abstract ListMethodDetailView listMethod();
 
@@ -116,6 +118,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
     public abstract Builder callableMethod(CallableMethodDetailView details);
 
     public abstract Builder requestObjectMethod(RequestObjectMethodDetailView details);
+
+    public abstract Builder stubName(String stubName);
 
     public abstract StaticLangApiMethodView build();
   }
