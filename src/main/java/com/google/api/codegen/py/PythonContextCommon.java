@@ -14,14 +14,10 @@
  */
 package com.google.api.codegen.py;
 
-import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 import java.util.List;
 
 /**
@@ -39,17 +35,6 @@ public class PythonContextCommon {
       return name + "_";
     }
     return name;
-  }
-
-  public Iterable<TypeRef> getEnumTypes(Model model) {
-    return Iterables.filter(
-        model.getSymbolTable().getDeclaredTypes(),
-        new Predicate<TypeRef>() {
-          @Override
-          public boolean apply(TypeRef type) {
-            return type.isEnum() && type.getEnumType().isReachable();
-          }
-        });
   }
 
   /*
