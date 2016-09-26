@@ -62,8 +62,24 @@ public class FieldConfigGenerator implements MethodConfigGenerator {
       if (parameterList.size() <= FLATTENING_THRESHOLD) {
         result.put(CONFIG_KEY_FLATTENING, createFlatteningConfig(parameterList));
       }
-      result.put(CONFIG_KEY_REQUIRED_FIELDS, new LinkedList<String>(parameterList));
     }
+
+    // For the required fields, apart from ignoring pagination parameters, ignore any boolean
+    // fields. Those need always be optional, for requiring one to have a value other than the
+    // default (false) is requiring it to be set to true, which doesn't make sense.
+    List<String> requiredParameters = new LinkedList<>();
+    for (Field field : message.getFields()) {
+      String fieldName = field.getSimpleName();
+      if (ignoredFields.contains(fieldName)) {
+        continue;
+      }
+      if (field.getType().getKind() == Type.TYPE_BOOL && !field.getType().isRepeated()) {
+        continue;
+      }
+      requiredParameters.add(fieldName);
+    }
+    result.put(CONFIG_KEY_REQUIRED_FIELDS, requiredParameters);
+
     // use all fields for the following check; if there are ignored fields for flattening
     // purposes, the caller still needs a way to set them (by using the request object method).
     if (message.getFields().size() > REQUEST_OBJECT_METHOD_THRESHOLD
