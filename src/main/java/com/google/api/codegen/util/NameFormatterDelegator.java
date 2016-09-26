@@ -38,13 +38,18 @@ public abstract class NameFormatterDelegator implements NameFormatter {
   }
 
   @Override
-  public String publicVarName(Name name) {
-    return formatter.publicVarName(name);
+  public String publicFieldName(Name name) {
+    return formatter.publicFieldName(name);
   }
 
   @Override
-  public String privateVarName(Name name) {
-    return formatter.privateVarName(name);
+  public String privateFieldName(Name name) {
+    return formatter.privateFieldName(name);
+  }
+
+  @Override
+  public String localVarName(Name name) {
+    return formatter.localVarName(name);
   }
 
   @Override

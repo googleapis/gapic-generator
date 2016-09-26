@@ -110,7 +110,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * a particular proto interface.
    */
   public String getApiWrapperVariableName(Interface interfaze) {
-    return privateVarName(Name.upperCamel(interfaze.getSimpleName(), "Api"));
+    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Api"));
   }
 
   /**
@@ -140,7 +140,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * proto interface; not used in most languages.
    */
   public String getApiSettingsVariableName(Interface interfaze) {
-    return privateVarName(Name.upperCamel(interfaze.getSimpleName(), "Settings"));
+    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Settings"));
   }
 
   /**
@@ -148,7 +148,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * proto interface; not used in most languages.
    */
   public String getApiSettingsBuilderVarName(Interface interfaze) {
-    return privateVarName(Name.upperCamel(interfaze.getSimpleName(), "SettingsBuilder"));
+    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "SettingsBuilder"));
   }
 
   /**
@@ -157,15 +157,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getVariableName(Name identifier, InitValueConfig initValueConfig) {
     if (initValueConfig == null || !initValueConfig.hasFormattingConfig()) {
-      return privateVarName(identifier);
+      return localVarName(identifier);
     } else {
-      return privateVarName(Name.from("formatted").join(identifier));
+      return localVarName(Name.from("formatted").join(identifier));
     }
   }
 
   /** The name of the field. */
   public String getFieldName(Field field) {
-    return publicVarName(Name.from(field.getSimpleName()));
+    return publicFieldName(Name.from(field.getSimpleName()));
   }
 
   /** The function name to set the given proto field. */
@@ -234,6 +234,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
+   * The name of the example package
+   */
+  public String getExamplePackageName() {
+    return getNotImplementedString("SurfaceNamer.getExamplePackageName");
+  }
+
+  /**
    * The name of a path template constant for the given collection,
    * to be held in an API wrapper class.
    */
@@ -267,22 +274,22 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The entity name for the given collection. */
   public String getEntityName(CollectionConfig collectionConfig) {
-    return privateVarName(Name.from(collectionConfig.getEntityName()));
+    return localVarName(Name.from(collectionConfig.getEntityName()));
   }
 
   /** The parameter name for the entity for the given collection config. */
   public String getEntityNameParamName(CollectionConfig collectionConfig) {
-    return privateVarName(Name.from(collectionConfig.getEntityName(), "name"));
+    return localVarName(Name.from(collectionConfig.getEntityName(), "name"));
   }
 
   /** The parameter name for the given lower-case field name. */
   public String getParamName(String var) {
-    return privateVarName(Name.from(var));
+    return localVarName(Name.from(var));
   }
 
   /** The page streaming descriptor name for the given method. */
   public String getPageStreamingDescriptorName(Method method) {
-    return privateVarName(Name.upperCamel(method.getSimpleName(), "PageStreamingDescriptor"));
+    return privateFieldName(Name.upperCamel(method.getSimpleName(), "PageStreamingDescriptor"));
   }
 
   /** The name of the constant to hold the page streaming descriptor for the given method. */
@@ -394,7 +401,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * (such as a flattened parameter).
    */
   public String getVariableName(Field field) {
-    return privateVarName(Name.from(field.getSimpleName()));
+    return localVarName(Name.from(field.getSimpleName()));
   }
 
   /**
@@ -483,7 +490,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the callable for the paged callable variant of the given method. */
   public String getPagedCallableName(Method method) {
-    return privateVarName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
+    return privateFieldName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
   }
   /** The name of the plain callable variant of the given method. */
   public String getCallableMethodName(Method method) {
@@ -497,7 +504,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the plain callable for the given method. */
   public String getCallableName(Method method) {
-    return privateVarName(Name.upperCamel(method.getSimpleName(), "Callable"));
+    return privateFieldName(Name.upperCamel(method.getSimpleName(), "Callable"));
   }
 
   /** The name of the settings member name for the given method. */
@@ -578,7 +585,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The class name of a variable to hold the mock gRPC service for the given API service. */
   public String getMockServiceVarName(Interface service) {
-    return privateVarName(Name.upperCamel("Mock", service.getSimpleName()));
+    return localVarName(Name.upperCamel("Mock", service.getSimpleName()));
   }
 
   /** The class name of the mock gRPC service implementation for the given API service. */
@@ -588,7 +595,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The file name for an API service. */
   public String getServiceFileName(Interface service, String packageName) {
-    return getNotImplementedString("SurfaceNamer.getApiName");
+    return getNotImplementedString("SurfaceNamer.getServiceFileName");
+  }
+
+  /** The file name for the example of an API service. */
+  public String getExampleFileName(Interface service, String packageName) {
+    return getNotImplementedString("SurfaceNamer.getExampleFileName");
   }
 
   /**
@@ -601,17 +613,18 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the variable that will hold the stub for a service. */
   public String getStubName(Interface service) {
-    return privateVarName(Name.upperCamel(service.getSimpleName(), "Stub"));
+    return privateFieldName(Name.upperCamel(service.getSimpleName(), "Stub"));
   }
 
   /** The name of the function that will create a stub. */
   public String getCreateStubFunctionName(Interface service) {
-    return privateVarName(Name.upperCamel("Create", service.getSimpleName(), "Stub", "Function"));
+    return privateMethodName(
+        Name.upperCamel("Create", service.getSimpleName(), "Stub", "Function"));
   }
 
   /** The name of the array which will hold the methods for a given stub. */
   public String getStubMethodsArrayName(Interface service) {
-    return privateVarName(Name.upperCamel(service.getSimpleName(), "Stub", "Methods"));
+    return privateMethodName(Name.upperCamel(service.getSimpleName(), "Stub", "Methods"));
   }
 
   /** The name of the import for a specific grpcClient */
@@ -626,7 +639,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the variable to hold the grpc client of a service. */
   public String getGrpcClientVariableName(Interface service) {
-    return privateVarName(Name.upperCamel(service.getSimpleName(), "Client"));
+    return localVarName(Name.upperCamel(service.getSimpleName(), "Client"));
   }
 
   /** The qualified namespace of a service. */

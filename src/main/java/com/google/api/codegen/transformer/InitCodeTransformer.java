@@ -315,7 +315,7 @@ public class InitCodeTransformer {
         typeTable.getAndSaveNicknameForElementType(item.getType().makeOptional()));
     List<String> entries = new ArrayList<>();
     for (InitCodeNode child : item.getChildren().values()) {
-      entries.add(namer.privateVarName(child.getIdentifier()));
+      entries.add(namer.localVarName(child.getIdentifier()));
     }
     surfaceLine.elementIdentifiers(entries);
 

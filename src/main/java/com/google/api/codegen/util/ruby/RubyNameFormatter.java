@@ -29,12 +29,17 @@ public class RubyNameFormatter implements NameFormatter {
   }
 
   @Override
-  public String privateVarName(Name name) {
+  public String localVarName(Name name) {
     return name.toLowerUnderscore();
   }
 
   @Override
-  public String publicVarName(Name name) {
+  public String privateFieldName(Name name) {
+    return name.toLowerUnderscore();
+  }
+
+  @Override
+  public String publicFieldName(Name name) {
     return name.toLowerUnderscore();
   }
 

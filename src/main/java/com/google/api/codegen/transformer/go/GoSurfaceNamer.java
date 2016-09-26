@@ -116,13 +116,13 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getDefaultApiSettingsFunctionName(Interface service) {
-    return privateVarName(
+    return privateMethodName(
         Name.from("default").join(clientNamePrefix(service)).join("client").join("options"));
   }
 
   @Override
   public String getDefaultCallSettingsFunctionName(Interface service) {
-    return privateVarName(
+    return privateMethodName(
         Name.from("default").join(clientNamePrefix(service)).join("call").join("options"));
   }
 
@@ -160,6 +160,11 @@ public class GoSurfaceNamer extends SurfaceNamer {
     return parts[parts.length - 2];
   }
 
+  @Override
+  public String getExamplePackageName() {
+    return getLocalPackageName() + "_test";
+  }
+
   private Name clientNamePrefix(Interface service) {
     Name name = getReducedServiceName(service);
     // If there's only one service, or the service name matches the package name, don't prefix with
@@ -173,7 +178,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getStatusCodeName(Status.Code code) {
-    return publicVarName(Name.upperUnderscore(code.toString()));
+    return publicFieldName(Name.upperUnderscore(code.toString()));
   }
 
   @Override
@@ -187,5 +192,16 @@ public class GoSurfaceNamer extends SurfaceNamer {
   @Override
   public String getGrpcContainerTypeName(Interface service) {
     return "";
+  }
+
+  @Override
+  public String getServiceFileName(Interface service, String packageName) {
+    return classFileNameBase(getReducedServiceName(service).join("client"));
+  }
+
+  @Override
+  public String getExampleFileName(Interface service, String packageName) {
+    return classFileNameBase(
+        getReducedServiceName(service).join("client").join("example").join("test"));
   }
 }

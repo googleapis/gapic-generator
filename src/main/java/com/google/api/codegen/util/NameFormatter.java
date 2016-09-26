@@ -28,12 +28,17 @@ public interface NameFormatter {
   /**
    * Formats the name as a public variable name.
    */
-  String publicVarName(Name name);
+  String publicFieldName(Name name);
 
   /**
-   * Formats the name as a private variable name.
+   * Formats the name as a private field name.
    */
-  String privateVarName(Name name);
+  String privateFieldName(Name name);
+
+  /**
+   * Formats the name as a local variable name.
+   */
+  String localVarName(Name name);
 
   /**
    * Formats the name as a reference to a variable name.

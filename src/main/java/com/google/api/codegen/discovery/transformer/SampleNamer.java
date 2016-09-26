@@ -38,14 +38,14 @@ public class SampleNamer extends NameFormatterDelegator {
    * Returns the variable name of the service.
    */
   public String getServiceVarName() {
-    return privateVarName(Name.lowerCamel("service"));
+    return localVarName(Name.lowerCamel("service"));
   }
 
   /**
    * Returns the variable name for a field.
    */
   public String getFieldVarName(String fieldName) {
-    return privateVarName(Name.lowerCamel(fieldName));
+    return privateFieldName(Name.lowerCamel(fieldName));
   }
 
   /**
@@ -59,20 +59,20 @@ public class SampleNamer extends NameFormatterDelegator {
    * Returns the variable name of the request.
    */
   public String getRequestVarName() {
-    return privateVarName(Name.lowerCamel("request"));
+    return localVarName(Name.lowerCamel("request"));
   }
 
   /**
    * Returns the variable name of the request body.
    */
   public String getRequestBodyVarName() {
-    return privateVarName(Name.lowerCamel("requestBody"));
+    return localVarName(Name.lowerCamel("requestBody"));
   }
 
   /**
    * Returns the variable name of the response.
    */
   public String getResponseVarName() {
-    return privateVarName(Name.lowerCamel("response"));
+    return localVarName(Name.lowerCamel("response"));
   }
 }
