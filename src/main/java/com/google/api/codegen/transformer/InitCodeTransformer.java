@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.BundlingConfig;
 import com.google.api.codegen.CollectionConfig;
-import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.SmokeTestConfig;
 import com.google.api.codegen.metacode.InitCodeLineType;
@@ -429,8 +428,7 @@ public class InitCodeTransformer {
       List<String> varList, InitValueConfig initValueConfig) {
     List<String> formatFunctionArgs = new ArrayList<>();
     for (String entityName : varList) {
-      String entityValue =
-          "\"[" + LanguageUtil.lowerUnderscoreToUpperUnderscore(entityName) + "]\"";
+      String entityValue = "\"[" + Name.from(entityName).toUpperUnderscore() + "]\"";
       if (initValueConfig.hasFormattingConfigInitialValues()
           && initValueConfig.getCollectionValues().containsKey(entityName)) {
         entityValue = initValueConfig.getCollectionValues().get(entityName);
