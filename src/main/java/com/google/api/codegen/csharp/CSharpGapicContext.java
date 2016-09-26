@@ -85,6 +85,25 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
           .put(Type.TYPE_BYTES, "ByteString")
           .build();
 
+  private static final ImmutableMap<Type, String> PRIMITIVE_EMPTY_VALUES =
+      ImmutableMap.<Type, String>builder()
+          .put(Type.TYPE_BOOL, "false")
+          .put(Type.TYPE_DOUBLE, "0.0")
+          .put(Type.TYPE_FLOAT, "0.0f")
+          .put(Type.TYPE_INT64, "0L")
+          .put(Type.TYPE_UINT64, "0L")
+          .put(Type.TYPE_SINT64, "0L")
+          .put(Type.TYPE_FIXED64, "0L")
+          .put(Type.TYPE_SFIXED64, "0L")
+          .put(Type.TYPE_INT32, "0")
+          .put(Type.TYPE_UINT32, "0")
+          .put(Type.TYPE_SINT32, "0")
+          .put(Type.TYPE_FIXED32, "0")
+          .put(Type.TYPE_SFIXED32, "0")
+          .put(Type.TYPE_STRING, "\"\"")
+          .put(Type.TYPE_BYTES, "new ByteString()")
+          .build();
+
   private CSharpContextCommon csharpCommon;
 
   public CSharpGapicContext(Model model, ApiConfig config) {
@@ -295,11 +314,12 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
         String name,
         String typeName,
         String defaultValue,
+        String emptyValue,
         String propertyName,
         String propertyTransform,
         boolean isRepeated) {
       return new AutoValue_CSharpGapicContext_ParamInfo(
-          name, typeName, defaultValue, propertyName, propertyTransform, isRepeated);
+          name, typeName, defaultValue, emptyValue, propertyName, propertyTransform, isRepeated);
     }
 
     public abstract String name();
@@ -307,6 +327,8 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
     public abstract String typeName();
 
     public abstract String defaultValue();
+
+    public abstract String emptyValue();
 
     public abstract String propertyName();
 
@@ -361,11 +383,20 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
   @AutoValue
   public abstract static class FlatInfo {
     public static FlatInfo create(
-        Iterable<ParamInfo> params, Iterable<String> xmlDocAsync, Iterable<String> xmlDocSync) {
-      return new AutoValue_CSharpGapicContext_FlatInfo(params, xmlDocAsync, xmlDocSync);
+        Iterable<ParamInfo> params,
+        String paramNamesList,
+        String paramTypesList,
+        Iterable<String> xmlDocAsync,
+        Iterable<String> xmlDocSync) {
+      return new AutoValue_CSharpGapicContext_FlatInfo(
+          params, paramNamesList, paramTypesList, xmlDocAsync, xmlDocSync);
     }
 
     public abstract Iterable<ParamInfo> params();
+
+    public abstract String paramNamesList();
+
+    public abstract String paramTypesList();
 
     public abstract Iterable<String> xmlDocAsync();
 
@@ -383,6 +414,7 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
                         CSharpContextCommon.s_underscoresToCamelCase(field.getSimpleName()),
                         typeName(field.getType()),
                         "",
+                        getEmptyValue(field.getType()),
                         CSharpContextCommon.s_underscoresToPascalCase(field.getSimpleName()),
                         "",
                         field.getType().isRepeated());
@@ -391,13 +423,36 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
             .toList();
     if (page != null) {
       ParamInfo pageToken =
-          ParamInfo.create("pageToken", "string", " = null", "PageToken", " ?? \"\"", false);
+          ParamInfo.create(
+              "pageToken", "string", " = null", "null", "PageToken", " ?? \"\"", false);
       ParamInfo pageSize =
-          ParamInfo.create("pageSize", "int?", " = null", "PageSize", " ?? 0", false);
+          ParamInfo.create("pageSize", "int?", " = null", "null", "PageSize", " ?? 0", false);
       params = FluentIterable.from(params).append(pageToken, pageSize).toList();
     }
+    String paramNamesList =
+        FluentIterable.from(params)
+            .transform(
+                new Function<ParamInfo, String>() {
+                  @Override
+                  public String apply(ParamInfo param) {
+                    return param.name();
+                  }
+                })
+            .join(Joiner.on(", "));
+    String paramTypesList =
+        FluentIterable.from(params)
+            .transform(
+                new Function<ParamInfo, String>() {
+                  @Override
+                  public String apply(ParamInfo param) {
+                    return param.typeName();
+                  }
+                })
+            .join(Joiner.on(","));
     return FlatInfo.create(
         params,
+        paramNamesList,
+        paramTypesList,
         makeMethodXmlDoc(method, flat, true, page != null),
         makeMethodXmlDoc(method, flat, false, page != null));
   }
@@ -718,6 +773,25 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
     addImport(getNamespace(elem.getFile()));
     // Return the combined type prefix and type name
     return prefix + elem.getSimpleName();
+  }
+
+  private String getEmptyValue(TypeRef type) {
+    if (type.isMap()) {
+      TypeRef keyType = type.getMapKeyField().getType();
+      TypeRef valueType = type.getMapValueField().getType();
+      return "new Dictionary<" + typeName(keyType) + ", " + typeName(valueType) + ">()";
+    }
+    // Must check for map first, as a map is also repeated
+    if (type.isRepeated()) {
+      return String.format("new List<%s>()", basicTypeName(type));
+    }
+    if (type.isEnum()) {
+      return "(" + basicTypeName(type) + ") 0";
+    }
+    if (type.isMessage()) {
+      return "new " + typeName(type) + "()";
+    }
+    return PRIMITIVE_EMPTY_VALUES.get(type.getKind());
   }
 
   private List<String> docLines(ProtoElement element, final String prefix) {

@@ -93,7 +93,8 @@ public class MainGapicProviderFactory
               .setContext(new CSharpGapicContext(model, apiConfig))
               .setSnippetSetRunner(
                   new CSharpSnippetSetRunner<Interface>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-              .setSnippetFileNames(Arrays.asList("csharp/wrapper.snip"))
+              .setSnippetFileNames(
+                  Arrays.asList("csharp/wrapper.snip", "csharp/wrapper_samples.snip"))
               .setCodePathMapper(new CSharpCodePathMapper())
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
