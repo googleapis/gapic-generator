@@ -224,7 +224,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     String commentType = fieldTypeCardinalityComment(field);
     String fieldName = wrapIfKeywordOrBuiltIn(lowerUnderscoreToLowerCamel(field.getSimpleName()));
     if (isOptional) {
-      fieldName = "otherArgs." + fieldName;
+      fieldName = "options." + fieldName;
       commentType = commentType + "=";
     }
     return fieldComment(
@@ -273,6 +273,18 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   @Nullable
   private String returnTypeComment(Method method, MethodConfig config) {
     if (config.isPageStreaming()) {
+      String callbackMessage =
+          "@param {function(?Error, ?"
+              + jsTypeName(method.getOutputType())
+              + ", ?"
+              + jsTypeName(config.getPageStreaming().getResponseTokenField().getType())
+              + ")=} callback\n"
+              + "  When specified, the results are not streamed but this callback\n"
+              + "  will be called with the response object representing "
+              + linkForMessage(method.getOutputMessage())
+              + ".\n"
+              + "  The third item will be set if the response contains the token for the further results\n"
+              + "  and can be reused to `pageToken` field in the options in the next request.";
       TypeRef resourceType = config.getPageStreaming().getResourcesField().getType();
       String resourceTypeName;
       if (resourceType.isMessage()) {
@@ -283,12 +295,14 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       } else {
         resourceTypeName = "a " + jsTypeName(resourceType);
       }
-      return "@returns {Stream}\n"
-          + "  An object stream. By default, this emits "
+      return callbackMessage
+          + "\n@returns {Stream|gax.EventEmitter}\n"
+          + "  An object stream which emits "
           + resourceTypeName
           + " on 'data' event.\n"
-          + "  This object can also be configured to emit\n"
-          + "  pages of the responses through the options parameter.";
+          + "  When the callback is specified or streaming is suppressed through options,\n"
+          + "  it will return an event emitter to handle the call status and the callback\n"
+          + "  will be called with the response object.";
     }
 
     MessageType returnMessageType = method.getOutputMessage();
@@ -349,9 +363,15 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     for (Field field : config.getRequiredFields()) {
       paramTypesBuilder.append(fieldParamComment(field, null, false));
     }
+    paramTypesBuilder.append(
+        "@param {Object=} options\n"
+            + "  Optional parameters. You can override the default settings for this call, e.g, timeout,\n"
+            + "  retries, paginations, etc. See [gax.CallOptions]{@link "
+            + "https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.");
     Iterable<Field> optionalParams = removePageTokenFromFields(config.getOptionalFields(), config);
     if (optionalParams.iterator().hasNext()) {
-      paramTypesBuilder.append("@param {Object=} otherArgs\n");
+      paramTypesBuilder.append(
+          "\n\n  In addition, options may contain the following optional parameters.\n");
       for (Field field : optionalParams) {
         if (config.isPageStreaming()
             && field.equals((config.getPageStreaming().getPageSizeField()))) {
@@ -369,10 +389,6 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
         }
       }
     }
-    paramTypesBuilder.append(
-        "@param {gax.CallOptions=} options\n"
-            + "  Overrides the default settings for this call, e.g, timeout,\n"
-            + "  retries, etc.");
     String paramTypes = paramTypesBuilder.toString();
 
     String returnType = returnTypeComment(msg, config);
@@ -594,9 +610,14 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
               "true",
               "false",
               // common parameters passed to methods.
-              "otherArgs",
               "options",
-              "callback")
+              "callback",
+              // parameters used in CallOptions.
+              "timeout",
+              "retry",
+              "flattenPages",
+              "pageToken",
+              "isBundling")
           .build();
 
   private static final ImmutableSet<String> COMMON_PROTO_PATHS =

@@ -171,23 +171,6 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String retryFilterMethodName(String key) {
-    return methodName(Name.from(key).join("retry").join("filter"));
-  }
-
-  /** The method name of the retry backoff for the given key */
-  @Override
-  public String retryBackoffMethodName(String key) {
-    return methodName(Name.from("get").join(key).join("retry").join("backoff"));
-  }
-
-  /** The method name of the timeout backoff for the given key */
-  @Override
-  public String timeoutBackoffMethodName(String key) {
-    return methodName(Name.from("get").join(key).join("timeout").join("backoff"));
-  }
-
-  @Override
   public List<String> getReturnDocLines(
       SurfaceTransformerContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
     if (methodConfig.isPageStreaming()) {

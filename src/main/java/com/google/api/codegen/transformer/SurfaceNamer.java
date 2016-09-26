@@ -245,17 +245,17 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The method name of the retry filter for the given key */
   public String retryFilterMethodName(String key) {
-    return getNotImplementedString("SurfaceNamer.retryFilterMethodName");
+    return methodName(Name.from(key).join("retry").join("filter"));
   }
 
   /** The method name of the retry backoff for the given key */
   public String retryBackoffMethodName(String key) {
-    return getNotImplementedString("SurfaceNamer.retryBackoffMethodName");
+    return methodName(Name.from("get").join(key).join("retry").join("backoff"));
   }
 
   /** The method name of the timeout backoff for the given key */
   public String timeoutBackoffMethodName(String key) {
-    return getNotImplementedString("SurfaceNamer.timeoutBackoffMethodName");
+    return methodName(Name.from("get").join(key).join("timeout").join("backoff"));
   }
 
   /** The page streaming descriptor name for the given method. */
