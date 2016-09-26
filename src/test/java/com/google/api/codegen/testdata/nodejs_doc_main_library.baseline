@@ -1107,20 +1107,28 @@ LibraryServiceApi.prototype.updateBookIndex = function updateBookIndex(
 /**
  * @param {string[]} names
  * @param {string[]} shelves
- * @param {Object=} otherArgs
- * @param {number=} otherArgs.pageSize
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ *
+ *   In addition, options may contain the following optional parameters.
+ * @param {number=} options.pageSize
  *   The maximum number of resources contained in the underlying API
  *   response. If page streaming is performed per-resource, this
  *   parameter does not affect the return value. If page streaming is
  *   performed per-page, this determines the maximum number of
  *   resources in a page.
- * @param {gax.CallOptions=} options
- *   Overrides the default settings for this call, e.g, timeout,
- *   retries, etc.
- * @returns {Stream}
- *   An object stream. By default, this emits a string on 'data' event.
- *   This object can also be configured to emit
- *   pages of the responses through the options parameter.
+ *
+ * @param {function(?Error, ?Object, ?string)=} callback
+ *   When specified, the results are not streamed but this callback
+ *   will be called with the response object representing [FindRelatedBooksResponse]{@link FindRelatedBooksResponse}.
+ *   The third item will be set if the response contains the token for the further results
+ *   and can be reused to `pageToken` field in the options in the next request.
+ * @returns {Stream|gax.EventEmitter}
+ *   An object stream which emits a string on 'data' event.
+ *   When the callback is specified or streaming is suppressed through options,
+ *   it will return an event emitter to handle the call status and the callback
+ *   will be called with the response object.
  *
  * @example
  *
@@ -1128,26 +1136,42 @@ LibraryServiceApi.prototype.updateBookIndex = function updateBookIndex(
  * var namesElement = '';
  * var names = [namesElement];
  * var shelves = [];
+ * // Iterate over all elements.
  * api.findRelatedBooks(names, shelves).on('data', function(element) {
  *     // doThingsWith(element)
  * });
+ *
+ * // Or obtain the paged response through the callback.
+ * function callback(err, response, nextPageToken) {
+ *     if (err) {
+ *         console.error(err);
+ *         return;
+ *     }
+ *     // doThingsWith(response)
+ *     if (nextPageToken) {
+ *         // fetch the next page.
+ *         api.findRelatedBooks(names, shelves, {pageToken: nextPageToken}, callback);
+ *     }
+ * }
+ * api.findRelatedBooks(names, shelves, {flattenPages: false}, callback);
  */
-LibraryServiceApi.prototype.findRelatedBooks = function findRelatedBooks() {
-  var args = arguejs({
-    names: Array,
-    shelves: Array,
-    otherArgs: [Object, {}],
-    options: [gax.CallOptions],
-    callback: [Function]
-  }, arguments);
-  var req = {
-    names: args.names,
-    shelves: args.shelves
-  };
-  if ('pageSize' in args.otherArgs) {
-    req.page_size = args.otherArgs.pageSize;
+LibraryServiceApi.prototype.findRelatedBooks = function findRelatedBooks(
+    names,
+    shelves,
+    options,
+    callback) {
+  if (options instanceof Function && callback === undefined) {
+    callback = options;
+    options = {};
   }
-  return this._findRelatedBooks(req, args.options, args.callback);
+  var req = {
+    names: names,
+    shelves: shelves
+  };
+  if ('pageSize' in options) {
+    req.page_size = options.pageSize;
+  }
+  return this._findRelatedBooks(req, options, callback);
 };
 
 /**

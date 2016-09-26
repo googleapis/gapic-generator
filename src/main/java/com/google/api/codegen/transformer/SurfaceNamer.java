@@ -479,12 +479,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getAndSaveFieldTypeName(
       FeatureConfig featureConfig, ModelTypeTable typeTable, Field resourceField) {
-    return getNotImplementedString("SurfaceNamer.getAndSaveFieldTypeName");
+    return typeTable.getAndSaveNicknameFor(resourceField.getType());
   }
 
   public String getAndSaveElementFieldTypeName(
-      FeatureConfig featureConfig, ModelTypeTable typeTable, Field resourcesField) {
-    return getNotImplementedString("SurfaceNamer.getAndSaveElementFieldTypeName");
+      FeatureConfig featureConfig, ModelTypeTable typeTable, Field resourceField) {
+    return typeTable.getAndSaveNicknameForElementType(resourceField.getType());
   }
 
   /**

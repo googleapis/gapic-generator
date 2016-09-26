@@ -149,7 +149,7 @@ public class LibraryServiceApi implements AutoCloseable {
   private final ApiCallable<GetBookFromArchiveRequest, Book> getBookFromArchiveCallable;
   private final ApiCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable;
   private final ApiCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable;
-  private final ApiCallable<FindRelatedBooksRequest, PagedListResponse<FindRelatedBooksRequest,FindRelatedBooksResponse,String>> findRelatedBooksPagedCallable;
+  private final ApiCallable<FindRelatedBooksRequest, PagedListResponse<FindRelatedBooksRequest,FindRelatedBooksResponse,BookName>> findRelatedBooksPagedCallable;
   private final ApiCallable<AddTagRequest, AddTagResponse> addTagCallable;
   private final ApiCallable<AddLabelRequest, AddLabelResponse> addLabelCallable;
 
@@ -1651,7 +1651,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
-   *   for (String element : libraryServiceApi.findRelatedBooks(names, shelves).iterateAllElements()) {
+   *   for (BookName element : libraryServiceApi.findRelatedBooks(names, shelves).iterateAllElements()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1661,7 +1661,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param shelves
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final PagedListResponse<FindRelatedBooksRequest,FindRelatedBooksResponse,String> findRelatedBooks(List<BookName> names, List<ShelfName> shelves) {
+  public final PagedListResponse<FindRelatedBooksRequest,FindRelatedBooksResponse,BookName> findRelatedBooks(List<BookName> names, List<ShelfName> shelves) {
     FindRelatedBooksRequest request =
         FindRelatedBooksRequest.newBuilder()
         .addAllNamesWithResources(names)
@@ -1684,7 +1684,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *     .addAllNamesWithResources(names)
    *     .addAllShelvesWithResources(shelves)
    *     .build();
-   *   for (String element : libraryServiceApi.findRelatedBooks(request).iterateAllElements()) {
+   *   for (BookName element : libraryServiceApi.findRelatedBooks(request).iterateAllElements()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1693,7 +1693,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  private final PagedListResponse<FindRelatedBooksRequest,FindRelatedBooksResponse,String> findRelatedBooks(FindRelatedBooksRequest request) {
+  private final PagedListResponse<FindRelatedBooksRequest,FindRelatedBooksResponse,BookName> findRelatedBooks(FindRelatedBooksRequest request) {
     return findRelatedBooksPagedCallable()
         .call(request);
   }
@@ -1712,15 +1712,15 @@ public class LibraryServiceApi implements AutoCloseable {
    *     .addAllNamesWithResources(names)
    *     .addAllShelvesWithResources(shelves)
    *     .build();
-   *   ListenableFuture&lt;PagedListResponse&lt;FindRelatedBooksRequest,FindRelatedBooksResponse,String&gt;&gt; future = libraryServiceApi.findRelatedBooksPagedCallable().futureCall(request);
+   *   ListenableFuture&lt;PagedListResponse&lt;FindRelatedBooksRequest,FindRelatedBooksResponse,BookName&gt;&gt; future = libraryServiceApi.findRelatedBooksPagedCallable().futureCall(request);
    *   // Do something
-   *   for (String element : future.get().iterateAllElements()) {
+   *   for (BookName element : future.get().iterateAllElements()) {
    *     // doThingsWith(element);
    *   }
    * }
    * </code></pre>
    */
-  public final ApiCallable<FindRelatedBooksRequest, PagedListResponse<FindRelatedBooksRequest,FindRelatedBooksResponse,String>> findRelatedBooksPagedCallable() {
+  public final ApiCallable<FindRelatedBooksRequest, PagedListResponse<FindRelatedBooksRequest,FindRelatedBooksResponse,BookName>> findRelatedBooksPagedCallable() {
     return findRelatedBooksPagedCallable;
   }
 
@@ -1740,7 +1740,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *     .build();
    *   while (true) {
    *     FindRelatedBooksResponse response = libraryServiceApi.findRelatedBooksCallable().call(request);
-   *     for (String element : response.getNamesList()) {
+   *     for (BookName element : response.getNamesList()) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
