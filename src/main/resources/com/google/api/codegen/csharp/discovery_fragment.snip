@@ -117,7 +117,11 @@
     {@BREAK}
     @if sample.params
 
-        // {@TODO()} Change placeholders below to desired parameter values for the `{@sample.methodName}` method:
+        @if context.isSingleton(sample.params)
+            // {@TODO()} Change placeholder below to desired parameter value for the `{@sample.methodName}` method:
+        @else
+            // {@TODO()} Change placeholders below to desired parameter values for the `{@sample.methodName}` method:
+        @end
 
         @join param : sample.params
             {@description(param.description)}
