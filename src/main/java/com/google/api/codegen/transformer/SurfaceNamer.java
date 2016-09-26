@@ -30,7 +30,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
-
+import io.grpc.Status.Code;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,6 +78,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the class that implements a particular proto interface. */
   public String getApiWrapperClassName(Interface interfaze) {
     return className(Name.upperCamel(interfaze.getSimpleName(), "Api"));
+  }
+
+  /** The name of the implementation class that implements a particular proto interface. */
+  public String getApiWrapperClassImplName(Interface interfaze) {
+    return getNotImplementedString("SurfaceNamer.getApiWrapperClassImplName");
   }
 
   /**
@@ -233,6 +238,26 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return varName(Name.from(var));
   }
 
+  /** The documentation name of a parameter for the given lower-case field name. */
+  public String getParamDocName(String var) {
+    return varName(Name.from(var));
+  }
+
+  /** The method name of the retry filter for the given key */
+  public String retryFilterMethodName(String key) {
+    return methodName(Name.from(key).join("retry").join("filter"));
+  }
+
+  /** The method name of the retry backoff for the given key */
+  public String retryBackoffMethodName(String key) {
+    return methodName(Name.from("get").join(key).join("retry").join("backoff"));
+  }
+
+  /** The method name of the timeout backoff for the given key */
+  public String timeoutBackoffMethodName(String key) {
+    return methodName(Name.from("get").join(key).join("timeout").join("backoff"));
+  }
+
   /** The page streaming descriptor name for the given method. */
   public String getPageStreamingDescriptorName(Method method) {
     return varName(Name.upperCamel(method.getSimpleName(), "PageStreamingDescriptor"));
@@ -322,12 +347,24 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return methodName(Name.upperCamel(method.getSimpleName()));
   }
 
+  /** The name of the async surface method which can call the given API method. */
+  public String getAsyncApiMethodName(Method method) {
+    return getNotImplementedString("SurfaceNamer.getAsyncApiMethodName");
+  }
+
   /**
    * The name of a variable to hold a value for the given proto message field
    * (such as a flattened parameter).
    */
   public String getVariableName(Field field) {
     return varName(Name.from(field.getSimpleName()));
+  }
+
+  /**
+   * The name of a field as a method.
+   */
+  public String getFieldAsMethodName(Field field) {
+    return methodName(Name.from(field.getSimpleName()));
   }
 
   /**
@@ -356,6 +393,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The doc lines that declare what exception(s) are thrown for an API method. */
   public List<String> getThrowsDocLines() {
+    return new ArrayList<>();
+  }
+
+  /** The doc lines that describe the return value for an API method. */
+  public List<String> getReturnDocLines(
+      SurfaceTransformerContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
     return new ArrayList<>();
   }
 
@@ -396,7 +439,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The return type name in a static language for the given method. */
   public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
-    return getNotImplementedString("SurfaceNamer.getStaticReturnTypeName");
+    return getNotImplementedString("SurfaceNamer.getStaticLangReturnTypeName");
+  }
+
+  /** The async return type name in a static language for the given method. */
+  public String getStaticLangAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
+    return getNotImplementedString("SurfaceNamer.getStaticLangAsyncReturnTypeName");
   }
 
   /** The name of the paged callable variant of the given method. */
@@ -546,5 +594,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getProtoFileImportFromService(Interface service) {
     return getNotImplementedString("SurfaceNamer.getProtoFileImportFromService");
+  }
+
+  /** The name of an RPC status code */
+  public String getStatusCodeName(Code code) {
+    return methodName(Name.upperUnderscore(code.toString()));
+  }
+
+  /* The name of a retry definition */
+  public String getRetryDefinitionName(String retryDefinitionKey) {
+    return methodName(Name.from(retryDefinitionKey));
   }
 }

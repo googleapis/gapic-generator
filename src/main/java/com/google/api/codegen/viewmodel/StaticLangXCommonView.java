@@ -15,43 +15,41 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-
-import java.util.List;
 import javax.annotation.Nullable;
 
+// View of both api and settings for static language.
+// ViewModel members delegate to api.
 @AutoValue
-public abstract class SimpleParamDocView implements ParamDocView {
-  public abstract String paramName();
+public abstract class StaticLangXCommonView implements ViewModel {
+  public abstract StaticLangXApiView api();
 
-  public abstract String typeName();
-
-  @Nullable
-  public abstract List<String> lines();
-
-  public abstract String firstLine();
-
-  public abstract List<String> remainingLines();
-
-  public String type() {
-    return SimpleParamDocView.class.getSimpleName();
-  }
+  public abstract StaticLangXSettingsView settings();
 
   public static Builder newBuilder() {
-    return new AutoValue_SimpleParamDocView.Builder();
+    return new AutoValue_StaticLangXCommonView.Builder();
+  }
+
+  @Override
+  public String resourceRoot() {
+    return api().resourceRoot();
+  }
+
+  @Override
+  public String templateFileName() {
+    return api().templateFileName();
+  }
+
+  @Override
+  public String outputPath() {
+    return api().outputPath();
   }
 
   @AutoValue.Builder
   public static abstract class Builder {
-    public abstract Builder paramName(String val);
+    public abstract Builder api(StaticLangXApiView val);
 
-    public abstract Builder typeName(String val);
+    public abstract Builder settings(StaticLangXSettingsView val);
 
-    public abstract Builder lines(List<String> val);
-
-    public abstract Builder firstLine(String val);
-
-    public abstract Builder remainingLines(List<String> val);
-
-    public abstract SimpleParamDocView build();
+    public abstract StaticLangXCommonView build();
   }
 }

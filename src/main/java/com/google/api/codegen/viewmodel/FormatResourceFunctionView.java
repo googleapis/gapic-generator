@@ -30,6 +30,8 @@ public abstract class FormatResourceFunctionView {
 
   public abstract String pathTemplateGetterName();
 
+  public abstract String pattern();
+
   public static Builder newBuilder() {
     return new AutoValue_FormatResourceFunctionView.Builder();
   }
@@ -45,6 +47,8 @@ public abstract class FormatResourceFunctionView {
     public abstract Builder pathTemplateName(String val);
 
     public abstract Builder pathTemplateGetterName(String val);
+
+    public abstract Builder pattern(String val);
 
     public abstract FormatResourceFunctionView build();
   }

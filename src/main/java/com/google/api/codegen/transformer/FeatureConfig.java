@@ -12,22 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.viewmodel;
+package com.google.api.codegen.transformer;
 
-public enum ApiMethodType {
-  // Java
-  PagedFlattenedMethod,
-  PagedRequestObjectMethod,
-  PagedCallableMethod,
-  UnpagedListCallableMethod,
-  FlattenedMethod,
-  RequestObjectMethod,
-  CallableMethod,
-  // PHP
-  OptionalArrayMethod,
-  PagedOptionalArrayMethod,
-  // C#
-  FlattenedAsyncCallSettingsMethod,
-  FlattenedAsyncCancellationTokenMethod,
-  PagedFlattenedAsyncMethod,
+public class FeatureConfig {
+
+  public boolean enableMixins() {
+    return false;
+  }
 }

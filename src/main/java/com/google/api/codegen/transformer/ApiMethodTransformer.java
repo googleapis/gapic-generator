@@ -42,6 +42,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /** ApiMethodTransformer generates view objects from method definitions. */
@@ -54,14 +55,38 @@ public class ApiMethodTransformer {
 
   public StaticLangApiMethodView generatePagedFlattenedMethod(
       MethodTransformerContext context, ImmutableList<Field> fields) {
+    return generatePagedFlattenedMethod(
+        context, fields, Collections.<ParamWithSimpleDoc>emptyList());
+  }
+
+  public StaticLangApiMethodView generatePagedFlattenedMethod(
+      MethodTransformerContext context,
+      ImmutableList<Field> fields,
+      List<ParamWithSimpleDoc> additionalParams) {
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(context.getNamer().getApiMethodName(context.getMethod()));
     setListMethodFields(context, methodViewBuilder);
-    setFlattenedMethodFields(context, fields, methodViewBuilder);
+    setFlattenedMethodFields(
+        context, fields, additionalParams, Synchronicity.Sync, methodViewBuilder);
 
     return methodViewBuilder.type(ApiMethodType.PagedFlattenedMethod).build();
+  }
+
+  public StaticLangApiMethodView generatePagedFlattenedAsyncMethod(
+      MethodTransformerContext context,
+      ImmutableList<Field> fields,
+      List<ParamWithSimpleDoc> additionalParams) {
+    StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
+
+    setCommonFields(context, methodViewBuilder);
+    methodViewBuilder.name(context.getNamer().getAsyncApiMethodName(context.getMethod()));
+    setListMethodFields(context, methodViewBuilder);
+    setFlattenedMethodFields(
+        context, fields, additionalParams, Synchronicity.Async, methodViewBuilder);
+
+    return methodViewBuilder.type(ApiMethodType.PagedFlattenedAsyncMethod).build();
   }
 
   public StaticLangApiMethodView generatePagedRequestObjectMethod(
@@ -116,14 +141,40 @@ public class ApiMethodTransformer {
     return methodViewBuilder.type(ApiMethodType.UnpagedListCallableMethod).build();
   }
 
+  public StaticLangApiMethodView generateFlattenedAsyncMethod(
+      MethodTransformerContext context,
+      ImmutableList<Field> fields,
+      List<ParamWithSimpleDoc> additionalParams,
+      ApiMethodType type) {
+    StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
+
+    setCommonFields(context, methodViewBuilder);
+    methodViewBuilder.name(context.getNamer().getAsyncApiMethodName(context.getMethod()));
+    methodViewBuilder.callableName(context.getNamer().getCallableName(context.getMethod()));
+    setFlattenedMethodFields(
+        context, fields, additionalParams, Synchronicity.Async, methodViewBuilder);
+    setStaticLangReturnFields(context, Synchronicity.Async, methodViewBuilder);
+
+    return methodViewBuilder.type(type).build();
+  }
+
   public StaticLangApiMethodView generateFlattenedMethod(
       MethodTransformerContext context, ImmutableList<Field> fields) {
+    return generateFlattenedMethod(context, fields, Collections.<ParamWithSimpleDoc>emptyList());
+  }
+
+  public StaticLangApiMethodView generateFlattenedMethod(
+      MethodTransformerContext context,
+      ImmutableList<Field> fields,
+      List<ParamWithSimpleDoc> additionalParams) {
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(context.getNamer().getApiMethodName(context.getMethod()));
-    setFlattenedMethodFields(context, fields, methodViewBuilder);
-    setStaticLangSyncReturnFields(context, methodViewBuilder);
+    methodViewBuilder.callableName(context.getNamer().getCallableName(context.getMethod()));
+    setFlattenedMethodFields(
+        context, fields, additionalParams, Synchronicity.Sync, methodViewBuilder);
+    setStaticLangReturnFields(context, Synchronicity.Sync, methodViewBuilder);
 
     return methodViewBuilder.type(ApiMethodType.FlattenedMethod).build();
   }
@@ -136,7 +187,7 @@ public class ApiMethodTransformer {
     methodViewBuilder.name(namer.getApiMethodName(context.getMethod()));
     setRequestObjectMethodFields(
         context, namer.getCallableMethodName(context.getMethod()), methodViewBuilder);
-    setStaticLangSyncReturnFields(context, methodViewBuilder);
+    setStaticLangReturnFields(context, Synchronicity.Sync, methodViewBuilder);
 
     return methodViewBuilder.type(ApiMethodType.RequestObjectMethod).build();
   }
@@ -164,15 +215,26 @@ public class ApiMethodTransformer {
     methodViewBuilder.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
     methodViewBuilder.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
     methodViewBuilder.settingsGetterName(namer.getSettingsFunctionName(context.getMethod()));
+    methodViewBuilder.callableName(context.getNamer().getCallableName(context.getMethod()));
   }
 
   private void setListMethodFields(
       MethodTransformerContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
+    ModelTypeTable typeTable = context.getTypeTable();
+    SurfaceNamer namer = context.getNamer();
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
+    String requestTypeName = typeTable.getAndSaveNicknameFor(context.getMethod().getInputType());
+    String responseTypeName = typeTable.getAndSaveNicknameFor(context.getMethod().getOutputType());
     TypeRef resourceType = pageStreaming.getResourcesField().getType();
-    String resourceTypeName = context.getTypeTable().getAndSaveNicknameForElementType(resourceType);
+    String resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceType);
     methodViewBuilder.listMethod(
-        ListMethodDetailView.newBuilder().resourceTypeName(resourceTypeName).build());
+        ListMethodDetailView.newBuilder()
+            .requestTypeName(requestTypeName)
+            .responseTypeName(responseTypeName)
+            .resourceTypeName(resourceTypeName)
+            .resourcesFieldGetFunction(
+                namer.getFieldGetFunctionName(pageStreaming.getResourcesField()))
+            .build());
     methodViewBuilder.responseTypeName(
         context
             .getNamer()
@@ -187,6 +249,8 @@ public class ApiMethodTransformer {
   private void setFlattenedMethodFields(
       MethodTransformerContext context,
       ImmutableList<Field> fields,
+      List<ParamWithSimpleDoc> additionalParams,
+      Synchronicity synchronicity,
       StaticLangApiMethodView.Builder methodViewBuilder) {
     SurfaceNamer namer = context.getNamer();
     methodViewBuilder.initCode(
@@ -194,15 +258,23 @@ public class ApiMethodTransformer {
     methodViewBuilder.doc(
         ApiMethodDocView.newBuilder()
             .mainDocLines(namer.getDocLines(context.getMethod()))
-            .paramDocs(getMethodParamDocs(context, fields))
+            .paramDocs(getMethodParamDocs(context, fields, additionalParams))
             .throwsDocLines(namer.getThrowsDocLines())
+            .returnsDocLines(
+                namer.getReturnDocLines(
+                    context.getSurfaceTransformerContext(),
+                    context.getMethodConfig(),
+                    synchronicity))
             .build());
 
     List<RequestObjectParamView> params = new ArrayList<>();
     for (Field field : fields) {
       params.add(generateRequestObjectParam(context, field));
     }
-    methodViewBuilder.methodParams(params);
+    methodViewBuilder.forwardingMethodParams(params);
+    List<RequestObjectParamView> nonforwardingParams = new ArrayList<>(params);
+    nonforwardingParams.addAll(ParamWithSimpleDoc.asRequestObjectParamViews(additionalParams));
+    methodViewBuilder.methodParams(nonforwardingParams);
     methodViewBuilder.requestObjectParams(params);
 
     methodViewBuilder.pathTemplateChecks(generatePathTemplateChecks(context, fields));
@@ -265,14 +337,26 @@ public class ApiMethodTransformer {
             .build());
   }
 
-  private void setStaticLangSyncReturnFields(
-      MethodTransformerContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
-    String returnTypeFullName =
-        context
-            .getNamer()
-            .getStaticLangReturnTypeName(context.getMethod(), context.getMethodConfig());
-    methodViewBuilder.responseTypeName(
-        context.getTypeTable().getAndSaveNicknameFor(returnTypeFullName));
+  private void setStaticLangReturnFields(
+      MethodTransformerContext context,
+      Synchronicity synchronicity,
+      StaticLangApiMethodView.Builder methodViewBuilder) {
+    SurfaceNamer namer = context.getNamer();
+    String syncReturnTypeFullName =
+        namer.getStaticLangReturnTypeName(context.getMethod(), context.getMethodConfig());
+    String syncNickname = context.getTypeTable().getAndSaveNicknameFor(syncReturnTypeFullName);
+    switch (synchronicity) {
+      case Async:
+        String asyncReturnTypeFullName =
+            namer.getStaticLangAsyncReturnTypeName(context.getMethod(), context.getMethodConfig());
+        String asyncNickname =
+            context.getTypeTable().getAndSaveNicknameFor(asyncReturnTypeFullName);
+        methodViewBuilder.responseTypeName(asyncNickname);
+        break;
+      case Sync:
+        methodViewBuilder.responseTypeName(syncNickname);
+        break;
+    }
     methodViewBuilder.hasReturnValue(
         !ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
   }
@@ -350,7 +434,10 @@ public class ApiMethodTransformer {
 
     docBuilder.mainDocLines(context.getNamer().getDocLines(context.getMethod()));
     List<ParamDocView> paramDocs =
-        getMethodParamDocs(context, context.getMethodConfig().getRequiredFields());
+        getMethodParamDocs(
+            context,
+            context.getMethodConfig().getRequiredFields(),
+            Collections.<ParamWithSimpleDoc>emptyList());
     paramDocs.add(getOptionalArrayParamDoc(context, context.getMethodConfig().getOptionalFields()));
     docBuilder.paramDocs(paramDocs);
     docBuilder.returnTypeName(
@@ -408,6 +495,7 @@ public class ApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
     param.name(namer.getVariableName(field));
+    param.nameAsMethodName(namer.getFieldAsMethodName(field));
 
     if (namer.shouldImportRequestObjectParamType(field)) {
       param.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getType()));
@@ -433,7 +521,9 @@ public class ApiMethodTransformer {
   }
 
   private List<ParamDocView> getMethodParamDocs(
-      MethodTransformerContext context, Iterable<Field> fields) {
+      MethodTransformerContext context,
+      Iterable<Field> fields,
+      List<ParamWithSimpleDoc> additionalParamDocs) {
     List<ParamDocView> allDocs = new ArrayList<>();
     for (Field field : fields) {
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
@@ -466,11 +556,13 @@ public class ApiMethodTransformer {
         docLines = context.getNamer().getDocLines(field);
       }
 
+      paramDoc.lines(docLines);
       paramDoc.firstLine(docLines.get(0));
       paramDoc.remainingLines(docLines.subList(1, docLines.size()));
 
       allDocs.add(paramDoc.build());
     }
+    allDocs.addAll(ParamWithSimpleDoc.asParamDocViews(additionalParamDocs));
     return allDocs;
   }
 
@@ -500,7 +592,8 @@ public class ApiMethodTransformer {
 
     paramDoc.arrayKeyDocs(
         ImmutableList.<ParamDocView>builder()
-            .addAll(getMethodParamDocs(context, fields))
+            .addAll(
+                getMethodParamDocs(context, fields, Collections.<ParamWithSimpleDoc>emptyList()))
             .addAll(getCallSettingsParamDocList(context))
             .build());
 
