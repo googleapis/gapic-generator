@@ -99,7 +99,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private static final ImmutableList<String> PAGE_STREAM_IMPORTS =
-      ImmutableList.<String>of("math;;;");
+      ImmutableList.<String>of("math;;;", "google.golang.org/api/iterator;;;");
 
   private StaticLangXCombinedSurfaceView generate(SurfaceTransformerContext context) {
     StaticLangXCombinedSurfaceView.Builder view = StaticLangXCombinedSurfaceView.newBuilder();
