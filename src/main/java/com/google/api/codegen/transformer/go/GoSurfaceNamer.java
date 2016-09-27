@@ -28,6 +28,7 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.annotations.VisibleForTesting;
 
 import io.grpc.Status;
 
@@ -160,7 +161,8 @@ public class GoSurfaceNamer extends SurfaceNamer {
     return getLocalPackageName() + "_test";
   }
 
-  private Name clientNamePrefix(Interface service) {
+  @VisibleForTesting
+  Name clientNamePrefix(Interface service) {
     Name name = getReducedServiceName(service);
     // If the service name matches the package name, don't prefix with the service name.
     // Eg, instead of "library.NewLibraryClient", we want "library.NewClient".

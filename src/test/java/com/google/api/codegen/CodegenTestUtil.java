@@ -15,15 +15,33 @@
 package com.google.api.codegen;
 
 import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.stages.Merged;
+import com.google.api.tools.framework.model.testing.TestConfig;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
+import com.google.api.tools.framework.setup.StandardSetup;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Message;
 
+import org.junit.rules.TemporaryFolder;
+
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CodegenTestUtil {
+
+  public static Model readModel(
+      TestDataLocator locator, TemporaryFolder tempDir, String[] protoFiles, String[] yamlFiles) {
+    TestConfig testConfig =
+        new TestConfig(locator, tempDir.getRoot().getPath(), Arrays.asList(protoFiles));
+    Model model = testConfig.createModel(Arrays.asList(yamlFiles));
+    StandardSetup.registerStandardProcessors(model);
+    StandardSetup.registerStandardConfigAspects(model);
+    model.establishStage(Merged.KEY);
+    return model;
+  }
 
   public static ConfigProto readConfig(
       DiagCollector diagCollector, TestDataLocator testDataLocator, String[] gapicConfigFileNames) {
