@@ -16,21 +16,21 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.api.codegen.util.go.GoTypeTable;
-import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
-
 import io.grpc.Status;
-
 import java.util.List;
 
 public class GoSurfaceNamer extends SurfaceNamer {
@@ -83,8 +83,12 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSavePagedResponseTypeName(
-      ModelTypeTable typeTable, TypeRef inputType, TypeRef outputType, TypeRef resourceType) {
-    String typeName = converter.getTypeNameForElementType(resourceType).getNickname();
+      FeatureConfig featureConfig,
+      ModelTypeTable typeTable,
+      TypeRef inputTypeName,
+      TypeRef outputTypeName,
+      Field resourcesField) {
+    String typeName = converter.getTypeNameForElementType(resourcesField.getType()).getNickname();
     int dotIndex = typeName.indexOf('.');
     if (dotIndex >= 0) {
       typeName = typeName.substring(dotIndex + 1);

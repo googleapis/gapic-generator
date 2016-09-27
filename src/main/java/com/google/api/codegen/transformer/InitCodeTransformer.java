@@ -312,7 +312,7 @@ public class InitCodeTransformer {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
     surfaceLine.lineType(InitCodeLineType.StructureInitLine);
-    surfaceLine.identifier(namer.varName(item.getIdentifier()));
+    surfaceLine.identifier(namer.localVarName(item.getIdentifier()));
     surfaceLine.typeName(typeTable.getAndSaveNicknameFor(item.getType()));
 
     surfaceLine.fieldSettings(getFieldSettings(context, item.getChildren().values()));
@@ -327,7 +327,7 @@ public class InitCodeTransformer {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
     surfaceLine.lineType(InitCodeLineType.ListInitLine);
-    surfaceLine.identifier(namer.varName(item.getIdentifier()));
+    surfaceLine.identifier(namer.localVarName(item.getIdentifier()));
 
     if (context.getFeatureConfig().useResourceNameFormatOption(item.getField())) {
       Field field = item.getField();
@@ -356,7 +356,7 @@ public class InitCodeTransformer {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
     surfaceLine.lineType(InitCodeLineType.MapInitLine);
-    surfaceLine.identifier(namer.varName(item.getIdentifier()));
+    surfaceLine.identifier(namer.localVarName(item.getIdentifier()));
 
     surfaceLine.keyTypeName(
         typeTable.getAndSaveNicknameFor(item.getType().getMapKeyField().getType()));
@@ -369,7 +369,7 @@ public class InitCodeTransformer {
       mapEntry.key(
           typeTable.renderPrimitiveValue(
               item.getType().getMapKeyField().getType(), entry.getKey()));
-      mapEntry.value(context.getNamer().varName(entry.getValue().getIdentifier()));
+      mapEntry.value(context.getNamer().localVarName(entry.getValue().getIdentifier()));
       entries.add(mapEntry.build());
     }
     surfaceLine.initEntries(entries);
@@ -465,6 +465,6 @@ public class InitCodeTransformer {
         && item.getInitValueConfig().hasFormattingConfig()) {
       return context.getNamer().getFormattedVariableName(item.getIdentifier());
     }
-    return context.getNamer().varName(item.getIdentifier());
+    return context.getNamer().localVarName(item.getIdentifier());
   }
 }

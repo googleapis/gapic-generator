@@ -78,7 +78,7 @@ public class PageStreamingTransformer {
 
     Field resourceField = pageStreaming.getResourcesField();
     TypeRef resourceType = resourceField.getType();
-    
+
     desc.name(namer.getPageStreamingDescriptorConstName(method));
     desc.typeName(
         namer.getAndSavePagedResponseTypeName(
