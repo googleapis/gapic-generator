@@ -25,8 +25,8 @@ import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.nodejs.NodeJSModelTypeNameConverter;
 import com.google.api.codegen.transformer.nodejs.NodeJSSurfaceNamer;
 import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
+import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.GrpcStubView;
-import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.Field;
@@ -54,6 +54,7 @@ import javax.annotation.Nullable;
  * A GapicContext specialized for NodeJS.
  */
 public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
+  private GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
 
   public NodeJSGapicContext(Model model, ApiConfig apiConfig) {
     super(model, apiConfig);
@@ -68,7 +69,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    * NOTE: Temporary solution to use MVVM with just sample gen. This class
    *       will eventually go away when code gen also converts to MVVM.
    */
-  public OptionalArrayMethodView getApiMethodView(Interface service, Method method) {
+  public ApiMethodView getApiMethodView(Interface service, Method method) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     MethodTransformerContext methodContext = context.asMethodContext(method);
     ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
@@ -83,9 +84,13 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    *       will eventually go away when code gen also converts to MVVM.
    */
   public List<GrpcStubView> getStubs(Interface service) {
-    GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     return grpcStubTransformer.generateGrpcStubs(context);
+  }
+
+  public GrpcStubView getStubForMethod(Interface service, Method method) {
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    return grpcStubTransformer.generateGrpcStub(context, method);
   }
 
   private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {
@@ -484,7 +489,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     switch (typeRef.getKind()) {
       case TYPE_MESSAGE:
         return "gax.createByteLengthFunction(grpcClients."
-            + getApiMethodView(service, method).stubName()
+            + getStubForMethod(service, method).grpcClientVariableName()
             + "."
             + typeRef.getMessageType().getFullName()
             + ")";

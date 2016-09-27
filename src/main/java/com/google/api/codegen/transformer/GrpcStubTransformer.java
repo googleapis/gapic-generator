@@ -20,6 +20,7 @@ import com.google.api.tools.framework.model.Method;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -61,5 +62,24 @@ public class GrpcStubTransformer {
     }
 
     return stubs;
+  }
+
+  public GrpcStubView generateGrpcStub(SurfaceTransformerContext context, Method method) {
+    SurfaceNamer namer = context.getNamer();
+    Interface targetInterface = context.asMethodContext(method).getTargetInterface();
+    GrpcStubView.Builder stub = GrpcStubView.newBuilder();
+    stub.name(namer.getStubName(targetInterface));
+    stub.fullyQualifiedType(namer.getFullyQualifiedStubType(targetInterface));
+    stub.createStubFunctionName(namer.getCreateStubFunctionName(targetInterface));
+    String grpcClientTypeName = namer.getGrpcClientTypeName(targetInterface);
+    stub.grpcClientTypeName(context.getTypeTable().getAndSaveNicknameFor(grpcClientTypeName));
+    stub.grpcClientVariableName(namer.getGrpcClientVariableName(targetInterface));
+    stub.grpcClientImportName(namer.getGrpcClientImportName(targetInterface));
+    stub.methodNames(Collections.singletonList(namer.getApiMethodName(method)));
+    stub.stubMethodsArrayName(namer.getStubMethodsArrayName(targetInterface));
+    stub.namespace(namer.getNamespace(targetInterface));
+    stub.protoFileName(targetInterface.getFile().getSimpleName());
+
+    return stub.build();
   }
 }
