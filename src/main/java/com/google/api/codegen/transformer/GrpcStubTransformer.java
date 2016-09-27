@@ -20,7 +20,6 @@ import com.google.api.tools.framework.model.Method;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -28,47 +27,31 @@ import java.util.TreeMap;
 public class GrpcStubTransformer {
   public List<GrpcStubView> generateGrpcStubs(SurfaceTransformerContext context) {
     List<GrpcStubView> stubs = new ArrayList<>();
-    SurfaceNamer namer = context.getNamer();
-
     Map<String, Interface> interfaces = new TreeMap<>();
-    Map<String, List<String>> methods = new TreeMap<>();
-    Map
+    Map<String, List<Method>> methods = new TreeMap<>();
     for (Method method : context.getSupportedMethods()) {
       Interface targetInterface = context.asMethodContext(method).getTargetInterface();
       interfaces.put(targetInterface.getFullName(), targetInterface);
       if (methods.containsKey(targetInterface.getFullName())) {
-        methods.get(targetInterface.getFullName()).add(namer.getApiMethodName(method));
+        methods.get(targetInterface.getFullName()).add(method);
       } else {
-        methods.put(
-            targetInterface.getFullName(),
-            new ArrayList<String>(Arrays.asList(namer.getApiMethodName(method))));
+        methods.put(targetInterface.getFullName(), new ArrayList<>(Arrays.asList(method)));
       }
     }
 
-    for (String interfaceName : interfaces.keySet()) {
-      Interface interfaze = interfaces.get(interfaceName);
-      GrpcStubView.Builder stub = GrpcStubView.newBuilder();
-      stub.name(namer.getStubName(interfaze));
-      stub.fullyQualifiedType(namer.getFullyQualifiedStubType(interfaze));
-      stub.createStubFunctionName(namer.getCreateStubFunctionName(interfaze));
-      String grpcClientTypeName = namer.getGrpcClientTypeName(interfaze);
-      stub.grpcClientTypeName(context.getTypeTable().getAndSaveNicknameFor(grpcClientTypeName));
-      stub.grpcClientVariableName(namer.getGrpcClientVariableName(interfaze));
-      stub.grpcClientImportName(namer.getGrpcClientImportName(interfaze));
-      stub.methodNames(methods.get(interfaceName));
-      stub.stubMethodsArrayName(namer.getStubMethodsArrayName(interfaze));
-      stub.namespace(namer.getNamespace(interfaze));
-      stub.protoFileName(interfaze.getFile().getSimpleName());
-      stubs.add(stub.build());
+    for (Map.Entry<String, Interface> entry : interfaces.entrySet()) {
+      Interface service = entry.getValue();
+      stubs.add(generateGrpcStub(context, service, methods.get(entry.getKey())));
     }
 
     return stubs;
   }
 
-  public GrpcStubView generateGrpcStub(SurfaceTransformerContext context, Method method) {
+  public GrpcStubView generateGrpcStub(
+      SurfaceTransformerContext context, Interface targetInterface, List<Method> methods) {
     SurfaceNamer namer = context.getNamer();
-    Interface targetInterface = context.asMethodContext(method).getTargetInterface();
     GrpcStubView.Builder stub = GrpcStubView.newBuilder();
+
     stub.name(namer.getStubName(targetInterface));
     stub.fullyQualifiedType(namer.getFullyQualifiedStubType(targetInterface));
     stub.createStubFunctionName(namer.getCreateStubFunctionName(targetInterface));
@@ -76,7 +59,13 @@ public class GrpcStubTransformer {
     stub.grpcClientTypeName(context.getTypeTable().getAndSaveNicknameFor(grpcClientTypeName));
     stub.grpcClientVariableName(namer.getGrpcClientVariableName(targetInterface));
     stub.grpcClientImportName(namer.getGrpcClientImportName(targetInterface));
-    stub.methodNames(Collections.singletonList(namer.getApiMethodName(method)));
+
+    List<String> methodNames = new ArrayList<>();
+    for (Method method : methods) {
+      methodNames.add(namer.getApiMethodName(method));
+    }
+    stub.methodNames(methodNames);
+
     stub.stubMethodsArrayName(namer.getStubMethodsArrayName(targetInterface));
     stub.namespace(namer.getNamespace(targetInterface));
     stub.protoFileName(targetInterface.getFile().getSimpleName());

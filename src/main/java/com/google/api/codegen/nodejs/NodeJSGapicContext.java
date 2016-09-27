@@ -46,6 +46,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -90,7 +93,9 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
 
   public GrpcStubView getStubForMethod(Interface service, Method method) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
-    return grpcStubTransformer.generateGrpcStub(context, method);
+    Interface targetInterface = context.asMethodContext(method).getTargetInterface();
+    return grpcStubTransformer.generateGrpcStub(
+        context, targetInterface, Collections.singletonList(method));
   }
 
   private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {
