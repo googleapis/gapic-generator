@@ -72,7 +72,11 @@ module Library
         "list_strings" => Google::Gax::PageDescriptor.new(
           "page_token",
           "next_page_token",
-          "strings")
+          "strings"),
+        "find_related_books" => Google::Gax::PageDescriptor.new(
+          "page_token",
+          "next_page_token",
+          "names")
       }.freeze
 
       private_constant :PAGE_DESCRIPTORS
@@ -316,6 +320,10 @@ module Library
         @update_book_index = Google::Gax.create_api_call(
           @library_service_stub.method(:update_book_index),
           defaults["update_book_index"]
+        )
+        @find_related_books = Google::Gax.create_api_call(
+          @library_service_stub.method(:find_related_books),
+          defaults["find_related_books"]
         )
         @add_tag = Google::Gax.create_api_call(
           @library_service_stub.method(:add_tag),
@@ -889,6 +897,59 @@ module Library
           index_map: index_map
         )
         @update_book_index.call(req, options)
+      end
+
+      # @param names [Array<String>]
+      # @param shelves [Array<String>]
+      # @param page_size [Integer]
+      #   The maximum number of resources contained in the underlying API
+      #   response. If page streaming is performed per-resource, this
+      #   parameter does not affect the return value. If page streaming is
+      #   performed per-page, this determines the maximum number of
+      #   resources in a page.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Gax::PagedEnumerable<String>]
+      #   An enumerable of String instances.
+      #   See Google::Gax::PagedEnumerable documentation for other
+      #   operations such as per-page iteration or access to the response
+      #   object.
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1/library_service_api"
+      #
+      #   LibraryServiceApi = Library::V1::LibraryServiceApi
+      #
+      #   library_service_api = LibraryServiceApi.new
+      #   names_element = ''
+      #   names = [names_element]
+      #   shelves = []
+      #
+      #   # Iterate over all results.
+      #   library_service_api.find_related_books(names, shelves).each do |element|
+      #     # Process element.
+      #   end
+      #
+      #   # Or iterate over results one page at a time.
+      #   library_service_api.find_related_books(names, shelves).each_page do |page|
+      #     # Process each page at a time.
+      #     page.each do |element|
+      #       # Process element.
+      #     end
+      #   end
+
+      def find_related_books \
+          names,
+          shelves,
+          page_size: nil,
+          options: nil
+        req = Google::Example::Library::V1::FindRelatedBooksRequest.new(
+          names: names,
+          shelves: shelves
+        )
+        req.page_size = page_size unless page_size.nil?
+        @find_related_books.call(req, options)
       end
 
       # Adds a tag to the book. This RPC is a mixin.

@@ -15,8 +15,8 @@
 package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
-import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.TypeName;
+import com.google.api.codegen.util.TypedValue;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
@@ -24,7 +24,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -198,5 +197,11 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
         // Anything else -- numeric values.
         return "0";
     }
+  }
+
+  @Override
+  public TypeName getTypeNameForTypedResourceName(
+      ProtoElement field, TypeRef type, String typedResourceShortName) {
+    throw new UnsupportedOperationException("getTypeNameForTypedResourceName not supported by Go");
   }
 }

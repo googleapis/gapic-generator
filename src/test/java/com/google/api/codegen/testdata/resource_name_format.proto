@@ -1,0 +1,42 @@
+// Copyright 2016 Google Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package google.gapic;
+
+import "google/protobuf/descriptor.proto";
+
+option java_multiple_files = true;
+option java_outer_classname = "ResourceNameFormatProto";
+option java_package = "com.google.gapic";
+
+message Format {
+  // Name of this format configuration, e.g. "TopicName"
+  string format_name = 1;
+
+  // Format pattern, e.g. "projects/{project_id}/topics/{topic_id}"
+  string format_string = 2;
+}
+
+extend google.protobuf.FileOptions {
+  // List of formats that may be used in this proto file
+  repeated Format format = 50001;
+}
+
+extend google.protobuf.FieldOptions {
+  // Format to apply to this field. Must match the format_name of a Format
+  // object listed in the google.gapic.format file option defined above.
+  string format_name = 50000;
+}

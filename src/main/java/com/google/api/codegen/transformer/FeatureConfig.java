@@ -14,8 +14,25 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.util.ResourceNameUtil;
+import com.google.api.tools.framework.model.Field;
+
 public class FeatureConfig {
 
+  /** Returns true if generated types are supported for resource name fields. */
+  public boolean resourceNameTypesEnabled() {
+    return false;
+  }
+
+  /**
+   * Returns true if resourceNameTypesEnabled() is true, and the field provided has a resource name
+   * format option.
+   */
+  public boolean useResourceNameFormatOption(Field field) {
+    return resourceNameTypesEnabled() && ResourceNameUtil.hasResourceName(field);
+  }
+
+  /** Returns true if mixin APIs are supported. */
   public boolean enableMixins() {
     return false;
   }

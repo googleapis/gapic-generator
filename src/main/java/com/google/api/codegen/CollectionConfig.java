@@ -19,16 +19,12 @@ import com.google.api.gax.protobuf.ValidationException;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
-
+import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
 
-/**
- * CollectionConfig represents the collection configuration for a method.
- */
-public class CollectionConfig {
-  private final String namePattern;
-  private final PathTemplate nameTemplate;
-  private final String entityName;
+/** CollectionConfig represents the collection configuration for a method. */
+@AutoValue
+public abstract class CollectionConfig {
 
   /**
    * Creates an instance of CollectionConfig based on CollectionConfigProto. On errors, null will
@@ -46,33 +42,15 @@ public class CollectionConfig {
       return null;
     }
     String entityName = collectionConfigProto.getEntityName();
-    return new CollectionConfig(namePattern, nameTemplate, entityName);
+    return new AutoValue_CollectionConfig(namePattern, nameTemplate, entityName);
   }
 
-  private CollectionConfig(String namePattern, PathTemplate nameTemplate, String entityName) {
-    this.namePattern = namePattern;
-    this.nameTemplate = nameTemplate;
-    this.entityName = entityName;
-  }
+  /** Returns the name pattern for resources in the collection. */
+  public abstract String getNamePattern();
 
-  /**
-   * Returns the name pattern for resources in the collection.
-   */
-  public String getNamePattern() {
-    return namePattern;
-  }
+  /** Returns the name template for resources in the collection. */
+  public abstract PathTemplate getNameTemplate();
 
-  /**
-   * Returns the name template for resources in the collection.
-   */
-  public PathTemplate getNameTemplate() {
-    return nameTemplate;
-  }
-
-  /**
-   * Returns the name used as a basis for generating methods.
-   */
-  public String getEntityName() {
-    return entityName;
-  }
+  /** Returns the name used as a basis for generating methods. */
+  public abstract String getEntityName();
 }

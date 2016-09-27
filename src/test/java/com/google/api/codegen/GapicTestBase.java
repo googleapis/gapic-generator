@@ -22,7 +22,6 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.snippet.Doc;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +50,11 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
     this.idForFactory = idForFactory;
     this.gapicConfigFileNames = gapicConfigFileNames;
     this.snippetName = snippetName;
+  }
+
+  @Override
+  protected void test(String... baseNames) throws Exception {
+    super.test(new GapicTestModelGenerator(getTestDataLocator(), tempDir), baseNames);
   }
 
   @Override
