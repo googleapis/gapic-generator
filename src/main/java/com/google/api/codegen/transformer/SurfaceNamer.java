@@ -85,6 +85,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getApiWrapperClassImplName");
   }
 
+  /** The name of the class that implements snippets for a particular proto interface. */
+  public String getApiSnippetsClassName(Interface interfaze) {
+    return className(Name.upperCamel(interfaze.getSimpleName(), "ApiSnippets"));
+  }
+
   /**
    * The name of a variable that holds an instance of the class that implements
    * a particular proto interface.

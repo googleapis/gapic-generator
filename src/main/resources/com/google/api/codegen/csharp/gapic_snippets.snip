@@ -1,6 +1,6 @@
 @extends "csharp/common.snip"
 
-@snippet generate(common)
+@snippet generate(api)
     // Copyright 2016 Google Inc. All Rights Reserved.
     //
     // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,21 +17,21 @@
 
     // Generated code. DO NOT EDIT!
 
-    @join import : common.api.imports
+    @join import : api.imports
         using {@import.fullName};
     @end
 
-    namespace {@common.api.packageName}
+    namespace {@api.packageName}
     {
-        {@snippets(common.api, common.settings)}
+        {@snippets(api)}
     }
 
 @end
 
-@private snippets(api, settings)
+@private snippets(api)
     public class {@api.name}
     {
-        @join method : api.apiMethods if method.type.toString != "FlattenedAsyncCancellationTokenMethod"
+        @join method : api.snippetMethods
             {@method(api, method)}
 
         @end
@@ -141,14 +141,14 @@
 
 @private preparations(api, method)
     // Create client
-    {@api.name} {@method.apiVariableName} = {@api.name}.Create();
+    {@api.clientTypeName} {@method.apiVariableName} = {@api.clientTypeName}.Create();
     // Initialize request argument(s)
     {@topLevelInitCode(method.initCode)}
     // Make the request
 @end
 
 @private snippetArgTypes(params)
-    @join param : params if param.typeName != "CallSettings" on ","
+    @join param : params on ","
         {@param.typeName}
     @end
 @end
@@ -200,14 +200,14 @@
     @case "ListInitLine"
         {@prefix}new []
         {
-            @join child : line.elementViews
+            @join child : line.elements
                 {@initCode("", child)},
             @end
         }
     @case "MapInitLine"
         {@prefix}new Dictionary<{@line.keyTypeName}, {@line.valueTypeName}> {
             @join mapEntry : line.initEntries vertical
-                { {@mapEntry.key}, {@initCode("", mapEntry.valueView)} },
+                { {@mapEntry.key}, {@initCode("", mapEntry.value)} },
             @end
         }
     @case "SimpleInitLine"

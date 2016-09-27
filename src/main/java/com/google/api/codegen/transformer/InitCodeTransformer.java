@@ -251,27 +251,27 @@ public class InitCodeTransformer {
   }
 
   private List<InitCodeLineView> generateSurfaceInitCodeLines(
-      MethodTransformerContext context, Iterable<InitCodeNode> SpecItemNodes) {
+      MethodTransformerContext context, Iterable<InitCodeNode> specItemNode) {
     List<InitCodeLineView> surfaceLines = new ArrayList<>();
-    for (InitCodeNode item : SpecItemNodes) {
+    for (InitCodeNode item : specItemNode) {
       surfaceLines.add(generateSurfaceInitCodeLine(context, item));
     }
     return surfaceLines;
   }
 
   private InitCodeLineView generateSurfaceInitCodeLine(
-      MethodTransformerContext context, InitCodeNode SpecItemNode) {
-    switch (SpecItemNode.getLineType()) {
+      MethodTransformerContext context, InitCodeNode specItemNode) {
+    switch (specItemNode.getLineType()) {
       case StructureInitLine:
-        return generateStructureInitCodeLine(context, SpecItemNode);
+        return generateStructureInitCodeLine(context, specItemNode);
       case ListInitLine:
-        return generateListInitCodeLine(context, SpecItemNode);
+        return generateListInitCodeLine(context, specItemNode);
       case SimpleInitLine:
-        return generateSimpleInitCodeLine(context, SpecItemNode);
+        return generateSimpleInitCodeLine(context, specItemNode);
       case MapInitLine:
-        return generateMapInitCodeLine(context, SpecItemNode);
+        return generateMapInitCodeLine(context, specItemNode);
       default:
-        throw new RuntimeException("unhandled line type: " + SpecItemNode.getLineType());
+        throw new RuntimeException("unhandled line type: " + specItemNode.getLineType());
     }
   }
 
@@ -317,13 +317,13 @@ public class InitCodeTransformer {
     surfaceLine.elementTypeName(
         typeTable.getAndSaveNicknameForElementType(item.getType().makeOptional()));
     List<String> entries = new ArrayList<>();
-    List<InitCodeLineView> views = new ArrayList<>();
+    List<InitCodeLineView> elements = new ArrayList<>();
     for (InitCodeNode child : item.getChildren().values()) {
       entries.add(namer.varName(child.getIdentifier()));
-      views.add(generateSurfaceInitCodeLine(context, child));
+      elements.add(generateSurfaceInitCodeLine(context, child));
     }
     surfaceLine.elementIdentifiers(entries);
-    surfaceLine.elementViews(views);
+    surfaceLine.elements(elements);
 
     return surfaceLine.build();
   }
@@ -348,8 +348,9 @@ public class InitCodeTransformer {
       mapEntry.key(
           typeTable.renderPrimitiveValue(
               item.getType().getMapKeyField().getType(), entry.getKey()));
-      mapEntry.value(context.getNamer().getVariableName(entry.getValue().getIdentifier(), null));
-      mapEntry.valueView(generateSurfaceInitCodeLine(context, entry.getValue()));
+      mapEntry.valueString(
+          context.getNamer().getVariableName(entry.getValue().getIdentifier(), null));
+      mapEntry.value(generateSurfaceInitCodeLine(context, entry.getValue()));
       entries.add(mapEntry.build());
     }
     surfaceLine.initEntries(entries);

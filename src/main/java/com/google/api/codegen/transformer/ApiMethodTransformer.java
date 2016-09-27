@@ -75,6 +75,12 @@ public class ApiMethodTransformer {
   }
 
   public StaticLangApiMethodView generatePagedFlattenedAsyncMethod(
+      MethodTransformerContext context, ImmutableList<Field> fields) {
+    return generatePagedFlattenedAsyncMethod(
+        context, fields, Collections.<ParamWithSimpleDoc>emptyList());
+  }
+
+  public StaticLangApiMethodView generatePagedFlattenedAsyncMethod(
       MethodTransformerContext context,
       ImmutableList<Field> fields,
       List<ParamWithSimpleDoc> additionalParams) {
@@ -139,6 +145,12 @@ public class ApiMethodTransformer {
         context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType()));
 
     return methodViewBuilder.type(ApiMethodType.UnpagedListCallableMethod).build();
+  }
+
+  public StaticLangApiMethodView generateFlattenedAsyncMethod(
+      MethodTransformerContext context, ImmutableList<Field> fields, ApiMethodType type) {
+    return generateFlattenedAsyncMethod(
+        context, fields, Collections.<ParamWithSimpleDoc>emptyList(), type);
   }
 
   public StaticLangApiMethodView generateFlattenedAsyncMethod(
