@@ -17,7 +17,6 @@
 
 using Google.Api.Gax;
 using Google.Protobuf.WellKnownTypes;
-using Google.Tagger.V1;
 using Grpc.Core;
 using System;
 using System.Collections;
@@ -25,43 +24,25 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
+using UpdateBookIndexRequest.Types;
 
 namespace Google.Example.Library.V1
 {
-
     /// <summary>
-    /// Extension methods to assist with using <see cref="LibraryServiceClient"/>.
-    /// </summary>
-    public static partial class LibraryServiceExtensions
-    {
-        /// <summary>
-        /// Wrap a GRPC LibraryService client for more convenient use.
-        /// </summary>
-        /// <param name="grpcClient">A GRPC client to wrap.</param>
-        /// <param name="settings">
-        /// An optional <see cref="LibraryServiceSettings"/> to configure this wrapper.
-        /// If null or not specified, then the default settings are used.
-        /// </param>
-        /// <returns>A <see cref="LibraryServiceClient"/> that wraps the specified GRPC client.</returns>
-        public static LibraryServiceClient ToClient(
-            this LibraryService.LibraryServiceClient grpcClient,
-            LibraryServiceSettings settings = null
-        ) => new LibraryServiceClientImpl(grpcClient, settings);
-    }
-
-    /// <summary>
-    /// Settings for a LibraryService wrapper.
+    /// Settings for a <see cref="LibraryServiceClient"/>.
     /// </summary>
     public sealed partial class LibraryServiceSettings : ServiceSettingsBase
     {
         /// <summary>
         /// Get a new instance of the default <see cref="LibraryServiceSettings"/>.
         /// </summary>
-        /// <returns>A new instance of the default LibraryServiceSettings.</returns>
+        /// <returns>
+        /// A new instance of the default <see cref="LibraryServiceSettings"/>.
+        /// </returns>
         public static LibraryServiceSettings GetDefault() => new LibraryServiceSettings();
 
         /// <summary>
-        /// Constructs a new LibraryServiceSettings object with default settings.
+        /// Constructs a new <see cref="LibraryServiceSettings"/> object with default settings.
         /// </summary>
         public LibraryServiceSettings() { }
 
@@ -114,7 +95,9 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// "Default" retry backoff for <see cref="LibraryServiceClient"/> RPC methods.
         /// </summary>
-        /// <returns>The "Default" retry backoff for <see cref="LibraryServiceClient"/> RPC methods.</returns>
+        /// <returns>
+        /// The "Default" retry backoff for <see cref="LibraryServiceClient"/> RPC methods.
+        /// </returns>
         /// <remarks>
         /// The "Default" retry backoff for <see cref="LibraryServiceClient"/> RPC methods is defined as:
         /// <list type="bullet">
@@ -133,7 +116,9 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// "Default" timeout backoff for <see cref="LibraryServiceClient"/> RPC methods.
         /// </summary>
-        /// <returns>The "Default" timeout backoff for <see cref="LibraryServiceClient"/> RPC methods.</returns>
+        /// <returns>
+        /// The "Default" timeout backoff for <see cref="LibraryServiceClient"/> RPC methods.
+        /// </returns>
         /// <remarks>
         /// The "Default" timeout backoff for <see cref="LibraryServiceClient"/> RPC methods is defined as:
         /// <list type="bullet">
@@ -703,11 +688,10 @@ namespace Google.Example.Library.V1
             }),
         };
 
-
         /// <summary>
         /// Creates a deep clone of this object, with all the same property values.
         /// </summary>
-        /// <returns>A deep clone of this set of LibraryService settings.</returns>
+        /// <returns>A deep clone of this <see cref="LibraryServiceSettings"/> object.</returns>
         public LibraryServiceSettings Clone() => new LibraryServiceSettings(this);
     }
 
@@ -716,15 +700,13 @@ namespace Google.Example.Library.V1
     /// </summary>
     public abstract partial class LibraryServiceClient
     {
-        private static readonly ChannelPool s_channelPool = new ChannelPool();
-
         /// <summary>
         /// The default endpoint for the LibraryService service, which is a host of "library-example.googleapis.com" and a port of 443.
         /// </summary>
         public static ServiceEndpoint DefaultEndpoint { get; } = new ServiceEndpoint("library-example.googleapis.com", 443);
 
         /// <summary>
-        /// The default LibraryService scopes
+        /// The default LibraryService scopes.
         /// </summary>
         /// <remarks>
         /// The default LibraryService scopes are:
@@ -733,10 +715,12 @@ namespace Google.Example.Library.V1
         /// <item><description>"https://www.googleapis.com/auth/library"</description></item>
         /// </list>
         /// </remarks>
-        public static IReadOnlyList<string> DefaultScopes { get; } = new ReadOnlyCollection<string>(new[] {
+        public static IReadOnlyList<string> DefaultScopes { get; } = new ReadOnlyCollection<string>(new string[] {
             "https://www.googleapis.com/auth/cloud-platform",
             "https://www.googleapis.com/auth/library",
         });
+
+        private static readonly ChannelPool s_channelPool = new ChannelPool(DefaultScopes);
 
         /// <summary>
         /// Path template for a shelf resource. Parameters:
@@ -750,7 +734,9 @@ namespace Google.Example.Library.V1
         /// Creates a shelf resource name from its component IDs.
         /// </summary>
         /// <param name="shelfId">The shelf ID.</param>
-        /// <returns>The full shelf resource name.</returns>
+        /// <returns>
+        /// The full shelf resource name.
+        /// </returns>
         public static string FormatShelfName(string shelfId) => ShelfTemplate.Expand(shelfId);
 
         /// <summary>
@@ -767,25 +753,29 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="shelfId">The shelf ID.</param>
         /// <param name="bookId">The book ID.</param>
-        /// <returns>The full book resource name.</returns>
+        /// <returns>
+        /// The full book resource name.
+        /// </returns>
         public static string FormatBookName(string shelfId, string bookId) => BookTemplate.Expand(shelfId, bookId);
 
         /// <summary>
-        /// Path template for a archivedBook resource. Parameters:
+        /// Path template for a archived_book resource. Parameters:
         /// <list type="bullet">
-        /// <item><description>archive_path</description></item>
+        /// <item><description>archivePath</description></item>
         /// <item><description>book</description></item>
         /// </list>
         /// </summary>
         public static PathTemplate ArchivedBookTemplate { get; } = new PathTemplate("archives/{archive_path=**}/books/{book}");
 
         /// <summary>
-        /// Creates a archivedBook resource name from its component IDs.
+        /// Creates a archived_book resource name from its component IDs.
         /// </summary>
-        /// <param name="archive_pathId">The archive_path ID.</param>
+        /// <param name="archivePathId">The archivePath ID.</param>
         /// <param name="bookId">The book ID.</param>
-        /// <returns>The full archivedBook resource name.</returns>
-        public static string FormatArchivedBookName(string archive_pathId, string bookId) => ArchivedBookTemplate.Expand(archive_pathId, bookId);
+        /// <returns>
+        /// The full archived_book resource name.
+        /// </returns>
+        public static string FormatArchivedBookName(string archivePathId, string bookId) => ArchivedBookTemplate.Expand(archivePathId, bookId);
 
         // Note: we could have parameterless overloads of Create and CreateAsync,
         // documented to just use the default endpoint, settings and credentials.
@@ -847,7 +837,7 @@ namespace Google.Example.Library.V1
         public static Task ShutdownDefaultChannelsAsync() => s_channelPool.ShutdownChannelsAsync();
 
         /// <summary>
-        /// The underlying GRPC LibraryService client.
+        /// The underlying gRPC LibraryService client.
         /// </summary>
         public virtual LibraryService.LibraryServiceClient GrpcClient
         {
@@ -857,9 +847,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
         /// </summary>
-        /// <param name="shelf">The shelf to create.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="shelf">
+        /// The shelf to create.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Shelf> CreateShelfAsync(
             Shelf shelf,
             CallSettings callSettings = null)
@@ -870,9 +866,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
         /// </summary>
-        /// <param name="shelf">The shelf to create.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="shelf">
+        /// The shelf to create.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Shelf> CreateShelfAsync(
             Shelf shelf,
             CancellationToken cancellationToken) => CreateShelfAsync(
@@ -882,9 +884,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
         /// </summary>
-        /// <param name="shelf">The shelf to create.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="shelf">
+        /// The shelf to create.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public virtual Shelf CreateShelf(
             Shelf shelf,
             CallSettings callSettings = null)
@@ -895,9 +903,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to retrieve.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Shelf> GetShelfAsync(
             string name,
             CallSettings callSettings = null)
@@ -908,9 +922,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to retrieve.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to retrieve.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Shelf> GetShelfAsync(
             string name,
             CancellationToken cancellationToken) => GetShelfAsync(
@@ -920,9 +940,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to retrieve.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public virtual Shelf GetShelf(
             string name,
             CallSettings callSettings = null)
@@ -933,10 +959,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to retrieve.</param>
-        /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to retrieve.
+        /// </param>
+        /// <param name="message">
+        /// Field to verify that message-type query parameter gets flattened.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Shelf> GetShelfAsync(
             string name,
             SomeMessage message,
@@ -948,10 +982,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to retrieve.</param>
-        /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to retrieve.
+        /// </param>
+        /// <param name="message">
+        /// Field to verify that message-type query parameter gets flattened.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Shelf> GetShelfAsync(
             string name,
             SomeMessage message,
@@ -963,10 +1005,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to retrieve.</param>
-        /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to retrieve.
+        /// </param>
+        /// <param name="message">
+        /// Field to verify that message-type query parameter gets flattened.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public virtual Shelf GetShelf(
             string name,
             SomeMessage message,
@@ -978,11 +1028,21 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to retrieve.</param>
-        /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
-        /// <param name="stringBuilder"></param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to retrieve.
+        /// </param>
+        /// <param name="message">
+        /// Field to verify that message-type query parameter gets flattened.
+        /// </param>
+        /// <param name="stringBuilder">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Shelf> GetShelfAsync(
             string name,
             SomeMessage message,
@@ -995,11 +1055,21 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to retrieve.</param>
-        /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
-        /// <param name="stringBuilder"></param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to retrieve.
+        /// </param>
+        /// <param name="message">
+        /// Field to verify that message-type query parameter gets flattened.
+        /// </param>
+        /// <param name="stringBuilder">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Shelf> GetShelfAsync(
             string name,
             SomeMessage message,
@@ -1013,11 +1083,21 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to retrieve.</param>
-        /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
-        /// <param name="stringBuilder"></param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to retrieve.
+        /// </param>
+        /// <param name="message">
+        /// Field to verify that message-type query parameter gets flattened.
+        /// </param>
+        /// <param name="stringBuilder">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public virtual Shelf GetShelf(
             string name,
             SomeMessage message,
@@ -1030,13 +1110,20 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Lists shelves.
         /// </summary>
-        /// <param name="pageToken">The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.</param>
-        /// <param name="pageSize">The size of page to request.
-        /// The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A pageable asynchronous sequence of Shelf resources.</returns>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable asynchronous sequence of <see cref="Shelf"/> resources.
+        /// </returns>
         public virtual IPagedAsyncEnumerable<ListShelvesResponse, Shelf> ListShelvesAsync(
             string pageToken = null,
             int? pageSize = null,
@@ -1048,13 +1135,20 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Lists shelves.
         /// </summary>
-        /// <param name="pageToken">The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.</param>
-        /// <param name="pageSize">The size of page to request.
-        /// The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A pageable sequence of Shelf resources.</returns>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable sequence of <see cref="Shelf"/> resources.
+        /// </returns>
         public virtual IPagedEnumerable<ListShelvesResponse, Shelf> ListShelves(
             string pageToken = null,
             int? pageSize = null,
@@ -1066,9 +1160,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Deletes a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to delete.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to delete.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task DeleteShelfAsync(
             string name,
             CallSettings callSettings = null)
@@ -1079,9 +1179,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Deletes a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to delete.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to delete.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task DeleteShelfAsync(
             string name,
             CancellationToken cancellationToken) => DeleteShelfAsync(
@@ -1091,9 +1197,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Deletes a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to delete.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to delete.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public virtual void DeleteShelf(
             string name,
             CallSettings callSettings = null)
@@ -1106,10 +1218,18 @@ namespace Google.Example.Library.V1
         /// `other_shelf_name` to shelf `name`, and deletes
         /// `other_shelf_name`. Returns the updated shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf we're adding books to.</param>
-        /// <param name="otherShelfName">The name of the shelf we're removing books from and deleting.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf we're adding books to.
+        /// </param>
+        /// <param name="otherShelfName">
+        /// The name of the shelf we're removing books from and deleting.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Shelf> MergeShelvesAsync(
             string name,
             string otherShelfName,
@@ -1123,10 +1243,18 @@ namespace Google.Example.Library.V1
         /// `other_shelf_name` to shelf `name`, and deletes
         /// `other_shelf_name`. Returns the updated shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf we're adding books to.</param>
-        /// <param name="otherShelfName">The name of the shelf we're removing books from and deleting.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf we're adding books to.
+        /// </param>
+        /// <param name="otherShelfName">
+        /// The name of the shelf we're removing books from and deleting.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Shelf> MergeShelvesAsync(
             string name,
             string otherShelfName,
@@ -1140,10 +1268,18 @@ namespace Google.Example.Library.V1
         /// `other_shelf_name` to shelf `name`, and deletes
         /// `other_shelf_name`. Returns the updated shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf we're adding books to.</param>
-        /// <param name="otherShelfName">The name of the shelf we're removing books from and deleting.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf we're adding books to.
+        /// </param>
+        /// <param name="otherShelfName">
+        /// The name of the shelf we're removing books from and deleting.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public virtual Shelf MergeShelves(
             string name,
             string otherShelfName,
@@ -1155,10 +1291,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Creates a book.
         /// </summary>
-        /// <param name="name">The name of the shelf in which the book is created.</param>
-        /// <param name="book">The book to create.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf in which the book is created.
+        /// </param>
+        /// <param name="book">
+        /// The book to create.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Book> CreateBookAsync(
             string name,
             Book book,
@@ -1170,10 +1314,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Creates a book.
         /// </summary>
-        /// <param name="name">The name of the shelf in which the book is created.</param>
-        /// <param name="book">The book to create.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf in which the book is created.
+        /// </param>
+        /// <param name="book">
+        /// The book to create.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Book> CreateBookAsync(
             string name,
             Book book,
@@ -1185,10 +1337,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Creates a book.
         /// </summary>
-        /// <param name="name">The name of the shelf in which the book is created.</param>
-        /// <param name="book">The book to create.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf in which the book is created.
+        /// </param>
+        /// <param name="book">
+        /// The book to create.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public virtual Book CreateBook(
             string name,
             Book book,
@@ -1200,11 +1360,21 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Creates a series of books.
         /// </summary>
-        /// <param name="shelf">The shelf in which the series is created.</param>
-        /// <param name="books">The books to publish in the series.</param>
-        /// <param name="edition">The edition of the series</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="shelf">
+        /// The shelf in which the series is created.
+        /// </param>
+        /// <param name="books">
+        /// The books to publish in the series.
+        /// </param>
+        /// <param name="edition">
+        /// The edition of the series
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<PublishSeriesResponse> PublishSeriesAsync(
             Shelf shelf,
             IEnumerable<Book> books,
@@ -1217,11 +1387,21 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Creates a series of books.
         /// </summary>
-        /// <param name="shelf">The shelf in which the series is created.</param>
-        /// <param name="books">The books to publish in the series.</param>
-        /// <param name="edition">The edition of the series</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="shelf">
+        /// The shelf in which the series is created.
+        /// </param>
+        /// <param name="books">
+        /// The books to publish in the series.
+        /// </param>
+        /// <param name="edition">
+        /// The edition of the series
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<PublishSeriesResponse> PublishSeriesAsync(
             Shelf shelf,
             IEnumerable<Book> books,
@@ -1235,11 +1415,21 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Creates a series of books.
         /// </summary>
-        /// <param name="shelf">The shelf in which the series is created.</param>
-        /// <param name="books">The books to publish in the series.</param>
-        /// <param name="edition">The edition of the series</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="shelf">
+        /// The shelf in which the series is created.
+        /// </param>
+        /// <param name="books">
+        /// The books to publish in the series.
+        /// </param>
+        /// <param name="edition">
+        /// The edition of the series
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public virtual PublishSeriesResponse PublishSeries(
             Shelf shelf,
             IEnumerable<Book> books,
@@ -1252,9 +1442,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a book.
         /// </summary>
-        /// <param name="name">The name of the book to retrieve.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Book> GetBookAsync(
             string name,
             CallSettings callSettings = null)
@@ -1265,9 +1461,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a book.
         /// </summary>
-        /// <param name="name">The name of the book to retrieve.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Book> GetBookAsync(
             string name,
             CancellationToken cancellationToken) => GetBookAsync(
@@ -1277,9 +1479,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a book.
         /// </summary>
-        /// <param name="name">The name of the book to retrieve.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public virtual Book GetBook(
             string name,
             CallSettings callSettings = null)
@@ -1290,15 +1498,26 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Lists books in a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf whose books we'd like to list.</param>
-        /// <param name="filter">To test python built-in wrapping.</param>
-        /// <param name="pageToken">The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.</param>
-        /// <param name="pageSize">The size of page to request.
-        /// The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A pageable asynchronous sequence of Book resources.</returns>
+        /// <param name="name">
+        /// The name of the shelf whose books we'd like to list.
+        /// </param>
+        /// <param name="filter">
+        /// To test python built-in wrapping.
+        /// </param>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable asynchronous sequence of <see cref="Book"/> resources.
+        /// </returns>
         public virtual IPagedAsyncEnumerable<ListBooksResponse, Book> ListBooksAsync(
             string name,
             string filter,
@@ -1312,15 +1531,26 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Lists books in a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf whose books we'd like to list.</param>
-        /// <param name="filter">To test python built-in wrapping.</param>
-        /// <param name="pageToken">The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.</param>
-        /// <param name="pageSize">The size of page to request.
-        /// The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A pageable sequence of Book resources.</returns>
+        /// <param name="name">
+        /// The name of the shelf whose books we'd like to list.
+        /// </param>
+        /// <param name="filter">
+        /// To test python built-in wrapping.
+        /// </param>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable sequence of <see cref="Book"/> resources.
+        /// </returns>
         public virtual IPagedEnumerable<ListBooksResponse, Book> ListBooks(
             string name,
             string filter,
@@ -1334,9 +1564,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Deletes a book.
         /// </summary>
-        /// <param name="name">The name of the book to delete.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to delete.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task DeleteBookAsync(
             string name,
             CallSettings callSettings = null)
@@ -1347,9 +1583,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Deletes a book.
         /// </summary>
-        /// <param name="name">The name of the book to delete.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to delete.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task DeleteBookAsync(
             string name,
             CancellationToken cancellationToken) => DeleteBookAsync(
@@ -1359,9 +1601,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Deletes a book.
         /// </summary>
-        /// <param name="name">The name of the book to delete.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to delete.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public virtual void DeleteBook(
             string name,
             CallSettings callSettings = null)
@@ -1372,10 +1620,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Updates a book.
         /// </summary>
-        /// <param name="name">The name of the book to update.</param>
-        /// <param name="book">The book to update with.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to update.
+        /// </param>
+        /// <param name="book">
+        /// The book to update with.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Book> UpdateBookAsync(
             string name,
             Book book,
@@ -1387,10 +1643,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Updates a book.
         /// </summary>
-        /// <param name="name">The name of the book to update.</param>
-        /// <param name="book">The book to update with.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to update.
+        /// </param>
+        /// <param name="book">
+        /// The book to update with.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Book> UpdateBookAsync(
             string name,
             Book book,
@@ -1402,10 +1666,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Updates a book.
         /// </summary>
-        /// <param name="name">The name of the book to update.</param>
-        /// <param name="book">The book to update with.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to update.
+        /// </param>
+        /// <param name="book">
+        /// The book to update with.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public virtual Book UpdateBook(
             string name,
             Book book,
@@ -1417,12 +1689,24 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Updates a book.
         /// </summary>
-        /// <param name="name">The name of the book to update.</param>
-        /// <param name="book">The book to update with.</param>
-        /// <param name="updateMask">A field mask to apply, rendered as an HTTP parameter.</param>
-        /// <param name="physicalMask">To test Python import clash resolution.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to update.
+        /// </param>
+        /// <param name="book">
+        /// The book to update with.
+        /// </param>
+        /// <param name="updateMask">
+        /// A field mask to apply, rendered as an HTTP parameter.
+        /// </param>
+        /// <param name="physicalMask">
+        /// To test Python import clash resolution.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Book> UpdateBookAsync(
             string name,
             Book book,
@@ -1436,12 +1720,24 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Updates a book.
         /// </summary>
-        /// <param name="name">The name of the book to update.</param>
-        /// <param name="book">The book to update with.</param>
-        /// <param name="updateMask">A field mask to apply, rendered as an HTTP parameter.</param>
-        /// <param name="physicalMask">To test Python import clash resolution.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to update.
+        /// </param>
+        /// <param name="book">
+        /// The book to update with.
+        /// </param>
+        /// <param name="updateMask">
+        /// A field mask to apply, rendered as an HTTP parameter.
+        /// </param>
+        /// <param name="physicalMask">
+        /// To test Python import clash resolution.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Book> UpdateBookAsync(
             string name,
             Book book,
@@ -1457,12 +1753,24 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Updates a book.
         /// </summary>
-        /// <param name="name">The name of the book to update.</param>
-        /// <param name="book">The book to update with.</param>
-        /// <param name="updateMask">A field mask to apply, rendered as an HTTP parameter.</param>
-        /// <param name="physicalMask">To test Python import clash resolution.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to update.
+        /// </param>
+        /// <param name="book">
+        /// The book to update with.
+        /// </param>
+        /// <param name="updateMask">
+        /// A field mask to apply, rendered as an HTTP parameter.
+        /// </param>
+        /// <param name="physicalMask">
+        /// To test Python import clash resolution.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public virtual Book UpdateBook(
             string name,
             Book book,
@@ -1476,10 +1784,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Moves a book to another shelf, and returns the new book.
         /// </summary>
-        /// <param name="name">The name of the book to move.</param>
-        /// <param name="otherShelfName">The name of the destination shelf.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to move.
+        /// </param>
+        /// <param name="otherShelfName">
+        /// The name of the destination shelf.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Book> MoveBookAsync(
             string name,
             string otherShelfName,
@@ -1491,10 +1807,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Moves a book to another shelf, and returns the new book.
         /// </summary>
-        /// <param name="name">The name of the book to move.</param>
-        /// <param name="otherShelfName">The name of the destination shelf.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to move.
+        /// </param>
+        /// <param name="otherShelfName">
+        /// The name of the destination shelf.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Book> MoveBookAsync(
             string name,
             string otherShelfName,
@@ -1506,10 +1830,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Moves a book to another shelf, and returns the new book.
         /// </summary>
-        /// <param name="name">The name of the book to move.</param>
-        /// <param name="otherShelfName">The name of the destination shelf.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to move.
+        /// </param>
+        /// <param name="otherShelfName">
+        /// The name of the destination shelf.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public virtual Book MoveBook(
             string name,
             string otherShelfName,
@@ -1521,13 +1853,20 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Lists a primitive resource. To test go page streaming.
         /// </summary>
-        /// <param name="pageToken">The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.</param>
-        /// <param name="pageSize">The size of page to request.
-        /// The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A pageable asynchronous sequence of string resources.</returns>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable asynchronous sequence of <see cref="string"/> resources.
+        /// </returns>
         public virtual IPagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
             string pageToken = null,
             int? pageSize = null,
@@ -1539,13 +1878,20 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Lists a primitive resource. To test go page streaming.
         /// </summary>
-        /// <param name="pageToken">The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.</param>
-        /// <param name="pageSize">The size of page to request.
-        /// The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A pageable sequence of string resources.</returns>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable sequence of <see cref="string"/> resources.
+        /// </returns>
         public virtual IPagedEnumerable<ListStringsResponse, string> ListStrings(
             string pageToken = null,
             int? pageSize = null,
@@ -1557,10 +1903,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Adds comments to a book
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="comments"></param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="comments">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task AddCommentsAsync(
             string name,
             IEnumerable<Comment> comments,
@@ -1572,10 +1926,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Adds comments to a book
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="comments"></param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="comments">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task AddCommentsAsync(
             string name,
             IEnumerable<Comment> comments,
@@ -1587,10 +1949,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Adds comments to a book
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="comments"></param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="comments">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public virtual void AddComments(
             string name,
             IEnumerable<Comment> comments,
@@ -1602,9 +1972,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a book from an archive.
         /// </summary>
-        /// <param name="name">The name of the book to retrieve.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Book> GetBookFromArchiveAsync(
             string name,
             CallSettings callSettings = null)
@@ -1615,9 +1991,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a book from an archive.
         /// </summary>
-        /// <param name="name">The name of the book to retrieve.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<Book> GetBookFromArchiveAsync(
             string name,
             CancellationToken cancellationToken) => GetBookFromArchiveAsync(
@@ -1627,9 +2009,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a book from an archive.
         /// </summary>
-        /// <param name="name">The name of the book to retrieve.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public virtual Book GetBookFromArchive(
             string name,
             CallSettings callSettings = null)
@@ -1640,11 +2028,21 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Updates the index of a book.
         /// </summary>
-        /// <param name="name">The name of the book to update.</param>
-        /// <param name="indexName">The name of the index for the book</param>
-        /// <param name="indexMap">The index to update the book with</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to update.
+        /// </param>
+        /// <param name="indexName">
+        /// The name of the index for the book
+        /// </param>
+        /// <param name="indexMap">
+        /// The index to update the book with
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task UpdateBookIndexAsync(
             string name,
             string indexName,
@@ -1657,11 +2055,21 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Updates the index of a book.
         /// </summary>
-        /// <param name="name">The name of the book to update.</param>
-        /// <param name="indexName">The name of the index for the book</param>
-        /// <param name="indexMap">The index to update the book with</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to update.
+        /// </param>
+        /// <param name="indexName">
+        /// The name of the index for the book
+        /// </param>
+        /// <param name="indexMap">
+        /// The index to update the book with
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task UpdateBookIndexAsync(
             string name,
             string indexName,
@@ -1675,11 +2083,21 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Updates the index of a book.
         /// </summary>
-        /// <param name="name">The name of the book to update.</param>
-        /// <param name="indexName">The name of the index for the book</param>
-        /// <param name="indexMap">The index to update the book with</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to update.
+        /// </param>
+        /// <param name="indexName">
+        /// The name of the index for the book
+        /// </param>
+        /// <param name="indexMap">
+        /// The index to update the book with
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public virtual void UpdateBookIndex(
             string name,
             string indexName,
@@ -1697,9 +2115,15 @@ namespace Google.Example.Library.V1
         /// Resource is usually specified as a path, such as,
         /// projects/{project}/zones/{zone}/disks/{disk}.
         /// </param>
-        /// <param name="tag">REQUIRED: The tag to add.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="tag">
+        /// REQUIRED: The tag to add.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<AddTagResponse> AddTagAsync(
             string resource,
             string tag,
@@ -1716,9 +2140,15 @@ namespace Google.Example.Library.V1
         /// Resource is usually specified as a path, such as,
         /// projects/{project}/zones/{zone}/disks/{disk}.
         /// </param>
-        /// <param name="tag">REQUIRED: The tag to add.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="tag">
+        /// REQUIRED: The tag to add.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public virtual Task<AddTagResponse> AddTagAsync(
             string resource,
             string tag,
@@ -1735,9 +2165,15 @@ namespace Google.Example.Library.V1
         /// Resource is usually specified as a path, such as,
         /// projects/{project}/zones/{zone}/disks/{disk}.
         /// </param>
-        /// <param name="tag">REQUIRED: The tag to add.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="tag">
+        /// REQUIRED: The tag to add.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public virtual AddTagResponse AddTag(
             string resource,
             string tag,
@@ -1810,14 +2246,23 @@ namespace Google.Example.Library.V1
                 GrpcClient.AddTagAsync, GrpcClient.AddTag, effectiveSettings.AddTagSettings);
         }
 
+        /// <summary>
+        /// The underlying gRPC LibraryService client.
+        /// </summary>
         public override LibraryService.LibraryServiceClient GrpcClient { get; }
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
         /// </summary>
-        /// <param name="shelf">The shelf to create.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="shelf">
+        /// The shelf to create.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public override Task<Shelf> CreateShelfAsync(
             Shelf shelf,
             CallSettings callSettings = null) => _callCreateShelf.Async(
@@ -1830,9 +2275,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
         /// </summary>
-        /// <param name="shelf">The shelf to create.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="shelf">
+        /// The shelf to create.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public override Shelf CreateShelf(
             Shelf shelf,
             CallSettings callSettings = null) => _callCreateShelf.Sync(
@@ -1845,9 +2296,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to retrieve.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public override Task<Shelf> GetShelfAsync(
             string name,
             CallSettings callSettings = null) => _callGetShelf.Async(
@@ -1860,9 +2317,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to retrieve.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public override Shelf GetShelf(
             string name,
             CallSettings callSettings = null) => _callGetShelf.Sync(
@@ -1875,10 +2338,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to retrieve.</param>
-        /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to retrieve.
+        /// </param>
+        /// <param name="message">
+        /// Field to verify that message-type query parameter gets flattened.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public override Task<Shelf> GetShelfAsync(
             string name,
             SomeMessage message,
@@ -1893,10 +2364,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to retrieve.</param>
-        /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to retrieve.
+        /// </param>
+        /// <param name="message">
+        /// Field to verify that message-type query parameter gets flattened.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public override Shelf GetShelf(
             string name,
             SomeMessage message,
@@ -1911,11 +2390,21 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to retrieve.</param>
-        /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
-        /// <param name="stringBuilder"></param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to retrieve.
+        /// </param>
+        /// <param name="message">
+        /// Field to verify that message-type query parameter gets flattened.
+        /// </param>
+        /// <param name="stringBuilder">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public override Task<Shelf> GetShelfAsync(
             string name,
             SomeMessage message,
@@ -1932,11 +2421,21 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to retrieve.</param>
-        /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
-        /// <param name="stringBuilder"></param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to retrieve.
+        /// </param>
+        /// <param name="message">
+        /// Field to verify that message-type query parameter gets flattened.
+        /// </param>
+        /// <param name="stringBuilder">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public override Shelf GetShelf(
             string name,
             SomeMessage message,
@@ -1953,13 +2452,20 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Lists shelves.
         /// </summary>
-        /// <param name="pageToken">The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.</param>
-        /// <param name="pageSize">The size of page to request.
-        /// The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A pageable asynchronous sequence of Shelf resources.</returns>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable asynchronous sequence of <see cref="Shelf"/> resources.
+        /// </returns>
         public override IPagedAsyncEnumerable<ListShelvesResponse, Shelf> ListShelvesAsync(
             string pageToken = null,
             int? pageSize = null,
@@ -1967,6 +2473,7 @@ namespace Google.Example.Library.V1
                 _callListShelves,
                 new ListShelvesRequest
                 {
+
                     PageToken = pageToken ?? "",
                     PageSize = pageSize ?? 0,
                 },
@@ -1975,13 +2482,20 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Lists shelves.
         /// </summary>
-        /// <param name="pageToken">The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.</param>
-        /// <param name="pageSize">The size of page to request.
-        /// The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A pageable sequence of Shelf resources.</returns>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable sequence of <see cref="Shelf"/> resources.
+        /// </returns>
         public override IPagedEnumerable<ListShelvesResponse, Shelf> ListShelves(
             string pageToken = null,
             int? pageSize = null,
@@ -1989,6 +2503,7 @@ namespace Google.Example.Library.V1
                 _callListShelves,
                 new ListShelvesRequest
                 {
+
                     PageToken = pageToken ?? "",
                     PageSize = pageSize ?? 0,
                 },
@@ -1997,9 +2512,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Deletes a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to delete.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to delete.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public override Task DeleteShelfAsync(
             string name,
             CallSettings callSettings = null) => _callDeleteShelf.Async(
@@ -2012,9 +2533,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Deletes a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf to delete.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf to delete.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public override void DeleteShelf(
             string name,
             CallSettings callSettings = null) => _callDeleteShelf.Sync(
@@ -2029,10 +2556,18 @@ namespace Google.Example.Library.V1
         /// `other_shelf_name` to shelf `name`, and deletes
         /// `other_shelf_name`. Returns the updated shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf we're adding books to.</param>
-        /// <param name="otherShelfName">The name of the shelf we're removing books from and deleting.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf we're adding books to.
+        /// </param>
+        /// <param name="otherShelfName">
+        /// The name of the shelf we're removing books from and deleting.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public override Task<Shelf> MergeShelvesAsync(
             string name,
             string otherShelfName,
@@ -2049,10 +2584,18 @@ namespace Google.Example.Library.V1
         /// `other_shelf_name` to shelf `name`, and deletes
         /// `other_shelf_name`. Returns the updated shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf we're adding books to.</param>
-        /// <param name="otherShelfName">The name of the shelf we're removing books from and deleting.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf we're adding books to.
+        /// </param>
+        /// <param name="otherShelfName">
+        /// The name of the shelf we're removing books from and deleting.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public override Shelf MergeShelves(
             string name,
             string otherShelfName,
@@ -2067,10 +2610,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Creates a book.
         /// </summary>
-        /// <param name="name">The name of the shelf in which the book is created.</param>
-        /// <param name="book">The book to create.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf in which the book is created.
+        /// </param>
+        /// <param name="book">
+        /// The book to create.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public override Task<Book> CreateBookAsync(
             string name,
             Book book,
@@ -2085,10 +2636,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Creates a book.
         /// </summary>
-        /// <param name="name">The name of the shelf in which the book is created.</param>
-        /// <param name="book">The book to create.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the shelf in which the book is created.
+        /// </param>
+        /// <param name="book">
+        /// The book to create.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public override Book CreateBook(
             string name,
             Book book,
@@ -2103,11 +2662,21 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Creates a series of books.
         /// </summary>
-        /// <param name="shelf">The shelf in which the series is created.</param>
-        /// <param name="books">The books to publish in the series.</param>
-        /// <param name="edition">The edition of the series</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="shelf">
+        /// The shelf in which the series is created.
+        /// </param>
+        /// <param name="books">
+        /// The books to publish in the series.
+        /// </param>
+        /// <param name="edition">
+        /// The edition of the series
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public override Task<PublishSeriesResponse> PublishSeriesAsync(
             Shelf shelf,
             IEnumerable<Book> books,
@@ -2124,11 +2693,21 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Creates a series of books.
         /// </summary>
-        /// <param name="shelf">The shelf in which the series is created.</param>
-        /// <param name="books">The books to publish in the series.</param>
-        /// <param name="edition">The edition of the series</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="shelf">
+        /// The shelf in which the series is created.
+        /// </param>
+        /// <param name="books">
+        /// The books to publish in the series.
+        /// </param>
+        /// <param name="edition">
+        /// The edition of the series
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public override PublishSeriesResponse PublishSeries(
             Shelf shelf,
             IEnumerable<Book> books,
@@ -2145,9 +2724,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a book.
         /// </summary>
-        /// <param name="name">The name of the book to retrieve.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public override Task<Book> GetBookAsync(
             string name,
             CallSettings callSettings = null) => _callGetBook.Async(
@@ -2160,9 +2745,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a book.
         /// </summary>
-        /// <param name="name">The name of the book to retrieve.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public override Book GetBook(
             string name,
             CallSettings callSettings = null) => _callGetBook.Sync(
@@ -2175,15 +2766,26 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Lists books in a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf whose books we'd like to list.</param>
-        /// <param name="filter">To test python built-in wrapping.</param>
-        /// <param name="pageToken">The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.</param>
-        /// <param name="pageSize">The size of page to request.
-        /// The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A pageable asynchronous sequence of Book resources.</returns>
+        /// <param name="name">
+        /// The name of the shelf whose books we'd like to list.
+        /// </param>
+        /// <param name="filter">
+        /// To test python built-in wrapping.
+        /// </param>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable asynchronous sequence of <see cref="Book"/> resources.
+        /// </returns>
         public override IPagedAsyncEnumerable<ListBooksResponse, Book> ListBooksAsync(
             string name,
             string filter,
@@ -2203,15 +2805,26 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Lists books in a shelf.
         /// </summary>
-        /// <param name="name">The name of the shelf whose books we'd like to list.</param>
-        /// <param name="filter">To test python built-in wrapping.</param>
-        /// <param name="pageToken">The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.</param>
-        /// <param name="pageSize">The size of page to request.
-        /// The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A pageable sequence of Book resources.</returns>
+        /// <param name="name">
+        /// The name of the shelf whose books we'd like to list.
+        /// </param>
+        /// <param name="filter">
+        /// To test python built-in wrapping.
+        /// </param>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable sequence of <see cref="Book"/> resources.
+        /// </returns>
         public override IPagedEnumerable<ListBooksResponse, Book> ListBooks(
             string name,
             string filter,
@@ -2231,9 +2844,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Deletes a book.
         /// </summary>
-        /// <param name="name">The name of the book to delete.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to delete.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public override Task DeleteBookAsync(
             string name,
             CallSettings callSettings = null) => _callDeleteBook.Async(
@@ -2246,9 +2865,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Deletes a book.
         /// </summary>
-        /// <param name="name">The name of the book to delete.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to delete.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public override void DeleteBook(
             string name,
             CallSettings callSettings = null) => _callDeleteBook.Sync(
@@ -2261,10 +2886,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Updates a book.
         /// </summary>
-        /// <param name="name">The name of the book to update.</param>
-        /// <param name="book">The book to update with.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to update.
+        /// </param>
+        /// <param name="book">
+        /// The book to update with.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public override Task<Book> UpdateBookAsync(
             string name,
             Book book,
@@ -2279,10 +2912,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Updates a book.
         /// </summary>
-        /// <param name="name">The name of the book to update.</param>
-        /// <param name="book">The book to update with.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to update.
+        /// </param>
+        /// <param name="book">
+        /// The book to update with.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public override Book UpdateBook(
             string name,
             Book book,
@@ -2297,12 +2938,24 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Updates a book.
         /// </summary>
-        /// <param name="name">The name of the book to update.</param>
-        /// <param name="book">The book to update with.</param>
-        /// <param name="updateMask">A field mask to apply, rendered as an HTTP parameter.</param>
-        /// <param name="physicalMask">To test Python import clash resolution.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to update.
+        /// </param>
+        /// <param name="book">
+        /// The book to update with.
+        /// </param>
+        /// <param name="updateMask">
+        /// A field mask to apply, rendered as an HTTP parameter.
+        /// </param>
+        /// <param name="physicalMask">
+        /// To test Python import clash resolution.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public override Task<Book> UpdateBookAsync(
             string name,
             Book book,
@@ -2321,12 +2974,24 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Updates a book.
         /// </summary>
-        /// <param name="name">The name of the book to update.</param>
-        /// <param name="book">The book to update with.</param>
-        /// <param name="updateMask">A field mask to apply, rendered as an HTTP parameter.</param>
-        /// <param name="physicalMask">To test Python import clash resolution.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to update.
+        /// </param>
+        /// <param name="book">
+        /// The book to update with.
+        /// </param>
+        /// <param name="updateMask">
+        /// A field mask to apply, rendered as an HTTP parameter.
+        /// </param>
+        /// <param name="physicalMask">
+        /// To test Python import clash resolution.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public override Book UpdateBook(
             string name,
             Book book,
@@ -2345,10 +3010,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Moves a book to another shelf, and returns the new book.
         /// </summary>
-        /// <param name="name">The name of the book to move.</param>
-        /// <param name="otherShelfName">The name of the destination shelf.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to move.
+        /// </param>
+        /// <param name="otherShelfName">
+        /// The name of the destination shelf.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public override Task<Book> MoveBookAsync(
             string name,
             string otherShelfName,
@@ -2363,10 +3036,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Moves a book to another shelf, and returns the new book.
         /// </summary>
-        /// <param name="name">The name of the book to move.</param>
-        /// <param name="otherShelfName">The name of the destination shelf.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to move.
+        /// </param>
+        /// <param name="otherShelfName">
+        /// The name of the destination shelf.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public override Book MoveBook(
             string name,
             string otherShelfName,
@@ -2381,13 +3062,20 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Lists a primitive resource. To test go page streaming.
         /// </summary>
-        /// <param name="pageToken">The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.</param>
-        /// <param name="pageSize">The size of page to request.
-        /// The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A pageable asynchronous sequence of string resources.</returns>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable asynchronous sequence of <see cref="string"/> resources.
+        /// </returns>
         public override IPagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
             string pageToken = null,
             int? pageSize = null,
@@ -2395,6 +3083,7 @@ namespace Google.Example.Library.V1
                 _callListStrings,
                 new ListStringsRequest
                 {
+
                     PageToken = pageToken ?? "",
                     PageSize = pageSize ?? 0,
                 },
@@ -2403,13 +3092,20 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Lists a primitive resource. To test go page streaming.
         /// </summary>
-        /// <param name="pageToken">The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.</param>
-        /// <param name="pageSize">The size of page to request.
-        /// The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A pageable sequence of string resources.</returns>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable sequence of <see cref="string"/> resources.
+        /// </returns>
         public override IPagedEnumerable<ListStringsResponse, string> ListStrings(
             string pageToken = null,
             int? pageSize = null,
@@ -2417,6 +3113,7 @@ namespace Google.Example.Library.V1
                 _callListStrings,
                 new ListStringsRequest
                 {
+
                     PageToken = pageToken ?? "",
                     PageSize = pageSize ?? 0,
                 },
@@ -2425,10 +3122,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Adds comments to a book
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="comments"></param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="comments">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public override Task AddCommentsAsync(
             string name,
             IEnumerable<Comment> comments,
@@ -2443,10 +3148,18 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Adds comments to a book
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="comments"></param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="comments">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public override void AddComments(
             string name,
             IEnumerable<Comment> comments,
@@ -2461,9 +3174,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a book from an archive.
         /// </summary>
-        /// <param name="name">The name of the book to retrieve.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public override Task<Book> GetBookFromArchiveAsync(
             string name,
             CallSettings callSettings = null) => _callGetBookFromArchive.Async(
@@ -2476,9 +3195,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Gets a book from an archive.
         /// </summary>
-        /// <param name="name">The name of the book to retrieve.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public override Book GetBookFromArchive(
             string name,
             CallSettings callSettings = null) => _callGetBookFromArchive.Sync(
@@ -2491,11 +3216,21 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Updates the index of a book.
         /// </summary>
-        /// <param name="name">The name of the book to update.</param>
-        /// <param name="indexName">The name of the index for the book</param>
-        /// <param name="indexMap">The index to update the book with</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to update.
+        /// </param>
+        /// <param name="indexName">
+        /// The name of the index for the book
+        /// </param>
+        /// <param name="indexMap">
+        /// The index to update the book with
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public override Task UpdateBookIndexAsync(
             string name,
             string indexName,
@@ -2505,18 +3240,28 @@ namespace Google.Example.Library.V1
                 {
                     Name = name,
                     IndexName = indexName,
-                    IndexMap = { indexMap },
+                    IndexMap = indexMap,
                 },
                 callSettings);
 
         /// <summary>
         /// Updates the index of a book.
         /// </summary>
-        /// <param name="name">The name of the book to update.</param>
-        /// <param name="indexName">The name of the index for the book</param>
-        /// <param name="indexMap">The index to update the book with</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="name">
+        /// The name of the book to update.
+        /// </param>
+        /// <param name="indexName">
+        /// The name of the index for the book
+        /// </param>
+        /// <param name="indexMap">
+        /// The index to update the book with
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public override void UpdateBookIndex(
             string name,
             string indexName,
@@ -2526,7 +3271,7 @@ namespace Google.Example.Library.V1
                 {
                     Name = name,
                     IndexName = indexName,
-                    IndexMap = { indexMap },
+                    IndexMap = indexMap,
                 },
                 callSettings);
 
@@ -2538,9 +3283,15 @@ namespace Google.Example.Library.V1
         /// Resource is usually specified as a path, such as,
         /// projects/{project}/zones/{zone}/disks/{disk}.
         /// </param>
-        /// <param name="tag">REQUIRED: The tag to add.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
+        /// <param name="tag">
+        /// REQUIRED: The tag to add.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
         public override Task<AddTagResponse> AddTagAsync(
             string resource,
             string tag,
@@ -2560,9 +3311,15 @@ namespace Google.Example.Library.V1
         /// Resource is usually specified as a path, such as,
         /// projects/{project}/zones/{zone}/disks/{disk}.
         /// </param>
-        /// <param name="tag">REQUIRED: The tag to add.</param>
-        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
+        /// <param name="tag">
+        /// REQUIRED: The tag to add.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
         public override AddTagResponse AddTag(
             string resource,
             string tag,
@@ -2600,3 +3357,4 @@ namespace Google.Example.Library.V1
     }
 
 }
+

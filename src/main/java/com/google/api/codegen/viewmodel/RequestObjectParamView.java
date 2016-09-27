@@ -15,10 +15,14 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class RequestObjectParamView {
   public abstract String name();
+
+  @Nullable
+  public abstract String nameAsMethodName();
 
   public abstract String elementTypeName();
 
@@ -30,6 +34,13 @@ public abstract class RequestObjectParamView {
 
   public abstract boolean isArray();
 
+  @Nullable // Used in C#
+  public abstract String defaultValue();
+
+  public boolean hasDefaultValue() {
+    return defaultValue() != null;
+  }
+
   public static Builder newBuilder() {
     return new AutoValue_RequestObjectParamView.Builder();
   }
@@ -37,6 +48,8 @@ public abstract class RequestObjectParamView {
   @AutoValue.Builder
   public static abstract class Builder {
     public abstract Builder name(String val);
+
+    public abstract Builder nameAsMethodName(String val);
 
     public abstract Builder elementTypeName(String val);
 
@@ -47,6 +60,8 @@ public abstract class RequestObjectParamView {
     public abstract Builder isMap(boolean val);
 
     public abstract Builder isArray(boolean val);
+
+    public abstract Builder defaultValue(String val);
 
     public abstract RequestObjectParamView build();
   }

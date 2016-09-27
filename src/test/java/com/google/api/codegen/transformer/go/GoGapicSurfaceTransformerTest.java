@@ -19,6 +19,7 @@ import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.gapic.PackageNameCodePathMapper;
 import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.MultiYamlReader;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -99,7 +100,11 @@ public class GoGapicSurfaceTransformerTest {
     GoSurfaceNamer namer = new GoSurfaceNamer(model, apiConfig.getPackageName());
     context =
         SurfaceTransformerContext.create(
-            service, apiConfig, GoGapicSurfaceTransformer.createTypeTable(), namer);
+            service,
+            apiConfig,
+            GoGapicSurfaceTransformer.createTypeTable(),
+            namer,
+            new FeatureConfig());
   }
 
   private static final ImmutableList<String> PAGE_STREAM_IMPORTS =

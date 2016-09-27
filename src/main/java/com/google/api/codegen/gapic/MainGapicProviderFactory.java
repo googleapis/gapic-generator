@@ -15,18 +15,16 @@
 package com.google.api.codegen.gapic;
 
 import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.ProtoFileView;
-import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.clientconfig.ClientConfigGapicContext;
 import com.google.api.codegen.clientconfig.ClientConfigSnippetSetRunner;
-import com.google.api.codegen.csharp.CSharpCodePathMapper;
-import com.google.api.codegen.csharp.CSharpGapicContext;
 import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
+import com.google.api.codegen.go.GoSnippetSetRunner;
+import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.nodejs.NodeJSCodePathMapper;
 import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
+import com.google.api.codegen.ProtoFileView;
 import com.google.api.codegen.py.PythonGapicContext;
 import com.google.api.codegen.py.PythonInterfaceInitializer;
 import com.google.api.codegen.py.PythonProtoFileInitializer;
@@ -34,18 +32,24 @@ import com.google.api.codegen.py.PythonSnippetSetRunner;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.ruby.RubyGapicContext;
 import com.google.api.codegen.ruby.RubySnippetSetRunner;
-import com.google.api.codegen.transformer.java.JavaGapicSurfaceTestTransformer;
+import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.transformer.csharp.CSharpGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTransformer;
+import com.google.api.codegen.transformer.java.JavaGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
+import com.google.api.codegen.util.csharp.CSharpNameFormatter;
+import com.google.api.codegen.util.csharp.CSharpRenderingUtil;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
+
 import java.util.Arrays;
 import java.util.List;
+
 import org.apache.commons.lang3.NotImplementedException;
 
 /** MainGapicProviderFactory creates GapicProvider instances based on an id. */
@@ -85,17 +89,20 @@ public class MainGapicProviderFactory
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
     } else if (id.equals(CSHARP)) {
-      GapicProvider<? extends Object> provider =
-          CommonGapicProvider.<Interface>newBuilder()
-              .setModel(model)
-              .setView(new InterfaceView())
-              .setContext(new CSharpGapicContext(model, apiConfig))
-              .setSnippetSetRunner(
-                  new CSharpSnippetSetRunner<Interface>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-              .setSnippetFileNames(Arrays.asList("csharp/wrapper.snip"))
-              .setCodePathMapper(new CSharpCodePathMapper())
+      GapicCodePathMapper pathMapper =
+          CommonGapicCodePathMapper.newBuilder()
+              .setPrefix("")
+              .setShouldAppendPackage(true)
+              .setPackageFilePathNameFormatter(new CSharpNameFormatter())
               .build();
-      return Arrays.<GapicProvider<? extends Object>>asList(provider);
+      GapicProvider<? extends Object> mainProvider =
+          ViewModelGapicProvider.newBuilder()
+              .setModel(model)
+              .setApiConfig(apiConfig)
+              .setSnippetSetRunner(new CommonSnippetSetRunner(new CSharpRenderingUtil()))
+              .setModelToViewTransformer(new CSharpGapicSurfaceTransformer(pathMapper))
+              .build();
+      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);
 
     } else if (id.equals(GO)) {
       GapicProvider<? extends Object> provider =

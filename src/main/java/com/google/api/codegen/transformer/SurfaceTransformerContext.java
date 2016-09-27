@@ -31,8 +31,13 @@ import java.util.List;
 @AutoValue
 public abstract class SurfaceTransformerContext {
   public static SurfaceTransformerContext create(
-      Interface interfaze, ApiConfig apiConfig, ModelTypeTable typeTable, SurfaceNamer namer) {
-    return new AutoValue_SurfaceTransformerContext(interfaze, apiConfig, typeTable, namer);
+      Interface interfaze,
+      ApiConfig apiConfig,
+      ModelTypeTable typeTable,
+      SurfaceNamer namer,
+      FeatureConfig featureConfig) {
+    return new AutoValue_SurfaceTransformerContext(
+        interfaze, apiConfig, typeTable, namer, featureConfig);
   }
 
   public Model getModel() {
@@ -47,8 +52,15 @@ public abstract class SurfaceTransformerContext {
 
   public abstract SurfaceNamer getNamer();
 
+  public abstract FeatureConfig getFeatureConfig();
+
   public SurfaceTransformerContext withNewTypeTable() {
-    return create(getInterface(), getApiConfig(), getTypeTable().cloneEmpty(), getNamer());
+    return create(
+        getInterface(),
+        getApiConfig(),
+        getTypeTable().cloneEmpty(),
+        getNamer(),
+        getFeatureConfig());
   }
 
   public InterfaceConfig getInterfaceConfig() {
@@ -73,6 +85,7 @@ public abstract class SurfaceTransformerContext {
 
   public MethodTransformerContext asMethodContext(Method method) {
     return MethodTransformerContext.create(
+        this,
         getInterface(),
         getApiConfig(),
         getTypeTable(),

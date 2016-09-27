@@ -20,6 +20,8 @@ import com.google.auto.value.AutoValue;
 public abstract class ResourceIdParamView {
   public abstract String name();
 
+  public abstract String docName();
+
   public abstract String templateKey();
 
   public static Builder newBuilder() {
@@ -29,6 +31,8 @@ public abstract class ResourceIdParamView {
   @AutoValue.Builder
   public static abstract class Builder {
     public abstract Builder name(String val);
+
+    public abstract Builder docName(String val);
 
     public abstract Builder templateKey(String val);
 

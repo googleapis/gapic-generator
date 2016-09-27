@@ -82,6 +82,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return className(Name.upperCamel(interfaze.getSimpleName(), "Api"));
   }
 
+  /** The name of the implementation class that implements a particular proto interface. */
+  public String getApiWrapperClassImplName(Interface interfaze) {
+    return getNotImplementedString("SurfaceNamer.getApiWrapperClassImplName");
+  }
+
   /**
    * The name of the constructor for the service client.
    * The client is VKit generated, not GRPC.
@@ -287,6 +292,26 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return localVarName(Name.from(var));
   }
 
+  /** The documentation name of a parameter for the given lower-case field name. */
+  public String getParamDocName(String var) {
+    return localVarName(Name.from(var));
+  }
+
+  /** The method name of the retry filter for the given key */
+  public String retryFilterMethodName(String key) {
+    return privateMethodName(Name.from(key).join("retry").join("filter"));
+  }
+
+  /** The method name of the retry backoff for the given key */
+  public String retryBackoffMethodName(String key) {
+    return privateMethodName(Name.from("get").join(key).join("retry").join("backoff"));
+  }
+
+  /** The method name of the timeout backoff for the given key */
+  public String timeoutBackoffMethodName(String key) {
+    return privateMethodName(Name.from("get").join(key).join("timeout").join("backoff"));
+  }
+
   /** The page streaming descriptor name for the given method. */
   public String getPageStreamingDescriptorName(Method method) {
     return privateFieldName(Name.upperCamel(method.getSimpleName(), "PageStreamingDescriptor"));
@@ -388,12 +413,28 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getApiMethodName(method);
   }
 
+  /** The name of the async surface method which can call the given API method. */
+  public String getAsyncApiMethodName(Method method) {
+    return getNotImplementedString("SurfaceNamer.getAsyncApiMethodName");
+  }
+
+  public String getAsyncApiMethodExampleName(Method method) {
+    return getNotImplementedString("SurfaceNamer.getAsyncApiMethodExampleName");
+  }
+
   /**
    * The name of a variable to hold a value for the given proto message field
    * (such as a flattened parameter).
    */
   public String getVariableName(Field field) {
     return localVarName(Name.from(field.getSimpleName()));
+  }
+
+  /**
+   * The name of a field as a method.
+   */
+  public String getFieldAsMethodName(Field field) {
+    return privateMethodName(Name.from(field.getSimpleName()));
   }
 
   /**
@@ -425,6 +466,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return new ArrayList<>();
   }
 
+  /** The doc lines that describe the return value for an API method. */
+  public List<String> getReturnDocLines(
+      SurfaceTransformerContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
+    return new ArrayList<>();
+  }
+
   /** The public access modifier for the current language. */
   public String getPublicAccessModifier() {
     return "public";
@@ -450,11 +497,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getRetrySettingsClassName");
   }
 
-  /** Type name of the status code */
-  public String getStatusCodeName(Status.Code code) {
-    return inittedConstantName(Name.upperUnderscore(code.toString()));
-  }
-
   /** The type name for an optional array argument; not used in most languages. */
   public String getOptionalArrayTypeName() {
     return getNotImplementedString("SurfaceNamer.getOptionalArrayTypeName");
@@ -467,7 +509,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The return type name in a static language for the given method. */
   public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
-    return getNotImplementedString("SurfaceNamer.getStaticReturnTypeName");
+    return getNotImplementedString("SurfaceNamer.getStaticLangReturnTypeName");
+  }
+
+  /** The async return type name in a static language for the given method. */
+  public String getStaticLangAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
+    return getNotImplementedString("SurfaceNamer.getStaticLangAsyncReturnTypeName");
   }
 
   /** The name of the paged callable variant of the given method. */
@@ -500,13 +547,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the settings member name for the given method. */
-  public String getCallSettingsMemberName(Method method) {
+  public String getSettingsMemberName(Method method) {
     return publicMethodName(Name.upperCamel(method.getSimpleName(), "Settings"));
   }
 
   /** The getter function name for the settings for the given method. */
-  public String getCallSettingsFunctionName(Method method) {
-    return getCallSettingsMemberName(method);
+  public String getSettingsFunctionName(Method method) {
+    return getSettingsMemberName(method);
   }
 
   /** The type name of call options */
@@ -654,5 +701,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
     String name = service.getSimpleName().replaceAll("V[0-9]+$", "");
     name = name.replaceAll("Service$", "");
     return Name.upperCamel(name);
+  }
+
+  /** The name of an RPC status code */
+  public String getStatusCodeName(Status.Code code) {
+    return privateMethodName(Name.upperUnderscore(code.toString()));
+  }
+
+  /* The name of a retry definition */
+  public String getRetryDefinitionName(String retryDefinitionKey) {
+    return privateMethodName(Name.from(retryDefinitionKey));
   }
 }

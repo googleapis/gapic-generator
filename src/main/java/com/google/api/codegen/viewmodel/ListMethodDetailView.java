@@ -18,6 +18,10 @@ import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class ListMethodDetailView {
+  public abstract String requestTypeName();
+
+  public abstract String responseTypeName();
+
   public abstract String resourceTypeName();
 
   public abstract String resourceFieldName();
@@ -30,17 +34,25 @@ public abstract class ListMethodDetailView {
    */
   public abstract String responseObjectTypeName();
 
+  public abstract String resourcesFieldGetFunction();
+
   public static Builder newBuilder() {
     return new AutoValue_ListMethodDetailView.Builder();
   }
 
   @AutoValue.Builder
   public static abstract class Builder {
+    public abstract Builder requestTypeName(String name);
+
+    public abstract Builder responseTypeName(String name);
+
     public abstract Builder resourceTypeName(String name);
 
     public abstract Builder resourceFieldName(String name);
 
     public abstract Builder responseObjectTypeName(String name);
+
+    public abstract Builder resourcesFieldGetFunction(String name);
 
     public abstract ListMethodDetailView build();
   }

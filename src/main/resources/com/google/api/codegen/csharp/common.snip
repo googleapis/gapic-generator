@@ -1,0 +1,60 @@
+@snippet xmlDoc(doc)
+    /// <summary>
+    @join line : doc.mainDocLines
+        /// {@line}
+    @end
+    /// </summary>
+    @join param : doc.paramDocs
+        @switch param.type.toString
+        @case "SimpleParamDocView"
+            /// <param name="{@param.paramName}">
+            @join line : param.lines
+                /// {@line}
+            @end
+            /// </param>
+        @default
+            *** ERROR: Cannot display parameter doc of type '{@param.type.toString}' ***
+        @end
+    @end
+    /// <returns>
+    @join line : doc.returnsDocLines
+        /// {@line}
+    @end
+    /// </returns>
+@end
+
+@snippet retryCodes(codes)
+    @join code : codes on ", "
+        StatusCode.{@code}
+    @end
+@end
+
+@snippet formatResourceParams(vars)
+    @join var : vars on ", "
+        string {@var.name}
+    @end
+@end
+
+@snippet formatResourceArgs(vars)
+    @join var : vars on ", "
+        {@var.name}
+    @end
+@end
+
+@snippet objectParams(params)
+    @join param : params on ",".add(BREAK)
+        {@param.typeName} {@param.name}{@paramDefault(param)}
+    @end
+@end
+
+@private paramDefault(param)
+    @if param.hasDefaultValue
+        {@""} = {@param.defaultValue}
+    @end
+@end
+
+@snippet objectArgs(args)
+    @join arg : args on ",".add(BREAK)
+        {@arg.name}
+    @end
+@end

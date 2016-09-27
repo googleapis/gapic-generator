@@ -16,12 +16,19 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.gax.core.RetrySettings.Builder;
 import com.google.auto.value.AutoValue;
-
+import javax.annotation.Nullable;
 import org.joda.time.Duration;
 
 @AutoValue
 public abstract class RetryParamsDefinitionView {
   public abstract String key();
+
+  @Nullable // Used in C#
+  public abstract String name();
+
+  public abstract String retryBackoffMethodName();
+
+  public abstract String timeoutBackoffMethodName();
 
   public abstract Duration totalTimeout();
 
@@ -44,6 +51,12 @@ public abstract class RetryParamsDefinitionView {
   @AutoValue.Builder
   public static abstract class Builder {
     public abstract Builder key(String val);
+
+    public abstract Builder name(String val);
+
+    public abstract Builder retryBackoffMethodName(String val);
+
+    public abstract Builder timeoutBackoffMethodName(String val);
 
     public abstract Builder initialRetryDelay(Duration initialDelay);
 

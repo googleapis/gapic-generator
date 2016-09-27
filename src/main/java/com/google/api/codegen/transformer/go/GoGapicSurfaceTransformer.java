@@ -22,6 +22,7 @@ import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.ServiceConfig;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -90,10 +91,13 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     List<ServiceDocView> serviceDocs = new ArrayList<>();
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       SurfaceTransformerContext context =
-          SurfaceTransformerContext.create(service, apiConfig, createTypeTable(), namer);
+          SurfaceTransformerContext.create(
+              service, apiConfig, createTypeTable(), namer, new FeatureConfig());
       models.add(generate(context));
 
-      context = SurfaceTransformerContext.create(service, apiConfig, createTypeTable(), namer);
+      context =
+          SurfaceTransformerContext.create(
+              service, apiConfig, createTypeTable(), namer, new FeatureConfig());
       models.add(generateExample(context));
     }
     models.add(generatePackageInfo(model, apiConfig, namer));

@@ -191,10 +191,29 @@ message SomeMessage {
   int32 field = 1;
 
   SomeMessage2 field2 = 2;
+
+  // Tests service with two enums of the same simple name
+  enum Alignment {
+    GOOD = 0;
+    NEUTRAL = 1;
+    EVIL = 2;
+  }
+
+  Alignment alignment = 3;
 }
 
 message SomeMessage2 {
   int32 field1 = 1;
+
+  // Another enum with duplicated simple name
+  enum Alignment {
+    FLUSH_LEFT = 0;
+    FLUSH_RIGHT = 1;
+    CENTERED = 2;
+    JUSTIFIED = 3;
+  }
+
+  Alignment format = 2;
 }
 
 // A Shelf contains a collection of books with a theme.
