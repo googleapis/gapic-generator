@@ -393,13 +393,13 @@
       }
       var req = {
         @join field : requiredParams on ",".add(BREAK)
-          {@field.getSimpleName}: {@fieldParameterName(field)}
+          {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)}: {@fieldParameterName(field)}
         @end
       };
       @join field : optionalParams
         @let paramName = fieldParameterName(field)
           if ('{@paramName}' in options) {
-            req.{@field.getSimpleName} = options.{@paramName};
+            req.{@context.lowerUnderscoreToLowerCamel(field.getSimpleName)} = options.{@paramName};
           }
         @end
       @end

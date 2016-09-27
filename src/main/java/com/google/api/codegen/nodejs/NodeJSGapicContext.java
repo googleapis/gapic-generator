@@ -250,7 +250,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    */
   public List<String> fieldPropertyComment(Field field) {
     String commentType = fieldTypeCardinalityComment(field);
-    String fieldName = wrapIfKeywordOrBuiltIn(field.getSimpleName());
+    String fieldName = lowerUnderscoreToLowerCamel(field.getSimpleName());
     return convertToCommentedBlock(
         fieldComment(String.format("@property {%s} %s", commentType, fieldName), null, field));
   }
