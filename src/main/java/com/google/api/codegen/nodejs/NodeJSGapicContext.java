@@ -56,8 +56,11 @@ import javax.annotation.Nullable;
 public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   private GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
 
+  NodeJSSurfaceNamer namer;
+
   public NodeJSGapicContext(Model model, ApiConfig apiConfig) {
     super(model, apiConfig);
+    namer = new NodeJSSurfaceNamer(getApiConfig().getPackageName());
   }
 
   // Snippet Helpers
@@ -101,15 +104,15 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
             new NodeJSTypeTable(getApiConfig().getPackageName()),
             new NodeJSModelTypeNameConverter(getApiConfig().getPackageName()));
     return SurfaceTransformerContext.create(
-        service,
-        getApiConfig(),
-        modelTypeTable,
-        new NodeJSSurfaceNamer(getApiConfig().getPackageName()),
-        new NodeJSFeatureConfig());
+        service, getApiConfig(), modelTypeTable, namer, new NodeJSFeatureConfig());
   }
 
   public String filePath(ProtoFile file) {
     return file.getSimpleName().replace(".proto", "_pb2.js");
+  }
+
+  public String propertyName(Field field) {
+    return namer.getVariableName(field);
   }
 
   /**
@@ -243,7 +246,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    */
   public List<String> fieldPropertyComment(Field field) {
     String commentType = fieldTypeCardinalityComment(field);
-    String fieldName = wrapIfKeywordOrBuiltIn(field.getSimpleName());
+    String fieldName = propertyName(field);
     return convertToCommentedBlock(
         fieldComment(String.format("@property {%s} %s", commentType, fieldName), null, field));
   }
