@@ -88,13 +88,13 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     return grpcStubTransformer.generateGrpcStubs(context);
   }
 
-  private String getStubNameFor(Interface service, Method method) {
+  private String getGrpcClientVariableNameFor(Interface service, Method method) {
     NodeJSSurfaceNamer namer = new NodeJSSurfaceNamer(getApiConfig().getPackageName());
     String jsMethodName = namer.getApiMethodName(method);
     for (GrpcStubView stub : getStubs(service)) {
       for (String methodName : stub.methodNames()) {
         if (jsMethodName.equals(methodName)) {
-          return stub.name();
+          return stub.grpcClientVariableName();
         }
       }
     }
@@ -498,7 +498,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     switch (typeRef.getKind()) {
       case TYPE_MESSAGE:
         return "gax.createByteLengthFunction(grpcClients."
-            + getStubNameFor(service, method)
+            + getGrpcClientVariableNameFor(service, method)
             + "."
             + typeRef.getMessageType().getFullName()
             + ")";
