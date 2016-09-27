@@ -46,6 +46,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -54,6 +57,7 @@ import javax.annotation.Nullable;
  * A GapicContext specialized for NodeJS.
  */
 public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
+  private GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
 
   public NodeJSGapicContext(Model model, ApiConfig apiConfig) {
     super(model, apiConfig);
@@ -83,23 +87,15 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    *       will eventually go away when code gen also converts to MVVM.
    */
   public List<GrpcStubView> getStubs(Interface service) {
-    GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     return grpcStubTransformer.generateGrpcStubs(context);
   }
 
-  private String getGrpcClientVariableNameFor(Interface service, Method method) {
-    NodeJSSurfaceNamer namer = new NodeJSSurfaceNamer(getApiConfig().getPackageName());
-    String jsMethodName = namer.getApiMethodName(method);
-    for (GrpcStubView stub : getStubs(service)) {
-      for (String methodName : stub.methodNames()) {
-        if (jsMethodName.equals(methodName)) {
-          return stub.grpcClientVariableName();
-        }
-      }
-    }
-    throw new IllegalArgumentException(
-        "Method " + method.getFullName() + " cannot be found in the stubs");
+  public GrpcStubView getStubForMethod(Interface service, Method method) {
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    Interface targetInterface = context.asMethodContext(method).getTargetInterface();
+    return grpcStubTransformer.generateGrpcStub(
+        context, targetInterface, Collections.singletonList(method));
   }
 
   private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {
@@ -498,7 +494,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     switch (typeRef.getKind()) {
       case TYPE_MESSAGE:
         return "gax.createByteLengthFunction(grpcClients."
-            + getGrpcClientVariableNameFor(service, method)
+            + getStubForMethod(service, method).grpcClientVariableName()
             + "."
             + typeRef.getMessageType().getFullName()
             + ")";
