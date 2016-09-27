@@ -27,7 +27,7 @@ public abstract class ListMethodDetailView {
   public abstract String resourceFieldName();
 
   /**
-   * Distict from resourceTypeName().
+   * Distinct from resourceTypeName().
    * Eg,
    *   resourceTypeName: "Shelf"
    *   responseObjectTypeName: "ListShelvesResponse"

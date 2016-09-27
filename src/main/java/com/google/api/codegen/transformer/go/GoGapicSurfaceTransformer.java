@@ -73,6 +73,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private final ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
+  private final GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
   private final GapicCodePathMapper pathMapper;
 
   public GoGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
@@ -147,7 +148,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.servicePort(serviceConfig.getServicePort());
     view.authScopes(serviceConfig.getAuthScopes(service));
 
-    view.stubs(new GrpcStubTransformer().generateGrpcStubs(context));
+    view.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
     addXApiImports(context);
     view.imports(GoTypeTable.formatImports(context.getTypeTable().getImports()));

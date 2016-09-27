@@ -26,7 +26,7 @@ public interface NameFormatter {
   String className(Name name);
 
   /**
-   * Formats the name as a public variable name.
+   * Formats the name as a public field name.
    */
   String publicFieldName(Name name);
 

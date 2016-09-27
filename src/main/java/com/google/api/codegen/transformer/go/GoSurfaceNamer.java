@@ -209,9 +209,4 @@ public class GoSurfaceNamer extends SurfaceNamer {
   public String getCreateStubFunctionName(Interface service) {
     return getGrpcClientTypeName(service).replace(".", ".New");
   }
-
-  @Override
-  public String getApiWrapperVariableName(Interface service) {
-    return getStubName(service);
-  }
 }
