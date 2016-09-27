@@ -25,8 +25,8 @@ import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.nodejs.NodeJSModelTypeNameConverter;
 import com.google.api.codegen.transformer.nodejs.NodeJSSurfaceNamer;
 import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
-import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.GrpcStubView;
+import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.Field;
@@ -68,7 +68,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    * NOTE: Temporary solution to use MVVM with just sample gen. This class
    *       will eventually go away when code gen also converts to MVVM.
    */
-  public ApiMethodView getApiMethodView(Interface service, Method method) {
+  public OptionalArrayMethodView getApiMethodView(Interface service, Method method) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     MethodTransformerContext methodContext = context.asMethodContext(method);
     ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
@@ -86,20 +86,6 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     return grpcStubTransformer.generateGrpcStubs(context);
-  }
-
-  private String getStubNameFor(Interface service, Method method) {
-    NodeJSSurfaceNamer namer = new NodeJSSurfaceNamer(getApiConfig().getPackageName());
-    String jsMethodName = namer.getApiMethodName(method);
-    for (GrpcStubView stub : getStubs(service)) {
-      for (String methodName : stub.methodNames()) {
-        if (jsMethodName.equals(methodName)) {
-          return stub.name();
-        }
-      }
-    }
-    throw new IllegalArgumentException(
-        "Method " + method.getFullName() + " cannot be found in the stubs");
   }
 
   private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {
@@ -498,7 +484,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     switch (typeRef.getKind()) {
       case TYPE_MESSAGE:
         return "gax.createByteLengthFunction(grpcClients."
-            + getStubNameFor(service, method)
+            + getApiMethodView(service, method).stubName()
             + "."
             + typeRef.getMessageType().getFullName()
             + ")";
