@@ -1,397 +1,253 @@
 @extends "go/header.snip"
 
-@snippet generateFilename(service)
-    {@context.getApiConfig.getPackageName}/{@context.getReducedServiceName(service)}_client.go
-@end
-
-@snippet generateClass(service, body)
+@snippet generate(view)
     {@headerComment()}
 
-    // AUTO-GENERATED CODE. DO NOT EDIT.
+    package {@view.localPackageName}
 
-    package {@context.getPackageName}
-
-    {@importSection(service)}
-
-    {@body}
-@end
-
-@private importSection(service)
     import (
-    @join import : context.getImports(service)
-    {@import}
-    @end
+        @join imp : view.imports
+            {@imp}
+        @end
     )
-@end
 
-@snippet generateBody(service)
-    {@globals(service)}
+    var (
+        @join pathTemplate : view.pathTemplates
+            {@pathTemplate.name} = gax.MustCompilePathTemplate("{@pathTemplate.pattern}")
+        @end
+    )
 
-    @let clientName = context.getClientName(service)
-        // {@clientName} is a client for interacting with {@service.getSimpleName}.
-        type {@clientName} struct {
-            // The connection to the service.
-            conn *grpc.ClientConn
-
-            // The gRPC API client.
-            client {@context.getServiceClientName(service)}
-
-            // The call options for this service.
-            CallOptions *{@context.getClientPrefix(service)}CallOptions
-
-    @end
-        // The metadata to be sent with each request.
-        metadata map[string][]string
-    }
-
-    {@constructor(service)}
-    {@pathTemplateMethods(service)}
-    {@methods(service)}
-
-    {@iterators(service)}
-@end
-
-@private globals(service)
-    @if context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs
-        var (
-            @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs
-                {@pathTemplateVarName(service, collectionConfig)} = gax.MustCompilePathTemplate("{@collectionConfig.getNamePattern}")
-            @end
-        )
-
-    @end
-
-    // {@context.getClientPrefix(service)}CallOptions contains the retry settings for each method of this client.
-    type {@context.getClientPrefix(service)}CallOptions struct {
-        @join method : context.getSupportedMethods(service)
-            @let methodName = method.getSimpleName
-                {@methodName} []gax.CallOption
-            @end
+    // {@view.callOptionsTypeName} contains the retry settings for each method of {@view.clientTypeName}.
+    type {@view.callOptionsTypeName} struct {
+        @join apiMethod : view.apiMethods
+            {@apiMethod.name} []gax.CallOption
         @end
     }
 
-    func default{@context.getClientName(service)}Options() []option.ClientOption {
+    func {@view.defaultClientOptionFunctionName}() []option.ClientOption {
         return []option.ClientOption{
-            option.WithEndpoint("{@context.getServiceConfig.getServiceAddress(service)}:{@context.getServiceConfig.getServicePort()}"),
+            option.WithEndpoint("{@view.serviceAddress}:{@view.servicePort}"),
             option.WithScopes(
-                @join scope : context.getServiceConfig.getAuthScopes(service)
+                @join scope : view.authScopes
                     "{@scope}",
                 @end
             ),
         }
     }
 
-    func default{@context.getClientPrefix(service)}CallOptions() *{@context.getClientPrefix(service)}CallOptions {
+    func {@view.defaultCallOptionFunctionName}() *{@view.callOptionsTypeName} {
         retry := map[[2]string][]gax.CallOption{
-            @let interfaceConf = context.getApiConfig.getInterfaceConfig(service)
-                @join retryName : context.getRetryConfigNames(service) if interfaceConf.getRetryCodesDefinition.get(retryName.getCodesName)
-                    @let retryCodes = interfaceConf.getRetryCodesDefinition.get(retryName.getCodesName), \
-                         retrySettings = interfaceConf.getRetrySettingsDefinition.get(retryName.getSettingsName)
-                        {"{@retryName.getSettingsName}", "{@retryName.getCodesName}"}: {
-                            gax.WithRetry(func() gax.Retryer {
-                                return gax.OnCodes([]codes.Code{
-                                    @join code : retryCodes
-                                        codes.{@context.upperUnderscoreToUpperCamel(code.toString())},
-                                    @end
-                                }, gax.Backoff{
-                                    Initial: {@retrySettings.getInitialRetryDelay.getMillis}*time.Millisecond,
-                                    Max: {@retrySettings.getMaxRetryDelay.getMillis}*time.Millisecond,
-                                    Multiplier: {@retrySettings.getRetryDelayMultiplier},
-                                })
-                            }),
-                        },
-                    @end
-                @end
+            @join def : view.retryPairDefinitions
+              {"{@def.name.retrySettingsConfigName}", "{@def.name.retryCodesConfigName}"}: {
+                  gax.WithRetry(func() gax.Retryer {
+                      return gax.OnCodes([]codes.Code{
+                          @join code : def.retryCodes
+                              codes.{@code},
+                          @end
+                      }, gax.Backoff{
+                          Initial: {@def.params.getInitialRetryDelay.getMillis}*time.Millisecond,
+                          Max: {@def.params.getMaxRetryDelay.getMillis}*time.Millisecond,
+                          Multiplier: {@def.params.getRetryDelayMultiplier},
+                      })
+                  }),
+              },
             @end
         }
-
-        return &{@context.getClientPrefix(service)}CallOptions{
-            @join method : context.getSupportedMethods(service)
-                @let methodName = method.getSimpleName, \
-                     methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-                     retryParamsName = methodConfig.getRetrySettingsConfigName, \
-                     retryCodesName = methodConfig.getRetryCodesConfigName
-                    {@methodName}: retry[[2]string{"{@retryParamsName}", "{@retryCodesName}"}],
-                @end
+        return &{@view.callOptionsTypeName}{
+            @join settings : view.callSettings
+                {@settings.methodName}: retry[[2]string{"{@settings.retryParamsName}", "{@settings.retryCodesName}"}],
             @end
         }
     }
-@end
 
-@private constructor(service)
-    @let clientName = context.getClientName(service)
-        // New{@clientName} creates a new {@context.getReducedServiceName(service)} service client.
-        //
-        @join commentLine : context.comments(service)
-            {@commentLine}
+    // {@view.clientTypeName} is a client for interacting with {@view.serviceOriginalName}.
+    type {@view.clientTypeName} struct {
+        // The connection to the service.
+        conn *grpc.ClientConn
+
+        // The gRPC API client.
+        @join stub : view.stubs
+            {@stub.name} {@stub.grpcClientTypeName}
         @end
-        func New{@clientName}(ctx context.Context, opts ...option.ClientOption) (*{@clientName}, error) {
-            conn, err := transport.DialGRPC(ctx, append(default{@clientName}Options(), opts...)...)
+
+        // The call options for this service.
+        CallOptions *{@view.callOptionsTypeName}
+
+        // The metadata to be sent with each request.
+        metadata map[string][]string
+    }
+
+    // {@view.clientConstructorName} creates a new {@view.servicePhraseName} client.
+    //
+    @join line : view.serviceDoc
+        {@line}
+    @end
+    func {@view.clientConstructorName}(ctx context.Context, opts ...option.ClientOption) (*{@view.clientTypeName}, error) {
+        conn, err := transport.DialGRPC(ctx, append({@view.defaultClientOptionFunctionName}(), opts...)...)
+        if err != nil {
+            return nil, err
+        }
+        c := &{@view.clientTypeName} {
+            conn: conn,
+            CallOptions: {@view.defaultCallOptionFunctionName}(),
+
+            @join stub : view.stubs
+                {@stub.name}: {@stub.createStubFunctionName}(conn),
+            @end
+        }
+        c.SetGoogleClientInfo("gax", gax.Version)
+        return c, nil
+    }
+
+    // Connection returns the client's connection to the API service.
+    func (c *{@view.clientTypeName}) Connection() *grpc.ClientConn {
+        return c.conn
+    }
+
+    // Close closes the connection to the API service. The user should invoke this when
+    // the client is no longer required.
+    func (c *{@view.clientTypeName}) Close() error {
+        return c.conn.Close()
+    }
+
+    // SetGoogleClientInfo sets the name and version of the application in
+    // the `x-goog-api-client` header passed on each request. Intended for
+    // use by Google-written clients.
+    func (c *{@view.clientTypeName}) SetGoogleClientInfo(name, version string) {
+        c.metadata = map[string][]string{
+            "x-goog-api-client": {fmt.Sprintf("%s/%s %s gax/%s go/%s", name, version, gapicNameVersion, gax.Version, runtime.Version())},
+        }
+    }
+
+    @join getter : view.pathTemplateGetters
+        // {@getter.name} returns the path for the {@getter.resourceName} resource.
+        func {@getter.name}({@pathTemplateParams(getter.args)} string) string {
+            path, err := {@getter.pathTemplateName}.Render(map[string]string{
+                @join arg : getter.args
+                    "{@arg.templateKey}": {@arg.name},
+                @end
+            })
             if err != nil {
-                return nil, err
+                panic(err)
             }
-            c := &{@clientName} {
-                conn: conn,
-                client: {@context.getServiceClientConstructorName(service)}(conn),
-                CallOptions: default{@context.getClientPrefix(service)}CallOptions(),
-            }
-            c.SetGoogleClientInfo("gax", gax.Version)
-            return c, nil
+            return path
         }
 
-        // Connection returns the client's connection to the API service.
-        func (c *{@clientName}) Connection() *grpc.ClientConn {
-            return c.conn
-        }
-
-        // Close closes the connection to the API service. The user should invoke this when
-        // the client is no longer required.
-        func (c *{@clientName}) Close() error {
-            return c.conn.Close()
-        }
-
-        // SetGoogleClientInfo sets the name and version of the application in
-        // the `x-goog-api-client` header passed on each request. Intended for
-        // use by Google-written clients.
-        func (c *{@clientName}) SetGoogleClientInfo(name, version string) {
-            c.metadata = map[string][]string{
-                "x-goog-api-client": {fmt.Sprintf("%s/%s %s gax/%s go/%s", name, version, gapicNameVersion, gax.Version, runtime.Version())},
-            }
-        }
     @end
-@end
 
-@private pathTemplateVarName(service, collectionConfig)
-    @let prefix = context.lowerUnderscoreToLowerCamel(context.getReducedServiceName(service)), \
-         entityName = @context.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName)
-        {@prefix}{@entityName}PathTemplate
-    @end
-@end
-
-@private createResourceDocParams(collectionConfig)
-    @join param : collectionConfig.getNameTemplate.vars() on " and "
-        the {@context.lowerUnderscoreToLowerCamel(param)}
-    @end
-@end
-
-@private pathParams(params)
-    @join param : params on ", "
-        {@context.lowerUnderscoreToLowerCamel(param)} string
-    @end
-@end
-
-# PathTemplates are currently methods of the service. They don't have to be, but
-# this would be good to shorten the method names, and normally the users of these
-# methods would have the service instance already.
-@private pathTemplateMethods(service)
-
-    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
-        @let pathTypeName = context.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName), \
-             humanReadableName = collectionConfig.getEntityName.replaceAll("_", " "), \
-             methodReceiver = context.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName), \
-             prefix = context.lowerUnderscoreToUpperCamel(context.getReducedServiceName(service))
-
-            // {@pathTypeName}Path returns the path for the {@humanReadableName} resource.
-            func {@prefix}{@pathTypeName}Path({@pathParams(collectionConfig.getNameTemplate.vars())}) string {
-                path, err := {@pathTemplateVarName(service, collectionConfig)}.Render(map[string]string{
-                    @join param : collectionConfig.getNameTemplate.vars()
-                    "{@param}": {@context.lowerUnderscoreToLowerCamel(param)},
-                    @end
-                })
-                if err != nil {
-                    panic(err)
-                }
-                return path
-            }
+    @join method : view.apiMethods
+        @join doc : method.doc.mainDocLines
+            // {@doc}
         @end
-    @end
-@end
 
-@private methods(service)
-    @join method : context.getSupportedMethods(service)
-        @let methodName = method.getSimpleName, \
-             inTypeName = context.typeName(method.getInputType), \
-             outTypeName = context.typeName(method.getOutputType), \
-             methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-             isPageStreaming = methodConfig.isPageStreaming, \
-             clientName = context.getClientName(service)
-            @if {@isPageStreaming}
-                @let pageStreaming = methodConfig.getPageStreaming(), \
-                     iteratorTypeName = context.getIteratorTypeName(pageStreaming), \
-                     resourceFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getResourcesField().getSimpleName), \
-                     hasPageSizeField = pageStreaming.hasPageSizeField(), \
-                     requestTokenFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getRequestTokenField().getSimpleName), \
-                     responseTokenFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getResponseTokenField().getSimpleName), \
-                     tokenZeroValue = context.zeroValue(pageStreaming.getRequestTokenField().getType)
-
-                    {@methodComment(method, methodName)}
-                    func (c *{@clientName}) {@methodName}(ctx context.Context, req {@inTypeName}) *{@iteratorTypeName} {
-                        ctx = metadata.NewContext(ctx, c.metadata)
-                        it := &{@iteratorTypeName}{}
-                        it.apiCall = func() error {
-                            var resp {@outTypeName}
-                            err := gax.Invoke(ctx, func (ctx context.Context) error {
-                                var err error
-                                req.{@requestTokenFieldName} = it.nextPageToken
-                                @if hasPageSizeField
-                                    req.{@context.lowerUnderscoreToUpperCamel(pageStreaming.getPageSizeField().getSimpleName())} = it.pageSize
-                                @end
-                                resp, err = c.client.{@methodName}(ctx, req)
-                                return err
-                            }, c.CallOptions.{@methodName}...)
-                            if err != nil {
-                                return err
-                            }
-                            if resp.{@responseTokenFieldName} == {@tokenZeroValue} {
-                                it.atLastPage = true
-                            }
-                            it.nextPageToken = resp.{@responseTokenFieldName}
-                            it.items = resp.{@resourceFieldName}
-                            return nil
-                        }
-                        return it
-                    }
-
-                @end
+        @if method.isPageStreaming
+            {@pageStreamingMethod(view, method)}
+        @else
+            @if method.hasReturnValue
+                {@simpleMethod(view, method)}
             @else
-
-                {@methodComment(method, methodName)}
-                @if {@context.isEmpty(method.getOutputType)}
-                    func (c *{@clientName}) {@methodName}(ctx context.Context, req {@inTypeName}) error {
-                        ctx = metadata.NewContext(ctx, c.metadata)
-                        err := gax.Invoke(ctx, func (ctx context.Context) error {
-                            var err error
-                            _, err = c.client.{@methodName}(ctx, req)
-                            return err
-                        }, c.CallOptions.{@methodName}...)
-                        return err
-                    }
-                @else
-                    func (c *{@clientName}) {@methodName}(ctx context.Context, req {@inTypeName}) ({@outTypeName}, error) {
-                        ctx = metadata.NewContext(ctx, c.metadata)
-                        var resp {@outTypeName}
-                        err := gax.Invoke(ctx, func (ctx context.Context) error {
-                            var err error
-                            resp, err = c.client.{@methodName}(ctx, req)
-                            return err
-                        }, c.CallOptions.{@methodName}...)
-                        if err != nil {
-                            return nil, err
-                        }
-                        return resp, nil
-                    }
-                @end
-
+                {@emptyReturnMethod(view, method)}
             @end
         @end
+
+    @end
+
+    @join iter : view.pageStreamingDescriptorClasses
+        {@iterator(iter)}
     @end
 @end
 
-@private methodComment(method, methodName)
-    @join commentLine : context.getMethodComments(method, methodName)
-        {@commentLine}
-    @end
+@private simpleMethod(view, method)
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) ({@method.responseTypeName}, error) {
+        ctx = metadata.NewContext(ctx, c.metadata)
+        var resp {@method.responseTypeName}
+        err := gax.Invoke(ctx, func(ctx context.Context) error {
+            var err error
+            resp, err = c.{@method.stubName}.{@method.name}(ctx, req)
+            return err
+        }, c.CallOptions.{@method.name}...)
+        if err != nil {
+            return nil, err
+        }
+        return resp, nil
+    }
 @end
 
-@private iterators(service)
-    @join pageStreaming : context.getPageStreamingConfigs(service)
-        @let iteratorTypeName = context.getIteratorTypeName(pageStreaming), \
-             tokenType = context.getNextPageTokenType(service, pageStreaming), \
-             resourceFieldType = context.getResourceType(pageStreaming.getResourcesField), \
-             resourceFieldTypeName = context.getResourceTypeName(pageStreaming.getResourcesField), \
-             hasPageSizeField = pageStreaming.hasPageSizeField()
+@private emptyReturnMethod(view, method)
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) error {
+        ctx = metadata.NewContext(ctx, c.metadata)
+        err := gax.Invoke(ctx, func(ctx context.Context) error {
+            var err error
+            _, err = c.{@method.stubName}.{@method.name}(ctx, req)
+            return err
+        }, c.CallOptions.{@method.name}...)
+        return err
+    }
+@end
 
-            // {@iteratorTypeName} manages a stream of {@resourceFieldTypeName}.
-            type {@iteratorTypeName} struct {
-                // The current page data.
-                items         []{@resourceFieldTypeName}
-                atLastPage    bool
-                currentIndex  int
-                @if hasPageSizeField
-                    pageSize      int32
-                @end
-                nextPageToken {@tokenType}
-                apiCall       func() error
+@private pageStreamingMethod(view, method)
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) *{@method.responseTypeName} {
+        ctx = metadata.NewContext(ctx, c.metadata)
+        it := &{@method.responseTypeName}{}
+
+        fetch := func(pageSize int, pageToken string) (string, err) {
+            var resp {@method.listMethod.responseObjectTypeName}
+            req.PageToken = pageToken
+            if pageSize > math.MaxInt32 {
+                req.PageSize = math.MaxInt32
+            } else {
+                req.PageSize = int32(pageSize)
             }
-
-            // NextPage returns the next page of results.
-            @if hasPageSizeField
-              // It will return at most the number of results specified by the last call to SetPageSize.
-              // If SetPageSize was never called or was called with a value less than 1,
-              // the page size is determined by the underlying service.
-            @end
-            //
-            // NextPage may return a second return value of Done along with the last page of results. After
-            // NextPage returns Done, all subsequent calls to NextPage will return (nil, Done).
-            //
-            // Next and NextPage should not be used with the same iterator.
-            func (it *{@iteratorTypeName}) NextPage() ([]{@resourceFieldTypeName}, error) {
-                if it.atLastPage {
-                    // We already returned Done with the last page of items. Continue to
-                    // return Done, but with no items.
-                    return nil, Done
-                }
-                if err := it.apiCall(); err != nil {
-                    return nil, err
-                }
-                if it.atLastPage {
-                    return it.items, Done
-                }
-                return it.items, nil
+            err := gax.Invoke(ctx, func(ctx context.Context) error {
+                var err error
+                resp, err = c.{@method.stubName}.{@method.name}(ctx, req)
+                return err
+            }, c.CallOptions.{@method.name}...)
+            if err != nil {
+                return "", err
             }
+            it.items = resp.{@method.listMethod.resourceFieldName}
+            return resp.NextPageToken, nil
+        }
+        bufLen := func() int { return len(it.items) }
+        takeBuf := func() interface{} {
+            b := it.items
+            it.items = nil
+            return b
+        }
 
-            // Next returns the next result. Its second return value is Done if there are no more results.
-            // Once next returns Done, all subsequent calls will return Done.
-            @if hasPageSizeField
-              //
-              // Internally, Next retrieves results in bulk. You can call SetPageSize as a performance hint to
-              // affect how many results are retrieved in a single RPC.
-            @end
-            //
-            // SetPageToken should not be called when using Next.
-            //
-            // Next and NextPage should not be used with the same iterator.
-            func (it *{@iteratorTypeName}) Next() ({@resourceFieldTypeName}, error) {
-                for it.currentIndex >= len(it.items) {
-                    if it.atLastPage {
-                        return {@context.zeroValue(resourceFieldType)}, Done
-                    }
-                    if err := it.apiCall(); err != nil {
-                        return {@context.zeroValue(resourceFieldType)}, err
-                    }
-                    it.currentIndex = 0
-                }
-                result := it.items[it.currentIndex]
-                it.currentIndex++
-                return result, nil
-            }
+        it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, bufLen, takeBuf)
+        return it
+    }
+@end
 
-            @if hasPageSizeField
-                // PageSize returns the page size for all subsequent calls to NextPage.
-                func (it *{@iteratorTypeName}) PageSize() int {
-                    return int(it.pageSize)
-                }
+@private iterator(iter)
+    // {@iter.typeName} manages a stream of {@iter.resourceTypeName}.
+    type {@iter.typeName} struct {
+        items    []{@iter.resourceTypeName}
+        pageInfo *iterator.PageInfo
+        nextFunc func() error
+    }
 
-                // SetPageSize sets the page size for all subsequent calls to NextPage.
-                func (it *{@iteratorTypeName}) SetPageSize(pageSize int) {
-                    if pageSize > math.MaxInt32 {
-                        pageSize = math.MaxInt32
-                    }
-                    it.pageSize = int32(pageSize)
-                }
+    // PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
+    func (it *{@iter.typeName}) PageInfo() *iterator.PageInfo {
+        return it.pageInfo
+    }
 
-            @end
-            // SetPageToken sets the page token for the next call to NextPage, to resume the iteration from
-            // a previous point.
-            func (it *{@iteratorTypeName}) SetPageToken(token {@tokenType}) {
-                it.nextPageToken = token
-            }
+    // Next returns the next result. Its second return value is iterator.Done if there are no more
+    // results. Once Next returns Done, all subsequent calls will return Done.
+    func (it *{@iter.typeName}) Next() ({@iter.resourceTypeName}, error) {
+        if err := it.nextFunc(); err != nil {
+            return {@iter.resourceZeroValue}, err
+        }
+        item := it.items[0]
+        it.items = it.items[1:]
+        return item, nil
+    }
+@end
 
-            // NextPageToken returns a page token that can be used with SetPageToken to resume
-            // iteration from the next page. It returns the empty string if there are no more pages.
-            func (it *{@iteratorTypeName}) NextPageToken() {@tokenType} {
-                return it.nextPageToken
-            }
-        @end
+@private pathTemplateParams(args)
+    @join e : args on ", "
+      {@e.name}
     @end
 @end

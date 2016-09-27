@@ -26,7 +26,17 @@ public class CSharpNameFormatter implements NameFormatter {
   }
 
   @Override
-  public String varName(Name name) {
+  public String localVarName(Name name) {
+    return name.toLowerCamel();
+  }
+
+  @Override
+  public String privateFieldName(Name name) {
+    return "_" + name.toLowerCamel();
+  }
+
+  @Override
+  public String publicFieldName(Name name) {
     return name.toLowerCamel();
   }
 
@@ -36,7 +46,12 @@ public class CSharpNameFormatter implements NameFormatter {
   }
 
   @Override
-  public String methodName(Name name) {
+  public String privateMethodName(Name name) {
+    return name.toUpperCamel();
+  }
+
+  @Override
+  public String publicMethodName(Name name) {
     return name.toUpperCamel();
   }
 

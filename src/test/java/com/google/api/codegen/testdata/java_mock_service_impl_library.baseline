@@ -85,6 +85,8 @@ import com.google.example.library.v1.CreateShelfRequest;
 import com.google.example.library.v1.DeleteBookRequest;
 import com.google.example.library.v1.DeleteShelfRequest;
 import com.google.example.library.v1.DiscussBookRequest;
+import com.google.example.library.v1.FindRelatedBooksRequest;
+import com.google.example.library.v1.FindRelatedBooksResponse;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
@@ -301,6 +303,15 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase  {
       StreamObserver<Comment> responseObserver) {
     System.err.println("Streaming method is not supported.");
     return null;
+  }
+
+  @Override
+  public void findRelatedBooks(FindRelatedBooksRequest request,
+    StreamObserver<FindRelatedBooksResponse> responseObserver) {
+    FindRelatedBooksResponse response = (FindRelatedBooksResponse) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   @Override

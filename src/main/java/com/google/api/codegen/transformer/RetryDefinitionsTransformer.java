@@ -63,7 +63,7 @@ public class RetryDefinitionsTransformer {
       RetrySettings settings = retryCodesDef.getValue();
       RetryParamsDefinitionView.Builder params = RetryParamsDefinitionView.newBuilder();
       params.key(retryCodesDef.getKey());
-      params.name(namer.methodName(Name.from(retryCodesDef.getKey())));
+      params.name(namer.publicMethodName(Name.from(retryCodesDef.getKey())));
       params.retryBackoffMethodName(namer.retryBackoffMethodName(retryCodesDef.getKey()));
       params.timeoutBackoffMethodName(namer.timeoutBackoffMethodName(retryCodesDef.getKey()));
       params.initialRetryDelay(settings.getInitialRetryDelay());

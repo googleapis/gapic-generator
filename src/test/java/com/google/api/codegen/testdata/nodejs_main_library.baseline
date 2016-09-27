@@ -51,7 +51,11 @@ var PAGE_DESCRIPTORS = {
   listStrings: new gax.PageDescriptor(
       'page_token',
       'next_page_token',
-      'strings')
+      'strings'),
+  findRelatedBooks: new gax.PageDescriptor(
+      'page_token',
+      'next_page_token',
+      'names')
 };
 
 /**
@@ -145,6 +149,7 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
     'addComments',
     'getBookFromArchive',
     'updateBookIndex',
+    'findRelatedBooks',
     'addTag'
   ];
   libraryServiceStubMethods.forEach(function(methodName) {
@@ -1142,6 +1147,79 @@ LibraryServiceApi.prototype.updateBookIndex = function updateBookIndex(
     indexMap: indexMap
   };
   return this._updateBookIndex(req, options, callback);
+};
+
+/**
+ * @param {string[]} names
+ * @param {string[]} shelves
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ *
+ *   In addition, options may contain the following optional parameters.
+ * @param {number=} options.pageSize
+ *   The maximum number of resources contained in the underlying API
+ *   response. If page streaming is performed per-resource, this
+ *   parameter does not affect the return value. If page streaming is
+ *   performed per-page, this determines the maximum number of
+ *   resources in a page.
+ *
+ * @param {function(?Error, ?Object, ?string)=} callback
+ *   When specified, the results are not streamed but this callback
+ *   will be called with the response object representing [FindRelatedBooksResponse]{@link FindRelatedBooksResponse}.
+ *   The third item will be set if the response contains the token for the further results
+ *   and can be reused to `pageToken` field in the options in the next request.
+ * @returns {Stream|gax.EventEmitter}
+ *   An object stream which emits a string on 'data' event.
+ *   When the callback is specified or streaming is suppressed through options,
+ *   it will return an event emitter to handle the call status and the callback
+ *   will be called with the response object.
+ *
+ * @example
+ *
+ * var api = libraryV1.libraryServiceApi();
+ * var namesElement = '';
+ * var names = [namesElement];
+ * var shelves = [];
+ * // Iterate over all elements.
+ * api.findRelatedBooks(names, shelves).on('data', function(element) {
+ *     // doThingsWith(element)
+ * });
+ *
+ * // Or obtain the paged response through the callback.
+ * function callback(err, response, nextPageToken) {
+ *     if (err) {
+ *         console.error(err);
+ *         return;
+ *     }
+ *     // doThingsWith(response)
+ *     if (nextPageToken) {
+ *         // fetch the next page.
+ *         api.findRelatedBooks(names, shelves, {pageToken: nextPageToken}, callback);
+ *     }
+ * }
+ * api.findRelatedBooks(names, shelves, {flattenPages: false}, callback);
+ */
+LibraryServiceApi.prototype.findRelatedBooks = function findRelatedBooks(
+    names,
+    shelves,
+    options,
+    callback) {
+  if (options instanceof Function && callback === undefined) {
+    callback = options;
+    options = {};
+  }
+  if (options === undefined) {
+    options = {};
+  }
+  var req = {
+    names: names,
+    shelves: shelves
+  };
+  if ('pageSize' in options) {
+    req.pageSize = options.pageSize;
+  }
+  return this._findRelatedBooks(req, options, callback);
 };
 
 /**

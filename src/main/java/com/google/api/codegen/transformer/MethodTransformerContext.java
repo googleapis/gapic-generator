@@ -21,9 +21,7 @@ import com.google.api.codegen.MethodConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
-
 import java.util.Collection;
-
 import javax.annotation.Nullable;
 
 /**
@@ -38,9 +36,17 @@ public abstract class MethodTransformerContext {
       ModelTypeTable typeTable,
       SurfaceNamer namer,
       Method method,
-      MethodConfig methodConfig) {
+      MethodConfig methodConfig,
+      FeatureConfig featureConfig) {
     return new AutoValue_MethodTransformerContext(
-        surfaceTransformerContext, interfaze, apiConfig, typeTable, namer, method, methodConfig);
+        surfaceTransformerContext,
+        interfaze,
+        apiConfig,
+        typeTable,
+        namer,
+        method,
+        methodConfig,
+        featureConfig);
   }
 
   public abstract SurfaceTransformerContext getSurfaceTransformerContext();
@@ -57,6 +63,8 @@ public abstract class MethodTransformerContext {
 
   @Nullable
   public abstract MethodConfig getMethodConfig();
+
+  public abstract FeatureConfig getFeatureConfig();
 
   public Interface getTargetInterface() {
     return InterfaceConfig.getTargetInterface(
@@ -83,6 +91,7 @@ public abstract class MethodTransformerContext {
         getTypeTable().cloneEmpty(),
         getNamer(),
         getMethod(),
-        getMethodConfig());
+        getMethodConfig(),
+        getFeatureConfig());
   }
 }

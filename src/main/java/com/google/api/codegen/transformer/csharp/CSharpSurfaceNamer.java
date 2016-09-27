@@ -17,13 +17,13 @@ package com.google.api.codegen.transformer.csharp;
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.tools.framework.model.Field;
@@ -31,7 +31,6 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CSharpSurfaceNamer extends SurfaceNamer {
@@ -71,28 +70,35 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getCallableName(Method method) {
-    // TODO: Use the 'privateFieldName' method when it's available (from Go MVVM PR)
-    return "_" + varName(Name.upperCamel("Call", method.getSimpleName()));
+    return privateFieldName(Name.upperCamel("Call", method.getSimpleName()));
   }
 
   @Override
-  public String getPathTemplateName(CollectionConfig collectionConfig) {
+  public String getPathTemplateName(Interface service, CollectionConfig collectionConfig) {
     return inittedConstantName(Name.from(collectionConfig.getEntityName(), "template"));
   }
 
   @Override
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
-    return methodName(identifier);
+    return privateMethodName(identifier);
   }
 
   @Override
   public String getAndSavePagedResponseTypeName(
-      ModelTypeTable typeTable, TypeRef... parameterizedTypes) {
-    String[] typeList = new String[parameterizedTypes.length];
-    for (int i = 0; i < typeList.length; i++) {
-      typeList[i] = typeTable.getFullNameForElementType(parameterizedTypes[i]);
-    }
-    return typeTable.getAndSaveNicknameForContainer("Google.Api.Gax.PagedEnumerable", typeList);
+      FeatureConfig featureConfig,
+      ModelTypeTable typeTable,
+      TypeRef inputType,
+      TypeRef outputType,
+      Field resourceField) {
+
+    String inputTypeName = typeTable.getAndSaveNicknameForElementType(inputType);
+    String outputTypeName = typeTable.getAndSaveNicknameForElementType(outputType);
+
+    String resourceTypeName =
+        getAndSaveElementFieldTypeName(featureConfig, typeTable, resourceField);
+
+    return typeTable.getAndSaveNicknameForContainer(
+        "Google.Api.Gax.PagedEnumerable", inputTypeName, outputTypeName, resourceTypeName);
   }
 
   @Override
@@ -124,7 +130,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getParamName(String var) {
-    return varName(Name.from(var).join("id"));
+    return localVarName(Name.from(var).join("id"));
   }
 
   @Override
