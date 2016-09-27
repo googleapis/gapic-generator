@@ -91,8 +91,6 @@
        * @@param {Object=} opts.clientConfig
        *   The customized config to build the call settings. See
        *   {@@link gax.constructSettings} for the format.
-       * @@param {number=} opts.timeout
-       *   The default timeout, in seconds, for calls made through this client.
        * @@param {number=} opts.appName
        *   The codename of the calling service.
        * @@param {String=} opts.appVersion
@@ -117,7 +115,6 @@
 
     var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
 
-    var DEFAULT_TIMEOUT = 30;
     @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service))
 
       var PAGE_DESCRIPTORS = {
@@ -153,7 +150,6 @@
         '{@service.getFullName}',
         configData,
         clientConfig,
-        timeout,
         @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service))
           PAGE_DESCRIPTORS,
         @else
@@ -176,7 +172,8 @@
 @private constructor(service)
   @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service), \
        serviceName = context.getApiWrapperName(service), \
-       documentation = context.defaultComments(service)
+       documentation = context.defaultComments(service), \
+       stubs = context.getStubs(service)
     /**
      @if documentation
        {@comments(documentation)}
@@ -209,7 +206,6 @@
       var port = opts.port || DEFAULT_SERVICE_PORT;
       var sslCreds = opts.sslCreds || null;
       var clientConfig = opts.clientConfig || {};
-      var timeout = opts.timeout || DEFAULT_TIMEOUT;
       var appName = opts.appName || 'gax';
       var appVersion = opts.appVersion || gax.version;
 
@@ -236,33 +232,31 @@
                   @else
                     null,
                   @end
-                  {@context.getByteLengthFunction(bundling.getBundledField().getType())})
+                  {@context.getByteLengthFunction(service, method, bundling.getBundledField().getType())})
             @end
           @end
         };
       @end
       {@constructDefaults(service)}
 
-      @let stubs = {@context.getStubs(service)}
-        @join stub : stubs on BREAK.add(BREAK)
-          var {@stub.name} = gaxGrpc.createStub(
-              servicePath,
-              port,
-              grpcClients.{@stub.grpcClientVariableName}.{@stub.fullyQualifiedType},
-              {sslCreds: sslCreds});
-          var {@stub.stubMethodsArrayName} = [
-            @join method : {@stub.methodNames} on {@","}.add(BREAK)
-                '{@method}'
-            @end
-          ];
-          {@stub.stubMethodsArrayName}.forEach(function(methodName) {
-            this['_' + methodName] = gax.createApiCall(
-              {@stub.name}.then(function({@stub.name}) {
-                return {@stub.name}[methodName].bind({@stub.name});
-              }),
-              defaults[methodName]);
-          }.bind(this));
-        @end
+      @join stub : stubs on BREAK.add(BREAK)
+        var {@stub.name} = gaxGrpc.createStub(
+            servicePath,
+            port,
+            grpcClients.{@stub.grpcClientVariableName}.{@stub.fullyQualifiedType},
+            {sslCreds: sslCreds});
+        var {@stub.stubMethodsArrayName} = [
+          @join method : {@stub.methodNames} on {@","}.add(BREAK)
+              '{@method}'
+          @end
+        ];
+        {@stub.stubMethodsArrayName}.forEach(function(methodName) {
+          this['_' + methodName] = gax.createApiCall(
+            {@stub.name}.then(function({@stub.name}) {
+              return {@stub.name}[methodName].bind({@stub.name});
+            }),
+            defaults[methodName]);
+        }.bind(this));
       @end
     }
   @end
@@ -392,6 +386,9 @@
         callback) {
       if (options instanceof Function && callback === undefined) {
         callback = options;
+        options = {};
+      }
+      if (options === undefined) {
         options = {};
       }
       var req = {

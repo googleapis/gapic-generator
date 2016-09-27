@@ -38,7 +38,6 @@ var DEFAULT_SERVICE_PORT = 443;
 
 var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
 
-var DEFAULT_TIMEOUT = 30;
 
 /**
  * The scopes needed to make gRPC calls to all of the methods defined in
@@ -66,7 +65,6 @@ function NoTemplatesAPIServiceApi(gaxGrpc, grpcClients, opts) {
   var port = opts.port || DEFAULT_SERVICE_PORT;
   var sslCreds = opts.sslCreds || null;
   var clientConfig = opts.clientConfig || {};
-  var timeout = opts.timeout || DEFAULT_TIMEOUT;
   var appName = opts.appName || 'gax';
   var appVersion = opts.appVersion || gax.version;
 
@@ -80,7 +78,6 @@ function NoTemplatesAPIServiceApi(gaxGrpc, grpcClients, opts) {
       'google.cloud.example.v1.NoTemplatesAPIService',
       configData,
       clientConfig,
-      timeout,
       null,
       null,
       {'x-goog-api-client': googleApiClient});
@@ -137,6 +134,9 @@ NoTemplatesAPIServiceApi.prototype.increment = function increment(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
   };
   return this._increment(req, options, callback);
@@ -167,8 +167,6 @@ function NoTemplatesAPIServiceApiBuilder(gaxGrpc) {
    * @param {Object=} opts.clientConfig
    *   The customized config to build the call settings. See
    *   {@link gax.constructSettings} for the format.
-   * @param {number=} opts.timeout
-   *   The default timeout, in seconds, for calls made through this client.
    * @param {number=} opts.appName
    *   The codename of the calling service.
    * @param {String=} opts.appVersion
