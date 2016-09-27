@@ -39,9 +39,13 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract String apiRequestTypeName();
 
+  public abstract String apiRequestTypeConstructor();
+
   public abstract String responseTypeName();
 
   public abstract String name();
+
+  public abstract String exampleName();
 
   @Nullable // Used in C#
   public abstract String callableName();
@@ -57,7 +61,11 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract boolean hasReturnValue();
 
+  public abstract boolean isPageStreaming();
+
   public abstract List<RequestObjectParamView> requestObjectParams();
+
+  public abstract String stubName();
 
   @Nullable
   public abstract ListMethodDetailView listMethod();
@@ -91,9 +99,13 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
     public abstract Builder apiRequestTypeName(String requestTypeName);
 
+    public abstract Builder apiRequestTypeConstructor(String requestTypeConstructor);
+
     public abstract Builder responseTypeName(String responseTypeName);
 
     public abstract Builder name(String name);
+
+    public abstract Builder exampleName(String name);
 
     public abstract Builder callableName(String name);
 
@@ -107,6 +119,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
     public abstract Builder hasReturnValue(boolean hasReturnValue);
 
+    public abstract Builder isPageStreaming(boolean isPageStreaming);
+
     public abstract Builder requestObjectParams(List<RequestObjectParamView> requestObjectParams);
 
     public abstract Builder listMethod(ListMethodDetailView details);
@@ -116,6 +130,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
     public abstract Builder callableMethod(CallableMethodDetailView details);
 
     public abstract Builder requestObjectMethod(RequestObjectMethodDetailView details);
+
+    public abstract Builder stubName(String stubName);
 
     public abstract StaticLangApiMethodView build();
   }

@@ -75,17 +75,20 @@ public class PageStreamingTransformer {
 
     PageStreamingDescriptorClassView.Builder desc = PageStreamingDescriptorClassView.newBuilder();
 
+    TypeRef resourceType = pageStreaming.getResourcesField().getType();
     desc.name(namer.getPageStreamingDescriptorConstName(method));
+    desc.typeName(
+        namer.getAndSavePagedResponseTypeName(
+            typeTable, method.getInputType(), method.getOutputType(), resourceType));
     desc.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     desc.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
-
-    TypeRef resourceType = pageStreaming.getResourcesField().getType();
     desc.resourceTypeName(context.getTypeTable().getAndSaveNicknameForElementType(resourceType));
 
     TypeRef tokenType = pageStreaming.getResponseTokenField().getType();
     desc.tokenTypeName(typeTable.getAndSaveNicknameFor(tokenType));
 
     desc.defaultTokenValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(tokenType));
+    desc.resourceZeroValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(resourceType));
 
     desc.requestTokenSetFunction(
         namer.getFieldSetFunctionName(pageStreaming.getRequestTokenField()));

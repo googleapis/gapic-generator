@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package google.example.myproto.v1;
+
+service MyService {
+  rpc SimpleMethod(SimpleRequest) returns (SimpleResponse);
+  rpc RetryMethod(SimpleRequest) returns (SimpleResponse);
+  rpc PageStreamMethod(PageStreamRequest) returns (PageStreamResponse);
+}
+
+message SimpleRequest {
+  string value = 1;
+}
+
+message SimpleResponse {
+  string value = 1;
+}
+
+message PageStreamRequest {
+  string value = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message PageStreamResponse {
+  string value = 1;
+  string next_page_token = 2;
+}

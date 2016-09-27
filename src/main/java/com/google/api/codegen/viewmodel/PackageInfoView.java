@@ -19,6 +19,8 @@ import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 @AutoValue
 public abstract class PackageInfoView implements ViewModel {
   @Override
@@ -32,6 +34,12 @@ public abstract class PackageInfoView implements ViewModel {
   public abstract List<ServiceDocView> serviceDocs();
 
   public abstract String packageName();
+
+  @Nullable
+  public abstract String importPath();
+
+  @Nullable
+  public abstract List<String> packageDoc();
 
   @Override
   public String resourceRoot() {
@@ -53,6 +61,10 @@ public abstract class PackageInfoView implements ViewModel {
     public abstract Builder serviceDocs(List<ServiceDocView> val);
 
     public abstract Builder packageName(String val);
+
+    public abstract Builder importPath(String val);
+
+    public abstract Builder packageDoc(List<String> val);
 
     public abstract PackageInfoView build();
   }

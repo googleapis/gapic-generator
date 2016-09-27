@@ -15,11 +15,14 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.CollectionConfig;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
 import com.google.api.codegen.viewmodel.ParseResourceFunctionView;
-import com.google.api.codegen.viewmodel.PathTemplateView;
+import com.google.api.codegen.viewmodel.PathTemplateArgumentView;
 import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
+import com.google.api.codegen.viewmodel.PathTemplateView;
 import com.google.api.codegen.viewmodel.ResourceIdParamView;
+import com.google.api.tools.framework.model.Interface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +37,8 @@ public class PathTemplateTransformer {
 
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
       PathTemplateView.Builder pathTemplate = PathTemplateView.newBuilder();
-      pathTemplate.name(context.getNamer().getPathTemplateName(collectionConfig));
+      pathTemplate.name(
+          context.getNamer().getPathTemplateName(context.getInterface(), collectionConfig));
       pathTemplate.pattern(collectionConfig.getNamePattern());
       pathTemplates.add(pathTemplate.build());
     }
@@ -47,12 +51,13 @@ public class PathTemplateTransformer {
     List<FormatResourceFunctionView> functions = new ArrayList<>();
 
     SurfaceNamer namer = context.getNamer();
+    Interface service = context.getInterface();
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
       FormatResourceFunctionView.Builder function = FormatResourceFunctionView.newBuilder();
       function.entityName(collectionConfig.getEntityName());
       function.name(namer.getFormatFunctionName(collectionConfig));
-      function.pathTemplateName(namer.getPathTemplateName(collectionConfig));
-      function.pathTemplateGetterName(namer.getPathTemplateNameGetter(collectionConfig));
+      function.pathTemplateName(namer.getPathTemplateName(service, collectionConfig));
+      function.pathTemplateGetterName(namer.getPathTemplateNameGetter(service, collectionConfig));
       function.pattern(collectionConfig.getNamePattern());
       List<ResourceIdParamView> resourceIdParams = new ArrayList<>();
       for (String var : collectionConfig.getNameTemplate().vars()) {
@@ -77,13 +82,14 @@ public class PathTemplateTransformer {
     List<ParseResourceFunctionView> functions = new ArrayList<>();
 
     SurfaceNamer namer = context.getNamer();
+    Interface service = context.getInterface();
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
       for (String var : collectionConfig.getNameTemplate().vars()) {
         ParseResourceFunctionView.Builder function = ParseResourceFunctionView.newBuilder();
         function.entityName(namer.getEntityName(collectionConfig));
         function.name(namer.getParseFunctionName(var, collectionConfig));
-        function.pathTemplateName(namer.getPathTemplateName(collectionConfig));
-        function.pathTemplateGetterName(namer.getPathTemplateNameGetter(collectionConfig));
+        function.pathTemplateName(namer.getPathTemplateName(service, collectionConfig));
+        function.pathTemplateGetterName(namer.getPathTemplateNameGetter(service, collectionConfig));
         function.entityNameParamName(namer.getEntityNameParamName(collectionConfig));
         function.outputResourceId(var);
 
@@ -99,11 +105,20 @@ public class PathTemplateTransformer {
     List<PathTemplateGetterFunctionView> functions = new ArrayList<>();
 
     SurfaceNamer namer = context.getNamer();
+    Interface service = context.getInterface();
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
       PathTemplateGetterFunctionView.Builder function = PathTemplateGetterFunctionView.newBuilder();
-      function.name(namer.getPathTemplateNameGetter(collectionConfig));
-      function.pathTemplateName(namer.getPathTemplateName(collectionConfig));
+      function.name(namer.getPathTemplateNameGetter(service, collectionConfig));
+      function.resourceName(namer.getPathTemplateResourcePhraseName(collectionConfig));
+      function.pathTemplateName(namer.getPathTemplateName(service, collectionConfig));
       function.pattern(collectionConfig.getNamePattern());
+
+      List<PathTemplateArgumentView> args = new ArrayList<>();
+      for (String templateKey : collectionConfig.getNameTemplate().vars()) {
+        String name = context.getNamer().localVarName(Name.from(templateKey));
+        args.add(PathTemplateArgumentView.newBuilder().templateKey(templateKey).name(name).build());
+      }
+      function.args(args);
       functions.add(function.build());
     }
 
