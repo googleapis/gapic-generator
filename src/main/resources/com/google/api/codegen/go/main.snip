@@ -159,7 +159,7 @@
 
 @private simpleMethod(view, method)
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) ({@method.responseTypeName}, error) {
-        ctx = metadata.NewContext(ctx, c.metadata)
+        {@mergeMetadata()}
         var resp {@method.responseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
@@ -175,7 +175,7 @@
 
 @private emptyReturnMethod(view, method)
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) error {
-        ctx = metadata.NewContext(ctx, c.metadata)
+        {@mergeMetadata()}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
             _, err = c.{@method.stubName}.{@method.name}(ctx, req)
@@ -187,7 +187,7 @@
 
 @private pageStreamingMethod(view, method)
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) *{@method.responseTypeName} {
-        ctx = metadata.NewContext(ctx, c.metadata)
+        {@mergeMetadata()}
         it := &{@method.responseTypeName}{}
 
         fetch := func(pageSize int, pageToken string) (string, err) {
@@ -250,4 +250,12 @@
     @join e : args on ", "
       {@e.name}
     @end
+@end
+
+@private mergeMetadata()
+    if md, ok := metadata.FromContext(ctx); ok {
+        ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
+    } else {
+        ctx = metadata.NewContext(ctx, c.metadata)
+    }
 @end
