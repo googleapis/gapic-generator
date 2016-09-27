@@ -38,7 +38,6 @@ var DEFAULT_SERVICE_PORT = 443;
 
 var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
 
-var DEFAULT_TIMEOUT = 30;
 
 var PAGE_DESCRIPTORS = {
   listShelves: new gax.PageDescriptor(
@@ -100,7 +99,6 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
   var port = opts.port || DEFAULT_SERVICE_PORT;
   var sslCreds = opts.sslCreds || null;
   var clientConfig = opts.clientConfig || {};
-  var timeout = opts.timeout || DEFAULT_TIMEOUT;
   var appName = opts.appName || 'gax';
   var appVersion = opts.appVersion || gax.version;
 
@@ -119,13 +117,12 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
           'shelf.name'
         ],
         'book_names',
-        gax.createByteLengthFunction(grpcClient.google.example.library.v1.Book))
+        gax.createByteLengthFunction(grpcClients.libraryServiceClient.google.example.library.v1.Book))
   };
   var defaults = gaxGrpc.constructSettings(
       'google.example.library.v1.LibraryService',
       configData,
       clientConfig,
-      timeout,
       PAGE_DESCRIPTORS,
       bundleDescriptors,
       {'x-goog-api-client': googleApiClient});
@@ -322,6 +319,9 @@ LibraryServiceApi.prototype.createShelf = function createShelf(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
     shelf: shelf
   };
@@ -374,6 +374,9 @@ LibraryServiceApi.prototype.getShelf = function getShelf(
     callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
+    options = {};
+  }
+  if (options === undefined) {
     options = {};
   }
   var req = {
@@ -438,6 +441,9 @@ LibraryServiceApi.prototype.listShelves = function listShelves(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
   };
   return this._listShelves(req, options, callback);
@@ -472,6 +478,9 @@ LibraryServiceApi.prototype.deleteShelf = function deleteShelf(
     callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
+    options = {};
+  }
+  if (options === undefined) {
     options = {};
   }
   var req = {
@@ -521,6 +530,9 @@ LibraryServiceApi.prototype.mergeShelves = function mergeShelves(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
     name: name,
     other_shelf_name: otherShelfName
@@ -567,6 +579,9 @@ LibraryServiceApi.prototype.createBook = function createBook(
     callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
+    options = {};
+  }
+  if (options === undefined) {
     options = {};
   }
   var req = {
@@ -626,6 +641,9 @@ LibraryServiceApi.prototype.publishSeries = function publishSeries(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
     shelf: shelf,
     books: books
@@ -669,6 +687,9 @@ LibraryServiceApi.prototype.getBook = function getBook(
     callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
+    options = {};
+  }
+  if (options === undefined) {
     options = {};
   }
   var req = {
@@ -739,6 +760,9 @@ LibraryServiceApi.prototype.listBooks = function listBooks(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
     name: name
   };
@@ -780,6 +804,9 @@ LibraryServiceApi.prototype.deleteBook = function deleteBook(
     callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
+    options = {};
+  }
+  if (options === undefined) {
     options = {};
   }
   var req = {
@@ -840,6 +867,9 @@ LibraryServiceApi.prototype.updateBook = function updateBook(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
     name: name,
     book: book
@@ -890,6 +920,9 @@ LibraryServiceApi.prototype.moveBook = function moveBook(
     callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
+    options = {};
+  }
+  if (options === undefined) {
     options = {};
   }
   var req = {
@@ -957,6 +990,9 @@ LibraryServiceApi.prototype.listStrings = function listStrings(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
   };
   if ('name' in options) {
@@ -1008,6 +1044,9 @@ LibraryServiceApi.prototype.addComments = function addComments(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
     name: name,
     comments: comments
@@ -1048,6 +1087,9 @@ LibraryServiceApi.prototype.getBookFromArchive = function getBookFromArchive(
     callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
+    options = {};
+  }
+  if (options === undefined) {
     options = {};
   }
   var req = {
@@ -1094,6 +1136,9 @@ LibraryServiceApi.prototype.updateBookIndex = function updateBookIndex(
     callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
+    options = {};
+  }
+  if (options === undefined) {
     options = {};
   }
   var req = {
@@ -1215,6 +1260,9 @@ LibraryServiceApi.prototype.addTag = function addTag(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
     resource: resource,
     tag: tag
@@ -1263,6 +1311,9 @@ LibraryServiceApi.prototype.addLabel = function addLabel(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
     resource: resource,
     label: label
@@ -1305,8 +1356,6 @@ function LibraryServiceApiBuilder(gaxGrpc) {
    * @param {Object=} opts.clientConfig
    *   The customized config to build the call settings. See
    *   {@link gax.constructSettings} for the format.
-   * @param {number=} opts.timeout
-   *   The default timeout, in seconds, for calls made through this client.
    * @param {number=} opts.appName
    *   The codename of the calling service.
    * @param {String=} opts.appVersion

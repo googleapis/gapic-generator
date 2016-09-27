@@ -19,6 +19,7 @@ import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorView;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import java.util.ArrayList;
@@ -75,18 +76,27 @@ public class PageStreamingTransformer {
 
     PageStreamingDescriptorClassView.Builder desc = PageStreamingDescriptorClassView.newBuilder();
 
+    Field resourceField = pageStreaming.getResourcesField();
+    TypeRef resourceType = resourceField.getType();
+    
     desc.name(namer.getPageStreamingDescriptorConstName(method));
+    desc.typeName(
+        namer.getAndSavePagedResponseTypeName(
+            featureConfig,
+            typeTable,
+            method.getInputType(),
+            method.getOutputType(),
+            resourceField));
     desc.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     desc.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
-
     desc.resourceTypeName(
-        namer.getAndSaveElementFieldTypeName(
-            featureConfig, typeTable, pageStreaming.getResourcesField()));
+        namer.getAndSaveElementFieldTypeName(featureConfig, typeTable, resourceField));
 
     TypeRef tokenType = pageStreaming.getResponseTokenField().getType();
     desc.tokenTypeName(typeTable.getAndSaveNicknameFor(tokenType));
 
     desc.defaultTokenValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(tokenType));
+    desc.resourceZeroValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(resourceType));
 
     desc.requestTokenSetFunction(
         namer.getFieldSetFunctionName(featureConfig, pageStreaming.getRequestTokenField()));

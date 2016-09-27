@@ -342,7 +342,7 @@ public class InitCodeTransformer {
 
     List<String> entries = new ArrayList<>();
     for (InitCodeNode child : item.getChildren().values()) {
-      entries.add(namer.varName(child.getIdentifier()));
+      entries.add(namer.localVarName(child.getIdentifier()));
     }
     surfaceLine.elementIdentifiers(entries);
 

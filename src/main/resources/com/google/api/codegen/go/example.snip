@@ -1,86 +1,88 @@
 @extends "go/header.snip"
 
-@snippet generateFilename(service)
-    {@context.getApiConfig.getPackageName}/{@context.getReducedServiceName(service)}_client_example_test.go
-@end
-
-@snippet generateClass(service, body)
+@snippet generate(view)
     {@headerComment()}
 
-    // AUTO-GENERATED CODE. DO NOT EDIT.
+    package {@view.exampleLocalPackageName}
 
-    package {@context.getPackageName}_test
-
-    {@importSection(service)}
-
-    {@body}
-@end
-
-@private importSection(service)
     import (
-    @join import : context.getTestImports(service)
-    {@import}
-    @end
+        @join imp : view.imports
+            {@imp}
+        @end
     )
-@end
 
-@snippet generateBody(service)
-    func ExampleNew{@context.getClientName(service)}() {
+    func {@view.clientConstructorExampleName}() {
         ctx := context.Background()
-        c, err := {@context.getPackageName}.New{@context.getClientName(service)}(ctx)
+        c, err := {@view.libLocalPackageName}.{@view.clientConstructorName}(ctx)
         if err != nil {
             // TODO: Handle error.
         }
         // TODO: Use client.
         _ = c
     }
-    @join method : context.getSupportedMethods(service)
-        @let methodName = method.getSimpleName, \
-             inTypeName = context.messageTypeName(method.getInputType), \
-             outTypeName = context.typeName(method.getOutputType), \
-             methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-             isPageStreaming = methodConfig.isPageStreaming
 
-            func Example{@context.getClientName(service)}_{@method.getSimpleName}() {
-                ctx := context.Background()
-                c, err := {@context.getPackageName}.New{@context.getClientName(service)}(ctx)
-                if err != nil {
-                    // TODO: Handle error.
-                }
-
-                req := &{@inTypeName}{
-                    // TODO: Fill request struct fields.
-                }
-                @if {@context.isEmpty(method.getOutputType)}
-                    err = c.{@method.getSimpleName}(ctx, req)
-                    if err != nil {
-                        // TODO: Handle error.
-                    }
-                @else
-                    @if {@isPageStreaming}
-                        @let pageStreaming = methodConfig.getPageStreaming(), \
-                             resourceFieldTypeName = context.getResourceTypeName(pageStreaming.getResourcesField())
-                            it := c.{@method.getSimpleName}(ctx, req)
-                            for {
-                                resp, err := it.Next()
-                                if err != nil {
-                                    // TODO: Handle error.
-                                    break
-                                }
-                                // TODO: Use resp.
-                                _ = resp
-                            }
-                        @end
-                    @else
-                        resp, err := c.{@method.getSimpleName}(ctx, req)
-                        if err != nil {
-                            // TODO: Handle error.
-                        }
-                        // TODO: Use resp.
-                        _ = resp
-                    @end
-                @end
-        }
+    @join method : view.apiMethods
+        @if method.isPageStreaming
+            {@pageStreamingMethod(view, method)}
+        @else
+            @if method.hasReturnValue
+                {@simpleMethod(view, method)}
+            @else
+                {@emptyReturnMethod(view, method)}
+            @end
         @end
+
+
     @end
+
+@end
+
+@private simpleMethod(view, method)
+    func {@method.exampleName}() {
+        {@methodInit(view, method)}
+        resp, err := c.{@method.name}(ctx, req)
+        if err != nil {
+            // TODO: Handle error.
+        }
+        // TODO: Use resp.
+        _ = resp
+    }
+@end
+
+@private emptyReturnMethod(view, method)
+    func {@method.exampleName}() {
+        {@methodInit(view, method)}
+        err = c.{@method.name}(ctx, req)
+        if err != nil {
+            // TODO: Handle error.
+        }
+    }
+@end
+
+@private pageStreamingMethod(view, method)
+    func {@method.exampleName}() {
+        {@methodInit(view, method)}
+        it := c.{@method.name}(ctx, req)
+        for {
+            resp, err := it.Next()
+            if err != nil {
+                // TODO: Handle error.
+                break
+            }
+            // TODO: Use resp.
+            _ = resp
+        }
+    }
+@end
+
+@private methodInit(view, method)
+    ctx := context.Background()
+    c, err := {@view.libLocalPackageName}.{@view.clientConstructorName}(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := {@method.apiRequestTypeConstructor}{
+        // TODO: Fill request struct fields.
+    }
 @end
