@@ -162,10 +162,9 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   private Name clientNamePrefix(Interface service) {
     Name name = getReducedServiceName(service);
-    // If there's only one service, or the service name matches the package name, don't prefix with
-    // the service name.
-    if (model.getSymbolTable().getInterfaces().size() == 1
-        || Name.from(getLocalPackageName()).equals(name)) {
+    // If the service name matches the package name, don't prefix with the service name.
+    // Eg, instead of "library.NewLibraryClient", we want "library.NewClient".
+    if (Name.from(getLocalPackageName()).equals(name)) {
       return Name.from();
     }
     return name;
