@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryImporter;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
 import com.google.protobuf.Field.Cardinality;
@@ -131,16 +132,13 @@ public class ApiaryConfigToSampleConfigConverter {
 
   /**
    * Creates a field.
-   *
-   * Returns null if field is null.
    */
   private FieldInfo createFieldInfo(Field field, Method method) {
-    if (field == null) {
-      return null;
-    }
     return FieldInfo.newBuilder()
         .name(field.getName())
-        .description(apiaryConfig.getDescription(method.getRequestTypeUrl(), field.getName()))
+        .description(
+            Strings.nullToEmpty(
+                apiaryConfig.getDescription(method.getRequestTypeUrl(), field.getName())))
         .type(createTypeInfo(field, method))
         .build();
   }
