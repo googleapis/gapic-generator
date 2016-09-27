@@ -139,6 +139,9 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     sampleBodyView.fieldVarNames(fieldVarNames);
     sampleBodyView.isPageStreaming(methodInfo.isPageStreaming());
 
+    sampleBodyView.authType(sampleConfig.authType());
+    sampleBodyView.authInstructionsUrl(sampleConfig.authInstructionsUrl());
+    sampleBodyView.authScopes(methodInfo.authScopes());
     return sampleBodyView.build();
   }
 

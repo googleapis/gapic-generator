@@ -99,6 +99,18 @@ public abstract class SampleConfig {
   @JsonProperty("methods")
   public abstract Map<String, MethodInfo> methods();
 
+  /**
+   * Returns the API's authentication type.
+   */
+  @JsonProperty("authType")
+  public abstract AuthType authType();
+
+  /**
+   * Returns the authentication instructions URL.
+   */
+  @JsonProperty("authInstructionsUrl")
+  public abstract String authInstructionsUrl();
+
   public static Builder newBuilder() {
     return new AutoValue_SampleConfig.Builder();
   }
@@ -123,6 +135,12 @@ public abstract class SampleConfig {
 
     @JsonProperty("methods")
     public abstract Builder methods(Map<String, MethodInfo> val);
+
+    @JsonProperty("authType")
+    public abstract Builder authType(AuthType val);
+
+    @JsonProperty("authInstructionsUrl")
+    public abstract Builder authInstructionsUrl(String val);
 
     public abstract SampleConfig build();
   }

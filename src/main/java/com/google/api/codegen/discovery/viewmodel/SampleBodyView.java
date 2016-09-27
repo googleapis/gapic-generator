@@ -15,7 +15,7 @@
 package com.google.api.codegen.discovery.viewmodel;
 
 import java.util.List;
-
+import com.google.api.codegen.discovery.config.AuthType;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -54,6 +54,12 @@ public abstract class SampleBodyView {
   public abstract String resourceTypeName();
 
   public abstract boolean isResourceMap();
+
+  public abstract AuthType authType();
+
+  public abstract String authInstructionsUrl();
+
+  public abstract List<String> authScopes();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleBodyView.Builder();
@@ -95,6 +101,12 @@ public abstract class SampleBodyView {
     public abstract Builder resourceTypeName(String val);
 
     public abstract Builder isResourceMap(boolean val);
+
+    public abstract Builder authType(AuthType val);
+
+    public abstract Builder authInstructionsUrl(String val);
+
+    public abstract Builder authScopes(List<String> val);
 
     public abstract SampleBodyView build();
   }
