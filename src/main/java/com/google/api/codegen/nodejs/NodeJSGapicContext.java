@@ -31,6 +31,7 @@ import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.FieldSelector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
@@ -40,6 +41,7 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -113,6 +115,14 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
 
   public String propertyName(Field field) {
     return namer.getVariableName(field);
+  }
+
+  public String fieldSelectorName(FieldSelector fieldSelector) {
+    ImmutableList.Builder<String> names = ImmutableList.builder();
+    for (Field field : fieldSelector.getFields()) {
+      names.add(propertyName(field));
+    }
+    return Joiner.on(".").join(names.build());
   }
 
   /**

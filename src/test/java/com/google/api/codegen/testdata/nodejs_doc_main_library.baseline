@@ -41,20 +41,20 @@ var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
 
 var PAGE_DESCRIPTORS = {
   listShelves: new gax.PageDescriptor(
-      'page_token',
-      'next_page_token',
+      'pageToken',
+      'nextPageToken',
       'shelves'),
   listBooks: new gax.PageDescriptor(
-      'page_token',
-      'next_page_token',
+      'pageToken',
+      'nextPageToken',
       'books'),
   listStrings: new gax.PageDescriptor(
-      'page_token',
-      'next_page_token',
+      'pageToken',
+      'nextPageToken',
       'strings'),
   findRelatedBooks: new gax.PageDescriptor(
-      'page_token',
-      'next_page_token',
+      'pageToken',
+      'nextPageToken',
       'names')
 };
 
@@ -116,7 +116,7 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
           'edition',
           'shelf.name'
         ],
-        'book_names',
+        'bookNames',
         gax.createByteLengthFunction(grpcClients.libraryServiceClient.google.example.library.v1.Book))
   };
   var defaults = gaxGrpc.constructSettings(
