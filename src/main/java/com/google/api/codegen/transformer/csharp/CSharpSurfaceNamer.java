@@ -71,23 +71,23 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getCallableName(Method method) {
-    // TODO: Use the 'privateFieldName' method when it's available (from Go MVVM PR)
-    return "_" + varName(Name.upperCamel("Call", method.getSimpleName()));
+    return privateFieldName(Name.upperCamel("Call", method.getSimpleName()));
   }
 
   @Override
-  public String getPathTemplateName(CollectionConfig collectionConfig) {
+  public String getPathTemplateName(Interface service, CollectionConfig collectionConfig) {
     return inittedConstantName(Name.from(collectionConfig.getEntityName(), "template"));
   }
 
   @Override
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
-    return methodName(identifier);
+    return privateMethodName(identifier);
   }
 
   @Override
   public String getAndSavePagedResponseTypeName(
-      ModelTypeTable typeTable, TypeRef... parameterizedTypes) {
+      ModelTypeTable typeTable, TypeRef inputType, TypeRef outputType, TypeRef resourceType) {
+    TypeRef[] parameterizedTypes = {inputType, outputType, resourceType};
     String[] typeList = new String[parameterizedTypes.length];
     for (int i = 0; i < typeList.length; i++) {
       typeList[i] = typeTable.getFullNameForElementType(parameterizedTypes[i]);
@@ -124,7 +124,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getParamName(String var) {
-    return varName(Name.from(var).join("id"));
+    return localVarName(Name.from(var).join("id"));
   }
 
   @Override

@@ -110,7 +110,8 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSavePagedResponseTypeName(
-      ModelTypeTable typeTable, TypeRef... parameterizedTypes) {
+      ModelTypeTable typeTable, TypeRef inputType, TypeRef outputType, TypeRef resourceType) {
+    TypeRef[] parameterizedTypes = {inputType, outputType, resourceType};
     String[] typeList = new String[parameterizedTypes.length];
     for (int i = 0; i < typeList.length; i++) {
       typeList[i] = typeTable.getFullNameForElementType(parameterizedTypes[i]);

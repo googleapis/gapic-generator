@@ -12,25 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.util.php;
+package com.google.api.codegen.util.go;
 
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NamePath;
 
 /**
- * The NameFormatter for PHP.
+ * The NameFormatter for Java.
  */
-public class PhpNameFormatter implements NameFormatter {
+public class GoNameFormatter implements NameFormatter {
 
   @Override
   public String className(Name name) {
     return name.toUpperCamel();
-  }
-
-  @Override
-  public String localVarName(Name name) {
-    return name.toLowerCamel();
   }
 
   @Override
@@ -40,17 +35,22 @@ public class PhpNameFormatter implements NameFormatter {
 
   @Override
   public String publicFieldName(Name name) {
+    return name.toUpperCamel();
+  }
+
+  @Override
+  public String localVarName(Name name) {
     return name.toLowerCamel();
   }
 
   @Override
   public String varReference(Name name) {
-    return "$" + localVarName(name);
+    return localVarName(name);
   }
 
   @Override
   public String publicMethodName(Name name) {
-    return name.toLowerCamel();
+    return name.toUpperCamel();
   }
 
   @Override
@@ -75,7 +75,7 @@ public class PhpNameFormatter implements NameFormatter {
 
   @Override
   public String qualifiedName(NamePath namePath) {
-    return namePath.toBackslashed();
+    return namePath.toDotted();
   }
 
   @Override
@@ -85,6 +85,6 @@ public class PhpNameFormatter implements NameFormatter {
 
   @Override
   public String classFileNameBase(Name name) {
-    return name.toOriginal();
+    return name.toLowerUnderscore() + ".go";
   }
 }
