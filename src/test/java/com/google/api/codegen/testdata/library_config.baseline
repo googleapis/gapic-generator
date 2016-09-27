@@ -313,6 +313,26 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 60000
+  - name: FindRelatedBooks
+    flattening:
+      groups:
+      - parameters:
+        - names
+        - shelves
+    required_fields:
+    - names
+    - shelves
+    request_object_method: true
+    page_streaming:
+      request:
+        page_size_field: page_size
+        token_field: page_token
+      response:
+        token_field: next_page_token
+        resources_field: names
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 60000
   - name: AddTag
     flattening:
       groups:

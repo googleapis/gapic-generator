@@ -28,7 +28,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
 import java.io.File;
 
 /**
@@ -205,7 +204,37 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeName(ProtoElement elem) {
-    // Construct the full name in Java
+    String packageName = getProtoElementPackage(elem);
+    String shortName = getShortName(elem);
+    String longName = packageName + "." + shortName;
+
+    return new TypeName(longName, shortName);
+  }
+
+  @Override
+  public TypeName getTypeNameForTypedResourceName(
+      ProtoElement elem, TypeRef type, String resourceName) {
+    String packageName = getProtoElementPackage(elem);
+    String longName = packageName + "." + resourceName;
+
+    TypeName simpleTypeName = new TypeName(longName, resourceName);
+
+    if (type.isMap()) {
+      throw new IllegalArgumentException("Map type not supported for typed resource name");
+    } else if (type.isRepeated()) {
+      TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
+      return new TypeName(
+          listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", simpleTypeName);
+    } else {
+      return simpleTypeName;
+    }
+  }
+
+  private static String getShortName(ProtoElement elem) {
+    return elem.getFullName().substring(elem.getFile().getFullName().length() + 1);
+  }
+
+  private static String getProtoElementPackage(ProtoElement elem) {
     String name = getJavaPackage(elem.getFile());
     if (!elem.getFile().getProto().getOptions().getJavaMultipleFiles()) {
       String outerClassName = elem.getFile().getProto().getOptions().getJavaOuterClassname();
@@ -214,11 +243,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
       }
       name = name + "." + outerClassName;
     }
-    String typeName = elem.getFullName().substring(elem.getFile().getFullName().length() + 1);
-    name = name + "." + typeName;
-    String shortName = name.substring(name.lastIndexOf('.') + 1);
-
-    return new TypeName(name, shortName);
+    return name;
   }
 
   private static String getJavaPackage(ProtoFile file) {

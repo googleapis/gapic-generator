@@ -59,6 +59,7 @@ type CallOptions struct {
     AddComments []gax.CallOption
     GetBookFromArchive []gax.CallOption
     UpdateBookIndex []gax.CallOption
+    FindRelatedBooks []gax.CallOption
     AddTag []gax.CallOption
     AddLabel []gax.CallOption
 }
@@ -105,6 +106,7 @@ func defaultCallOptions() *CallOptions {
         AddComments: retry[[2]string{"default", "non_idempotent"}],
         GetBookFromArchive: retry[[2]string{"default", "idempotent"}],
         UpdateBookIndex: retry[[2]string{"default", "idempotent"}],
+        FindRelatedBooks: retry[[2]string{"default", "idempotent"}],
         AddTag: retry[[2]string{"default", "non_idempotent"}],
         AddLabel: retry[[2]string{"default", "non_idempotent"}],
     }
@@ -498,6 +500,41 @@ func (c *Client) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBookI
     return err
 }
 
+// FindRelatedBooks
+func (c *Client) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelatedBooksRequest) *StringIterator {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    it := &StringIterator{}
+
+    fetch := func(pageSize int, pageToken string) (string, err) {
+        var resp *librarypb.FindRelatedBooksResponse
+        req.PageToken = pageToken
+        if pageSize > math.MaxInt32 {
+            req.PageSize = math.MaxInt32
+        } else {
+            req.PageSize = int32(pageSize)
+        }
+        err := gax.Invoke(ctx, func(ctx context.Context) error {
+            var err error
+            resp, err = c.client.FindRelatedBooks(ctx, req)
+            return err
+        }, c.CallOptions.FindRelatedBooks...)
+        if err != nil {
+            return "", err
+        }
+        it.items = resp.Names
+        return resp.NextPageToken, nil
+    }
+    bufLen := func() int { return len(it.items) }
+    takeBuf := func() interface{} {
+        b := it.items
+        it.items = nil
+        return b
+    }
+
+    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, bufLen, takeBuf)
+    return it
+}
+
 // AddTag adds a tag to the book. This RPC is a mixin.
 func (c *Client) AddTag(ctx context.Context, req *taggerpb.AddTagRequest) (*taggerpb.AddTagResponse, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
@@ -566,6 +603,28 @@ func (it *BookIterator) PageInfo() *iterator.PageInfo {
 // Next returns the next result. Its second return value is iterator.Done if there are no more
 // results. Once Next returns Done, all subsequent calls will return Done.
 func (it *BookIterator) Next() (*librarypb.Book, error) {
+    if err := it.nextFunc(); err != nil {
+        return nil, err
+    }
+    item := it.items[0]
+    it.items = it.items[1:]
+    return item, nil
+}
+// StringIterator manages a stream of string.
+type StringIterator struct {
+    items    []string
+    pageInfo *iterator.PageInfo
+    nextFunc func() error
+}
+
+// PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
+func (it *StringIterator) PageInfo() *iterator.PageInfo {
+    return it.pageInfo
+}
+
+// Next returns the next result. Its second return value is iterator.Done if there are no more
+// results. Once Next returns Done, all subsequent calls will return Done.
+func (it *StringIterator) Next() (string, error) {
     if err := it.nextFunc(); err != nil {
         return nil, err
     }

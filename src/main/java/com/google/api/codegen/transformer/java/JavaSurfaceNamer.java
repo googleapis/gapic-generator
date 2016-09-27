@@ -16,9 +16,11 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
@@ -26,7 +28,6 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -110,14 +111,53 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSavePagedResponseTypeName(
-      ModelTypeTable typeTable, TypeRef inputType, TypeRef outputType, TypeRef resourceType) {
-    TypeRef[] parameterizedTypes = {inputType, outputType, resourceType};
-    String[] typeList = new String[parameterizedTypes.length];
-    for (int i = 0; i < typeList.length; i++) {
-      typeList[i] = typeTable.getFullNameForElementType(parameterizedTypes[i]);
-    }
+      FeatureConfig featureConfig,
+      ModelTypeTable typeTable,
+      TypeRef inputType,
+      TypeRef outputType,
+      Field resourceField) {
+
+    String inputTypeName = typeTable.getAndSaveNicknameForElementType(inputType);
+    String outputTypeName = typeTable.getAndSaveNicknameForElementType(outputType);
+
+    String resourceTypeName =
+        getAndSaveElementFieldTypeName(featureConfig, typeTable, resourceField);
+
     return typeTable.getAndSaveNicknameForContainer(
-        "com.google.api.gax.core.PagedListResponse", typeList);
+        "com.google.api.gax.core.PagedListResponse",
+        inputTypeName,
+        outputTypeName,
+        resourceTypeName);
+  }
+
+  @Override
+  public String getAndSaveFieldTypeName(
+      FeatureConfig featureConfig, ModelTypeTable typeTable, Field resourceField) {
+    String resourceTypeName;
+    if (featureConfig.useResourceNameFormatOption(resourceField)) {
+      String resourceShortName = ResourceNameUtil.getResourceName(resourceField);
+      resourceTypeName =
+          typeTable.getAndSaveNicknameForTypedResourceName(
+              resourceField, resourceField.getType(), resourceShortName);
+    } else {
+      resourceTypeName = typeTable.getAndSaveNicknameFor(resourceField.getType());
+    }
+    return resourceTypeName;
+  }
+
+  @Override
+  public String getAndSaveElementFieldTypeName(
+      FeatureConfig featureConfig, ModelTypeTable typeTable, Field resourceField) {
+    String resourceTypeName;
+    if (featureConfig.useResourceNameFormatOption(resourceField)) {
+      String resourceShortName = ResourceNameUtil.getResourceName(resourceField);
+      resourceTypeName =
+          typeTable.getAndSaveNicknameForTypedResourceName(
+              resourceField, resourceField.getType().makeOptional(), resourceShortName);
+    } else {
+      resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
+    }
+    return resourceTypeName;
   }
 
   @Override

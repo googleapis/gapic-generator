@@ -33,6 +33,10 @@ public interface ModelTypeNameConverter {
    */
   TypeName getTypeNameForElementType(TypeRef type);
 
+  /** Provides a TypeName for the given ProtoElement and ResourceName type */
+  TypeName getTypeNameForTypedResourceName(
+      ProtoElement field, TypeRef type, String typedResourceShortName);
+
   /**
    * Provides a TypeName for the given ProtoElement.
    */

@@ -175,4 +175,10 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
   private static String getPhpPackage(ProtoFile file) {
     return file.getProto().getPackage().replaceAll("\\.", "\\\\");
   }
+
+  @Override
+  public TypeName getTypeNameForTypedResourceName(
+      ProtoElement field, TypeRef type, String typedResourceShortName) {
+    throw new UnsupportedOperationException("getTypeNameForTypedResourceName not supported by PHP");
+  }
 }

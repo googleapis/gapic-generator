@@ -16,13 +16,15 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.BundlingConfig;
 import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.BundlingConfigView;
 import com.google.api.codegen.viewmodel.BundlingDescriptorClassView;
 import com.google.api.codegen.viewmodel.BundlingPartitionKeyView;
 import com.google.api.codegen.viewmodel.FieldCopyView;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.FieldSelector;
 import com.google.api.tools.framework.model.Method;
-
+import com.google.api.tools.framework.model.TypeRef;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,26 +64,31 @@ public class BundlingTransformer {
     Method method = context.getMethod();
     BundlingConfig bundling = context.getMethodConfig().getBundling();
 
+    Field bundledField = bundling.getBundledField();
+    TypeRef bundledType = bundledField.getType();
+    Name bundledTypeName = Name.from(bundledField.getSimpleName());
+
+    Field subresponseField = bundling.getSubresponseField();
+    TypeRef subresponseType = subresponseField.getType();
+    Name subresponseTypeName = Name.from(subresponseField.getSimpleName());
+
     BundlingDescriptorClassView.Builder desc = BundlingDescriptorClassView.newBuilder();
 
     desc.name(namer.getBundlingDescriptorConstName(method));
     desc.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     desc.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
-    desc.bundledFieldTypeName(
-        typeTable.getAndSaveNicknameFor(bundling.getBundledField().getType()));
-    desc.subresponseTypeName(
-        typeTable.getAndSaveNicknameFor(bundling.getSubresponseField().getType()));
+    desc.bundledFieldTypeName(typeTable.getAndSaveNicknameFor(bundledType));
+    desc.subresponseTypeName(typeTable.getAndSaveNicknameFor(subresponseType));
 
     desc.partitionKeys(generatePartitionKeys(context));
     desc.discriminatorFieldCopies(generateDiscriminatorFieldCopies(context));
 
-    desc.bundledFieldGetFunction(namer.getFieldGetFunctionName(bundling.getBundledField()));
-    desc.bundledFieldSetFunction(namer.getFieldSetFunctionName(bundling.getBundledField()));
-    desc.bundledFieldCountGetFunction(
-        namer.getFieldCountGetFunctionName(bundling.getBundledField()));
-    desc.subresponseByIndexGetFunction(
-        namer.getByIndexGetFunctionName(bundling.getSubresponseField()));
-    desc.subresponseSetFunction(namer.getFieldSetFunctionName(bundling.getSubresponseField()));
+    desc.bundledFieldGetFunction(namer.getFieldGetFunctionName(bundledType, bundledTypeName));
+    desc.bundledFieldSetFunction(namer.getFieldSetFunctionName(bundledType, bundledTypeName));
+    desc.bundledFieldCountGetFunction(namer.getFieldCountGetFunctionName(bundledField));
+    desc.subresponseByIndexGetFunction(namer.getByIndexGetFunctionName(subresponseField));
+    desc.subresponseSetFunction(
+        namer.getFieldSetFunctionName(subresponseType, subresponseTypeName));
 
     namer.addBundlingDescriptorImports(typeTable);
 
@@ -92,11 +99,13 @@ public class BundlingTransformer {
     List<BundlingPartitionKeyView> keys = new ArrayList<>();
     BundlingConfig bundling = context.getMethodConfig().getBundling();
     for (FieldSelector fieldSelector : bundling.getDiscriminatorFields()) {
+      TypeRef selectedType = fieldSelector.getLastField().getType();
+      Name selectedTypeName = Name.from(fieldSelector.getLastField().getSimpleName());
       BundlingPartitionKeyView key =
           BundlingPartitionKeyView.newBuilder()
               .separatorLiteral("\"|\"")
               .fieldGetFunction(
-                  context.getNamer().getFieldGetFunctionName(fieldSelector.getLastField()))
+                  context.getNamer().getFieldGetFunctionName(selectedType, selectedTypeName))
               .build();
       keys.add(key);
     }
@@ -107,12 +116,14 @@ public class BundlingTransformer {
     List<FieldCopyView> fieldCopies = new ArrayList<>();
     BundlingConfig bundling = context.getMethodConfig().getBundling();
     for (FieldSelector fieldSelector : bundling.getDiscriminatorFields()) {
+      TypeRef selectedType = fieldSelector.getLastField().getType();
+      Name selectedTypeName = Name.from(fieldSelector.getLastField().getSimpleName());
       FieldCopyView fieldCopy =
           FieldCopyView.newBuilder()
               .fieldGetFunction(
-                  context.getNamer().getFieldGetFunctionName(fieldSelector.getLastField()))
+                  context.getNamer().getFieldGetFunctionName(selectedType, selectedTypeName))
               .fieldSetFunction(
-                  context.getNamer().getFieldSetFunctionName(fieldSelector.getLastField()))
+                  context.getNamer().getFieldSetFunctionName(selectedType, selectedTypeName))
               .build();
       fieldCopies.add(fieldCopy);
     }
