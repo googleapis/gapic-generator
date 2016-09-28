@@ -27,7 +27,6 @@ import com.google.api.tools.framework.aspects.documentation.model.DocumentationU
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
@@ -39,17 +38,15 @@ import java.util.List;
 public class GoSurfaceNamer extends SurfaceNamer {
 
   private final GoModelTypeNameConverter converter;
-  private final Model model;
   private final String packagePath;
 
-  public GoSurfaceNamer(Model model, String packagePath) {
-    this(new GoModelTypeNameConverter(), model, packagePath);
+  public GoSurfaceNamer(String packagePath) {
+    this(new GoModelTypeNameConverter(), packagePath);
   }
 
-  private GoSurfaceNamer(GoModelTypeNameConverter converter, Model model, String packagePath) {
+  private GoSurfaceNamer(GoModelTypeNameConverter converter, String packagePath) {
     super(new GoNameFormatter(), new ModelTypeFormatterImpl(converter), new GoTypeTable());
     this.converter = converter;
-    this.model = model;
     this.packagePath = packagePath;
   }
 
@@ -170,7 +167,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   @VisibleForTesting
   Name clientNamePrefix(Interface service) {
     Name name = getReducedServiceName(service);
-    // If the service name matches the package name, don't prefix with the service name.
+    // If the service name matches the package name, don't include the service name in the prefix.
     // Eg, instead of "library.NewLibraryClient", we want "library.NewClient".
     if (Name.from(getLocalPackageName()).equals(name)) {
       return Name.from();

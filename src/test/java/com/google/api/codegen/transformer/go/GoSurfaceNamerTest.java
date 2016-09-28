@@ -33,13 +33,10 @@ import java.util.List;
 public class GoSurfaceNamerTest {
   @ClassRule public static TemporaryFolder tempDir = new TemporaryFolder();
 
-  private static Model model;
-  private static ApiConfig apiConfig;
-
-  @BeforeClass
-  public static void setupClass() {
+  @Test
+  public void testClientNamePrefix() {
     TestDataLocator locator = TestDataLocator.create(GoGapicSurfaceTransformerTest.class);
-    model =
+    Model model =
         CodegenTestUtil.readModel(
             locator, tempDir, new String[] {"myproto.proto"}, new String[] {"myproto.yaml"});
 
@@ -47,18 +44,41 @@ public class GoSurfaceNamerTest {
         CodegenTestUtil.readConfig(
             model.getDiagCollector(), locator, new String[] {"myproto_gapic.yaml"});
 
-    apiConfig = ApiConfig.createApiConfig(model, configProto);
+    ApiConfig apiConfig = ApiConfig.createApiConfig(model, configProto);
 
     if (model.getDiagCollector().hasErrors()) {
       throw new IllegalStateException(model.getDiagCollector().getDiags().toString());
     }
+    GoSurfaceNamer namer = new GoSurfaceNamer(apiConfig.getPackageName());
+    List<Interface> services = model.getSymbolTable().getInterfaces().asList();
+    Truth.assertThat(namer.clientNamePrefix(services.get(0))).isEqualTo(Name.from());
+    Truth.assertThat(namer.clientNamePrefix(services.get(1))).isEqualTo(Name.from("guru"));
   }
 
+  // Don't drop service name if the name is different from package,
+  // even if there's only one.
   @Test
-  public void testClientNamePrefix() {
-    GoSurfaceNamer namer = new GoSurfaceNamer(model, apiConfig.getPackageName());
+  public void testClientNamePrefixSingle() {
+    TestDataLocator locator = TestDataLocator.create(GoGapicSurfaceTransformerTest.class);
+    Model model =
+        CodegenTestUtil.readModel(
+            locator,
+            tempDir,
+            new String[] {"singleservice.proto"},
+            new String[] {"singleservice.yaml"});
+
+    ConfigProto configProto =
+        CodegenTestUtil.readConfig(
+            model.getDiagCollector(), locator, new String[] {"singleservice_gapic.yaml"});
+
+    ApiConfig apiConfig = ApiConfig.createApiConfig(model, configProto);
+
+    if (model.getDiagCollector().hasErrors()) {
+      throw new IllegalStateException(model.getDiagCollector().getDiags().toString());
+    }
+    GoSurfaceNamer namer = new GoSurfaceNamer(apiConfig.getPackageName());
     List<Interface> services = model.getSymbolTable().getInterfaces().asList();
-    Truth.assertThat(namer.clientNamePrefix(services.get(0))).isEqualTo(Name.from("my"));
-    Truth.assertThat(namer.clientNamePrefix(services.get(1))).isEqualTo(Name.from("my", "proto"));
+    Truth.assertThat(namer.clientNamePrefix(services.get(0)))
+        .isEqualTo(Name.from("oddly", "named"));
   }
 }

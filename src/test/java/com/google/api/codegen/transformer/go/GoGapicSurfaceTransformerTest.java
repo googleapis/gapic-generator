@@ -68,7 +68,7 @@ public class GoGapicSurfaceTransformerTest {
 
   @Before
   public void setup() {
-    GoSurfaceNamer namer = new GoSurfaceNamer(model, apiConfig.getPackageName());
+    GoSurfaceNamer namer = new GoSurfaceNamer(apiConfig.getPackageName());
     context =
         SurfaceTransformerContext.create(
             service,
