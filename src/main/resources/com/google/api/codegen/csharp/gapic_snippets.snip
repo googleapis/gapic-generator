@@ -1,6 +1,6 @@
 @extends "csharp/common.snip"
 
-@snippet generate(api)
+@snippet generate(snippets)
     // Copyright 2016 Google Inc. All Rights Reserved.
     //
     // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,47 +17,47 @@
 
     // Generated code. DO NOT EDIT!
 
-    @join import : api.imports
+    @join import : snippets.imports
         using {@import.fullName};
     @end
 
-    namespace {@api.packageName}
+    namespace {@snippets.packageName}
     {
-        {@snippets(api)}
+        {@renderSnippets(snippets)}
     }
 
 @end
 
-@private snippets(api)
-    public class {@api.name}
+@private renderSnippets(snippets)
+    public class {@snippets.name}
     {
-        @join method : api.snippetMethods
-            {@method(api, method)}
+        @join method : snippets.snippetMethods
+            {@method(snippets, method)}
 
         @end
     }
 @end
 
-@private method(api, method)
+@private method(snippets, method)
     @switch method.type.toString
     @case "FlattenedMethod"
-        {@flattenedMethodSync(api, method)}
+        {@flattenedMethodSync(snippets, method)}
     @case "FlattenedAsyncCallSettingsMethod"
-        {@flattenedMethodAsyncCallSettings(api, method)}
+        {@flattenedMethodAsyncCallSettings(snippets, method)}
     @case "PagedFlattenedMethod"
-        {@pagedFlattenedMethodSync(api, method)}
+        {@pagedFlattenedMethodSync(snippets, method)}
     @case "PagedFlattenedAsyncMethod" 
-        {@pagedFlattenedMethodAsync(api, method)}
+        {@pagedFlattenedMethodAsync(snippets, method)}
     @default
-        *** ERROR: Cannot handle method type '{@method.type.toString}' ***
+        $unhandledCase: {@method.type.toString}$
     @end
 @end
 
-@private flattenedMethodSync(api, method)
-    public void {@method.name}()
+@private flattenedMethodSync(snippets, method)
+    public void {@method.uniqueName}()
     {
         // Snippet: {@method.name}({@snippetArgTypes(method.methodParams)},CallSettings)
-        {@preparations(api, method)}
+        {@preparations(snippets, method)}
         @if method.hasReturnValue
             {@method.callerResponseTypeName} response = {@sampleMethodCall(method)};
         @else
@@ -67,12 +67,12 @@
     }
 @end
 
-@private flattenedMethodAsyncCallSettings(api, method)
-    public async Task {@method.name}()
+@private flattenedMethodAsyncCallSettings(snippets, method)
+    public async Task {@method.uniqueName}()
     {
         // Snippet: {@method.name}({@snippetArgTypes(method.methodParams)},CallSettings)
         // Additional: {@method.name}({@snippetArgTypes(method.methodParams)},CancellationToken)
-        {@preparations(api, method)}
+        {@preparations(snippets, method)}
         @if method.hasReturnValue
             {@method.callerResponseTypeName} response = await {@sampleMethodCall(method)};
         @else
@@ -82,12 +82,13 @@
     }
 @end
 
-@private pagedFlattenedMethodSync(api, method)
-    public void {@method.name}()
+@private pagedFlattenedMethodSync(snippets, method)
+    public void {@method.uniqueName}()
     {
         // Snippet: {@method.name}({@snippetArgTypes(method.methodParams)},CallSettings)
-        {@preparations(api, method)}
-        {@method.callerResponseTypeName} response = {@sampleMethodCall(method)};
+        {@preparations(snippets, method)}
+        {@method.callerResponseTypeName} response =
+            {@sampleMethodCall(method)};
 
         // Iterate over all response items, lazily performing RPCs as required
         foreach ({@method.listMethod.resourceTypeName} item in response)
@@ -102,7 +103,8 @@
         {
             // Do something with each page of items
             Console.Writeline("A page of results:");
-            foreach ({@method.listMethod.resourceTypeName} item in page) {
+            foreach ({@method.listMethod.resourceTypeName} item in page)
+            {
                 Console.Writeline(item);
             }
         }
@@ -110,13 +112,14 @@
     }
 @end
 
-@private pagedFlattenedMethodAsync(api, method)
-    public async Task {@method.name}()
+@private pagedFlattenedMethodAsync(snippets, method)
+    public async Task {@method.uniqueName}()
     {
         // Snippet: {@method.name}({@snippetArgTypes(method.methodParams)},CallSettings)
         // Additional: {@method.name}({@snippetArgTypes(method.methodParams)},CancellationToken)
-        {@preparations(api, method)}
-        {@method.callerResponseTypeName} response = await {@sampleMethodCall(method)};
+        {@preparations(snippets, method)}
+        {@method.callerResponseTypeName} response =
+            await {@sampleMethodCall(method)};
 
         // Iterate over all response items, lazily performing RPCs as required
         foreach ({@method.listMethod.resourceTypeName} item in response)
@@ -131,7 +134,8 @@
         {
             // Do something with each page of items
             Console.Writeline("A page of results:");
-            foreach ({@method.listMethod.resourceTypeName} item in page) {
+            foreach ({@method.listMethod.resourceTypeName} item in page)
+            {
                 Console.Writeline(item);
             }
         }
@@ -139,9 +143,9 @@
     }
 @end
 
-@private preparations(api, method)
+@private preparations(snippets, method)
     // Create client
-    {@api.clientTypeName} {@method.apiVariableName} = {@api.clientTypeName}.Create();
+    {@snippets.clientTypeName} {@method.apiVariableName} = {@snippets.clientTypeName}.Create();
     // Initialize request argument(s)
     {@topLevelInitCode(method.initCode)}
     // Make the request
@@ -153,8 +157,8 @@
     @end
 @end
 
-@private sampleMethodCall(apiMethod)
-    {@apiMethod.apiVariableName}.{@apiMethod.name}({@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+@private sampleMethodCall(method)
+    {@method.apiVariableName}.{@method.name}({@sampleMethodCallArgList(method.initCode.fieldSettings)})
 @end
 
 @private sampleMethodCallArgList(fieldSettings)
@@ -165,53 +169,55 @@
 
 @private topLevelInitCode(initCodeSpec)
     @join line : initCodeSpec.topLevelLines
-        {@initCode(initCodeType(line).add(" ").add(line.identifier).add(" = "), line)};
+        {@initCode(TRUE, line)};
     @end
 @end
 
-@private test(a)
-    {@a}
-@end
-
-@private initCodeType(line)
+@private initCode(includeAssignment, line)
     @switch line.lineType.toString
     @case "StructureInitLine"
-        {@line.typeName}
-    @case "ListInitLine"
-        IEnumerable<{@line.elementTypeName}>
-    @case "MapInitLine"
-        IDictionary<{@line.keyTypeName}, {@line.valueTypeName}>
-    @case "SimpleInitLine"
-        {@line.typeName}
-    @default
-        $unhandledCase: {@line.lineType.toString}$
-    @end
-@end
-
-@private initCode(prefix, line)
-    @switch line.lineType.toString
-    @case "StructureInitLine"
-        {@prefix}new {@line.typeName}
-        {
-        @join fieldSetting : line.fieldSettings
-            {@EMPTY}    {@fieldSetting.fieldSetFunction} = {@initCode("", fieldSetting.initCodeLine)},
+        @if includeAssignment
+            {@line.typeName} {@line.identifier} = new {@line.typeName}
+        @else
+            new {@line.typeName}
         @end
+
+        {
+            @join fieldSetting : line.fieldSettings
+                {@fieldSetting.fieldSetFunction} = {@initCode(FALSE, fieldSetting.initCodeLine)},
+            @end
         }
     @case "ListInitLine"
-        {@prefix}new []
+        @if includeAssignment
+            IEnumerable<{@line.elementTypeName}> {@line.identifier} = new[]
+        @else
+            new[]
+        @end
+
         {
             @join child : line.elements
-                {@initCode("", child)},
+                {@initCode(FALSE, child)},
             @end
         }
     @case "MapInitLine"
-        {@prefix}new Dictionary<{@line.keyTypeName}, {@line.valueTypeName}> {
-            @join mapEntry : line.initEntries vertical
-                { {@mapEntry.key}, {@initCode("", mapEntry.value)} },
+        @if includeAssignment
+            IDictionary<{@line.keyTypeName}, {@line.valueTypeName}> {@line.identifier} = \
+                new Dictionary<{@line.keyTypeName}, {@line.valueTypeName}>
+        @else
+            new Dictionary<{@line.keyTypeName}, {@line.valueTypeName}>
+        @end
+
+        {
+            @join mapEntry : line.initEntries
+                { {@mapEntry.key}, {@initCode(FALSE, mapEntry.value)} },
             @end
         }
     @case "SimpleInitLine"
-        {@prefix}{@renderInitValue(line.initValue)}
+        @if includeAssignment
+            {@line.typeName} {@line.identifier} = {@renderInitValue(line.initValue)}
+        @else
+            {@renderInitValue(line.initValue)}
+        @end
     @default
         $unhandledCase: {@line.lineType.toString}$
     @end

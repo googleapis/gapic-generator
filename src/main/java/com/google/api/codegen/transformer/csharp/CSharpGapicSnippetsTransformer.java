@@ -26,42 +26,46 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.transformer.csharp.CSharpSurfaceNamer.MethodFields;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.SnippetsFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
-import com.google.api.codegen.viewmodel.StaticLangXApiView;
-import com.google.api.codegen.viewmodel.StaticLangXCommonView;
-import com.google.api.codegen.viewmodel.StaticLangXSettingsView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class CSharpGapicSurfaceSnippetsTransformer implements ModelToViewTransformer {
+public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
 
-  private static final String XAPI_TEMPLATE_FILENAME = "csharp/gapic_snippets.snip";
+  private static final String SNIPPETS_TEMPLATE_FILENAME = "csharp/gapic_snippets.snip";
 
   private final GapicCodePathMapper pathMapper;
   private final ImportTypeTransformer importTypeTransformer;
   private final ApiMethodTransformer apiMethodTransformer;
+  private final CSharpCommonTransformer csharpCommonTransformer;
 
-  public CSharpGapicSurfaceSnippetsTransformer(GapicCodePathMapper pathMapper) {
+  public CSharpGapicSnippetsTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
     this.importTypeTransformer = new ImportTypeTransformer();
     this.apiMethodTransformer = new ApiMethodTransformer();
+    this.csharpCommonTransformer = new CSharpCommonTransformer();
   }
 
   @Override
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
-    SurfaceNamer namer = new CSharpSurfaceNamer(apiConfig.getPackageName());
+    SurfaceNamer namer =
+        new CSharpSurfaceNamer(apiConfig.getPackageName(), generateMethodNameMap(model, apiConfig));
 
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       SurfaceTransformerContext context =
@@ -71,7 +75,7 @@ public class CSharpGapicSurfaceSnippetsTransformer implements ModelToViewTransfo
               createTypeTable(apiConfig.getPackageName()),
               namer,
               new CSharpFeatureConfig());
-      addCommonImports(context);
+      csharpCommonTransformer.addCommonImports(context, true);
       SnippetsFileView snippets = generateSnippets(context);
       surfaceDocs.add(snippets);
     }
@@ -81,7 +85,36 @@ public class CSharpGapicSurfaceSnippetsTransformer implements ModelToViewTransfo
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(XAPI_TEMPLATE_FILENAME);
+    return Arrays.asList(SNIPPETS_TEMPLATE_FILENAME);
+  }
+
+  private Map<MethodFields, Function<SurfaceNamer, String>> generateMethodNameMap(
+      Model model, ApiConfig apiConfig) {
+    Map<MethodFields, Function<SurfaceNamer, String>> nameMap = new HashMap<>();
+    // Multiple interfaces with the same mixin will create method name collisions.
+    // This doesn't matter as the names will be the same in all interfaces.
+    for (Interface interfaze : new InterfaceView().getElementIterable(model)) {
+      for (MethodConfig methodConfig : apiConfig.getInterfaceConfig(interfaze).getMethodConfigs()) {
+        if (methodConfig.isFlattening()) {
+          final Method method = methodConfig.getMethod();
+          List<ImmutableList<Field>> fieldss = methodConfig.getFlattening().getFlatteningGroups();
+          if (fieldss.size() > 1) {
+            for (int i = 0; i < fieldss.size(); i++) {
+              final String suffix = Integer.toString(i + 1);
+              nameMap.put(
+                  new MethodFields(method, fieldss.get(i)),
+                  new Function<SurfaceNamer, String>() {
+                    @Override
+                    public String apply(SurfaceNamer namer) {
+                      return namer.getApiMethodName(method) + suffix;
+                    }
+                  });
+            }
+          }
+        }
+      }
+    }
+    return nameMap;
   }
 
   private ModelTypeTable createTypeTable(String implicitPackageName) {
@@ -90,26 +123,12 @@ public class CSharpGapicSurfaceSnippetsTransformer implements ModelToViewTransfo
         new CSharpModelTypeNameConverter(implicitPackageName));
   }
 
-  private void addCommonImports(SurfaceTransformerContext context) {
-    ModelTypeTable typeTable = context.getTypeTable();
-    // Common imports, only one class per required namespace is needed.
-    typeTable.saveNicknameFor("Google.Protobuf.Bytestring");
-    typeTable.saveNicknameFor("Google.Protobuf.WellKnownTypes.SomeSortOfWellKnownType");
-    typeTable.saveNicknameFor("Grpc.Core.ByteString");
-    typeTable.saveNicknameFor("System.Collections.ObjectModel.ReadOnlyCollection");
-    typeTable.saveNicknameFor("System.Threading.Tasks.Task");
-    typeTable.saveNicknameFor("System.Threading.Thread");
-    typeTable.saveNicknameFor("System.NotImplementedException");
-    typeTable.saveNicknameFor("System.Collections.IEnumerable");
-    typeTable.saveNicknameFor("System.Collections.Generic.IEnumerable");
-  }
-
   private SnippetsFileView generateSnippets(SurfaceTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
     String name = namer.getApiSnippetsClassName(context.getInterface());
     SnippetsFileView.Builder snippetsBuilder = SnippetsFileView.newBuilder();
 
-    snippetsBuilder.templateFileName(XAPI_TEMPLATE_FILENAME);
+    snippetsBuilder.templateFileName(SNIPPETS_TEMPLATE_FILENAME);
     String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
     snippetsBuilder.outputPath(outputPath + File.separator + name + ".g.cs");
     snippetsBuilder.packageName(context.getApiConfig().getPackageName() + ".Snippets");
@@ -126,20 +145,6 @@ public class CSharpGapicSurfaceSnippetsTransformer implements ModelToViewTransfo
 
   private List<StaticLangApiMethodView> generateMethods(SurfaceTransformerContext context) {
     boolean mixinsDisabled = !context.getFeatureConfig().enableMixins();
-    List<ParamWithSimpleDoc> pagedMethodAdditionalParams =
-        ImmutableList.of(
-            makeParam(
-                "string",
-                "pageToken",
-                "null",
-                "The token returned from the previous request.",
-                "A value of <c>null</c> or an empty string retrieves the first page."),
-            makeParam(
-                "int?",
-                "pageSize",
-                "null",
-                "The size of page to request. The response will not be larger than this, but may be smaller.",
-                "A value of <c>null</c> or 0 uses a server-defined page size."));
     List<StaticLangApiMethodView> methods = new ArrayList<>();
 
     for (Method method : context.getSupportedMethods()) {
@@ -153,10 +158,10 @@ public class CSharpGapicSurfaceSnippetsTransformer implements ModelToViewTransfo
           for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
             methods.add(
                 apiMethodTransformer.generatePagedFlattenedAsyncMethod(
-                    methodContext, fields, pagedMethodAdditionalParams));
+                    methodContext, fields, csharpCommonTransformer.pagedMethodAdditionalParams()));
             methods.add(
                 apiMethodTransformer.generatePagedFlattenedMethod(
-                    methodContext, fields, pagedMethodAdditionalParams));
+                    methodContext, fields, csharpCommonTransformer.pagedMethodAdditionalParams()));
           }
         }
       } else {
@@ -172,19 +177,5 @@ public class CSharpGapicSurfaceSnippetsTransformer implements ModelToViewTransfo
     }
 
     return methods;
-  }
-
-  private ParamWithSimpleDoc makeParam(
-      String typeName, String name, String defaultValue, String... doc) {
-    return ParamWithSimpleDoc.newBuilder()
-        .name(name)
-        .elementTypeName("")
-        .typeName(typeName)
-        .setCallName("")
-        .isMap(false)
-        .isArray(false)
-        .defaultValue(defaultValue)
-        .docLines(Arrays.asList(doc))
-        .build();
   }
 }

@@ -56,7 +56,7 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        public async Task GetShelfAsync()
+        public async Task GetShelf1Async()
         {
             // Snippet: GetShelfAsync(string,CallSettings)
             // Additional: GetShelfAsync(string,CancellationToken)
@@ -69,7 +69,7 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        public void GetShelf()
+        public void GetShelf1()
         {
             // Snippet: GetShelf(string,CallSettings)
             // Create client
@@ -81,7 +81,7 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        public async Task GetShelfAsync()
+        public async Task GetShelf2Async()
         {
             // Snippet: GetShelfAsync(string,SomeMessage,CallSettings)
             // Additional: GetShelfAsync(string,SomeMessage,CancellationToken)
@@ -95,7 +95,7 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        public void GetShelf()
+        public void GetShelf2()
         {
             // Snippet: GetShelf(string,SomeMessage,CallSettings)
             // Create client
@@ -108,7 +108,7 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        public async Task GetShelfAsync()
+        public async Task GetShelf3Async()
         {
             // Snippet: GetShelfAsync(string,SomeMessage,StringBuilder,CallSettings)
             // Additional: GetShelfAsync(string,SomeMessage,StringBuilder,CancellationToken)
@@ -123,7 +123,7 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        public void GetShelf()
+        public void GetShelf3()
         {
             // Snippet: GetShelf(string,SomeMessage,StringBuilder,CallSettings)
             // Create client
@@ -146,7 +146,8 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
 
             // Make the request
-            IPagedAsyncEnumerable<ListShelvesResponse,Shelf> response = await libraryServiceClient.ListShelvesAsync();
+            IPagedAsyncEnumerable<ListShelvesResponse,Shelf> response =
+                await libraryServiceClient.ListShelvesAsync();
 
             // Iterate over all response items, lazily performing RPCs as required
             foreach (Shelf item in response)
@@ -161,14 +162,15 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.Writeline("A page of results:");
-                foreach (Shelf item in page) {
+                foreach (Shelf item in page)
+                {
                     Console.Writeline(item);
                 }
             }
             // End snippet
         }
 
-        public void ListShelves()
+        public void ListShelvesAsync()
         {
             // Snippet: ListShelves(string,int?,CallSettings)
             // Create client
@@ -176,7 +178,8 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
 
             // Make the request
-            IPagedEnumerable<ListShelvesResponse,Shelf> response = libraryServiceClient.ListShelves();
+            IPagedEnumerable<ListShelvesResponse,Shelf> response =
+                libraryServiceClient.ListShelves();
 
             // Iterate over all response items, lazily performing RPCs as required
             foreach (Shelf item in response)
@@ -191,7 +194,8 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.Writeline("A page of results:");
-                foreach (Shelf item in page) {
+                foreach (Shelf item in page)
+                {
                     Console.Writeline(item);
                 }
             }
@@ -285,7 +289,7 @@ namespace Google.Example.Library.V1.Snippets
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
             Shelf shelf = new Shelf();
-            IEnumerable<Book> books = new List<???>();
+            IEnumerable<Book> books = new List<Book>();
             uint edition = 0;
             // Make the request
             PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(shelf, books, edition);
@@ -299,7 +303,7 @@ namespace Google.Example.Library.V1.Snippets
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
             Shelf shelf = new Shelf();
-            IEnumerable<Book> books = new List<???>();
+            IEnumerable<Book> books = new List<Book>();
             uint edition = 0;
             // Make the request
             PublishSeriesResponse response = libraryServiceClient.PublishSeries(shelf, books, edition);
@@ -341,7 +345,8 @@ namespace Google.Example.Library.V1.Snippets
             string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
             string filter = "";
             // Make the request
-            IPagedAsyncEnumerable<ListBooksResponse,Book> response = await libraryServiceClient.ListBooksAsync(formattedName, filter);
+            IPagedAsyncEnumerable<ListBooksResponse,Book> response =
+                await libraryServiceClient.ListBooksAsync(formattedName, filter);
 
             // Iterate over all response items, lazily performing RPCs as required
             foreach (Book item in response)
@@ -356,14 +361,15 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.Writeline("A page of results:");
-                foreach (Book item in page) {
+                foreach (Book item in page)
+                {
                     Console.Writeline(item);
                 }
             }
             // End snippet
         }
 
-        public void ListBooks()
+        public void ListBooksAsync()
         {
             // Snippet: ListBooks(string,string,string,int?,CallSettings)
             // Create client
@@ -372,7 +378,8 @@ namespace Google.Example.Library.V1.Snippets
             string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
             string filter = "";
             // Make the request
-            IPagedEnumerable<ListBooksResponse,Book> response = libraryServiceClient.ListBooks(formattedName, filter);
+            IPagedEnumerable<ListBooksResponse,Book> response =
+                libraryServiceClient.ListBooks(formattedName, filter);
 
             // Iterate over all response items, lazily performing RPCs as required
             foreach (Book item in response)
@@ -387,7 +394,8 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.Writeline("A page of results:");
-                foreach (Book item in page) {
+                foreach (Book item in page)
+                {
                     Console.Writeline(item);
                 }
             }
@@ -419,7 +427,7 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        public async Task UpdateBookAsync()
+        public async Task UpdateBook1Async()
         {
             // Snippet: UpdateBookAsync(string,Book,CallSettings)
             // Additional: UpdateBookAsync(string,Book,CancellationToken)
@@ -433,7 +441,7 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        public void UpdateBook()
+        public void UpdateBook1()
         {
             // Snippet: UpdateBook(string,Book,CallSettings)
             // Create client
@@ -446,7 +454,7 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        public async Task UpdateBookAsync()
+        public async Task UpdateBook2Async()
         {
             // Snippet: UpdateBookAsync(string,Book,FieldMask,FieldMask,CallSettings)
             // Additional: UpdateBookAsync(string,Book,FieldMask,FieldMask,CancellationToken)
@@ -462,7 +470,7 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        public void UpdateBook()
+        public void UpdateBook2()
         {
             // Snippet: UpdateBook(string,Book,FieldMask,FieldMask,CallSettings)
             // Create client
@@ -513,7 +521,8 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
 
             // Make the request
-            IPagedAsyncEnumerable<ListStringsResponse,string> response = await libraryServiceClient.ListStringsAsync();
+            IPagedAsyncEnumerable<ListStringsResponse,string> response =
+                await libraryServiceClient.ListStringsAsync();
 
             // Iterate over all response items, lazily performing RPCs as required
             foreach (string item in response)
@@ -528,14 +537,15 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.Writeline("A page of results:");
-                foreach (string item in page) {
+                foreach (string item in page)
+                {
                     Console.Writeline(item);
                 }
             }
             // End snippet
         }
 
-        public void ListStrings()
+        public void ListStringsAsync()
         {
             // Snippet: ListStrings(string,int?,CallSettings)
             // Create client
@@ -543,7 +553,8 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
 
             // Make the request
-            IPagedEnumerable<ListStringsResponse,string> response = libraryServiceClient.ListStrings();
+            IPagedEnumerable<ListStringsResponse,string> response =
+                libraryServiceClient.ListStrings();
 
             // Iterate over all response items, lazily performing RPCs as required
             foreach (string item in response)
@@ -558,7 +569,8 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.Writeline("A page of results:");
-                foreach (string item in page) {
+                foreach (string item in page)
+                {
                     Console.Writeline(item);
                 }
             }
@@ -573,12 +585,12 @@ namespace Google.Example.Library.V1.Snippets
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
             string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
-            IEnumerable<Comment> comments = new []
+            IEnumerable<Comment> comments = new[]
             {
                 new Comment
                 {
                     Comment = ByteString.CopyFromUtf8(""),
-                    Stage = Stage.UNSET,
+                    Stage = Stage.Unset,
                 },
             };
             // Make the request
@@ -593,12 +605,12 @@ namespace Google.Example.Library.V1.Snippets
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
             string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
-            IEnumerable<Comment> comments = new []
+            IEnumerable<Comment> comments = new[]
             {
                 new Comment
                 {
                     Comment = ByteString.CopyFromUtf8(""),
-                    Stage = Stage.UNSET,
+                    Stage = Stage.Unset,
                 },
             };
             // Make the request
@@ -640,7 +652,8 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
             string indexName = "default index";
-            IDictionary<string, string> indexMap = new Dictionary<string, string> {
+            IDictionary<string, string> indexMap = new Dictionary<string, string>
+            {
                 { "default_key", "" },
             };
             // Make the request
@@ -656,7 +669,8 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
             string indexName = "default index";
-            IDictionary<string, string> indexMap = new Dictionary<string, string> {
+            IDictionary<string, string> indexMap = new Dictionary<string, string>
+            {
                 { "default_key", "" },
             };
             // Make the request

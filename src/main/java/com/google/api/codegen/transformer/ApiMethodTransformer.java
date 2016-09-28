@@ -63,10 +63,12 @@ public class ApiMethodTransformer {
       MethodTransformerContext context,
       ImmutableList<Field> fields,
       List<ParamWithSimpleDoc> additionalParams) {
+    SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
     setCommonFields(context, methodViewBuilder);
-    methodViewBuilder.name(context.getNamer().getApiMethodName(context.getMethod()));
+    methodViewBuilder.name(namer.getApiMethodName(context.getMethod()));
+    methodViewBuilder.uniqueName(namer.getUniqueAsyncApiMethodName(context.getMethod(), fields));
     setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
     setFlattenedMethodFields(
         context, fields, additionalParams, Synchronicity.Sync, methodViewBuilder);
@@ -84,10 +86,12 @@ public class ApiMethodTransformer {
       MethodTransformerContext context,
       ImmutableList<Field> fields,
       List<ParamWithSimpleDoc> additionalParams) {
+    SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
     setCommonFields(context, methodViewBuilder);
-    methodViewBuilder.name(context.getNamer().getAsyncApiMethodName(context.getMethod()));
+    methodViewBuilder.name(namer.getAsyncApiMethodName(context.getMethod()));
+    methodViewBuilder.uniqueName(namer.getUniqueAsyncApiMethodName(context.getMethod(), fields));
     setListMethodFields(context, Synchronicity.Async, methodViewBuilder);
     setFlattenedMethodFields(
         context, fields, additionalParams, Synchronicity.Async, methodViewBuilder);
@@ -158,11 +162,13 @@ public class ApiMethodTransformer {
       ImmutableList<Field> fields,
       List<ParamWithSimpleDoc> additionalParams,
       ApiMethodType type) {
+    SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
     setCommonFields(context, methodViewBuilder);
-    methodViewBuilder.name(context.getNamer().getAsyncApiMethodName(context.getMethod()));
-    methodViewBuilder.callableName(context.getNamer().getCallableName(context.getMethod()));
+    methodViewBuilder.name(namer.getAsyncApiMethodName(context.getMethod()));
+    methodViewBuilder.uniqueName(namer.getUniqueAsyncApiMethodName(context.getMethod(), fields));
+    methodViewBuilder.callableName(namer.getCallableName(context.getMethod()));
     setFlattenedMethodFields(
         context, fields, additionalParams, Synchronicity.Async, methodViewBuilder);
     setStaticLangReturnFields(context, Synchronicity.Async, methodViewBuilder);
@@ -179,11 +185,13 @@ public class ApiMethodTransformer {
       MethodTransformerContext context,
       ImmutableList<Field> fields,
       List<ParamWithSimpleDoc> additionalParams) {
+    SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
     setCommonFields(context, methodViewBuilder);
-    methodViewBuilder.name(context.getNamer().getApiMethodName(context.getMethod()));
-    methodViewBuilder.callableName(context.getNamer().getCallableName(context.getMethod()));
+    methodViewBuilder.name(namer.getApiMethodName(context.getMethod()));
+    methodViewBuilder.uniqueName(namer.getUniqueApiMethodName(context.getMethod(), fields));
+    methodViewBuilder.callableName(namer.getCallableName(context.getMethod()));
     setFlattenedMethodFields(
         context, fields, additionalParams, Synchronicity.Sync, methodViewBuilder);
     setStaticLangReturnFields(context, Synchronicity.Sync, methodViewBuilder);

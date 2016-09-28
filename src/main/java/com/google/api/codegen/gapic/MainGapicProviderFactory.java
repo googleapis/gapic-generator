@@ -33,8 +33,8 @@ import com.google.api.codegen.py.PythonSnippetSetRunner;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.ruby.RubyGapicContext;
 import com.google.api.codegen.ruby.RubySnippetSetRunner;
-import com.google.api.codegen.transformer.csharp.CSharpGapicSurfaceClientTransformer;
-import com.google.api.codegen.transformer.csharp.CSharpGapicSurfaceSnippetsTransformer;
+import com.google.api.codegen.transformer.csharp.CSharpGapicClientTransformer;
+import com.google.api.codegen.transformer.csharp.CSharpGapicSnippetsTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
@@ -98,14 +98,14 @@ public class MainGapicProviderFactory
               .setModel(model)
               .setApiConfig(apiConfig)
               .setSnippetSetRunner(new CommonSnippetSetRunner(new CSharpRenderingUtil()))
-              .setModelToViewTransformer(new CSharpGapicSurfaceClientTransformer(pathMapper))
+              .setModelToViewTransformer(new CSharpGapicClientTransformer(pathMapper))
               .build();
       GapicProvider<? extends Object> snippetProvider =
           ViewModelGapicProvider.newBuilder()
               .setModel(model)
               .setApiConfig(apiConfig)
               .setSnippetSetRunner(new CommonSnippetSetRunner(new CSharpRenderingUtil()))
-              .setModelToViewTransformer(new CSharpGapicSurfaceSnippetsTransformer(pathMapper))
+              .setModelToViewTransformer(new CSharpGapicSnippetsTransformer(pathMapper))
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, snippetProvider);
 

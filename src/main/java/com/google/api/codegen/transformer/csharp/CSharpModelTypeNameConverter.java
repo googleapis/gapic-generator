@@ -73,9 +73,11 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
           .build();
 
   private TypeNameConverter typeNameConverter;
+  private CSharpEnumNamer enumNamer;
 
   public CSharpModelTypeNameConverter(String implicitPackageName) {
     this.typeNameConverter = new CSharpTypeTable(implicitPackageName);
+    this.enumNamer = new CSharpEnumNamer();
   }
 
   @Override
@@ -131,17 +133,25 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   @Override
   public TypedValue getZeroValue(TypeRef type) {
     if (type.isMap()) {
+      TypeName keyTypeName = getTypeName(type.getMapKeyField());
+      TypeName valueTypeName = getTypeName(type.getMapValueField());
+      String pattern =
+          "new %s<" + keyTypeName.getNickname() + ", " + valueTypeName.getNickname() + ">()";
       return TypedValue.create(
-          typeNameConverter.getTypeName("System.Collections.Generic.Dictionary"),
-          "new %s<???, ???>()");
+          typeNameConverter.getTypeName("System.Collections.Generic.Dictionary"), pattern);
     } else if (type.isRepeated()) {
+      TypeName elementTypeName = getTypeNameForElementType(type);
+      String pattern = "new %s<" + elementTypeName.getNickname() + ">()";
       return TypedValue.create(
-          typeNameConverter.getTypeName("System.Collections.Generic.List"), "new %s<???>()");
+          typeNameConverter.getTypeName("System.Collections.Generic.List"), pattern);
     } else if (type.isMessage()) {
       return TypedValue.create(getTypeName(type), "new %s()");
     } else if (type.isEnum()) {
+      TypeName enumTypeName = getTypeName(type);
       EnumValue enumValue = type.getEnumType().getValues().get(0);
-      return TypedValue.create(getTypeName(type), "%s." + enumValue.getSimpleName());
+      String enumValueName =
+          enumNamer.getEnumValueName(enumTypeName.getNickname(), enumValue.getSimpleName());
+      return TypedValue.create(enumTypeName, "%s." + enumValueName);
     } else {
       return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
     }
