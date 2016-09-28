@@ -34,6 +34,7 @@ import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
+import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.RetryConfigDefinitionView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
@@ -140,8 +141,16 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.callSettings(apiCallableTransformer.generateCallSettings(context));
     view.apiMethods(
         generateApiMethods(context, context.getSupportedMethods(), PAGE_STREAM_IMPORTS));
+
+    // In Go, multiple methods share the same iterator type, one iterator type per resource type.
+    // We have to dedupe the iterators.
+    Map<String, PageStreamingDescriptorClassView> iterators = new TreeMap<>();
+    for (PageStreamingDescriptorClassView desc :
+        pageStreamingTransformer.generateDescriptorClasses(context)) {
+      iterators.put(desc.typeName(), desc);
+    }
     view.pageStreamingDescriptorClasses(
-        pageStreamingTransformer.generateDescriptorClasses(context));
+        new ArrayList<PageStreamingDescriptorClassView>(iterators.values()));
 
     ServiceConfig serviceConfig = new ServiceConfig();
     view.serviceAddress(serviceConfig.getServiceAddress(service));
