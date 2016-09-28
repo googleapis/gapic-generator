@@ -253,9 +253,6 @@
 @end
 
 @private mergeMetadata()
-    if md, ok := metadata.FromContext(ctx); ok {
-        ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
-    } else {
-        ctx = metadata.NewContext(ctx, c.metadata)
-    }
+    md, _ := metadata.FromContext(ctx)
+    ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
 @end
