@@ -143,10 +143,11 @@ public class ApiaryConfigToSampleConfigConverter {
     String placeholder = "";
     TypeInfo typeInfo = createTypeInfo(field, method);
     if (typeInfo.kind() == Field.Kind.TYPE_STRING && !typeInfo.isArray() && !typeInfo.isMap()) {
-      // Only generate placeholders for String types.
       String pattern = apiaryConfig.getFieldPattern().get(containerType.getName(), field.getName());
-      placeholder = Strings.nullToEmpty(DefaultString.getPlaceholder(field.getName(), pattern));
-      placeholder = typeNameGenerator.formatValue(placeholder, field.getKind());
+      if (!Strings.isNullOrEmpty(pattern)) {
+        placeholder = DefaultString.getPlaceholder(field.getName(), pattern);
+        placeholder = typeNameGenerator.formatValue(placeholder, field.getKind());
+      }
     }
     return FieldInfo.newBuilder()
         .name(field.getName())

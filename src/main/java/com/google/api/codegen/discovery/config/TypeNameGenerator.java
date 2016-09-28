@@ -57,7 +57,7 @@ public interface TypeNameGenerator {
   public String getSubpackage(boolean isRequest);
 
   /**
-   * Returns the language formatted representation of value given the type kind.
+   * Returns the language formatted representation of value given kind.
    */
   public String formatValue(String value, Kind kind);
 }
