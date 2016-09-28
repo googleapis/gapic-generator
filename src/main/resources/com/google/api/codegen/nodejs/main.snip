@@ -120,9 +120,9 @@
       var PAGE_DESCRIPTORS = {
         @join method : context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service)) on {@", "}.add(BREAK)
           @let pageStreaming = ifaceConfig.getMethodConfig(method).getPageStreaming(), \
-               requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
-               responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
-               resources = pageStreaming.getResourcesField().getSimpleName()
+               requestToken = context.propertyName(pageStreaming.getRequestTokenField()), \
+               responseToken = context.propertyName(pageStreaming.getResponseTokenField()), \
+               resources = context.propertyName(pageStreaming.getResourcesField())
               {@methodName(method)}: new gax.PageDescriptor(
                   '{@requestToken}',
                   '{@responseToken}',
@@ -224,11 +224,11 @@
                   '{@bundling.getBundledField().getSimpleName()}',
                   [
                     @join fieldSelector : bundling.getDiscriminatorFields() on {@", "}.add(BREAK)
-                      '{@fieldSelector.getParamName}'
+                      '{@context.fieldSelectorName(fieldSelector)}'
                     @end
                   ],
                   @if bundling.hasSubresponseField()
-                    '{@bundling.getSubresponseField().getSimpleName()}',
+                    '{@context.propertyName(bundling.getSubresponseField())}',
                   @else
                     null,
                   @end
