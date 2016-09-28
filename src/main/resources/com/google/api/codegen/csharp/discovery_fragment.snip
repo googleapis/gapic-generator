@@ -219,16 +219,10 @@
   @end
 @end
 
-# Unlike placeholders for other languages, this placeholder does not pretty-print output.
-# This seems to require a third-party library like Json.NET: https://www.nuget.org/packages/newtonsoft.json/
 @private print(element)
-    @let JavaScriptSerializer = context.using("System.Web.Script.Serialization.JavaScriptSerializer")
-        Console.WriteLine(new {@JavaScriptSerializer}().Serialize({@element}));
-    @end
+    Console.WriteLine({@element});
 @end
 
 @private printEntry(entry)
-    @let JavaScriptSerializer = context.using("System.Web.Script.Serialization.JavaScriptSerializer")
-        Console.WriteLine("[" + {@entry}.Key + "] = " + new {@JavaScriptSerializer}().Serialize({@entry}.Value));
-    @end
+    Console.WriteLine("[" + {@entry}.Key + "] = " + {@entry}.Value);
 @end
