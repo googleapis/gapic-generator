@@ -239,6 +239,10 @@ public abstract class DiscoveryContext extends CodegenContext {
     return apiaryConfig.getMediaUpload().contains(method.getName());
   }
 
+  public boolean hasMediaDownload(Method method) {
+    return apiaryConfig.getMediaDownload().contains(method.getName());
+  }
+
   public boolean hasAuthScopes(Method method) {
     return apiaryConfig.hasAuthScopes(method.getName());
   }

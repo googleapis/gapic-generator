@@ -126,17 +126,36 @@
       @end
 
     @end
-  @end
-  @if context.hasRequestField(method)
+    @if context.hasRequestField(method)
 
-    ${@requestBodyName()} = new {@context.getRequestClassName(method)}($client);
-    @if context.isPatch(method)
-      // {@TODO()} Assign values to desired properties of the `{@requestBodyName()}` object to be changed.
-    @else
-      // {@TODO()} Assign values to desired properties of the `{@requestBodyName()}` object.
+      ${@requestBodyName()} = new {@context.getRequestClassName(method)}($client);
+      @if context.isPatch(method)
+        // {@TODO()} Assign values to desired properties of the `{@requestBodyName()}` object to be changed.
+      @else
+        // {@TODO()} Assign values to desired properties of the `{@requestBodyName()}` object.
+      @end
+
+
     @end
 
+    @if context.hasMediaDownload(method)
+      ${@optParamsName()} = array();
+      @if context.hasMediaUpload(method)
 
+        {@mediaUpload()}
+
+      @end
+
+      {@mediaDownload()}
+
+
+    @else
+      @if context.hasMediaUpload(method)
+        {@mediaUpload()}
+
+
+      @end
+    @end
   @end
 @end
 
@@ -144,9 +163,8 @@
   @let responseTypeRef = context.getApiaryConfig.getType(method.getResponseTypeUrl), \
        resourceField = context.getFirstRepeatedField(responseTypeRef), \
        resources = resourceField.getName
-    ${@optParamsName()} = array();
-    @if context.hasMediaUpload(method)
-      {@mediaUpload()}
+    @if not(context.hasMediaDownload(method))
+      ${@optParamsName()} = array();
 
     @end
     do {
@@ -175,12 +193,6 @@
 @end
 
 @private compactCall(method)
-  @if context.hasMediaUpload(method)
-    {@mediaUpload()}
-
-
-
-  @end
   @if context.isResponseEmpty(method)
     {@methodCall(method)};
   @else
@@ -196,6 +208,14 @@
   // https://developers.google.com/api-client-library/php/guide/media_upload
 @end
 
+# TODO(tcoffee): refer to documentation if extant and valid on option for HTTP download with URL:
+# http://stackoverflow.com/questions/17855705/downloading-files-using-google-api-php-client
+@private mediaDownload()
+  // {@TODO()} Use `'alt' => 'media'` to download media content.
+  //
+  // ${@optParamsName()}['alt'] = 'media';
+@end
+
 @private methodCall(method)
   @let methodName = context.getMethodName(method), \
        resourcesPath = context.getApiaryConfig.getResources(method.getName)
@@ -205,7 +225,7 @@
 
 @private arguments(method)
   @let pathArgs = pathArguments(method)
-    @if context.isPageStreaming(method)
+    @if or(context.isPageStreaming(method), context.hasMediaDownload(method))
       @if pathArgs
         {@pathArgs}, ${@optParamsName()}
       @else

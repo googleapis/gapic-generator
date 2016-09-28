@@ -66,11 +66,18 @@
         JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
         {@ApiName} {@serviceName()} = new {@ApiName}.Builder(httpTransport, jsonFactory, credential)
-          .setApplicationName("Google Cloud Platform Sample")
-          .build();
+            .setApplicationName("Google Cloud Platform Sample")
+            .build();
 
         {@initialize(method)}
         {@methodCall(method)}
+        @if context.hasMediaDownload(method)
+
+          // {@TODO()} Download desired media content. For more information, see:
+          // https://developers.google.com/api-client-library/java/google-api-java-client/media-download
+
+
+        @end
         @if context.isPageStreaming(method)
           {@iterableCall(method)}
         @else

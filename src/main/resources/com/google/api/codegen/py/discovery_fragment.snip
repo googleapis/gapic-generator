@@ -79,6 +79,14 @@
     @end
 
     {@initialize(method)}
+    @if context.hasMediaDownload(method)
+        @let methodName = context.getMethodName(method)
+            @# {@TODO()} Use `{@methodName}_media` in place of `{@methodName}` below to download media content.
+            @# For multipart download options, see:
+            @# https://google.github.io/google-api-python-client/docs/epy/googleapiclient.http.MediaIoBaseDownload-class.html
+
+        @end
+    @end
     @if context.isPageStreaming(method)
         {@iterableCall(method)}
     @else

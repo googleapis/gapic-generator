@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.Documentation;
 import com.google.api.Service;
 import com.google.common.base.CaseFormat;
@@ -23,10 +25,6 @@ import com.google.protobuf.Field;
 import com.google.protobuf.Field.Kind;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayDeque;
@@ -43,7 +41,7 @@ import java.util.TreeMap;
  * DiscoveryImporter parses a Discovery Doc into a {@link com.google.api.Service} object and an
  * additional {@link ApiaryConfig} object for data not accommodated by Service.
  *
- * The current implementation also provides a main method used for manual sanity checking.
+ * <p>The current implementation also provides a main method used for manual sanity checking.
  */
 public class DiscoveryImporter {
 
@@ -97,7 +95,7 @@ public class DiscoveryImporter {
   /**
    * Parses the file.
    *
-   * Imports all RPC methods under "resources" and all types under "schemas". Since the discovery
+   * <p>Imports all RPC methods under "resources" and all types under "schemas". Since the discovery
    * doc and Service have different ways to handle nested structures, "synthetic" types are made as
    * a glue layer. All such types have names beginning with "synthetic$"
    */
@@ -181,9 +179,7 @@ public class DiscoveryImporter {
     return config;
   }
 
-  /**
-   * Parses the type and adds it to {@code types}. Used for both top-level types and synthetics.
-   */
+  /** Parses the type and adds it to {@code types}. Used for both top-level types and synthetics. */
   private void addType(String name, JsonNode root) {
     Type.Builder builder = Type.newBuilder();
     builder.setName(name);
@@ -193,9 +189,7 @@ public class DiscoveryImporter {
     types.put(name, builder.build());
   }
 
-  /**
-   * Parses a field of an object. Might create more synthetic types to express nested types.
-   */
+  /** Parses a field of an object. Might create more synthetic types to express nested types. */
   private Field fieldFrom(String typeName, String fieldName, JsonNode root) {
     if (root.get("description") != null) {
       config.getFieldDescription().put(typeName, fieldName, root.get("description").asText());
@@ -302,10 +296,10 @@ public class DiscoveryImporter {
   }
 
   /**
-   * Parses {@code root} as a member of "additionalProperties" of an object and adds it to
-   * {@code types}.
+   * Parses {@code root} as a member of "additionalProperties" of an object and adds it to {@code
+   * types}.
    *
-   * Properties are expressed as types, but are not strictly types as defined by discovery. They
+   * <p>Properties are expressed as types, but are not strictly types as defined by discovery. They
    * are not to be instantiated. Rather they provide a "schema" describing how data should be laid
    * out.
    */
@@ -359,8 +353,8 @@ public class DiscoveryImporter {
 
   /**
    * Parses and adds methods listed in {@code root} into {@code methods}. For each method, its
-   * namespace is recorded in {@link ApiaryConfig#resources} and its parameter order in
-   * {@link ApiaryConfig#methodParams}.
+   * namespace is recorded in {@link ApiaryConfig#resources} and its parameter order in {@link
+   * ApiaryConfig#methodParams}.
    */
   private void addMethods(JsonNode root) {
     addMethods(root, new ArrayDeque<String>());
@@ -382,11 +376,11 @@ public class DiscoveryImporter {
   /**
    * Parses a single method.
    *
-   * In discovery, a method can take multiple parameters, but in Service they can only take one.
-   * For this reason, a synthetic type is created for each method to "pull together" the
-   * parameters. For example, if a discovery-doc method takes two parameters, a string {@code s}
-   * and a number {@code i}, it will be instead structured as having one parameter. The type of the
-   * parameter will be a message with two fields: a string {@code s} and a number {@code i}.
+   * <p>In discovery, a method can take multiple parameters, but in Service they can only take one.
+   * For this reason, a synthetic type is created for each method to "pull together" the parameters.
+   * For example, if a discovery-doc method takes two parameters, a string {@code s} and a number
+   * {@code i}, it will be instead structured as having one parameter. The type of the parameter
+   * will be a message with two fields: a string {@code s} and a number {@code i}.
    */
   private Method methodFrom(JsonNode root) {
     String methodName = root.get("id").asText();
@@ -420,6 +414,11 @@ public class DiscoveryImporter {
       config.getMediaUpload().add(methodName);
     }
 
+    if (root.get("supportsMediaDownload") != null
+        && root.get("supportsMediaDownload").asBoolean()) {
+      config.getMediaDownload().add(methodName);
+    }
+
     for (JsonNode scope : elements(root.get("scopes"))) {
       config.getAuthScopes().put(methodName, scope.asText());
     }
@@ -437,16 +436,16 @@ public class DiscoveryImporter {
   }
 
   /**
-   * Maps the discovery doc type ({@code kindName}) and format {@code formatNode} into
-   * {@link Field.Kind}.
+   * Maps the discovery doc type ({@code kindName}) and format {@code formatNode} into {@link
+   * Field.Kind}.
    *
-   * If {@code kindName} is not {@code "string"}, {@code TYPE_TABLE} is consulted for the
+   * <p>If {@code kindName} is not {@code "string"}, {@code TYPE_TABLE} is consulted for the
    * appropriate {@link Field.Kind}.
    *
-   * Otherwise, if {@code kindName} is {@code "int64"} or {@code "uint64"}, the corresponding
+   * <p>Otherwise, if {@code kindName} is {@code "int64"} or {@code "uint64"}, the corresponding
    * {@link Field.Kind} is returned.
    *
-   * Otherwise, the returned {@link Field.Kind} is simply {@link Field.Kind.TYPE_STRING}, and its
+   * <p>Otherwise, the returned {@link Field.Kind} is simply {@link Field.Kind.TYPE_STRING}, and its
    * format, if exists, is recorded in {@link ApiaryConfig#stringFormat}.
    */
   private Field.Kind getFieldKind(
