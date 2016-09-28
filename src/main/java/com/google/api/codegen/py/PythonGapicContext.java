@@ -354,7 +354,8 @@ public class PythonGapicContext extends GapicContext {
     return defaultValue(field.getType(), importHandler);
   }
 
-  public String pathInEnumFile(EnumType enumType) {
+  /** Gives the path to a generated enum alias in the enums.py file */
+  private String pathInEnumFile(EnumType enumType) {
     List<String> path = new LinkedList<>();
     path.add(enumType.getSimpleName());
     ProtoElement elt = enumType.getParent();
