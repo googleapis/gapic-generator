@@ -17,12 +17,10 @@ package com.google.api.codegen.py;
 import com.google.api.codegen.ApiConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
 
 public class PythonInterfaceInitializer implements PythonSnippetSetInputInitializer<Interface> {
 
   private final ApiConfig apiConfig;
-  private PythonEnumSymbolTable enumTable = null;
 
   public PythonInterfaceInitializer(ApiConfig apiConfig) {
     this.apiConfig = apiConfig;
@@ -30,17 +28,11 @@ public class PythonInterfaceInitializer implements PythonSnippetSetInputInitiali
 
   @Override
   public PythonImportHandler getImportHandler(Interface iface) {
-    if (enumTable == null) {
-      enumTable = new PythonEnumSymbolTable(iface.getModel());
-    }
-    return new PythonImportHandler(iface, apiConfig, !Iterables.isEmpty(enumTable.getEnums()));
+    return new PythonImportHandler(iface, apiConfig);
   }
 
   @Override
   public ImmutableMap<String, Object> getGlobalMap(Interface iface) {
-    if (enumTable == null) {
-      enumTable = new PythonEnumSymbolTable(iface.getModel());
-    }
-    return ImmutableMap.of("pyproto", (Object) new PythonProtoElements(), "enumTable", enumTable);
+    return ImmutableMap.of("pyproto", (Object) new PythonProtoElements());
   }
 }

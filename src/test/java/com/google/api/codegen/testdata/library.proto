@@ -227,6 +227,19 @@ message SomeMessage2 {
     JUSTIFIED = 3;
   }
 
+  message SomeMessage3 {
+
+    // Tests Python nested enums
+    enum Alignment {
+      // 8-bit
+      CHAR = 0;
+      // 32-bit
+      INT = 1;
+      // 64-bit
+      DOUBLE = 2;
+    }
+  }
+
   Alignment format = 2;
 }
 
@@ -452,6 +465,9 @@ message Comment {
 
   // should be filled in by the sample generator
   Stage stage = 5;
+
+  // Tests Python nested enums
+  SomeMessage2.SomeMessage3.Alignment alignment = 6;
 }
 
 // Request message for LibraryService.GetBookFromArchive.

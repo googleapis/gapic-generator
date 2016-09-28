@@ -26,7 +26,6 @@ public class PythonProtoFileInitializer implements PythonSnippetSetInputInitiali
 
   @Override
   public ImmutableMap<String, Object> getGlobalMap(ProtoFile file) {
-    return ImmutableMap.of(
-        "file", (Object) file, "enumTable", new PythonEnumSymbolTable(file.getModel()));
+    return ImmutableMap.of("file", (Object) file);
   }
 }

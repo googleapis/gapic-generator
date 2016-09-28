@@ -353,7 +353,7 @@
 
 @private methodComments(service, method)
   @let descriptionComments = context.methodDescriptionComments(method), \
-       signatureComments = context.methodSignatureComments(service, method, importHandler, enumTable)
+       signatureComments = context.methodSignatureComments(service, method, importHandler)
     """
     @join comment : descriptionComments
       {@comment}
@@ -383,7 +383,7 @@
 @private methodSample(service, method)
   @let apiConfig = context.getApiConfig, \
        apiName = context.getApiWrapperName(service), \
-       returnType = context.returnTypeOrEmpty(method, importHandler, enumTable), \
+       returnType = context.returnTypeOrEmpty(method, importHandler), \
        fields = context.getRequiredFields(service, method), \
        builder = context.newDocConfigBuilder \
          .setInterface(service) \
@@ -501,7 +501,7 @@
             @if {@context.isDefaultValueMutable(field)}
                 {@paramName}=None
             @else
-                {@paramName}={@context.defaultValue(field, importHandler, enumTable)}
+                {@paramName}={@context.defaultValue(field, importHandler)}
             @end
         @end
     @end
@@ -511,7 +511,7 @@
     @join field : params if {@context.isDefaultValueMutable(field)} on BREAK
         @let paramName = {@context.python.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
             if {@paramName} is None:
-                {@paramName} = {@context.defaultValue(field, importHandler, enumTable)}
+                {@paramName} = {@context.defaultValue(field, importHandler)}
         @end
     @end
 @end
