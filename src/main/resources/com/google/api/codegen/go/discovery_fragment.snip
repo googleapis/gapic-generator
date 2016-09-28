@@ -38,7 +38,9 @@
       @if authType != "APPLICATION_DEFAULT_CREDENTIALS"
         "errors"
       @end
-      "fmt"
+      @if not(context.isResponseEmpty(method))
+        "fmt"
+      @end
       "log"
       @if authType != "APPLICATION_DEFAULT_CREDENTIALS"
         "net/http"
