@@ -17,6 +17,12 @@ package com.google.api.codegen.transformer.java;
 import com.google.api.codegen.transformer.FeatureConfig;
 
 public class JavaFeatureConfig extends FeatureConfig {
+
+  @Override
+  public boolean resourceNameTypesEnabled() {
+    return true;
+  }
+
   @Override
   public boolean enableMixins() {
     return true;

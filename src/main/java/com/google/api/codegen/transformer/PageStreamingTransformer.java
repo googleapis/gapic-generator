@@ -19,9 +19,9 @@ import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorView;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,33 +72,44 @@ public class PageStreamingTransformer {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
+    FeatureConfig featureConfig = context.getFeatureConfig();
 
     PageStreamingDescriptorClassView.Builder desc = PageStreamingDescriptorClassView.newBuilder();
 
+    Field resourceField = pageStreaming.getResourcesField();
+    TypeRef resourceType = resourceField.getType();
+
     desc.name(namer.getPageStreamingDescriptorConstName(method));
+    desc.typeName(
+        namer.getAndSavePagedResponseTypeName(
+            featureConfig,
+            typeTable,
+            method.getInputType(),
+            method.getOutputType(),
+            resourceField));
     desc.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     desc.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
-
-    TypeRef resourceType = pageStreaming.getResourcesField().getType();
-    desc.resourceTypeName(context.getTypeTable().getAndSaveNicknameForElementType(resourceType));
+    desc.resourceTypeName(
+        namer.getAndSaveElementFieldTypeName(featureConfig, typeTable, resourceField));
 
     TypeRef tokenType = pageStreaming.getResponseTokenField().getType();
     desc.tokenTypeName(typeTable.getAndSaveNicknameFor(tokenType));
 
     desc.defaultTokenValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(tokenType));
+    desc.resourceZeroValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(resourceType));
 
     desc.requestTokenSetFunction(
-        namer.getFieldSetFunctionName(pageStreaming.getRequestTokenField()));
+        namer.getFieldSetFunctionName(featureConfig, pageStreaming.getRequestTokenField()));
     if (pageStreaming.hasPageSizeField()) {
       desc.requestPageSizeSetFunction(
-          namer.getFieldSetFunctionName(pageStreaming.getPageSizeField()));
+          namer.getFieldSetFunctionName(featureConfig, pageStreaming.getPageSizeField()));
       desc.requestPageSizeGetFunction(
-          namer.getFieldGetFunctionName(pageStreaming.getPageSizeField()));
+          namer.getFieldGetFunctionName(featureConfig, pageStreaming.getPageSizeField()));
     }
     desc.responseTokenGetFunction(
-        namer.getFieldGetFunctionName(pageStreaming.getResponseTokenField()));
+        namer.getFieldGetFunctionName(featureConfig, pageStreaming.getResponseTokenField()));
     desc.resourcesFieldGetFunction(
-        namer.getFieldGetFunctionName(pageStreaming.getResourcesField()));
+        namer.getFieldGetFunctionName(featureConfig, pageStreaming.getResourcesField()));
 
     return desc.build();
   }

@@ -29,17 +29,32 @@ public class PhpNameFormatter implements NameFormatter {
   }
 
   @Override
-  public String varName(Name name) {
+  public String localVarName(Name name) {
+    return name.toLowerCamel();
+  }
+
+  @Override
+  public String privateFieldName(Name name) {
+    return name.toLowerCamel();
+  }
+
+  @Override
+  public String publicFieldName(Name name) {
     return name.toLowerCamel();
   }
 
   @Override
   public String varReference(Name name) {
-    return "$" + varName(name);
+    return "$" + localVarName(name);
   }
 
   @Override
-  public String methodName(Name name) {
+  public String publicMethodName(Name name) {
+    return name.toLowerCamel();
+  }
+
+  @Override
+  public String privateMethodName(Name name) {
     return name.toLowerCamel();
   }
 

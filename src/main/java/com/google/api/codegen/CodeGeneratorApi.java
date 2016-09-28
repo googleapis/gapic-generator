@@ -28,9 +28,10 @@ import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gapic.ResourceNameFormatProto;
 import com.google.inject.TypeLiteral;
+import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,13 @@ public class CodeGeneratorApi extends ToolDriverBase {
    */
   public CodeGeneratorApi(ToolOptions options) {
     super(options);
+  }
+
+  @Override
+  public ExtensionRegistry getPlatformExtensions() {
+    ExtensionRegistry extensionRegistry = super.getPlatformExtensions();
+    ResourceNameFormatProto.registerAllExtensions(extensionRegistry);
+    return extensionRegistry;
   }
 
   @Override

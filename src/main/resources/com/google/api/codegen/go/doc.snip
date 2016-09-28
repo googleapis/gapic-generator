@@ -1,26 +1,15 @@
 @extends "go/header.snip"
 
-@snippet generateFilename(service)
-    {@context.getApiConfig.getPackageName}/doc.go
-@end
-
-@snippet generateClass(service, body)
+@snippet generate(view)
     {@headerComment()}
 
-    // AUTO-GENERATED CODE. DO NOT EDIT.
-
-    // Package {@context.getPackageName} is an experimental, auto-generated package for the
-    // {@context.getPackageName} API.
+    // Package {@view.packageName} is an experimental, auto-generated package for the
+    // {@view.packageName} API.
     //
-    {@packageCommentSection(service)}
-    package {@context.getPackageName} // import "{@context.getApiConfig.getPackageName}"
-@end
-
-@snippet generateBody(service)
-@end
-
-@private packageCommentSection(service)
-    @join commentLine : context.getPackageDocument(service)
-        {@commentLine}
+    @join line : view.packageDoc
+      {@line}
     @end
+    package {@view.packageName} // import "{@view.importPath}"
+
+    const gapicNameVersion = "gapic/0.1.0"
 @end

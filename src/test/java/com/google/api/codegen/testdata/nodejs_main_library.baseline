@@ -38,21 +38,24 @@ var DEFAULT_SERVICE_PORT = 443;
 
 var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
 
-var DEFAULT_TIMEOUT = 30;
 
 var PAGE_DESCRIPTORS = {
   listShelves: new gax.PageDescriptor(
-      'page_token',
-      'next_page_token',
+      'pageToken',
+      'nextPageToken',
       'shelves'),
   listBooks: new gax.PageDescriptor(
-      'page_token',
-      'next_page_token',
+      'pageToken',
+      'nextPageToken',
       'books'),
   listStrings: new gax.PageDescriptor(
-      'page_token',
-      'next_page_token',
-      'strings')
+      'pageToken',
+      'nextPageToken',
+      'strings'),
+  findRelatedBooks: new gax.PageDescriptor(
+      'pageToken',
+      'nextPageToken',
+      'names')
 };
 
 /**
@@ -96,7 +99,6 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
   var port = opts.port || DEFAULT_SERVICE_PORT;
   var sslCreds = opts.sslCreds || null;
   var clientConfig = opts.clientConfig || {};
-  var timeout = opts.timeout || DEFAULT_TIMEOUT;
   var appName = opts.appName || 'gax';
   var appVersion = opts.appVersion || gax.version;
 
@@ -114,14 +116,13 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
           'edition',
           'shelf.name'
         ],
-        'book_names',
-        gax.createByteLengthFunction(grpcClient.google.example.library.v1.Book))
+        'bookNames',
+        gax.createByteLengthFunction(grpcClients.libraryServiceClient.google.example.library.v1.Book))
   };
   var defaults = gaxGrpc.constructSettings(
       'google.example.library.v1.LibraryService',
       configData,
       clientConfig,
-      timeout,
       PAGE_DESCRIPTORS,
       bundleDescriptors,
       {'x-goog-api-client': googleApiClient});
@@ -148,6 +149,7 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
     'addComments',
     'getBookFromArchive',
     'updateBookIndex',
+    'findRelatedBooks',
     'addTag'
   ];
   libraryServiceStubMethods.forEach(function(methodName) {
@@ -317,6 +319,9 @@ LibraryServiceApi.prototype.createShelf = function createShelf(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
     shelf: shelf
   };
@@ -371,6 +376,9 @@ LibraryServiceApi.prototype.getShelf = function getShelf(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
     name: name,
     options: options_
@@ -379,7 +387,7 @@ LibraryServiceApi.prototype.getShelf = function getShelf(
     req.message = options.message;
   }
   if ('stringBuilder' in options) {
-    req.string_builder = options.stringBuilder;
+    req.stringBuilder = options.stringBuilder;
   }
   return this._getShelf(req, options, callback);
 };
@@ -433,6 +441,9 @@ LibraryServiceApi.prototype.listShelves = function listShelves(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
   };
   return this._listShelves(req, options, callback);
@@ -467,6 +478,9 @@ LibraryServiceApi.prototype.deleteShelf = function deleteShelf(
     callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
+    options = {};
+  }
+  if (options === undefined) {
     options = {};
   }
   var req = {
@@ -516,9 +530,12 @@ LibraryServiceApi.prototype.mergeShelves = function mergeShelves(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
     name: name,
-    other_shelf_name: otherShelfName
+    otherShelfName: otherShelfName
   };
   return this._mergeShelves(req, options, callback);
 };
@@ -562,6 +579,9 @@ LibraryServiceApi.prototype.createBook = function createBook(
     callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
+    options = {};
+  }
+  if (options === undefined) {
     options = {};
   }
   var req = {
@@ -621,6 +641,9 @@ LibraryServiceApi.prototype.publishSeries = function publishSeries(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
     shelf: shelf,
     books: books
@@ -664,6 +687,9 @@ LibraryServiceApi.prototype.getBook = function getBook(
     callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
+    options = {};
+  }
+  if (options === undefined) {
     options = {};
   }
   var req = {
@@ -734,11 +760,14 @@ LibraryServiceApi.prototype.listBooks = function listBooks(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
     name: name
   };
   if ('pageSize' in options) {
-    req.page_size = options.pageSize;
+    req.pageSize = options.pageSize;
   }
   if ('filter' in options) {
     req.filter = options.filter;
@@ -775,6 +804,9 @@ LibraryServiceApi.prototype.deleteBook = function deleteBook(
     callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
+    options = {};
+  }
+  if (options === undefined) {
     options = {};
   }
   var req = {
@@ -835,15 +867,18 @@ LibraryServiceApi.prototype.updateBook = function updateBook(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
     name: name,
     book: book
   };
   if ('updateMask' in options) {
-    req.update_mask = options.updateMask;
+    req.updateMask = options.updateMask;
   }
   if ('physicalMask' in options) {
-    req.physical_mask = options.physicalMask;
+    req.physicalMask = options.physicalMask;
   }
   return this._updateBook(req, options, callback);
 };
@@ -887,9 +922,12 @@ LibraryServiceApi.prototype.moveBook = function moveBook(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
     name: name,
-    other_shelf_name: otherShelfName
+    otherShelfName: otherShelfName
   };
   return this._moveBook(req, options, callback);
 };
@@ -952,13 +990,16 @@ LibraryServiceApi.prototype.listStrings = function listStrings(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
   };
   if ('name' in options) {
     req.name = options.name;
   }
   if ('pageSize' in options) {
-    req.page_size = options.pageSize;
+    req.pageSize = options.pageSize;
   }
   return this._listStrings(req, options, callback);
 };
@@ -1003,6 +1044,9 @@ LibraryServiceApi.prototype.addComments = function addComments(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
     name: name,
     comments: comments
@@ -1043,6 +1087,9 @@ LibraryServiceApi.prototype.getBookFromArchive = function getBookFromArchive(
     callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
+    options = {};
+  }
+  if (options === undefined) {
     options = {};
   }
   var req = {
@@ -1091,12 +1138,88 @@ LibraryServiceApi.prototype.updateBookIndex = function updateBookIndex(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
     name: name,
-    index_name: indexName,
-    index_map: indexMap
+    indexName: indexName,
+    indexMap: indexMap
   };
   return this._updateBookIndex(req, options, callback);
+};
+
+/**
+ * @param {string[]} names
+ * @param {string[]} shelves
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ *
+ *   In addition, options may contain the following optional parameters.
+ * @param {number=} options.pageSize
+ *   The maximum number of resources contained in the underlying API
+ *   response. If page streaming is performed per-resource, this
+ *   parameter does not affect the return value. If page streaming is
+ *   performed per-page, this determines the maximum number of
+ *   resources in a page.
+ *
+ * @param {function(?Error, ?Object, ?string)=} callback
+ *   When specified, the results are not streamed but this callback
+ *   will be called with the response object representing [FindRelatedBooksResponse]{@link FindRelatedBooksResponse}.
+ *   The third item will be set if the response contains the token for the further results
+ *   and can be reused to `pageToken` field in the options in the next request.
+ * @returns {Stream|gax.EventEmitter}
+ *   An object stream which emits a string on 'data' event.
+ *   When the callback is specified or streaming is suppressed through options,
+ *   it will return an event emitter to handle the call status and the callback
+ *   will be called with the response object.
+ *
+ * @example
+ *
+ * var api = libraryV1.libraryServiceApi();
+ * var namesElement = '';
+ * var names = [namesElement];
+ * var shelves = [];
+ * // Iterate over all elements.
+ * api.findRelatedBooks(names, shelves).on('data', function(element) {
+ *     // doThingsWith(element)
+ * });
+ *
+ * // Or obtain the paged response through the callback.
+ * function callback(err, response, nextPageToken) {
+ *     if (err) {
+ *         console.error(err);
+ *         return;
+ *     }
+ *     // doThingsWith(response)
+ *     if (nextPageToken) {
+ *         // fetch the next page.
+ *         api.findRelatedBooks(names, shelves, {pageToken: nextPageToken}, callback);
+ *     }
+ * }
+ * api.findRelatedBooks(names, shelves, {flattenPages: false}, callback);
+ */
+LibraryServiceApi.prototype.findRelatedBooks = function findRelatedBooks(
+    names,
+    shelves,
+    options,
+    callback) {
+  if (options instanceof Function && callback === undefined) {
+    callback = options;
+    options = {};
+  }
+  if (options === undefined) {
+    options = {};
+  }
+  var req = {
+    names: names,
+    shelves: shelves
+  };
+  if ('pageSize' in options) {
+    req.pageSize = options.pageSize;
+  }
+  return this._findRelatedBooks(req, options, callback);
 };
 
 /**
@@ -1138,6 +1261,9 @@ LibraryServiceApi.prototype.addTag = function addTag(
     callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
+    options = {};
+  }
+  if (options === undefined) {
     options = {};
   }
   var req = {
@@ -1188,6 +1314,9 @@ LibraryServiceApi.prototype.addLabel = function addLabel(
     callback = options;
     options = {};
   }
+  if (options === undefined) {
+    options = {};
+  }
   var req = {
     resource: resource,
     label: label
@@ -1230,8 +1359,6 @@ function LibraryServiceApiBuilder(gaxGrpc) {
    * @param {Object=} opts.clientConfig
    *   The customized config to build the call settings. See
    *   {@link gax.constructSettings} for the format.
-   * @param {number=} opts.timeout
-   *   The default timeout, in seconds, for calls made through this client.
    * @param {number=} opts.appName
    *   The codename of the calling service.
    * @param {String=} opts.appVersion

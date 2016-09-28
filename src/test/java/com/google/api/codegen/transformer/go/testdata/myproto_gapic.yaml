@@ -1,0 +1,56 @@
+type: com.google.api.codegen.ConfigProto
+language_settings:
+  go:
+    package_name: cloud.google.com/go/library/apiv1
+interfaces:
+- name: google.example.myproto.v1.MyService
+  retry_codes_def:
+  - name: idempotent
+    retry_codes:
+    - UNAVAILABLE
+    - DEADLINE_EXCEEDED
+  - name: non_idempotent
+    retry_codes:
+  retry_params_def:
+  - name: default
+    initial_retry_delay_millis: 100
+    retry_delay_multiplier: 1.2
+    max_retry_delay_millis: 1000
+    initial_rpc_timeout_millis: 300
+    rpc_timeout_multiplier: 1.3
+    max_rpc_timeout_millis: 3000
+    total_timeout_millis: 30000
+  methods:
+  - name: SimpleMethod
+    flattening:
+      groups:
+      - parameters:
+        - value
+    required_fields:
+      - value
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    timeout_millis: 1000
+    request_object_method: false
+  - name: RetryMethod
+    flattening:
+      groups:
+      - parameters:
+        - value
+    required_fields:
+      - value
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 1000
+    request_object_method: false
+  - name: PageStreamMethod
+    page_streaming:
+      request:
+        token_field: page_token
+      response:
+        token_field: next_page_token
+        resources_field: value
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 1000
+    request_object_method: false

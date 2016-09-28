@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.csharp;
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -109,11 +110,6 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiWrapperVariableName(Interface interfaze) {
-    return varName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
-  }
-
-  @Override
   public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
     if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
       return "void";
@@ -147,60 +143,75 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getCallableName(Method method) {
-    // TODO: Use the 'privateFieldName' method when it's available (from Go MVVM PR)
-    return "_" + varName(Name.upperCamel("Call", method.getSimpleName()));
+    return privateFieldName(Name.upperCamel("Call", method.getSimpleName()));
   }
 
   @Override
-  public String getPathTemplateName(CollectionConfig collectionConfig) {
+  public String getPathTemplateName(Interface service, CollectionConfig collectionConfig) {
     return inittedConstantName(Name.from(collectionConfig.getEntityName(), "template"));
   }
 
   @Override
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
-    return methodName(identifier);
+    return privateMethodName(identifier);
   }
 
   @Override
   public String getAndSavePagedResponseTypeName(
-      ModelTypeTable typeTable, TypeRef... parameterizedTypes) {
-    String[] typeList = new String[parameterizedTypes.length];
-    for (int i = 0; i < typeList.length; i++) {
-      typeList[i] = typeTable.getFullNameForElementType(parameterizedTypes[i]);
-    }
-    return typeTable.getAndSaveNicknameForContainer("Google.Api.Gax.PagedEnumerable", typeList);
-  }
-
-  @Override
-  public String getAndSaveCallerPagedResponseTypeName(
-      ModelTypeTable typeTable, TypeRef... parameterizedTypes) {
-    String[] typeList = new String[parameterizedTypes.length - 1];
-    for (int i = 0; i < typeList.length; i++) {
-      typeList[i] = typeTable.getFullNameForElementType(parameterizedTypes[i + 1]);
-    }
-    return typeTable.getAndSaveNicknameForContainer("Google.Api.Gax.IPagedEnumerable", typeList);
+      FeatureConfig featureConfig,
+      ModelTypeTable typeTable,
+      TypeRef inputType,
+      TypeRef outputType,
+      Field resourceField) {
+    String inputTypeName = typeTable.getAndSaveNicknameForElementType(inputType);
+    String outputTypeName = typeTable.getAndSaveNicknameForElementType(outputType);
+    String resourceTypeName =
+        getAndSaveElementFieldTypeName(featureConfig, typeTable, resourceField);
+    return typeTable.getAndSaveNicknameForContainer(
+        "Google.Api.Gax.PagedEnumerable", inputTypeName, outputTypeName, resourceTypeName);
   }
 
   @Override
   public String getAndSaveAsyncPagedResponseTypeName(
-      ModelTypeTable typeTable, TypeRef... parameterizedTypes) {
-    String[] typeList = new String[parameterizedTypes.length];
-    for (int i = 0; i < typeList.length; i++) {
-      typeList[i] = typeTable.getFullNameForElementType(parameterizedTypes[i]);
-    }
+      FeatureConfig featureConfig,
+      ModelTypeTable typeTable,
+      TypeRef inputType,
+      TypeRef outputType,
+      Field resourceField) {
+    String inputTypeName = typeTable.getAndSaveNicknameForElementType(inputType);
+    String outputTypeName = typeTable.getAndSaveNicknameForElementType(outputType);
+    String resourceTypeName =
+        getAndSaveElementFieldTypeName(featureConfig, typeTable, resourceField);
     return typeTable.getAndSaveNicknameForContainer(
-        "Google.Api.Gax.PagedAsyncEnumerable", typeList);
+        "Google.Api.Gax.PagedAsyncEnumerable", inputTypeName, outputTypeName, resourceTypeName);
+  }
+
+  @Override
+  public String getAndSaveCallerPagedResponseTypeName(
+      FeatureConfig featureConfig,
+      ModelTypeTable typeTable,
+      TypeRef inputType,
+      TypeRef outputType,
+      Field resourceField) {
+    String outputTypeName = typeTable.getAndSaveNicknameForElementType(outputType);
+    String resourceTypeName =
+        getAndSaveElementFieldTypeName(featureConfig, typeTable, resourceField);
+    return typeTable.getAndSaveNicknameForContainer(
+        "Google.Api.Gax.IPagedEnumerable", outputTypeName, resourceTypeName);
   }
 
   @Override
   public String getAndSaveCallerAsyncPagedResponseTypeName(
-      ModelTypeTable typeTable, TypeRef... parameterizedTypes) {
-    String[] typeList = new String[parameterizedTypes.length - 1];
-    for (int i = 0; i < typeList.length; i++) {
-      typeList[i] = typeTable.getFullNameForElementType(parameterizedTypes[i + 1]);
-    }
+      FeatureConfig featureConfig,
+      ModelTypeTable typeTable,
+      TypeRef inputType,
+      TypeRef outputType,
+      Field resourceField) {
+    String outputTypeName = typeTable.getAndSaveNicknameForElementType(outputType);
+    String resourceTypeName =
+        getAndSaveElementFieldTypeName(featureConfig, typeTable, resourceField);
     return typeTable.getAndSaveNicknameForContainer(
-        "Google.Api.Gax.IPagedAsyncEnumerable", typeList);
+        "Google.Api.Gax.IPagedAsyncEnumerable", outputTypeName, resourceTypeName);
   }
 
   @Override
@@ -213,6 +224,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     return className(Name.upperCamel(service.getSimpleName()))
         + "."
         + className(Name.upperCamel(service.getSimpleName(), "Client"));
+  }
+
+  @Override
+  public String getApiWrapperVariableName(Interface interfaze) {
+    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
   }
 
   @Override
@@ -239,7 +255,12 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getParamName(String var) {
-    return varName(Name.from(var).join("id"));
+    return localVarName(Name.from(var).join("id"));
+  }
+
+  @Override
+  public String getFieldSetFunctionName(TypeRef type, Name identifier) {
+    return publicMethodName(identifier);
   }
 
   @Override
@@ -268,10 +289,5 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
       }
     }
     throw new IllegalStateException("Invalid Synchronicity: " + synchronicity);
-  }
-
-  @Override
-  public String getFieldSetFunctionName(TypeRef type, Name identifier) {
-    return methodName(identifier);
   }
 }

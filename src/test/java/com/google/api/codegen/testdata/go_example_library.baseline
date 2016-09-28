@@ -326,6 +326,28 @@ func ExampleClient_UpdateBookIndex() {
     }
 }
 
+func ExampleClient_FindRelatedBooks() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.FindRelatedBooksRequest{
+        // TODO: Fill request struct fields.
+    }
+    it := c.FindRelatedBooks(ctx, req)
+    for {
+        resp, err := it.Next()
+        if err != nil {
+            // TODO: Handle error.
+            break
+        }
+        // TODO: Use resp.
+        _ = resp
+    }
+}
+
 func ExampleClient_AddTag() {
     ctx := context.Background()
     c, err := library.NewClient(ctx)
@@ -343,3 +365,23 @@ func ExampleClient_AddTag() {
     // TODO: Use resp.
     _ = resp
 }
+
+func ExampleClient_AddLabel() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &taggerpb.AddLabelRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.AddLabel(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+

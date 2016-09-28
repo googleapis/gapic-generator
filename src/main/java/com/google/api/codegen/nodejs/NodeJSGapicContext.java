@@ -22,6 +22,7 @@ import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.transformer.nodejs.NodeJSFeatureConfig;
 import com.google.api.codegen.transformer.nodejs.NodeJSModelTypeNameConverter;
 import com.google.api.codegen.transformer.nodejs.NodeJSSurfaceNamer;
 import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
@@ -30,6 +31,7 @@ import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.FieldSelector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
@@ -39,24 +41,28 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
+import java.util.Collections;
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 /**
  * A GapicContext specialized for NodeJS.
  */
 public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
+  private GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
+
+  NodeJSSurfaceNamer namer;
 
   public NodeJSGapicContext(Model model, ApiConfig apiConfig) {
     super(model, apiConfig);
+    namer = new NodeJSSurfaceNamer(getApiConfig().getPackageName());
   }
 
   // Snippet Helpers
@@ -83,9 +89,15 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    *       will eventually go away when code gen also converts to MVVM.
    */
   public List<GrpcStubView> getStubs(Interface service) {
-    GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     return grpcStubTransformer.generateGrpcStubs(context);
+  }
+
+  public GrpcStubView getStubForMethod(Interface service, Method method) {
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    Interface targetInterface = context.asMethodContext(method).getTargetInterface();
+    return grpcStubTransformer.generateGrpcStub(
+        context, targetInterface, Collections.singletonList(method));
   }
 
   private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {
@@ -94,15 +106,23 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
             new NodeJSTypeTable(getApiConfig().getPackageName()),
             new NodeJSModelTypeNameConverter(getApiConfig().getPackageName()));
     return SurfaceTransformerContext.create(
-        service,
-        getApiConfig(),
-        modelTypeTable,
-        new NodeJSSurfaceNamer(getApiConfig().getPackageName()),
-        new NodeJSFeatureConfig());
+        service, getApiConfig(), modelTypeTable, namer, new NodeJSFeatureConfig());
   }
 
   public String filePath(ProtoFile file) {
     return file.getSimpleName().replace(".proto", "_pb2.js");
+  }
+
+  public String propertyName(Field field) {
+    return namer.getVariableName(field);
+  }
+
+  public String fieldSelectorName(FieldSelector fieldSelector) {
+    ImmutableList.Builder<String> names = ImmutableList.builder();
+    for (Field field : fieldSelector.getFields()) {
+      names.add(propertyName(field));
+    }
+    return Joiner.on(".").join(names.build());
   }
 
   /**
@@ -236,7 +256,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    */
   public List<String> fieldPropertyComment(Field field) {
     String commentType = fieldTypeCardinalityComment(field);
-    String fieldName = wrapIfKeywordOrBuiltIn(field.getSimpleName());
+    String fieldName = propertyName(field);
     return convertToCommentedBlock(
         fieldComment(String.format("@property {%s} %s", commentType, fieldName), null, field));
   }
@@ -480,10 +500,12 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   /**
    * Returns the JavaScript representation of the function to return the byte length.
    */
-  public String getByteLengthFunction(TypeRef typeRef) {
+  public String getByteLengthFunction(Interface service, Method method, TypeRef typeRef) {
     switch (typeRef.getKind()) {
       case TYPE_MESSAGE:
-        return "gax.createByteLengthFunction(grpcClient."
+        return "gax.createByteLengthFunction(grpcClients."
+            + getStubForMethod(service, method).grpcClientVariableName()
+            + "."
             + typeRef.getMessageType().getFullName()
             + ")";
       case TYPE_STRING:

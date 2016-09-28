@@ -21,7 +21,6 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,6 +41,7 @@ public class InitCodeNode {
   private InitValueConfig initValueConfig;
   private Map<String, InitCodeNode> children;
   private TypeRef typeRef;
+  private Field nodeField;
   private Name identifier;
 
   // TODO(michaelbausor): delete this field once DocConfig is no longer used (when python converts
@@ -94,6 +94,14 @@ public class InitCodeNode {
   }
 
   /*
+   * Get the Field of the node. Nodes that are children of Map or List nodes will share the same
+   * field as their parent.
+   */
+  public Field getField() {
+    return nodeField;
+  }
+
+  /*
    * Get the unique Name that will be used as a variable name in the initialization code.
    */
   public Name getIdentifier() {
@@ -142,11 +150,7 @@ public class InitCodeNode {
   public static InitCodeNode createTree(InitTreeParserContext context) {
     List<InitCodeNode> subTrees = buildSubTrees(context);
     InitCodeNode root = createWithChildren("root", InitCodeLineType.StructureInitLine, subTrees);
-    root.resolveNamesAndTypes(
-        context.table(),
-        context.valueGenerator(),
-        context.rootObjectType(),
-        context.suggestedName());
+    root.resolveNamesAndTypes(context, context.rootObjectType(), context.suggestedName(), null);
     root.createInitCodeLines();
     return root;
   }
@@ -241,19 +245,23 @@ public class InitCodeNode {
   }
 
   private void resolveNamesAndTypes(
-      SymbolTable table, TestValueGenerator valueGenerator, TypeRef type, Name suggestedName) {
+      InitTreeParserContext context, TypeRef type, Name suggestedName, Field field) {
 
     for (InitCodeNode child : children.values()) {
       validateKeyValue(type, child.key);
       child.resolveNamesAndTypes(
-          table,
-          valueGenerator,
+          context,
           getChildType(type, child.key),
-          getChildSuggestedName(suggestedName, lineType, child));
+          getChildSuggestedName(suggestedName, lineType, child),
+          getChildField(field, type, child.key));
     }
+
+    SymbolTable table = context.table();
+    TestValueGenerator valueGenerator = context.valueGenerator();
 
     validateType(lineType, type, children.keySet());
     typeRef = type;
+    nodeField = field;
     identifier = table.getNewSymbol(suggestedName);
 
     if (children.size() == 0) {
@@ -408,6 +416,25 @@ public class InitCodeNode {
       for (Field field : parentType.getMessageType().getFields()) {
         if (field.getSimpleName().equals(key)) {
           return field.getType();
+        }
+      }
+      throw new IllegalArgumentException(
+          "Message type " + parentType + " does not have field " + key);
+    } else {
+      throw new IllegalArgumentException(
+          "Primitive type " + parentType + " cannot have children. Child key: " + key);
+    }
+  }
+
+  private static Field getChildField(Field parentField, TypeRef parentType, String key) {
+    if (parentType.isMap()) {
+      return parentField;
+    } else if (parentType.isRepeated()) {
+      return parentField;
+    } else if (parentType.isMessage()) {
+      for (Field field : parentType.getMessageType().getFields()) {
+        if (field.getSimpleName().equals(key)) {
+          return field;
         }
       }
       throw new IllegalArgumentException(
