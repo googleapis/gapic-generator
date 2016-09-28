@@ -14,16 +14,12 @@
  */
 package com.google.api.codegen.discovery;
 
-import org.apache.commons.lang3.NotImplementedException;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.csharp.CSharpDiscoveryContext;
 import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
-import com.google.api.codegen.discovery.config.java.JavaTypeNameGenerator;
-import com.google.api.codegen.discovery.transformer.java.JavaSampleMethodToViewTransformer;
 import com.google.api.codegen.go.GoDiscoveryContext;
 import com.google.api.codegen.go.GoSnippetSetRunner;
 import com.google.api.codegen.java.JavaDiscoveryContext;
@@ -35,11 +31,10 @@ import com.google.api.codegen.php.PhpSnippetSetRunner;
 import com.google.api.codegen.py.PythonDiscoveryContext;
 import com.google.api.codegen.py.PythonDiscoveryInitializer;
 import com.google.api.codegen.py.PythonSnippetSetRunner;
-import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.ruby.RubyDiscoveryContext;
 import com.google.api.codegen.ruby.RubySnippetSetRunner;
-import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.protobuf.Method;
+import org.apache.commons.lang3.NotImplementedException;
 
 /*
  * Creates DiscoveryProvider instances based on an ID.
@@ -60,9 +55,11 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
       Service service, ApiaryConfig apiaryConfig, JsonNode sampleConfigOverrides, String id) {
     // If the JSON object has a language field at root that matches the current
     // language, use that node instead. Conversely, if there is no language
-    // field, don't adjust the node.
+    // field, set sampleConfigOverrides to null.
     if (sampleConfigOverrides != null && sampleConfigOverrides.has(id)) {
       sampleConfigOverrides = sampleConfigOverrides.get(id);
+    } else {
+      sampleConfigOverrides = null;
     }
     if (id.equals(CSHARP)) {
       return CommonDiscoveryProvider.newBuilder()
@@ -87,7 +84,6 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
               new JavaSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
           .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
           .build();
-
     } else if (id.equals(NODEJS)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new NodeJSDiscoveryContext(service, apiaryConfig))

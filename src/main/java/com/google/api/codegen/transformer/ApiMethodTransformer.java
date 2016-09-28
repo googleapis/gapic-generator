@@ -39,7 +39,6 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -265,17 +264,24 @@ public class ApiMethodTransformer {
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
     String requestTypeName = typeTable.getAndSaveNicknameFor(context.getMethod().getInputType());
     String responseTypeName = typeTable.getAndSaveNicknameFor(context.getMethod().getOutputType());
-    TypeRef resourceType = pageStreaming.getResourcesField().getType();
-    String resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceType);
+
+    Field resourceField = pageStreaming.getResourcesField();
+    String resourceTypeName =
+        context
+            .getNamer()
+            .getAndSaveElementFieldTypeName(
+                context.getFeatureConfig(), context.getTypeTable(), resourceField);
     String resourceFieldName = context.getNamer().getFieldName(pageStreaming.getResourcesField());
+    String resourceFieldGetFunctionName =
+        namer.getFieldGetFunctionName(context.getFeatureConfig(), resourceField);
+
     methodViewBuilder.listMethod(
         ListMethodDetailView.newBuilder()
             .requestTypeName(requestTypeName)
             .responseTypeName(responseTypeName)
             .resourceTypeName(resourceTypeName)
             .resourceFieldName(resourceFieldName)
-            .resourcesFieldGetFunction(
-                namer.getFieldGetFunctionName(pageStreaming.getResourcesField()))
+            .resourcesFieldGetFunction(resourceFieldGetFunctionName)
             .responseObjectTypeName(
                 context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType()))
             .build());
@@ -283,10 +289,11 @@ public class ApiMethodTransformer {
         context
             .getNamer()
             .getAndSavePagedResponseTypeName(
+                context.getFeatureConfig(),
                 context.getTypeTable(),
                 context.getMethod().getInputType(),
                 context.getMethod().getOutputType(),
-                resourceType));
+                resourceField));
     methodViewBuilder.hasReturnValue(true);
   }
 
@@ -409,6 +416,10 @@ public class ApiMethodTransformer {
       MethodTransformerContext context, ImmutableList<Field> fields) {
     List<PathTemplateCheckView> pathTemplateChecks = new ArrayList<>();
     for (Field field : fields) {
+      if (context.getFeatureConfig().useResourceNameFormatOption(field)) {
+        // Don't generate a path template check when using a ResourceName type instead of a string
+        continue;
+      }
       ImmutableMap<String, String> fieldNamePatterns =
           context.getMethodConfig().getFieldNamePatterns();
       String entityName = fieldNamePatterns.get(field.getSimpleName());
@@ -538,28 +549,30 @@ public class ApiMethodTransformer {
   private RequestObjectParamView generateRequestObjectParam(
       MethodTransformerContext context, Field field) {
     SurfaceNamer namer = context.getNamer();
+    FeatureConfig featureConfig = context.getFeatureConfig();
+    ModelTypeTable typeTable = context.getTypeTable();
+
+    String typeName =
+        namer.getNotImplementedString("ApiMethodTransformer.generateRequestObjectParam - typeName");
+    String elementTypeName =
+        namer.getNotImplementedString(
+            "ApiMethodTransformer.generateRequestObjectParam - elementTypeName");
+
+    if (namer.shouldImportRequestObjectParamType(field)) {
+      typeName = namer.getAndSaveFieldTypeName(featureConfig, typeTable, field);
+    }
+    if (namer.shouldImportRequestObjectParamElementType(field)) {
+      elementTypeName = namer.getAndSaveElementFieldTypeName(featureConfig, typeTable, field);
+    }
+
+    String setCallName = namer.getFieldSetFunctionName(featureConfig, field);
+
     RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
     param.name(namer.getVariableName(field));
     param.nameAsMethodName(namer.getFieldAsMethodName(field));
-
-    if (namer.shouldImportRequestObjectParamType(field)) {
-      param.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getType()));
-    } else {
-      param.typeName(
-          namer.getNotImplementedString(
-              "ApiMethodTransformer.generateRequestObjectParam - typeName"));
-    }
-
-    if (namer.shouldImportRequestObjectParamElementType(field)) {
-      param.elementTypeName(
-          context.getTypeTable().getAndSaveNicknameForElementType(field.getType()));
-    } else {
-      param.elementTypeName(
-          namer.getNotImplementedString(
-              "ApiMethodTransformer.generateRequestObjectParam - elementTypeName"));
-    }
-
-    param.setCallName(namer.getFieldSetFunctionName(field));
+    param.typeName(typeName);
+    param.elementTypeName(elementTypeName);
+    param.setCallName(setCallName);
     param.isMap(field.getType().isMap());
     param.isArray(!field.getType().isMap() && field.getType().isRepeated());
     return param.build();
