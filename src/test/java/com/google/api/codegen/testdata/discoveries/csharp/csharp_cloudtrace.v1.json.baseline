@@ -16,7 +16,6 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudTrace.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudTrace.v1.Data;
 
@@ -60,7 +59,7 @@ namespace CloudTraceSample
             // Data.Empty response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
@@ -81,7 +80,6 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudTrace.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudTrace.v1.Data;
 
@@ -124,7 +122,7 @@ namespace CloudTraceSample
             // Data.Trace response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
@@ -145,7 +143,6 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudTrace.v1;
 using Google.Apis.Services;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.CloudTrace.v1.Data;
 
@@ -194,7 +191,7 @@ namespace CloudTraceSample
                 foreach (Data.Trace trace in response.Traces)
                 {
                     // TODO: Change code below to process each `trace` resource:
-                    Console.WriteLine(new JavaScriptSerializer().Serialize(trace));
+                    Console.WriteLine(trace);
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
