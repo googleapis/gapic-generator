@@ -15,37 +15,25 @@
 package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.ApiConfig;
+import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.gapic.PackageNameCodePathMapper;
-import com.google.api.codegen.InterfaceConfig;
-import com.google.api.codegen.MultiYamlReader;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.stages.Merged;
-import com.google.api.tools.framework.model.testing.TestConfig;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
-import com.google.api.tools.framework.setup.StandardSetup;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.truth.Truth;
-import com.google.protobuf.Message;
-
-import io.grpc.Status;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.rules.TemporaryFolder;
 import org.junit.Test;
-import org.mockito.Mockito;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public class GoGapicSurfaceTransformerTest {
 
@@ -57,33 +45,16 @@ public class GoGapicSurfaceTransformerTest {
 
   @BeforeClass
   public static void setupClass() {
-    List<String> protoFiles = Collections.singletonList("myproto.proto");
-    List<String> yamlFiles = Collections.singletonList("myproto.yaml");
-    TestDataLocator testDataLocator = TestDataLocator.create(GoGapicSurfaceTransformerTest.class);
-    TestConfig testConfig =
-        new TestConfig(testDataLocator, tempDir.getRoot().getPath(), protoFiles);
-    model = testConfig.createModel(yamlFiles);
-    StandardSetup.registerStandardProcessors(model);
-    StandardSetup.registerStandardConfigAspects(model);
-    model.establishStage(Merged.KEY);
+    TestDataLocator locator = TestDataLocator.create(GoGapicSurfaceTransformerTest.class);
+    model =
+        CodegenTestUtil.readModel(
+            locator, tempDir, new String[] {"myproto.proto"}, new String[] {"myproto.yaml"});
     service = model.getSymbolTable().getInterfaces().asList().get(0);
 
-    List<String> gapicConfigFiles = Collections.singletonList("myproto_gapic.yaml");
-    List<String> gapicConfigContents = new ArrayList<>();
-    for (String fileName : gapicConfigFiles) {
-      gapicConfigContents.add(testDataLocator.readTestData(testDataLocator.findTestData(fileName)));
-    }
-
-    ImmutableMap<String, Message> supportedConfigTypes =
-        ImmutableMap.<String, Message>of(
-            ConfigProto.getDescriptor().getFullName(), ConfigProto.getDefaultInstance());
     ConfigProto configProto =
-        (ConfigProto)
-            MultiYamlReader.read(
-                model.getDiagCollector(),
-                gapicConfigFiles,
-                gapicConfigContents,
-                supportedConfigTypes);
+        CodegenTestUtil.readConfig(
+            model.getDiagCollector(), locator, new String[] {"myproto_gapic.yaml"});
+
     apiConfig = ApiConfig.createApiConfig(model, configProto);
 
     if (model.getDiagCollector().hasErrors()) {
@@ -97,7 +68,7 @@ public class GoGapicSurfaceTransformerTest {
 
   @Before
   public void setup() {
-    GoSurfaceNamer namer = new GoSurfaceNamer(model, apiConfig.getPackageName());
+    GoSurfaceNamer namer = new GoSurfaceNamer(apiConfig.getPackageName());
     context =
         SurfaceTransformerContext.create(
             service,

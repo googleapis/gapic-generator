@@ -89,7 +89,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   @Override
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
-    GoSurfaceNamer namer = new GoSurfaceNamer(model, apiConfig.getPackageName());
+    GoSurfaceNamer namer = new GoSurfaceNamer(apiConfig.getPackageName());
     List<ServiceDocView> serviceDocs = new ArrayList<>();
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       SurfaceTransformerContext context =
