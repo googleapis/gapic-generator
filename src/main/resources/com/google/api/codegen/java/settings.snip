@@ -198,7 +198,7 @@
 
 @private pageStreamingDescriptors(xsettingsClass)
   @join desc : xsettingsClass.pageStreamingDescriptors
-    private static PageStreamingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}, {@desc.resourceTypeName}> {@desc.name} =
+    private static final PageStreamingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}, {@desc.resourceTypeName}> {@desc.name} =
         new PageStreamingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}, {@desc.resourceTypeName}>() {
           @@Override
           public Object emptyToken() {
@@ -245,7 +245,7 @@
 
 @private bundlingDescriptors(xsettingsClass)
   @join desc : xsettingsClass.bundlingDescriptors
-    private static BundlingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}> {@desc.name} =
+    private static final BundlingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}> {@desc.name} =
         new BundlingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}>() {
           @@Override
           public String getBundlePartitionKey({@desc.requestTypeName} request) {
@@ -344,13 +344,13 @@
   @join settings : xsettingsClass.callSettings
     @switch settings.type.toString
     @case "SimpleApiCallable"
-      private SimpleCallSettings.Builder<{@settings.requestTypeName}, \
+      private final SimpleCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
     @case "PagedApiCallable"
-      private PageStreamingCallSettings.Builder<{@settings.requestTypeName}, \
+      private final PageStreamingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}, {@settings.resourceTypeName}> {@settings.memberName};
     @case "BundlingApiCallable"
-      private BundlingCallSettings.Builder<{@settings.requestTypeName}, \
+      private final BundlingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
     @default
       $unhandledCase: {@settings.type.toString}$

@@ -16,6 +16,7 @@
     {@statics(xapiClass)}
     {@staticFunctions(xapiClass)}
     {@constructors(xapiClass)}
+    {@memberMethods(xapiClass)}
     {@apiMethods(xapiClass)}
     {@cleanupSection()}
   }
@@ -152,10 +153,6 @@
   @join apiCallable : xapiClass.apiCallableMembers
     private final ApiCallable<{@apiCallable.requestTypeName}, {@apiCallable.responseTypeName}> {@apiCallable.name};
   @end
-
-  public final {@xapiClass.settingsClassName} getSettings() {
-    return settings;
-  }
   {@""}
 @end
 
@@ -221,6 +218,13 @@
           }
         });
     }
+  }
+  {@""}
+@end
+
+@private memberMethods(xapiClass)
+  public final {@xapiClass.settingsClassName} getSettings() {
+    return settings;
   }
   {@""}
 @end
