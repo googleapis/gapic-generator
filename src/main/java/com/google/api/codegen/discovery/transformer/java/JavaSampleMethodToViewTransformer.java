@@ -144,6 +144,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     sampleBodyView.authType(sampleConfig.authType());
     sampleBodyView.authInstructionsUrl(sampleConfig.authInstructionsUrl());
     sampleBodyView.authScopes(methodInfo.authScopes());
+    sampleBodyView.isAuthScopesSingular(methodInfo.authScopes().size() == 1);
     return sampleBodyView.build();
   }
 

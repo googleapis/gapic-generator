@@ -61,6 +61,8 @@ public abstract class SampleBodyView {
 
   public abstract List<String> authScopes();
 
+  public abstract boolean isAuthScopesSingular();
+
   public static Builder newBuilder() {
     return new AutoValue_SampleBodyView.Builder();
   }
@@ -107,6 +109,8 @@ public abstract class SampleBodyView {
     public abstract Builder authInstructionsUrl(String val);
 
     public abstract Builder authScopes(List<String> val);
+
+    public abstract Builder isAuthScopesSingular(boolean val);
 
     public abstract SampleBodyView build();
   }
