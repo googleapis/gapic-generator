@@ -20,6 +20,7 @@ import java.util.List;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Joiner;
+import com.google.protobuf.Field;
 
 public class JavaTypeNameGenerator implements TypeNameGenerator {
 
@@ -57,5 +58,15 @@ public class JavaTypeNameGenerator implements TypeNameGenerator {
       return NON_REQUEST_SUBPACKAGE;
     }
     return "";
+  }
+
+  @Override
+  public String formatValue(String value, Field.Kind kind) {
+    switch (kind) {
+      case TYPE_STRING:
+        return "\"" + value + "\"";
+      default:
+        throw new IllegalArgumentException("unsupported kind: " + kind.toString());
+    }
   }
 }

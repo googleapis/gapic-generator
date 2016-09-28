@@ -22,10 +22,10 @@ import java.util.Map;
 
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryImporter;
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
-import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
 
@@ -89,15 +89,15 @@ public class ApiaryConfigToSampleConfigConverter {
     ImmutableMap.Builder<String, FieldInfo> fields = new ImmutableMap.Builder<>();
     TypeInfo requestBodyType = null;
     for (String fieldName : apiaryConfig.getMethodParams(method.getName())) {
-      Field field =
-          apiaryConfig.getField(apiaryConfig.getType(method.getRequestTypeUrl()), fieldName);
+      Type containerType = apiaryConfig.getType(method.getRequestTypeUrl());
+      Field field = apiaryConfig.getField(containerType, fieldName);
       // If one of the method arguments has the field name "request$", it's the
       // request body.
       if (fieldName.equals(DiscoveryImporter.REQUEST_FIELD_NAME)) {
         requestBodyType = createTypeInfo(field, method);
         continue;
       }
-      fields.put(field.getName(), createFieldInfo(field, method));
+      fields.put(field.getName(), createFieldInfo(field, containerType, method));
     }
 
     TypeInfo requestType = createTypeInfo(method, true);
@@ -111,12 +111,13 @@ public class ApiaryConfigToSampleConfigConverter {
     boolean isPageStreaming = isPageStreaming(method);
     FieldInfo pageStreamingResourceField = null;
     if (isPageStreaming) {
-      Field field = getPageStreamingResourceField(apiaryConfig.getType(responseTypeUrl));
+      Type containerType = apiaryConfig.getType(responseTypeUrl);
+      Field field = getPageStreamingResourceField(containerType);
       // If field is null, then the page streaming resource field is not
       // repeated. We allow null to be stored, and leave it to the overrides
       // file to define appropriately.
       if (field != null) {
-        pageStreamingResourceField = createFieldInfo(field, method);
+        pageStreamingResourceField = createFieldInfo(field, containerType, method);
       }
     }
     MethodInfo methodInfo =
@@ -138,13 +139,22 @@ public class ApiaryConfigToSampleConfigConverter {
   /**
    * Creates a field.
    */
-  private FieldInfo createFieldInfo(Field field, Method method) {
+  private FieldInfo createFieldInfo(Field field, Type containerType, Method method) {
+    String placeholder = "";
+    TypeInfo typeInfo = createTypeInfo(field, method);
+    if (typeInfo.kind() == Field.Kind.TYPE_STRING && !typeInfo.isArray() && !typeInfo.isMap()) {
+      // Only generate placeholders for String types.
+      String pattern = apiaryConfig.getFieldPattern().get(containerType.getName(), field.getName());
+      placeholder = Strings.nullToEmpty(DefaultString.getPlaceholder(field.getName(), pattern));
+      placeholder = typeNameGenerator.formatValue(placeholder, field.getKind());
+    }
     return FieldInfo.newBuilder()
         .name(field.getName())
+        .type(typeInfo)
+        .placeholder(placeholder)
         .description(
             Strings.nullToEmpty(
                 apiaryConfig.getDescription(method.getRequestTypeUrl(), field.getName())))
-        .type(createTypeInfo(field, method))
         .build();
   }
 
@@ -154,7 +164,7 @@ public class ApiaryConfigToSampleConfigConverter {
   private TypeInfo createTypeInfo(Field field, Method method) {
     boolean isMap =
         apiaryConfig.getAdditionalProperties(method.getResponseTypeUrl(), field.getName()) != null;
-    boolean isArray = !isMap && (field.getCardinality() == Cardinality.CARDINALITY_REPEATED);
+    boolean isArray = !isMap && (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED);
 
     TypeInfo mapKey = null;
     TypeInfo mapValue = null;
@@ -221,12 +231,12 @@ public class ApiaryConfigToSampleConfigConverter {
    */
   private MessageTypeInfo createMessageTypeInfo(
       Field field, Method method, ApiaryConfig apiaryConfig, boolean deep) {
+    Type type = apiaryConfig.getType(field.getTypeUrl());
     String typeName = typeNameGenerator.getMessageTypeName(field.getTypeUrl());
-    Type type = apiaryConfig.getType(typeName);
     Map<String, FieldInfo> fields = new HashMap<>();
     if (deep) {
       for (Field field2 : type.getFieldsList()) {
-        fields.put(field2.getName(), createFieldInfo(field2, method));
+        fields.put(field2.getName(), createFieldInfo(field2, type, method));
       }
     }
     return MessageTypeInfo.newBuilder()

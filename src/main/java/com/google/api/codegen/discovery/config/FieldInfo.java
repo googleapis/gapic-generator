@@ -38,6 +38,12 @@ public abstract class FieldInfo {
   public abstract TypeInfo type();
 
   /**
+   * Returns the placeholder value of the field, and empty string if none.
+   */
+  @JsonProperty("placeholder")
+  public abstract String placeholder();
+
+  /**
    * Returns the description of the field.
    */
   @JsonProperty("description")
@@ -51,10 +57,13 @@ public abstract class FieldInfo {
   public static abstract class Builder {
 
     @JsonProperty("name")
-    public abstract Builder name(String name);
+    public abstract Builder name(String val);
 
     @JsonProperty("type")
     public abstract Builder type(TypeInfo val);
+
+    @JsonProperty("placeholder")
+    public abstract Builder placeholder(String val);
 
     @JsonProperty("description")
     public abstract Builder description(String val);
