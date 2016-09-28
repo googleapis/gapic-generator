@@ -76,6 +76,8 @@ public class ApiaryConfigToSampleConfigConverter {
         .apiTypeName(typeNameGenerator.getApiTypeName(apiName))
         .packagePrefix(typeNameGenerator.getPackagePrefix(apiName, apiVersion))
         .methods(methods)
+        .authType(apiaryConfig.getAuthType())
+        .authInstructionsUrl(apiaryConfig.getAuthInstructionsUrl())
         .build();
   }
 
@@ -126,6 +128,7 @@ public class ApiaryConfigToSampleConfigConverter {
             .responseType(responseType)
             .isPageStreaming(isPageStreaming)
             .pageStreamingResourceField(pageStreamingResourceField)
+            .authScopes(apiaryConfig.getAuthScopes(method.getName()))
             .build();
     return methodInfo;
   }

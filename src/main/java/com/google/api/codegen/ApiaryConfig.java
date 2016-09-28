@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
-
+import com.google.api.codegen.discovery.config.AuthType;
 import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashBasedTable;
@@ -142,15 +142,6 @@ public class ApiaryConfig {
    */
   private static final String CLOUD_PLATFORM_SCOPE =
       "https://www.googleapis.com/auth/cloud-platform";
-
-  /**
-   * Possible auth types supported by discovery.
-   */
-  public enum AuthType {
-    APPLICATION_DEFAULT_CREDENTIALS,
-    OAUTH_3L,
-    API_KEY,
-  }
 
   /**
    * Returns the auth type supported by the service.

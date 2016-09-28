@@ -96,6 +96,12 @@ public abstract class MethodInfo {
   @Nullable
   public abstract FieldInfo pageStreamingResourceField();
 
+  /**
+   * Returns a list of the method's accepted authentication scopes.
+   */
+  @JsonProperty("authScopes")
+  public abstract List<String> authScopes();
+
   public static Builder newBuilder() {
     return new AutoValue_MethodInfo.Builder();
   }
@@ -123,6 +129,9 @@ public abstract class MethodInfo {
 
     @JsonProperty("pageStreamingResourceField")
     public abstract Builder pageStreamingResourceField(FieldInfo val);
+
+    @JsonProperty("authScopes")
+    public abstract Builder authScopes(List<String> val);
 
     public abstract MethodInfo build();
   }
