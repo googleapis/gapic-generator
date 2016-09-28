@@ -518,7 +518,8 @@ func (c *Client) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBookI
 
 // FindRelatedBooks
 func (c *Client) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelatedBooksRequest) *StringIterator {
-    ctx = metadata.NewContext(ctx, c.metadata)
+    md, _ := metadata.FromContext(ctx)
+    ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
     it := &StringIterator{}
 
     fetch := func(pageSize int, pageToken string) (string, err) {
