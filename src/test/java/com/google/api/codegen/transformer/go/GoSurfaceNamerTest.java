@@ -49,14 +49,24 @@ public class GoSurfaceNamerTest {
     if (model.getDiagCollector().hasErrors()) {
       throw new IllegalStateException(model.getDiagCollector().getDiags().toString());
     }
+
     GoSurfaceNamer namer = new GoSurfaceNamer(apiConfig.getPackageName());
     List<Interface> services = model.getSymbolTable().getInterfaces().asList();
+
+    Truth.assertThat(apiConfig.getPackageName()).isEqualTo("cloud.google.com/go/gopher/apiv1");
+    Truth.assertThat(namer.getLocalPackageName()).isEqualTo("gopher");
+
+    // Both the service name and the local package name are "gopher",
+    // the client name prefix should be empty.
+    Truth.assertThat(namer.getReducedServiceName(services.get(0))).isEqualTo(Name.from("gopher"));
     Truth.assertThat(namer.clientNamePrefix(services.get(0))).isEqualTo(Name.from());
+
+    // The service name is different from the local package name,
+    // use the service name as the prefix.
+    Truth.assertThat(namer.getReducedServiceName(services.get(1))).isEqualTo(Name.from("guru"));
     Truth.assertThat(namer.clientNamePrefix(services.get(1))).isEqualTo(Name.from("guru"));
   }
 
-  // Don't drop service name if the name is different from package,
-  // even if there's only one.
   @Test
   public void testClientNamePrefixSingle() {
     TestDataLocator locator = TestDataLocator.create(GoGapicSurfaceTransformerTest.class);
@@ -76,8 +86,18 @@ public class GoSurfaceNamerTest {
     if (model.getDiagCollector().hasErrors()) {
       throw new IllegalStateException(model.getDiagCollector().getDiags().toString());
     }
+
     GoSurfaceNamer namer = new GoSurfaceNamer(apiConfig.getPackageName());
     List<Interface> services = model.getSymbolTable().getInterfaces().asList();
+
+    Truth.assertThat(apiConfig.getPackageName())
+        .isEqualTo("cloud.google.com/go/singleservice/apiv1");
+    Truth.assertThat(namer.getLocalPackageName()).isEqualTo("singleservice");
+
+    // Don't drop service name if the name is different from package,
+    // even if there's only one.
+    Truth.assertThat(namer.getReducedServiceName(services.get(0)))
+        .isEqualTo(Name.from("oddly", "named"));
     Truth.assertThat(namer.clientNamePrefix(services.get(0)))
         .isEqualTo(Name.from("oddly", "named"));
   }
