@@ -16,20 +16,22 @@
 """Wrappers for protocol buffer enum types."""
 
 
-class Material(object):
-    """
-    Attributes:
-      PAPIER_MACHE (int)
-      WOOD (int)
-      PORCELAIN (int)
-      SEQUINS (int)
-      CARDBOARD (int)
-    """
-    PAPIER_MACHE = 0
-    WOOD = 1
-    PORCELAIN = 2
-    SEQUINS = 3
-    CARDBOARD = 4
+class FieldMask(object):
+    class Material(object):
+        """
+        Attributes:
+          PAPIER_MACHE (int)
+          WOOD (int)
+          PORCELAIN (int)
+          SEQUINS (int)
+          CARDBOARD (int)
+        """
+        PAPIER_MACHE = 0
+        WOOD = 1
+        PORCELAIN = 2
+        SEQUINS = 3
+        CARDBOARD = 4
+
 
 
 class NullValue(object):
@@ -45,56 +47,78 @@ class NullValue(object):
     NULL_VALUE = 0
 
 
-class Rating(object):
-    """
-    Attributes:
-      GOOD (int): GOOD enum description
-      BAD (int)
-    """
-    GOOD = 0
-    BAD = 1
+class Book(object):
+    class Rating(object):
+        """
+        Attributes:
+          GOOD (int): GOOD enum description
+          BAD (int)
+        """
+        GOOD = 0
+        BAD = 1
 
 
-class SomeMessageAlignment(object):
-    """
-    Tests service with two enums of the same simple name
 
-    Attributes:
-      GOOD (int)
-      NEUTRAL (int)
-      EVIL (int)
-    """
-    GOOD = 0
-    NEUTRAL = 1
-    EVIL = 2
+class SomeMessage(object):
+    class Alignment(object):
+        """
+        Tests service with two enums of the same simple name
 
-
-class SomeMessage2Alignment(object):
-    """
-    Another enum with duplicated simple name
-
-    Attributes:
-      FLUSH_LEFT (int)
-      FLUSH_RIGHT (int)
-      CENTERED (int)
-      JUSTIFIED (int)
-    """
-    FLUSH_LEFT = 0
-    FLUSH_RIGHT = 1
-    CENTERED = 2
-    JUSTIFIED = 3
+        Attributes:
+          GOOD (int)
+          NEUTRAL (int)
+          EVIL (int)
+        """
+        GOOD = 0
+        NEUTRAL = 1
+        EVIL = 2
 
 
-class Stage(object):
-    """
-    Attributes:
-      UNSET (int)
-      DRAFT (int)
-      PUBLISHED (int)
-      DELETED (int)
-    """
-    UNSET = 0
-    DRAFT = 1
-    PUBLISHED = 2
-    DELETED = 3
 
+class SomeMessage2(object):
+    class Alignment(object):
+        """
+        Another enum with duplicated simple name
+
+        Attributes:
+          FLUSH_LEFT (int)
+          FLUSH_RIGHT (int)
+          CENTERED (int)
+          JUSTIFIED (int)
+        """
+        FLUSH_LEFT = 0
+        FLUSH_RIGHT = 1
+        CENTERED = 2
+        JUSTIFIED = 3
+
+    class SomeMessage3(object):
+        class Alignment(object):
+            """
+            Tests Python nested enums
+
+            Attributes:
+              CHAR (int): 8-bit
+              INT (int): 32-bit
+              DOUBLE (int): 64-bit
+            """
+            CHAR = 0
+            INT = 1
+            DOUBLE = 2
+
+
+
+class Comment(object):
+    class Stage(object):
+        """
+        Attributes:
+          UNSET (int)
+          DRAFT (int)
+          PUBLISHED (int)
+          DELETED (int)
+        """
+        UNSET = 0
+        DRAFT = 1
+        PUBLISHED = 2
+        DELETED = 3
+
+    

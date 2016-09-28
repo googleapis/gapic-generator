@@ -46,6 +46,7 @@ import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.ShelfName;
 import com.google.example.library.v1.SomeMessage;
+import com.google.example.library.v1.SomeMessage2.SomeMessage3.Alignment;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
 import com.google.protobuf.ByteString;
@@ -576,9 +577,11 @@ public class LibraryServiceTest {
     String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
     ByteString comment = ByteString.copyFromUtf8("95");
     Comment.Stage stage = Comment.Stage.UNSET;
+    SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
     Comment commentsElement = Comment.newBuilder()
       .setComment(comment)
       .setStage(stage)
+      .setAlignment(alignment)
       .build();
     List<Comment> comments = Arrays.asList(commentsElement);
 

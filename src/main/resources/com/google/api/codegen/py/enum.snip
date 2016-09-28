@@ -1,3 +1,5 @@
+@extends "py/common.snip"
+
 @snippet generateFilename(service)
     enums.py
 @end
@@ -8,16 +10,15 @@
 @snippet generateMethodSampleCode(docConfig)
 @end
 
-@snippet generateModule(_, __, ___)
-    @let enums = enumConstants()
+@snippet generateModule(service, _, __)
+    @let enums = enumConstants(service.getModel)
         @if enums
             {@licenseSection()}
         
             {@moduleDocstring()}
-        
-        
-            {@enums}
 
+
+            {@enums}
         @end
     @end
 @end
@@ -62,15 +63,53 @@
 @end
 
 @private enumSection(enum)
-    class {@context.python.wrapIfKeywordOrBuiltIn(enumTable.lookupName(enum))}(object):
+    class {@context.python.wrapIfKeywordOrBuiltIn(enum.getSimpleName)}(object):
         {@enumComments(enum)}
         @join value : enum.getValues
             {@context.python.wrapIfKeywordOrBuiltIn(value.getSimpleName)} = {@value.getNumber}
         @end
 @end
 
-@private enumConstants()
-    @join enum : enumTable.getEnums on BREAK.add(BREAK).add(BREAK)
+@private enumConstants(model)
+    @join file : model.getFiles if {@containerSection(file)} on BREAK.add(BREAK)
+        @let enums = enumDecls(file),\
+                messages = containerSubsections(file)
+            @if enums
+                {@enums}{@BREAK}
+                @if {@messages}
+                    {@BREAK}
+                    {@BREAK}
+                @end
+            @end
+            @if messages
+                {@messages}
+            @end
+        @end
+    @end
+@end
+
+@private containerSection(protoContainerElement)
+    @let enums = enumDecls(protoContainerElement),\
+            subsections = containerSubsections(protoContainerElement)
+        @if enums
+            {@enums}
+            {@BREAK}
+        @end
+        @if subsections
+            {@subsections}
+        @end
+    @end
+@end
+
+@private enumDecls(protoContainerElement)
+    @join enum : protoContainerElement.getEnums() if enum.isReachable
         {@enumSection(enum)}
+    @end
+@end
+
+@private containerSubsections(protoContainerElement)
+    @join message : protoContainerElement.getMessages if containerSection(message) on BREAK.add(BREAK)
+        class {@message.getSimpleName}(object):
+            {@containerSection(message)}
     @end
 @end
