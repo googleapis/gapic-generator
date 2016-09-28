@@ -92,7 +92,7 @@ public class CommonAcronyms {
         startIndex = endIndex;
       }
     }
-    positions.sort(null);
+    Collections.sort(positions);
 
     return positions;
   }
