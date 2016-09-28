@@ -17,6 +17,8 @@ package com.google.api.codegen.discovery.transformer.java;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+
+import com.google.api.codegen.discovery.config.AuthType;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
 import com.google.api.codegen.discovery.config.SampleConfig;
@@ -157,6 +159,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
   }
 
   private void addStaticImports(SampleTransformerContext context) {
+    SampleConfig sampleConfig = context.getSampleConfig();
     SampleTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("com.google.api.client.googleapis.auth.oauth2.GoogleCredential");
     typeTable.saveNicknameFor("com.google.api.client.googleapis.javanet.GoogleNetHttpTransport");
@@ -165,6 +168,8 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     typeTable.saveNicknameFor("com.google.api.client.json.JsonFactory");
     typeTable.saveNicknameFor("java.io.IOException");
     typeTable.saveNicknameFor("java.security.GeneralSecurityException");
-    typeTable.saveNicknameFor("java.util.Arrays");
+    if (sampleConfig.authType() == AuthType.APPLICATION_DEFAULT_CREDENTIALS) {
+      typeTable.saveNicknameFor("java.util.Arrays");
+    }
   }
 }
