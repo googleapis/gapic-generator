@@ -190,7 +190,7 @@
         ctx = metadata.NewContext(ctx, c.metadata)
         it := &{@method.responseTypeName}{}
 
-        fetch := func(pageSize int, pageToken string) (string, err) {
+        fetch := func(pageSize int, pageToken string) (string, error) {
             var resp {@method.listMethod.responseObjectTypeName}
             req.PageToken = pageToken
             if pageSize > math.MaxInt32 {
@@ -244,6 +244,7 @@
         it.items = it.items[1:]
         return item, nil
     }
+
 @end
 
 @private pathTemplateParams(args)
