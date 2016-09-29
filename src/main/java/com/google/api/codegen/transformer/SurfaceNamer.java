@@ -654,17 +654,17 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The class name of the mock gRPC service for the given API service. */
   public String getMockServiceClassName(Interface service) {
-    return className(Name.upperCamel("Mock", service.getSimpleName()));
+    return className(Name.upperCamelKeepUpperAcronyms("Mock", service.getSimpleName()));
   }
 
   /** The class name of a variable to hold the mock gRPC service for the given API service. */
   public String getMockServiceVarName(Interface service) {
-    return localVarName(Name.upperCamel("Mock", service.getSimpleName()));
+    return localVarName(Name.upperCamelKeepUpperAcronyms("Mock", service.getSimpleName()));
   }
 
   /** The class name of the mock gRPC service implementation for the given API service. */
   public String getMockGrpcServiceImplName(Interface service) {
-    return className(Name.upperCamel("Mock", service.getSimpleName(), "Impl"));
+    return className(Name.upperCamelKeepUpperAcronyms("Mock", service.getSimpleName(), "Impl"));
   }
 
   /** The file name for an API service. */
