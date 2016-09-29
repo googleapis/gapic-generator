@@ -58,7 +58,7 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
 
   @Override
   protected String objectTypeName(String typeName) {
-    return upperCamelToLowerCamel(typeName);
+    return upperCamelToLowerCamel(getSimpleName(typeName));
   }
 
   public String typeDefaultValue(Type type, Field field) {
