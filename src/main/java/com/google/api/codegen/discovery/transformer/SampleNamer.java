@@ -17,6 +17,7 @@ package com.google.api.codegen.discovery.transformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NameFormatterDelegator;
+import com.google.common.base.Strings;
 
 /**
  * Provides language-specific names for variables and classes.
@@ -45,7 +46,7 @@ public class SampleNamer extends NameFormatterDelegator {
    * Returns the variable name for a field.
    */
   public String getFieldVarName(String fieldName) {
-    return privateFieldName(Name.lowerCamel(fieldName));
+    return localVarName(Name.lowerCamel(fieldName));
   }
 
   /**
@@ -53,6 +54,18 @@ public class SampleNamer extends NameFormatterDelegator {
    */
   public String getResourceGetterName(String fieldName) {
     return publicMethodName(Name.lowerCamel("get", fieldName));
+  }
+
+  /**
+   * Returns the variable name for a resource field.
+   *
+   * If resourceTypeName is an empty string, "item" is returned.
+   */
+  public String getResourceVarName(String resourceTypeName) {
+    if (Strings.isNullOrEmpty(resourceTypeName)) {
+      return localVarName(Name.lowerCamel("item"));
+    }
+    return localVarName(Name.upperCamel(resourceTypeName));
   }
 
   /**

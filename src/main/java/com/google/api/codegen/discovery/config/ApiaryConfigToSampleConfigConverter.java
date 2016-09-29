@@ -121,6 +121,7 @@ public class ApiaryConfigToSampleConfigConverter {
     }
     MethodInfo methodInfo =
         MethodInfo.newBuilder()
+            .verb(apiaryConfig.getHttpMethod(method.getName()))
             .nameComponents(methodNameComponents.get(method.getName()))
             .fields(fields.build())
             .requestType(requestType)
@@ -128,6 +129,7 @@ public class ApiaryConfigToSampleConfigConverter {
             .responseType(responseType)
             .isPageStreaming(isPageStreaming)
             .pageStreamingResourceField(pageStreamingResourceField)
+            .hasMediaUpload(apiaryConfig.getMediaUpload().contains(method.getName()))
             .authScopes(apiaryConfig.getAuthScopes(method.getName()))
             .build();
     return methodInfo;

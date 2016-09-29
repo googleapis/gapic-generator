@@ -39,6 +39,9 @@
   public void run() throws IOException, GeneralSecurityException {
     @if sampleBody.hasInputRequest
       // TODO: Assign values to the desired fields of `{@sampleBody.requestBodyVarName}`.
+      @if sampleBody.methodVerb == "PATCH"
+        // Only the assigned fields will be changed.
+      @end
       {@sampleBody.requestBodyTypeName} {@sampleBody.requestBodyVarName} = new {@sampleBody.requestBodyTypeName}();
 
     @end
@@ -53,6 +56,11 @@
       {@field.typeName} {@field.name} = {@field.defaultValue}; // TODO: Update placeholder value(s).
 
     @end
+    @if sampleBody.hasMediaUpload
+      // TODO: Add desired media content for upload. For more information, see:
+      // https://developers.google.com/api-client-library/java/google-api-java-client/media-upload
+
+    @end
     {@sampleBody.serviceTypeName} {@sampleBody.serviceVarName} = createService();
     {@sampleBody.requestTypeName} {@sampleBody.requestVarName} = {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}({@paramList(sampleBody.fieldVarNames)});
 
@@ -64,14 +72,14 @@
           continue;
         }
         @if sampleBody.isResourceMap
-          for ({@sampleBody.resourceTypeName} item : response.{@sampleBody.resourceGetterName}().entrySet()) {
-            // TODO: Process each `item` resource.
-            System.out.println(item.getKey() + ": " + item.getValue());
+          for ({@sampleBody.resourceTypeName} {@sampleBody.resourceVarName} : response.{@sampleBody.resourceGetterName}().entrySet()) {
+            // TODO: Change code below to process each `{@sampleBody.resourceVarName}` entry:
+            System.out.println({@sampleBody.resourceVarName}.getKey() + ": " + {@sampleBody.resourceVarName}.getValue());
           }
         @else
-          for ({@sampleBody.resourceTypeName} item : response.{@sampleBody.resourceGetterName}()) {
-            // TODO: Process each `item` resource.
-            System.out.println(item);
+          for ({@sampleBody.resourceTypeName} {@sampleBody.resourceVarName} : response.{@sampleBody.resourceGetterName}()) {
+            // TODO: Change code below to process each `{@sampleBody.resourceVarName}` resource:
+            System.out.println({@sampleBody.resourceVarName});
           }
         @end
       } while ({@sampleBody.responseVarName}.getNextPageToken() != null);
