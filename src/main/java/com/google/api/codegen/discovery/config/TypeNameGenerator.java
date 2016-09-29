@@ -16,6 +16,8 @@ package com.google.api.codegen.discovery.config;
 
 import java.util.List;
 
+import com.google.protobuf.Field.Kind;
+
 /**
  * Generates language specific names for types and package paths.
  *
@@ -53,4 +55,9 @@ public interface TypeNameGenerator {
    * type.
    */
   public String getSubpackage(boolean isRequest);
+
+  /**
+   * Returns the language formatted representation of value given kind.
+   */
+  public String formatValue(String value, Kind kind);
 }

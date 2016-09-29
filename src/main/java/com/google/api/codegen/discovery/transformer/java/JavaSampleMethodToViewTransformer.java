@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.google.api.client.util.Strings;
 import com.google.api.codegen.discovery.config.AuthType;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
@@ -158,10 +159,14 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
   public SampleFieldView generateSampleField(
       Entry<String, FieldInfo> field, SampleTypeTable sampleTypeTable, SymbolTable symbolTable) {
     TypeInfo typeInfo = field.getValue().type();
+    String defaultValue = field.getValue().placeholder();
+    if (Strings.isNullOrEmpty(defaultValue)) {
+      defaultValue = sampleTypeTable.getZeroValueAndSaveNicknameFor(typeInfo);
+    }
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.getKey()))
         .typeName(sampleTypeTable.getAndSaveNicknameFor(typeInfo))
-        .defaultValue(sampleTypeTable.getZeroValueAndSaveNicknameFor(typeInfo))
+        .defaultValue(defaultValue)
         .description(field.getValue().description())
         .build();
   }
