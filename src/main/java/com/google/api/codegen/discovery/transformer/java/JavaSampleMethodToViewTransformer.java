@@ -110,10 +110,10 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
       }
       sampleBodyView.resourceGetterName(sampleNamer.getResourceGetterName(fieldInfo.name()));
       String resourceTypeName = sampleTypeTable.getAndSaveNickNameForElementType(fieldInfo.type());
+      sampleBodyView.resourceTypeName(resourceTypeName);
       String resourceVarName =
           sampleNamer.getResourceVarName(fieldInfo.type().isMessage() ? resourceTypeName : "");
       sampleBodyView.resourceVarName(symbolTable.getNewSymbol(resourceVarName));
-      sampleBodyView.resourceTypeName(resourceTypeName);
       sampleBodyView.isResourceMap(fieldInfo.type().isMap());
     }
 
