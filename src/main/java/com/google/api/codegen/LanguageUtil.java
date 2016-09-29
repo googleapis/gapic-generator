@@ -37,17 +37,17 @@ public class LanguageUtil {
   }
 
   public static String upperCamelToUpperUnderscore(String name) {
-    name = CommonAcronyms.replaceAcronyms(name);
+    name = CommonAcronyms.camelizeUpperAcronyms(name);
     return CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, name);
   }
 
   public static String upperCamelToLowerCamel(String name) {
-    name = CommonAcronyms.replaceAcronyms(name);
+    name = CommonAcronyms.camelizeUpperAcronyms(name);
     return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, name);
   }
 
   public static String upperCamelToLowerUnderscore(String name) {
-    name = CommonAcronyms.replaceAcronyms(name);
+    name = CommonAcronyms.camelizeUpperAcronyms(name);
     return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
   }
 

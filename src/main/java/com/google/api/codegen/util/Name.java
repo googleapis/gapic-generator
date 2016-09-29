@@ -15,8 +15,10 @@
 package com.google.api.codegen.util;
 
 import com.google.api.client.util.Joiner;
+import com.google.api.codegen.util.CommonAcronyms.SubNamePiece;
+import com.google.api.codegen.util.CommonAcronyms.NamePieceCasingType;
 import com.google.common.base.CaseFormat;
-import com.google.common.base.Splitter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,11 +96,26 @@ public class Name {
    * @throws IllegalArgumentException if any of the strings do not follow the upper-camel format.
    */
   public static Name upperCamel(String... pieces) {
+    return upperCamelInternal(AcronymMode.CAMEL_CASE, pieces);
+  }
+
+  public static Name upperCamelKeepUpperAcronyms(String... pieces) {
+    return upperCamelInternal(AcronymMode.UPPER_CASE, pieces);
+  }
+
+  private static Name upperCamelInternal(AcronymMode acronymMode, String... pieces) {
     List<NamePiece> namePieces = new ArrayList<>();
     for (String piece : pieces) {
       validateCamel(piece, CheckCase.UPPER);
-      piece = CommonAcronyms.replaceAcronyms(piece);
-      namePieces.add(new NamePiece(piece, CaseFormat.UPPER_CAMEL));
+      for (SubNamePiece subPiece : CommonAcronyms.splitByUpperAcronyms(piece)) {
+        CaseFormat caseFormat = CaseFormat.UPPER_CAMEL;
+        CasingMode casingMode = CasingMode.NORMAL;
+        if (subPiece.type().equals(NamePieceCasingType.UPPER_ACRONYM)) {
+          caseFormat = CaseFormat.UPPER_UNDERSCORE;
+          casingMode = acronymMode.casingMode;
+        }
+        namePieces.add(new NamePiece(subPiece.namePieceString(), caseFormat, casingMode));
+      }
     }
     return new Name(namePieces);
   }
@@ -207,7 +224,11 @@ public class Name {
       if (firstPiece && caseFormat.equals(CaseFormat.LOWER_CAMEL)) {
         buffer.append(namePiece.caseFormat.to(CaseFormat.LOWER_CAMEL, namePiece.identifier));
       } else {
-        buffer.append(namePiece.caseFormat.to(CaseFormat.UPPER_CAMEL, namePiece.identifier));
+        CaseFormat toCaseFormat = CaseFormat.UPPER_CAMEL;
+        if (namePiece.casingMode.equals(CasingMode.UPPER_CAMEL_TO_SQUASHED_UPPERCASE)) {
+          toCaseFormat = CaseFormat.UPPER_UNDERSCORE;
+        }
+        buffer.append(namePiece.caseFormat.to(toCaseFormat, namePiece.identifier));
       }
       firstPiece = false;
     }
@@ -269,11 +290,35 @@ public class Name {
   private static class NamePiece {
     public final String identifier;
     public final CaseFormat caseFormat;
+    public final CasingMode casingMode;
 
     private NamePiece(String identifier, CaseFormat caseFormat) {
+      this(identifier, caseFormat, CasingMode.NORMAL);
+    }
+
+    private NamePiece(String identifier, CaseFormat caseFormat, CasingMode casingMode) {
       this.identifier = identifier;
       this.caseFormat = caseFormat;
+      this.casingMode = casingMode;
     }
+  }
+
+  // Represents how acronyms should be rendered
+  private enum AcronymMode {
+    CAMEL_CASE(CasingMode.NORMAL),
+    UPPER_CASE(CasingMode.UPPER_CAMEL_TO_SQUASHED_UPPERCASE);
+
+    private AcronymMode(CasingMode casingMode) {
+      this.casingMode = casingMode;
+    }
+
+    private final CasingMode casingMode;
+  }
+
+  // Represents overrides of desired output casing
+  private enum CasingMode {
+    NORMAL,
+    UPPER_CAMEL_TO_SQUASHED_UPPERCASE;
   }
 
   private enum CheckCase {

@@ -354,7 +354,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     addLabelSettings = settingsBuilder.addLabelSettings().build();
   }
 
-  private static PageStreamingDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_STR_DESC =
+  private static final PageStreamingDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_STR_DESC =
       new PageStreamingDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf>() {
         @Override
         public Object emptyToken() {
@@ -385,7 +385,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
         }
       };
 
-  private static PageStreamingDescriptor<ListBooksRequest, ListBooksResponse, Book> LIST_BOOKS_PAGE_STR_DESC =
+  private static final PageStreamingDescriptor<ListBooksRequest, ListBooksResponse, Book> LIST_BOOKS_PAGE_STR_DESC =
       new PageStreamingDescriptor<ListBooksRequest, ListBooksResponse, Book>() {
         @Override
         public Object emptyToken() {
@@ -419,7 +419,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
         }
       };
 
-  private static PageStreamingDescriptor<ListStringsRequest, ListStringsResponse, String> LIST_STRINGS_PAGE_STR_DESC =
+  private static final PageStreamingDescriptor<ListStringsRequest, ListStringsResponse, String> LIST_STRINGS_PAGE_STR_DESC =
       new PageStreamingDescriptor<ListStringsRequest, ListStringsResponse, String>() {
         @Override
         public Object emptyToken() {
@@ -453,7 +453,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
         }
       };
 
-  private static PageStreamingDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse, BookName> FIND_RELATED_BOOKS_PAGE_STR_DESC =
+  private static final PageStreamingDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse, BookName> FIND_RELATED_BOOKS_PAGE_STR_DESC =
       new PageStreamingDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse, BookName>() {
         @Override
         public Object emptyToken() {
@@ -487,7 +487,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
         }
       };
 
-  private static BundlingDescriptor<PublishSeriesRequest, PublishSeriesResponse> PUBLISH_SERIES_BUNDLING_DESC =
+  private static final BundlingDescriptor<PublishSeriesRequest, PublishSeriesResponse> PUBLISH_SERIES_BUNDLING_DESC =
       new BundlingDescriptor<PublishSeriesRequest, PublishSeriesResponse>() {
         @Override
         public String getBundlePartitionKey(PublishSeriesRequest request) {
@@ -556,25 +556,25 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   public static class Builder extends ServiceApiSettings.Builder {
     private final ImmutableList<ApiCallSettings.Builder> methodSettingsBuilders;
 
-    private SimpleCallSettings.Builder<CreateShelfRequest, Shelf> createShelfSettings;
-    private SimpleCallSettings.Builder<GetShelfRequest, Shelf> getShelfSettings;
-    private PageStreamingCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, Shelf> listShelvesSettings;
-    private SimpleCallSettings.Builder<DeleteShelfRequest, Empty> deleteShelfSettings;
-    private SimpleCallSettings.Builder<MergeShelvesRequest, Shelf> mergeShelvesSettings;
-    private SimpleCallSettings.Builder<CreateBookRequest, Book> createBookSettings;
-    private BundlingCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
-    private SimpleCallSettings.Builder<GetBookRequest, Book> getBookSettings;
-    private PageStreamingCallSettings.Builder<ListBooksRequest, ListBooksResponse, Book> listBooksSettings;
-    private SimpleCallSettings.Builder<DeleteBookRequest, Empty> deleteBookSettings;
-    private SimpleCallSettings.Builder<UpdateBookRequest, Book> updateBookSettings;
-    private SimpleCallSettings.Builder<MoveBookRequest, Book> moveBookSettings;
-    private PageStreamingCallSettings.Builder<ListStringsRequest, ListStringsResponse, String> listStringsSettings;
-    private SimpleCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings;
-    private SimpleCallSettings.Builder<GetBookFromArchiveRequest, Book> getBookFromArchiveSettings;
-    private SimpleCallSettings.Builder<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
-    private PageStreamingCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, String> findRelatedBooksSettings;
-    private SimpleCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings;
-    private SimpleCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings;
+    private final SimpleCallSettings.Builder<CreateShelfRequest, Shelf> createShelfSettings;
+    private final SimpleCallSettings.Builder<GetShelfRequest, Shelf> getShelfSettings;
+    private final PageStreamingCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, Shelf> listShelvesSettings;
+    private final SimpleCallSettings.Builder<DeleteShelfRequest, Empty> deleteShelfSettings;
+    private final SimpleCallSettings.Builder<MergeShelvesRequest, Shelf> mergeShelvesSettings;
+    private final SimpleCallSettings.Builder<CreateBookRequest, Book> createBookSettings;
+    private final BundlingCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
+    private final SimpleCallSettings.Builder<GetBookRequest, Book> getBookSettings;
+    private final PageStreamingCallSettings.Builder<ListBooksRequest, ListBooksResponse, Book> listBooksSettings;
+    private final SimpleCallSettings.Builder<DeleteBookRequest, Empty> deleteBookSettings;
+    private final SimpleCallSettings.Builder<UpdateBookRequest, Book> updateBookSettings;
+    private final SimpleCallSettings.Builder<MoveBookRequest, Book> moveBookSettings;
+    private final PageStreamingCallSettings.Builder<ListStringsRequest, ListStringsResponse, String> listStringsSettings;
+    private final SimpleCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings;
+    private final SimpleCallSettings.Builder<GetBookFromArchiveRequest, Book> getBookFromArchiveSettings;
+    private final SimpleCallSettings.Builder<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
+    private final PageStreamingCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, String> findRelatedBooksSettings;
+    private final SimpleCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings;
+    private final SimpleCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings;
 
     private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
 

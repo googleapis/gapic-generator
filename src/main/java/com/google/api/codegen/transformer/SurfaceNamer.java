@@ -388,7 +388,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getGrpcClientTypeName(Interface service) {
     NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
-    String className = className(Name.upperCamel(namePath.getHead(), "Client"));
+    String className = className(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Client"));
     return qualifiedName(namePath.withHead(className));
   }
 
@@ -398,7 +398,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getGrpcContainerTypeName(Interface service) {
     NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
-    String className = className(Name.upperCamel(namePath.getHead(), "Grpc"));
+    String className = className(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Grpc"));
     return qualifiedName(namePath.withHead(className));
   }
 
@@ -408,8 +408,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getGrpcServiceClassName(Interface service) {
     NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
-    String grpcContainerName = className(Name.upperCamel(namePath.getHead(), "Grpc"));
-    String serviceClassName = className(Name.upperCamel(service.getSimpleName(), "ImplBase"));
+    String grpcContainerName =
+        className(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Grpc"));
+    String serviceClassName =
+        className(Name.upperCamelKeepUpperAcronyms(service.getSimpleName(), "ImplBase"));
     return qualifiedName(namePath.withHead(grpcContainerName).append(serviceClassName));
   }
 
@@ -418,7 +420,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * This needs to match what Grpc generates for the particular language.
    */
   public String getGrpcMethodConstant(Method method) {
-    return inittedConstantName(Name.from("method").join(Name.upperCamel(method.getSimpleName())));
+    return inittedConstantName(
+        Name.from("method").join(Name.upperCamelKeepUpperAcronyms(method.getSimpleName())));
   }
 
   /** The name of the surface method which can call the given API method. */
@@ -507,7 +510,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getGrpcMethodName(Method method) {
     // This might seem silly, but it makes clear what we're dealing with (upper camel).
     // This is language-independent because of gRPC conventions.
-    return Name.upperCamel(method.getSimpleName()).toUpperCamel();
+    return Name.upperCamelKeepUpperAcronyms(method.getSimpleName()).toUpperCamel();
   }
 
   /** The type name for retry settings. */
@@ -651,17 +654,17 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The class name of the mock gRPC service for the given API service. */
   public String getMockServiceClassName(Interface service) {
-    return className(Name.upperCamel("Mock", service.getSimpleName()));
+    return className(Name.upperCamelKeepUpperAcronyms("Mock", service.getSimpleName()));
   }
 
   /** The class name of a variable to hold the mock gRPC service for the given API service. */
   public String getMockServiceVarName(Interface service) {
-    return localVarName(Name.upperCamel("Mock", service.getSimpleName()));
+    return localVarName(Name.upperCamelKeepUpperAcronyms("Mock", service.getSimpleName()));
   }
 
   /** The class name of the mock gRPC service implementation for the given API service. */
   public String getMockGrpcServiceImplName(Interface service) {
-    return className(Name.upperCamel("Mock", service.getSimpleName(), "Impl"));
+    return className(Name.upperCamelKeepUpperAcronyms("Mock", service.getSimpleName(), "Impl"));
   }
 
   /** The file name for an API service. */
