@@ -27,6 +27,14 @@ import javax.annotation.Nullable;
 public abstract class MethodInfo {
 
   /**
+   * Returns the HTTP verb of the method.
+   *
+   * For example: "GET"
+   */
+  @JsonProperty("verb")
+  public abstract String verb();
+
+  /**
    * Returns a list of the method-name's components.
    *
    * The method ID parsed from discovery is of the format
@@ -97,6 +105,12 @@ public abstract class MethodInfo {
   public abstract FieldInfo pageStreamingResourceField();
 
   /**
+   * Returns true if the method supports media upload.
+   */
+  @JsonProperty("hasMediaUpload")
+  public abstract boolean hasMediaUpload();
+
+  /**
    * Returns a list of the method's accepted authentication scopes.
    */
   @JsonProperty("authScopes")
@@ -108,6 +122,9 @@ public abstract class MethodInfo {
 
   @AutoValue.Builder
   public static abstract class Builder {
+
+    @JsonProperty("verb")
+    public abstract Builder verb(String val);
 
     @JsonProperty("nameComponents")
     public abstract Builder nameComponents(List<String> val);
@@ -129,6 +146,9 @@ public abstract class MethodInfo {
 
     @JsonProperty("pageStreamingResourceField")
     public abstract Builder pageStreamingResourceField(FieldInfo val);
+
+    @JsonProperty("hasMediaUpload")
+    public abstract Builder hasMediaUpload(boolean val);
 
     @JsonProperty("authScopes")
     public abstract Builder authScopes(List<String> val);

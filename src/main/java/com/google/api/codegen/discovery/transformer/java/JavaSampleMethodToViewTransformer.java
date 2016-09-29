@@ -88,6 +88,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     sampleBodyView.serviceVarName(symbolTable.getNewSymbol(sampleNamer.getServiceVarName()));
     sampleBodyView.serviceTypeName(
         sampleTypeTable.getAndSaveNicknameForServiceType(sampleConfig.apiTypeName()));
+    sampleBodyView.methodVerb(methodInfo.verb());
     sampleBodyView.methodNameComponents(methodInfo.nameComponents());
     sampleBodyView.requestVarName(symbolTable.getNewSymbol(sampleNamer.getRequestVarName()));
     sampleBodyView.requestTypeName(
@@ -97,6 +98,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     sampleBodyView.requestBodyVarName("");
     sampleBodyView.requestBodyTypeName("");
     sampleBodyView.resourceGetterName("");
+    sampleBodyView.resourceVarName("");
     sampleBodyView.resourceTypeName("");
     sampleBodyView.isResourceMap(false);
 
@@ -107,8 +109,11 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
             "method is page streaming, but the page streaming resource field is null.");
       }
       sampleBodyView.resourceGetterName(sampleNamer.getResourceGetterName(fieldInfo.name()));
-      sampleBodyView.resourceTypeName(
-          sampleTypeTable.getAndSaveNickNameForElementType(fieldInfo.type()));
+      String resourceTypeName = sampleTypeTable.getAndSaveNickNameForElementType(fieldInfo.type());
+      sampleBodyView.resourceTypeName(resourceTypeName);
+      String resourceVarName =
+          sampleNamer.getResourceVarName(fieldInfo.type().isMessage() ? resourceTypeName : "");
+      sampleBodyView.resourceVarName(symbolTable.getNewSymbol(resourceVarName));
       sampleBodyView.isResourceMap(fieldInfo.type().isMap());
     }
 
@@ -140,6 +145,8 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     }
     sampleBodyView.fieldVarNames(fieldVarNames);
     sampleBodyView.isPageStreaming(methodInfo.isPageStreaming());
+
+    sampleBodyView.hasMediaUpload(methodInfo.hasMediaUpload());
 
     sampleBodyView.authType(sampleConfig.authType());
     sampleBodyView.authInstructionsUrl(sampleConfig.authInstructionsUrl());

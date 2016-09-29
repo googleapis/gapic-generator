@@ -25,6 +25,8 @@ public abstract class SampleBodyView {
 
   public abstract String serviceTypeName();
 
+  public abstract String methodVerb();
+
   public abstract List<String> methodNameComponents();
 
   public abstract String requestVarName();
@@ -51,9 +53,13 @@ public abstract class SampleBodyView {
 
   public abstract String resourceGetterName();
 
+  public abstract String resourceVarName();
+
   public abstract String resourceTypeName();
 
   public abstract boolean isResourceMap();
+
+  public abstract boolean hasMediaUpload();
 
   public abstract AuthType authType();
 
@@ -73,6 +79,8 @@ public abstract class SampleBodyView {
     public abstract Builder serviceVarName(String val);
 
     public abstract Builder serviceTypeName(String val);
+
+    public abstract Builder methodVerb(String val);
 
     public abstract Builder methodNameComponents(List<String> val);
 
@@ -100,9 +108,13 @@ public abstract class SampleBodyView {
 
     public abstract Builder resourceGetterName(String val);
 
+    public abstract Builder resourceVarName(String val);
+
     public abstract Builder resourceTypeName(String val);
 
     public abstract Builder isResourceMap(boolean val);
+
+    public abstract Builder hasMediaUpload(boolean val);
 
     public abstract Builder authType(AuthType val);
 
