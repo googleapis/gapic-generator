@@ -148,6 +148,23 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
       pointerPrefix = "*";
     }
 
+    // TODO(pongad): Remove this atrocious hack after resolving
+    // https://github.com/googleapis/googleapis/issues/161 .
+    // Context: The structure of Go "google.golang.org/genproto/googleapis/api" directory is different from
+    // the way proto files are laid out in https://github.com/googleapis/googleapis/tree/master/google/api .
+    // These files therefore needs the `go_package` option so we can generate import paths properly.
+    // This is the workaround until that can happen.
+    if (importPath.equals("google.golang.org/genproto/googleapis/api")
+        && (elemName.equals("MetricDescriptor") || elemName.equals("Metric"))) {
+      importPath = "google.golang.org/genproto/googleapis/api/metric";
+      localName = "metricpb";
+    } else if (importPath.equals("google.golang.org/genproto/googleapis/api")
+        && (elemName.equals("MonitoredResourceDescriptor")
+            || elemName.equals("MonitoredResource"))) {
+      importPath = "google.golang.org/genproto/googleapis/api/monitoredres";
+      localName = "monitoredrespb";
+    }
+
     return new TypeName(
         Joiner.on(";").join(importPath, localName, elemName, pointerPrefix),
         pointerPrefix + localName + "." + elemName);
