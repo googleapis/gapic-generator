@@ -38,7 +38,7 @@ public abstract class FieldInfo {
   public abstract TypeInfo type();
 
   /**
-   * Returns the placeholder value of the field, and empty string if none.
+   * Returns the placeholder value of the field, or empty string if none.
    */
   @JsonProperty("placeholder")
   public abstract String placeholder();
