@@ -5,25 +5,24 @@
   // 1. If not already done, enable the {@sampleClass.apiTitle}
   //    and check the quota for your project at
   //    https://console.developers.google.com/apis/api/{@sampleClass.apiName}
-  // 2. Install the Node.js client library by running
-  //    `npm install googleapis --save`
-  // 3. This sample uses Application Default Credentials for authentication.
+  // 2. This sample uses Application Default Credentials for authentication.
   //    If not already done, install the gcloud CLI from
   //    https://cloud.google.com/sdk and run
   //    `gcloud beta auth application-default login`
+  // 3. Install the Node.js client library by running
+  //    `npm install googleapis --save`
 
-  var google = require('googleapis');
-  var GoogleAuth = require('google-auth-library');
+  var {@sampleClass.body.googleImportVarName} = require('googleapis');
 
-  var {@sampleClass.body.serviceVarName} = google.{@sampleClass.body.serviceTypeName}('{@sampleClass.apiVersion}');
+  var {@sampleClass.body.serviceVarName} = {@sampleClass.body.googleImportVarName}.{@sampleClass.body.serviceTypeName}('{@sampleClass.apiVersion}');
 
   {@mainFunc(sampleClass.body)}
 
-  {@authFunc()}
+  {@authFunc(sampleClass.body)}
 @end
 
 @private mainFunc(sampleBody)
-  authorize(function(authClient) {
+  {@sampleBody.authFuncName}(function(authClient) {
     @if sampleBody.hasRequestBody
       var {@sampleBody.requestVarName} = {
         @join field : sampleBody.fields if sampleBody.fields
@@ -34,7 +33,7 @@
 
 
           @end
-          {@field.name}: {@field.defaultValue}, // TODO: Update placeholder value(s).
+          {@field.name}: {@field.defaultValue},  {@placeholderTodo(field.isPlaceholderSingular)}
 
         @end
         @if sampleBody.hasRequestBody
@@ -47,13 +46,13 @@
 
         @end
         @if sampleBody.hasMediaUpload
-            media: {
-          // TODO: Change placeholders below to add desired media content for upload.
-          // For more information, see:
-          // https://github.com/google/google-api-nodejs-client#media-uploads
-          mimeType: '',  // See https://www.w3.org/Protocols/rfc1341/4_Content-Type.html
-          body: {}
-        },
+          media: {
+            // TODO: Change placeholders below to add desired media content for upload.
+            // For more information, see:
+            // https://github.com/google/google-api-nodejs-client#media-uploads
+            mimeType: '',  // See https://www.w3.org/Protocols/rfc1341/4_Content-Type.html
+            body: {}
+          },
 
         @end
         auth: authClient
@@ -61,42 +60,45 @@
 
     @end
     @if sampleBody.isPageStreaming
-      var handlePage = function(err, {@sampleBody.responseVarName}) {
+      var {@sampleBody.handlePageVarName} = function(err, {@sampleBody.responseVarName}) {
         if (err) {
           console.log(err);
           return;
         }
 
         var {@sampleBody.pageVarName} = {@sampleBody.responseVarName}['{@sampleBody.resourceFieldName}'];
-        if (!page) {
+        if (!{@sampleBody.pageVarName}) {
           return;
         }
         @if sampleBody.isResourceMap
-          Object.keys({@sampleBody.pageVarName}).forEach(function ({@keyName}) {
+          Object.keys({@sampleBody.pageVarName}).forEach(function (name) {
+            // TODO: Change code below to process each `name` property:
+            console.log(name + ': ' + JSON.stringify({@sampleBody.pageVarName}['name'], null, 2));
           });
         @else
           for (var i = 0; i < {@sampleBody.pageVarName}.length; i++) {
-            console.log({@sampleBody.pageVarName}[i]);
+            // TODO: Change code below to process each resource in `{@sampleBody.pageVarName}`:
+            console.log(JSON.stringify({@sampleBody.pageVarName}[i], null 2));
           }
         @end
         if ({@sampleBody.responseVarName}.nextPageToken) {
-          request.pageToken = {@sampleBody.responseVarName}.nextPageToken;
-          {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}(request, handlePage);
+          {@sampleBody.requestVarName}.pageToken = {@sampleBody.responseVarName}.nextPageToken;
+          {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}({@sampleBody.requestVarName}, {@sampleBody.handlePageVarName});
         }
       };
 
-      {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}(request, handlePage);
+      {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}({@sampleBody.requestVarName}, {@sampleBody.handlePageVarName});
     @else
       @if sampleBody.hasResponse
-        {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}(request, function(err, {@sampleBody.responseVarName}) {
+        {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}({@sampleBody.requestVarName}, function(err, {@sampleBody.responseVarName}) {
           if (err) {
             console.log(err);
             return;
           }
-          console.log({@sampleBody.responseVarName});
+          console.log(JSON.stringify({@sampleBody.responseVarName}, null, 2));
         });
       @else
-        {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}(request, function(err) {
+        {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}({@sampleBody.requestVarName}, function(err) {
           if (err) {
             console.log(err);
             return;
@@ -107,9 +109,9 @@
   });
 @end
 
-@private authFunc()
-  function authorize(callback) {
-    new GoogleAuth().getApplicationDefault(function(err, authClient)) {
+@private authFunc(sampleBody)
+  function {@sampleBody.authFuncName}(callback) {
+    google.auth.getApplicationDefault(function(err, authClient)) {
       if (err) {
         console.log('authentication failed: ', err);
         return;
@@ -126,5 +128,13 @@
 @private callChain(methodNameComponents)
   @join resource : methodNameComponents on "."
     {@resource}
+  @end
+@end
+
+@private placeholderTodo(isSingular)
+  @if isSingular
+    // TODO: Update placeholder value.
+  @else
+    // TODO: Update placeholder values.
   @end
 @end

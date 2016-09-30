@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.api.codegen.discovery.config.AuthType;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
@@ -114,7 +112,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
         throw new IllegalArgumentException(
             "method is page streaming, but the page streaming resource field is null.");
       }
-      sampleBodyView.resourceFieldName(sampleNamer.getFieldVarName(fieldInfo.name()));
+      sampleBodyView.resourceFieldName("");
       sampleBodyView.resourceGetterName(sampleNamer.getResourceGetterName(fieldInfo.name()));
       String resourceTypeName = sampleTypeTable.getAndSaveNickNameForElementType(fieldInfo.type());
       sampleBodyView.resourceTypeName(resourceTypeName);

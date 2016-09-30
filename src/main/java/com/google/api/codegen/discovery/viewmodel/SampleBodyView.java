@@ -15,6 +15,9 @@
 package com.google.api.codegen.discovery.viewmodel;
 
 import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.google.api.codegen.discovery.config.AuthType;
 import com.google.auto.value.AutoValue;
 
@@ -59,8 +62,6 @@ public abstract class SampleBodyView {
 
   public abstract String resourceTypeName();
 
-  public abstract String pageVarName();
-
   public abstract boolean isResourceMap();
 
   public abstract boolean hasMediaUpload();
@@ -72,6 +73,19 @@ public abstract class SampleBodyView {
   public abstract List<String> authScopes();
 
   public abstract boolean isAuthScopesSingular();
+
+  // Node.js specific section...
+  @Nullable
+  public abstract String googleImportVarName();
+
+  @Nullable
+  public abstract String pageVarName();
+
+  @Nullable
+  public abstract String handlePageVarName();
+
+  @Nullable
+  public abstract String authFuncName();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleBodyView.Builder();
@@ -106,8 +120,6 @@ public abstract class SampleBodyView {
 
     public abstract Builder responseTypeName(String val);
 
-    public abstract Builder pageVarName(String val);
-
     public abstract Builder fields(List<SampleFieldView> val);
 
     public abstract Builder fieldVarNames(List<String> val);
@@ -131,6 +143,14 @@ public abstract class SampleBodyView {
     public abstract Builder authScopes(List<String> val);
 
     public abstract Builder isAuthScopesSingular(boolean val);
+
+    public abstract Builder googleImportVarName(String val);
+
+    public abstract Builder pageVarName(String val);
+
+    public abstract Builder handlePageVarName(String val);
+
+    public abstract Builder authFuncName(String val);
 
     public abstract SampleBodyView build();
   }

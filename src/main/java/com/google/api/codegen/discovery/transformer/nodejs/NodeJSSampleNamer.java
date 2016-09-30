@@ -15,11 +15,17 @@
 package com.google.api.codegen.discovery.transformer.nodejs;
 
 import com.google.api.codegen.discovery.transformer.SampleNamer;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.nodejs.NodeJSNameFormatter;
 
 public class NodeJSSampleNamer extends SampleNamer {
 
   public NodeJSSampleNamer() {
     super(new NodeJSNameFormatter());
+  }
+
+  @Override
+  public String getServiceVarName(String apiTypeName) {
+    return localVarName(Name.lowerCamel(apiTypeName));
   }
 }

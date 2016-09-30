@@ -27,6 +27,8 @@ import com.google.api.codegen.discovery.transformer.SampleTypeTable;
 import com.google.api.codegen.discovery.viewmodel.SampleBodyView;
 import com.google.api.codegen.discovery.viewmodel.SampleFieldView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
+import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.protobuf.Method;
@@ -68,39 +70,27 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
     MethodInfo methodInfo = sampleConfig.methods().get(context.getMethodName());
     SampleNamer sampleNamer = context.getSampleNamer();
     SampleTypeTable sampleTypeTable = context.getTypeTable();
+    SymbolTable symbolTable = new SymbolTable();
 
     SampleBodyView.Builder sampleBodyView = SampleBodyView.newBuilder();
-    sampleBodyView.serviceVarName(sampleNamer.getServiceVarName());
+    sampleBodyView.serviceVarName(
+        symbolTable.getNewSymbol(sampleNamer.getServiceVarName(sampleConfig.apiTypeName())));
     sampleBodyView.serviceTypeName(
         sampleTypeTable.getAndSaveNicknameForServiceType(sampleConfig.apiTypeName()));
+    sampleBodyView.methodVerb(methodInfo.verb());
     sampleBodyView.methodNameComponents(methodInfo.nameComponents());
-    sampleBodyView.requestVarName(sampleNamer.getRequestVarName());
+    sampleBodyView.requestVarName(symbolTable.getNewSymbol(sampleNamer.getRequestVarName()));
     sampleBodyView.requestTypeName("");
-    sampleBodyView.hasRequestBody(true);
+
     sampleBodyView.requestBodyVarName("");
     sampleBodyView.requestBodyTypeName("");
-    sampleBodyView.hasResponse(
-        true); // The Node.js libraries always return a response, even if EMPTY.
-    sampleBodyView.responseVarName(sampleNamer.getResponseVarName());
-    sampleBodyView.responseTypeName("");
-    List<SampleFieldView> fields = new ArrayList<>();
-    for (FieldInfo field :
-        context.getSampleConfig().methods().get(context.getMethodName()).fields().values()) {
-      fields.add(
-          SampleFieldView.newBuilder()
-              .name(field.name())
-              .typeName("")
-              .defaultValue(sampleTypeTable.getZeroValueAndSaveNicknameFor(field.type()))
-              .description(field.description())
-              .build());
-    }
-    sampleBodyView.fields(fields);
-    sampleBodyView.fieldVarNames(new ArrayList<String>());
-    sampleBodyView.isPageStreaming(false);
     sampleBodyView.resourceFieldName("");
     sampleBodyView.resourceGetterName("");
+    sampleBodyView.resourceVarName("");
     sampleBodyView.resourceTypeName("");
     sampleBodyView.isResourceMap(false);
+    sampleBodyView.handlePageVarName("");
+    sampleBodyView.pageVarName("");
 
     if (methodInfo.isPageStreaming()) {
       FieldInfo fieldInfo = methodInfo.pageStreamingResourceField();
@@ -110,7 +100,49 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
       }
       sampleBodyView.resourceFieldName(sampleNamer.getFieldVarName(fieldInfo.name()));
       sampleBodyView.isResourceMap(fieldInfo.type().isMap());
+
+      sampleBodyView.handlePageVarName(
+          symbolTable.getNewSymbol(sampleNamer.localVarName(Name.lowerCamel("handlePage"))));
+      sampleBodyView.pageVarName(
+          symbolTable.getNewSymbol(
+              sampleNamer.localVarName(Name.lowerCamel(fieldInfo.name(), "page"))));
     }
+
+    sampleBodyView.responseVarName(sampleNamer.getResponseVarName());
+    sampleBodyView.responseTypeName("");
+    sampleBodyView.hasResponse(methodInfo.responseType() != null);
+
+    List<SampleFieldView> fields = new ArrayList<>();
+    for (FieldInfo field :
+        context.getSampleConfig().methods().get(context.getMethodName()).fields().values()) {
+      fields.add(
+          SampleFieldView.newBuilder()
+              .name(field.name())
+              .typeName("")
+              .defaultValue(sampleTypeTable.getZeroValueAndSaveNicknameFor(field.type()))
+              .description(field.description())
+              .isPlaceholderSingular(field.isPlaceholderSingular())
+              .build());
+    }
+    sampleBodyView.fields(fields);
+
+    sampleBodyView.hasRequestBody(methodInfo.requestBodyType() != null);
+    sampleBodyView.requestBodyVarName("");
+    sampleBodyView.requestBodyTypeName("");
+    sampleBodyView.fieldVarNames(new ArrayList<String>());
+    sampleBodyView.isPageStreaming(methodInfo.isPageStreaming());
+
+    sampleBodyView.hasMediaUpload(methodInfo.hasMediaUpload());
+
+    sampleBodyView.authType(sampleConfig.authType());
+    sampleBodyView.authInstructionsUrl(sampleConfig.authInstructionsUrl());
+    sampleBodyView.authScopes(methodInfo.authScopes());
+    sampleBodyView.isAuthScopesSingular(methodInfo.authScopes().size() == 1);
+
+    sampleBodyView.authFuncName(
+        symbolTable.getNewSymbol(sampleNamer.staticFunctionName(Name.lowerCamel("authorize"))));
+    sampleBodyView.googleImportVarName(
+        symbolTable.getNewSymbol(sampleNamer.localVarName(Name.lowerCamel("google"))));
     return sampleBodyView.build();
   }
 }

@@ -17,6 +17,7 @@ package com.google.api.codegen.discovery.config.nodejs;
 import java.util.List;
 
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
+import com.google.protobuf.Field.Kind;
 
 public class NodeJSTypeNameGenerator implements TypeNameGenerator {
 
@@ -47,5 +48,15 @@ public class NodeJSTypeNameGenerator implements TypeNameGenerator {
   public String getSubpackage(boolean isRequest) {
     // N/A
     return "";
+  }
+
+  @Override
+  public String formatValue(String value, Kind kind) {
+    switch (kind) {
+      case TYPE_STRING:
+        return "\'" + value + "\'";
+      default:
+        throw new IllegalArgumentException("unsupported kind: " + kind.toString());
+    }
   }
 }

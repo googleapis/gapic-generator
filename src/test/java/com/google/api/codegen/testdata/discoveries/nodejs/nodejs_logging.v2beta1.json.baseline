@@ -5,34 +5,51 @@
 // 1. If not already done, enable the Google Cloud Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
-// 2. Install the Node.js client library by running
-//    `npm install googleapis --save`
-// 3. This sample uses Application Default Credentials for authentication.
+// 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
 
 var google = require('googleapis');
-var GoogleAuth = require('google-auth-library');
 
-var service = google.logging('v2beta1');
+var logging = google.logging('v2beta1');
 
 authorize(function(authClient) {
   var request = {
+    resource: {
+      // TODO: Add desired properties of the request body.
+    },
+
     auth: authClient
   }
 
-  service.entries.list(request, function(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
     }
-    console.log(response);
-  });
+
+    var entriesPage = response['entries'];
+    if (!entriesPage) {
+      return;
+    }
+    for (var i = 0; i < entriesPage.length; i++) {
+      // TODO: Change code below to process each resource in `entriesPage`:
+      console.log(JSON.stringify(entriesPage[i], null 2));
+    }
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      logging.entries.list(request, handlePage);
+    }
+  };
+
+  logging.entries.list(request, handlePage);
 });
 
 function authorize(callback) {
-  new GoogleAuth().getApplicationDefault(function(err, authClient)) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
       console.log('authentication failed: ', err);
       return;
@@ -50,34 +67,37 @@ function authorize(callback) {
 // 1. If not already done, enable the Google Cloud Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
-// 2. Install the Node.js client library by running
-//    `npm install googleapis --save`
-// 3. This sample uses Application Default Credentials for authentication.
+// 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
 
 var google = require('googleapis');
-var GoogleAuth = require('google-auth-library');
 
-var service = google.logging('v2beta1');
+var logging = google.logging('v2beta1');
 
 authorize(function(authClient) {
   var request = {
+    resource: {
+      // TODO: Add desired properties of the request body.
+    },
+
     auth: authClient
   }
 
-  service.entries.write(request, function(err, response) {
+  logging.entries.write(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
     }
-    console.log(response);
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 
 function authorize(callback) {
-  new GoogleAuth().getApplicationDefault(function(err, authClient)) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
       console.log('authentication failed: ', err);
       return;
@@ -95,34 +115,43 @@ function authorize(callback) {
 // 1. If not already done, enable the Google Cloud Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
-// 2. Install the Node.js client library by running
-//    `npm install googleapis --save`
-// 3. This sample uses Application Default Credentials for authentication.
+// 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
 
 var google = require('googleapis');
-var GoogleAuth = require('google-auth-library');
 
-var service = google.logging('v2beta1');
+var logging = google.logging('v2beta1');
 
 authorize(function(authClient) {
-  var request = {
-    auth: authClient
-  }
-
-  service.monitoredResourceDescriptors.list(request, function(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
     }
-    console.log(response);
-  });
+
+    var resourceDescriptorsPage = response['resourceDescriptors'];
+    if (!resourceDescriptorsPage) {
+      return;
+    }
+    for (var i = 0; i < resourceDescriptorsPage.length; i++) {
+      // TODO: Change code below to process each resource in `resourceDescriptorsPage`:
+      console.log(JSON.stringify(resourceDescriptorsPage[i], null 2));
+    }
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      logging.monitoredResourceDescriptors.list(request, handlePage);
+    }
+  };
+
+  logging.monitoredResourceDescriptors.list(request, handlePage);
 });
 
 function authorize(callback) {
-  new GoogleAuth().getApplicationDefault(function(err, authClient)) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
       console.log('authentication failed: ', err);
       return;
@@ -140,37 +169,28 @@ function authorize(callback) {
 // 1. If not already done, enable the Google Cloud Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
-// 2. Install the Node.js client library by running
-//    `npm install googleapis --save`
-// 3. This sample uses Application Default Credentials for authentication.
+// 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
 
 var google = require('googleapis');
-var GoogleAuth = require('google-auth-library');
 
-var service = google.logging('v2beta1');
+var logging = google.logging('v2beta1');
 
 authorize(function(authClient) {
-  var request = {
-    // Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
-    logName: '', // TODO: Update placeholder value(s).
-
-    auth: authClient
-  }
-
-  service.projects.logs.delete(request, function(err, response) {
+  logging.projects.logs.delete(request, function(err) {
     if (err) {
       console.log(err);
       return;
     }
-    console.log(response);
   });
 });
 
 function authorize(callback) {
-  new GoogleAuth().getApplicationDefault(function(err, authClient)) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
       console.log('authentication failed: ', err);
       return;
@@ -188,38 +208,41 @@ function authorize(callback) {
 // 1. If not already done, enable the Google Cloud Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
-// 2. Install the Node.js client library by running
-//    `npm install googleapis --save`
-// 3. This sample uses Application Default Credentials for authentication.
+// 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
 
 var google = require('googleapis');
-var GoogleAuth = require('google-auth-library');
 
-var service = google.logging('v2beta1');
+var logging = google.logging('v2beta1');
 
 authorize(function(authClient) {
   var request = {
     // The resource name of the project in which to create the metric. Example:
     // `"projects/my-project-id"`. The new metric must be provided in the request.
-    projectName: '', // TODO: Update placeholder value(s).
+    projectName: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties of the request body.
+    },
 
     auth: authClient
   }
 
-  service.projects.metrics.create(request, function(err, response) {
+  logging.projects.metrics.create(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
     }
-    console.log(response);
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 
 function authorize(callback) {
-  new GoogleAuth().getApplicationDefault(function(err, authClient)) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
       console.log('authentication failed: ', err);
       return;
@@ -237,38 +260,28 @@ function authorize(callback) {
 // 1. If not already done, enable the Google Cloud Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
-// 2. Install the Node.js client library by running
-//    `npm install googleapis --save`
-// 3. This sample uses Application Default Credentials for authentication.
+// 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
 
 var google = require('googleapis');
-var GoogleAuth = require('google-auth-library');
 
-var service = google.logging('v2beta1');
+var logging = google.logging('v2beta1');
 
 authorize(function(authClient) {
-  var request = {
-    // The resource name of the metric to delete. Example:
-    // `"projects/my-project-id/metrics/my-metric-id"`.
-    metricName: '', // TODO: Update placeholder value(s).
-
-    auth: authClient
-  }
-
-  service.projects.metrics.delete(request, function(err, response) {
+  logging.projects.metrics.delete(request, function(err) {
     if (err) {
       console.log(err);
       return;
     }
-    console.log(response);
   });
 });
 
 function authorize(callback) {
-  new GoogleAuth().getApplicationDefault(function(err, authClient)) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
       console.log('authentication failed: ', err);
       return;
@@ -286,37 +299,29 @@ function authorize(callback) {
 // 1. If not already done, enable the Google Cloud Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
-// 2. Install the Node.js client library by running
-//    `npm install googleapis --save`
-// 3. This sample uses Application Default Credentials for authentication.
+// 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
 
 var google = require('googleapis');
-var GoogleAuth = require('google-auth-library');
 
-var service = google.logging('v2beta1');
+var logging = google.logging('v2beta1');
 
 authorize(function(authClient) {
-  var request = {
-    // The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-    metricName: '', // TODO: Update placeholder value(s).
-
-    auth: authClient
-  }
-
-  service.projects.metrics.get(request, function(err, response) {
+  logging.projects.metrics.get(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
     }
-    console.log(response);
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 
 function authorize(callback) {
-  new GoogleAuth().getApplicationDefault(function(err, authClient)) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
       console.log('authentication failed: ', err);
       return;
@@ -334,38 +339,43 @@ function authorize(callback) {
 // 1. If not already done, enable the Google Cloud Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
-// 2. Install the Node.js client library by running
-//    `npm install googleapis --save`
-// 3. This sample uses Application Default Credentials for authentication.
+// 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
 
 var google = require('googleapis');
-var GoogleAuth = require('google-auth-library');
 
-var service = google.logging('v2beta1');
+var logging = google.logging('v2beta1');
 
 authorize(function(authClient) {
-  var request = {
-    // Required. The resource name of the project containing the metrics. Example:
-    // `"projects/my-project-id"`.
-    projectName: '', // TODO: Update placeholder value(s).
-
-    auth: authClient
-  }
-
-  service.projects.metrics.list(request, function(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
     }
-    console.log(response);
-  });
+
+    var metricsPage = response['metrics'];
+    if (!metricsPage) {
+      return;
+    }
+    for (var i = 0; i < metricsPage.length; i++) {
+      // TODO: Change code below to process each resource in `metricsPage`:
+      console.log(JSON.stringify(metricsPage[i], null 2));
+    }
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      logging.projects.metrics.list(request, handlePage);
+    }
+  };
+
+  logging.projects.metrics.list(request, handlePage);
 });
 
 function authorize(callback) {
-  new GoogleAuth().getApplicationDefault(function(err, authClient)) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
       console.log('authentication failed: ', err);
       return;
@@ -383,17 +393,16 @@ function authorize(callback) {
 // 1. If not already done, enable the Google Cloud Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
-// 2. Install the Node.js client library by running
-//    `npm install googleapis --save`
-// 3. This sample uses Application Default Credentials for authentication.
+// 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
 
 var google = require('googleapis');
-var GoogleAuth = require('google-auth-library');
 
-var service = google.logging('v2beta1');
+var logging = google.logging('v2beta1');
 
 authorize(function(authClient) {
   var request = {
@@ -401,22 +410,26 @@ authorize(function(authClient) {
     // `"projects/my-project-id/metrics/my-metric-id"`. The updated metric must be provided in the request
     // and have the same identifier that is specified in `metricName`. If the metric does not exist, it is
     // created.
-    metricName: '', // TODO: Update placeholder value(s).
+    metricName: '',  // TODO: Update placeholder values.
+
+    resource: {
+      // TODO: Add desired properties of the request body.
+    },
 
     auth: authClient
   }
 
-  service.projects.metrics.update(request, function(err, response) {
+  logging.projects.metrics.update(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
     }
-    console.log(response);
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 
 function authorize(callback) {
-  new GoogleAuth().getApplicationDefault(function(err, authClient)) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
       console.log('authentication failed: ', err);
       return;
@@ -434,38 +447,41 @@ function authorize(callback) {
 // 1. If not already done, enable the Google Cloud Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
-// 2. Install the Node.js client library by running
-//    `npm install googleapis --save`
-// 3. This sample uses Application Default Credentials for authentication.
+// 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
 
 var google = require('googleapis');
-var GoogleAuth = require('google-auth-library');
 
-var service = google.logging('v2beta1');
+var logging = google.logging('v2beta1');
 
 authorize(function(authClient) {
   var request = {
     // The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`.
     // The new sink must be provided in the request.
-    projectName: '', // TODO: Update placeholder value(s).
+    projectName: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties of the request body.
+    },
 
     auth: authClient
   }
 
-  service.projects.sinks.create(request, function(err, response) {
+  logging.projects.sinks.create(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
     }
-    console.log(response);
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 
 function authorize(callback) {
-  new GoogleAuth().getApplicationDefault(function(err, authClient)) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
       console.log('authentication failed: ', err);
       return;
@@ -483,37 +499,28 @@ function authorize(callback) {
 // 1. If not already done, enable the Google Cloud Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
-// 2. Install the Node.js client library by running
-//    `npm install googleapis --save`
-// 3. This sample uses Application Default Credentials for authentication.
+// 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
 
 var google = require('googleapis');
-var GoogleAuth = require('google-auth-library');
 
-var service = google.logging('v2beta1');
+var logging = google.logging('v2beta1');
 
 authorize(function(authClient) {
-  var request = {
-    // The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
-    sinkName: '', // TODO: Update placeholder value(s).
-
-    auth: authClient
-  }
-
-  service.projects.sinks.delete(request, function(err, response) {
+  logging.projects.sinks.delete(request, function(err) {
     if (err) {
       console.log(err);
       return;
     }
-    console.log(response);
   });
 });
 
 function authorize(callback) {
-  new GoogleAuth().getApplicationDefault(function(err, authClient)) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
       console.log('authentication failed: ', err);
       return;
@@ -531,37 +538,29 @@ function authorize(callback) {
 // 1. If not already done, enable the Google Cloud Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
-// 2. Install the Node.js client library by running
-//    `npm install googleapis --save`
-// 3. This sample uses Application Default Credentials for authentication.
+// 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
 
 var google = require('googleapis');
-var GoogleAuth = require('google-auth-library');
 
-var service = google.logging('v2beta1');
+var logging = google.logging('v2beta1');
 
 authorize(function(authClient) {
-  var request = {
-    // The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
-    sinkName: '', // TODO: Update placeholder value(s).
-
-    auth: authClient
-  }
-
-  service.projects.sinks.get(request, function(err, response) {
+  logging.projects.sinks.get(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
     }
-    console.log(response);
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 
 function authorize(callback) {
-  new GoogleAuth().getApplicationDefault(function(err, authClient)) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
       console.log('authentication failed: ', err);
       return;
@@ -579,38 +578,43 @@ function authorize(callback) {
 // 1. If not already done, enable the Google Cloud Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
-// 2. Install the Node.js client library by running
-//    `npm install googleapis --save`
-// 3. This sample uses Application Default Credentials for authentication.
+// 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
 
 var google = require('googleapis');
-var GoogleAuth = require('google-auth-library');
 
-var service = google.logging('v2beta1');
+var logging = google.logging('v2beta1');
 
 authorize(function(authClient) {
-  var request = {
-    // Required. The resource name of the project containing the sinks. Example:
-    // `"projects/my-logging-project"`.
-    projectName: '', // TODO: Update placeholder value(s).
-
-    auth: authClient
-  }
-
-  service.projects.sinks.list(request, function(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
     }
-    console.log(response);
-  });
+
+    var sinksPage = response['sinks'];
+    if (!sinksPage) {
+      return;
+    }
+    for (var i = 0; i < sinksPage.length; i++) {
+      // TODO: Change code below to process each resource in `sinksPage`:
+      console.log(JSON.stringify(sinksPage[i], null 2));
+    }
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      logging.projects.sinks.list(request, handlePage);
+    }
+  };
+
+  logging.projects.sinks.list(request, handlePage);
 });
 
 function authorize(callback) {
-  new GoogleAuth().getApplicationDefault(function(err, authClient)) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
       console.log('authentication failed: ', err);
       return;
@@ -628,39 +632,42 @@ function authorize(callback) {
 // 1. If not already done, enable the Google Cloud Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
-// 2. Install the Node.js client library by running
-//    `npm install googleapis --save`
-// 3. This sample uses Application Default Credentials for authentication.
+// 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
 
 var google = require('googleapis');
-var GoogleAuth = require('google-auth-library');
 
-var service = google.logging('v2beta1');
+var logging = google.logging('v2beta1');
 
 authorize(function(authClient) {
   var request = {
     // The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The
     // updated sink must be provided in the request and have the same name that is specified in
     // `sinkName`. If the sink does not exist, it is created.
-    sinkName: '', // TODO: Update placeholder value(s).
+    sinkName: '',  // TODO: Update placeholder values.
+
+    resource: {
+      // TODO: Add desired properties of the request body.
+    },
 
     auth: authClient
   }
 
-  service.projects.sinks.update(request, function(err, response) {
+  logging.projects.sinks.update(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
     }
-    console.log(response);
+    console.log(JSON.stringify(response, null, 2));
   });
 });
 
 function authorize(callback) {
-  new GoogleAuth().getApplicationDefault(function(err, authClient)) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
       console.log('authentication failed: ', err);
       return;
