@@ -75,6 +75,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
+  private final FeatureConfig featureConfig = new GoFeatureConfig();
   private final GapicCodePathMapper pathMapper;
 
   public GoGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
@@ -94,12 +95,12 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(
-              service, apiConfig, createTypeTable(), namer, new FeatureConfig());
+              service, apiConfig, createTypeTable(), namer, featureConfig);
       models.add(generate(context));
 
       context =
           SurfaceTransformerContext.create(
-              service, apiConfig, createTypeTable(), namer, new FeatureConfig());
+              service, apiConfig, createTypeTable(), namer, featureConfig);
       models.add(generateExample(context));
     }
     models.add(generatePackageInfo(model, apiConfig, namer));
@@ -140,7 +141,11 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.pathTemplateGetters(pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
     view.callSettings(apiCallableTransformer.generateCallSettings(context));
     view.apiMethods(
-        generateApiMethods(context, context.getSupportedMethods(), PAGE_STREAM_IMPORTS));
+        generateApiMethods(
+            context,
+            context.getSupportedMethods(),
+            PAGE_STREAM_IMPORTS,
+            Collections.<String>emptyList()));
 
     // In Go, multiple methods share the same iterator type, one iterator type per resource type.
     // We have to dedupe the iterators.
@@ -165,6 +170,9 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     return view.build();
   }
 
+  private static final ImmutableList<String> EXAMPLE_GRPC_SERVER_STREAM_IMPORTS =
+      ImmutableList.<String>of("io;;;");
+
   private StaticLangXExampleView generateExample(SurfaceTransformerContext context) {
     StaticLangXExampleView.Builder view = StaticLangXExampleView.newBuilder();
 
@@ -186,7 +194,10 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.clientConstructorExampleName(namer.getApiWrapperClassConstructorExampleName(service));
     view.apiMethods(
         generateApiMethods(
-            context, context.getSupportedMethods(), Collections.<String>emptyList()));
+            context,
+            context.getSupportedMethods(),
+            Collections.<String>emptyList(),
+            EXAMPLE_GRPC_SERVER_STREAM_IMPORTS));
 
     addXExampleImports(context);
     view.imports(GoTypeTable.formatImports(context.getTypeTable().getImports()));
@@ -230,19 +241,36 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @VisibleForTesting
   List<StaticLangApiMethodView> generateApiMethods(
-      SurfaceTransformerContext context, List<Method> methods, List<String> pageStreamImports) {
+      SurfaceTransformerContext context,
+      List<Method> methods,
+      List<String> pageStreamImports,
+      List<String> grpcServerStreamImports) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
+    boolean hasPageStreaming = false;
+    boolean hasGrpcServerStreaming = false;
     for (Method method : methods) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       MethodTransformerContext methodContext = context.asMethodContext(method);
 
-      if (methodConfig.isPageStreaming()) {
-        for (String imp : pageStreamImports) {
-          context.getTypeTable().saveNicknameFor(imp);
-        }
+      if (method.getRequestStreaming() || method.getResponseStreaming()) {
+        hasGrpcServerStreaming |= method.getResponseStreaming();
+        apiMethods.add(
+            apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(methodContext));
+      } else if (methodConfig.isPageStreaming()) {
+        hasPageStreaming = true;
         apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext));
       } else {
         apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(methodContext));
+      }
+    }
+    if (hasPageStreaming) {
+      for (String imp : pageStreamImports) {
+        context.getTypeTable().saveNicknameFor(imp);
+      }
+    }
+    if (hasGrpcServerStreaming) {
+      for (String imp : grpcServerStreamImports) {
+        context.getTypeTable().saveNicknameFor(imp);
       }
     }
     return apiMethods;

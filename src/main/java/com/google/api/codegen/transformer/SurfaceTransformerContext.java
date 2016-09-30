@@ -100,7 +100,10 @@ public abstract class SurfaceTransformerContext {
    * TODO: integrate with GapicContext for this method.
    */
   private boolean isSupported(Method method) {
-    return !method.getResponseStreaming() && !method.getRequestStreaming();
+    if (!getFeatureConfig().enableStreaming()) {
+      return !method.getResponseStreaming() && !method.getRequestStreaming();
+    }
+    return true;
   }
 
   /**

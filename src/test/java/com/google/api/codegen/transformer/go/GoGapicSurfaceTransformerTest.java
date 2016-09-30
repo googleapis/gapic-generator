@@ -81,10 +81,17 @@ public class GoGapicSurfaceTransformerTest {
   private static final ImmutableList<String> PAGE_STREAM_IMPORTS =
       ImmutableList.<String>of("math;;;");
 
+  private static final ImmutableList<String> GRPC_SERVER_STREAM_IMPORTS =
+      ImmutableList.<String>of("io;;;");
+
   @Test
   public void testGetImportsPlain() {
     Method method = getMethod(context.getInterface(), "SimpleMethod");
-    transformer.generateApiMethods(context, Collections.singletonList(method), PAGE_STREAM_IMPORTS);
+    transformer.generateApiMethods(
+        context,
+        Collections.singletonList(method),
+        PAGE_STREAM_IMPORTS,
+        GRPC_SERVER_STREAM_IMPORTS);
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("time");
   }
@@ -92,7 +99,11 @@ public class GoGapicSurfaceTransformerTest {
   @Test
   public void testGetImportsRetry() {
     Method method = getMethod(context.getInterface(), "RetryMethod");
-    transformer.generateApiMethods(context, Collections.singletonList(method), PAGE_STREAM_IMPORTS);
+    transformer.generateApiMethods(
+        context,
+        Collections.singletonList(method),
+        PAGE_STREAM_IMPORTS,
+        GRPC_SERVER_STREAM_IMPORTS);
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).containsKey("time");
   }
@@ -100,9 +111,49 @@ public class GoGapicSurfaceTransformerTest {
   @Test
   public void testGetImportsPageStream() {
     Method method = getMethod(context.getInterface(), "PageStreamMethod");
-    transformer.generateApiMethods(context, Collections.singletonList(method), PAGE_STREAM_IMPORTS);
+    transformer.generateApiMethods(
+        context,
+        Collections.singletonList(method),
+        PAGE_STREAM_IMPORTS,
+        GRPC_SERVER_STREAM_IMPORTS);
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).containsKey("math");
+  }
+
+  @Test
+  public void testGetImportsServerStream() {
+    Method method = getMethod(context.getInterface(), "ServerStreamMethod");
+    transformer.generateApiMethods(
+        context,
+        Collections.singletonList(method),
+        PAGE_STREAM_IMPORTS,
+        GRPC_SERVER_STREAM_IMPORTS);
+    transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
+    Truth.assertThat(context.getTypeTable().getImports()).containsKey("io");
+  }
+
+  @Test
+  public void testGetImportsBidiStream() {
+    Method method = getMethod(context.getInterface(), "BidiStreamMethod");
+    transformer.generateApiMethods(
+        context,
+        Collections.singletonList(method),
+        PAGE_STREAM_IMPORTS,
+        GRPC_SERVER_STREAM_IMPORTS);
+    transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
+    Truth.assertThat(context.getTypeTable().getImports()).containsKey("io");
+  }
+
+  @Test
+  public void testGetImportsClientStream() {
+    Method method = getMethod(context.getInterface(), "ClientStreamMethod");
+    transformer.generateApiMethods(
+        context,
+        Collections.singletonList(method),
+        PAGE_STREAM_IMPORTS,
+        GRPC_SERVER_STREAM_IMPORTS);
+    transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
+    Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("io");
   }
 
   private Method getMethod(Interface service, String methodName) {

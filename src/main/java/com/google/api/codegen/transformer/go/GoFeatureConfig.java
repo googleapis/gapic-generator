@@ -12,11 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
+package com.google.api.codegen.transformer.go;
 
-/** Specifies synchronous or asynchronous. */
-public enum Synchronicity {
-  Sync,
-  Async,
-  GrpcStreaming
+import com.google.api.codegen.transformer.FeatureConfig;
+
+public class GoFeatureConfig extends FeatureConfig {
+  @Override
+  public boolean enableStreaming() {
+    return true;
+  }
 }

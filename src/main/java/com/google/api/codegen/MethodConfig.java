@@ -264,7 +264,7 @@ public class MethodConfig {
   }
 
   /** Returns the configuration for grpc response streaming. */
-  public PageStreamingConfig getGrpcStreaing() {
+  public PageStreamingConfig getGrpcStreaming() {
     return grpcStreaming;
   }
 

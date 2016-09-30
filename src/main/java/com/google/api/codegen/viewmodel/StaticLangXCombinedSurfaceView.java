@@ -73,6 +73,10 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
 
   public abstract List<PageStreamingDescriptorClassView> pageStreamingDescriptorClasses();
 
+  public boolean getTrue() {
+    return true;
+  }
+
   public static Builder newBuilder() {
     return new AutoValue_StaticLangXCombinedSurfaceView.Builder();
   }

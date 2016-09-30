@@ -36,4 +36,9 @@ public class FeatureConfig {
   public boolean enableMixins() {
     return false;
   }
+
+  /** Returns true if mixin APIs are supported. */
+  public boolean enableStreaming() {
+    return false;
+  }
 }

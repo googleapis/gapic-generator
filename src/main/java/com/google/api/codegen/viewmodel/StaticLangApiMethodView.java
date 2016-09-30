@@ -63,6 +63,14 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract boolean isPageStreaming();
 
+  public abstract boolean isRequestStreaming();
+
+  public abstract boolean isResponseStreaming();
+
+  public boolean isBidiStreaming() {
+    return isRequestStreaming() && isResponseStreaming();
+  }
+
   public abstract List<RequestObjectParamView> requestObjectParams();
 
   public abstract String stubName();
@@ -120,6 +128,10 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
     public abstract Builder hasReturnValue(boolean hasReturnValue);
 
     public abstract Builder isPageStreaming(boolean isPageStreaming);
+
+    public abstract Builder isRequestStreaming(boolean isPageStreaming);
+
+    public abstract Builder isResponseStreaming(boolean isPageStreaming);
 
     public abstract Builder requestObjectParams(List<RequestObjectParamView> requestObjectParams);
 

@@ -6,6 +6,9 @@ service Gopher {
   rpc SimpleMethod(SimpleRequest) returns (SimpleResponse);
   rpc RetryMethod(SimpleRequest) returns (SimpleResponse);
   rpc PageStreamMethod(PageStreamRequest) returns (PageStreamResponse);
+  rpc ServerStreamMethod(SimpleRequest) returns (stream SimpleResponse);
+  rpc ClientStreamMethod(stream SimpleRequest) returns (SimpleResponse);
+  rpc BidiStreamMethod(stream SimpleRequest) returns (stream SimpleResponse);
 }
 
 service Guru {}

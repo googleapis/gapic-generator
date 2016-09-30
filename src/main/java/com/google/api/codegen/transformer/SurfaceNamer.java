@@ -443,6 +443,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getAsyncApiMethodExampleName");
   }
 
+  public String getGrpcStreamingApiMethodName(Method method) {
+    return getApiMethodName(method);
+  }
+
+  public String getGrpcStreamingApiMethodExampleName(Interface interfaze, Method method) {
+    return getGrpcStreamingApiMethodName(method);
+  }
+
   /**
    * The name of a variable to hold a value for the given proto message field
    * (such as a flattened parameter).
@@ -536,6 +544,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The async return type name in a static language for the given method. */
   public String getStaticLangAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getStaticLangAsyncReturnTypeName");
+  }
+
+  public String getStaticLangStreamingReturnTypeName(Method method, MethodConfig methodConfig) {
+    return getNotImplementedString("SurfaceNamer.getStaticLangStreamingReturnTypeName");
   }
 
   /** The name of the paged callable variant of the given method. */
