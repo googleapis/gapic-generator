@@ -88,7 +88,8 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     SymbolTable symbolTable = new SymbolTable();
 
     SampleBodyView.Builder sampleBodyView = SampleBodyView.newBuilder();
-    sampleBodyView.serviceVarName(symbolTable.getNewSymbol(sampleNamer.getServiceVarName()));
+    sampleBodyView.serviceVarName(
+        symbolTable.getNewSymbol(sampleNamer.getServiceVarName(sampleConfig.apiTypeName())));
     sampleBodyView.serviceTypeName(
         sampleTypeTable.getAndSaveNicknameForServiceType(sampleConfig.apiTypeName()));
     sampleBodyView.methodVerb(methodInfo.verb());
