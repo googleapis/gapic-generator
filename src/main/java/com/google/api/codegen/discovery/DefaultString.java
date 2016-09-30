@@ -82,6 +82,20 @@ public class DefaultString {
     return sample == null ? "" : sample;
   }
 
+  /**
+   * Does the same thing as {@link #getPlaceholder(String, String)}, but returns
+   * an empty string for unrecognized patterns.
+   */
+  public static String getNonTrivialPlaceholder(String pattern) {
+    if (pattern != null) {
+      String def = forPattern(pattern);
+      if (def != null) {
+        return def;
+      }
+    }
+    return "";
+  }
+
   public static String getPlaceholder(String fieldName, String pattern) {
     if (pattern != null) {
       // If the pattern has a specially-recognized default, use the default. No sample.
