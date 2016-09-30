@@ -37,14 +37,6 @@
 
 @private runFunc(sampleBody)
   public void run() throws IOException, GeneralSecurityException {
-    @if sampleBody.hasInputRequest
-      // TODO: Assign values to desired fields of `{@sampleBody.requestBodyVarName}`.
-      @if sampleBody.methodVerb == "PATCH"
-        // Only assigned fields will be changed.
-      @end
-      {@sampleBody.requestBodyTypeName} {@sampleBody.requestBodyVarName} = new {@sampleBody.requestBodyTypeName}();
-
-    @end
     @join field : sampleBody.fields if sampleBody.fields
       @if field.description
         @join line : util.getDocLines(field.description, 100)
@@ -53,7 +45,15 @@
 
 
       @end
-      {@field.typeName} {@field.name} = {@field.defaultValue}; // TODO: Update placeholder value(s).
+      {@field.typeName} {@field.name} = {@field.defaultValue}; {@placeholderTodo(field.isPlaceholderSingular)}
+
+    @end
+    @if sampleBody.hasInputRequest
+      // TODO: Assign values to desired fields of `{@sampleBody.requestBodyVarName}`.
+      @if sampleBody.methodVerb == "PATCH"
+        // Only assigned fields will be changed.
+      @end
+      {@sampleBody.requestBodyTypeName} {@sampleBody.requestBodyVarName} = new {@sampleBody.requestBodyTypeName}();
 
     @end
     @if sampleBody.hasMediaUpload
@@ -153,5 +153,13 @@
 @private paramList(fieldVarNames)
   @join fieldVarName : fieldVarNames on ", "
     {@fieldVarName}
+  @end
+@end
+
+@private placeholderTodo(isSingular)
+  @if isSingular
+    // TODO: Update placeholder value.
+  @else
+    // TODO: Update placeholder values.
   @end
 @end

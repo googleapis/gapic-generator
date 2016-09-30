@@ -44,6 +44,12 @@ public abstract class FieldInfo {
   public abstract String placeholder();
 
   /**
+   * Returns true if the placeholder contains more than one placeholder value.
+   */
+  @JsonProperty("isPlaceholderSingular")
+  public abstract boolean isPlaceholderSingular();
+
+  /**
    * Returns the description of the field.
    */
   @JsonProperty("description")
@@ -64,6 +70,9 @@ public abstract class FieldInfo {
 
     @JsonProperty("placeholder")
     public abstract Builder placeholder(String val);
+
+    @JsonProperty("isPlaceholderSingular")
+    public abstract Builder isPlaceholderSingular(boolean val);
 
     @JsonProperty("description")
     public abstract Builder description(String val);

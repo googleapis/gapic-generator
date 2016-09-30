@@ -20,6 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.codegen.discovery.DefaultString;
@@ -141,11 +143,15 @@ public class ApiaryConfigToSampleConfigConverter {
    */
   private FieldInfo createFieldInfo(Field field, Type containerType, Method method) {
     String placeholder = "";
+    boolean isPlaceholderSingular = true;
     TypeInfo typeInfo = createTypeInfo(field, method);
     if (typeInfo.kind() == Field.Kind.TYPE_STRING && !typeInfo.isArray() && !typeInfo.isMap()) {
       String pattern = apiaryConfig.getFieldPattern().get(containerType.getName(), field.getName());
       if (!Strings.isNullOrEmpty(pattern)) {
-        placeholder = DefaultString.getPlaceholder(field.getName(), pattern);
+        placeholder = DefaultString.getNonTrivialPlaceholder(pattern);
+        // String placeholders are always contained within braces, so counting
+        // the number of open braces is an easy test for singularity.
+        isPlaceholderSingular = StringUtils.countMatches(placeholder, '{') < 2;
         placeholder = typeNameGenerator.formatValue(placeholder, field.getKind());
       }
     }
@@ -153,6 +159,7 @@ public class ApiaryConfigToSampleConfigConverter {
         .name(field.getName())
         .type(typeInfo)
         .placeholder(placeholder)
+        .isPlaceholderSingular(isPlaceholderSingular)
         .description(
             Strings.nullToEmpty(
                 apiaryConfig.getDescription(method.getRequestTypeUrl(), field.getName())))

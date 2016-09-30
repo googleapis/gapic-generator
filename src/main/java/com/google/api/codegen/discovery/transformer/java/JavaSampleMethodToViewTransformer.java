@@ -18,7 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.google.api.client.util.Strings;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.api.codegen.discovery.config.AuthType;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
@@ -34,6 +35,7 @@ import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.Strings;
 import com.google.protobuf.Method;
 
 /*
@@ -168,6 +170,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
         .typeName(sampleTypeTable.getAndSaveNicknameFor(typeInfo))
         .defaultValue(defaultValue)
         .description(field.getValue().description())
+        .isPlaceholderSingular(field.getValue().isPlaceholderSingular())
         .build();
   }
 
