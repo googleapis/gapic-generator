@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
