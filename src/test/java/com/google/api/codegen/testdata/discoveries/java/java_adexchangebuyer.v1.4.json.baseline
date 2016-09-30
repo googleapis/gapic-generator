@@ -1,5 +1,5 @@
 
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -10,54 +10,56 @@
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Accounts.Get;
 import com.google.api.services.adexchangebuyer.model.Account;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `get` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The account id
-    int id = 0;
+    int id = 0; // TODO: Update placeholder value.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Get request = adExchangeBuyerService.accounts().get(id);
 
-    Adexchangebuyer.Accounts.Get request = adexchangebuyerService.accounts().get(id);
     Account response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `get` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -68,110 +70,53 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Accounts.List;
 import com.google.api.services.adexchangebuyer.model.AccountsList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    List request = adExchangeBuyerService.accounts().list();
 
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    Adexchangebuyer.Accounts.List request = adexchangebuyerService.accounts().list();
     AccountsList response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
-    // See: https://foo.com/bar
-    //
-    // To use the `list` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
-  }
-}
-/**
- * BEFORE RUNNING:
- * ---------------
- * 1. If not already done, enable the Ad Exchange Buyer API
- *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. Install the Java client library on Maven or Gradle. Check installation
- *    instructions at https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
- */
-
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
-import com.google.api.services.adexchangebuyer.model.Account;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `patch` method:
-
-    // The account id
-    int id = 0;
-
-
-    Account requestBody = new Account();
-    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
-
-
-    Adexchangebuyer.Accounts.Patch request = adexchangebuyerService.accounts().patch(id, requestBody);
-    Account response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
-    System.out.println(response);
-  }
-
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `patch` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -182,58 +127,60 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Accounts.Patch;
 import com.google.api.services.adexchangebuyer.model.Account;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `update` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The account id
-    int id = 0;
+    int id = 0; // TODO: Update placeholder value.
 
-
+    // TODO: Assign values to desired fields of `requestBody`.
+    // Only assigned fields will be changed.
     Account requestBody = new Account();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Patch request = adExchangeBuyerService.accounts().patch(id, requestBody);
 
-    Adexchangebuyer.Accounts.Update request = adexchangebuyerService.accounts().update(id, requestBody);
     Account response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `update` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -244,54 +191,119 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Accounts.Update;
+import com.google.api.services.adexchangebuyer.model.Account;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
+    // The account id
+    int id = 0; // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`.
+    Account requestBody = new Account();
+
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Update request = adExchangeBuyerService.accounts().update(id, requestBody);
+
+    Account response = request.execute();
+    System.out.println(response);
+  }
+
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
+    // See: https://foo.com/bar
+    //
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Ad Exchange Buyer API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.BillingInfo.Get;
 import com.google.api.services.adexchangebuyer.model.BillingInfo;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `get` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The account id.
-    int accountId = 0;
+    int accountId = 0; // TODO: Update placeholder value.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Get request = adExchangeBuyerService.billingInfo().get(accountId);
 
-    Adexchangebuyer.BillingInfo.Get request = adexchangebuyerService.billingInfo().get(accountId);
     BillingInfo response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `get` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -302,48 +314,53 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.BillingInfo.List;
 import com.google.api.services.adexchangebuyer.model.BillingInfoList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    List request = adExchangeBuyerService.billingInfo().list();
 
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    Adexchangebuyer.BillingInfo.List request = adexchangebuyerService.billingInfo().list();
     BillingInfoList response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `list` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -354,57 +371,59 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Budget.Get;
 import com.google.api.services.adexchangebuyer.model.Budget;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `get` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The account id to get the budget information for.
-    long accountId = 0;
+    long accountId = 0L; // TODO: Update placeholder value.
 
     // The billing id to get the budget information for.
-    long billingId = 0;
+    long billingId = 0L; // TODO: Update placeholder value.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Get request = adExchangeBuyerService.budget().get(accountId, billingId);
 
-    Adexchangebuyer.Budget.Get request = adexchangebuyerService.budget().get(accountId, billingId);
     Budget response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `get` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -415,61 +434,63 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Budget.Patch;
 import com.google.api.services.adexchangebuyer.model.Budget;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `patch` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The account id associated with the budget being updated.
-    long accountId = 0;
+    long accountId = 0L; // TODO: Update placeholder value.
 
     // The billing id associated with the budget being updated.
-    long billingId = 0;
+    long billingId = 0L; // TODO: Update placeholder value.
 
-
+    // TODO: Assign values to desired fields of `requestBody`.
+    // Only assigned fields will be changed.
     Budget requestBody = new Budget();
-    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Patch request = adExchangeBuyerService.budget().patch(accountId, billingId, requestBody);
 
-    Adexchangebuyer.Budget.Patch request = adexchangebuyerService.budget().patch(accountId, billingId, requestBody);
     Budget response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `patch` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -480,61 +501,62 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Budget.Update;
 import com.google.api.services.adexchangebuyer.model.Budget;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `update` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The account id associated with the budget being updated.
-    long accountId = 0;
+    long accountId = 0L; // TODO: Update placeholder value.
 
     // The billing id associated with the budget being updated.
-    long billingId = 0;
+    long billingId = 0L; // TODO: Update placeholder value.
 
-
+    // TODO: Assign values to desired fields of `requestBody`.
     Budget requestBody = new Budget();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Update request = adExchangeBuyerService.budget().update(accountId, billingId, requestBody);
 
-    Adexchangebuyer.Budget.Update request = adexchangebuyerService.budget().update(accountId, billingId, requestBody);
     Budget response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `update` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -545,56 +567,60 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Creatives.AddDeal;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `addDeal` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The id for the account that will serve this creative.
-    int accountId = 0;
+    int accountId = 0; // TODO: Update placeholder value.
 
     // The buyer-specific id for this creative.
-    String buyerCreativeId = "{MY-BUYER-CREATIVE-ID}";
+    String buyerCreativeId = ""; // TODO: Update placeholder value.
 
     // The id of the deal id to associate with this creative.
-    long dealId = 0;
+    long dealId = 0L; // TODO: Update placeholder value.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    AddDeal request = adExchangeBuyerService.creatives().addDeal(accountId, buyerCreativeId, dealId);
 
-    Adexchangebuyer.Creatives.AddDeal request = adexchangebuyerService.creatives().addDeal(accountId, buyerCreativeId, dealId);
     request.execute();
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `addDeal` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -605,113 +631,59 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Creatives.Get;
 import com.google.api.services.adexchangebuyer.model.Creative;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `get` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The id for the account that will serve this creative.
-    int accountId = 0;
+    int accountId = 0; // TODO: Update placeholder value.
 
     // The buyer-specific id for this creative.
-    String buyerCreativeId = "{MY-BUYER-CREATIVE-ID}";
+    String buyerCreativeId = ""; // TODO: Update placeholder value.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Get request = adExchangeBuyerService.creatives().get(accountId, buyerCreativeId);
 
-    Adexchangebuyer.Creatives.Get request = adexchangebuyerService.creatives().get(accountId, buyerCreativeId);
     Creative response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
-    // See: https://foo.com/bar
-    //
-    // To use the `get` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
-  }
-}
-/**
- * BEFORE RUNNING:
- * ---------------
- * 1. If not already done, enable the Ad Exchange Buyer API
- *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. Install the Java client library on Maven or Gradle. Check installation
- *    instructions at https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
- */
-
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
-import com.google.api.services.adexchangebuyer.model.Creative;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    Creative requestBody = new Creative();
-    // TODO: Assign values to desired fields of the `requestBody` object.
-
-
-    Adexchangebuyer.Creatives.Insert request = adexchangebuyerService.creatives().insert(requestBody);
-    Creative response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
-    System.out.println(response);
-  }
-
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `insert` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -722,118 +694,123 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Creatives.Insert;
+import com.google.api.services.adexchangebuyer.model.Creative;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
+    // TODO: Assign values to desired fields of `requestBody`.
+    Creative requestBody = new Creative();
+
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Insert request = adExchangeBuyerService.creatives().insert(requestBody);
+
+    Creative response = request.execute();
+    System.out.println(response);
+  }
+
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
+    // See: https://foo.com/bar
+    //
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Ad Exchange Buyer API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Creatives.List;
 import com.google.api.services.adexchangebuyer.model.Creative;
 import com.google.api.services.adexchangebuyer.model.CreativesList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    List request = adExchangeBuyerService.creatives().list();
 
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    Adexchangebuyer.Creatives.List request = adexchangebuyerService.creatives().list();
     CreativesList response;
     do {
       response = request.execute();
-      if (response.getItems() == null)
+      if (response.getItems() == null) {
         continue;
-
+      }
       for (Creative creative : response.getItems()) {
         // TODO: Change code below to process each `creative` resource:
         System.out.println(creative);
       }
-
-      request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
-    // See: https://foo.com/bar
-    //
-    // To use the `list` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
-  }
-}
-/**
- * BEFORE RUNNING:
- * ---------------
- * 1. If not already done, enable the Ad Exchange Buyer API
- *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. Install the Java client library on Maven or Gradle. Check installation
- *    instructions at https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
- */
-
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `removeDeal` method:
-
-    // The id for the account that will serve this creative.
-    int accountId = 0;
-
-    // The buyer-specific id for this creative.
-    String buyerCreativeId = "{MY-BUYER-CREATIVE-ID}";
-
-    // The id of the deal id to disassociate with this creative.
-    long dealId = 0;
-
-
-    Adexchangebuyer.Creatives.RemoveDeal request = adexchangebuyerService.creatives().removeDeal(accountId, buyerCreativeId, dealId);
-    request.execute();
-  }
-
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `removeDeal` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -844,59 +821,124 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Creatives.RemoveDeal;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
+    // The id for the account that will serve this creative.
+    int accountId = 0; // TODO: Update placeholder value.
+
+    // The buyer-specific id for this creative.
+    String buyerCreativeId = ""; // TODO: Update placeholder value.
+
+    // The id of the deal id to disassociate with this creative.
+    long dealId = 0L; // TODO: Update placeholder value.
+
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    RemoveDeal request = adExchangeBuyerService.creatives().removeDeal(accountId, buyerCreativeId, dealId);
+
+    request.execute();
+  }
+
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
+    // See: https://foo.com/bar
+    //
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Ad Exchange Buyer API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Marketplacedeals.Delete;
 import com.google.api.services.adexchangebuyer.model.DeleteOrderDealsRequest;
 import com.google.api.services.adexchangebuyer.model.DeleteOrderDealsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `delete` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The proposalId to delete deals from.
-    String proposalId = "{MY-PROPOSAL-ID}";
+    String proposalId = ""; // TODO: Update placeholder value.
 
-
+    // TODO: Assign values to desired fields of `requestBody`.
     DeleteOrderDealsRequest requestBody = new DeleteOrderDealsRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Delete request = adExchangeBuyerService.marketplacedeals().delete(proposalId, requestBody);
 
-    Adexchangebuyer.Marketplacedeals.Delete request = adexchangebuyerService.marketplacedeals().delete(proposalId, requestBody);
     DeleteOrderDealsResponse response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `delete` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -907,59 +949,60 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Marketplacedeals.Insert;
 import com.google.api.services.adexchangebuyer.model.AddOrderDealsRequest;
 import com.google.api.services.adexchangebuyer.model.AddOrderDealsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `insert` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // proposalId for which deals need to be added.
-    String proposalId = "{MY-PROPOSAL-ID}";
+    String proposalId = ""; // TODO: Update placeholder value.
 
-
+    // TODO: Assign values to desired fields of `requestBody`.
     AddOrderDealsRequest requestBody = new AddOrderDealsRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Insert request = adExchangeBuyerService.marketplacedeals().insert(proposalId, requestBody);
 
-    Adexchangebuyer.Marketplacedeals.Insert request = adexchangebuyerService.marketplacedeals().insert(proposalId, requestBody);
     AddOrderDealsResponse response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `insert` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -970,55 +1013,57 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Marketplacedeals.List;
 import com.google.api.services.adexchangebuyer.model.GetOrderDealsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The proposalId to get deals for. To search across all proposals specify order_id = '-' as part of
     // the URL.
-    String proposalId = "{MY-PROPOSAL-ID}";
+    String proposalId = ""; // TODO: Update placeholder value.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    List request = adExchangeBuyerService.marketplacedeals().list(proposalId);
 
-    Adexchangebuyer.Marketplacedeals.List request = adexchangebuyerService.marketplacedeals().list(proposalId);
     GetOrderDealsResponse response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `list` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1029,59 +1074,60 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Marketplacedeals.Update;
 import com.google.api.services.adexchangebuyer.model.EditAllOrderDealsRequest;
 import com.google.api.services.adexchangebuyer.model.EditAllOrderDealsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `update` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The proposalId to edit deals on.
-    String proposalId = "{MY-PROPOSAL-ID}";
+    String proposalId = ""; // TODO: Update placeholder value.
 
-
+    // TODO: Assign values to desired fields of `requestBody`.
     EditAllOrderDealsRequest requestBody = new EditAllOrderDealsRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Update request = adExchangeBuyerService.marketplacedeals().update(proposalId, requestBody);
 
-    Adexchangebuyer.Marketplacedeals.Update request = adexchangebuyerService.marketplacedeals().update(proposalId, requestBody);
     EditAllOrderDealsResponse response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `update` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1092,59 +1138,60 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Marketplacenotes.Insert;
 import com.google.api.services.adexchangebuyer.model.AddOrderNotesRequest;
 import com.google.api.services.adexchangebuyer.model.AddOrderNotesResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `insert` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The proposalId to add notes for.
-    String proposalId = "{MY-PROPOSAL-ID}";
+    String proposalId = ""; // TODO: Update placeholder value.
 
-
+    // TODO: Assign values to desired fields of `requestBody`.
     AddOrderNotesRequest requestBody = new AddOrderNotesRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Insert request = adExchangeBuyerService.marketplacenotes().insert(proposalId, requestBody);
 
-    Adexchangebuyer.Marketplacenotes.Insert request = adexchangebuyerService.marketplacenotes().insert(proposalId, requestBody);
     AddOrderNotesResponse response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `insert` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1155,55 +1202,57 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Marketplacenotes.List;
 import com.google.api.services.adexchangebuyer.model.GetOrderNotesResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The proposalId to get notes for. To search across all proposals specify order_id = '-' as part of
     // the URL.
-    String proposalId = "{MY-PROPOSAL-ID}";
+    String proposalId = ""; // TODO: Update placeholder value.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    List request = adExchangeBuyerService.marketplacenotes().list(proposalId);
 
-    Adexchangebuyer.Marketplacenotes.List request = adexchangebuyerService.marketplacenotes().list(proposalId);
     GetOrderNotesResponse response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `list` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1214,55 +1263,58 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Marketplaceprivateauction.Updateproposal;
 import com.google.api.services.adexchangebuyer.model.UpdatePrivateAuctionProposalRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `updateproposal` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The private auction id to be updated.
-    String privateAuctionId = "{MY-PRIVATE-AUCTION-ID}";
+    String privateAuctionId = ""; // TODO: Update placeholder value.
 
-
+    // TODO: Assign values to desired fields of `requestBody`.
     UpdatePrivateAuctionProposalRequest requestBody = new UpdatePrivateAuctionProposalRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Updateproposal request = adExchangeBuyerService.marketplaceprivateauction().updateproposal(privateAuctionId, requestBody);
 
-    Adexchangebuyer.Marketplaceprivateauction.Updateproposal request = adexchangebuyerService.marketplaceprivateauction().updateproposal(privateAuctionId, requestBody);
     request.execute();
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `updateproposal` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1273,60 +1325,62 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.PerformanceReport.List;
 import com.google.api.services.adexchangebuyer.model.PerformanceReportList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `list` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The account id to get the reports.
-    long accountId = 0;
+    long accountId = 0L; // TODO: Update placeholder value.
 
     // The end time of the report in ISO 8601 timestamp format using UTC.
-    String endDateTime = "{MY-END-DATE-TIME}";
+    String endDateTime = ""; // TODO: Update placeholder value.
 
     // The start time of the report in ISO 8601 timestamp format using UTC.
-    String startDateTime = "{MY-START-DATE-TIME}";
+    String startDateTime = ""; // TODO: Update placeholder value.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    List request = adExchangeBuyerService.performanceReport().list(accountId, endDateTime, startDateTime);
 
-    Adexchangebuyer.PerformanceReport.List request = adexchangebuyerService.performanceReport().list(accountId, endDateTime, startDateTime);
     PerformanceReportList response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `list` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1337,53 +1391,57 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.PretargetingConfig.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `delete` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The account id to delete the pretargeting config for.
-    long accountId = 0;
+    long accountId = 0L; // TODO: Update placeholder value.
 
     // The specific id of the configuration to delete.
-    long configId = 0;
+    long configId = 0L; // TODO: Update placeholder value.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Delete request = adExchangeBuyerService.pretargetingConfig().delete(accountId, configId);
 
-    Adexchangebuyer.PretargetingConfig.Delete request = adexchangebuyerService.pretargetingConfig().delete(accountId, configId);
     request.execute();
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `delete` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1394,119 +1452,59 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.PretargetingConfig.Get;
 import com.google.api.services.adexchangebuyer.model.PretargetingConfig;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `get` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The account id to get the pretargeting config for.
-    long accountId = 0;
+    long accountId = 0L; // TODO: Update placeholder value.
 
     // The specific id of the configuration to retrieve.
-    long configId = 0;
+    long configId = 0L; // TODO: Update placeholder value.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Get request = adExchangeBuyerService.pretargetingConfig().get(accountId, configId);
 
-    Adexchangebuyer.PretargetingConfig.Get request = adexchangebuyerService.pretargetingConfig().get(accountId, configId);
     PretargetingConfig response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
-    // See: https://foo.com/bar
-    //
-    // To use the `get` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
-  }
-}
-/**
- * BEFORE RUNNING:
- * ---------------
- * 1. If not already done, enable the Ad Exchange Buyer API
- *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. Install the Java client library on Maven or Gradle. Check installation
- *    instructions at https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
- */
-
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
-import com.google.api.services.adexchangebuyer.model.PretargetingConfig;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `insert` method:
-
-    // The account id to insert the pretargeting config for.
-    long accountId = 0;
-
-
-    PretargetingConfig requestBody = new PretargetingConfig();
-    // TODO: Assign values to desired fields of the `requestBody` object.
-
-
-    Adexchangebuyer.PretargetingConfig.Insert request = adexchangebuyerService.pretargetingConfig().insert(accountId, requestBody);
-    PretargetingConfig response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
-    System.out.println(response);
-  }
-
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `insert` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1517,119 +1515,119 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.PretargetingConfig.Insert;
+import com.google.api.services.adexchangebuyer.model.PretargetingConfig;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
+    // The account id to insert the pretargeting config for.
+    long accountId = 0L; // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`.
+    PretargetingConfig requestBody = new PretargetingConfig();
+
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Insert request = adExchangeBuyerService.pretargetingConfig().insert(accountId, requestBody);
+
+    PretargetingConfig response = request.execute();
+    System.out.println(response);
+  }
+
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
+    // See: https://foo.com/bar
+    //
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Ad Exchange Buyer API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.PretargetingConfig.List;
 import com.google.api.services.adexchangebuyer.model.PretargetingConfigList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The account id to get the pretargeting configs for.
-    long accountId = 0;
+    long accountId = 0L; // TODO: Update placeholder value.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    List request = adExchangeBuyerService.pretargetingConfig().list(accountId);
 
-    Adexchangebuyer.PretargetingConfig.List request = adexchangebuyerService.pretargetingConfig().list(accountId);
     PretargetingConfigList response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
-    // See: https://foo.com/bar
-    //
-    // To use the `list` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
-  }
-}
-/**
- * BEFORE RUNNING:
- * ---------------
- * 1. If not already done, enable the Ad Exchange Buyer API
- *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/adexchangebuyer
- * 2. Install the Java client library on Maven or Gradle. Check installation
- *    instructions at https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
- */
-
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
-import com.google.api.services.adexchangebuyer.model.PretargetingConfig;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `patch` method:
-
-    // The account id to update the pretargeting config for.
-    long accountId = 0;
-
-    // The specific id of the configuration to update.
-    long configId = 0;
-
-
-    PretargetingConfig requestBody = new PretargetingConfig();
-    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
-
-
-    Adexchangebuyer.PretargetingConfig.Patch request = adexchangebuyerService.pretargetingConfig().patch(accountId, configId, requestBody);
-    PretargetingConfig response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
-    System.out.println(response);
-  }
-
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `patch` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1640,61 +1638,63 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.PretargetingConfig.Patch;
 import com.google.api.services.adexchangebuyer.model.PretargetingConfig;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `update` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The account id to update the pretargeting config for.
-    long accountId = 0;
+    long accountId = 0L; // TODO: Update placeholder value.
 
     // The specific id of the configuration to update.
-    long configId = 0;
+    long configId = 0L; // TODO: Update placeholder value.
 
-
+    // TODO: Assign values to desired fields of `requestBody`.
+    // Only assigned fields will be changed.
     PretargetingConfig requestBody = new PretargetingConfig();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Patch request = adExchangeBuyerService.pretargetingConfig().patch(accountId, configId, requestBody);
 
-    Adexchangebuyer.PretargetingConfig.Update request = adexchangebuyerService.pretargetingConfig().update(accountId, configId, requestBody);
     PretargetingConfig response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `update` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1705,54 +1705,122 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.PretargetingConfig.Update;
+import com.google.api.services.adexchangebuyer.model.PretargetingConfig;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
+    // The account id to update the pretargeting config for.
+    long accountId = 0L; // TODO: Update placeholder value.
+
+    // The specific id of the configuration to update.
+    long configId = 0L; // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`.
+    PretargetingConfig requestBody = new PretargetingConfig();
+
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Update request = adExchangeBuyerService.pretargetingConfig().update(accountId, configId, requestBody);
+
+    PretargetingConfig response = request.execute();
+    System.out.println(response);
+  }
+
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
+    // See: https://foo.com/bar
+    //
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Ad Exchange Buyer API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Products.Get;
 import com.google.api.services.adexchangebuyer.model.Product;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `get` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The id for the product to get the head revision for.
-    String productId = "{MY-PRODUCT-ID}";
+    String productId = ""; // TODO: Update placeholder value.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Get request = adExchangeBuyerService.products().get(productId);
 
-    Adexchangebuyer.Products.Get request = adexchangebuyerService.products().get(productId);
     Product response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `get` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1763,48 +1831,53 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Products.Search;
 import com.google.api.services.adexchangebuyer.model.GetOffersResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Search request = adExchangeBuyerService.products().search();
 
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    Adexchangebuyer.Products.Search request = adexchangebuyerService.products().search();
     GetOffersResponse response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `search` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1815,54 +1888,56 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Proposals.Get;
 import com.google.api.services.adexchangebuyer.model.Proposal;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `get` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // Id of the proposal to retrieve.
-    String proposalId = "{MY-PROPOSAL-ID}";
+    String proposalId = ""; // TODO: Update placeholder value.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Get request = adExchangeBuyerService.proposals().get(proposalId);
 
-    Adexchangebuyer.Proposals.Get request = adexchangebuyerService.proposals().get(proposalId);
     Proposal response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `get` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1873,53 +1948,57 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Proposals.Insert;
 import com.google.api.services.adexchangebuyer.model.CreateOrdersRequest;
 import com.google.api.services.adexchangebuyer.model.CreateOrdersResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
+    // TODO: Assign values to desired fields of `requestBody`.
     CreateOrdersRequest requestBody = new CreateOrdersRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Insert request = adExchangeBuyerService.proposals().insert(requestBody);
 
-    Adexchangebuyer.Proposals.Insert request = adexchangebuyerService.proposals().insert(requestBody);
     CreateOrdersResponse response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `insert` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -1930,67 +2009,69 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Proposals.Patch;
 import com.google.api.services.adexchangebuyer.model.Proposal;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `patch` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The proposal id to update.
-    String proposalId = "{MY-PROPOSAL-ID}";
+    String proposalId = ""; // TODO: Update placeholder value.
 
-    // The last known revision number to update. If the head revision in the marketplace database has since
-    // changed, an error will be thrown. The caller should then fetch the latest proposal at head revision
-    // and retry the update at that revision.
-    long revisionNumber = 0;
+    // The last known revision number to update. If the head revision in the marketplace database has
+    // since changed, an error will be thrown. The caller should then fetch the latest proposal at head
+    // revision and retry the update at that revision.
+    long revisionNumber = 0L; // TODO: Update placeholder value.
 
-    // The proposed action to take on the proposal. This field is required and it must be set when updating
-    // a proposal.
-    String updateAction = "{MY-UPDATE-ACTION}";
+    // The proposed action to take on the proposal. This field is required and it must be set when
+    // updating a proposal.
+    String updateAction = ""; // TODO: Update placeholder value.
 
-
+    // TODO: Assign values to desired fields of `requestBody`.
+    // Only assigned fields will be changed.
     Proposal requestBody = new Proposal();
-    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Patch request = adExchangeBuyerService.proposals().patch(proposalId, revisionNumber, updateAction, requestBody);
 
-    Adexchangebuyer.Proposals.Patch request = adexchangebuyerService.proposals().patch(proposalId, revisionNumber, updateAction, requestBody);
     Proposal response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `patch` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -2001,48 +2082,53 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Proposals.Search;
 import com.google.api.services.adexchangebuyer.model.GetOrdersResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Search request = adExchangeBuyerService.proposals().search();
 
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    Adexchangebuyer.Proposals.Search request = adexchangebuyerService.proposals().search();
     GetOrdersResponse response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `search` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -2053,50 +2139,54 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Proposals.Setupcomplete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `setupcomplete` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The proposal id for which the setup is complete
-    String proposalId = "{MY-PROPOSAL-ID}";
+    String proposalId = ""; // TODO: Update placeholder value.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Setupcomplete request = adExchangeBuyerService.proposals().setupcomplete(proposalId);
 
-    Adexchangebuyer.Proposals.Setupcomplete request = adexchangebuyerService.proposals().setupcomplete(proposalId);
     request.execute();
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `setupcomplete` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -2107,67 +2197,68 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Proposals.Update;
 import com.google.api.services.adexchangebuyer.model.Proposal;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `update` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The proposal id to update.
-    String proposalId = "{MY-PROPOSAL-ID}";
+    String proposalId = ""; // TODO: Update placeholder value.
 
-    // The last known revision number to update. If the head revision in the marketplace database has since
-    // changed, an error will be thrown. The caller should then fetch the latest proposal at head revision
-    // and retry the update at that revision.
-    long revisionNumber = 0;
+    // The last known revision number to update. If the head revision in the marketplace database has
+    // since changed, an error will be thrown. The caller should then fetch the latest proposal at head
+    // revision and retry the update at that revision.
+    long revisionNumber = 0L; // TODO: Update placeholder value.
 
-    // The proposed action to take on the proposal. This field is required and it must be set when updating
-    // a proposal.
-    String updateAction = "{MY-UPDATE-ACTION}";
+    // The proposed action to take on the proposal. This field is required and it must be set when
+    // updating a proposal.
+    String updateAction = ""; // TODO: Update placeholder value.
 
-
+    // TODO: Assign values to desired fields of `requestBody`.
     Proposal requestBody = new Proposal();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    Update request = adExchangeBuyerService.proposals().update(proposalId, revisionNumber, updateAction, requestBody);
 
-    Adexchangebuyer.Proposals.Update request = adexchangebuyerService.proposals().update(proposalId, revisionNumber, updateAction, requestBody);
     Proposal response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `update` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
-/**
+/*
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Ad Exchange Buyer API
@@ -2178,50 +2269,52 @@ public class AdexchangebuyerExample {
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
  */
-
-import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.adexchangebuyer.Adexchangebuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer.Pubprofiles.List;
 import com.google.api.services.adexchangebuyer.model.GetPublisherProfilesByAccountIdResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
-
-public class AdexchangebuyerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    Credential credential = getAuth();
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Adexchangebuyer adexchangebuyerService = new Adexchangebuyer.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
+public class AdExchangeBuyerExample {
+  public void run() throws IOException, GeneralSecurityException {
     // The accountId of the publisher to get profiles for.
-    int accountId = 0;
+    int accountId = 0; // TODO: Update placeholder value.
 
+    AdExchangeBuyer adExchangeBuyerService = createService();
+    List request = adExchangeBuyerService.pubprofiles().list(accountId);
 
-    Adexchangebuyer.Pubprofiles.List request = adexchangebuyerService.pubprofiles().list(accountId);
     GetPublisherProfilesByAccountIdResponse response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public static Credential getAuth() {
-    // TODO: Change placeholder below to get authentication credentials.
+  public AdExchangeBuyer createService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials.
     // See: https://foo.com/bar
     //
-    // To use the `list` method, authorize using one of the following scopes:
-    //   https://www.googleapis.com/auth/adexchange.buyer
-    return null;
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    try {
+      new AdExchangeBuyerExample().run();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (GeneralSecurityException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
