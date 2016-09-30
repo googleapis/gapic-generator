@@ -268,7 +268,7 @@ func (c *Client) ListShelves(ctx context.Context, req *librarypb.ListShelvesRequ
         if err != nil {
             return "", err
         }
-        it.items = resp.Shelves
+        it.items = append(it.items, resp.Shelves...)
         return resp.NextPageToken, nil
     }
     bufLen := func() int { return len(it.items) }
@@ -382,7 +382,7 @@ func (c *Client) ListBooks(ctx context.Context, req *librarypb.ListBooksRequest)
         if err != nil {
             return "", err
         }
-        it.items = resp.Books
+        it.items = append(it.items, resp.Books...)
         return resp.NextPageToken, nil
     }
     bufLen := func() int { return len(it.items) }
@@ -462,7 +462,7 @@ func (c *Client) ListStrings(ctx context.Context, req *librarypb.ListStringsRequ
         if err != nil {
             return "", err
         }
-        it.items = resp.Strings
+        it.items = append(it.items, resp.Strings...)
         return resp.NextPageToken, nil
     }
     bufLen := func() int { return len(it.items) }
@@ -538,7 +538,7 @@ func (c *Client) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelate
         if err != nil {
             return "", err
         }
-        it.items = resp.Names
+        it.items = append(it.items, resp.Names...)
         return resp.NextPageToken, nil
     }
     bufLen := func() int { return len(it.items) }
