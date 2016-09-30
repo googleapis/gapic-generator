@@ -121,7 +121,7 @@
 @private compactCall(method)
   @if context.hasMediaDownload(method)
     // {@TODO()} Use `Download` in place of `Do` below to download media content. For more information, see:
-    // {@godocURL()}
+    // {@godocURL()}#{@resourceType(method)}.Download
 
   @end
   @if context.isResponseEmpty(method)
@@ -179,6 +179,15 @@
 @private resourcePath(method)
   @join r : context.getApiaryConfig.getResources(method.getName) on "."
     {@context.lowerCamelToUpperCamel(r)}
+  @end
+@end
+
+@private resourceType(method)
+  @let methodName = context.getMethodName(method)
+    @join r : context.getApiaryConfig.getResources(method.getName)
+      {@context.lowerCamelToUpperCamel(r)}
+    @end
+    {@context.lowerCamelToUpperCamel(methodName)}Call
   @end
 @end
 
