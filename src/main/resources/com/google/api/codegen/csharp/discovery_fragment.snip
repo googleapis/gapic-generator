@@ -220,9 +220,13 @@
 @end
 
 @private print(element)
-    Console.WriteLine({@element});
+    @let Console = context.using("System.Console")
+        {@Console}.WriteLine({@element});
+    @end
 @end
 
 @private printEntry(entry)
-    Console.WriteLine("[" + {@entry}.Key + "] = " + {@entry}.Value);
+    @let Console = context.using("System.Console")
+        {@Console}.WriteLine("[" + {@entry}.Key + "] = " + {@entry}.Value);
+    @end
 @end
