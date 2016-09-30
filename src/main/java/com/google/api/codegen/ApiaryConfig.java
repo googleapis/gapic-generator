@@ -86,6 +86,11 @@ public class ApiaryConfig {
   private final Set<String> mediaUpload = new HashSet<>();
 
   /**
+   * Records whether or not the method allows media download.
+   */
+  private final Set<String> mediaDownload = new HashSet<>();
+
+  /**
    * Maps type name to type (from {@link DiscoveryImporter}).
    */
   private final Map<String, Type> types = new HashMap<>();
@@ -208,6 +213,10 @@ public class ApiaryConfig {
 
   public Set<String> getMediaUpload() {
     return mediaUpload;
+  }
+
+  public Set<String> getMediaDownload() {
+    return mediaDownload;
   }
 
   public String getApiTitle() {
