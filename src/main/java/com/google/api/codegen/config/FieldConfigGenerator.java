@@ -69,6 +69,11 @@ public class FieldConfigGenerator implements MethodConfigGenerator {
     // Required parameters for this method.
     List<String> requiredParameters = new LinkedList<>();
     for (Field field : message.getFields()) {
+      // We skip the fields that we deem optional. Ideally, for each of them we'd still produce a
+      // placeholder comment in the config, naming it and explaining why we decided it's not
+      // required. That'd help both reviewing the generated config, and spotting changes when it's
+      // regenerated. Unfortunately there doesn't seem to be an easy way to output comments.
+
       String fieldName = field.getSimpleName();
       // Ignore pagination parameters.
       if (ignoredFields.contains(fieldName)) {
