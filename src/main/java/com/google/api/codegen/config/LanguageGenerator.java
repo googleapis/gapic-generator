@@ -36,15 +36,15 @@ public class LanguageGenerator {
   private static final Map<String, LanguageFormatter> LANGUAGE_FORMATTERS;
 
   static {
-    // Matches API name and version from "google.path1.path2.apiname.version", as $1 and $2.
-    String componentsMatcher = "^google(?\\.[a-z]+)*\\.([a-z]+)\\.(v[0-9a-z]+)$";
+    // Matches API name and version from "google.path1.path2.apiname.version", as $2 and $3.
+    String componentsMatcher = "^google(\\.[a-z]+)*\\.([a-z]+)\\.(v[0-9a-z]+)$";
 
     List<RewriteRule> javaRewriteRules = Arrays.asList(
-        new RewriteRule(componentsMatcher, "$1.spi.$2"), // {api}.spi.{version}
+        new RewriteRule(componentsMatcher, "$2.spi.$3"), // {api}.spi.{version}
         new RewriteRule("^cloud(.+)$", "$1"), // Strip "cloud" prefix from API name.
         new RewriteRule("^(.*)$", "com.google.cloud.$1")); // Prepend com.google.cloud.
     List<RewriteRule> pythonRewriteRules = Arrays.asList(
-        new RewriteRule(componentsMatcher, "$1.$2"), // {api}.{version}
+        new RewriteRule(componentsMatcher, "$2.$3"), // {api}.{version}
         new RewriteRule("^cloud(.+)$", "$1"), // Strip "cloud" prefix from API name.
         new RewriteRule("^(.*)$", "google.cloud.gapic.$1")); // Prepend google.cloud.gapic.
     List<RewriteRule> commonRewriteRules =
