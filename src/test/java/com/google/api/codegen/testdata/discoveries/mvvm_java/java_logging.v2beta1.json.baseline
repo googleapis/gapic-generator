@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Logging API
@@ -20,7 +20,6 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.logging.v2beta1.Logging;
-import com.google.api.services.logging.v2beta1.Logging.Entries.List;
 import com.google.api.services.logging.v2beta1.model.ListLogEntriesRequest;
 import com.google.api.services.logging.v2beta1.model.ListLogEntriesResponse;
 import com.google.api.services.logging.v2beta1.model.LogEntry;
@@ -29,12 +28,12 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // TODO: Assign values to desired fields of `requestBody`.
     ListLogEntriesRequest requestBody = new ListLogEntriesRequest();
 
-    Logging loggingService = createService();
-    List request = loggingService.entries().list(requestBody);
+    Logging loggingService = createLoggingService();
+    Logging.Entries.List request = loggingService.entries().list(requestBody);
 
     ListLogEntriesResponse response;
     do {
@@ -46,15 +45,15 @@ public class LoggingExample {
         // TODO: Change code below to process each `logEntry` resource:
         System.out.println(logEntry);
       }
+      requestBody.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 
-  public Logging createService() throws IOException, GeneralSecurityException {
+  public static Logging createLoggingService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -64,18 +63,8 @@ public class LoggingExample {
         .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new LoggingExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Logging API
@@ -96,7 +85,6 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.logging.v2beta1.Logging;
-import com.google.api.services.logging.v2beta1.Logging.Entries.Write;
 import com.google.api.services.logging.v2beta1.model.WriteLogEntriesRequest;
 import com.google.api.services.logging.v2beta1.model.WriteLogEntriesResponse;
 import java.io.IOException;
@@ -104,23 +92,24 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // TODO: Assign values to desired fields of `requestBody`.
     WriteLogEntriesRequest requestBody = new WriteLogEntriesRequest();
 
-    Logging loggingService = createService();
-    Write request = loggingService.entries().write(requestBody);
+    Logging loggingService = createLoggingService();
+    Logging.Entries.Write request = loggingService.entries().write(requestBody);
 
     WriteLogEntriesResponse response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Logging createService() throws IOException, GeneralSecurityException {
+  public static Logging createLoggingService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -130,18 +119,8 @@ public class LoggingExample {
         .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new LoggingExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Logging API
@@ -162,7 +141,6 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.logging.v2beta1.Logging;
-import com.google.api.services.logging.v2beta1.Logging.MonitoredResourceDescriptors.List;
 import com.google.api.services.logging.v2beta1.model.ListMonitoredResourceDescriptorsResponse;
 import com.google.api.services.logging.v2beta1.model.MonitoredResourceDescriptor;
 import java.io.IOException;
@@ -170,9 +148,9 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
-    Logging loggingService = createService();
-    List request = loggingService.monitoredResourceDescriptors().list();
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    Logging loggingService = createLoggingService();
+    Logging.MonitoredResourceDescriptors.List request = loggingService.monitoredResourceDescriptors().list();
 
     ListMonitoredResourceDescriptorsResponse response;
     do {
@@ -184,15 +162,15 @@ public class LoggingExample {
         // TODO: Change code below to process each `monitoredResourceDescriptor` resource:
         System.out.println(monitoredResourceDescriptor);
       }
+      request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 
-  public Logging createService() throws IOException, GeneralSecurityException {
+  public static Logging createLoggingService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -202,18 +180,8 @@ public class LoggingExample {
         .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new LoggingExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Logging API
@@ -234,28 +202,26 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.logging.v2beta1.Logging;
-import com.google.api.services.logging.v2beta1.Logging.Projects.Logs.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
-    String logName = "projects/{MY-PROJECT}/logs/{MY-LOG}"; // TODO: Update placeholder values.
+    String logName = "projects/{MY-PROJECT}/logs/{MY-LOG}";  // TODO: Update placeholder values.
 
-    Logging loggingService = createService();
-    Delete request = loggingService.projects().logs().delete(logName);
+    Logging loggingService = createLoggingService();
+    Logging.Projects.Logs.Delete request = loggingService.projects().logs().delete(logName);
 
     request.execute();
   }
 
-  public Logging createService() throws IOException, GeneralSecurityException {
+  public static Logging createLoggingService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -265,18 +231,8 @@ public class LoggingExample {
         .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new LoggingExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Logging API
@@ -297,34 +253,34 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.logging.v2beta1.Logging;
-import com.google.api.services.logging.v2beta1.Logging.Projects.Metrics.Create;
 import com.google.api.services.logging.v2beta1.model.LogMetric;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The resource name of the project in which to create the metric. Example:
     // `"projects/my-project-id"`. The new metric must be provided in the request.
-    String projectName = "projects/{MY-PROJECT}"; // TODO: Update placeholder value.
+    String projectName = "projects/{MY-PROJECT}";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     LogMetric requestBody = new LogMetric();
 
-    Logging loggingService = createService();
-    Create request = loggingService.projects().metrics().create(projectName, requestBody);
+    Logging loggingService = createLoggingService();
+    Logging.Projects.Metrics.Create request = loggingService.projects().metrics().create(projectName, requestBody);
 
     LogMetric response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Logging createService() throws IOException, GeneralSecurityException {
+  public static Logging createLoggingService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -334,18 +290,8 @@ public class LoggingExample {
         .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new LoggingExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Logging API
@@ -366,29 +312,27 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.logging.v2beta1.Logging;
-import com.google.api.services.logging.v2beta1.Logging.Projects.Metrics.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The resource name of the metric to delete. Example:
     // `"projects/my-project-id/metrics/my-metric-id"`.
-    String metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}"; // TODO: Update placeholder values.
+    String metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}";  // TODO: Update placeholder values.
 
-    Logging loggingService = createService();
-    Delete request = loggingService.projects().metrics().delete(metricName);
+    Logging loggingService = createLoggingService();
+    Logging.Projects.Metrics.Delete request = loggingService.projects().metrics().delete(metricName);
 
     request.execute();
   }
 
-  public Logging createService() throws IOException, GeneralSecurityException {
+  public static Logging createLoggingService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -398,18 +342,8 @@ public class LoggingExample {
         .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new LoggingExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Logging API
@@ -430,30 +364,30 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.logging.v2beta1.Logging;
-import com.google.api.services.logging.v2beta1.Logging.Projects.Metrics.Get;
 import com.google.api.services.logging.v2beta1.model.LogMetric;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-    String metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}"; // TODO: Update placeholder values.
+    String metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}";  // TODO: Update placeholder values.
 
-    Logging loggingService = createService();
-    Get request = loggingService.projects().metrics().get(metricName);
+    Logging loggingService = createLoggingService();
+    Logging.Projects.Metrics.Get request = loggingService.projects().metrics().get(metricName);
 
     LogMetric response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Logging createService() throws IOException, GeneralSecurityException {
+  public static Logging createLoggingService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -463,18 +397,8 @@ public class LoggingExample {
         .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new LoggingExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Logging API
@@ -495,7 +419,6 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.logging.v2beta1.Logging;
-import com.google.api.services.logging.v2beta1.Logging.Projects.Metrics.List;
 import com.google.api.services.logging.v2beta1.model.ListLogMetricsResponse;
 import com.google.api.services.logging.v2beta1.model.LogMetric;
 import java.io.IOException;
@@ -503,13 +426,13 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Required. The resource name of the project containing the metrics. Example:
     // `"projects/my-project-id"`.
-    String projectName = "projects/{MY-PROJECT}"; // TODO: Update placeholder value.
+    String projectName = "projects/{MY-PROJECT}";  // TODO: Update placeholder value.
 
-    Logging loggingService = createService();
-    List request = loggingService.projects().metrics().list(projectName);
+    Logging loggingService = createLoggingService();
+    Logging.Projects.Metrics.List request = loggingService.projects().metrics().list(projectName);
 
     ListLogMetricsResponse response;
     do {
@@ -521,15 +444,15 @@ public class LoggingExample {
         // TODO: Change code below to process each `logMetric` resource:
         System.out.println(logMetric);
       }
+      request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 
-  public Logging createService() throws IOException, GeneralSecurityException {
+  public static Logging createLoggingService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -539,18 +462,8 @@ public class LoggingExample {
         .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new LoggingExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Logging API
@@ -571,36 +484,36 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.logging.v2beta1.Logging;
-import com.google.api.services.logging.v2beta1.Logging.Projects.Metrics.Update;
 import com.google.api.services.logging.v2beta1.model.LogMetric;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The resource name of the metric to update. Example:
     // `"projects/my-project-id/metrics/my-metric-id"`. The updated metric must be provided in the request
     // and have the same identifier that is specified in `metricName`. If the metric does not exist, it is
     // created.
-    String metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}"; // TODO: Update placeholder values.
+    String metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}";  // TODO: Update placeholder values.
 
     // TODO: Assign values to desired fields of `requestBody`.
     LogMetric requestBody = new LogMetric();
 
-    Logging loggingService = createService();
-    Update request = loggingService.projects().metrics().update(metricName, requestBody);
+    Logging loggingService = createLoggingService();
+    Logging.Projects.Metrics.Update request = loggingService.projects().metrics().update(metricName, requestBody);
 
     LogMetric response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Logging createService() throws IOException, GeneralSecurityException {
+  public static Logging createLoggingService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -610,18 +523,8 @@ public class LoggingExample {
         .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new LoggingExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Logging API
@@ -642,34 +545,34 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.logging.v2beta1.Logging;
-import com.google.api.services.logging.v2beta1.Logging.Projects.Sinks.Create;
 import com.google.api.services.logging.v2beta1.model.LogSink;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`.
     // The new sink must be provided in the request.
-    String projectName = "projects/{MY-PROJECT}"; // TODO: Update placeholder value.
+    String projectName = "projects/{MY-PROJECT}";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     LogSink requestBody = new LogSink();
 
-    Logging loggingService = createService();
-    Create request = loggingService.projects().sinks().create(projectName, requestBody);
+    Logging loggingService = createLoggingService();
+    Logging.Projects.Sinks.Create request = loggingService.projects().sinks().create(projectName, requestBody);
 
     LogSink response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Logging createService() throws IOException, GeneralSecurityException {
+  public static Logging createLoggingService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -679,18 +582,8 @@ public class LoggingExample {
         .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new LoggingExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Logging API
@@ -711,28 +604,26 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.logging.v2beta1.Logging;
-import com.google.api.services.logging.v2beta1.Logging.Projects.Sinks.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
-    String sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}"; // TODO: Update placeholder values.
+    String sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}";  // TODO: Update placeholder values.
 
-    Logging loggingService = createService();
-    Delete request = loggingService.projects().sinks().delete(sinkName);
+    Logging loggingService = createLoggingService();
+    Logging.Projects.Sinks.Delete request = loggingService.projects().sinks().delete(sinkName);
 
     request.execute();
   }
 
-  public Logging createService() throws IOException, GeneralSecurityException {
+  public static Logging createLoggingService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -742,18 +633,8 @@ public class LoggingExample {
         .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new LoggingExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Logging API
@@ -774,30 +655,30 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.logging.v2beta1.Logging;
-import com.google.api.services.logging.v2beta1.Logging.Projects.Sinks.Get;
 import com.google.api.services.logging.v2beta1.model.LogSink;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
-    String sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}"; // TODO: Update placeholder values.
+    String sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}";  // TODO: Update placeholder values.
 
-    Logging loggingService = createService();
-    Get request = loggingService.projects().sinks().get(sinkName);
+    Logging loggingService = createLoggingService();
+    Logging.Projects.Sinks.Get request = loggingService.projects().sinks().get(sinkName);
 
     LogSink response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Logging createService() throws IOException, GeneralSecurityException {
+  public static Logging createLoggingService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -807,18 +688,8 @@ public class LoggingExample {
         .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new LoggingExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Logging API
@@ -839,7 +710,6 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.logging.v2beta1.Logging;
-import com.google.api.services.logging.v2beta1.Logging.Projects.Sinks.List;
 import com.google.api.services.logging.v2beta1.model.ListSinksResponse;
 import com.google.api.services.logging.v2beta1.model.LogSink;
 import java.io.IOException;
@@ -847,13 +717,13 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Required. The resource name of the project containing the sinks. Example:
     // `"projects/my-logging-project"`.
-    String projectName = "projects/{MY-PROJECT}"; // TODO: Update placeholder value.
+    String projectName = "projects/{MY-PROJECT}";  // TODO: Update placeholder value.
 
-    Logging loggingService = createService();
-    List request = loggingService.projects().sinks().list(projectName);
+    Logging loggingService = createLoggingService();
+    Logging.Projects.Sinks.List request = loggingService.projects().sinks().list(projectName);
 
     ListSinksResponse response;
     do {
@@ -865,15 +735,15 @@ public class LoggingExample {
         // TODO: Change code below to process each `logSink` resource:
         System.out.println(logSink);
       }
+      request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 
-  public Logging createService() throws IOException, GeneralSecurityException {
+  public static Logging createLoggingService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -883,18 +753,8 @@ public class LoggingExample {
         .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new LoggingExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Logging API
@@ -915,35 +775,35 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.logging.v2beta1.Logging;
-import com.google.api.services.logging.v2beta1.Logging.Projects.Sinks.Update;
 import com.google.api.services.logging.v2beta1.model.LogSink;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The
     // updated sink must be provided in the request and have the same name that is specified in
     // `sinkName`. If the sink does not exist, it is created.
-    String sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}"; // TODO: Update placeholder values.
+    String sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}";  // TODO: Update placeholder values.
 
     // TODO: Assign values to desired fields of `requestBody`.
     LogSink requestBody = new LogSink();
 
-    Logging loggingService = createService();
-    Update request = loggingService.projects().sinks().update(sinkName, requestBody);
+    Logging loggingService = createLoggingService();
+    Logging.Projects.Sinks.Update request = loggingService.projects().sinks().update(sinkName, requestBody);
 
     LogSink response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Logging createService() throws IOException, GeneralSecurityException {
+  public static Logging createLoggingService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -952,15 +812,5 @@ public class LoggingExample {
     return new Logging.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
         .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new LoggingExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
   }
 }

@@ -105,10 +105,26 @@ public abstract class MethodInfo {
   public abstract FieldInfo pageStreamingResourceField();
 
   /**
+   * Returns true if the request body contains the page streaming resource setter.
+   *
+   * Provided to support a workaround for the logging.entries.list method in
+   * Java, where the request body, instead of the request, contains the page
+   * streaming resource setter.
+   */
+  @JsonProperty("isPageStreamingResourceSetterInRequestBody")
+  public abstract boolean isPageStreamingResourceSetterInRequestBody();
+
+  /**
    * Returns true if the method supports media upload.
    */
   @JsonProperty("hasMediaUpload")
   public abstract boolean hasMediaUpload();
+
+  /**
+   * Returns true if the method supports media download.
+   */
+  @JsonProperty("hasMediaDownload")
+  public abstract boolean hasMediaDownload();
 
   /**
    * Returns a list of the method's accepted authentication scopes.
@@ -147,8 +163,14 @@ public abstract class MethodInfo {
     @JsonProperty("pageStreamingResourceField")
     public abstract Builder pageStreamingResourceField(FieldInfo val);
 
+    @JsonProperty("isPageStreamingResourceSetterInRequestBody")
+    public abstract Builder isPageStreamingResourceSetterInRequestBody(boolean val);
+
     @JsonProperty("hasMediaUpload")
     public abstract Builder hasMediaUpload(boolean val);
+
+    @JsonProperty("hasMediaDownload")
+    public abstract Builder hasMediaDownload(boolean val);
 
     @JsonProperty("authScopes")
     public abstract Builder authScopes(List<String> val);

@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.codegen.discovery.DefaultString;
+import com.google.api.codegen.util.Name;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
@@ -71,11 +72,13 @@ public class ApiaryConfigToSampleConfigConverter {
     for (Method method : this.methods) {
       methods.put(method.getName(), createMethod(method));
     }
+    String apiTypeName = typeNameGenerator.getApiTypeName(apiName);
     return SampleConfig.newBuilder()
         .apiTitle(apiaryConfig.getApiTitle())
         .apiName(apiName)
         .apiVersion(apiVersion)
-        .apiTypeName(typeNameGenerator.getApiTypeName(apiName))
+        .apiTypeName(apiTypeName)
+        .lowerCamelApiTypeName(Name.upperCamel(apiTypeName).toLowerCamel())
         .packagePrefix(typeNameGenerator.getPackagePrefix(apiName, apiVersion))
         .methods(methods)
         .authType(apiaryConfig.getAuthType())
@@ -132,7 +135,9 @@ public class ApiaryConfigToSampleConfigConverter {
             .responseType(responseType)
             .isPageStreaming(isPageStreaming)
             .pageStreamingResourceField(pageStreamingResourceField)
+            .isPageStreamingResourceSetterInRequestBody(false)
             .hasMediaUpload(apiaryConfig.getMediaUpload().contains(method.getName()))
+            .hasMediaDownload(apiaryConfig.getMediaDownload().contains(method.getName()))
             .authScopes(apiaryConfig.getAuthScopes(method.getName()))
             .build();
     return methodInfo;
