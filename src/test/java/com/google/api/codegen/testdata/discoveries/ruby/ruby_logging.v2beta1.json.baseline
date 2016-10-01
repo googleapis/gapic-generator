@@ -1,7 +1,41 @@
 
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Logging API
+# 1. If not already done, enable the Stackdriver Logging API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/logging
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run
+#    `gcloud beta auth application-default login`
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+require 'googleauth'
+require 'google/apis/logging_v2beta1'
+require 'json'
+
+service = Google::Apis::LoggingV2beta1::LoggingService.new
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
+# https://developers.google.com/identity/protocols/application-default-credentials
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+# TODO: Change placeholder below to desired parameter value for the `delete_billing_account_log` method:
+
+# Required. The resource name of the log to delete.  Example:
+# `"projects/my-project/logs/syslog"`.
+log_name = 'billingAccounts/{MY-BILLINGACCOUNT}/logs/{MY-LOG}'
+
+
+# Perform the call
+service.delete_billing_account_log(log_name)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Stackdriver Logging API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/logging
 # 2. This sample uses Application Default Credentials for authentication.
@@ -39,7 +73,7 @@ entries.each do |log_entry|
 end
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Logging API
+# 1. If not already done, enable the Stackdriver Logging API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/logging
 # 2. This sample uses Application Default Credentials for authentication.
@@ -73,7 +107,7 @@ response = service.write_entry_log_entries(request_body)
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Logging API
+# 1. If not already done, enable the Stackdriver Logging API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/logging
 # 2. This sample uses Application Default Credentials for authentication.
@@ -107,7 +141,41 @@ resourceDescriptors.each do |monitored_resource_descriptor|
 end
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Logging API
+# 1. If not already done, enable the Stackdriver Logging API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/logging
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run
+#    `gcloud beta auth application-default login`
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+require 'googleauth'
+require 'google/apis/logging_v2beta1'
+require 'json'
+
+service = Google::Apis::LoggingV2beta1::LoggingService.new
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
+# https://developers.google.com/identity/protocols/application-default-credentials
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+# TODO: Change placeholder below to desired parameter value for the `delete_organization_log` method:
+
+# Required. The resource name of the log to delete.  Example:
+# `"projects/my-project/logs/syslog"`.
+log_name = 'organizations/{MY-ORGANIZATION}/logs/{MY-LOG}'
+
+
+# Perform the call
+service.delete_organization_log(log_name)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Stackdriver Logging API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/logging
 # 2. This sample uses Application Default Credentials for authentication.
@@ -132,7 +200,8 @@ service.authorization = \
 
 # TODO: Change placeholder below to desired parameter value for the `delete_log` method:
 
-# Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
+# Required. The resource name of the log to delete.  Example:
+# `"projects/my-project/logs/syslog"`.
 log_name = 'projects/{MY-PROJECT}/logs/{MY-LOG}'
 
 
@@ -140,7 +209,7 @@ log_name = 'projects/{MY-PROJECT}/logs/{MY-LOG}'
 service.delete_log(log_name)
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Logging API
+# 1. If not already done, enable the Stackdriver Logging API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/logging
 # 2. This sample uses Application Default Credentials for authentication.
@@ -165,9 +234,10 @@ service.authorization = \
 
 # TODO: Change placeholder below to desired parameter value for the `create_project_metric` method:
 
-# The resource name of the project in which to create the metric. Example: `"projects/my-project-id"`.
+# The resource name of the project in which to create the metric.
+# Example: `"projects/my-project-id"`.
 # The new metric must be provided in the request.
-project_name = 'projects/{MY-PROJECT}'
+parent = 'projects/{MY-PROJECT}'
 
 
 request_body = Google::Apis::LoggingV2beta1::LogMetric.new
@@ -175,13 +245,13 @@ request_body = Google::Apis::LoggingV2beta1::LogMetric.new
 
 
 # Perform the call
-response = service.create_project_metric(project_name, request_body)
+response = service.create_project_metric(parent, request_body)
 
 # TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Logging API
+# 1. If not already done, enable the Stackdriver Logging API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/logging
 # 2. This sample uses Application Default Credentials for authentication.
@@ -206,7 +276,8 @@ service.authorization = \
 
 # TODO: Change placeholder below to desired parameter value for the `delete_project_metric` method:
 
-# The resource name of the metric to delete. Example: `"projects/my-project-id/metrics/my-metric-id"`.
+# The resource name of the metric to delete.
+# Example: `"projects/my-project-id/metrics/my-metric-id"`.
 metric_name = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'
 
 
@@ -214,7 +285,7 @@ metric_name = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'
 service.delete_project_metric(metric_name)
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Logging API
+# 1. If not already done, enable the Stackdriver Logging API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/logging
 # 2. This sample uses Application Default Credentials for authentication.
@@ -239,7 +310,8 @@ service.authorization = \
 
 # TODO: Change placeholder below to desired parameter value for the `get_project_metric` method:
 
-# The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
+# The resource name of the desired metric.
+# Example: `"projects/my-project-id/metrics/my-metric-id"`.
 metric_name = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'
 
 
@@ -250,7 +322,7 @@ response = service.get_project_metric(metric_name)
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Logging API
+# 1. If not already done, enable the Stackdriver Logging API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/logging
 # 2. This sample uses Application Default Credentials for authentication.
@@ -275,14 +347,14 @@ service.authorization = \
 
 # TODO: Change placeholder below to desired parameter value for the `list_project_metrics` method:
 
-# Required. The resource name of the project containing the metrics. Example:
-# `"projects/my-project-id"`.
-project_name = 'projects/{MY-PROJECT}'
+# Required. The resource name containing the metrics.
+# Example: `"projects/my-project-id"`.
+parent = 'projects/{MY-PROJECT}'
 
 
 # Perform the call
 metrics = service.fetch_all(items: :metrics) do |token|
-  service.list_project_metrics(project_name, page_token: token)
+  service.list_project_metrics(parent, page_token: token)
 end
 
 metrics.each do |log_metric|
@@ -291,7 +363,7 @@ metrics.each do |log_metric|
 end
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Logging API
+# 1. If not already done, enable the Stackdriver Logging API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/logging
 # 2. This sample uses Application Default Credentials for authentication.
@@ -316,9 +388,11 @@ service.authorization = \
 
 # TODO: Change placeholder below to desired parameter value for the `update_project_metric` method:
 
-# The resource name of the metric to update. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-# The updated metric must be provided in the request and have the same identifier that is specified in
-# `metricName`. If the metric does not exist, it is created.
+# The resource name of the metric to update.
+# Example: `"projects/my-project-id/metrics/my-metric-id"`.
+# The updated metric must be provided in the request and have the
+# same identifier that is specified in `metricName`.
+# If the metric does not exist, it is created.
 metric_name = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'
 
 
@@ -333,7 +407,7 @@ response = service.update_project_metric(metric_name, request_body)
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Logging API
+# 1. If not already done, enable the Stackdriver Logging API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/logging
 # 2. This sample uses Application Default Credentials for authentication.
@@ -358,9 +432,10 @@ service.authorization = \
 
 # TODO: Change placeholder below to desired parameter value for the `create_project_sink` method:
 
-# The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`.
+# Required. The resource in which to create the sink.
+# Example: `"projects/my-project-id"`.
 # The new sink must be provided in the request.
-project_name = 'projects/{MY-PROJECT}'
+parent = 'projects/{MY-PROJECT}'
 
 
 request_body = Google::Apis::LoggingV2beta1::LogSink.new
@@ -368,13 +443,13 @@ request_body = Google::Apis::LoggingV2beta1::LogSink.new
 
 
 # Perform the call
-response = service.create_project_sink(project_name, request_body)
+response = service.create_project_sink(parent, request_body)
 
 # TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Logging API
+# 1. If not already done, enable the Stackdriver Logging API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/logging
 # 2. This sample uses Application Default Credentials for authentication.
@@ -399,7 +474,10 @@ service.authorization = \
 
 # TODO: Change placeholder below to desired parameter value for the `delete_project_sink` method:
 
-# The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
+# Required. The resource name of the sink to delete, including the parent
+# resource and the sink identifier.  Example:
+# `"projects/my-project-id/sinks/my-sink-id"`.  It is an error if the sink
+# does not exist.
 sink_name = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'
 
 
@@ -407,7 +485,7 @@ sink_name = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'
 service.delete_project_sink(sink_name)
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Logging API
+# 1. If not already done, enable the Stackdriver Logging API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/logging
 # 2. This sample uses Application Default Credentials for authentication.
@@ -432,7 +510,8 @@ service.authorization = \
 
 # TODO: Change placeholder below to desired parameter value for the `get_project_sink` method:
 
-# The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
+# Required. The resource name of the sink to return.
+# Example: `"projects/my-project-id/sinks/my-sink-id"`.
 sink_name = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'
 
 
@@ -443,7 +522,7 @@ response = service.get_project_sink(sink_name)
 puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Logging API
+# 1. If not already done, enable the Stackdriver Logging API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/logging
 # 2. This sample uses Application Default Credentials for authentication.
@@ -468,14 +547,14 @@ service.authorization = \
 
 # TODO: Change placeholder below to desired parameter value for the `list_project_sinks` method:
 
-# Required. The resource name of the project containing the sinks. Example:
-# `"projects/my-logging-project"`.
-project_name = 'projects/{MY-PROJECT}'
+# Required. The cloud resource containing the sinks.
+# Example: `"projects/my-logging-project"`.
+parent = 'projects/{MY-PROJECT}'
 
 
 # Perform the call
 sinks = service.fetch_all(items: :sinks) do |token|
-  service.list_project_sinks(project_name, page_token: token)
+  service.list_project_sinks(parent, page_token: token)
 end
 
 sinks.each do |log_sink|
@@ -484,7 +563,7 @@ sinks.each do |log_sink|
 end
 # BEFORE RUNNING:
 # ---------------
-# 1. If not already done, enable the Google Cloud Logging API
+# 1. If not already done, enable the Stackdriver Logging API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/logging
 # 2. This sample uses Application Default Credentials for authentication.
@@ -509,9 +588,9 @@ service.authorization = \
 
 # TODO: Change placeholder below to desired parameter value for the `update_project_sink` method:
 
-# The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The
-# updated sink must be provided in the request and have the same name that is specified in `sinkName`.
-# If the sink does not exist, it is created.
+# Required. The resource name of the sink to update, including the parent
+# resource and the sink identifier.  If the sink does not exist, this method
+# creates the sink.  Example: `"projects/my-project-id/sinks/my-sink-id"`.
 sink_name = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'
 
 
