@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
@@ -65,16 +66,21 @@ public class FieldConfigGenerator implements MethodConfigGenerator {
       }
     }
 
-    // For the required fields, apart from ignoring pagination parameters, ignore any boolean
-    // fields. Those need always be optional, for requiring one to have a value other than the
-    // default (false) is requiring it to be set to true, which doesn't make sense.
+    // Required parameters for this method.
     List<String> requiredParameters = new LinkedList<>();
     for (Field field : message.getFields()) {
       String fieldName = field.getSimpleName();
+      // Ignore pagination parameters.
       if (ignoredFields.contains(fieldName)) {
         continue;
       }
+      // Ignore boolean fields. Those need always be optional, for requiring one to have a value
+      // other than the default (false) is requiring it to be set to true, which doesn't make sense.
       if (field.getType().getKind() == Type.TYPE_BOOL && !field.getType().isRepeated()) {
+        continue;
+      }
+      // Ignore fields whose documentation indicates are optional.
+      if (isDescribedAsOptional(DocumentationUtil.getDescription(field))) {
         continue;
       }
       requiredParameters.add(fieldName);
@@ -103,5 +109,19 @@ public class FieldConfigGenerator implements MethodConfigGenerator {
     flattening.put(CONFIG_KEY_GROUPS, groups);
 
     return flattening;
+  }
+
+  // Heuristic created from the comments in Cloud Debugger API. To be refined as we review more
+  // APIs.
+  private static boolean isDescribedAsOptional(String description) {
+    return description.contains(", if specified,")
+        || description.contains("If specified,")
+        || description.contains(", if set,")
+        || description.contains("If set,")
+        || description.contains(", when set,")
+        || description.contains("When set,");
+    // Indicators of being required: "must be set" (which usually refers to message subfields),
+    // appearing in the URL of a GET method, or being a string field named *_id (which has a big
+    // overlap with the former).
   }
 }
