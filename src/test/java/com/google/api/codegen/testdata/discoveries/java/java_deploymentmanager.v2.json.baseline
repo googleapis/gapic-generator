@@ -212,6 +212,68 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.deploymentmanager.DeploymentManager;
+import com.google.api.services.deploymentmanager.model.Policy;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+public class DeploymentManagerExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    DeploymentManager deploymentmanagerService = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `getIamPolicy` method:
+
+    // Project ID for this request.
+    String project = "{MY-PROJECT}";
+
+    // Name of the resource for this request.
+    String resource = "{MY-RESOURCE}";
+
+
+    DeploymentManager.Deployments.GetIamPolicy request = deploymentmanagerService.deployments().getIamPolicy(project, resource);
+    Policy response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+}
+/**
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud Deployment Manager API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/deploymentmanager
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/deploymentmanager/v2/java
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.deploymentmanager.DeploymentManager;
 import com.google.api.services.deploymentmanager.model.Deployment;
 import com.google.api.services.deploymentmanager.model.Operation;
 import java.io.IOException;
@@ -412,6 +474,72 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.deploymentmanager.DeploymentManager;
+import com.google.api.services.deploymentmanager.model.Policy;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+public class DeploymentManagerExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    DeploymentManager deploymentmanagerService = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `setIamPolicy` method:
+
+    // Project ID for this request.
+    String project = "{MY-PROJECT}";
+
+    // Name of the resource for this request.
+    String resource = "{MY-RESOURCE}";
+
+
+    Policy requestBody = new Policy();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    DeploymentManager.Deployments.SetIamPolicy request = deploymentmanagerService.deployments().setIamPolicy(project, resource, requestBody);
+    Policy response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+}
+/**
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud Deployment Manager API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/deploymentmanager
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/deploymentmanager/v2/java
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.deploymentmanager.DeploymentManager;
 import com.google.api.services.deploymentmanager.model.DeploymentsStopRequest;
 import com.google.api.services.deploymentmanager.model.Operation;
 import java.io.IOException;
@@ -452,6 +580,73 @@ public class DeploymentManagerExample {
 
     DeploymentManager.Deployments.Stop request = deploymentmanagerService.deployments().stop(project, deployment, requestBody);
     Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+}
+/**
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud Deployment Manager API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/deploymentmanager
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/deploymentmanager/v2/java
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.deploymentmanager.DeploymentManager;
+import com.google.api.services.deploymentmanager.model.TestPermissionsRequest;
+import com.google.api.services.deploymentmanager.model.TestPermissionsResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+public class DeploymentManagerExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    DeploymentManager deploymentmanagerService = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `testIamPermissions` method:
+
+    // Project ID for this request.
+    String project = "{MY-PROJECT}";
+
+    // Name of the resource for this request.
+    String resource = "{MY-RESOURCE}";
+
+
+    TestPermissionsRequest requestBody = new TestPermissionsRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    DeploymentManager.Deployments.TestIamPermissions request = deploymentmanagerService.deployments().testIamPermissions(project, resource, requestBody);
+    TestPermissionsResponse response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
