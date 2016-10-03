@@ -48,7 +48,7 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
   }
 
   public boolean isKeyword(String name) {
-    return GoTypeTable.KEYWORD_BUILT_IN_SET.contains(name);
+    return GoTypeTable.RESERVED_IDENTIFIER_SET.contains(name);
   }
 
   @Override

@@ -107,12 +107,14 @@ public class GoTypeTable implements TypeTable {
   }
 
   /**
-   * A set of Go reserved words. See
+   * A set of Go reserved identifiers. See
    * https://golang.org/ref/spec#Keywords
+   * https://golang.org/ref/spec#Predeclared_identifiers
    */
-  public static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
+  public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
       ImmutableSet.<String>builder()
           .add(
+              // Keywords
               "break",
               "case",
               "chan",
@@ -137,6 +139,46 @@ public class GoTypeTable implements TypeTable {
               "struct",
               "switch",
               "type",
-              "var")
+              "var",
+              // Predeclared identifiers
+              "bool",
+              "byte",
+              "complex64",
+              "complex128",
+              "error",
+              "float32",
+              "float64",
+              "int",
+              "int8",
+              "int16",
+              "int32",
+              "int64",
+              "rune",
+              "string",
+              "uint",
+              "uint8",
+              "uint16",
+              "uint32",
+              "uint64",
+              "uintptr",
+              "true",
+              "false",
+              "iota",
+              "nil",
+              "append",
+              "cap",
+              "close",
+              "complex",
+              "copy",
+              "delete",
+              "imag",
+              "len",
+              "make",
+              "new",
+              "panic",
+              "print",
+              "println",
+              "real",
+              "recover")
           .build();
 }
