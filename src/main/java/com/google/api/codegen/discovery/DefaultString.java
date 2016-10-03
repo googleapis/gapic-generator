@@ -83,12 +83,15 @@ public class DefaultString {
   }
 
   /**
-   * Does the same thing as {@link #getPlaceholder(String, String)}, but returns
-   * an empty string for unrecognized patterns.
+   * Does the same thing as {@link #getPlaceholder(String, String)}, but uses a
+   * no-brace and lower-case format and returns an empty string for unrecognized
+   * patterns.
+   *
+   * For example: "projects/my-project/logs/my-log"
    */
   public static String getNonTrivialPlaceholder(String pattern) {
     if (pattern != null) {
-      String def = forPattern(pattern);
+      String def = forPattern(pattern, "my-%s", false);
       if (def != null) {
         return def;
       }
@@ -99,7 +102,7 @@ public class DefaultString {
   public static String getPlaceholder(String fieldName, String pattern) {
     if (pattern != null) {
       // If the pattern has a specially-recognized default, use the default. No sample.
-      String def = forPattern(pattern);
+      String def = forPattern(pattern, "{MY-%s}", true);
       if (def != null) {
         return def;
       }
@@ -114,7 +117,7 @@ public class DefaultString {
    * Returns a default string from `pattern`, or null if the pattern is not supported.
    */
   @VisibleForTesting
-  static String forPattern(String pattern) {
+  static String forPattern(String pattern, String placeholderFormat, boolean placeholderUpperCase) {
     // We only care about patterns that have alternating literal and wildcard like
     //  ^foo/[^/]*/bar/[^/]*$
     // Ignore if what we get looks nothing like this.
@@ -130,11 +133,14 @@ public class DefaultString {
     StringBuilder ret = new StringBuilder();
     for (int i = 0; i < elems.size(); i += 2) {
       String literal = elems.get(i).getLiteral();
+      String placeholder = Inflector.singularize(literal);
+      if (placeholderUpperCase) {
+        placeholder = placeholder.toUpperCase();
+      }
       ret.append('/')
           .append(literal)
-          .append("/{MY-")
-          .append(Inflector.singularize(literal).toUpperCase())
-          .append('}');
+          .append("/")
+          .append(String.format(placeholderFormat, placeholder));
     }
     return ret.substring(1);
   }

@@ -43,7 +43,10 @@
 
 
       @end
-      {@field.typeName} {@field.name} = {@field.defaultValue};  {@placeholderTodo(field.isPlaceholderSingular)}
+      {@field.typeName} {@field.name} = {@field.defaultValue};  // TODO: Update placeholder value.
+      @if field.example
+        // {@field.example}
+      @end
 
     @end
     @if body.hasInputRequest
@@ -55,7 +58,7 @@
 
     @end
     @if body.hasMediaUpload
-      // TODO: Add desired media content for upload. For more information, see:
+      // TODO: Add desired media content for upload. See:
       // https://developers.google.com/api-client-library/java/google-api-java-client/media-upload
 
     @end
@@ -63,7 +66,7 @@
     {@body.requestTypeName} {@body.requestVarName} = {@body.serviceVarName}.{@callChain(body.methodNameComponents)}({@paramList(body.fieldVarNames)});
     @if {@body.hasMediaDownload()}
 
-      // TODO: Download media content if desired. For more information, see:
+      // TODO: Download media content if desired. See:
       // https://developers.google.com/api-client-library/java/google-api-java-client/media-download
     @end
 
@@ -111,7 +114,7 @@
 
     @switch body.authType
     @case "OAUTH_3L"
-      // TODO: Change placeholder below to generate authentication credentials, see:
+      // TODO: Change placeholder below to generate authentication credentials. See:
       // {@body.authInstructionsUrl}
       //
       @if body.isAuthScopesSingular
@@ -150,13 +153,5 @@
 @private paramList(fieldVarNames)
   @join fieldVarName : fieldVarNames on ", "
     {@fieldVarName}
-  @end
-@end
-
-@private placeholderTodo(isSingular)
-  @if isSingular
-    // TODO: Update placeholder value.
-  @else
-    // TODO: Update placeholder values.
   @end
 @end

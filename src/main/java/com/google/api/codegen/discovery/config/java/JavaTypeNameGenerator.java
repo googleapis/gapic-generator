@@ -17,10 +17,11 @@ package com.google.api.codegen.discovery.config.java;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.api.client.util.Strings;
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Joiner;
-import com.google.protobuf.Field;
 
 public class JavaTypeNameGenerator implements TypeNameGenerator {
 
@@ -61,12 +62,23 @@ public class JavaTypeNameGenerator implements TypeNameGenerator {
   }
 
   @Override
-  public String formatValue(String value, Field.Kind kind) {
-    switch (kind) {
-      case TYPE_STRING:
-        return "\"" + value + "\"";
-      default:
-        throw new IllegalArgumentException("unsupported kind: " + kind.toString());
+  public String getExample(String format) {
+    if (Strings.isNullOrEmpty(format)) {
+      return "";
     }
+    switch (format) {
+      case "byte":
+        return "Base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648";
+      case "date":
+        return "\"YYYY-MM-DD\": see java.text.SimpleDateFormat";
+      case "date-time":
+        return "\"YYYY-MM-DDThh:mm:ss.fffZ\": see com.google.api.client.util.DateTime.toStringRfc3339()";
+    }
+    // Returns "" if format is invalid.
+    String def = DefaultString.getNonTrivialPlaceholder(format);
+    if (Strings.isNullOrEmpty(def)) {
+      return "";
+    }
+    return String.format("ex: \"%s\"", def);
   }
 }

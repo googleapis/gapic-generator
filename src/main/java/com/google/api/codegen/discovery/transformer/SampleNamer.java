@@ -38,9 +38,8 @@ public class SampleNamer extends NameFormatterDelegator {
   /**
    * Returns the variable name of the service.
    */
-  public String getServiceVarName(String lowerCamelApiTypeName) {
-    return localVarName(
-        Name.lowerCamel(Name.lowerCamel(lowerCamelApiTypeName).toLowerCamel(), "service"));
+  public String getServiceVarName(String apiTypeName) {
+    return localVarName(Name.upperCamel(apiTypeName, "Service"));
   }
 
   /**
@@ -94,7 +93,6 @@ public class SampleNamer extends NameFormatterDelegator {
    * Returns the name of the createService function.
    */
   public String createServiceFuncName(String apiTypeName) {
-    return publicMethodName(
-        Name.lowerCamel("create", Name.upperCamel(apiTypeName).toLowerCamel(), "service"));
+    return publicMethodName(Name.upperCamel("Create", apiTypeName, "Service"));
   }
 }

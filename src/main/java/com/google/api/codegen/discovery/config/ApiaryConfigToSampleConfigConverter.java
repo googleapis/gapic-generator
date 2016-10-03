@@ -20,12 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryImporter;
-import com.google.api.codegen.discovery.DefaultString;
-import com.google.api.codegen.util.Name;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
@@ -78,7 +74,6 @@ public class ApiaryConfigToSampleConfigConverter {
         .apiName(apiName)
         .apiVersion(apiVersion)
         .apiTypeName(apiTypeName)
-        .lowerCamelApiTypeName(Name.upperCamel(apiTypeName).toLowerCamel())
         .packagePrefix(typeNameGenerator.getPackagePrefix(apiName, apiVersion))
         .methods(methods)
         .authType(apiaryConfig.getAuthType())
@@ -147,24 +142,19 @@ public class ApiaryConfigToSampleConfigConverter {
    * Creates a field.
    */
   private FieldInfo createFieldInfo(Field field, Type containerType, Method method) {
-    String placeholder = "";
-    boolean isPlaceholderSingular = true;
+    String exampleFormat = "";
     TypeInfo typeInfo = createTypeInfo(field, method);
-    if (typeInfo.kind() == Field.Kind.TYPE_STRING && !typeInfo.isArray() && !typeInfo.isMap()) {
-      String pattern = apiaryConfig.getFieldPattern().get(containerType.getName(), field.getName());
-      if (!Strings.isNullOrEmpty(pattern)) {
-        placeholder = DefaultString.getNonTrivialPlaceholder(pattern);
-        // String placeholders are always contained within braces, so counting
-        // the number of open braces is an easy test for singularity.
-        isPlaceholderSingular = StringUtils.countMatches(placeholder, '{') < 2;
-        placeholder = typeNameGenerator.formatValue(placeholder, field.getKind());
+    if (typeInfo.kind() == Field.Kind.TYPE_STRING) {
+      // If a field pattern exists, use it. Otherwise, get the string format.
+      exampleFormat = apiaryConfig.getFieldPattern().get(containerType.getName(), field.getName());
+      if (Strings.isNullOrEmpty(exampleFormat)) {
+        exampleFormat = apiaryConfig.getStringFormat(containerType.getName(), field.getName());
       }
     }
     return FieldInfo.newBuilder()
         .name(field.getName())
         .type(typeInfo)
-        .placeholder(placeholder)
-        .isPlaceholderSingular(isPlaceholderSingular)
+        .example(typeNameGenerator.getExample(exampleFormat))
         .description(
             Strings.nullToEmpty(
                 apiaryConfig.getDescription(method.getRequestTypeUrl(), field.getName())))

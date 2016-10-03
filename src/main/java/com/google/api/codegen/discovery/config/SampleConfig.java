@@ -88,17 +88,6 @@ public abstract class SampleConfig {
   public abstract String apiTypeName();
 
   /**
-   * Returns the lower-camel formatted API type name.
-   *
-   * This is mostly for utility for overrides where apiTypeName is used to
-   * generate a variable name, and the automatically generated lower-camel
-   * format is wrong.
-   * For example: "SQLAdmin" to "sQLAdmin"
-   */
-  @JsonProperty("lowerCamelApiTypeName")
-  public abstract String lowerCamelApiTypeName();
-
-  /**
    * Returns the language specific package prefix for API types.
    */
   @JsonProperty("packagePrefix")
@@ -140,9 +129,6 @@ public abstract class SampleConfig {
 
     @JsonProperty("apiTypeName")
     public abstract Builder apiTypeName(String val);
-
-    @JsonProperty("lowerCamelApiTypeName")
-    public abstract Builder lowerCamelApiTypeName(String val);
 
     @JsonProperty("packagePrefix")
     public abstract Builder packagePrefix(String val);

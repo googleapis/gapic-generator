@@ -87,8 +87,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
 
     SampleBodyView.Builder sampleBodyView = SampleBodyView.newBuilder();
     sampleBodyView.serviceVarName(
-        symbolTable.getNewSymbol(
-            sampleNamer.getServiceVarName(sampleConfig.lowerCamelApiTypeName())));
+        symbolTable.getNewSymbol(sampleNamer.getServiceVarName(sampleConfig.apiTypeName())));
     sampleBodyView.serviceTypeName(
         sampleTypeTable.getAndSaveNicknameForServiceType(sampleConfig.apiTypeName()));
     sampleBodyView.methodVerb(methodInfo.verb());
@@ -172,16 +171,14 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
   public SampleFieldView generateSampleField(
       Entry<String, FieldInfo> field, SampleTypeTable sampleTypeTable, SymbolTable symbolTable) {
     TypeInfo typeInfo = field.getValue().type();
-    String defaultValue = field.getValue().placeholder();
-    if (Strings.isNullOrEmpty(defaultValue)) {
-      defaultValue = sampleTypeTable.getZeroValueAndSaveNicknameFor(typeInfo);
-    }
+    String defaultValue = sampleTypeTable.getZeroValueAndSaveNicknameFor(typeInfo);
+    String example = field.getValue().example();
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.getKey()))
         .typeName(sampleTypeTable.getAndSaveNicknameFor(typeInfo))
         .defaultValue(defaultValue)
+        .example(example)
         .description(field.getValue().description())
-        .isPlaceholderSingular(field.getValue().isPlaceholderSingular())
         .build();
   }
 
