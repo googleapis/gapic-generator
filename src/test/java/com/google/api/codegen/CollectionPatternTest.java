@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.config.CollectionPattern;
+import com.google.api.codegen.configgen.CollectionPattern;
 import com.google.api.gax.grpc.ApiCallable;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.FieldSegment;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.LiteralSegment;

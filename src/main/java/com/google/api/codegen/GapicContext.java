@@ -14,6 +14,11 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.CollectionConfig;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;

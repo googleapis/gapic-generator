@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.ruby;
 
-import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
-import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.ImportTypeTransformer;

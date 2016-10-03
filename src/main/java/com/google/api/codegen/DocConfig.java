@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.config.CollectionConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.metacode.FieldSetting;
 import com.google.api.codegen.metacode.InitCode;
 import com.google.api.codegen.metacode.InitCodeLine;
@@ -36,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 /** Represents the generic documentation settings for an Api method. */
+@Deprecated // Obsolete with MVVM
 public abstract class DocConfig {
   public abstract String getApiName();
 

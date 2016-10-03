@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.transformer.go;
 
-import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.gapic.PackageNameCodePathMapper;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
