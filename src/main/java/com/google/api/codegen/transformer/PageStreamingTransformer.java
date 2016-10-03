@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.MethodConfig;
-import com.google.api.codegen.PageStreamingConfig;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorView;

@@ -14,11 +14,11 @@
  */
 package com.google.api.codegen.transformer.java;
 
-import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ImportTypeTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;

@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.BundlingConfig;
-import com.google.api.codegen.CollectionConfig;
-import com.google.api.codegen.PageStreamingConfig;
-import com.google.api.codegen.SmokeTestConfig;
+import com.google.api.codegen.config.BundlingConfig;
+import com.google.api.codegen.config.CollectionConfig;
+import com.google.api.codegen.config.PageStreamingConfig;
+import com.google.api.codegen.config.SmokeTestConfig;
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitTreeParserContext;

@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.config.ConfigGeneratorApi;
+import com.google.api.codegen.configgen.ConfigGeneratorApi;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.Lists;

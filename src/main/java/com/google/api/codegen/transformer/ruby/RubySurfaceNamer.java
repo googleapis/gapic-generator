@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.CollectionConfig;
+import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;

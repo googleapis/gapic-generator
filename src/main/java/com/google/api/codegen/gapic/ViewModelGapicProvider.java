@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.gapic;
 
-import com.google.api.codegen.ApiConfig;
+import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;

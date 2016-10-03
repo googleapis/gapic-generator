@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.ApiConfig;
+import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Model;
 

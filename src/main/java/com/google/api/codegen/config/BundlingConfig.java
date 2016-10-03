@@ -12,8 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.config;
 
+import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.BundlingConfigProto;
+import com.google.api.codegen.BundlingDescriptorProto;
+import com.google.api.codegen.BundlingSettingsProto;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
