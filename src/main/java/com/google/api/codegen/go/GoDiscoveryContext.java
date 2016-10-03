@@ -178,7 +178,7 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
    * exists, it is stripped to its last path-element and converted to camel case, eg
    * "https://www.googleapis.com/auth/cloud-platform" becomes "CloudPlatform".
    */
-  public ImmutableList<String> getAuthScopes(Method method) {
+  public ImmutableList<String> getFormattedAuthScopes(Method method) {
     if (!getApiaryConfig().getAuthScopes().containsKey(method.getName())) {
       return ImmutableList.<String>of();
     }
