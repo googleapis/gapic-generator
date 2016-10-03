@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.BundlingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
@@ -30,13 +29,13 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
+import org.joda.time.Duration;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nullable;
-
-import org.joda.time.Duration;
 
 // TODO(garrettjones) consider using AutoValue in this class and related classes.
 /**
@@ -47,7 +46,7 @@ public class MethodConfig {
 
   private final Method method;
   private final PageStreamingConfig pageStreaming;
-  private final PageStreamingConfig grpcStreaming;
+  private final GrpcStreamingConfig grpcStreaming;
   private final FlatteningConfig flattening;
   private final String retryCodesConfigName;
   private final String retrySettingsConfigName;
@@ -74,11 +73,9 @@ public class MethodConfig {
 
     boolean error = false;
 
-    PageStreamingConfig pageStreaming;
-    if (PageStreamingConfigProto.getDefaultInstance()
+    PageStreamingConfig pageStreaming = null;
+    if (!PageStreamingConfigProto.getDefaultInstance()
         .equals(methodConfigProto.getPageStreaming())) {
-      pageStreaming = null;
-    } else {
       pageStreaming =
           PageStreamingConfig.createPageStreaming(
               diagCollector, methodConfigProto.getPageStreaming(), method);
@@ -87,23 +84,23 @@ public class MethodConfig {
       }
     }
 
-    PageStreamingConfig grpcStreaming;
-    if (PageStreamingConfigProto.getDefaultInstance()
-        .equals(methodConfigProto.getGrpcStreaming())) {
-      grpcStreaming = null;
-    } else {
-      grpcStreaming =
-          PageStreamingConfig.createGrpcStreaming(
-              diagCollector, methodConfigProto.getGrpcStreaming(), method);
-      if (grpcStreaming == null) {
-        error = true;
+    GrpcStreamingConfig grpcStreaming = null;
+    if (isStreamingMethod(method)) {
+      if (PageStreamingConfigProto.getDefaultInstance()
+          .equals(methodConfigProto.getGrpcStreaming())) {
+        grpcStreaming = GrpcStreamingConfig.createGrpcStreaming(diagCollector, method);
+      } else {
+        grpcStreaming =
+            GrpcStreamingConfig.createGrpcStreaming(
+                diagCollector, methodConfigProto.getGrpcStreaming(), method);
+        if (grpcStreaming == null) {
+          error = true;
+        }
       }
     }
 
-    FlatteningConfig flattening;
-    if (FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
-      flattening = null;
-    } else {
+    FlatteningConfig flattening = null;
+    if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
       flattening =
           FlatteningConfig.createFlattening(
               diagCollector, methodConfigProto.getFlattening(), method);
@@ -112,10 +109,8 @@ public class MethodConfig {
       }
     }
 
-    BundlingConfig bundling;
-    if (BundlingConfigProto.getDefaultInstance().equals(methodConfigProto.getBundling())) {
-      bundling = null;
-    } else {
+    BundlingConfig bundling = null;
+    if (!BundlingConfigProto.getDefaultInstance().equals(methodConfigProto.getBundling())) {
       bundling =
           BundlingConfig.createBundling(diagCollector, methodConfigProto.getBundling(), method);
       if (bundling == null) {
@@ -220,7 +215,7 @@ public class MethodConfig {
   private MethodConfig(
       Method method,
       PageStreamingConfig pageStreaming,
-      PageStreamingConfig grpcStreaming,
+      GrpcStreamingConfig grpcStreaming,
       FlatteningConfig flattening,
       String retryCodesConfigName,
       String retrySettingsConfigName,
@@ -263,13 +258,13 @@ public class MethodConfig {
     return pageStreaming;
   }
 
-  /** Returns true if this method has grpc response streaming configured. */
+  /** Returns true if this method has grpc streaming configured. */
   public boolean isGrpcStreaming() {
     return grpcStreaming != null;
   }
 
-  /** Returns the configuration for grpc response streaming. */
-  public PageStreamingConfig getGrpcStreaing() {
+  /** Returns the grpc streaming configuration of the method. */
+  public GrpcStreamingConfig getGrpcStreaming() {
     return grpcStreaming;
   }
 
@@ -334,10 +329,14 @@ public class MethodConfig {
   }
 
   /**
-   * Returns the Interface that should be used for the GRPC call in place of the interface
-   * in which this method appears.
+   * Returns the Interface that should be used for the GRPC call in place of the interface in which
+   * this method appears.
    */
   public String getRerouteToGrpcInterface() {
     return rerouteToGrpcInterface;
+  }
+
+  static private boolean isStreamingMethod(Method method) {
+    return method.getRequestStreaming() || method.getResponseStreaming();
   }
 }

@@ -27,4 +27,9 @@ public class JavaFeatureConfig extends FeatureConfig {
   public boolean enableMixins() {
     return true;
   }
+
+  @Override
+  public boolean enableStreaming() {
+    return true;
+  }
 }

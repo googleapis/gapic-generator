@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.CollectionConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.util.Name;
@@ -39,6 +40,7 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -237,6 +239,12 @@ public class ApiMethodTransformer {
     methodViewBuilder.hasReturnValue(
         !ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
     methodViewBuilder.isPageStreaming(false);
+
+    MethodConfig methodConfig = context.getMethodConfig();
+    if (methodConfig.isGrpcStreaming()) {
+      GrpcStreamingConfig grpcStreaming = methodConfig.getGrpcStreaming();
+      methodViewBuilder.streamingType(grpcStreaming.getType());
+    }
 
     return methodViewBuilder.type(ApiMethodType.CallableMethod).build();
   }

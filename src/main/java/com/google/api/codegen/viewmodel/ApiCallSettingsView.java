@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.config.GrpcStreamingConfig.StreamingType;
 import com.google.auto.value.AutoValue;
 
 import javax.annotation.Nullable;
-import org.joda.time.Duration;
 
 @AutoValue
 public abstract class ApiCallSettingsView {
@@ -32,6 +32,12 @@ public abstract class ApiCallSettingsView {
   public abstract String responseTypeName();
 
   public abstract String resourceTypeName();
+
+  public abstract StreamingType streamingType();
+
+  public boolean isStreaming() {
+    return streamingType() != StreamingType.NonStreaming;
+  }
 
   public abstract String memberName();
 
@@ -61,11 +67,11 @@ public abstract class ApiCallSettingsView {
   public abstract Builder toBuilder();
 
   public static Builder newBuilder() {
-    return new AutoValue_ApiCallSettingsView.Builder();
+    return new AutoValue_ApiCallSettingsView.Builder().streamingType(StreamingType.NonStreaming);
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder type(ApiCallableType type);
 
     public abstract Builder methodName(String apiMethodName);
@@ -77,6 +83,8 @@ public abstract class ApiCallSettingsView {
     public abstract Builder responseTypeName(String val);
 
     public abstract Builder resourceTypeName(String val);
+
+    public abstract Builder streamingType(StreamingType val);
 
     public abstract Builder memberName(String val);
 

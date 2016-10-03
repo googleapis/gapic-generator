@@ -47,14 +47,13 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * The ModelToViewTransformer to transform a Model into the standard GAPIC surface in Java.
- */
+/** The ModelToViewTransformer to transform a Model into the standard GAPIC surface in Java. */
 public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private GapicCodePathMapper pathMapper;
   private ServiceTransformer serviceTransformer;
@@ -119,9 +118,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       surfaceDocs.add(xsettings);
     }
 
-    PackageInfoView packageInfo =
-        generatePackageInfo(
-            model, apiConfig, createTypeTable(apiConfig.getPackageName()), namer, serviceDocs);
+    PackageInfoView packageInfo = generatePackageInfo(model, apiConfig, serviceDocs);
     surfaceDocs.add(packageInfo);
 
     return surfaceDocs;
@@ -213,11 +210,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private PackageInfoView generatePackageInfo(
-      Model model,
-      ApiConfig apiConfig,
-      ModelTypeTable createTypeTable,
-      SurfaceNamer namer,
-      List<ServiceDocView> serviceDocs) {
+      Model model, ApiConfig apiConfig, List<ServiceDocView> serviceDocs) {
     PackageInfoView.Builder packageInfo = PackageInfoView.newBuilder();
 
     packageInfo.templateFileName(PACKAGE_INFO_TEMPLATE_FILENAME);
@@ -235,7 +228,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private void addXApiImports(SurfaceTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryApiCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.StreamingApiCallable");
     typeTable.saveNicknameFor("com.google.api.gax.protobuf.PathTemplate");
     typeTable.saveNicknameFor("io.grpc.ManagedChannel");
     typeTable.saveNicknameFor("java.io.Closeable");
@@ -249,7 +243,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("com.google.api.gax.core.ConnectionSettings");
     typeTable.saveNicknameFor("com.google.api.gax.core.RetrySettings");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryApiCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.StreamingCallSettings");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.SimpleCallSettings");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ServiceApiSettings");
     typeTable.saveNicknameFor("com.google.auth.Credentials");
@@ -299,6 +294,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
         apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext));
         apiMethods.add(apiMethodTransformer.generatePagedCallableMethod(methodContext));
         apiMethods.add(apiMethodTransformer.generateUnpagedListCallableMethod(methodContext));
+      } else if (methodConfig.isGrpcStreaming()) {
+        apiMethods.add(apiMethodTransformer.generateCallableMethod(methodContext));
       } else {
         if (methodConfig.isFlattening()) {
           for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {

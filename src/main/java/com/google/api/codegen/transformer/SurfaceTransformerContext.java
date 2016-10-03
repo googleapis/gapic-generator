@@ -22,6 +22,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.auto.value.AutoValue;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -94,18 +95,7 @@ public abstract class SurfaceTransformerContext {
         getFeatureConfig());
   }
 
-  /**
-   * Returns true if the method is supported by the current context.
-   * Currently no streaming methods are supported.
-   * TODO: integrate with GapicContext for this method.
-   */
-  private boolean isSupported(Method method) {
-    return !method.getResponseStreaming() && !method.getRequestStreaming();
-  }
-
-  /**
-   * Returns a list of simple RPC methods.
-   */
+  /** Returns a list of simple RPC methods. */
   public List<Method> getSupportedMethods() {
     List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
     for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
@@ -115,6 +105,13 @@ public abstract class SurfaceTransformerContext {
       }
     }
     return methods;
+  }
+
+  private boolean isSupported(Method method) {
+    if (!getFeatureConfig().enableStreaming()) {
+      return !method.getRequestStreaming() && !method.getResponseStreaming();
+    }
+    return true;
   }
 
   public List<Method> getPageStreamingMethods() {

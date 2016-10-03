@@ -47,6 +47,7 @@ import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.ShelfName;
 import com.google.example.library.v1.SomeMessage;
 import com.google.example.library.v1.SomeMessage2.SomeMessage3.Alignment;
+import com.google.example.library.v1.StreamBooksRequest;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
 import com.google.protobuf.ByteString;
@@ -648,6 +649,36 @@ public class LibraryServiceTest {
     Assert.assertEquals(name, actualRequest.getNameAsResource());
     Assert.assertEquals(indexName, actualRequest.getIndexName());
     Assert.assertEquals(indexMap, actualRequest.getIndexMap());
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void streamBooksTest() {
+    BookName name2 = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+    String author = "author-1406328437";
+    String title = "title110371416";
+    boolean read = true;
+    Book expectedResponse = Book.newBuilder()
+      .setNameWithResource(name2)
+      .setAuthor(author)
+      .setTitle(title)
+      .setRead(read)
+      .build();
+    List<GeneratedMessageV3> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    mockLibraryService.setResponses(expectedResponses);
+
+    String name = "name3373707";
+
+    Book actualResponse =
+        api.streamBooks(name);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    StreamBooksRequest actualRequest = (StreamBooksRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, actualRequest.getName());
   }
 
   @Test

@@ -17,10 +17,12 @@ package com.google.api.codegen.viewmodel;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AutoValue
 public abstract class StaticLangXSettingsView implements ViewModel {
+  @Override
   public abstract String templateFileName();
 
   public abstract String packageName();
@@ -37,6 +39,16 @@ public abstract class StaticLangXSettingsView implements ViewModel {
 
   public abstract List<ApiCallSettingsView> callSettings();
 
+  public List<ApiCallSettingsView> unaryCallSettings() {
+    ArrayList<ApiCallSettingsView> unaryCallSettings = new ArrayList<>();
+    for (ApiCallSettingsView settingsView : callSettings()) {
+      if (!settingsView.isStreaming()) {
+        unaryCallSettings.add(settingsView);
+      }
+    }
+    return unaryCallSettings;
+  }
+
   public abstract List<PageStreamingDescriptorClassView> pageStreamingDescriptors();
 
   public abstract List<BundlingDescriptorClassView> bundlingDescriptors();
@@ -47,6 +59,7 @@ public abstract class StaticLangXSettingsView implements ViewModel {
 
   public abstract List<ImportTypeView> imports();
 
+  @Override
   public abstract String outputPath();
 
   @Override
