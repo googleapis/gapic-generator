@@ -72,7 +72,6 @@ import com.google.tagger.v1.AddTagResponse;
 import com.google.tagger.v1.LabelerGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
-import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -277,21 +276,21 @@ public class LibraryServiceSettings extends ServiceApiSettings {
    */
   public StreamingCallSettings<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings() {
     return streamShelvesSettings;
-   }
+  }
 
   /**
    * Returns the object with the settings used for calls to streamBooks.
    */
   public StreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings() {
     return streamBooksSettings;
-   }
+  }
 
   /**
    * Returns the object with the settings used for calls to discussBook.
    */
   public StreamingCallSettings<DiscussBookRequest, Comment> discussBookSettings() {
     return discussBookSettings;
-   }
+  }
 
   /**
    * Returns the object with the settings used for calls to findRelatedBooks.
@@ -606,9 +605,9 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     private final SimpleCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings;
     private final SimpleCallSettings.Builder<GetBookFromArchiveRequest, Book> getBookFromArchiveSettings;
     private final SimpleCallSettings.Builder<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
-    private StreamingCallSettings.Builder<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings;
-    private StreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings;
-    private StreamingCallSettings.Builder<DiscussBookRequest, Comment> discussBookSettings;
+    private final StreamingCallSettings.Builder<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings;
+    private final StreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings;
+    private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> discussBookSettings;
     private final PageStreamingCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, String> findRelatedBooksSettings;
     private final SimpleCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings;
     private final SimpleCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings;
@@ -906,9 +905,11 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     }
 
     /**
-     * Applies the given settings to all of the API methods in this service. Only
+     * Applies the given settings to all of the unary API methods in this service. Only
      * values that are non-null will be applied, so this method is not capable
      * of un-setting any values.
+     *
+     * Note: This method does not support applying settings to streaming methods.
      */
     public Builder applyToAllApiMethods(ApiCallSettings.Builder apiCallSettings) throws Exception {
       super.applyToAllApiMethods(methodSettingsBuilders, apiCallSettings);

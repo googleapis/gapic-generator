@@ -33,6 +33,7 @@ import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
@@ -190,7 +191,11 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xsettingsClass.serviceAddress(serviceConfig.getServiceAddress(context.getInterface()));
     xsettingsClass.servicePort(serviceConfig.getServicePort());
     xsettingsClass.authScopes(serviceConfig.getAuthScopes(context.getInterface()));
-    xsettingsClass.callSettings(apiCallableTransformer.generateCallSettings(context));
+
+    List<ApiCallSettingsView> apiCallSettings =
+        apiCallableTransformer.generateCallSettings(context);
+    xsettingsClass.callSettings(apiCallSettings);
+    xsettingsClass.unaryCallSettings(unaryCallSettings(apiCallSettings));
     xsettingsClass.pageStreamingDescriptors(
         pageStreamingTransformer.generateDescriptorClasses(context));
     xsettingsClass.bundlingDescriptors(bundlingTransformer.generateDescriptorClasses(context));
@@ -207,6 +212,16 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xsettingsClass.outputPath(outputPath + "/" + name + ".java");
 
     return xsettingsClass.build();
+  }
+
+  private List<ApiCallSettingsView> unaryCallSettings(List<ApiCallSettingsView> callSettings) {
+    ArrayList<ApiCallSettingsView> unaryCallSettings = new ArrayList<>();
+    for (ApiCallSettingsView settingsView : callSettings) {
+      if (!settingsView.isStreaming()) {
+        unaryCallSettings.add(settingsView);
+      }
+    }
+    return unaryCallSettings;
   }
 
   private PackageInfoView generatePackageInfo(
@@ -229,7 +244,6 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private void addXApiImports(SurfaceTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryApiCallable");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.StreamingApiCallable");
     typeTable.saveNicknameFor("com.google.api.gax.protobuf.PathTemplate");
     typeTable.saveNicknameFor("io.grpc.ManagedChannel");
     typeTable.saveNicknameFor("java.io.Closeable");
@@ -244,7 +258,6 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.core.ConnectionSettings");
     typeTable.saveNicknameFor("com.google.api.gax.core.RetrySettings");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryApiCallSettings");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.StreamingCallSettings");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.SimpleCallSettings");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ServiceApiSettings");
     typeTable.saveNicknameFor("com.google.auth.Credentials");
@@ -259,6 +272,16 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("java.io.IOException");
     typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
+    addStreamingSettingsImportIfNecessary(context);
+  }
+
+  private void addStreamingSettingsImportIfNecessary(SurfaceTransformerContext context) {
+    for (Method method : context.getSupportedMethods()) {
+      if (MethodConfig.isGrpcStreamingMethod(method)) {
+        context.getTypeTable().saveNicknameFor("com.google.api.gax.grpc.StreamingCallSettings");
+        break;
+      }
+    }
   }
 
   public SettingsDocView generateSettingsDoc(
@@ -295,6 +318,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
         apiMethods.add(apiMethodTransformer.generatePagedCallableMethod(methodContext));
         apiMethods.add(apiMethodTransformer.generateUnpagedListCallableMethod(methodContext));
       } else if (methodConfig.isGrpcStreaming()) {
+        context.getTypeTable().saveNicknameFor("com.google.api.gax.grpc.StreamingApiCallable");
         apiMethods.add(apiMethodTransformer.generateCallableMethod(methodContext));
       } else {
         if (methodConfig.isFlattening()) {

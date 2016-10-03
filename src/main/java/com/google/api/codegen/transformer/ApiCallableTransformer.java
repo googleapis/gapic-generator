@@ -83,7 +83,6 @@ public class ApiCallableTransformer {
     if (methodConfig.isGrpcStreaming()) {
       apiCallableBuilder.type(ApiCallableType.StreamingApiCallable);
       apiCallableBuilder.streamingType(methodConfig.getGrpcStreaming().getType());
-      typeTable.saveNicknameFor("io.grpc.stub.StreamObserver");
     } else if (methodConfig.isBundling()) {
       apiCallableBuilder.type(ApiCallableType.BundlingApiCallable);
     } else {
@@ -173,7 +172,6 @@ public class ApiCallableTransformer {
         settings.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceType));
       }
       settings.streamingType(methodConfig.getGrpcStreaming().getType());
-      typeTable.saveNicknameFor("io.grpc.stub.StreamObserver");
     } else if (methodConfig.isPageStreaming()) {
       namer.addPageStreamingCallSettingsImports(typeTable);
       settings.type(ApiCallableType.PagedApiCallable);

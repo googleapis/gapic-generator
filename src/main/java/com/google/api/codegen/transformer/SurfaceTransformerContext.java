@@ -109,7 +109,7 @@ public abstract class SurfaceTransformerContext {
 
   private boolean isSupported(Method method) {
     if (!getFeatureConfig().enableStreaming()) {
-      return !method.getRequestStreaming() && !method.getResponseStreaming();
+      return !MethodConfig.isGrpcStreamingMethod(method);
     }
     return true;
   }

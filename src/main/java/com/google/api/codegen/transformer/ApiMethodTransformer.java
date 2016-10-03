@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.CollectionConfig;
-import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.util.Name;
@@ -239,12 +238,7 @@ public class ApiMethodTransformer {
     methodViewBuilder.hasReturnValue(
         !ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
     methodViewBuilder.isPageStreaming(false);
-
-    MethodConfig methodConfig = context.getMethodConfig();
-    if (methodConfig.isGrpcStreaming()) {
-      GrpcStreamingConfig grpcStreaming = methodConfig.getGrpcStreaming();
-      methodViewBuilder.streamingType(grpcStreaming.getType());
-    }
+    methodViewBuilder.streamingType(context.getMethodConfig().getGrpcStreamingType());
 
     return methodViewBuilder.type(ApiMethodType.CallableMethod).build();
   }

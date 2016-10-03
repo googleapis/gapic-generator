@@ -175,7 +175,7 @@
       public StreamingCallSettings<{@settings.requestTypeName}, \
             {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
-       }
+      }
     @default
       $unhandledCase: {@settings.type.toString}$
     @end
@@ -361,7 +361,7 @@
       private final BundlingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
     @case "StreamingApiCallable"
-      private StreamingCallSettings.Builder<{@settings.requestTypeName}, \
+      private final StreamingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
     @default
       $unhandledCase: {@settings.type.toString}$
@@ -522,9 +522,11 @@
   }
 
   /**
-   * Applies the given settings to all of the API methods in this service. Only
+   * Applies the given settings to all of the unary API methods in this service. Only
    * values that are non-null will be applied, so this method is not capable
    * of un-setting any values.
+   *
+   * Note: This method does not support applying settings to streaming methods.
    */
   public Builder applyToAllApiMethods(ApiCallSettings.Builder apiCallSettings) throws Exception {
     super.applyToAllApiMethods(methodSettingsBuilders, apiCallSettings);

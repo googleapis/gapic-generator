@@ -17,8 +17,9 @@ package com.google.api.codegen.viewmodel;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class StaticLangXSettingsView implements ViewModel {
@@ -39,15 +40,8 @@ public abstract class StaticLangXSettingsView implements ViewModel {
 
   public abstract List<ApiCallSettingsView> callSettings();
 
-  public List<ApiCallSettingsView> unaryCallSettings() {
-    ArrayList<ApiCallSettingsView> unaryCallSettings = new ArrayList<>();
-    for (ApiCallSettingsView settingsView : callSettings()) {
-      if (!settingsView.isStreaming()) {
-        unaryCallSettings.add(settingsView);
-      }
-    }
-    return unaryCallSettings;
-  }
+  @Nullable
+  public abstract List<ApiCallSettingsView> unaryCallSettings();
 
   public abstract List<PageStreamingDescriptorClassView> pageStreamingDescriptors();
 
@@ -88,6 +82,8 @@ public abstract class StaticLangXSettingsView implements ViewModel {
     public abstract Builder authScopes(Iterable<String> val);
 
     public abstract Builder callSettings(List<ApiCallSettingsView> callSettings);
+
+    public abstract Builder unaryCallSettings(List<ApiCallSettingsView> callSettings);
 
     public abstract Builder pageStreamingDescriptors(
         List<PageStreamingDescriptorClassView> generateDescriptorClasses);

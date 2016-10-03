@@ -18,6 +18,7 @@ import com.google.api.codegen.BundlingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
+import com.google.api.codegen.config.GrpcStreamingConfig.StreamingType;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -85,7 +86,7 @@ public class MethodConfig {
     }
 
     GrpcStreamingConfig grpcStreaming = null;
-    if (isStreamingMethod(method)) {
+    if (isGrpcStreamingMethod(method)) {
       if (PageStreamingConfigProto.getDefaultInstance()
           .equals(methodConfigProto.getGrpcStreaming())) {
         grpcStreaming = GrpcStreamingConfig.createGrpcStreaming(diagCollector, method);
@@ -243,6 +244,11 @@ public class MethodConfig {
     this.rerouteToGrpcInterface = rerouteToGrpcInterface;
   }
 
+  /** Returns true if the method is a streaming method */
+  public static boolean isGrpcStreamingMethod(Method method) {
+    return method.getRequestStreaming() || method.getResponseStreaming();
+  }
+
   /** Returns the method that this config corresponds to. */
   public Method getMethod() {
     return method;
@@ -266,6 +272,15 @@ public class MethodConfig {
   /** Returns the grpc streaming configuration of the method. */
   public GrpcStreamingConfig getGrpcStreaming() {
     return grpcStreaming;
+  }
+
+  /** Returns the grpc streaming configuration of the method. */
+  public StreamingType getGrpcStreamingType() {
+    if (isGrpcStreaming()) {
+      return grpcStreaming.getType();
+    } else {
+      return StreamingType.NonStreaming;
+    }
   }
 
   /** Returns true if this method has flattening configured. */
@@ -334,9 +349,5 @@ public class MethodConfig {
    */
   public String getRerouteToGrpcInterface() {
     return rerouteToGrpcInterface;
-  }
-
-  static private boolean isStreamingMethod(Method method) {
-    return method.getRequestStreaming() || method.getResponseStreaming();
   }
 }
