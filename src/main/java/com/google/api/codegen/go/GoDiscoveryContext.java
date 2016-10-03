@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.go;
 
+import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryContext;
 import com.google.api.codegen.DiscoveryImporter;
@@ -44,6 +45,10 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
   @Override
   public String getMethodName(Method method) {
     return lowerCamelToUpperCamel(super.getMethodName(method));
+  }
+
+  public boolean isKeyword(String name) {
+    return GoTypeTable.KEYWORD_BUILT_IN_SET.contains(name);
   }
 
   @Override

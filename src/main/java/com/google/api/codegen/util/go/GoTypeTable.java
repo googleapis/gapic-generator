@@ -18,6 +18,7 @@ import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
+import com.google.common.collect.ImmutableSet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,4 +105,38 @@ public class GoTypeTable implements TypeTable {
     // we might have to special case them.
     return !importPath.contains("/");
   }
+
+  /**
+   * A set of Go reserved words. See
+   * https://golang.org/ref/spec#Keywords
+   */
+  public static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
+      ImmutableSet.<String>builder()
+          .add(
+              "break",
+              "case",
+              "chan",
+              "const",
+              "continue",
+              "default",
+              "defer",
+              "else",
+              "fallthrough",
+              "for",
+              "func",
+              "go",
+              "goto",
+              "if",
+              "import",
+              "interface",
+              "map",
+              "package",
+              "range",
+              "return",
+              "select",
+              "struct",
+              "switch",
+              "type",
+              "var")
+          .build();
 }
