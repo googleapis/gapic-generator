@@ -2,7 +2,60 @@
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/logging
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/logging/v2beta1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.logging.v2beta1.Logging;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class LoggingExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Required. The resource name of the log to delete.  Example:
+    // `"projects/my-project/logs/syslog"`.
+    String logName = "";  // TODO: Update placeholder value.
+    // ex: "billingAccounts/my-billingAccount/logs/my-log"
+
+    Logging loggingService = createLoggingService();
+    Logging.BillingAccounts.Logs.Delete request = loggingService.billingAccounts().logs().delete(logName);
+
+    request.execute();
+  }
+
+  public static Logging createLoggingService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Logging.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+}
+/**
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -67,7 +120,7 @@ public class LoggingExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -123,7 +176,7 @@ public class LoggingExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -184,7 +237,7 @@ public class LoggingExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -208,7 +261,61 @@ import java.util.Arrays;
 
 public class LoggingExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
+    // Required. The resource name of the log to delete.  Example:
+    // `"projects/my-project/logs/syslog"`.
+    String logName = "";  // TODO: Update placeholder value.
+    // ex: "organizations/my-organization/logs/my-log"
+
+    Logging loggingService = createLoggingService();
+    Logging.Organizations.Logs.Delete request = loggingService.organizations().logs().delete(logName);
+
+    request.execute();
+  }
+
+  public static Logging createLoggingService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Logging.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+}
+/**
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Stackdriver Logging API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/logging
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/logging/v2beta1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.logging.v2beta1.Logging;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class LoggingExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Required. The resource name of the log to delete.  Example:
+    // `"projects/my-project/logs/syslog"`.
     String logName = "";  // TODO: Update placeholder value.
     // ex: "projects/my-project/logs/my-log"
 
@@ -236,7 +343,7 @@ public class LoggingExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -261,16 +368,17 @@ import java.util.Arrays;
 
 public class LoggingExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // The resource name of the project in which to create the metric. Example:
-    // `"projects/my-project-id"`. The new metric must be provided in the request.
-    String projectName = "";  // TODO: Update placeholder value.
+    // The resource name of the project in which to create the metric.
+    // Example: `"projects/my-project-id"`.
+    // The new metric must be provided in the request.
+    String parent = "";  // TODO: Update placeholder value.
     // ex: "projects/my-project"
 
     // TODO: Assign values to desired fields of `requestBody`.
     LogMetric requestBody = new LogMetric();
 
     Logging loggingService = createLoggingService();
-    Logging.Projects.Metrics.Create request = loggingService.projects().metrics().create(projectName, requestBody);
+    Logging.Projects.Metrics.Create request = loggingService.projects().metrics().create(parent, requestBody);
 
     LogMetric response = request.execute();
 
@@ -296,7 +404,7 @@ public class LoggingExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -320,8 +428,8 @@ import java.util.Arrays;
 
 public class LoggingExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // The resource name of the metric to delete. Example:
-    // `"projects/my-project-id/metrics/my-metric-id"`.
+    // The resource name of the metric to delete.
+    // Example: `"projects/my-project-id/metrics/my-metric-id"`.
     String metricName = "";  // TODO: Update placeholder value.
     // ex: "projects/my-project/metrics/my-metric"
 
@@ -349,7 +457,7 @@ public class LoggingExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -374,7 +482,8 @@ import java.util.Arrays;
 
 public class LoggingExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
+    // The resource name of the desired metric.
+    // Example: `"projects/my-project-id/metrics/my-metric-id"`.
     String metricName = "";  // TODO: Update placeholder value.
     // ex: "projects/my-project/metrics/my-metric"
 
@@ -405,7 +514,7 @@ public class LoggingExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -431,13 +540,13 @@ import java.util.Arrays;
 
 public class LoggingExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // Required. The resource name of the project containing the metrics. Example:
-    // `"projects/my-project-id"`.
-    String projectName = "";  // TODO: Update placeholder value.
+    // Required. The resource name containing the metrics.
+    // Example: `"projects/my-project-id"`.
+    String parent = "";  // TODO: Update placeholder value.
     // ex: "projects/my-project"
 
     Logging loggingService = createLoggingService();
-    Logging.Projects.Metrics.List request = loggingService.projects().metrics().list(projectName);
+    Logging.Projects.Metrics.List request = loggingService.projects().metrics().list(parent);
 
     ListLogMetricsResponse response;
     do {
@@ -471,7 +580,7 @@ public class LoggingExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -496,10 +605,11 @@ import java.util.Arrays;
 
 public class LoggingExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // The resource name of the metric to update. Example:
-    // `"projects/my-project-id/metrics/my-metric-id"`. The updated metric must be provided in the request
-    // and have the same identifier that is specified in `metricName`. If the metric does not exist, it is
-    // created.
+    // The resource name of the metric to update.
+    // Example: `"projects/my-project-id/metrics/my-metric-id"`.
+    // The updated metric must be provided in the request and have the
+    // same identifier that is specified in `metricName`.
+    // If the metric does not exist, it is created.
     String metricName = "";  // TODO: Update placeholder value.
     // ex: "projects/my-project/metrics/my-metric"
 
@@ -533,7 +643,7 @@ public class LoggingExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -558,16 +668,17 @@ import java.util.Arrays;
 
 public class LoggingExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`.
+    // Required. The resource in which to create the sink.
+    // Example: `"projects/my-project-id"`.
     // The new sink must be provided in the request.
-    String projectName = "";  // TODO: Update placeholder value.
+    String parent = "";  // TODO: Update placeholder value.
     // ex: "projects/my-project"
 
     // TODO: Assign values to desired fields of `requestBody`.
     LogSink requestBody = new LogSink();
 
     Logging loggingService = createLoggingService();
-    Logging.Projects.Sinks.Create request = loggingService.projects().sinks().create(projectName, requestBody);
+    Logging.Projects.Sinks.Create request = loggingService.projects().sinks().create(parent, requestBody);
 
     LogSink response = request.execute();
 
@@ -593,7 +704,7 @@ public class LoggingExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -617,7 +728,10 @@ import java.util.Arrays;
 
 public class LoggingExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
+    // Required. The resource name of the sink to delete, including the parent
+    // resource and the sink identifier.  Example:
+    // `"projects/my-project-id/sinks/my-sink-id"`.  It is an error if the sink
+    // does not exist.
     String sinkName = "";  // TODO: Update placeholder value.
     // ex: "projects/my-project/sinks/my-sink"
 
@@ -645,7 +759,7 @@ public class LoggingExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -670,7 +784,8 @@ import java.util.Arrays;
 
 public class LoggingExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
+    // Required. The resource name of the sink to return.
+    // Example: `"projects/my-project-id/sinks/my-sink-id"`.
     String sinkName = "";  // TODO: Update placeholder value.
     // ex: "projects/my-project/sinks/my-sink"
 
@@ -701,7 +816,7 @@ public class LoggingExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -727,13 +842,13 @@ import java.util.Arrays;
 
 public class LoggingExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // Required. The resource name of the project containing the sinks. Example:
-    // `"projects/my-logging-project"`.
-    String projectName = "";  // TODO: Update placeholder value.
+    // Required. The cloud resource containing the sinks.
+    // Example: `"projects/my-logging-project"`.
+    String parent = "";  // TODO: Update placeholder value.
     // ex: "projects/my-project"
 
     Logging loggingService = createLoggingService();
-    Logging.Projects.Sinks.List request = loggingService.projects().sinks().list(projectName);
+    Logging.Projects.Sinks.List request = loggingService.projects().sinks().list(parent);
 
     ListSinksResponse response;
     do {
@@ -767,7 +882,7 @@ public class LoggingExample {
 /**
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -792,9 +907,9 @@ import java.util.Arrays;
 
 public class LoggingExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The
-    // updated sink must be provided in the request and have the same name that is specified in
-    // `sinkName`. If the sink does not exist, it is created.
+    // Required. The resource name of the sink to update, including the parent
+    // resource and the sink identifier.  If the sink does not exist, this method
+    // creates the sink.  Example: `"projects/my-project-id/sinks/my-sink-id"`.
     String sinkName = "";  // TODO: Update placeholder value.
     // ex: "projects/my-project/sinks/my-sink"
 
