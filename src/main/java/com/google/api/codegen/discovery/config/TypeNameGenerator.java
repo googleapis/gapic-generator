@@ -55,7 +55,20 @@ public interface TypeNameGenerator {
   public String getSubpackage(boolean isRequest);
 
   /**
-   * Returns an example value for a field with the given format.
+   * Returns an example demonstrating the given string format or an empty
+   * string if format is unrecognized.
+   *
+   * If not the empty string, the returned value will be enclosed within the
+   * correct language-specific quotes.
    */
-  public String getExample(String format);
+  public String getStringFormatExample(String format);
+
+  /**
+   * Returns an example demonstrating the given field pattern or an empty
+   * string if pattern is invalid.
+   *
+   * If not the empty string, the returned value will be enclosed within the
+   * correct language-specific quotes.
+   */
+  public String getFieldPatternExample(String pattern);
 }

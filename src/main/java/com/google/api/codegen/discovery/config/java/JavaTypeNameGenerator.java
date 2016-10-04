@@ -62,7 +62,7 @@ public class JavaTypeNameGenerator implements TypeNameGenerator {
   }
 
   @Override
-  public String getExample(String format) {
+  public String getStringFormatExample(String format) {
     if (Strings.isNullOrEmpty(format)) {
       return "";
     }
@@ -73,12 +73,17 @@ public class JavaTypeNameGenerator implements TypeNameGenerator {
         return "\"YYYY-MM-DD\": see java.text.SimpleDateFormat";
       case "date-time":
         return "\"YYYY-MM-DDThh:mm:ss.fffZ\": see com.google.api.client.util.DateTime.toStringRfc3339()";
+      default:
+        return "";
     }
-    // Returns "" if format is invalid.
-    String def = DefaultString.getNonTrivialPlaceholder(format);
+  }
+
+  @Override
+  public String getFieldPatternExample(String pattern) {
+    String def = DefaultString.getNonTrivialPlaceholder(pattern);
     if (Strings.isNullOrEmpty(def)) {
       return "";
     }
-    return String.format("ex: \"%s\"", def);
+    return String.format("\"%s\"", def);
   }
 }

@@ -142,19 +142,24 @@ public class ApiaryConfigToSampleConfigConverter {
    * Creates a field.
    */
   private FieldInfo createFieldInfo(Field field, Type containerType, Method method) {
-    String exampleFormat = "";
+    String example = "";
     TypeInfo typeInfo = createTypeInfo(field, method);
     if (typeInfo.kind() == Field.Kind.TYPE_STRING) {
-      // If a field pattern exists, use it. Otherwise, get the string format.
-      exampleFormat = apiaryConfig.getFieldPattern().get(containerType.getName(), field.getName());
-      if (Strings.isNullOrEmpty(exampleFormat)) {
-        exampleFormat = apiaryConfig.getStringFormat(containerType.getName(), field.getName());
+      String fieldPattern =
+          apiaryConfig.getFieldPattern().get(containerType.getName(), field.getName());
+      String stringFormat = apiaryConfig.getStringFormat(containerType.getName(), field.getName());
+      example = typeNameGenerator.getFieldPatternExample(fieldPattern);
+      if (!Strings.isNullOrEmpty(example)) {
+        // Generates an example of the format: `ex: "projects/my-project/logs/my-log"`
+        example = "ex: " + example;
+      } else {
+        example = typeNameGenerator.getStringFormatExample(stringFormat);
       }
     }
     return FieldInfo.newBuilder()
         .name(field.getName())
         .type(typeInfo)
-        .example(typeNameGenerator.getExample(exampleFormat))
+        .example(example)
         .description(
             Strings.nullToEmpty(
                 apiaryConfig.getDescription(method.getRequestTypeUrl(), field.getName())))
