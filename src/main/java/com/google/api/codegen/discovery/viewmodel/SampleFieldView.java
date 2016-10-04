@@ -25,9 +25,9 @@ public abstract class SampleFieldView {
 
   public abstract String defaultValue();
 
-  public abstract String description();
+  public abstract String example();
 
-  public abstract boolean isPlaceholderSingular();
+  public abstract String description();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleFieldView.Builder();
@@ -42,9 +42,9 @@ public abstract class SampleFieldView {
 
     public abstract Builder defaultValue(String val);
 
-    public abstract Builder description(String val);
+    public abstract Builder example(String val);
 
-    public abstract Builder isPlaceholderSingular(boolean val);
+    public abstract Builder description(String val);
 
     public abstract SampleFieldView build();
   }

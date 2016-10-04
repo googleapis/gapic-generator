@@ -2,7 +2,63 @@
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/logging
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/logging/v2beta1/java
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.logging.v2beta1.Logging;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+public class LoggingExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Logging loggingService = new Logging.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholder below to desired parameter value for the `delete` method:
+
+    // Required. The resource name of the log to delete.  Example:
+    // `"projects/my-project/logs/syslog"`.
+    String logName = "billingAccounts/{MY-BILLINGACCOUNT}/logs/{MY-LOG}";
+
+
+    Logging.BillingAccounts.Logs.Delete request = loggingService.billingAccounts().logs().delete(logName);
+    request.execute();
+  }
+}
+/**
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -29,8 +85,23 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
-    // TODO: Assign values to desired fields of `requestBody`.
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Logging loggingService = new Logging.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
     ListLogEntriesRequest requestBody = new ListLogEntriesRequest();
 
     Logging loggingService = createService();
@@ -78,7 +149,7 @@ public class LoggingExample {
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -111,9 +182,9 @@ public class LoggingExample {
     Logging loggingService = createService();
     Write request = loggingService.entries().write(requestBody);
 
-    WriteLogEntriesResponse response = request.execute();
-    System.out.println(response);
-  }
+    Logging loggingService = new Logging.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
   public Logging createService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
@@ -144,7 +215,7 @@ public class LoggingExample {
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -170,9 +241,21 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
-    Logging loggingService = createService();
-    List request = loggingService.monitoredResourceDescriptors().list();
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Logging loggingService = new Logging.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
     ListMonitoredResourceDescriptorsResponse response;
     do {
@@ -216,7 +299,63 @@ public class LoggingExample {
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/logging
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/logging/v2beta1/java
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.logging.v2beta1.Logging;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+public class LoggingExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Logging loggingService = new Logging.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholder below to desired parameter value for the `delete` method:
+
+    // Required. The resource name of the log to delete.  Example:
+    // `"projects/my-project/logs/syslog"`.
+    String logName = "organizations/{MY-ORGANIZATION}/logs/{MY-LOG}";
+
+
+    Logging.Organizations.Logs.Delete request = loggingService.organizations().logs().delete(logName);
+    request.execute();
+  }
+}
+/**
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -247,8 +386,9 @@ public class LoggingExample {
     Logging loggingService = createService();
     Delete request = loggingService.projects().logs().delete(logName);
 
-    request.execute();
-  }
+    Logging loggingService = new Logging.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
   public Logging createService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
@@ -256,10 +396,9 @@ public class LoggingExample {
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
-    if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+    // Required. The resource name of the log to delete.  Example:
+    // `"projects/my-project/logs/syslog"`.
+    String logName = "projects/{MY-PROJECT}/logs/{MY-LOG}";
 
     return new Logging.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
@@ -279,7 +418,7 @@ public class LoggingExample {
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -304,10 +443,21 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
-    // The resource name of the project in which to create the metric. Example:
-    // `"projects/my-project-id"`. The new metric must be provided in the request.
-    String projectName = "projects/{MY-PROJECT}"; // TODO: Update placeholder value.
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Logging loggingService = new Logging.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
     // TODO: Assign values to desired fields of `requestBody`.
     LogMetric requestBody = new LogMetric();
@@ -315,9 +465,10 @@ public class LoggingExample {
     Logging loggingService = createService();
     Create request = loggingService.projects().metrics().create(projectName, requestBody);
 
-    LogMetric response = request.execute();
-    System.out.println(response);
-  }
+    // The resource name of the project in which to create the metric.
+    // Example: `"projects/my-project-id"`.
+    // The new metric must be provided in the request.
+    String parent = "projects/{MY-PROJECT}";
 
   public Logging createService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
@@ -330,10 +481,8 @@ public class LoggingExample {
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
-    return new Logging.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-  }
+    Logging.Projects.Metrics.Create request = loggingService.projects().metrics().create(parent, requestBody);
+    LogMetric response = request.execute();
 
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
@@ -348,7 +497,7 @@ public class LoggingExample {
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -380,8 +529,9 @@ public class LoggingExample {
     Logging loggingService = createService();
     Delete request = loggingService.projects().metrics().delete(metricName);
 
-    request.execute();
-  }
+    Logging loggingService = new Logging.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
   public Logging createService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
@@ -389,10 +539,9 @@ public class LoggingExample {
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
-    if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+    // The resource name of the metric to delete.
+    // Example: `"projects/my-project-id/metrics/my-metric-id"`.
+    String metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}";
 
     return new Logging.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
@@ -412,7 +561,7 @@ public class LoggingExample {
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -441,8 +590,9 @@ public class LoggingExample {
     // The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
     String metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}"; // TODO: Update placeholder values.
 
-    Logging loggingService = createService();
-    Get request = loggingService.projects().metrics().get(metricName);
+    Logging loggingService = new Logging.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
     LogMetric response = request.execute();
     System.out.println(response);
@@ -452,7 +602,9 @@ public class LoggingExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    // The resource name of the desired metric.
+    // Example: `"projects/my-project-id/metrics/my-metric-id"`.
+    String metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}";
 
     if (credential.createScopedRequired()) {
       credential =
@@ -477,7 +629,7 @@ public class LoggingExample {
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -503,14 +655,33 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
-    // Required. The resource name of the project containing the metrics. Example:
-    // `"projects/my-project-id"`.
-    String projectName = "projects/{MY-PROJECT}"; // TODO: Update placeholder value.
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Logging loggingService = new Logging.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholder below to desired parameter value for the `list` method:
+
+    // Required. The resource name containing the metrics.
+    // Example: `"projects/my-project-id"`.
+    String parent = "projects/{MY-PROJECT}";
 
     Logging loggingService = createService();
     List request = loggingService.projects().metrics().list(projectName);
 
+    Logging.Projects.Metrics.List request = loggingService.projects().metrics().list(parent);
     ListLogMetricsResponse response;
     do {
       response = request.execute();
@@ -553,7 +724,7 @@ public class LoggingExample {
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -578,22 +749,32 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
-    // The resource name of the metric to update. Example:
-    // `"projects/my-project-id/metrics/my-metric-id"`. The updated metric must be provided in the request
-    // and have the same identifier that is specified in `metricName`. If the metric does not exist, it is
-    // created.
-    String metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}"; // TODO: Update placeholder values.
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
 
-    // TODO: Assign values to desired fields of `requestBody`.
-    LogMetric requestBody = new LogMetric();
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Logging loggingService = new Logging.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
 
     Logging loggingService = createService();
     Update request = loggingService.projects().metrics().update(metricName, requestBody);
 
-    LogMetric response = request.execute();
-    System.out.println(response);
-  }
+    // The resource name of the metric to update.
+    // Example: `"projects/my-project-id/metrics/my-metric-id"`.
+    // The updated metric must be provided in the request and have the
+    // same identifier that is specified in `metricName`.
+    // If the metric does not exist, it is created.
+    String metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}";
 
   public Logging createService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
@@ -624,7 +805,7 @@ public class LoggingExample {
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -649,10 +830,30 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
-    // The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`.
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Logging loggingService = new Logging.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholder below to desired parameter value for the `create` method:
+
+    // Required. The resource in which to create the sink.
+    // Example: `"projects/my-project-id"`.
     // The new sink must be provided in the request.
-    String projectName = "projects/{MY-PROJECT}"; // TODO: Update placeholder value.
+    String parent = "projects/{MY-PROJECT}";
+
 
     // TODO: Assign values to desired fields of `requestBody`.
     LogSink requestBody = new LogSink();
@@ -660,6 +861,7 @@ public class LoggingExample {
     Logging loggingService = createService();
     Create request = loggingService.projects().sinks().create(projectName, requestBody);
 
+    Logging.Projects.Sinks.Create request = loggingService.projects().sinks().create(parent, requestBody);
     LogSink response = request.execute();
     System.out.println(response);
   }
@@ -693,7 +895,7 @@ public class LoggingExample {
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -724,8 +926,9 @@ public class LoggingExample {
     Logging loggingService = createService();
     Delete request = loggingService.projects().sinks().delete(sinkName);
 
-    request.execute();
-  }
+    Logging loggingService = new Logging.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
   public Logging createService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
@@ -733,10 +936,11 @@ public class LoggingExample {
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
-    if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+    // Required. The resource name of the sink to delete, including the parent
+    // resource and the sink identifier.  Example:
+    // `"projects/my-project-id/sinks/my-sink-id"`.  It is an error if the sink
+    // does not exist.
+    String sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}";
 
     return new Logging.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
@@ -756,7 +960,7 @@ public class LoggingExample {
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -785,8 +989,9 @@ public class LoggingExample {
     // The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
     String sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}"; // TODO: Update placeholder values.
 
-    Logging loggingService = createService();
-    Get request = loggingService.projects().sinks().get(sinkName);
+    Logging loggingService = new Logging.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
     LogSink response = request.execute();
     System.out.println(response);
@@ -796,7 +1001,9 @@ public class LoggingExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    // Required. The resource name of the sink to return.
+    // Example: `"projects/my-project-id/sinks/my-sink-id"`.
+    String sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}";
 
     if (credential.createScopedRequired()) {
       credential =
@@ -821,7 +1028,7 @@ public class LoggingExample {
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -847,14 +1054,33 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
-    // Required. The resource name of the project containing the sinks. Example:
-    // `"projects/my-logging-project"`.
-    String projectName = "projects/{MY-PROJECT}"; // TODO: Update placeholder value.
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Logging loggingService = new Logging.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholder below to desired parameter value for the `list` method:
+
+    // Required. The cloud resource containing the sinks.
+    // Example: `"projects/my-logging-project"`.
+    String parent = "projects/{MY-PROJECT}";
 
     Logging loggingService = createService();
     List request = loggingService.projects().sinks().list(projectName);
 
+    Logging.Projects.Sinks.List request = loggingService.projects().sinks().list(parent);
     ListSinksResponse response;
     do {
       response = request.execute();
@@ -897,7 +1123,7 @@ public class LoggingExample {
 /*
  * BEFORE RUNNING:
  * ---------------
- * 1. If not already done, enable the Google Cloud Logging API
+ * 1. If not already done, enable the Stackdriver Logging API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/logging
  * 2. This sample uses Application Default Credentials for authentication.
@@ -922,11 +1148,21 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class LoggingExample {
-  public void run() throws IOException, GeneralSecurityException {
-    // The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The
-    // updated sink must be provided in the request and have the same name that is specified in
-    // `sinkName`. If the sink does not exist, it is created.
-    String sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}"; // TODO: Update placeholder values.
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Logging loggingService = new Logging.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
     // TODO: Assign values to desired fields of `requestBody`.
     LogSink requestBody = new LogSink();
@@ -934,9 +1170,10 @@ public class LoggingExample {
     Logging loggingService = createService();
     Update request = loggingService.projects().sinks().update(sinkName, requestBody);
 
-    LogSink response = request.execute();
-    System.out.println(response);
-  }
+    // Required. The resource name of the sink to update, including the parent
+    // resource and the sink identifier.  If the sink does not exist, this method
+    // creates the sink.  Example: `"projects/my-project-id/sinks/my-sink-id"`.
+    String sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}";
 
   public Logging createService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();

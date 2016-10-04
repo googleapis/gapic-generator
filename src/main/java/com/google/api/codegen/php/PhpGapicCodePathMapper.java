@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.php;
 
-import com.google.api.codegen.ApiConfig;
+import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.auto.value.AutoValue;

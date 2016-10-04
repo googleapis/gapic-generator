@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.api.gax.grpc.ApiCallable;
 import com.google.common.collect.ImmutableMap;

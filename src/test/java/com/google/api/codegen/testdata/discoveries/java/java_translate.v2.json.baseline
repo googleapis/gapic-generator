@@ -23,7 +23,19 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 
 public class TranslateExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    Credential credential = getAuth();
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Translate translateService = new Translate.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholder below to desired parameter value for the `list` method:
+
     // The text to detect
     java.util.List<String> q = new ArrayList<>(); // TODO: Update placeholder value.
 
@@ -92,9 +104,13 @@ public class TranslateExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    // TODO: Change placeholder below to generate authentication credentials.
-    // See: https://foo.com/bar
-    GoogleCredential credential = null;
+    Translate translateService = new Translate.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    Translate.Languages.List request = translateService.languages().list();
+    LanguagesListResponse response = request.execute();
 
     return new Translate.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
@@ -135,7 +151,19 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 
 public class TranslateExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    Credential credential = getAuth();
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Translate translateService = new Translate.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
     // The text to translate
     java.util.List<String> q = new ArrayList<>(); // TODO: Update placeholder value.
 

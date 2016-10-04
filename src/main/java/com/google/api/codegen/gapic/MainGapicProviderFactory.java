@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.gapic;
 
-import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.clientconfig.ClientConfigGapicContext;
 import com.google.api.codegen.clientconfig.ClientConfigSnippetSetRunner;
+import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
 import com.google.api.codegen.go.GoSnippetSetRunner;
 import com.google.api.codegen.InterfaceView;

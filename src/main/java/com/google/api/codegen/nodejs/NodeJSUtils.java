@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.nodejs;
 
-import com.google.api.codegen.ApiConfig;
+import com.google.api.codegen.config.ApiConfig;
 import com.google.common.base.Strings;
 
 public class NodeJSUtils {

@@ -28,7 +28,13 @@ import java.util.List;
  */
 public class CommonAcronyms {
   private static final ImmutableSet<String> ACRONYMS =
-      ImmutableSet.<String>builder().add("IAM").add("HTTP").add("XML").add("API").build();
+      ImmutableSet.<String>builder()
+          .add("IAM")
+          .add("HTTP")
+          .add("XML")
+          .add("API")
+          .add("SQL")
+          .build();
 
   /**
    * Represents the notion of whether a name piece is normal or an upper-case acronym.

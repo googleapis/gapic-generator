@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.py;
 
-import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.py.PythonImport.ImportType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;

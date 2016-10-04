@@ -59,7 +59,11 @@ public abstract class SampleBodyView {
 
   public abstract boolean isResourceMap();
 
+  public abstract boolean isResourceSetterInRequestBody();
+
   public abstract boolean hasMediaUpload();
+
+  public abstract boolean hasMediaDownload();
 
   public abstract AuthType authType();
 
@@ -68,6 +72,8 @@ public abstract class SampleBodyView {
   public abstract List<String> authScopes();
 
   public abstract boolean isAuthScopesSingular();
+
+  public abstract String createServiceFuncName();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleBodyView.Builder();
@@ -114,7 +120,11 @@ public abstract class SampleBodyView {
 
     public abstract Builder isResourceMap(boolean val);
 
+    public abstract Builder isResourceSetterInRequestBody(boolean val);
+
     public abstract Builder hasMediaUpload(boolean val);
+
+    public abstract Builder hasMediaDownload(boolean val);
 
     public abstract Builder authType(AuthType val);
 
@@ -123,6 +133,8 @@ public abstract class SampleBodyView {
     public abstract Builder authScopes(List<String> val);
 
     public abstract Builder isAuthScopesSingular(boolean val);
+
+    public abstract Builder createServiceFuncName(String val);
 
     public abstract SampleBodyView build();
   }

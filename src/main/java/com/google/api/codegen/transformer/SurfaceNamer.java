@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.CollectionConfig;
-import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.config.CollectionConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;

@@ -34,8 +34,9 @@ public class StorageExample {
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
     String entity = ""; // TODO: Update placeholder value.
 
-    Storage storageService = createService();
-    Delete request = storageService.bucketAccessControls().delete(bucket, entity);
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
     request.execute();
   }
@@ -94,7 +95,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
     // Name of a bucket.
     String bucket = ""; // TODO: Update placeholder value.
 
@@ -163,9 +182,21 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
-    // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
     // TODO: Assign values to desired fields of `requestBody`.
     BucketAccessControl requestBody = new BucketAccessControl();
@@ -235,8 +266,9 @@ public class StorageExample {
     // Name of a bucket.
     String bucket = ""; // TODO: Update placeholder value.
 
-    Storage storageService = createService();
-    List request = storageService.bucketAccessControls().list(bucket);
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
     BucketAccessControls response = request.execute();
     System.out.println(response);
@@ -296,7 +328,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
+
     // Name of a bucket.
     String bucket = ""; // TODO: Update placeholder value.
 
@@ -369,7 +419,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
+
     // Name of a bucket.
     String bucket = ""; // TODO: Update placeholder value.
 
@@ -447,8 +515,9 @@ public class StorageExample {
     Storage storageService = createService();
     Delete request = storageService.buckets().delete(bucket);
 
-    request.execute();
-  }
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
   public Storage createService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
@@ -508,8 +577,9 @@ public class StorageExample {
     // Name of a bucket.
     String bucket = ""; // TODO: Update placeholder value.
 
-    Storage storageService = createService();
-    Get request = storageService.buckets().get(bucket);
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
     Bucket response = request.execute();
     System.out.println(response);
@@ -569,9 +639,21 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
-    // A valid API project identifier.
-    String project = ""; // TODO: Update placeholder value.
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
     // TODO: Assign values to desired fields of `requestBody`.
     Bucket requestBody = new Bucket();
@@ -638,7 +720,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholder below to desired parameter value for the `list` method:
+
     // A valid API project identifier.
     String project = ""; // TODO: Update placeholder value.
 
@@ -712,9 +812,21 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
-    // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
     // TODO: Assign values to desired fields of `requestBody`.
     // Only assigned fields will be changed.
@@ -781,9 +893,21 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
-    // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
     // TODO: Assign values to desired fields of `requestBody`.
     Bucket requestBody = new Bucket();
@@ -863,7 +987,10 @@ public class StorageExample {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
 
     if (credential.createScopedRequired()) {
       credential =
@@ -920,8 +1047,9 @@ public class StorageExample {
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
     String entity = ""; // TODO: Update placeholder value.
 
-    Storage storageService = createService();
-    Delete request = storageService.defaultObjectAccessControls().delete(bucket, entity);
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
     request.execute();
   }
@@ -980,7 +1108,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
     // Name of a bucket.
     String bucket = ""; // TODO: Update placeholder value.
 
@@ -1049,9 +1195,21 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
-    // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
     // TODO: Assign values to desired fields of `requestBody`.
     ObjectAccessControl requestBody = new ObjectAccessControl();
@@ -1121,8 +1279,9 @@ public class StorageExample {
     // Name of a bucket.
     String bucket = ""; // TODO: Update placeholder value.
 
-    Storage storageService = createService();
-    List request = storageService.defaultObjectAccessControls().list(bucket);
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
     ObjectAccessControls response = request.execute();
     System.out.println(response);
@@ -1182,7 +1341,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
+
     // Name of a bucket.
     String bucket = ""; // TODO: Update placeholder value.
 
@@ -1255,7 +1432,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
+
     // Name of a bucket.
     String bucket = ""; // TODO: Update placeholder value.
 
@@ -1326,7 +1521,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
     // Name of a bucket.
     String bucket = ""; // TODO: Update placeholder value.
 
@@ -1398,7 +1611,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
     // Name of a bucket.
     String bucket = ""; // TODO: Update placeholder value.
 
@@ -1471,7 +1702,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
+
     // Name of a bucket.
     String bucket = ""; // TODO: Update placeholder value.
 
@@ -1543,7 +1792,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
     // Name of a bucket.
     String bucket = ""; // TODO: Update placeholder value.
 
@@ -1612,7 +1879,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
+
     // Name of a bucket.
     String bucket = ""; // TODO: Update placeholder value.
 
@@ -1689,7 +1974,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
+
     // Name of a bucket.
     String bucket = ""; // TODO: Update placeholder value.
 
@@ -1766,7 +2069,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `compose` method:
+
     // Name of the bucket in which to store the new object.
     String destinationBucket = ""; // TODO: Update placeholder value.
 
@@ -1779,6 +2100,12 @@ public class StorageExample {
 
     Storage storageService = createService();
     Compose request = storageService.objects().compose(destinationBucket, destinationObject, requestBody);
+
+    Storage.Objects.Compose request = storageService.objects().compose(destinationBucket, destinationObject, requestBody);
+
+    // TODO: Download media content if desired. For more information, see:
+    // https://developers.google.com/api-client-library/java/google-api-java-client/media-download
+
 
     StorageObject response = request.execute();
     System.out.println(response);
@@ -1838,7 +2165,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `copy` method:
+
     // Name of the bucket in which to find the source object.
     String sourceBucket = ""; // TODO: Update placeholder value.
 
@@ -1860,6 +2205,12 @@ public class StorageExample {
 
     Storage storageService = createService();
     Copy request = storageService.objects().copy(sourceBucket, sourceObject, destinationBucket, destinationObject, requestBody);
+
+    Storage.Objects.Copy request = storageService.objects().copy(sourceBucket, sourceObject, destinationBucket, destinationObject, requestBody);
+
+    // TODO: Download media content if desired. For more information, see:
+    // https://developers.google.com/api-client-library/java/google-api-java-client/media-download
+
 
     StorageObject response = request.execute();
     System.out.println(response);
@@ -1926,8 +2277,9 @@ public class StorageExample {
     // Encoding URI Path Parts.
     String object = ""; // TODO: Update placeholder value.
 
-    Storage storageService = createService();
-    Delete request = storageService.objects().delete(bucket, object);
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
     request.execute();
   }
@@ -1986,7 +2338,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
     // Name of the bucket in which the object resides.
     String bucket = ""; // TODO: Update placeholder value.
 
@@ -1996,6 +2366,12 @@ public class StorageExample {
 
     Storage storageService = createService();
     Get request = storageService.objects().get(bucket, object);
+
+    Storage.Objects.Get request = storageService.objects().get(bucket, object);
+
+    // TODO: Download media content if desired. For more information, see:
+    // https://developers.google.com/api-client-library/java/google-api-java-client/media-download
+
 
     StorageObject response = request.execute();
     System.out.println(response);
@@ -2055,10 +2431,29 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
-    // Name of the bucket in which to store the new object. Overrides the provided object metadata's
-    // bucket value, if any.
-    String bucket = ""; // TODO: Update placeholder value.
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholder below to desired parameter value for the `insert` method:
+
+    // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
+    // value, if any.
+    String bucket = "{MY-BUCKET}";
+
 
     // TODO: Assign values to desired fields of `requestBody`.
     StorageObject requestBody = new StorageObject();
@@ -2128,7 +2523,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholder below to desired parameter value for the `list` method:
+
     // Name of the bucket in which to look for objects.
     String bucket = ""; // TODO: Update placeholder value.
 
@@ -2202,7 +2615,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
+
     // Name of the bucket in which the object resides.
     String bucket = ""; // TODO: Update placeholder value.
 
@@ -2276,7 +2707,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `rewrite` method:
+
     // Name of the bucket in which to find the source object.
     String sourceBucket = ""; // TODO: Update placeholder value.
 
@@ -2357,7 +2806,25 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+
+
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
+
     // Name of the bucket in which the object resides.
     String bucket = ""; // TODO: Update placeholder value.
 
@@ -2370,6 +2837,12 @@ public class StorageExample {
 
     Storage storageService = createService();
     Update request = storageService.objects().update(bucket, object, requestBody);
+
+    Storage.Objects.Update request = storageService.objects().update(bucket, object, requestBody);
+
+    // TODO: Download media content if desired. For more information, see:
+    // https://developers.google.com/api-client-library/java/google-api-java-client/media-download
+
 
     StorageObject response = request.execute();
     System.out.println(response);
@@ -2429,9 +2902,21 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
-    // Name of the bucket in which to look for objects.
-    String bucket = ""; // TODO: Update placeholder value.
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
 
     // TODO: Assign values to desired fields of `requestBody`.
     Channel requestBody = new Channel();

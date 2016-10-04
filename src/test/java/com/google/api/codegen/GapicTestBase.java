@@ -15,6 +15,7 @@
 package com.google.api.codegen;
 
 import com.google.api.Service;
+import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.gapic.MainGapicProviderFactory;
 import com.google.api.tools.framework.model.Diag;
