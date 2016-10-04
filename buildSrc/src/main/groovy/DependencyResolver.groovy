@@ -18,12 +18,7 @@ class DependencyResolver {
   // Fetch and locate archives
   public String locateArchive(String dependency) {
     Configuration config = setupConfig();
-    def groupId, artifact, version
-    (groupId, artifact, version) = dependency.split(":")
-    def notation = [group: groupId,
-                    name: artifact,
-                    version: version]
-    Dependency dep = project.dependencies.add(config.name, notation)
+    Dependency dep = project.dependencies.add(config.name, dependency)
     return config.fileCollection(dep).singleFile.toString();
   }
 
