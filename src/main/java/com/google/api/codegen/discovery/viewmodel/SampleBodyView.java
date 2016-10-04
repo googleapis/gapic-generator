@@ -64,8 +64,6 @@ public abstract class SampleBodyView {
 
   public abstract boolean isResourceMap();
 
-  public abstract boolean isResourceSetterInRequestBody();
-
   public abstract boolean hasMediaUpload();
 
   public abstract boolean hasMediaDownload();
@@ -78,6 +76,11 @@ public abstract class SampleBodyView {
 
   public abstract boolean isAuthScopesSingular();
 
+  // Java specific section...
+  @Nullable
+  public abstract Boolean isResourceSetterInRequestBody();
+
+  @Nullable
   public abstract String createServiceFuncName();
 
   // Node.js specific section...
@@ -140,8 +143,6 @@ public abstract class SampleBodyView {
 
     public abstract Builder isResourceMap(boolean val);
 
-    public abstract Builder isResourceSetterInRequestBody(boolean val);
-
     public abstract Builder hasMediaUpload(boolean val);
 
     public abstract Builder hasMediaDownload(boolean val);
@@ -153,6 +154,8 @@ public abstract class SampleBodyView {
     public abstract Builder authScopes(List<String> val);
 
     public abstract Builder isAuthScopesSingular(boolean val);
+
+    public abstract Builder isResourceSetterInRequestBody(Boolean val);
 
     public abstract Builder createServiceFuncName(String val);
 

@@ -33,7 +33,6 @@ import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.common.base.Strings;
 import com.google.protobuf.Method;
 
 /*
@@ -111,8 +110,6 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     sampleBodyView.resourceVarName("");
     sampleBodyView.resourceTypeName("");
     sampleBodyView.isResourceMap(false);
-    sampleBodyView.isResourceSetterInRequestBody(
-        methodInfo.isPageStreamingResourceSetterInRequestBody());
 
     if (methodInfo.isPageStreaming()) {
       FieldInfo fieldInfo = methodInfo.pageStreamingResourceField();
@@ -166,6 +163,9 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     sampleBodyView.authInstructionsUrl(sampleConfig.authInstructionsUrl());
     sampleBodyView.authScopes(methodInfo.authScopes());
     sampleBodyView.isAuthScopesSingular(methodInfo.authScopes().size() == 1);
+
+    sampleBodyView.isResourceSetterInRequestBody(
+        methodInfo.isPageStreamingResourceSetterInRequestBody());
     sampleBodyView.createServiceFuncName(
         sampleNamer.createServiceFuncName(sampleConfig.apiTypeName()));
     return sampleBodyView.build();

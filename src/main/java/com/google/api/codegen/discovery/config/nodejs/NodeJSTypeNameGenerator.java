@@ -19,7 +19,6 @@ import java.util.List;
 import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.common.base.Strings;
-import com.google.protobuf.Field.Kind;
 
 public class NodeJSTypeNameGenerator implements TypeNameGenerator {
 

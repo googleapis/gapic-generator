@@ -1,5 +1,4 @@
 @snippet generate(sampleClass)
-  //
   // BEFORE RUNNING:
   // ---------------
   // 1. If not already done, enable the {@sampleClass.apiTitle}
@@ -13,7 +12,6 @@
   //    `npm install googleapis --save`
 
   var {@sampleClass.body.googleImportVarName} = require('googleapis');
-
   var {@sampleClass.body.serviceVarName} = {@sampleClass.body.googleImportVarName}.{@sampleClass.body.serviceTypeName}('{@sampleClass.apiVersion}');
 
   {@mainFunc(sampleClass.body)}
@@ -23,42 +21,48 @@
 
 @private mainFunc(sampleBody)
   {@sampleBody.authFuncName}(function(authClient) {
-    @if sampleBody.hasRequestBody
-      var {@sampleBody.requestVarName} = {
-        @join field : sampleBody.fields if sampleBody.fields
-          @if field.description
-            @join line : util.getDocLines(field.description, 100)
-              // {@line}
-            @end
-
-
+    var {@sampleBody.requestVarName} = {
+      @join field : sampleBody.fields if sampleBody.fields
+        @if field.description
+          @join line : util.getDocLines(field.description, 100)
+            // {@line}
           @end
-          {@field.name}: {@field.defaultValue},  {@placeholderTodo(field.isPlaceholderSingular)}
+
 
         @end
-        @if sampleBody.hasRequestBody
-          resource: {
-            // TODO: Add desired properties of the request body.
-            @if sampleBody.methodVerb == "PATCH"
-              // Only added properties will be changed.
-            @end
-          },
-
+        {@field.name}: {@field.defaultValue},  // Update placeholder value.
+        @if field.example
+          // {@field.example}
         @end
-        @if sampleBody.hasMediaUpload
-          media: {
-            // TODO: Change placeholders below to add desired media content for upload.
-            // For more information, see:
-            // https://github.com/google/google-api-nodejs-client#media-uploads
-            mimeType: '',  // See https://www.w3.org/Protocols/rfc1341/4_Content-Type.html
-            body: {}
-          },
 
-        @end
-        auth: authClient
-      };
+      @end
+      @if sampleBody.hasRequestBody
+        resource: {
+          // TODO: Add desired properties of the request body.
+          @if sampleBody.methodVerb == "PATCH"
+            // Only added properties will be changed.
+          @end
+        },
 
-    @end
+      @end
+      @if sampleBody.hasMediaUpload
+        media: {
+          // TODO: Add desired media content for upload. See:
+          // https://github.com/google/google-api-nodejs-client#media-uploads
+          mimeType: '',  // See https://www.w3.org/Protocols/rfc1341/4_Content-Type.html
+          body: {}
+        },
+
+      @end
+      @if sampleBody.hasMediaDownload
+        // TODO: To download media content, use:
+        //
+        // alt: 'media',
+
+      @end
+      auth: authClient
+    };
+
     @if sampleBody.isPageStreaming
       var {@sampleBody.handlePageVarName} = function(err, {@sampleBody.responseVarName}) {
         if (err) {
@@ -95,6 +99,7 @@
             console.log(err);
             return;
           }
+          // TODO: Change code below to process the `{@sampleBody.responseVarName}` object:
           console.log(JSON.stringify({@sampleBody.responseVarName}, null, 2));
         });
       @else
@@ -128,13 +133,5 @@
 @private callChain(methodNameComponents)
   @join resource : methodNameComponents on "."
     {@resource}
-  @end
-@end
-
-@private placeholderTodo(isSingular)
-  @if isSingular
-    // TODO: Update placeholder value.
-  @else
-    // TODO: Update placeholder values.
   @end
 @end

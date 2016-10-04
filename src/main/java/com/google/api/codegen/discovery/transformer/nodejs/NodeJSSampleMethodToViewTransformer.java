@@ -70,7 +70,7 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
     MethodInfo methodInfo = sampleConfig.methods().get(context.getMethodName());
     SampleNamer sampleNamer = context.getSampleNamer();
     SampleTypeTable sampleTypeTable = context.getTypeTable();
-    SymbolTable symbolTable = new SymbolTable();
+    SymbolTable symbolTable = SymbolTable.fromSeed(NodeJSTypeTable.RESERVED_IDENTIFIER_SET);
 
     SampleBodyView.Builder sampleBodyView = SampleBodyView.newBuilder();
     sampleBodyView.serviceVarName(
@@ -108,7 +108,7 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
               sampleNamer.localVarName(Name.lowerCamel(fieldInfo.name(), "page"))));
     }
 
-    sampleBodyView.responseVarName(sampleNamer.getResponseVarName());
+    sampleBodyView.responseVarName(symbolTable.getNewSymbol(sampleNamer.getResponseVarName()));
     sampleBodyView.responseTypeName("");
     sampleBodyView.hasResponse(methodInfo.responseType() != null);
 
@@ -133,6 +133,7 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
     sampleBodyView.isPageStreaming(methodInfo.isPageStreaming());
 
     sampleBodyView.hasMediaUpload(methodInfo.hasMediaUpload());
+    sampleBodyView.hasMediaDownload(methodInfo.hasMediaDownload());
 
     sampleBodyView.authType(sampleConfig.authType());
     sampleBodyView.authInstructionsUrl(sampleConfig.authInstructionsUrl());
