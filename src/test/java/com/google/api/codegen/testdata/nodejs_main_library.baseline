@@ -193,7 +193,7 @@ var ARCHIVED_BOOK_PATH_TEMPLATE = new gax.PathTemplate(
  * @param {String} shelf
  * @returns {String}
  */
-LibraryServiceApi.prototype.shelfPath = function shelfPath(shelf) {
+LibraryServiceApi.prototype.shelfPath = function(shelf) {
   return SHELF_PATH_TEMPLATE.render({
     shelf: shelf
   });
@@ -206,7 +206,7 @@ LibraryServiceApi.prototype.shelfPath = function shelfPath(shelf) {
  * @returns {String} - A string representing the shelf.
  */
 LibraryServiceApi.prototype.matchShelfFromShelfName =
-    function matchShelfFromShelfName(shelfName) {
+    function(shelfName) {
   return SHELF_PATH_TEMPLATE.match(shelfName).shelf;
 };
 
@@ -216,7 +216,7 @@ LibraryServiceApi.prototype.matchShelfFromShelfName =
  * @param {String} book
  * @returns {String}
  */
-LibraryServiceApi.prototype.bookPath = function bookPath(shelf, book) {
+LibraryServiceApi.prototype.bookPath = function(shelf, book) {
   return BOOK_PATH_TEMPLATE.render({
     shelf: shelf,
     book: book
@@ -230,7 +230,7 @@ LibraryServiceApi.prototype.bookPath = function bookPath(shelf, book) {
  * @returns {String} - A string representing the shelf.
  */
 LibraryServiceApi.prototype.matchShelfFromBookName =
-    function matchShelfFromBookName(bookName) {
+    function(bookName) {
   return BOOK_PATH_TEMPLATE.match(bookName).shelf;
 };
 
@@ -241,7 +241,7 @@ LibraryServiceApi.prototype.matchShelfFromBookName =
  * @returns {String} - A string representing the book.
  */
 LibraryServiceApi.prototype.matchBookFromBookName =
-    function matchBookFromBookName(bookName) {
+    function(bookName) {
   return BOOK_PATH_TEMPLATE.match(bookName).book;
 };
 
@@ -251,9 +251,9 @@ LibraryServiceApi.prototype.matchBookFromBookName =
  * @param {String} book
  * @returns {String}
  */
-LibraryServiceApi.prototype.archivedBookPath = function archivedBookPath(archive_path, book) {
+LibraryServiceApi.prototype.archivedBookPath = function(archivePath, book) {
   return ARCHIVED_BOOK_PATH_TEMPLATE.render({
-    archive_path: archive_path,
+    archive_path: archivePath,
     book: book
   });
 };
@@ -265,7 +265,7 @@ LibraryServiceApi.prototype.archivedBookPath = function archivedBookPath(archive
  * @returns {String} - A string representing the archive_path.
  */
 LibraryServiceApi.prototype.matchArchivePathFromArchivedBookName =
-    function matchArchivePathFromArchivedBookName(archivedBookName) {
+    function(archivedBookName) {
   return ARCHIVED_BOOK_PATH_TEMPLATE.match(archivedBookName).archive_path;
 };
 
@@ -276,7 +276,7 @@ LibraryServiceApi.prototype.matchArchivePathFromArchivedBookName =
  * @returns {String} - A string representing the book.
  */
 LibraryServiceApi.prototype.matchBookFromArchivedBookName =
-    function matchBookFromArchivedBookName(archivedBookName) {
+    function(archivedBookName) {
   return ARCHIVED_BOOK_PATH_TEMPLATE.match(archivedBookName).book;
 };
 
@@ -311,7 +311,7 @@ LibraryServiceApi.prototype.matchBookFromArchivedBookName =
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.createShelf = function createShelf(
+LibraryServiceApi.prototype.createShelf = function(
     shelf,
     options,
     callback) {
@@ -367,7 +367,7 @@ LibraryServiceApi.prototype.createShelf = function createShelf(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.getShelf = function getShelf(
+LibraryServiceApi.prototype.getShelf = function(
     name,
     options_,
     options,
@@ -434,7 +434,7 @@ LibraryServiceApi.prototype.getShelf = function getShelf(
  * api.listShelves({flattenPages: false}, callback);
  * api.listShelves(function(err, response) {
  */
-LibraryServiceApi.prototype.listShelves = function listShelves(
+LibraryServiceApi.prototype.listShelves = function(
     options,
     callback) {
   if (options instanceof Function && callback === undefined) {
@@ -472,7 +472,7 @@ LibraryServiceApi.prototype.listShelves = function listShelves(
  *     }
  * });
  */
-LibraryServiceApi.prototype.deleteShelf = function deleteShelf(
+LibraryServiceApi.prototype.deleteShelf = function(
     name,
     options,
     callback) {
@@ -521,7 +521,7 @@ LibraryServiceApi.prototype.deleteShelf = function deleteShelf(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.mergeShelves = function mergeShelves(
+LibraryServiceApi.prototype.mergeShelves = function(
     name,
     otherShelfName,
     options,
@@ -572,7 +572,7 @@ LibraryServiceApi.prototype.mergeShelves = function mergeShelves(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.createBook = function createBook(
+LibraryServiceApi.prototype.createBook = function(
     name,
     book,
     options,
@@ -632,7 +632,7 @@ LibraryServiceApi.prototype.createBook = function createBook(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.publishSeries = function publishSeries(
+LibraryServiceApi.prototype.publishSeries = function(
     shelf,
     books,
     options,
@@ -681,7 +681,7 @@ LibraryServiceApi.prototype.publishSeries = function publishSeries(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.getBook = function getBook(
+LibraryServiceApi.prototype.getBook = function(
     name,
     options,
     callback) {
@@ -752,7 +752,7 @@ LibraryServiceApi.prototype.getBook = function getBook(
  * }
  * api.listBooks(formattedName, {flattenPages: false}, callback);
  */
-LibraryServiceApi.prototype.listBooks = function listBooks(
+LibraryServiceApi.prototype.listBooks = function(
     name,
     options,
     callback) {
@@ -798,7 +798,7 @@ LibraryServiceApi.prototype.listBooks = function listBooks(
  *     }
  * });
  */
-LibraryServiceApi.prototype.deleteBook = function deleteBook(
+LibraryServiceApi.prototype.deleteBook = function(
     name,
     options,
     callback) {
@@ -858,7 +858,7 @@ LibraryServiceApi.prototype.deleteBook = function deleteBook(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.updateBook = function updateBook(
+LibraryServiceApi.prototype.updateBook = function(
     name,
     book,
     options,
@@ -913,7 +913,7 @@ LibraryServiceApi.prototype.updateBook = function updateBook(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.moveBook = function moveBook(
+LibraryServiceApi.prototype.moveBook = function(
     name,
     otherShelfName,
     options,
@@ -983,7 +983,7 @@ LibraryServiceApi.prototype.moveBook = function moveBook(
  * api.listStrings({flattenPages: false}, callback);
  * api.listStrings(function(err, response) {
  */
-LibraryServiceApi.prototype.listStrings = function listStrings(
+LibraryServiceApi.prototype.listStrings = function(
     options,
     callback) {
   if (options instanceof Function && callback === undefined) {
@@ -1037,7 +1037,7 @@ LibraryServiceApi.prototype.listStrings = function listStrings(
  *     }
  * });
  */
-LibraryServiceApi.prototype.addComments = function addComments(
+LibraryServiceApi.prototype.addComments = function(
     name,
     comments,
     options,
@@ -1083,7 +1083,7 @@ LibraryServiceApi.prototype.addComments = function addComments(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.getBookFromArchive = function getBookFromArchive(
+LibraryServiceApi.prototype.getBookFromArchive = function(
     name,
     options,
     callback) {
@@ -1130,7 +1130,7 @@ LibraryServiceApi.prototype.getBookFromArchive = function getBookFromArchive(
  *     }
  * });
  */
-LibraryServiceApi.prototype.updateBookIndex = function updateBookIndex(
+LibraryServiceApi.prototype.updateBookIndex = function(
     name,
     indexName,
     indexMap,
@@ -1202,7 +1202,7 @@ LibraryServiceApi.prototype.updateBookIndex = function updateBookIndex(
  * }
  * api.findRelatedBooks(names, shelves, {flattenPages: false}, callback);
  */
-LibraryServiceApi.prototype.findRelatedBooks = function findRelatedBooks(
+LibraryServiceApi.prototype.findRelatedBooks = function(
     names,
     shelves,
     options,
@@ -1256,7 +1256,7 @@ LibraryServiceApi.prototype.findRelatedBooks = function findRelatedBooks(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.addTag = function addTag(
+LibraryServiceApi.prototype.addTag = function(
     resource,
     tag,
     options,
@@ -1307,7 +1307,7 @@ LibraryServiceApi.prototype.addTag = function addTag(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.addLabel = function addLabel(
+LibraryServiceApi.prototype.addLabel = function(
     resource,
     label,
     options,
