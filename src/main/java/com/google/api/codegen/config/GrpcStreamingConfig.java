@@ -20,14 +20,13 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
-
 import javax.annotation.Nullable;
 
 /** GrpcStreamingConfig represents the gRPC streaming configuration for a method. */
 public class GrpcStreamingConfig {
 
   /** Grpc streaming types */
-  public enum StreamingType {
+  public enum GrpcStreamingType {
     NonStreaming,
     ClientStreaming,
     ServerStreaming,
@@ -35,19 +34,21 @@ public class GrpcStreamingConfig {
   }
 
   private final Field resourcesField;
-  private final StreamingType type;
+  private final GrpcStreamingType type;
 
   /**
    * Creates an instance of GrpcStreamingConfig for gRPC response streaming, based on
    * PageStreamingConfigProto, linking it up with the provided method. On errors, null will be
    * returned, and diagnostics are reported to the diag collector.
+   *
+   * <p>TODO: Create a separate GrpcStreamingConfigProto
    */
   @Nullable
   public static GrpcStreamingConfig createGrpcStreaming(
       DiagCollector diagCollector, PageStreamingConfigProto pageStreaming, Method method) {
     String resourcesFieldName = pageStreaming.getResponse().getResourcesField();
     Field resourcesField = method.getOutputType().getMessageType().lookupField(resourcesFieldName);
-    StreamingType type = getStreamingType(diagCollector, method);
+    GrpcStreamingType type = getGrpcStreamingType(diagCollector, method);
     if (type == null) {
       return null;
     }
@@ -61,21 +62,22 @@ public class GrpcStreamingConfig {
   @Nullable
   public static GrpcStreamingConfig createGrpcStreaming(
       DiagCollector diagCollector, Method method) {
-    StreamingType type = getStreamingType(diagCollector, method);
+    GrpcStreamingType type = getGrpcStreamingType(diagCollector, method);
     if (type == null) {
       return null;
     }
     return new GrpcStreamingConfig(null, type);
   }
 
-  private static StreamingType getStreamingType(DiagCollector diagCollector, Method method) {
-    StreamingType type = null;
+  private static GrpcStreamingType getGrpcStreamingType(
+      DiagCollector diagCollector, Method method) {
+    GrpcStreamingType type = null;
     if (method.getRequestStreaming() && method.getResponseStreaming()) {
-      type = StreamingType.BidiStreaming;
+      type = GrpcStreamingType.BidiStreaming;
     } else if (method.getResponseStreaming()) {
-      type = StreamingType.ServerStreaming;
+      type = GrpcStreamingType.ServerStreaming;
     } else if (method.getRequestStreaming()) {
-      type = StreamingType.ClientStreaming;
+      type = GrpcStreamingType.ClientStreaming;
     } else {
       diagCollector.addDiag(
           Diag.error(
@@ -86,7 +88,7 @@ public class GrpcStreamingConfig {
     return type;
   }
 
-  private GrpcStreamingConfig(Field resourcesField, StreamingType type) {
+  private GrpcStreamingConfig(Field resourcesField, GrpcStreamingType type) {
     this.resourcesField = resourcesField;
     this.type = type;
   }
@@ -102,7 +104,7 @@ public class GrpcStreamingConfig {
   }
 
   /** Returns the streaming type. */
-  public StreamingType getType() {
+  public GrpcStreamingType getType() {
     return type;
   }
 }

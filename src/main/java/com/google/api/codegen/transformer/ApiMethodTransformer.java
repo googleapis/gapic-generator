@@ -39,7 +39,6 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -238,7 +237,7 @@ public class ApiMethodTransformer {
     methodViewBuilder.hasReturnValue(
         !ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
     methodViewBuilder.isPageStreaming(false);
-    methodViewBuilder.streamingType(context.getMethodConfig().getGrpcStreamingType());
+    methodViewBuilder.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
     return methodViewBuilder.type(ApiMethodType.CallableMethod).build();
   }

@@ -29,7 +29,7 @@ public class JavaFeatureConfig extends FeatureConfig {
   }
 
   @Override
-  public boolean enableStreaming() {
+  public boolean enableGrpcStreaming() {
     return true;
   }
 }

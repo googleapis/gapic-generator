@@ -23,7 +23,6 @@ import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -82,7 +81,7 @@ public class ApiCallableTransformer {
 
     if (methodConfig.isGrpcStreaming()) {
       apiCallableBuilder.type(ApiCallableType.StreamingApiCallable);
-      apiCallableBuilder.streamingType(methodConfig.getGrpcStreaming().getType());
+      apiCallableBuilder.grpcStreamingType(methodConfig.getGrpcStreaming().getType());
     } else if (methodConfig.isBundling()) {
       apiCallableBuilder.type(ApiCallableType.BundlingApiCallable);
     } else {
@@ -171,7 +170,7 @@ public class ApiCallableTransformer {
         TypeRef resourceType = methodConfig.getGrpcStreaming().getResourcesField().getType();
         settings.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceType));
       }
-      settings.streamingType(methodConfig.getGrpcStreaming().getType());
+      settings.grpcStreamingType(methodConfig.getGrpcStreaming().getType());
     } else if (methodConfig.isPageStreaming()) {
       namer.addPageStreamingCallSettingsImports(typeTable);
       settings.type(ApiCallableType.PagedApiCallable);

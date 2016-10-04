@@ -18,7 +18,7 @@ import com.google.api.codegen.BundlingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
-import com.google.api.codegen.config.GrpcStreamingConfig.StreamingType;
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -29,14 +29,11 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-
-import org.joda.time.Duration;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import javax.annotation.Nullable;
+import org.joda.time.Duration;
 
 // TODO(garrettjones) consider using AutoValue in this class and related classes.
 /**
@@ -275,11 +272,11 @@ public class MethodConfig {
   }
 
   /** Returns the grpc streaming configuration of the method. */
-  public StreamingType getGrpcStreamingType() {
+  public GrpcStreamingType getGrpcStreamingType() {
     if (isGrpcStreaming()) {
       return grpcStreaming.getType();
     } else {
-      return StreamingType.NonStreaming;
+      return GrpcStreamingType.NonStreaming;
     }
   }
 

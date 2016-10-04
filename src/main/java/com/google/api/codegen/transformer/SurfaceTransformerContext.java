@@ -22,7 +22,6 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.auto.value.AutoValue;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -108,7 +107,7 @@ public abstract class SurfaceTransformerContext {
   }
 
   private boolean isSupported(Method method) {
-    if (!getFeatureConfig().enableStreaming()) {
+    if (!getFeatureConfig().enableGrpcStreaming()) {
       return !MethodConfig.isGrpcStreamingMethod(method);
     }
     return true;

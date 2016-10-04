@@ -38,7 +38,7 @@ public class FeatureConfig {
   }
 
   /** Returns true if streaming APIs are supported. */
-  public boolean enableStreaming() {
+  public boolean enableGrpcStreaming() {
     return false;
   }
 }

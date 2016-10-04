@@ -14,11 +14,9 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.config.GrpcStreamingConfig.StreamingType;
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.auto.value.AutoValue;
-
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 /**
@@ -68,10 +66,10 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract String stubName();
 
-  public abstract StreamingType streamingType();
+  public abstract GrpcStreamingType grpcStreamingType();
 
   public boolean isStreaming() {
-    return streamingType() != StreamingType.NonStreaming;
+    return grpcStreamingType() != GrpcStreamingType.NonStreaming;
   }
 
   @Nullable
@@ -90,7 +88,7 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public static Builder newBuilder() {
     return new AutoValue_StaticLangApiMethodView.Builder()
-        .streamingType(StreamingType.NonStreaming);
+        .grpcStreamingType(GrpcStreamingType.NonStreaming);
   }
 
   @AutoValue.Builder
@@ -141,7 +139,7 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
     public abstract Builder stubName(String stubName);
 
-    public abstract Builder streamingType(StreamingType val);
+    public abstract Builder grpcStreamingType(GrpcStreamingType val);
 
     public abstract StaticLangApiMethodView build();
   }
