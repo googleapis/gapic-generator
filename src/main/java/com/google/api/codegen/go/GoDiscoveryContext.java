@@ -47,7 +47,7 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
     return lowerCamelToUpperCamel(super.getMethodName(method));
   }
 
-  public boolean isKeyword(String name) {
+  public boolean isReserved(String name) {
     return GoTypeTable.RESERVED_IDENTIFIER_SET.contains(name);
   }
 
