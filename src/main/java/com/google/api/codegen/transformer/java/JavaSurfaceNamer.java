@@ -20,7 +20,7 @@ import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.util.ResourceNameUtil;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
@@ -111,53 +111,14 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSavePagedResponseTypeName(
+      Method method,
       FeatureConfig featureConfig,
       ModelTypeTable typeTable,
       TypeRef inputType,
       TypeRef outputType,
       Field resourceField) {
 
-    String inputTypeName = typeTable.getAndSaveNicknameForElementType(inputType);
-    String outputTypeName = typeTable.getAndSaveNicknameForElementType(outputType);
-
-    String resourceTypeName =
-        getAndSaveElementFieldTypeName(featureConfig, typeTable, resourceField);
-
-    return typeTable.getAndSaveNicknameForContainer(
-        "com.google.api.gax.core.PagedListResponse",
-        inputTypeName,
-        outputTypeName,
-        resourceTypeName);
-  }
-
-  @Override
-  public String getAndSaveFieldTypeName(
-      FeatureConfig featureConfig, ModelTypeTable typeTable, Field resourceField) {
-    String resourceTypeName;
-    if (featureConfig.useResourceNameFormatOption(resourceField)) {
-      String resourceShortName = ResourceNameUtil.getResourceName(resourceField);
-      resourceTypeName =
-          typeTable.getAndSaveNicknameForTypedResourceName(
-              resourceField, resourceField.getType(), resourceShortName);
-    } else {
-      resourceTypeName = typeTable.getAndSaveNicknameFor(resourceField.getType());
-    }
-    return resourceTypeName;
-  }
-
-  @Override
-  public String getAndSaveElementFieldTypeName(
-      FeatureConfig featureConfig, ModelTypeTable typeTable, Field resourceField) {
-    String resourceTypeName;
-    if (featureConfig.useResourceNameFormatOption(resourceField)) {
-      String resourceShortName = ResourceNameUtil.getResourceName(resourceField);
-      resourceTypeName =
-          typeTable.getAndSaveNicknameForTypedResourceName(
-              resourceField, resourceField.getType().makeOptional(), resourceShortName);
-    } else {
-      resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
-    }
-    return resourceTypeName;
+    return className(Name.upperCamel(method.getSimpleName(), "PagedResponse"));
   }
 
   @Override

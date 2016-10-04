@@ -178,6 +178,7 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
     xsettingsClass.callSettings(generateCallSettings(context));
     xsettingsClass.pageStreamingDescriptors(
         pageStreamingTransformer.generateDescriptorClasses(context));
+    xsettingsClass.pageStreamingFactories(pageStreamingTransformer.generateFactoryClasses(context));
     xsettingsClass.bundlingDescriptors(bundlingTransformer.generateDescriptorClasses(context));
     xsettingsClass.retryCodesDefinitions(
         retryDefinitionsTransformer.generateRetryCodesDefinitions(context));

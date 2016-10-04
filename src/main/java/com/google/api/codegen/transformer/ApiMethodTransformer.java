@@ -266,11 +266,7 @@ public class ApiMethodTransformer {
     String responseTypeName = typeTable.getAndSaveNicknameFor(context.getMethod().getOutputType());
 
     Field resourceField = pageStreaming.getResourcesField();
-    String resourceTypeName =
-        context
-            .getNamer()
-            .getAndSaveElementFieldTypeName(
-                context.getFeatureConfig(), context.getTypeTable(), resourceField);
+    String resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
     String resourceFieldName = context.getNamer().getFieldName(pageStreaming.getResourcesField());
     String resourceFieldGetFunctionName =
         namer.getFieldGetFunctionName(context.getFeatureConfig(), resourceField);
@@ -288,7 +284,9 @@ public class ApiMethodTransformer {
     methodViewBuilder.responseTypeName(
         context
             .getNamer()
+            //.getPagedListResponseTypeName(context.getMethod())
             .getAndSavePagedResponseTypeName(
+                context.getMethod(),
                 context.getFeatureConfig(),
                 context.getTypeTable(),
                 context.getMethod().getInputType(),
@@ -559,10 +557,10 @@ public class ApiMethodTransformer {
             "ApiMethodTransformer.generateRequestObjectParam - elementTypeName");
 
     if (namer.shouldImportRequestObjectParamType(field)) {
-      typeName = namer.getAndSaveFieldTypeName(featureConfig, typeTable, field);
+      typeName = typeTable.getAndSaveNicknameFor(field.getType());
     }
     if (namer.shouldImportRequestObjectParamElementType(field)) {
-      elementTypeName = namer.getAndSaveElementFieldTypeName(featureConfig, typeTable, field);
+      elementTypeName = typeTable.getAndSaveNicknameForElementType(field.getType());
     }
 
     String setCallName = namer.getFieldSetFunctionName(featureConfig, field);

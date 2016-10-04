@@ -19,6 +19,7 @@ import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorView;
+import com.google.api.codegen.viewmodel.PageStreamingFactoryClassView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
@@ -82,6 +83,7 @@ public class PageStreamingTransformer {
     desc.name(namer.getPageStreamingDescriptorConstName(method));
     desc.typeName(
         namer.getAndSavePagedResponseTypeName(
+            method,
             featureConfig,
             typeTable,
             method.getInputType(),
@@ -89,8 +91,7 @@ public class PageStreamingTransformer {
             resourceField));
     desc.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     desc.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
-    desc.resourceTypeName(
-        namer.getAndSaveElementFieldTypeName(featureConfig, typeTable, resourceField));
+    desc.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
 
     TypeRef tokenType = pageStreaming.getResponseTokenField().getType();
     desc.tokenTypeName(typeTable.getAndSaveNicknameFor(tokenType));
@@ -116,5 +117,44 @@ public class PageStreamingTransformer {
         namer.getFieldGetFunctionName(featureConfig, pageStreaming.getResourcesField()));
 
     return desc.build();
+  }
+
+  public List<PageStreamingFactoryClassView> generateFactoryClasses(
+      SurfaceTransformerContext context) {
+    List<PageStreamingFactoryClassView> factories = new ArrayList<>();
+
+    context.getNamer().addPageStreamingFactoryImports(context.getTypeTable());
+    for (Method method : context.getPageStreamingMethods()) {
+      factories.add(generateFactoryClass(context.asMethodContext(method)));
+    }
+
+    return factories;
+  }
+
+  private PageStreamingFactoryClassView generateFactoryClass(MethodTransformerContext context) {
+    SurfaceNamer namer = context.getNamer();
+    ModelTypeTable typeTable = context.getTypeTable();
+    Method method = context.getMethod();
+    PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
+    FeatureConfig featureConfig = context.getFeatureConfig();
+
+    PageStreamingFactoryClassView.Builder fact = PageStreamingFactoryClassView.newBuilder();
+
+    Field resourceField = pageStreaming.getResourcesField();
+
+    fact.name(namer.getPageStreamingDescriptorConstName(method));
+    fact.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
+    fact.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
+    fact.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
+    fact.pagedListResponseTypeName(
+        namer.getAndSavePagedResponseTypeName(
+            method,
+            featureConfig,
+            typeTable,
+            method.getInputType(),
+            method.getOutputType(),
+            resourceField));
+
+    return fact.build();
   }
 }

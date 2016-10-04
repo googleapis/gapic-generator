@@ -213,25 +213,32 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         initCodeTransformer.generateTestMethodInitCode(
             methodContext, paramFields, initSymbolTable, valueGenerator);
 
+    String requestTypeName =
+        methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
+    String responseTypeName =
+        methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
+
     String resourceTypeName = "";
     String resourcesFieldGetterName = "";
     ApiMethodType type = ApiMethodType.FlattenedMethod;
     boolean isPageStreaming = methodConfig.isPageStreaming();
     if (isPageStreaming) {
       Field resourcesField = methodConfig.getPageStreaming().getResourcesField();
+      responseTypeName =
+          namer.getAndSavePagedResponseTypeName(
+              method,
+              methodContext.getFeatureConfig(),
+              methodContext.getTypeTable(),
+              method.getInputType(),
+              method.getOutputType(),
+              resourcesField);
       resourceTypeName =
-          namer.getAndSaveElementFieldTypeName(
-              methodContext.getFeatureConfig(), methodContext.getTypeTable(), resourcesField);
+          methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField.getType());
       resourcesFieldGetterName =
           namer.getFieldGetFunctionName(methodContext.getFeatureConfig(), resourcesField);
 
       type = ApiMethodType.PagedFlattenedMethod;
     }
-
-    String requestTypeName =
-        methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
-    String responseTypeName =
-        methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
 
     List<GapicSurfaceTestAssertView> requestAssertViews =
         initCodeTransformer.generateRequestAssertViews(methodContext, paramFields);

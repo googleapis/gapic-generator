@@ -85,6 +85,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSavePagedResponseTypeName(
+      Method method,
       FeatureConfig featureConfig,
       ModelTypeTable typeTable,
       TypeRef inputType,
@@ -94,8 +95,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     String inputTypeName = typeTable.getAndSaveNicknameForElementType(inputType);
     String outputTypeName = typeTable.getAndSaveNicknameForElementType(outputType);
 
-    String resourceTypeName =
-        getAndSaveElementFieldTypeName(featureConfig, typeTable, resourceField);
+    String resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
 
     return typeTable.getAndSaveNicknameForContainer(
         "Google.Api.Gax.PagedEnumerable", inputTypeName, outputTypeName, resourceTypeName);

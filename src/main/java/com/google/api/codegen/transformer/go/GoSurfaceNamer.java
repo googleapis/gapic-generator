@@ -30,9 +30,7 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
-
 import io.grpc.Status;
-
 import java.util.List;
 
 public class GoSurfaceNamer extends SurfaceNamer {
@@ -83,6 +81,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSavePagedResponseTypeName(
+      Method method,
       FeatureConfig featureConfig,
       ModelTypeTable typeTable,
       TypeRef inputTypeName,

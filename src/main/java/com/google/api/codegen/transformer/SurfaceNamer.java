@@ -340,6 +340,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("page_str_desc"));
   }
 
+  /** The page streaming factory name for the given method. */
+  public String getPageStreamingFactoryName(Method method) {
+    return privateFieldName(Name.upperCamel(method.getSimpleName(), "PageStreamingFactory"));
+  }
+
+  /** The name of the constant to hold the page streaming factory for the given method. */
+  public String getPageStreamingFactoryConstName(Method method) {
+    return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("page_str_fact"));
+  }
+
   /** The name of the constant to hold the bundling descriptor for the given method. */
   public String getBundlingDescriptorConstName(Method method) {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("bundling_desc"));
@@ -347,6 +357,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** Adds the imports used in the implementation of page streaming descriptors. */
   public void addPageStreamingDescriptorImports(ModelTypeTable typeTable) {
+    // do nothing
+  }
+
+  /** Adds the imports used in the implementation of page streaming factories. */
+  public void addPageStreamingFactoryImports(ModelTypeTable typeTable) {
     // do nothing
   }
 
@@ -616,22 +631,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * resources field, saves it in the given type table, and returns it.
    */
   public String getAndSavePagedResponseTypeName(
+      Method method,
       FeatureConfig featureConfig,
       ModelTypeTable typeTable,
       TypeRef inputTypeName,
       TypeRef outputTypeName,
       Field resourcesField) {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeName");
-  }
-
-  public String getAndSaveFieldTypeName(
-      FeatureConfig featureConfig, ModelTypeTable typeTable, Field resourceField) {
-    return typeTable.getAndSaveNicknameFor(resourceField.getType());
-  }
-
-  public String getAndSaveElementFieldTypeName(
-      FeatureConfig featureConfig, ModelTypeTable typeTable, Field resourceField) {
-    return typeTable.getAndSaveNicknameForElementType(resourceField.getType());
   }
 
   /**

@@ -136,7 +136,8 @@
           {@settings.responseTypeName}> {@settings.memberName};
     @case "PagedApiCallable"
       private final PageStreamingCallSettings<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}, {@settings.resourceTypeName}> {@settings.memberName};
+          {@settings.responseTypeName}, {@settings.resourceTypeName}, \
+          {@settings.pagedListResponseTypeName}> {@settings.memberName};
     @case "BundlingApiCallable"
       private final BundlingCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
@@ -160,7 +161,8 @@
        }
     @case "PagedApiCallable"
       public PageStreamingCallSettings<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}, {@settings.resourceTypeName}> {@settings.settingsGetFunction}() {
+          {@settings.responseTypeName}, {@settings.resourceTypeName}, \
+          {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
     @case "BundlingApiCallable"
@@ -193,6 +195,7 @@
 
 @private descriptors(xsettingsClass)
   {@pageStreamingDescriptors(xsettingsClass)}
+  {@pageStreamingFactories(xsettingsClass)}
   {@bundlingDescriptors(xsettingsClass)}
 @end
 
@@ -237,6 +240,23 @@
           @@Override
           public Iterable<{@desc.resourceTypeName}> extractResources({@desc.responseTypeName} payload) {
             return payload.{@desc.resourcesFieldGetFunction}();
+          }
+        };
+    {@""}
+  @end
+@end
+
+@private pageStreamingFactories(xsettingsClass)
+  @join fact : xsettingsClass.pageStreamingFactories
+    private static final PageStreamingFactory<{@fact.requestTypeName}, {@fact.responseTypeName}, {@fact.resourceTypeName}, {@fact.pagedListResponseTypeName}> {@fact.name} =
+        new PageStreamingFactory<{@fact.requestTypeName}, {@fact.responseTypeName}, {@fact.resourceTypeName}, {@fact.pagedListResponseTypeName}>() {
+          @@Override
+          public {@fact.pagedListResponseTypeName} createPagedListResponse(
+              {@fact.requestTypeName} request,
+              FutureCallable<{@fact.requestTypeName}, {@fact.responseTypeName}> callable,
+              PageStreamingDescriptor<{@fact.requestTypeName}, {@fact.responseTypeName}, {@fact.resourceTypeName}> pageDescriptor,
+              CallContext context) {
+            return new {@fact.pagedListResponseTypeName}(request, callable, pageDescriptor, context);
           }
         };
     {@""}
@@ -348,7 +368,8 @@
           {@settings.responseTypeName}> {@settings.memberName};
     @case "PagedApiCallable"
       private final PageStreamingCallSettings.Builder<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}, {@settings.resourceTypeName}> {@settings.memberName};
+          {@settings.responseTypeName}, {@settings.resourceTypeName}, \
+          {@settings.pagedListResponseTypeName}> {@settings.memberName};
     @case "BundlingApiCallable"
       private final BundlingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
@@ -408,7 +429,8 @@
       @case "PagedApiCallable"
         {@settings.memberName} = PageStreamingCallSettings.newBuilder(
             {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
-            {@settings.pageStreamingDescriptorName});
+            {@settings.pageStreamingDescriptorName},
+            {@settings.pageStreamingFactoryName});
       @case "BundlingApiCallable"
         {@settings.memberName} = BundlingCallSettings.newBuilder(
             {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
@@ -530,7 +552,7 @@
       }
     @case "PagedApiCallable"
       public PageStreamingCallSettings.Builder<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}, {@settings.resourceTypeName}> {@settings.settingsGetFunction}() {
+          {@settings.responseTypeName}, {@settings.resourceTypeName}, {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
     @case "BundlingApiCallable"

@@ -15,9 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-
 import javax.annotation.Nullable;
-import org.joda.time.Duration;
 
 @AutoValue
 public abstract class ApiCallSettingsView {
@@ -33,6 +31,8 @@ public abstract class ApiCallSettingsView {
 
   public abstract String resourceTypeName();
 
+  public abstract String pagedListResponseTypeName();
+
   public abstract String memberName();
 
   public abstract String settingsGetFunction();
@@ -42,6 +42,8 @@ public abstract class ApiCallSettingsView {
   public abstract String grpcMethodConstant();
 
   public abstract String pageStreamingDescriptorName();
+
+  public abstract String pageStreamingFactoryName();
 
   public abstract String bundlingDescriptorName();
 
@@ -78,6 +80,8 @@ public abstract class ApiCallSettingsView {
 
     public abstract Builder resourceTypeName(String val);
 
+    public abstract Builder pagedListResponseTypeName(String val);
+
     public abstract Builder memberName(String val);
 
     public abstract Builder settingsGetFunction(String val);
@@ -87,6 +91,8 @@ public abstract class ApiCallSettingsView {
     public abstract Builder grpcMethodConstant(String val);
 
     public abstract Builder pageStreamingDescriptorName(String val);
+
+    public abstract Builder pageStreamingFactoryName(String val);
 
     public abstract Builder bundlingDescriptorName(String val);
 
