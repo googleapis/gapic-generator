@@ -182,6 +182,10 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     ArrayList<GapicSurfaceTestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (Method method : context.getSupportedMethods()) {
+      if (MethodConfig.isGrpcStreamingMethod(method)) {
+        // TODO(shinfan): Add unit test support for streaming methods.
+        continue;
+      }
       MethodTransformerContext methodContext = context.asMethodContext(method);
       MethodConfig methodConfig = methodContext.getMethodConfig();
       if (methodConfig.isFlattening()) {
