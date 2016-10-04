@@ -35,7 +35,7 @@ public class DefaultStringTest {
     def2 = DefaultString.getNonTrivialPlaceholder("^projects/[^/]*$");
     sample = DefaultString.getSample("pubsub", "project", "^projects/[^/]*$");
     Truth.assertThat(def).isEqualTo("projects/{MY-PROJECT}");
-    Truth.assertThat(def2).isEqualTo("projects/{MY-PROJECT}");
+    Truth.assertThat(def2).isEqualTo("projects/my-project");
     Truth.assertThat(sample).isEqualTo("");
 
     def = DefaultString.getPlaceholder("bar", null);
@@ -58,7 +58,7 @@ public class DefaultStringTest {
         };
 
     for (String s : invalid) {
-      Truth.assertThat(DefaultString.forPattern(s)).isNull();
+      Truth.assertThat(DefaultString.forPattern(s, "{MY-%s}", true)).isNull();
     }
   }
 
@@ -74,7 +74,8 @@ public class DefaultStringTest {
             .build();
 
     for (Map.Entry<String, String> entry : tests.entrySet()) {
-      Truth.assertThat(DefaultString.forPattern(entry.getKey())).isEqualTo(entry.getValue());
+      Truth.assertThat(DefaultString.forPattern(entry.getKey(), "{MY-%s}", true))
+          .isEqualTo(entry.getValue());
     }
   }
 }

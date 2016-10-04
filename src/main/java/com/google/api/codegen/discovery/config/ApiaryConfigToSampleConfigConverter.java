@@ -20,11 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryImporter;
-import com.google.api.codegen.discovery.DefaultString;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
@@ -71,11 +68,12 @@ public class ApiaryConfigToSampleConfigConverter {
     for (Method method : this.methods) {
       methods.put(method.getName(), createMethod(method));
     }
+    String apiTypeName = typeNameGenerator.getApiTypeName(apiName);
     return SampleConfig.newBuilder()
         .apiTitle(apiaryConfig.getApiTitle())
         .apiName(apiName)
         .apiVersion(apiVersion)
-        .apiTypeName(typeNameGenerator.getApiTypeName(apiName))
+        .apiTypeName(apiTypeName)
         .packagePrefix(typeNameGenerator.getPackagePrefix(apiName, apiVersion))
         .methods(methods)
         .authType(apiaryConfig.getAuthType())
@@ -132,7 +130,9 @@ public class ApiaryConfigToSampleConfigConverter {
             .responseType(responseType)
             .isPageStreaming(isPageStreaming)
             .pageStreamingResourceField(pageStreamingResourceField)
+            .isPageStreamingResourceSetterInRequestBody(false)
             .hasMediaUpload(apiaryConfig.getMediaUpload().contains(method.getName()))
+            .hasMediaDownload(apiaryConfig.getMediaDownload().contains(method.getName()))
             .authScopes(apiaryConfig.getAuthScopes(method.getName()))
             .build();
     return methodInfo;
@@ -142,24 +142,24 @@ public class ApiaryConfigToSampleConfigConverter {
    * Creates a field.
    */
   private FieldInfo createFieldInfo(Field field, Type containerType, Method method) {
-    String placeholder = "";
-    boolean isPlaceholderSingular = true;
+    String example = "";
     TypeInfo typeInfo = createTypeInfo(field, method);
-    if (typeInfo.kind() == Field.Kind.TYPE_STRING && !typeInfo.isArray() && !typeInfo.isMap()) {
-      String pattern = apiaryConfig.getFieldPattern().get(containerType.getName(), field.getName());
-      if (!Strings.isNullOrEmpty(pattern)) {
-        placeholder = DefaultString.getNonTrivialPlaceholder(pattern);
-        // String placeholders are always contained within braces, so counting
-        // the number of open braces is an easy test for singularity.
-        isPlaceholderSingular = StringUtils.countMatches(placeholder, '{') < 2;
-        placeholder = typeNameGenerator.formatValue(placeholder, field.getKind());
+    if (typeInfo.kind() == Field.Kind.TYPE_STRING) {
+      String fieldPattern =
+          apiaryConfig.getFieldPattern().get(containerType.getName(), field.getName());
+      String stringFormat = apiaryConfig.getStringFormat(containerType.getName(), field.getName());
+      example = typeNameGenerator.getFieldPatternExample(fieldPattern);
+      if (!Strings.isNullOrEmpty(example)) {
+        // Generates an example of the format: `ex: "projects/my-project/logs/my-log"`
+        example = "ex: " + example;
+      } else {
+        example = typeNameGenerator.getStringFormatExample(stringFormat);
       }
     }
     return FieldInfo.newBuilder()
         .name(field.getName())
         .type(typeInfo)
-        .placeholder(placeholder)
-        .isPlaceholderSingular(isPlaceholderSingular)
+        .example(example)
         .description(
             Strings.nullToEmpty(
                 apiaryConfig.getDescription(method.getRequestTypeUrl(), field.getName())))

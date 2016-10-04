@@ -38,16 +38,10 @@ public abstract class FieldInfo {
   public abstract TypeInfo type();
 
   /**
-   * Returns the placeholder value of the field, or empty string if none.
+   * Returns the example value of the field, or empty string if none.
    */
-  @JsonProperty("placeholder")
-  public abstract String placeholder();
-
-  /**
-   * Returns true if the placeholder contains more than one placeholder value.
-   */
-  @JsonProperty("isPlaceholderSingular")
-  public abstract boolean isPlaceholderSingular();
+  @JsonProperty("example")
+  public abstract String example();
 
   /**
    * Returns the description of the field.
@@ -68,11 +62,8 @@ public abstract class FieldInfo {
     @JsonProperty("type")
     public abstract Builder type(TypeInfo val);
 
-    @JsonProperty("placeholder")
-    public abstract Builder placeholder(String val);
-
-    @JsonProperty("isPlaceholderSingular")
-    public abstract Builder isPlaceholderSingular(boolean val);
+    @JsonProperty("example")
+    public abstract Builder example(String val);
 
     @JsonProperty("description")
     public abstract Builder description(String val);

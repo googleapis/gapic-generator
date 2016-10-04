@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Translate API
@@ -16,25 +16,27 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.translate.Translate;
-import com.google.api.services.translate.Translate.Detections.List;
 import com.google.api.services.translate.model.DetectionsListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TranslateExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The text to detect
-    java.util.List<String> q = new ArrayList<>(); // TODO: Update placeholder value.
+    List<String> q = new ArrayList<>();  // TODO: Update placeholder value.
 
-    Translate translateService = createService();
-    List request = translateService.detections().list(q);
+    Translate translateService = createTranslateService();
+    Translate.Detections.List request = translateService.detections().list(q);
 
     DetectionsListResponse response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Translate createService() throws IOException, GeneralSecurityException {
+  public static Translate createTranslateService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
@@ -46,18 +48,8 @@ public class TranslateExample {
         .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new TranslateExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Translate API
@@ -74,21 +66,22 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.translate.Translate;
-import com.google.api.services.translate.Translate.Languages.List;
 import com.google.api.services.translate.model.LanguagesListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 public class TranslateExample {
-  public void run() throws IOException, GeneralSecurityException {
-    Translate translateService = createService();
-    List request = translateService.languages().list();
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    Translate translateService = createTranslateService();
+    Translate.Languages.List request = translateService.languages().list();
 
     LanguagesListResponse response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Translate createService() throws IOException, GeneralSecurityException {
+  public static Translate createTranslateService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
@@ -100,18 +93,8 @@ public class TranslateExample {
         .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new TranslateExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Translate API
@@ -128,28 +111,30 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.translate.Translate;
-import com.google.api.services.translate.Translate.Translations.List;
 import com.google.api.services.translate.model.TranslationsListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TranslateExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The text to translate
-    java.util.List<String> q = new ArrayList<>(); // TODO: Update placeholder value.
+    List<String> q = new ArrayList<>();  // TODO: Update placeholder value.
 
     // The target language into which the text should be translated
-    String target = ""; // TODO: Update placeholder value.
+    String target = "";  // TODO: Update placeholder value.
 
-    Translate translateService = createService();
-    List request = translateService.translations().list(q, target);
+    Translate translateService = createTranslateService();
+    Translate.Translations.List request = translateService.translations().list(q, target);
 
     TranslationsListResponse response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Translate createService() throws IOException, GeneralSecurityException {
+  public static Translate createTranslateService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
@@ -160,15 +145,5 @@ public class TranslateExample {
     return new Translate.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
         .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new TranslateExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
   }
 }
