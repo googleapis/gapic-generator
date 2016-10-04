@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -20,53 +20,41 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.BucketAccessControls.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = ""; // TODO: Update placeholder value.
+    String entity = "";  // TODO: Update placeholder value.
 
-    Storage service = createService();
-    Delete request = service.bucketAccessControls().delete(bucket, entity);
+    Storage storageService = createStorageService();
+    Storage.BucketAccessControls.Delete request = storageService.bucketAccessControls().delete(bucket, entity);
 
     request.execute();
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -87,55 +75,45 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.BucketAccessControls.Get;
 import com.google.api.services.storage.model.BucketAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = ""; // TODO: Update placeholder value.
+    String entity = "";  // TODO: Update placeholder value.
 
-    Storage service = createService();
-    Get request = service.bucketAccessControls().get(bucket, entity);
+    Storage storageService = createStorageService();
+    Storage.BucketAccessControls.Get request = storageService.bucketAccessControls().get(bucket, entity);
 
     BucketAccessControl response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -156,54 +134,44 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.BucketAccessControls.Insert;
 import com.google.api.services.storage.model.BucketAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     BucketAccessControl requestBody = new BucketAccessControl();
 
-    Storage service = createService();
-    Insert request = service.bucketAccessControls().insert(bucket, requestBody);
+    Storage storageService = createStorageService();
+    Storage.BucketAccessControls.Insert request = storageService.bucketAccessControls().insert(bucket, requestBody);
 
     BucketAccessControl response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -224,51 +192,41 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.BucketAccessControls.List;
 import com.google.api.services.storage.model.BucketAccessControls;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
-    Storage service = createService();
-    List request = service.bucketAccessControls().list(bucket);
+    Storage storageService = createStorageService();
+    Storage.BucketAccessControls.List request = storageService.bucketAccessControls().list(bucket);
 
     BucketAccessControls response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -289,59 +247,49 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.BucketAccessControls.Patch;
 import com.google.api.services.storage.model.BucketAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = ""; // TODO: Update placeholder value.
+    String entity = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     // Only assigned fields will be changed.
     BucketAccessControl requestBody = new BucketAccessControl();
 
-    Storage service = createService();
-    Patch request = service.bucketAccessControls().patch(bucket, entity, requestBody);
+    Storage storageService = createStorageService();
+    Storage.BucketAccessControls.Patch request = storageService.bucketAccessControls().patch(bucket, entity, requestBody);
 
     BucketAccessControl response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -362,58 +310,48 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.BucketAccessControls.Update;
 import com.google.api.services.storage.model.BucketAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = ""; // TODO: Update placeholder value.
+    String entity = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     BucketAccessControl requestBody = new BucketAccessControl();
 
-    Storage service = createService();
-    Update request = service.bucketAccessControls().update(bucket, entity, requestBody);
+    Storage storageService = createStorageService();
+    Storage.BucketAccessControls.Update request = storageService.bucketAccessControls().update(bucket, entity, requestBody);
 
     BucketAccessControl response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -434,49 +372,37 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.Buckets.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
-    Storage service = createService();
-    Delete request = service.buckets().delete(bucket);
+    Storage storageService = createStorageService();
+    Storage.Buckets.Delete request = storageService.buckets().delete(bucket);
 
     request.execute();
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -497,51 +423,41 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.Buckets.Get;
 import com.google.api.services.storage.model.Bucket;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
-    Storage service = createService();
-    Get request = service.buckets().get(bucket);
+    Storage storageService = createStorageService();
+    Storage.Buckets.Get request = storageService.buckets().get(bucket);
 
     Bucket response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -562,54 +478,44 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.Buckets.Insert;
 import com.google.api.services.storage.model.Bucket;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // A valid API project identifier.
-    String project = ""; // TODO: Update placeholder value.
+    String project = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     Bucket requestBody = new Bucket();
 
-    Storage service = createService();
-    Insert request = service.buckets().insert(project, requestBody);
+    Storage storageService = createStorageService();
+    Storage.Buckets.Insert request = storageService.buckets().insert(project, requestBody);
 
     Bucket response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -630,7 +536,6 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.Buckets.List;
 import com.google.api.services.storage.model.Bucket;
 import com.google.api.services.storage.model.Buckets;
 import java.io.IOException;
@@ -638,12 +543,12 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // A valid API project identifier.
-    String project = ""; // TODO: Update placeholder value.
+    String project = "";  // TODO: Update placeholder value.
 
-    Storage service = createService();
-    List request = service.buckets().list(project);
+    Storage storageService = createStorageService();
+    Storage.Buckets.List request = storageService.buckets().list(project);
 
     Buckets response;
     do {
@@ -655,36 +560,26 @@ public class StorageExample {
         // TODO: Change code below to process each `bucket` resource:
         System.out.println(bucket);
       }
+      request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -705,55 +600,45 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.Buckets.Patch;
 import com.google.api.services.storage.model.Bucket;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     // Only assigned fields will be changed.
     Bucket requestBody = new Bucket();
 
-    Storage service = createService();
-    Patch request = service.buckets().patch(bucket, requestBody);
+    Storage storageService = createStorageService();
+    Storage.Buckets.Patch request = storageService.buckets().patch(bucket, requestBody);
 
     Bucket response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -774,54 +659,44 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.Buckets.Update;
 import com.google.api.services.storage.model.Bucket;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     Bucket requestBody = new Bucket();
 
-    Storage service = createService();
-    Update request = service.buckets().update(bucket, requestBody);
+    Storage storageService = createStorageService();
+    Storage.Buckets.Update request = storageService.buckets().update(bucket, requestBody);
 
     Bucket response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -842,50 +717,38 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.Channels.Stop;
 import com.google.api.services.storage.model.Channel;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // TODO: Assign values to desired fields of `requestBody`.
     Channel requestBody = new Channel();
 
-    Storage service = createService();
-    Stop request = service.channels().stop(requestBody);
+    Storage storageService = createStorageService();
+    Storage.Channels.Stop request = storageService.channels().stop(requestBody);
 
     request.execute();
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -906,53 +769,41 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.DefaultObjectAccessControls.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = ""; // TODO: Update placeholder value.
+    String entity = "";  // TODO: Update placeholder value.
 
-    Storage service = createService();
-    Delete request = service.defaultObjectAccessControls().delete(bucket, entity);
+    Storage storageService = createStorageService();
+    Storage.DefaultObjectAccessControls.Delete request = storageService.defaultObjectAccessControls().delete(bucket, entity);
 
     request.execute();
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -973,55 +824,45 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.DefaultObjectAccessControls.Get;
 import com.google.api.services.storage.model.ObjectAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = ""; // TODO: Update placeholder value.
+    String entity = "";  // TODO: Update placeholder value.
 
-    Storage service = createService();
-    Get request = service.defaultObjectAccessControls().get(bucket, entity);
+    Storage storageService = createStorageService();
+    Storage.DefaultObjectAccessControls.Get request = storageService.defaultObjectAccessControls().get(bucket, entity);
 
     ObjectAccessControl response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1042,54 +883,44 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.DefaultObjectAccessControls.Insert;
 import com.google.api.services.storage.model.ObjectAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     ObjectAccessControl requestBody = new ObjectAccessControl();
 
-    Storage service = createService();
-    Insert request = service.defaultObjectAccessControls().insert(bucket, requestBody);
+    Storage storageService = createStorageService();
+    Storage.DefaultObjectAccessControls.Insert request = storageService.defaultObjectAccessControls().insert(bucket, requestBody);
 
     ObjectAccessControl response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1110,51 +941,41 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.DefaultObjectAccessControls.List;
 import com.google.api.services.storage.model.ObjectAccessControls;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
-    Storage service = createService();
-    List request = service.defaultObjectAccessControls().list(bucket);
+    Storage storageService = createStorageService();
+    Storage.DefaultObjectAccessControls.List request = storageService.defaultObjectAccessControls().list(bucket);
 
     ObjectAccessControls response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1175,59 +996,49 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.DefaultObjectAccessControls.Patch;
 import com.google.api.services.storage.model.ObjectAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = ""; // TODO: Update placeholder value.
+    String entity = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     // Only assigned fields will be changed.
     ObjectAccessControl requestBody = new ObjectAccessControl();
 
-    Storage service = createService();
-    Patch request = service.defaultObjectAccessControls().patch(bucket, entity, requestBody);
+    Storage storageService = createStorageService();
+    Storage.DefaultObjectAccessControls.Patch request = storageService.defaultObjectAccessControls().patch(bucket, entity, requestBody);
 
     ObjectAccessControl response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1248,58 +1059,48 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.DefaultObjectAccessControls.Update;
 import com.google.api.services.storage.model.ObjectAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = ""; // TODO: Update placeholder value.
+    String entity = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     ObjectAccessControl requestBody = new ObjectAccessControl();
 
-    Storage service = createService();
-    Update request = service.defaultObjectAccessControls().update(bucket, entity, requestBody);
+    Storage storageService = createStorageService();
+    Storage.DefaultObjectAccessControls.Update request = storageService.defaultObjectAccessControls().update(bucket, entity, requestBody);
 
     ObjectAccessControl response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1320,57 +1121,45 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.ObjectAccessControls.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    String object = ""; // TODO: Update placeholder value.
+    String object = "";  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = ""; // TODO: Update placeholder value.
+    String entity = "";  // TODO: Update placeholder value.
 
-    Storage service = createService();
-    Delete request = service.objectAccessControls().delete(bucket, object, entity);
+    Storage storageService = createStorageService();
+    Storage.ObjectAccessControls.Delete request = storageService.objectAccessControls().delete(bucket, object, entity);
 
     request.execute();
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1391,59 +1180,49 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.ObjectAccessControls.Get;
 import com.google.api.services.storage.model.ObjectAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    String object = ""; // TODO: Update placeholder value.
+    String object = "";  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = ""; // TODO: Update placeholder value.
+    String entity = "";  // TODO: Update placeholder value.
 
-    Storage service = createService();
-    Get request = service.objectAccessControls().get(bucket, object, entity);
+    Storage storageService = createStorageService();
+    Storage.ObjectAccessControls.Get request = storageService.objectAccessControls().get(bucket, object, entity);
 
     ObjectAccessControl response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1464,58 +1243,48 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.ObjectAccessControls.Insert;
 import com.google.api.services.storage.model.ObjectAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    String object = ""; // TODO: Update placeholder value.
+    String object = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     ObjectAccessControl requestBody = new ObjectAccessControl();
 
-    Storage service = createService();
-    Insert request = service.objectAccessControls().insert(bucket, object, requestBody);
+    Storage storageService = createStorageService();
+    Storage.ObjectAccessControls.Insert request = storageService.objectAccessControls().insert(bucket, object, requestBody);
 
     ObjectAccessControl response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1536,55 +1305,45 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.ObjectAccessControls.List;
 import com.google.api.services.storage.model.ObjectAccessControls;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    String object = ""; // TODO: Update placeholder value.
+    String object = "";  // TODO: Update placeholder value.
 
-    Storage service = createService();
-    List request = service.objectAccessControls().list(bucket, object);
+    Storage storageService = createStorageService();
+    Storage.ObjectAccessControls.List request = storageService.objectAccessControls().list(bucket, object);
 
     ObjectAccessControls response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1605,63 +1364,53 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.ObjectAccessControls.Patch;
 import com.google.api.services.storage.model.ObjectAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    String object = ""; // TODO: Update placeholder value.
+    String object = "";  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = ""; // TODO: Update placeholder value.
+    String entity = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     // Only assigned fields will be changed.
     ObjectAccessControl requestBody = new ObjectAccessControl();
 
-    Storage service = createService();
-    Patch request = service.objectAccessControls().patch(bucket, object, entity, requestBody);
+    Storage storageService = createStorageService();
+    Storage.ObjectAccessControls.Patch request = storageService.objectAccessControls().patch(bucket, object, entity, requestBody);
 
     ObjectAccessControl response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1682,62 +1431,52 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.ObjectAccessControls.Update;
 import com.google.api.services.storage.model.ObjectAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of a bucket.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    String object = ""; // TODO: Update placeholder value.
+    String object = "";  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    String entity = ""; // TODO: Update placeholder value.
+    String entity = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     ObjectAccessControl requestBody = new ObjectAccessControl();
 
-    Storage service = createService();
-    Update request = service.objectAccessControls().update(bucket, object, entity, requestBody);
+    Storage storageService = createStorageService();
+    Storage.ObjectAccessControls.Update request = storageService.objectAccessControls().update(bucket, object, entity, requestBody);
 
     ObjectAccessControl response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1758,7 +1497,6 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.Objects.Compose;
 import com.google.api.services.storage.model.ComposeRequest;
 import com.google.api.services.storage.model.StorageObject;
 import java.io.IOException;
@@ -1766,51 +1504,45 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of the bucket in which to store the new object.
-    String destinationBucket = ""; // TODO: Update placeholder value.
+    String destinationBucket = "";  // TODO: Update placeholder value.
 
     // Name of the new object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    String destinationObject = ""; // TODO: Update placeholder value.
+    String destinationObject = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     ComposeRequest requestBody = new ComposeRequest();
 
-    Storage service = createService();
-    Compose request = service.objects().compose(destinationBucket, destinationObject, requestBody);
+    Storage storageService = createStorageService();
+    Storage.Objects.Compose request = storageService.objects().compose(destinationBucket, destinationObject, requestBody);
+
+    // TODO: Download media content if desired. See:
+    // https://developers.google.com/api-client-library/java/google-api-java-client/media-download
 
     StorageObject response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1831,67 +1563,60 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.Objects.Copy;
 import com.google.api.services.storage.model.StorageObject;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of the bucket in which to find the source object.
-    String sourceBucket = ""; // TODO: Update placeholder value.
+    String sourceBucket = "";  // TODO: Update placeholder value.
 
     // Name of the source object. For information about how to URL encode object names to be path safe,
     // see Encoding URI Path Parts.
-    String sourceObject = ""; // TODO: Update placeholder value.
+    String sourceObject = "";  // TODO: Update placeholder value.
 
     // Name of the bucket in which to store the new object. Overrides the provided object metadata's
     // bucket value, if any.For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    String destinationBucket = ""; // TODO: Update placeholder value.
+    String destinationBucket = "";  // TODO: Update placeholder value.
 
     // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
     // object metadata's name value, if any.
-    String destinationObject = ""; // TODO: Update placeholder value.
+    String destinationObject = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     StorageObject requestBody = new StorageObject();
 
-    Storage service = createService();
-    Copy request = service.objects().copy(sourceBucket, sourceObject, destinationBucket, destinationObject, requestBody);
+    Storage storageService = createStorageService();
+    Storage.Objects.Copy request = storageService.objects().copy(sourceBucket, sourceObject, destinationBucket, destinationObject, requestBody);
+
+    // TODO: Download media content if desired. See:
+    // https://developers.google.com/api-client-library/java/google-api-java-client/media-download
 
     StorageObject response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1912,53 +1637,41 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.Objects.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of the bucket in which the object resides.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    String object = ""; // TODO: Update placeholder value.
+    String object = "";  // TODO: Update placeholder value.
 
-    Storage service = createService();
-    Delete request = service.objects().delete(bucket, object);
+    Storage storageService = createStorageService();
+    Storage.Objects.Delete request = storageService.objects().delete(bucket, object);
 
     request.execute();
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1979,55 +1692,48 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.Objects.Get;
 import com.google.api.services.storage.model.StorageObject;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of the bucket in which the object resides.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    String object = ""; // TODO: Update placeholder value.
+    String object = "";  // TODO: Update placeholder value.
 
-    Storage service = createService();
-    Get request = service.objects().get(bucket, object);
+    Storage storageService = createStorageService();
+    Storage.Objects.Get request = storageService.objects().get(bucket, object);
+
+    // TODO: Download media content if desired. See:
+    // https://developers.google.com/api-client-library/java/google-api-java-client/media-download
 
     StorageObject response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -2048,58 +1754,51 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.Objects.Insert;
 import com.google.api.services.storage.model.StorageObject;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of the bucket in which to store the new object. Overrides the provided object metadata's
     // bucket value, if any.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     StorageObject requestBody = new StorageObject();
 
-    // TODO: Add desired media content for upload. For more information, see:
+    // TODO: Add desired media content for upload. See:
     // https://developers.google.com/api-client-library/java/google-api-java-client/media-upload
 
-    Storage service = createService();
-    Insert request = service.objects().insert(bucket, requestBody);
+    Storage storageService = createStorageService();
+    Storage.Objects.Insert request = storageService.objects().insert(bucket, requestBody);
+
+    // TODO: Download media content if desired. See:
+    // https://developers.google.com/api-client-library/java/google-api-java-client/media-download
 
     StorageObject response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -2120,7 +1819,6 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.Objects.List;
 import com.google.api.services.storage.model.Objects;
 import com.google.api.services.storage.model.StorageObject;
 import java.io.IOException;
@@ -2128,12 +1826,12 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of the bucket in which to look for objects.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
-    Storage service = createService();
-    List request = service.objects().list(bucket);
+    Storage storageService = createStorageService();
+    Storage.Objects.List request = storageService.objects().list(bucket);
 
     Objects response;
     do {
@@ -2145,36 +1843,26 @@ public class StorageExample {
         // TODO: Change code below to process each `storageObject` resource:
         System.out.println(storageObject);
       }
+      request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -2195,59 +1883,49 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.Objects.Patch;
 import com.google.api.services.storage.model.StorageObject;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of the bucket in which the object resides.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    String object = ""; // TODO: Update placeholder value.
+    String object = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     // Only assigned fields will be changed.
     StorageObject requestBody = new StorageObject();
 
-    Storage service = createService();
-    Patch request = service.objects().patch(bucket, object, requestBody);
+    Storage storageService = createStorageService();
+    Storage.Objects.Patch request = storageService.objects().patch(bucket, object, requestBody);
 
     StorageObject response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -2268,7 +1946,6 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.Objects.Rewrite;
 import com.google.api.services.storage.model.RewriteResponse;
 import com.google.api.services.storage.model.StorageObject;
 import java.io.IOException;
@@ -2276,60 +1953,51 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of the bucket in which to find the source object.
-    String sourceBucket = ""; // TODO: Update placeholder value.
+    String sourceBucket = "";  // TODO: Update placeholder value.
 
     // Name of the source object. For information about how to URL encode object names to be path safe,
     // see Encoding URI Path Parts.
-    String sourceObject = ""; // TODO: Update placeholder value.
+    String sourceObject = "";  // TODO: Update placeholder value.
 
     // Name of the bucket in which to store the new object. Overrides the provided object metadata's
     // bucket value, if any.
-    String destinationBucket = ""; // TODO: Update placeholder value.
+    String destinationBucket = "";  // TODO: Update placeholder value.
 
     // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
     // object metadata's name value, if any. For information about how to URL encode object names to be
     // path safe, see Encoding URI Path Parts.
-    String destinationObject = ""; // TODO: Update placeholder value.
+    String destinationObject = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     StorageObject requestBody = new StorageObject();
 
-    Storage service = createService();
-    Rewrite request = service.objects().rewrite(sourceBucket, sourceObject, destinationBucket, destinationObject, requestBody);
+    Storage storageService = createStorageService();
+    Storage.Objects.Rewrite request = storageService.objects().rewrite(sourceBucket, sourceObject, destinationBucket, destinationObject, requestBody);
 
     RewriteResponse response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -2350,58 +2018,51 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.Objects.Update;
 import com.google.api.services.storage.model.StorageObject;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of the bucket in which the object resides.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    String object = ""; // TODO: Update placeholder value.
+    String object = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     StorageObject requestBody = new StorageObject();
 
-    Storage service = createService();
-    Update request = service.objects().update(bucket, object, requestBody);
+    Storage storageService = createStorageService();
+    Storage.Objects.Update request = storageService.objects().update(bucket, object, requestBody);
+
+    // TODO: Download media content if desired. See:
+    // https://developers.google.com/api-client-library/java/google-api-java-client/media-download
 
     StorageObject response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
   }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -2422,50 +2083,40 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.Storage.Objects.WatchAll;
 import com.google.api.services.storage.model.Channel;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class StorageExample {
-  public void run() throws IOException, GeneralSecurityException {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Name of the bucket in which to look for objects.
-    String bucket = ""; // TODO: Update placeholder value.
+    String bucket = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`.
     Channel requestBody = new Channel();
 
-    Storage service = createService();
-    WatchAll request = service.objects().watchAll(bucket, requestBody);
+    Storage storageService = createStorageService();
+    Storage.Objects.WatchAll request = storageService.objects().watchAll(bucket, requestBody);
 
     Channel response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
 
-  public Storage createService() throws IOException, GeneralSecurityException {
+  public static Storage createStorageService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Sample")
+        .setApplicationName("Google Cloud Platform Sample")
         .build();
-  }
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    try {
-      new StorageExample().run();
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    } catch (GeneralSecurityException e) {
-      System.out.println(e.getMessage());
-    }
   }
 }

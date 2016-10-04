@@ -16,7 +16,9 @@ package com.google.api.codegen.discovery.config.nodejs;
 
 import java.util.List;
 
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
+import com.google.common.base.Strings;
 import com.google.protobuf.Field.Kind;
 
 public class NodeJSTypeNameGenerator implements TypeNameGenerator {
@@ -51,12 +53,16 @@ public class NodeJSTypeNameGenerator implements TypeNameGenerator {
   }
 
   @Override
-  public String formatValue(String value, Kind kind) {
-    switch (kind) {
-      case TYPE_STRING:
-        return "\'" + value + "\'";
-      default:
-        throw new IllegalArgumentException("unsupported kind: " + kind.toString());
+  public String getStringFormatExample(String format) {
+    return "";
+  }
+
+  @Override
+  public String getFieldPatternExample(String pattern) {
+    String def = DefaultString.getNonTrivialPlaceholder(pattern);
+    if (Strings.isNullOrEmpty(def)) {
+      return "";
     }
+    return String.format("'%s'", def);
   }
 }

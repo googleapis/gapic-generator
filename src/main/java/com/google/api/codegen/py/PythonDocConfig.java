@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.py;
 
-import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.DocConfig;
 import com.google.api.codegen.LanguageUtil;
-import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.metacode.InitCode;
 import com.google.api.codegen.metacode.InitCodeLine;
 import com.google.api.codegen.metacode.InputParameter;

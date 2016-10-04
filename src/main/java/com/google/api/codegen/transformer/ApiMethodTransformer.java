@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.CollectionConfig;
-import com.google.api.codegen.MethodConfig;
-import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.CollectionConfig;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
 import com.google.api.codegen.viewmodel.ApiMethodType;

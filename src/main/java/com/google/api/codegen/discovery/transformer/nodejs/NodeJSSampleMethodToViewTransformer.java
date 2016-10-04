@@ -120,8 +120,8 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
               .name(field.name())
               .typeName("")
               .defaultValue(sampleTypeTable.getZeroValueAndSaveNicknameFor(field.type()))
+              .example(field.example())
               .description(field.description())
-              .isPlaceholderSingular(field.isPlaceholderSingular())
               .build());
     }
     sampleBodyView.fields(fields);

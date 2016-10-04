@@ -89,8 +89,9 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
   @Override
   public TypeName getRequestTypeName(String apiTypeName, TypeInfo typeInfo) {
     MessageTypeInfo type = typeInfo.message();
-    return typeNameConverter.getTypeName(
-        Joiner.on('.').join(packagePrefix(type.subpackage()), apiTypeName, type.typeName()));
+    return new TypeName(
+        Joiner.on('.').join(packagePrefix(type.subpackage()), apiTypeName, type.typeName()),
+        Joiner.on('.').join(apiTypeName, type.typeName()));
   }
 
   @Override

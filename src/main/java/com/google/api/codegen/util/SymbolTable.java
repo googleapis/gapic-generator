@@ -30,6 +30,23 @@ public class SymbolTable {
   private final Set<String> symbolTable = new HashSet<>();
 
   /**
+   * Returns a new SymbolTable seeded with all the words in seed.
+   *
+   * For example, if seed is {"int"}, a subsequent call to {@link
+   * #getNewSymbol(String)} for "int" will return "int2".
+   *
+   * The behavior of the returned SymbolTable is guaranteed if used with
+   * {@link #getNewSymbol(String)}, but not with {@link #getNewSymbol(Name)}.
+   */
+  public static SymbolTable fromSeed(Set<String> seed) {
+    SymbolTable symbolTable = new SymbolTable();
+    for (String s : seed) {
+      symbolTable.getNewSymbol(s);
+    }
+    return symbolTable;
+  }
+
+  /**
    * Returns a unique name, with a numeric suffix in case of conflicts.
    *
    * Not guaranteed to work as expected if used in combination with {@link
