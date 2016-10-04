@@ -39,6 +39,14 @@ public class LanguageGenerator {
     // Matches API name and version from "google.path1.path2.apiname.version", as $2 and $3.
     String componentsMatcher = "^google(\\.[a-z]+)*\\.([a-z]+)\\.(v[0-9a-z]+)$";
 
+    // TODO(jcanizales): Rewrite this so we can simply specify:
+    // java   -> "com.google.cloud.{api}.spi.{version}"
+    // python -> "google.cloud.gapic.{api}.{version}"
+    // go     -> "cloud.google.com/go/{api}/api{version}"
+    // csharp -> "{Path}.{Api}.{Version}"
+    // ruby   -> "Google::Cloud::{Api}::{Version}"
+    // php    -> "\\Google\\Cloud\\{Api}\\{Version}"
+    // nodejs -> "@google-cloud/{api}"
     List<RewriteRule> javaRewriteRules = Arrays.asList(
         new RewriteRule(componentsMatcher, "$2.spi.$3"), // {api}.spi.{version}
         new RewriteRule("^cloud(.+)$", "$1"), // Strip "cloud" prefix from API name.
@@ -47,16 +55,22 @@ public class LanguageGenerator {
         new RewriteRule(componentsMatcher, "$2.$3"), // {api}.{version}
         new RewriteRule("^cloud(.+)$", "$1"), // Strip "cloud" prefix from API name.
         new RewriteRule("^(.*)$", "google.cloud.gapic.$1")); // Prepend google.cloud.gapic.
-    List<RewriteRule> commonRewriteRules =
-        Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud"));
+    List<RewriteRule> rubyRewriteRules = Arrays.asList(
+        new RewriteRule(componentsMatcher, "$2::$3"), // {api}::{version}
+        new RewriteRule("^cloud(.+)$", "$1"), // Strip "cloud" prefix from API name.
+        new RewriteRule("^(.*)$", "Google::Cloud::$1")); // Prepend Google::Cloud::.
+    List<RewriteRule> phpRewriteRule = Arrays.asList(
+        new RewriteRule(componentsMatcher, "$2\\$3"), // {api}\{version}
+        new RewriteRule("^cloud(.+)$", "$1"), // Strip "cloud" prefix from API name.
+        new RewriteRule("^(.*)$", "\\Google\\Cloud\\$1")); // Prepend \Google\Cloud\.
     LANGUAGE_FORMATTERS =
         ImmutableMap.<String, LanguageFormatter>builder()
             .put("java", new SimpleLanguageFormatter(".", javaRewriteRules, false))
             .put("python", new SimpleLanguageFormatter(".", pythonRewriteRules, false))
             .put("go", new GoLanguageFormatter())
             .put("csharp", new SimpleLanguageFormatter(".", null, true))
-            .put("ruby", new SimpleLanguageFormatter("::", commonRewriteRules, true))
-            .put("php", new SimpleLanguageFormatter("\\", commonRewriteRules, true))
+            .put("ruby", new SimpleLanguageFormatter("::", rubyRewriteRules, true))
+            .put("php", new SimpleLanguageFormatter("\\", phpRewriteRule, true))
             .put("nodejs", new NodeJSLanguageFormatter())
             .build();
   }
@@ -139,10 +153,10 @@ public class LanguageGenerator {
         return Joiner.on("/").join(nameComponents);
       }
       int size = nameComponents.size();
-      return "cloud.google.com/go/"
-          + Joiner.on("/").join(nameComponents.subList(1, size - 1))
-          + "/api"
-          + nameComponents.get(size - 1);
+      // If the API name starts with the "cloud" prefix, remove it.
+      String name = nameComponents.get(size - 2).replaceFirst("^cloud", "");
+      // cloud.google.com/go/{api}/api{version}
+      return "cloud.google.com/go/" + name + "/api" + nameComponents.get(size - 1);
     }
   }
 
@@ -154,7 +168,11 @@ public class LanguageGenerator {
       if (!isApiGoogleCloud(nameComponents)) {
         return "gax-" + Joiner.on("-").join(nameComponents);
       }
-      return "@google-cloud/" + nameComponents.get(nameComponents.size() - 2);
+      int size = nameComponents.size();
+      // If the API name starts with the "cloud" prefix, remove it.
+      String name = nameComponents.get(size - 2).replaceFirst("^cloud", "");
+      // @google-cloud/{api}
+      return "@google-cloud/" + name;
     }
   }
 
