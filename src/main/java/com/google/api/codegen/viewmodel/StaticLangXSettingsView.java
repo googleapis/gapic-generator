@@ -19,8 +19,11 @@ import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 @AutoValue
 public abstract class StaticLangXSettingsView implements ViewModel {
+  @Override
   public abstract String templateFileName();
 
   public abstract String packageName();
@@ -37,6 +40,9 @@ public abstract class StaticLangXSettingsView implements ViewModel {
 
   public abstract List<ApiCallSettingsView> callSettings();
 
+  @Nullable
+  public abstract List<ApiCallSettingsView> unaryCallSettings();
+
   public abstract List<PageStreamingDescriptorClassView> pageStreamingDescriptors();
 
   public abstract List<BundlingDescriptorClassView> bundlingDescriptors();
@@ -47,6 +53,7 @@ public abstract class StaticLangXSettingsView implements ViewModel {
 
   public abstract List<ImportTypeView> imports();
 
+  @Override
   public abstract String outputPath();
 
   @Override
@@ -75,6 +82,8 @@ public abstract class StaticLangXSettingsView implements ViewModel {
     public abstract Builder authScopes(Iterable<String> val);
 
     public abstract Builder callSettings(List<ApiCallSettingsView> callSettings);
+
+    public abstract Builder unaryCallSettings(List<ApiCallSettingsView> callSettings);
 
     public abstract Builder pageStreamingDescriptors(
         List<PageStreamingDescriptorClassView> generateDescriptorClasses);

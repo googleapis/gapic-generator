@@ -29,7 +29,9 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
+
 import io.grpc.Status;
+
 import java.util.ArrayList;
 import java.util.List;
 

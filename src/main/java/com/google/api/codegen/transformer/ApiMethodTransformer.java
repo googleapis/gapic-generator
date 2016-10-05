@@ -237,6 +237,7 @@ public class ApiMethodTransformer {
     methodViewBuilder.hasReturnValue(
         !ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
     methodViewBuilder.isPageStreaming(false);
+    methodViewBuilder.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
     return methodViewBuilder.type(ApiMethodType.CallableMethod).build();
   }

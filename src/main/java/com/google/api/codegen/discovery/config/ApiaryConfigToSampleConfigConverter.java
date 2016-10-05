@@ -120,6 +120,7 @@ public class ApiaryConfigToSampleConfigConverter {
         pageStreamingResourceField = createFieldInfo(field, containerType, method);
       }
     }
+    boolean hasMediaUpload = apiaryConfig.getMediaUpload().contains(method.getName());
     MethodInfo methodInfo =
         MethodInfo.newBuilder()
             .verb(apiaryConfig.getHttpMethod(method.getName()))
@@ -131,8 +132,13 @@ public class ApiaryConfigToSampleConfigConverter {
             .isPageStreaming(isPageStreaming)
             .pageStreamingResourceField(pageStreamingResourceField)
             .isPageStreamingResourceSetterInRequestBody(false)
-            .hasMediaUpload(apiaryConfig.getMediaUpload().contains(method.getName()))
-            .hasMediaDownload(apiaryConfig.getMediaDownload().contains(method.getName()))
+            .hasMediaUpload(hasMediaUpload)
+            // Ignore media download for methods supporting media upload, as
+            // Apiary cannot combine both in a single request, and no sensible
+            // use cases are known for download with a method supporting upload.
+            // https://developers.google.com/discovery/v1/using#discovery-doc-methods
+            .hasMediaDownload(
+                !hasMediaUpload && apiaryConfig.getMediaDownload().contains(method.getName()))
             .authScopes(apiaryConfig.getAuthScopes(method.getName()))
             .build();
     return methodInfo;

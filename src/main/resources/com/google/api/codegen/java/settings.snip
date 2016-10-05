@@ -3,7 +3,7 @@
 @snippet generate(xsettingsClass)
   {@license()}
   package {@xsettingsClass.packageName};
-  
+
   @join import : xsettingsClass.imports
     import {@import.fullName};
   @end
@@ -140,6 +140,9 @@
     @case "BundlingApiCallable"
       private final BundlingCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
+    @case "StreamingApiCallable"
+      private final StreamingCallSettings<{@settings.requestTypeName}, \
+          {@settings.responseTypeName}> {@settings.memberName};
     @default
       $unhandledCase: {@settings.type.toString}$
     @end
@@ -166,6 +169,11 @@
     @case "BundlingApiCallable"
       public BundlingCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
+        return {@settings.memberName};
+      }
+    @case "StreamingApiCallable"
+      public StreamingCallSettings<{@settings.requestTypeName}, \
+            {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
     @default
@@ -328,7 +336,7 @@
    * Builder for {@xsettingsClass.name}.
    */
   public static class Builder extends ServiceApiSettings.Builder {
-    private final ImmutableList<ApiCallSettings.Builder> methodSettingsBuilders;
+    private final ImmutableList<UnaryApiCallSettings.Builder> unaryMethodSettingsBuilders;
 
     {@builderMembers(xsettingsClass)}
 
@@ -351,6 +359,9 @@
           {@settings.responseTypeName}, {@settings.resourceTypeName}> {@settings.memberName};
     @case "BundlingApiCallable"
       private final BundlingCallSettings.Builder<{@settings.requestTypeName}, \
+          {@settings.responseTypeName}> {@settings.memberName};
+    @case "StreamingApiCallable"
+      private final StreamingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
     @default
       $unhandledCase: {@settings.type.toString}$
@@ -414,12 +425,14 @@
             {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
             {@settings.bundlingDescriptorName})
                 .setBundlingSettingsBuilder(BundlingSettings.newBuilder());
+      @case "StreamingApiCallable"
+        {@settings.memberName} = StreamingCallSettings.newBuilder({@settings.grpcTypeName}.{@settings.grpcMethodConstant});
       @default
         $unhandledCase: {@settings.type.toString}$
       @end
       {@BREAK}
     @end
-    methodSettingsBuilders = ImmutableList.<ApiCallSettings.Builder>of(
+    unaryMethodSettingsBuilders = ImmutableList.<ApiCallSettings.Builder>of(
         @join settings : xsettingsClass.callSettings vertical on ",".add(BREAK)
           {@settings.memberName}
         @end
@@ -428,9 +441,9 @@
 
   private static Builder createDefault() {
     Builder builder = new Builder();
-    @join settings : xsettingsClass.callSettings
+    @join settings : xsettingsClass.unaryCallSettings
       {@""}
-      @switch settings.type.toString
+      @switch settings.type
       @case "SimpleApiCallable"
       @case "PagedApiCallable"
       @case "BundlingApiCallable"
@@ -459,8 +472,8 @@
       {@settings.memberName} = settings.{@settings.memberName}.toBuilder();
     @end
 
-    methodSettingsBuilders = ImmutableList.<ApiCallSettings.Builder>of(
-        @join settings : xsettingsClass.callSettings vertical on ",".add(BREAK)
+    unaryMethodSettingsBuilders = ImmutableList.<UnaryApiCallSettings.Builder>of(
+        @join settings : xsettingsClass.unaryCallSettings vertical on ",".add(BREAK)
           {@settings.memberName}
         @end
     );
@@ -509,9 +522,11 @@
   }
 
   /**
-   * Applies the given settings to all of the API methods in this service. Only
+   * Applies the given settings to all of the unary API methods in this service. Only
    * values that are non-null will be applied, so this method is not capable
    * of un-setting any values.
+   *
+   * Note: This method does not support applying settings to streaming methods.
    */
   public Builder applyToAllApiMethods(ApiCallSettings.Builder apiCallSettings) throws Exception {
     super.applyToAllApiMethods(methodSettingsBuilders, apiCallSettings);
@@ -535,6 +550,11 @@
       }
     @case "BundlingApiCallable"
       public BundlingCallSettings.Builder<{@settings.requestTypeName}, \
+          {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
+        return {@settings.memberName};
+      }
+    @case "StreamingApiCallable"
+      public StreamingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
