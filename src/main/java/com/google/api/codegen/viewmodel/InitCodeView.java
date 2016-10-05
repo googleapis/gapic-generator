@@ -22,6 +22,8 @@ import java.util.List;
 public abstract class InitCodeView {
   public abstract List<InitCodeLineView> lines();
 
+  public abstract List<InitCodeLineView> topLevelLines();
+
   public abstract List<FieldSettingView> fieldSettings();
 
   /**
@@ -41,6 +43,8 @@ public abstract class InitCodeView {
   @AutoValue.Builder
   public static abstract class Builder {
     public abstract Builder lines(List<InitCodeLineView> val);
+
+    public abstract Builder topLevelLines(List<InitCodeLineView> val);
 
     public abstract Builder fieldSettings(List<FieldSettingView> val);
 

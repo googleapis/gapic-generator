@@ -432,8 +432,8 @@
       @end
       {@BREAK}
     @end
-    unaryMethodSettingsBuilders = ImmutableList.<ApiCallSettings.Builder>of(
-        @join settings : xsettingsClass.callSettings vertical on ",".add(BREAK)
+    unaryMethodSettingsBuilders = ImmutableList.<UnaryApiCallSettings.Builder>of(
+        @join settings : xsettingsClass.unaryCallSettings vertical on ",".add(BREAK)
           {@settings.memberName}
         @end
     );
@@ -528,8 +528,8 @@
    *
    * Note: This method does not support applying settings to streaming methods.
    */
-  public Builder applyToAllApiMethods(ApiCallSettings.Builder apiCallSettings) throws Exception {
-    super.applyToAllApiMethods(methodSettingsBuilders, apiCallSettings);
+  public Builder applyToAllApiMethods(UnaryApiCallSettings.Builder apiCallSettings) throws Exception {
+    super.applyToAllApiMethods(unaryMethodSettingsBuilders, apiCallSettings);
     return this;
   }
 
