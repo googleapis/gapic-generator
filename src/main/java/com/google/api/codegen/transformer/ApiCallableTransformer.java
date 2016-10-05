@@ -161,7 +161,7 @@ public class ApiCallableTransformer {
     settings.pageStreamingDescriptorName(
         namer.getNotImplementedString(notImplementedPrefix + "pageStreamingDescriptorName"));
     settings.pagedListResponseFactoryName(
-        namer.getNotImplementedString(notImplementedPrefix + "pageStreamingFactoryName"));
+        namer.getNotImplementedString(notImplementedPrefix + "pagedListResponseFactoryName"));
     settings.bundlingDescriptorName(
         namer.getNotImplementedString(notImplementedPrefix + "bundlingDescriptorName"));
 
