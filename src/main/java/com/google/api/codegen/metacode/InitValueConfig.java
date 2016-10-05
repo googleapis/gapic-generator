@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.metacode;
 
-import com.google.api.codegen.CollectionConfig;
+import com.google.api.codegen.config.CollectionConfig;
 import com.google.auto.value.AutoValue;
 
 import java.util.HashMap;

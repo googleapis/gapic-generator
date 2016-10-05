@@ -12,14 +12,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.config;
 
+import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.InterfaceConfigProto;
+import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.SymbolTable;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
@@ -58,12 +62,14 @@ public abstract class ApiConfig {
   /**
    * Creates an ApiConfig with no content. Exposed for testing.
    */
-  static ApiConfig createDummyApiConfig() {
+  @VisibleForTesting
+  public static ApiConfig createDummyApiConfig() {
     return new AutoValue_ApiConfig(ImmutableMap.<String, InterfaceConfig>builder().build(), null);
   }
 
   /** Creates an ApiConfig with fixed content. Exposed for testing. */
-  static ApiConfig createDummyApiConfig(
+  @VisibleForTesting
+  public static ApiConfig createDummyApiConfig(
       ImmutableMap<String, InterfaceConfig> interfaceConfigMap, String packageName) {
     return new AutoValue_ApiConfig(interfaceConfigMap, packageName);
   }

@@ -151,6 +151,12 @@
 
     @end
     {@sample.requestTypeName} {@requestName()} = {@sample.serviceVarName}.{@sample.resourcePath}.{@sample.methodName}({@sample.paramList});
+    @if context.hasMediaDownload(method)
+
+      // {@TODO()} Download media content if desired. For more information, see:
+      // https://developers.google.com/api-client-library/dotnet/guide/media_download
+
+    @end
 
     @if sample.responseTypeName == "void"
         // To execute asynchronously in an async method, replace `{@requestName()}.Execute()` as shown:
@@ -220,9 +226,13 @@
 @end
 
 @private print(element)
-    Console.WriteLine({@element});
+    @let Console = context.using("System.Console")
+        {@Console}.WriteLine({@element});
+    @end
 @end
 
 @private printEntry(entry)
-    Console.WriteLine("[" + {@entry}.Key + "] = " + {@entry}.Value);
+    @let Console = context.using("System.Console")
+        {@Console}.WriteLine("[" + {@entry}.Key + "] = " + {@entry}.Value);
+    @end
 @end

@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.clientconfig;
 
-import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.BundlingConfig;
 import com.google.api.codegen.GapicContext;
+import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.BundlingConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;

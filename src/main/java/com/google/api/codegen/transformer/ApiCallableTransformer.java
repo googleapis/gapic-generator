@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.MethodConfig;
-import com.google.api.codegen.PageStreamingConfig;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
@@ -79,7 +79,10 @@ public class ApiCallableTransformer {
     apiCallableBuilder.memberName(context.getNamer().getSettingsMemberName(method));
     apiCallableBuilder.settingsFunctionName(context.getNamer().getSettingsFunctionName(method));
 
-    if (methodConfig.isBundling()) {
+    if (methodConfig.isGrpcStreaming()) {
+      apiCallableBuilder.type(ApiCallableType.StreamingApiCallable);
+      apiCallableBuilder.grpcStreamingType(methodConfig.getGrpcStreaming().getType());
+    } else if (methodConfig.isBundling()) {
       apiCallableBuilder.type(ApiCallableType.BundlingApiCallable);
     } else {
       apiCallableBuilder.type(ApiCallableType.SimpleApiCallable);
@@ -143,6 +146,7 @@ public class ApiCallableTransformer {
     settings.asyncMethodName(namer.getAsyncApiMethodName(method));
     settings.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     settings.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
+
     settings.grpcTypeName(
         typeTable.getAndSaveNicknameFor(
             namer.getGrpcContainerTypeName(context.getTargetInterface())));
@@ -160,7 +164,14 @@ public class ApiCallableTransformer {
     settings.bundlingDescriptorName(
         namer.getNotImplementedString(notImplementedPrefix + "bundlingDescriptorName"));
 
-    if (methodConfig.isPageStreaming()) {
+    if (methodConfig.isGrpcStreaming()) {
+      settings.type(ApiCallableType.StreamingApiCallable);
+      if (methodConfig.getGrpcStreaming().hasResourceField()) {
+        TypeRef resourceType = methodConfig.getGrpcStreaming().getResourcesField().getType();
+        settings.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceType));
+      }
+      settings.grpcStreamingType(methodConfig.getGrpcStreaming().getType());
+    } else if (methodConfig.isPageStreaming()) {
       namer.addPageStreamingCallSettingsImports(typeTable);
       settings.type(ApiCallableType.PagedApiCallable);
       TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();

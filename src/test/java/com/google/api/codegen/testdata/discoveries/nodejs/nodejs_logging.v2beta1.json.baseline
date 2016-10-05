@@ -1,7 +1,52 @@
 
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+var logging = google.logging('v2beta1');
+
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+
+    // TODO: Change placeholder below to desired parameter value for the `delete` method:
+
+    // Required. The resource name of the log to delete.  Example:
+    // `"projects/my-project/logs/syslog"`.
+    logName: 'billingAccounts/{MY-BILLINGACCOUNT}/logs/{MY-LOG}',
+
+
+    auth: authClient
+  };
+
+  logging.billingAccounts.logs.delete(request, function(err) {
+    if (err) {
+      console.log(err);
+    }
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -60,7 +105,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
 });
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -106,7 +151,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
 });
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -161,7 +206,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
 });
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -190,7 +235,53 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     // TODO: Change placeholder below to desired parameter value for the `delete` method:
 
-    // Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
+    // Required. The resource name of the log to delete.  Example:
+    // `"projects/my-project/logs/syslog"`.
+    logName: 'organizations/{MY-ORGANIZATION}/logs/{MY-LOG}',
+
+
+    auth: authClient
+  };
+
+  logging.organizations.logs.delete(request, function(err) {
+    if (err) {
+      console.log(err);
+    }
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Stackdriver Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+var logging = google.logging('v2beta1');
+
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+
+    // TODO: Change placeholder below to desired parameter value for the `delete` method:
+
+    // Required. The resource name of the log to delete.  Example:
+    // `"projects/my-project/logs/syslog"`.
     logName: 'projects/{MY-PROJECT}/logs/{MY-LOG}',
 
 
@@ -205,7 +296,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
 });
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -234,9 +325,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     // TODO: Change placeholder below to desired parameter value for the `create` method:
 
-    // The resource name of the project in which to create the metric. Example: `"projects/my-project-id"`.
+    // The resource name of the project in which to create the metric.
+    // Example: `"projects/my-project-id"`.
     // The new metric must be provided in the request.
-    projectName: 'projects/{MY-PROJECT}',
+    parent: 'projects/{MY-PROJECT}',
 
 
     resource: {
@@ -258,7 +350,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
 });
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -287,7 +379,8 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     // TODO: Change placeholder below to desired parameter value for the `delete` method:
 
-    // The resource name of the metric to delete. Example: `"projects/my-project-id/metrics/my-metric-id"`.
+    // The resource name of the metric to delete.
+    // Example: `"projects/my-project-id/metrics/my-metric-id"`.
     metricName: 'projects/{MY-PROJECT}/metrics/{MY-METRIC}',
 
 
@@ -302,7 +395,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
 });
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -331,7 +424,8 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     // TODO: Change placeholder below to desired parameter value for the `get` method:
 
-    // The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
+    // The resource name of the desired metric.
+    // Example: `"projects/my-project-id/metrics/my-metric-id"`.
     metricName: 'projects/{MY-PROJECT}/metrics/{MY-METRIC}',
 
 
@@ -350,7 +444,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
 });
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -379,9 +473,9 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     // TODO: Change placeholder below to desired parameter value for the `list` method:
 
-    // Required. The resource name of the project containing the metrics. Example:
-    // `"projects/my-project-id"`.
-    projectName: 'projects/{MY-PROJECT}',
+    // Required. The resource name containing the metrics.
+    // Example: `"projects/my-project-id"`.
+    parent: 'projects/{MY-PROJECT}',
 
 
     auth: authClient
@@ -412,7 +506,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
 });
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -441,9 +535,11 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     // TODO: Change placeholder below to desired parameter value for the `update` method:
 
-    // The resource name of the metric to update. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-    // The updated metric must be provided in the request and have the same identifier that is specified in
-    // `metricName`. If the metric does not exist, it is created.
+    // The resource name of the metric to update.
+    // Example: `"projects/my-project-id/metrics/my-metric-id"`.
+    // The updated metric must be provided in the request and have the
+    // same identifier that is specified in `metricName`.
+    // If the metric does not exist, it is created.
     metricName: 'projects/{MY-PROJECT}/metrics/{MY-METRIC}',
 
 
@@ -466,7 +562,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
 });
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -495,9 +591,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     // TODO: Change placeholder below to desired parameter value for the `create` method:
 
-    // The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`.
+    // Required. The resource in which to create the sink.
+    // Example: `"projects/my-project-id"`.
     // The new sink must be provided in the request.
-    projectName: 'projects/{MY-PROJECT}',
+    parent: 'projects/{MY-PROJECT}',
 
 
     resource: {
@@ -519,7 +616,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
 });
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -548,7 +645,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     // TODO: Change placeholder below to desired parameter value for the `delete` method:
 
-    // The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
+    // Required. The resource name of the sink to delete, including the parent
+    // resource and the sink identifier.  Example:
+    // `"projects/my-project-id/sinks/my-sink-id"`.  It is an error if the sink
+    // does not exist.
     sinkName: 'projects/{MY-PROJECT}/sinks/{MY-SINK}',
 
 
@@ -563,7 +663,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
 });
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -592,7 +692,8 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     // TODO: Change placeholder below to desired parameter value for the `get` method:
 
-    // The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
+    // Required. The resource name of the sink to return.
+    // Example: `"projects/my-project-id/sinks/my-sink-id"`.
     sinkName: 'projects/{MY-PROJECT}/sinks/{MY-SINK}',
 
 
@@ -611,7 +712,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
 });
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -640,9 +741,9 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     // TODO: Change placeholder below to desired parameter value for the `list` method:
 
-    // Required. The resource name of the project containing the sinks. Example:
-    // `"projects/my-logging-project"`.
-    projectName: 'projects/{MY-PROJECT}',
+    // Required. The cloud resource containing the sinks.
+    // Example: `"projects/my-logging-project"`.
+    parent: 'projects/{MY-PROJECT}',
 
 
     auth: authClient
@@ -673,7 +774,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
 });
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -702,9 +803,9 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     // TODO: Change placeholder below to desired parameter value for the `update` method:
 
-    // The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The
-    // updated sink must be provided in the request and have the same name that is specified in `sinkName`.
-    // If the sink does not exist, it is created.
+    // Required. The resource name of the sink to update, including the parent
+    // resource and the sink identifier.  If the sink does not exist, this method
+    // creates the sink.  Example: `"projects/my-project-id/sinks/my-sink-id"`.
     sinkName: 'projects/{MY-PROJECT}/sinks/{MY-SINK}',
 
 

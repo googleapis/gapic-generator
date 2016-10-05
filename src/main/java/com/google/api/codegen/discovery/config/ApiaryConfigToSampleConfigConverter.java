@@ -22,7 +22,6 @@ import java.util.Map;
 
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryImporter;
-import com.google.api.codegen.discovery.DefaultString;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
@@ -69,11 +68,12 @@ public class ApiaryConfigToSampleConfigConverter {
     for (Method method : this.methods) {
       methods.put(method.getName(), createMethod(method));
     }
+    String apiTypeName = typeNameGenerator.getApiTypeName(apiName);
     return SampleConfig.newBuilder()
         .apiTitle(apiaryConfig.getApiTitle())
         .apiName(apiName)
         .apiVersion(apiVersion)
-        .apiTypeName(typeNameGenerator.getApiTypeName(apiName))
+        .apiTypeName(apiTypeName)
         .packagePrefix(typeNameGenerator.getPackagePrefix(apiName, apiVersion))
         .methods(methods)
         .authType(apiaryConfig.getAuthType())
@@ -120,6 +120,7 @@ public class ApiaryConfigToSampleConfigConverter {
         pageStreamingResourceField = createFieldInfo(field, containerType, method);
       }
     }
+    boolean hasMediaUpload = apiaryConfig.getMediaUpload().contains(method.getName());
     MethodInfo methodInfo =
         MethodInfo.newBuilder()
             .verb(apiaryConfig.getHttpMethod(method.getName()))
@@ -130,7 +131,14 @@ public class ApiaryConfigToSampleConfigConverter {
             .responseType(responseType)
             .isPageStreaming(isPageStreaming)
             .pageStreamingResourceField(pageStreamingResourceField)
-            .hasMediaUpload(apiaryConfig.getMediaUpload().contains(method.getName()))
+            .isPageStreamingResourceSetterInRequestBody(false)
+            .hasMediaUpload(hasMediaUpload)
+            // Ignore media download for methods supporting media upload, as
+            // Apiary cannot combine both in a single request, and no sensible
+            // use cases are known for download with a method supporting upload.
+            // https://developers.google.com/discovery/v1/using#discovery-doc-methods
+            .hasMediaDownload(
+                !hasMediaUpload && apiaryConfig.getMediaDownload().contains(method.getName()))
             .authScopes(apiaryConfig.getAuthScopes(method.getName()))
             .build();
     return methodInfo;
@@ -140,19 +148,24 @@ public class ApiaryConfigToSampleConfigConverter {
    * Creates a field.
    */
   private FieldInfo createFieldInfo(Field field, Type containerType, Method method) {
-    String placeholder = "";
+    String example = "";
     TypeInfo typeInfo = createTypeInfo(field, method);
-    if (typeInfo.kind() == Field.Kind.TYPE_STRING && !typeInfo.isArray() && !typeInfo.isMap()) {
-      String pattern = apiaryConfig.getFieldPattern().get(containerType.getName(), field.getName());
-      if (!Strings.isNullOrEmpty(pattern)) {
-        placeholder = DefaultString.getPlaceholder(field.getName(), pattern);
-        placeholder = typeNameGenerator.formatValue(placeholder, field.getKind());
+    if (typeInfo.kind() == Field.Kind.TYPE_STRING) {
+      String fieldPattern =
+          apiaryConfig.getFieldPattern().get(containerType.getName(), field.getName());
+      String stringFormat = apiaryConfig.getStringFormat(containerType.getName(), field.getName());
+      example = typeNameGenerator.getFieldPatternExample(fieldPattern);
+      if (!Strings.isNullOrEmpty(example)) {
+        // Generates an example of the format: `ex: "projects/my-project/logs/my-log"`
+        example = "ex: " + example;
+      } else {
+        example = typeNameGenerator.getStringFormatExample(stringFormat);
       }
     }
     return FieldInfo.newBuilder()
         .name(field.getName())
         .type(typeInfo)
-        .placeholder(placeholder)
+        .example(example)
         .description(
             Strings.nullToEmpty(
                 apiaryConfig.getDescription(method.getRequestTypeUrl(), field.getName())))

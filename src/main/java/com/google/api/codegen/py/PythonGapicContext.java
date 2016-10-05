@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.py;
 
-import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
-import com.google.api.codegen.InterfaceConfig;
-import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.EnumType;

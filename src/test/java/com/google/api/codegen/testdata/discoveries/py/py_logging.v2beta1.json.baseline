@@ -2,7 +2,41 @@
 """
 BEFORE RUNNING:
 ---------------
-1. If not already done, enable the Google Cloud Logging API
+1. If not already done, enable the Stackdriver Logging API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/logging
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   `gcloud beta auth application-default login`
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
+# https://developers.google.com/identity/protocols/application-default-credentials
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('logging', 'v2beta1', credentials=credentials)
+
+
+# TODO: Change placeholder below to desired parameter value for the `delete` method:
+
+# Required. The resource name of the log to delete.  Example:
+# `"projects/my-project/logs/syslog"`.
+logName = 'billingAccounts/{MY-BILLINGACCOUNT}/logs/{MY-LOG}'
+
+
+request = service.billingAccounts().logs().delete(logName=logName)
+request.execute()
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Stackdriver Logging API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
@@ -44,7 +78,7 @@ while request is not None:
 """
 BEFORE RUNNING:
 ---------------
-1. If not already done, enable the Google Cloud Logging API
+1. If not already done, enable the Stackdriver Logging API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
@@ -81,7 +115,7 @@ pprint(response)
 """
 BEFORE RUNNING:
 ---------------
-1. If not already done, enable the Google Cloud Logging API
+1. If not already done, enable the Stackdriver Logging API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
@@ -118,7 +152,7 @@ while request is not None:
 """
 BEFORE RUNNING:
 ---------------
-1. If not already done, enable the Google Cloud Logging API
+1. If not already done, enable the Stackdriver Logging API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
@@ -142,7 +176,42 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 # TODO: Change placeholder below to desired parameter value for the `delete` method:
 
-# Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
+# Required. The resource name of the log to delete.  Example:
+# `"projects/my-project/logs/syslog"`.
+logName = 'organizations/{MY-ORGANIZATION}/logs/{MY-LOG}'
+
+
+request = service.organizations().logs().delete(logName=logName)
+request.execute()
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Stackdriver Logging API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/logging
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   `gcloud beta auth application-default login`
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
+# https://developers.google.com/identity/protocols/application-default-credentials
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('logging', 'v2beta1', credentials=credentials)
+
+
+# TODO: Change placeholder below to desired parameter value for the `delete` method:
+
+# Required. The resource name of the log to delete.  Example:
+# `"projects/my-project/logs/syslog"`.
 logName = 'projects/{MY-PROJECT}/logs/{MY-LOG}'
 
 
@@ -151,7 +220,7 @@ request.execute()
 """
 BEFORE RUNNING:
 ---------------
-1. If not already done, enable the Google Cloud Logging API
+1. If not already done, enable the Stackdriver Logging API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
@@ -177,9 +246,10 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 # TODO: Change placeholder below to desired parameter value for the `create` method:
 
-# The resource name of the project in which to create the metric. Example: `"projects/my-project-id"`.
+# The resource name of the project in which to create the metric.
+# Example: `"projects/my-project-id"`.
 # The new metric must be provided in the request.
-projectName = 'projects/{MY-PROJECT}'
+parent = 'projects/{MY-PROJECT}'
 
 
 log_metric_body = {
@@ -187,7 +257,7 @@ log_metric_body = {
 }
 
 
-request = service.projects().metrics().create(projectName=projectName, body=log_metric_body)
+request = service.projects().metrics().create(parent=parent, body=log_metric_body)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -195,7 +265,7 @@ pprint(response)
 """
 BEFORE RUNNING:
 ---------------
-1. If not already done, enable the Google Cloud Logging API
+1. If not already done, enable the Stackdriver Logging API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
@@ -219,7 +289,8 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 # TODO: Change placeholder below to desired parameter value for the `delete` method:
 
-# The resource name of the metric to delete. Example: `"projects/my-project-id/metrics/my-metric-id"`.
+# The resource name of the metric to delete.
+# Example: `"projects/my-project-id/metrics/my-metric-id"`.
 metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'
 
 
@@ -228,7 +299,7 @@ request.execute()
 """
 BEFORE RUNNING:
 ---------------
-1. If not already done, enable the Google Cloud Logging API
+1. If not already done, enable the Stackdriver Logging API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
@@ -254,7 +325,8 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 # TODO: Change placeholder below to desired parameter value for the `get` method:
 
-# The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
+# The resource name of the desired metric.
+# Example: `"projects/my-project-id/metrics/my-metric-id"`.
 metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'
 
 
@@ -266,7 +338,7 @@ pprint(response)
 """
 BEFORE RUNNING:
 ---------------
-1. If not already done, enable the Google Cloud Logging API
+1. If not already done, enable the Stackdriver Logging API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
@@ -292,13 +364,13 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 # TODO: Change placeholder below to desired parameter value for the `list` method:
 
-# Required. The resource name of the project containing the metrics. Example:
-# `"projects/my-project-id"`.
-projectName = 'projects/{MY-PROJECT}'
+# Required. The resource name containing the metrics.
+# Example: `"projects/my-project-id"`.
+parent = 'projects/{MY-PROJECT}'
 
 
 metrics = service.projects().metrics()
-request = metrics.list(projectName=projectName)
+request = metrics.list(parent=parent)
 while request is not None:
     response = request.execute()
 
@@ -310,7 +382,7 @@ while request is not None:
 """
 BEFORE RUNNING:
 ---------------
-1. If not already done, enable the Google Cloud Logging API
+1. If not already done, enable the Stackdriver Logging API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
@@ -336,9 +408,11 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 # TODO: Change placeholder below to desired parameter value for the `update` method:
 
-# The resource name of the metric to update. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-# The updated metric must be provided in the request and have the same identifier that is specified in
-# `metricName`. If the metric does not exist, it is created.
+# The resource name of the metric to update.
+# Example: `"projects/my-project-id/metrics/my-metric-id"`.
+# The updated metric must be provided in the request and have the
+# same identifier that is specified in `metricName`.
+# If the metric does not exist, it is created.
 metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'
 
 
@@ -355,7 +429,7 @@ pprint(response)
 """
 BEFORE RUNNING:
 ---------------
-1. If not already done, enable the Google Cloud Logging API
+1. If not already done, enable the Stackdriver Logging API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
@@ -381,9 +455,10 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 # TODO: Change placeholder below to desired parameter value for the `create` method:
 
-# The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`.
+# Required. The resource in which to create the sink.
+# Example: `"projects/my-project-id"`.
 # The new sink must be provided in the request.
-projectName = 'projects/{MY-PROJECT}'
+parent = 'projects/{MY-PROJECT}'
 
 
 log_sink_body = {
@@ -391,7 +466,7 @@ log_sink_body = {
 }
 
 
-request = service.projects().sinks().create(projectName=projectName, body=log_sink_body)
+request = service.projects().sinks().create(parent=parent, body=log_sink_body)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -399,7 +474,7 @@ pprint(response)
 """
 BEFORE RUNNING:
 ---------------
-1. If not already done, enable the Google Cloud Logging API
+1. If not already done, enable the Stackdriver Logging API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
@@ -423,7 +498,10 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 # TODO: Change placeholder below to desired parameter value for the `delete` method:
 
-# The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
+# Required. The resource name of the sink to delete, including the parent
+# resource and the sink identifier.  Example:
+# `"projects/my-project-id/sinks/my-sink-id"`.  It is an error if the sink
+# does not exist.
 sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'
 
 
@@ -432,7 +510,7 @@ request.execute()
 """
 BEFORE RUNNING:
 ---------------
-1. If not already done, enable the Google Cloud Logging API
+1. If not already done, enable the Stackdriver Logging API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
@@ -458,7 +536,8 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 # TODO: Change placeholder below to desired parameter value for the `get` method:
 
-# The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
+# Required. The resource name of the sink to return.
+# Example: `"projects/my-project-id/sinks/my-sink-id"`.
 sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'
 
 
@@ -470,7 +549,7 @@ pprint(response)
 """
 BEFORE RUNNING:
 ---------------
-1. If not already done, enable the Google Cloud Logging API
+1. If not already done, enable the Stackdriver Logging API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
@@ -496,13 +575,13 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 # TODO: Change placeholder below to desired parameter value for the `list` method:
 
-# Required. The resource name of the project containing the sinks. Example:
-# `"projects/my-logging-project"`.
-projectName = 'projects/{MY-PROJECT}'
+# Required. The cloud resource containing the sinks.
+# Example: `"projects/my-logging-project"`.
+parent = 'projects/{MY-PROJECT}'
 
 
 sinks = service.projects().sinks()
-request = sinks.list(projectName=projectName)
+request = sinks.list(parent=parent)
 while request is not None:
     response = request.execute()
 
@@ -514,7 +593,7 @@ while request is not None:
 """
 BEFORE RUNNING:
 ---------------
-1. If not already done, enable the Google Cloud Logging API
+1. If not already done, enable the Stackdriver Logging API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
@@ -540,9 +619,9 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 # TODO: Change placeholder below to desired parameter value for the `update` method:
 
-# The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The
-# updated sink must be provided in the request and have the same name that is specified in `sinkName`.
-# If the sink does not exist, it is created.
+# Required. The resource name of the sink to update, including the parent
+# resource and the sink identifier.  If the sink does not exist, this method
+# creates the sink.  Example: `"projects/my-project-id/sinks/my-sink-id"`.
 sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'
 
 

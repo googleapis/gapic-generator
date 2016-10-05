@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.nodejs;
 
-import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
-import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
@@ -48,8 +48,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+
 import java.util.Collections;
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 /**

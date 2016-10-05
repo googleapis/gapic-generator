@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.config;
+package com.google.api.codegen.configgen;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;

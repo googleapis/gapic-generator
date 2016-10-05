@@ -25,18 +25,24 @@ public class DefaultStringTest {
   @Test
   public void testOf() {
     String def = DefaultString.getPlaceholder("zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
+    String def2 = DefaultString.getNonTrivialPlaceholder("[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
     String sample = DefaultString.getSample("compute", "zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
     Truth.assertThat(def).isEqualTo("{MY-ZONE}");
+    Truth.assertThat(def2).isEqualTo("");
     Truth.assertThat(sample).isEqualTo("us-central1-f");
 
     def = DefaultString.getPlaceholder("project", "^projects/[^/]*$");
+    def2 = DefaultString.getNonTrivialPlaceholder("^projects/[^/]*$");
     sample = DefaultString.getSample("pubsub", "project", "^projects/[^/]*$");
     Truth.assertThat(def).isEqualTo("projects/{MY-PROJECT}");
+    Truth.assertThat(def2).isEqualTo("projects/my-project");
     Truth.assertThat(sample).isEqualTo("");
 
     def = DefaultString.getPlaceholder("bar", null);
+    def2 = DefaultString.getNonTrivialPlaceholder(null);
     sample = DefaultString.getSample("foo", "bar", null);
     Truth.assertThat(def).isEqualTo("{MY-BAR}");
+    Truth.assertThat(def2).isEqualTo("");
     Truth.assertThat(sample).isEqualTo("");
   }
 
@@ -52,7 +58,7 @@ public class DefaultStringTest {
         };
 
     for (String s : invalid) {
-      Truth.assertThat(DefaultString.forPattern(s)).isNull();
+      Truth.assertThat(DefaultString.forPattern(s, "{MY-%s}", true)).isNull();
     }
   }
 
@@ -68,7 +74,8 @@ public class DefaultStringTest {
             .build();
 
     for (Map.Entry<String, String> entry : tests.entrySet()) {
-      Truth.assertThat(DefaultString.forPattern(entry.getKey())).isEqualTo(entry.getValue());
+      Truth.assertThat(DefaultString.forPattern(entry.getKey(), "{MY-%s}", true))
+          .isEqualTo(entry.getValue());
     }
   }
 }

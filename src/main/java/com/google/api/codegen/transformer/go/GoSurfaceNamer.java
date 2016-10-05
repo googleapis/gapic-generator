@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.transformer.go;
 
-import com.google.api.codegen.CollectionConfig;
-import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.config.CollectionConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;

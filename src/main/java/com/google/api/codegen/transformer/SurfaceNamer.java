@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.CollectionConfig;
-import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.config.CollectionConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
@@ -29,7 +29,9 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
+
 import io.grpc.Status;
+
 import java.util.ArrayList;
 import java.util.List;
 

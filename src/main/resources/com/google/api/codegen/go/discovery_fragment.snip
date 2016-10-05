@@ -88,7 +88,7 @@
     }
     @if authType != "APPLICATION_DEFAULT_CREDENTIALS"
 
-      func getClient(ctx Context) (*http.Client, error) {
+      func getClient(ctx context.Context) (*http.Client, error) {
         // {@TODO()} Change placeholder below to get authentication credentials.
         @let authInstructionsUrl = apiaryConfig.getAuthInstructionsUrl
           @if authInstructionsUrl
@@ -111,7 +111,7 @@
 @end
 
 @private scopeArg(method)
-  @let scopeList = context.getAuthScopes(method)
+  @let scopeList = context.getFormattedAuthScopes(method)
     @if not(scopeList.isEmpty)
       , {@context.getApi.getName}.{@scopeList.get(0)}Scope
     @end
@@ -119,6 +119,11 @@
 @end
 
 @private compactCall(method)
+  @if context.hasMediaDownload(method)
+    // {@TODO()} Use `Download` in place of `Do` below to download media content. For more information, see:
+    // {@godocURL()}#{@resourceType(method)}.Download
+
+  @end
   @if context.isResponseEmpty(method)
     if err := {@methodCall(method)}.Context(ctx).Do(); err != nil {
       log.Fatal(err)
@@ -134,6 +139,7 @@
   @end
 @end
 
+# TODO(tcoffee): verify that page-streaming methods do not support media download
 @private iterableCall(method)
   @let responseType = method.getResponseTypeUrl, \
        responseTypeRef = context.getApiaryConfig.getType(responseType), \
@@ -176,10 +182,17 @@
   @end
 @end
 
+@private resourceType(method)
+  @let methodName = context.getMethodName(method)
+    @join r : context.getApiaryConfig.getResources(method.getName)
+      {@context.lowerCamelToUpperCamel(r)}
+    @end
+    {@context.lowerCamelToUpperCamel(methodName)}Call
+  @end
+@end
+
 @private initialize(method)
-  @let api = context.getApi, \
-       apiName = api.getName, \
-       apiVersion = api.getVersion, \
+  @let apiName = context.getApi.getName, \
        methodName = context.getMethodName(method), \
        signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
        params = context.getFlatMethodParams(method)
@@ -214,7 +227,7 @@
     @if context.hasMediaUpload(method)
 
       // {@TODO()} Add desired media content for upload. For more information, see:
-      // https://godoc.org/google.golang.org/api/{@apiName}/{@apiVersion}
+      // {@godocURL()}
 
     @end
   @end
@@ -231,6 +244,14 @@
     @else
       {@argumentList(params)}
     @end
+  @end
+@end
+
+@private godocURL()
+  @let api = context.getApi, \
+       apiName = api.getName, \
+       apiVersion = api.getVersion
+    https://godoc.org/google.golang.org/api/{@apiName}/{@apiVersion}
   @end
 @end
 
@@ -263,7 +284,7 @@
 @end
 
 @private unclashVar(var)
-  @if context.getApi.getName.equals(var)
+  @if or(context.getApi.getName.equals(var), context.isReserved(var))
     {@var}2
   @else
     {@var}

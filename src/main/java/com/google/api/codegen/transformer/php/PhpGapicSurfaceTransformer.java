@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.transformer.php;
 
-import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.ServiceConfig;
+import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
@@ -35,13 +35,12 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * The ModelToViewTransformer to transform a Model into the standard GAPIC surface in PHP.
- */
+/** The ModelToViewTransformer to transform a Model into the standard GAPIC surface in PHP. */
 public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   private GapicCodePathMapper pathMapper;
   private ServiceTransformer serviceTransformer;
@@ -81,7 +80,6 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
               modelTypeTable,
               new PhpSurfaceNamer(apiConfig.getPackageName()),
               new PhpFeatureConfig());
-
       surfaceDocs.addAll(transform(context));
     }
     return surfaceDocs;

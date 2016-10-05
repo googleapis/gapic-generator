@@ -37,8 +37,8 @@ public class FeatureConfig {
     return false;
   }
 
-  /** Returns true if mixin APIs are supported. */
-  public boolean enableStreaming() {
+  /** Returns true if streaming APIs are supported. */
+  public boolean enableGrpcStreaming() {
     return false;
   }
 }

@@ -239,6 +239,16 @@ public abstract class DiscoveryContext extends CodegenContext {
     return apiaryConfig.getMediaUpload().contains(method.getName());
   }
 
+  public boolean hasMediaDownload(Method method) {
+    // ignore media download for methods supporting media upload, as Apiary cannot combine both in
+    // single request, and no sensible use cases are known for download with a method supporting
+    // upload
+    if (hasMediaUpload(method)) {
+      return false;
+    }
+    return apiaryConfig.getMediaDownload().contains(method.getName());
+  }
+
   public boolean hasAuthScopes(Method method) {
     return apiaryConfig.hasAuthScopes(method.getName());
   }
