@@ -31,67 +31,67 @@
 @private renderSnippets(snippets)
     public class {@snippets.name}
     {
-        @join method : snippets.snippetMethods
-            {@method(snippets, method)}
+        @join snippetMethod : snippets.snippetMethods
+            {@method(snippetMethod)}
 
         @end
     }
 @end
 
-@private method(snippets, method)
-    @switch method.type.toString
+@private method(snippetMethod)
+    @switch snippetMethod.method.type.toString
     @case "FlattenedMethod"
-        {@flattenedMethodSync(snippets, method)}
+        {@flattenedMethodSync(snippetMethod)}
     @case "FlattenedAsyncCallSettingsMethod"
-        {@flattenedMethodAsyncCallSettings(snippets, method)}
+        {@flattenedMethodAsyncCallSettings(snippetMethod)}
     @case "PagedFlattenedMethod"
-        {@pagedFlattenedMethodSync(snippets, method)}
+        {@pagedFlattenedMethodSync(snippetMethod)}
     @case "PagedFlattenedAsyncMethod" 
-        {@pagedFlattenedMethodAsync(snippets, method)}
+        {@pagedFlattenedMethodAsync(snippetMethod)}
     @default
-        $unhandledCase: {@method.type.toString}$
+        $unhandledCase: {@snippetMethod.method.type.toString}$
     @end
 @end
 
-@private flattenedMethodSync(snippets, method)
-    public void {@method.uniqueName}()
+@private flattenedMethodSync(snippetMethod)
+    public void {@snippetMethod.snippetMethodName}()
     {
-        // Snippet: {@method.name}({@snippetArgTypes(method.methodParams)},CallSettings)
-        {@preparations(snippets, method)}
-        @if method.hasReturnValue
-            {@method.callerResponseTypeName} response = {@sampleMethodCall(method)};
+        // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
+        {@preparations(snippetMethod)}
+        @if snippetMethod.method.hasReturnValue
+            {@snippetMethod.callerResponseTypeName} response = {@sampleMethodCall(snippetMethod)};
         @else
-            {@sampleMethodCall(method)};
+            {@sampleMethodCall(snippetMethod)};
         @end
         // End snippet
     }
 @end
 
-@private flattenedMethodAsyncCallSettings(snippets, method)
-    public async Task {@method.uniqueName}()
+@private flattenedMethodAsyncCallSettings(snippetMethod)
+    public async Task {@snippetMethod.snippetMethodName}()
     {
-        // Snippet: {@method.name}({@snippetArgTypes(method.methodParams)},CallSettings)
-        // Additional: {@method.name}({@snippetArgTypes(method.methodParams)},CancellationToken)
-        {@preparations(snippets, method)}
-        @if method.hasReturnValue
-            {@method.callerResponseTypeName} response = await {@sampleMethodCall(method)};
+        // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
+        // Additional: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CancellationToken)
+        {@preparations(snippetMethod)}
+        @if snippetMethod.method.hasReturnValue
+            {@snippetMethod.callerResponseTypeName} response = await {@sampleMethodCall(snippetMethod)};
         @else
-            await {@sampleMethodCall(method)};
+            await {@sampleMethodCall(snippetMethod)};
         @end
         // End snippet
     }
 @end
 
-@private pagedFlattenedMethodSync(snippets, method)
-    public void {@method.uniqueName}()
+@private pagedFlattenedMethodSync(snippetMethod)
+    public void {@snippetMethod.snippetMethodName}()
     {
-        // Snippet: {@method.name}({@snippetArgTypes(method.methodParams)},CallSettings)
-        {@preparations(snippets, method)}
-        {@method.callerResponseTypeName} response =
-            {@sampleMethodCall(method)};
+        // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
+        {@preparations(snippetMethod)}
+        {@snippetMethod.callerResponseTypeName} response =
+            {@sampleMethodCall(snippetMethod)};
 
         // Iterate over all response items, lazily performing RPCs as required
-        foreach ({@method.listMethod.resourceTypeName} item in response)
+        foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in response)
         {
             // Do something with each item
             Console.Writeline(item);
@@ -99,11 +99,11 @@
         
         // Or iterate over fixed-sized pages, lazily performing RPCs as required
         int pageSize = 10;
-        foreach (FixedSizePage<{@method.listMethod.resourceTypeName}> page in response.AsPages().WithFixedSize(pageSize))
+        foreach (FixedSizePage<{@snippetMethod.method.listMethod.resourceTypeName}> page in response.AsPages().WithFixedSize(pageSize))
         {
             // Do something with each page of items
             Console.Writeline("A page of results:");
-            foreach ({@method.listMethod.resourceTypeName} item in page)
+            foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in page)
             {
                 Console.Writeline(item);
             }
@@ -112,17 +112,17 @@
     }
 @end
 
-@private pagedFlattenedMethodAsync(snippets, method)
-    public async Task {@method.uniqueName}()
+@private pagedFlattenedMethodAsync(snippetMethod)
+    public async Task {@snippetMethod.snippetMethodName}()
     {
-        // Snippet: {@method.name}({@snippetArgTypes(method.methodParams)},CallSettings)
-        // Additional: {@method.name}({@snippetArgTypes(method.methodParams)},CancellationToken)
-        {@preparations(snippets, method)}
-        {@method.callerResponseTypeName} response =
-            await {@sampleMethodCall(method)};
+        // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
+        // Additional: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CancellationToken)
+        {@preparations(snippetMethod)}
+        {@snippetMethod.callerResponseTypeName} response =
+            await {@sampleMethodCall(snippetMethod)};
 
         // Iterate over all response items, lazily performing RPCs as required
-        foreach ({@method.listMethod.resourceTypeName} item in response)
+        foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in response)
         {
             // Do something with each item
             Console.Writeline(item);
@@ -130,11 +130,11 @@
         
         // Or iterate over fixed-sized pages, lazily performing RPCs as required
         int pageSize = 10;
-        foreach (FixedSizePage<{@method.listMethod.resourceTypeName}> page in response.AsPages().WithFixedSize(pageSize))
+        foreach (FixedSizePage<{@snippetMethod.method.listMethod.resourceTypeName}> page in response.AsPages().WithFixedSize(pageSize))
         {
             // Do something with each page of items
             Console.Writeline("A page of results:");
-            foreach ({@method.listMethod.resourceTypeName} item in page)
+            foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in page)
             {
                 Console.Writeline(item);
             }
@@ -143,11 +143,11 @@
     }
 @end
 
-@private preparations(snippets, method)
+@private preparations(snippetMethod)
     // Create client
-    {@snippets.clientTypeName} {@method.apiVariableName} = {@snippets.clientTypeName}.Create();
+    {@snippetMethod.apiClassName} {@snippetMethod.apiVariableName} = {@snippetMethod.apiClassName}.Create();
     // Initialize request argument(s)
-    {@topLevelInitCode(method.initCode)}
+    {@topLevelInitCode(snippetMethod.method.initCode)}
     // Make the request
 @end
 
@@ -157,8 +157,8 @@
     @end
 @end
 
-@private sampleMethodCall(method)
-    {@method.apiVariableName}.{@method.name}({@sampleMethodCallArgList(method.initCode.fieldSettings)})
+@private sampleMethodCall(snippetMethod)
+    {@snippetMethod.method.apiVariableName}.{@snippetMethod.method.name}({@sampleMethodCallArgList(snippetMethod.method.initCode.fieldSettings)})
 @end
 
 @private sampleMethodCallArgList(fieldSettings)

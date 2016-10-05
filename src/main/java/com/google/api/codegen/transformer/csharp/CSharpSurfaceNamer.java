@@ -30,78 +30,15 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import java.util.List;
-import java.util.Map;
 
 public class CSharpSurfaceNamer extends SurfaceNamer {
-
-  public static final class MethodFields {
-    public MethodFields(Method method, List<Field> fields) {
-      this.method = method;
-      this.fields = fields;
-      int hashCode = method.getFullName().hashCode();
-      for (Field field : fields) {
-        hashCode *= 1003;
-        hashCode ^= field.getTag();
-      }
-      this.hashCode = hashCode;
-    }
-
-    private final Method method;
-    private final List<Field> fields;
-    private final int hashCode;
-
-    public Method getMethod() {
-      return method;
-    }
-
-    public List<Field> getFields() {
-      return fields;
-    }
-
-    @Override
-    public int hashCode() {
-      return hashCode;
-    }
-
-    @Override
-    public boolean equals(Object arg) {
-      if (!(arg instanceof MethodFields)) {
-        return false;
-      }
-      MethodFields other = (MethodFields) arg;
-      if (!this.method.getFullName().equals(other.method.getFullName())) {
-        return false;
-      }
-      if (this.fields.size() != other.fields.size()) {
-        return false;
-      }
-      for (int i = 0; i < this.fields.size(); i++) {
-        if (this.fields.get(i).getTag() != other.fields.get(i).getTag()) {
-          return false;
-        }
-      }
-      return true;
-    }
-  }
-
-  private Map<MethodFields, Function<SurfaceNamer, String>> uniqueMethodNameMap;
-
   public CSharpSurfaceNamer(String implicitPackageName) {
-    this(implicitPackageName, ImmutableMap.<MethodFields, Function<SurfaceNamer, String>>of());
-  }
-
-  public CSharpSurfaceNamer(
-      String implicitPackageName,
-      Map<MethodFields, Function<SurfaceNamer, String>> uniqueMethodNameMap) {
     super(
         new CSharpNameFormatter(),
         new ModelTypeFormatterImpl(new CSharpModelTypeNameConverter(implicitPackageName)),
         new CSharpTypeTable(implicitPackageName));
-    this.uniqueMethodNameMap = uniqueMethodNameMap;
   }
 
   @Override
@@ -234,18 +171,6 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getApiWrapperClassImplName(Interface interfaze) {
     return className(Name.upperCamel(interfaze.getSimpleName(), "ClientImpl"));
-  }
-
-  @Override
-  public String getUniqueApiMethodName(Method method, List<Field> fields) {
-    Function<SurfaceNamer, String> uniqueNameFn =
-        uniqueMethodNameMap.get(new MethodFields(method, fields));
-    return uniqueNameFn != null ? uniqueNameFn.apply(this) : getApiMethodName(method);
-  }
-
-  @Override
-  public String getUniqueAsyncApiMethodName(Method method, List<Field> fields) {
-    return getUniqueApiMethodName(method, fields) + "Async";
   }
 
   @Override

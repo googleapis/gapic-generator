@@ -133,17 +133,24 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   @Override
   public TypedValue getZeroValue(TypeRef type) {
     if (type.isMap()) {
-      TypeName keyTypeName = getTypeName(type.getMapKeyField());
-      TypeName valueTypeName = getTypeName(type.getMapValueField());
-      String pattern =
-          "new %s<" + keyTypeName.getNickname() + ", " + valueTypeName.getNickname() + ">()";
-      return TypedValue.create(
-          typeNameConverter.getTypeName("System.Collections.Generic.Dictionary"), pattern);
+      TypeName mapTypeName = typeNameConverter.getTypeName("System.Collections.Generic.Dictionary");
+      TypeName keyTypeName = getTypeNameForElementType(type.getMapKeyField().getType());
+      TypeName valueTypeName = getTypeNameForElementType(type.getMapValueField().getType());
+      TypeName genericMapTypeName =
+          new TypeName(
+              mapTypeName.getFullName(),
+              mapTypeName.getNickname(),
+              "%s<%i, %i>",
+              keyTypeName,
+              valueTypeName);
+      return TypedValue.create(genericMapTypeName, "new %s()");
     } else if (type.isRepeated()) {
+      TypeName listTypeName = typeNameConverter.getTypeName("System.Collections.Generic.List");
       TypeName elementTypeName = getTypeNameForElementType(type);
-      String pattern = "new %s<" + elementTypeName.getNickname() + ">()";
-      return TypedValue.create(
-          typeNameConverter.getTypeName("System.Collections.Generic.List"), pattern);
+      TypeName genericListTypeName =
+          new TypeName(
+              listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
+      return TypedValue.create(genericListTypeName, "new %s()");
     } else if (type.isMessage()) {
       return TypedValue.create(getTypeName(type), "new %s()");
     } else if (type.isEnum()) {

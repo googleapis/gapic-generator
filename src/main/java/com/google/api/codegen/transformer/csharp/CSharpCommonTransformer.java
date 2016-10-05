@@ -23,12 +23,9 @@ import java.util.List;
 
 public class CSharpCommonTransformer {
 
-  public void addCommonImports(SurfaceTransformerContext context, boolean includeByteString) {
+  public void addCommonImports(SurfaceTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     // Common imports, only one class per required namespace is needed.
-    if (includeByteString) {
-      typeTable.saveNicknameFor("Google.Protobuf.Bytestring");
-    }
     typeTable.saveNicknameFor("Google.Protobuf.WellKnownTypes.SomeSortOfWellKnownType");
     typeTable.saveNicknameFor("Grpc.Core.StatusCode");
     typeTable.saveNicknameFor("System.Collections.ObjectModel.ReadOnlyCollection");

@@ -40,7 +40,7 @@ public abstract class SnippetsFileView implements ViewModel {
 
   public abstract String clientTypeName();
 
-  public abstract List<StaticLangApiMethodView> snippetMethods();
+  public abstract List<StaticLangApiMethodSnippetView> snippetMethods();
 
   public static Builder newBuilder() {
     return new AutoValue_SnippetsFileView.Builder();
@@ -60,7 +60,7 @@ public abstract class SnippetsFileView implements ViewModel {
 
     public abstract Builder clientTypeName(String val);
 
-    public abstract Builder snippetMethods(List<StaticLangApiMethodView> val);
+    public abstract Builder snippetMethods(List<StaticLangApiMethodSnippetView> val);
 
     public abstract SnippetsFileView build();
   }

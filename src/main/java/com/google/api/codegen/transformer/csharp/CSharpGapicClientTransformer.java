@@ -95,7 +95,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
               createTypeTable(apiConfig.getPackageName()),
               namer,
               new CSharpFeatureConfig());
-      csharpCommonTransformer.addCommonImports(context, false);
+      csharpCommonTransformer.addCommonImports(context);
       StaticLangXApiView xapi = generateXApi(context);
       StaticLangXSettingsView xsettings = generateXSettings(context);
 

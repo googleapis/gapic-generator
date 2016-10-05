@@ -43,14 +43,9 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract String responseTypeName();
 
-  public abstract String callerResponseTypeName();
-
   public abstract String name();
 
   public abstract String exampleName();
-
-  @Nullable // Used in C#
-  public abstract String uniqueName();
 
   @Nullable // Used in C#
   public abstract String callableName();
@@ -108,13 +103,9 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
     public abstract Builder responseTypeName(String responseTypeName);
 
-    public abstract Builder callerResponseTypeName(String calleresponseTypeName);
-
     public abstract Builder name(String name);
 
     public abstract Builder exampleName(String name);
-
-    public abstract Builder uniqueName(String uniqueName);
 
     public abstract Builder callableName(String name);
 

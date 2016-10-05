@@ -441,16 +441,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getApiMethodName(method);
   }
 
-  /** A unique name within an interface for a surface method. */
-  public String getUniqueApiMethodName(Method method, List<Field> fields) {
-    return getNotImplementedString("SurfaceNamer.getUniqueApiMethodName");
-  }
-
-  /** A unique async name within an interface for a surface method. */
-  public String getUniqueAsyncApiMethodName(Method method, List<Field> fields) {
-    return getNotImplementedString("SurfaceNamer.getUniqueAsyncApiMethodName");
-  }
-
   public String getAsyncApiMethodExampleName(Method method) {
     return getNotImplementedString("SurfaceNamer.getAsyncApiMethodExampleName");
   }

@@ -17,33 +17,30 @@ package com.google.api.codegen.transformer.csharp;
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.ImportTypeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
-import com.google.api.codegen.transformer.csharp.CSharpSurfaceNamer.MethodFields;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.SnippetsFileView;
+import com.google.api.codegen.viewmodel.StaticLangApiMethodSnippetView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
 
@@ -64,8 +61,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
   @Override
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
-    SurfaceNamer namer =
-        new CSharpSurfaceNamer(apiConfig.getPackageName(), generateMethodNameMap(model, apiConfig));
+    SurfaceNamer namer = new CSharpSurfaceNamer(apiConfig.getPackageName());
 
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       SurfaceTransformerContext context =
@@ -75,7 +71,8 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
               createTypeTable(apiConfig.getPackageName()),
               namer,
               new CSharpFeatureConfig());
-      csharpCommonTransformer.addCommonImports(context, true);
+      csharpCommonTransformer.addCommonImports(context);
+      context.getTypeTable().saveNicknameFor("Google.Protobuf.Bytestring");
       SnippetsFileView snippets = generateSnippets(context);
       surfaceDocs.add(snippets);
     }
@@ -86,35 +83,6 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
   @Override
   public List<String> getTemplateFileNames() {
     return Arrays.asList(SNIPPETS_TEMPLATE_FILENAME);
-  }
-
-  private Map<MethodFields, Function<SurfaceNamer, String>> generateMethodNameMap(
-      Model model, ApiConfig apiConfig) {
-    Map<MethodFields, Function<SurfaceNamer, String>> nameMap = new HashMap<>();
-    // Multiple interfaces with the same mixin will create method name collisions.
-    // This doesn't matter as the names will be the same in all interfaces.
-    for (Interface interfaze : new InterfaceView().getElementIterable(model)) {
-      for (MethodConfig methodConfig : apiConfig.getInterfaceConfig(interfaze).getMethodConfigs()) {
-        if (methodConfig.isFlattening()) {
-          final Method method = methodConfig.getMethod();
-          List<ImmutableList<Field>> fieldss = methodConfig.getFlattening().getFlatteningGroups();
-          if (fieldss.size() > 1) {
-            for (int i = 0; i < fieldss.size(); i++) {
-              final String suffix = Integer.toString(i + 1);
-              nameMap.put(
-                  new MethodFields(method, fieldss.get(i)),
-                  new Function<SurfaceNamer, String>() {
-                    @Override
-                    public String apply(SurfaceNamer namer) {
-                      return namer.getApiMethodName(method) + suffix;
-                    }
-                  });
-            }
-          }
-        }
-      }
-    }
-    return nameMap;
   }
 
   private ModelTypeTable createTypeTable(String implicitPackageName) {
@@ -143,9 +111,9 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
     return snippetsBuilder.build();
   }
 
-  private List<StaticLangApiMethodView> generateMethods(SurfaceTransformerContext context) {
+  private List<StaticLangApiMethodSnippetView> generateMethods(SurfaceTransformerContext context) {
     boolean mixinsDisabled = !context.getFeatureConfig().enableMixins();
-    List<StaticLangApiMethodView> methods = new ArrayList<>();
+    List<StaticLangApiMethodSnippetView> methods = new ArrayList<>();
 
     for (Method method : context.getSupportedMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
@@ -155,27 +123,122 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
       MethodTransformerContext methodContext = context.asMethodContext(method);
       if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
-          for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
-            methods.add(
-                apiMethodTransformer.generatePagedFlattenedAsyncMethod(
-                    methodContext, fields, csharpCommonTransformer.pagedMethodAdditionalParams()));
-            methods.add(
-                apiMethodTransformer.generatePagedFlattenedMethod(
-                    methodContext, fields, csharpCommonTransformer.pagedMethodAdditionalParams()));
+          ImmutableList<ImmutableList<Field>> fieldGroups =
+              methodConfig.getFlattening().getFlatteningGroups();
+          boolean requiresNameSuffix = fieldGroups.size() > 1;
+          for (int i = 0; i < fieldGroups.size(); i++) {
+            ImmutableList<Field> fields = fieldGroups.get(i);
+            String nameSuffix = requiresNameSuffix ? Integer.toString(i + 1) : "";
+            methods.add(generatePagedFlattenedAsyncMethod(methodContext, fields, nameSuffix));
+            methods.add(generatePagedFlattenedMethod(methodContext, fields, nameSuffix));
           }
         }
       } else {
         if (methodConfig.isFlattening()) {
-          for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
-            methods.add(
-                apiMethodTransformer.generateFlattenedAsyncMethod(
-                    methodContext, fields, ApiMethodType.FlattenedAsyncCallSettingsMethod));
-            methods.add(apiMethodTransformer.generateFlattenedMethod(methodContext, fields));
+          ImmutableList<ImmutableList<Field>> fieldGroups =
+              methodConfig.getFlattening().getFlatteningGroups();
+          boolean requiresNameSuffix = fieldGroups.size() > 1;
+          for (int i = 0; i < fieldGroups.size(); i++) {
+            ImmutableList<Field> fields = fieldGroups.get(i);
+            String nameSuffix = requiresNameSuffix ? Integer.toString(i + 1) : "";
+            methods.add(generateFlattenedAsyncMethod(methodContext, fields, nameSuffix));
+            methods.add(generateFlattenedMethod(methodContext, fields, nameSuffix));
           }
         }
       }
     }
 
     return methods;
+  }
+
+  private StaticLangApiMethodSnippetView generatePagedFlattenedAsyncMethod(
+      MethodTransformerContext methodContext, ImmutableList<Field> fields, String suffix) {
+    StaticLangApiMethodView method =
+        apiMethodTransformer.generatePagedFlattenedAsyncMethod(
+            methodContext, fields, csharpCommonTransformer.pagedMethodAdditionalParams());
+    SurfaceNamer namer = methodContext.getNamer();
+    PageStreamingConfig pageStreaming = methodContext.getMethodConfig().getPageStreaming();
+    Field resourceField = pageStreaming.getResourcesField();
+    String callerResponseTypeName =
+        namer.getAndSaveCallerAsyncPagedResponseTypeName(
+            methodContext.getFeatureConfig(),
+            methodContext.getTypeTable(),
+            methodContext.getMethod().getInputType(),
+            methodContext.getMethod().getOutputType(),
+            resourceField);
+    return StaticLangApiMethodSnippetView.newBuilder()
+        .method(method)
+        .snippetMethodName(method.name() + suffix)
+        .callerResponseTypeName(callerResponseTypeName)
+        .apiClassName(
+            namer.getApiWrapperClassName(
+                methodContext.getSurfaceTransformerContext().getInterface()))
+        .apiVariableName(method.apiVariableName())
+        .build();
+  }
+
+  private StaticLangApiMethodSnippetView generatePagedFlattenedMethod(
+      MethodTransformerContext methodContext, ImmutableList<Field> fields, String suffix) {
+    StaticLangApiMethodView method =
+        apiMethodTransformer.generatePagedFlattenedMethod(
+            methodContext, fields, csharpCommonTransformer.pagedMethodAdditionalParams());
+    SurfaceNamer namer = methodContext.getNamer();
+    PageStreamingConfig pageStreaming = methodContext.getMethodConfig().getPageStreaming();
+    Field resourceField = pageStreaming.getResourcesField();
+    String callerResponseTypeName =
+        namer.getAndSaveCallerPagedResponseTypeName(
+            methodContext.getFeatureConfig(),
+            methodContext.getTypeTable(),
+            methodContext.getMethod().getInputType(),
+            methodContext.getMethod().getOutputType(),
+            resourceField);
+    return StaticLangApiMethodSnippetView.newBuilder()
+        .method(method)
+        .snippetMethodName(method.name() + suffix)
+        .callerResponseTypeName(callerResponseTypeName)
+        .apiClassName(
+            namer.getApiWrapperClassName(
+                methodContext.getSurfaceTransformerContext().getInterface()))
+        .apiVariableName(method.apiVariableName())
+        .build();
+  }
+
+  private StaticLangApiMethodSnippetView generateFlattenedAsyncMethod(
+      MethodTransformerContext methodContext, ImmutableList<Field> fields, String suffix) {
+    StaticLangApiMethodView method =
+        apiMethodTransformer.generateFlattenedAsyncMethod(
+            methodContext, fields, ApiMethodType.FlattenedAsyncCallSettingsMethod);
+    SurfaceNamer namer = methodContext.getNamer();
+    String callerResponseTypeName =
+        namer.getStaticLangCallerAsyncReturnTypeName(
+            methodContext.getMethod(), methodContext.getMethodConfig());
+    return StaticLangApiMethodSnippetView.newBuilder()
+        .method(method)
+        .snippetMethodName(method.name() + suffix)
+        .callerResponseTypeName(callerResponseTypeName)
+        .apiClassName(
+            namer.getApiWrapperClassName(
+                methodContext.getSurfaceTransformerContext().getInterface()))
+        .apiVariableName(method.apiVariableName())
+        .build();
+  }
+
+  private StaticLangApiMethodSnippetView generateFlattenedMethod(
+      MethodTransformerContext methodContext, ImmutableList<Field> fields, String suffix) {
+    StaticLangApiMethodView method =
+        apiMethodTransformer.generateFlattenedMethod(methodContext, fields);
+    SurfaceNamer namer = methodContext.getNamer();
+    String callerResponseTypeName =
+        namer.getStaticLangCallerReturnTypeName(
+            methodContext.getMethod(), methodContext.getMethodConfig());
+    return StaticLangApiMethodSnippetView.newBuilder()
+        .method(method)
+        .snippetMethodName(method.name() + suffix)
+        .callerResponseTypeName(callerResponseTypeName)
+        .apiClassName(
+            namer.getApiWrapperClassName(
+                methodContext.getSurfaceTransformerContext().getInterface()))
+        .apiVariableName(method.apiVariableName())
+        .build();
   }
 }
