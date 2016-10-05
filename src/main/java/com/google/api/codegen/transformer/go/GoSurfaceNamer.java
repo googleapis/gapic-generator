@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -28,7 +27,6 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.Status;
 import java.util.List;
@@ -81,12 +79,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSavePagedResponseTypeName(
-      Method method,
-      FeatureConfig featureConfig,
-      ModelTypeTable typeTable,
-      TypeRef inputTypeName,
-      TypeRef outputTypeName,
-      Field resourcesField) {
+      Method method, ModelTypeTable typeTable, Field resourcesField) {
     String typeName = converter.getTypeNameForElementType(resourcesField.getType()).getNickname();
     int dotIndex = typeName.indexOf('.');
     if (dotIndex >= 0) {

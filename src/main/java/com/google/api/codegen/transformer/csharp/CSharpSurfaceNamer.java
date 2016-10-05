@@ -17,7 +17,6 @@ package com.google.api.codegen.transformer.csharp;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -85,15 +84,10 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSavePagedResponseTypeName(
-      Method method,
-      FeatureConfig featureConfig,
-      ModelTypeTable typeTable,
-      TypeRef inputType,
-      TypeRef outputType,
-      Field resourceField) {
+      Method method, ModelTypeTable typeTable, Field resourceField) {
 
-    String inputTypeName = typeTable.getAndSaveNicknameForElementType(inputType);
-    String outputTypeName = typeTable.getAndSaveNicknameForElementType(outputType);
+    String inputTypeName = typeTable.getAndSaveNicknameForElementType(method.getInputType());
+    String outputTypeName = typeTable.getAndSaveNicknameForElementType(method.getOutputType());
 
     String resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
 

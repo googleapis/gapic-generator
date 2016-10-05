@@ -284,14 +284,8 @@ public class ApiMethodTransformer {
     methodViewBuilder.responseTypeName(
         context
             .getNamer()
-            //.getPagedListResponseTypeName(context.getMethod())
             .getAndSavePagedResponseTypeName(
-                context.getMethod(),
-                context.getFeatureConfig(),
-                context.getTypeTable(),
-                context.getMethod().getInputType(),
-                context.getMethod().getOutputType(),
-                resourceField));
+                context.getMethod(), context.getTypeTable(), resourceField));
     methodViewBuilder.hasReturnValue(true);
   }
 

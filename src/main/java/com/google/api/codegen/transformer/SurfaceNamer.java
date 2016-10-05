@@ -627,16 +627,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * Computes the nickname of the response type name for the given input and output types and
-   * resources field, saves it in the given type table, and returns it.
+   * Computes the nickname of the paged response type name for the given method and resources field,
+   * saves it in the given type table, and returns it.
    */
   public String getAndSavePagedResponseTypeName(
-      Method method,
-      FeatureConfig featureConfig,
-      ModelTypeTable typeTable,
-      TypeRef inputTypeName,
-      TypeRef outputTypeName,
-      Field resourcesField) {
+      Method method, ModelTypeTable typeTable, Field resourcesField) {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeName");
   }
 

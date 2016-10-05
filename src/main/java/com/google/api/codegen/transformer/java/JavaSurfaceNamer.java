@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -111,13 +110,8 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSavePagedResponseTypeName(
-      Method method,
-      FeatureConfig featureConfig,
-      ModelTypeTable typeTable,
-      TypeRef inputType,
-      TypeRef outputType,
-      Field resourceField) {
-
+      Method method, ModelTypeTable typeTable, Field resourceField) {
+    // TODO(michaelbausor) make sure this uses the typeTable correctly
     return className(Name.upperCamel(method.getSimpleName(), "PagedResponse"));
   }
 
