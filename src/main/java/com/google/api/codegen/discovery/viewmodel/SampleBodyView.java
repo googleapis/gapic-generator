@@ -15,6 +15,9 @@
 package com.google.api.codegen.discovery.viewmodel;
 
 import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.google.api.codegen.discovery.config.AuthType;
 import com.google.auto.value.AutoValue;
 
@@ -33,13 +36,13 @@ public abstract class SampleBodyView {
 
   public abstract String requestTypeName();
 
-  public abstract boolean hasInputRequest();
+  public abstract boolean hasRequestBody();
 
   public abstract String requestBodyVarName();
 
   public abstract String requestBodyTypeName();
 
-  public abstract boolean hasOutput();
+  public abstract boolean hasResponse();
 
   public abstract String responseVarName();
 
@@ -51,6 +54,8 @@ public abstract class SampleBodyView {
 
   public abstract boolean isPageStreaming();
 
+  public abstract String resourceFieldName();
+
   public abstract String resourceGetterName();
 
   public abstract String resourceVarName();
@@ -58,8 +63,6 @@ public abstract class SampleBodyView {
   public abstract String resourceTypeName();
 
   public abstract boolean isResourceMap();
-
-  public abstract boolean isResourceSetterInRequestBody();
 
   public abstract boolean hasMediaUpload();
 
@@ -73,7 +76,25 @@ public abstract class SampleBodyView {
 
   public abstract boolean isAuthScopesSingular();
 
+  // Java specific section...
+  @Nullable
+  public abstract Boolean isResourceSetterInRequestBody();
+
+  @Nullable
   public abstract String createServiceFuncName();
+
+  // Node.js specific section...
+  @Nullable
+  public abstract String googleImportVarName();
+
+  @Nullable
+  public abstract String pageVarName();
+
+  @Nullable
+  public abstract String handlePageVarName();
+
+  @Nullable
+  public abstract String authFuncName();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleBodyView.Builder();
@@ -94,13 +115,15 @@ public abstract class SampleBodyView {
 
     public abstract Builder requestTypeName(String val);
 
-    public abstract Builder hasInputRequest(boolean val);
+    public abstract Builder hasRequestBody(boolean val);
 
     public abstract Builder requestBodyVarName(String val);
 
     public abstract Builder requestBodyTypeName(String val);
 
-    public abstract Builder hasOutput(boolean val);
+    public abstract Builder hasResponse(boolean val);
+
+    public abstract Builder resourceFieldName(String val);
 
     public abstract Builder responseVarName(String val);
 
@@ -120,8 +143,6 @@ public abstract class SampleBodyView {
 
     public abstract Builder isResourceMap(boolean val);
 
-    public abstract Builder isResourceSetterInRequestBody(boolean val);
-
     public abstract Builder hasMediaUpload(boolean val);
 
     public abstract Builder hasMediaDownload(boolean val);
@@ -134,7 +155,17 @@ public abstract class SampleBodyView {
 
     public abstract Builder isAuthScopesSingular(boolean val);
 
+    public abstract Builder isResourceSetterInRequestBody(Boolean val);
+
     public abstract Builder createServiceFuncName(String val);
+
+    public abstract Builder googleImportVarName(String val);
+
+    public abstract Builder pageVarName(String val);
+
+    public abstract Builder handlePageVarName(String val);
+
+    public abstract Builder authFuncName(String val);
 
     public abstract SampleBodyView build();
   }
