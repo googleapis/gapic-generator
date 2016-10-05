@@ -14,17 +14,16 @@
  */
 package com.google.api.codegen.gapic;
 
+import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.ProtoFileView;
+import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.clientconfig.ClientConfigGapicContext;
 import com.google.api.codegen.clientconfig.ClientConfigSnippetSetRunner;
 import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
-import com.google.api.codegen.go.GoSnippetSetRunner;
-import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.nodejs.NodeJSCodePathMapper;
 import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
-import com.google.api.codegen.ProtoFileView;
 import com.google.api.codegen.py.PythonGapicContext;
 import com.google.api.codegen.py.PythonInterfaceInitializer;
 import com.google.api.codegen.py.PythonProtoFileInitializer;
@@ -32,8 +31,8 @@ import com.google.api.codegen.py.PythonSnippetSetRunner;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.ruby.RubyGapicContext;
 import com.google.api.codegen.ruby.RubySnippetSetRunner;
-import com.google.api.codegen.SnippetSetRunner;
-import com.google.api.codegen.transformer.csharp.CSharpGapicSurfaceTransformer;
+import com.google.api.codegen.transformer.csharp.CSharpGapicClientTransformer;
+import com.google.api.codegen.transformer.csharp.CSharpGapicSnippetsTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
@@ -46,10 +45,8 @@ import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
-
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.commons.lang3.NotImplementedException;
 
 /** MainGapicProviderFactory creates GapicProvider instances based on an id. */
@@ -100,9 +97,16 @@ public class MainGapicProviderFactory
               .setModel(model)
               .setApiConfig(apiConfig)
               .setSnippetSetRunner(new CommonSnippetSetRunner(new CSharpRenderingUtil()))
-              .setModelToViewTransformer(new CSharpGapicSurfaceTransformer(pathMapper))
+              .setModelToViewTransformer(new CSharpGapicClientTransformer(pathMapper))
               .build();
-      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);
+      GapicProvider<? extends Object> snippetProvider =
+          ViewModelGapicProvider.newBuilder()
+              .setModel(model)
+              .setApiConfig(apiConfig)
+              .setSnippetSetRunner(new CommonSnippetSetRunner(new CSharpRenderingUtil()))
+              .setModelToViewTransformer(new CSharpGapicSnippetsTransformer(pathMapper))
+              .build();
+      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, snippetProvider);
 
     } else if (id.equals(GO)) {
       GapicProvider<? extends Object> provider =

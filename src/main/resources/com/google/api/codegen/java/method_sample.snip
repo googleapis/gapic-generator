@@ -53,6 +53,21 @@
 @end
 
 @snippet callableMethodSampleCode(apiMethod)
+  @switch apiMethod.grpcStreamingType
+  @case "NonStreaming"
+    {@nonStreamingCallableSampleCode(apiMethod)}
+  @case "BidiStreaming"
+    {@bidiStreamingCallableSampleCode(apiMethod)}
+  @case "ServerStreaming"
+    {@serverStreamingCallableSampleCode(apiMethod)}
+  @case "ClientStreaming"
+    {@clientStreamingCallableSampleCode(apiMethod)}
+  @default
+    $unhandledCase: {@apiMethod.grpcStreamingType}$
+  @end
+@end
+
+@private nonStreamingCallableSampleCode(apiMethod)
   {@initCode(apiMethod.initCode)}
   ListenableFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
   // Do something
@@ -61,6 +76,53 @@
   @else
     future.get();
   @end
+@end
+
+@private bidiStreamingCallableSampleCode(apiMethod)
+  {@responseObserver(apiMethod)}
+  StreamObserver<StreamingRecognizeRequest> requestObserver =
+      {@apiMethod.apiVariableName}.{@apiMethod.name}().bidiStreamingCall(responseObserver)});
+
+  {@initCode(apiMethod.initCode)}
+  requestObserver.onNext(request);
+@end
+
+@private serverStreamingCallableSampleCode(apiMethod)
+  {@responseObserver(apiMethod)}
+
+  {@initCode(apiMethod.initCode)}
+
+  {@apiMethod.apiVariableName}.{@apiMethod.name}().serverStreamingCall(\
+      {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)}, responseObserver)});
+@end
+
+@private clientStreamingCallableSampleCode(apiMethod)
+  {@responseObserver(apiMethod)}
+  StreamObserver<StreamingRecognizeRequest> requestObserver =
+      {@apiMethod.apiVariableName}.{@apiMethod.name}().clientStreamingCall(responseObserver)});
+
+  {@initCode(apiMethod.initCode)}
+  requestObserver.onNext(request);
+@end
+
+@private responseObserver(apiMethod)
+  StreamObserver<{@apiMethod.callableMethod.genericAwareResponseType}> responseObserver =
+      new StreamObserver<{@apiMethod.callableMethod.genericAwareResponseType}>() {
+        @@Override
+        public void onNext({@apiMethod.callableMethod.genericAwareResponseType} response) {
+          // Do something when receive a response
+        }
+
+        @@Override
+        public void onError(Throwable t) {
+          // Add error-handling
+        }
+
+        @@Override
+        public void onCompleted() {
+          // Do something when complete.
+        }
+      };
 @end
 
 @private sampleFutureMethodCall(apiMethod)

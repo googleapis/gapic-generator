@@ -14,41 +14,37 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.auto.value.AutoValue;
 
-import java.util.List;
-
 @AutoValue
-public abstract class MapInitCodeLineView implements InitCodeLineView {
-  @Override
-  public abstract InitCodeLineType lineType();
+public abstract class StaticLangApiMethodSnippetView {
 
-  public abstract String keyTypeName();
+  public abstract StaticLangApiMethodView method();
 
-  public abstract String valueTypeName();
+  public abstract String snippetMethodName();
 
-  @Override
-  public abstract String identifier();
+  public abstract String callerResponseTypeName();
 
-  public abstract List<MapEntryView> initEntries();
+  public abstract String apiClassName();
+
+  public abstract String apiVariableName();
 
   public static Builder newBuilder() {
-    return new AutoValue_MapInitCodeLineView.Builder();
+    return new AutoValue_StaticLangApiMethodSnippetView.Builder();
   }
 
   @AutoValue.Builder
   public static abstract class Builder {
-    public abstract Builder lineType(InitCodeLineType val);
+    public abstract Builder method(StaticLangApiMethodView val);
 
-    public abstract Builder keyTypeName(String val);
+    public abstract Builder snippetMethodName(String val);
 
-    public abstract Builder valueTypeName(String val);
+    public abstract Builder callerResponseTypeName(String val);
 
-    public abstract Builder identifier(String val);
+    public abstract Builder apiClassName(String val);
 
-    public abstract Builder initEntries(List<MapEntryView> val);
+    public abstract Builder apiVariableName(String val);
 
-    public abstract MapInitCodeLineView build();
+    public abstract StaticLangApiMethodSnippetView build();
   }
 }

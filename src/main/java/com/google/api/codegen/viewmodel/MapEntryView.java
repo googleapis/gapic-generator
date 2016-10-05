@@ -20,7 +20,9 @@ import com.google.auto.value.AutoValue;
 public abstract class MapEntryView {
   public abstract String key();
 
-  public abstract String value();
+  public abstract String valueString();
+
+  public abstract InitCodeLineView value();
 
   public static Builder newBuilder() {
     return new AutoValue_MapEntryView.Builder();
@@ -30,7 +32,9 @@ public abstract class MapEntryView {
   public static abstract class Builder {
     public abstract Builder key(String key);
 
-    public abstract Builder value(String value);
+    public abstract Builder valueString(String value);
+
+    public abstract Builder value(InitCodeLineView view);
 
     public abstract MapEntryView build();
   }

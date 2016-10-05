@@ -292,7 +292,7 @@
    * @@returns {String}
    */
   {@context.getApiWrapperName(service)}.prototype.{@resourceFunctionName(collectionConfig)} = \
-  function {@resourceFunctionName(collectionConfig)}({@createResourceFunctionParams(collectionConfig)}) {
+  function({@createResourceFunctionParams(collectionConfig)}) {
     return {@pathTemplateName(collectionConfig)}.render({
       {@createRenderDictionary(collectionConfig)}
     });
@@ -310,8 +310,8 @@
        *   A fully-qualified path representing a {@collectionConfig.getEntityName} resources.
        * @@returns {String} - A string representing the {@subField}.
        */
-      {@context.getApiWrapperName(service)}.prototype.match{@subFieldUpper}From{@fieldPath} =
-          function match{@subFieldUpper}From{@fieldPath}({@fieldParam}) {
+      {@context.getApiWrapperName(service)}.prototype.match{@subFieldUpper}From{@fieldPath} = \
+          function({@fieldParam}) {
         return {@pathTemplateName(collectionConfig)}.match({@fieldParam}).{@subField};
       };
     @end
@@ -328,13 +328,13 @@
 
 @private createResourceFunctionParams(collectionConfig)
   @join param : collectionConfig.getNameTemplate.vars() on ", "
-    {@param}
+    {@context.lowerUnderscoreToLowerCamel(param)}
   @end
 @end
 
 @private createRenderDictionary(collectionConfig)
   @join param: collectionConfig.getNameTemplate.vars() on {@","}.add(BREAK)
-    {@param}: {@param}
+    {@param}: {@context.lowerUnderscoreToLowerCamel(param)}
   @end
 @end
 
@@ -378,7 +378,7 @@
        */
     @end
 
-    {@serviceName}.prototype.{@methodName(method)} = function {@methodName(method)}(
+    {@serviceName}.prototype.{@methodName(method)} = function(
         @join field : requiredParams
           {@fieldParameterName(field)},
         @end

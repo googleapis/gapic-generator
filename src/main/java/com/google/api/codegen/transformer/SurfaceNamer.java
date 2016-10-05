@@ -84,6 +84,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getApiWrapperClassImplName");
   }
 
+  /** The name of the class that implements snippets for a particular proto interface. */
+  public String getApiSnippetsClassName(Interface interfaze) {
+    return className(Name.upperCamel(interfaze.getSimpleName(), "ApiSnippets"));
+  }
+
   /**
    * The name of the constructor for the service client.
    * The client is VKit generated, not GRPC.
@@ -444,14 +449,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(Name.upperCamel(method.getSimpleName()));
   }
 
+  /** The name of the async surface method which can call the given API method. */
+  public String getAsyncApiMethodName(Method method) {
+    return publicMethodName(Name.upperCamel(method.getSimpleName()).join("async"));
+  }
+
   /** The name of the example for the method. */
   public String getApiMethodExampleName(Interface interfaze, Method method) {
     return getApiMethodName(method);
-  }
-
-  /** The name of the async surface method which can call the given API method. */
-  public String getAsyncApiMethodName(Method method) {
-    return getNotImplementedString("SurfaceNamer.getAsyncApiMethodName");
   }
 
   public String getAsyncApiMethodExampleName(Method method) {
@@ -548,9 +553,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getStaticLangReturnTypeName");
   }
 
+  /** The return type name in a static language that is used by the caller */
+  public String getStaticLangCallerReturnTypeName(Method method, MethodConfig methodConfig) {
+    return getStaticLangReturnTypeName(method, methodConfig);
+  }
+
   /** The async return type name in a static language for the given method. */
   public String getStaticLangAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getStaticLangAsyncReturnTypeName");
+  }
+
+  /** The async return type name in a static language that is used by the caller */
+  public String getStaticLangCallerAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
+    return getStaticLangAsyncReturnTypeName(method, methodConfig);
   }
 
   /** The name of the paged callable variant of the given method. */
@@ -633,6 +648,33 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getAndSavePagedResponseTypeName(
       Method method, ModelTypeTable typeTable, Field resourcesField) {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeName");
+  }
+
+  /**
+   * Computes the nickname of the async response type name for the given resource type, saves it in the
+   * given type table, and returns it.
+   */
+  public String getAndSaveAsyncPagedResponseTypeName(
+      Method method, ModelTypeTable typeTable, Field resourcesField) {
+    return getNotImplementedString("SurfaceNamer.getAndSavePagedAsyncResponseTypeName");
+  }
+
+  /**
+   * Computes the nickname of the response type name for the given resource type, as used by the caller, saves it in the
+   * given type table, and returns it.
+   */
+  public String getAndSaveCallerPagedResponseTypeName(
+      Method method, ModelTypeTable typeTable, Field resourcesField) {
+    return getAndSavePagedResponseTypeName(method, typeTable, resourcesField);
+  }
+
+  /**
+   * Computes the nickname of the response type name for the given resource type, as used by the caller, saves it in the
+   * given type table, and returns it.
+   */
+  public String getAndSaveCallerAsyncPagedResponseTypeName(
+      Method method, ModelTypeTable typeTable, Field resourcesField) {
+    return getAndSaveAsyncPagedResponseTypeName(method, typeTable, resourcesField);
   }
 
   /**

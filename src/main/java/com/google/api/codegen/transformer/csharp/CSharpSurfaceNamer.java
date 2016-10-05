@@ -33,7 +33,6 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class CSharpSurfaceNamer extends SurfaceNamer {
-
   public CSharpSurfaceNamer(String implicitPackageName) {
     super(
         new CSharpNameFormatter(),
@@ -63,8 +62,19 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getStaticLangCallerAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
+    // Same as sync because of 'await'
+    return getStaticLangReturnTypeName(method, methodConfig);
+  }
+
+  @Override
   public String getApiWrapperClassName(Interface interfaze) {
     return className(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+  }
+
+  @Override
+  public String getApiSnippetsClassName(Interface interfaze) {
+    return className(Name.upperCamel(interfaze.getSimpleName(), "ClientSnippets"));
   }
 
   @Override
@@ -88,11 +98,40 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
     String inputTypeName = typeTable.getAndSaveNicknameForElementType(method.getInputType());
     String outputTypeName = typeTable.getAndSaveNicknameForElementType(method.getOutputType());
-
     String resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
-
     return typeTable.getAndSaveNicknameForContainer(
         "Google.Api.Gax.PagedEnumerable", inputTypeName, outputTypeName, resourceTypeName);
+  }
+
+  @Override
+  public String getAndSaveAsyncPagedResponseTypeName(
+      Method method, ModelTypeTable typeTable, Field resourceField) {
+
+    String inputTypeName = typeTable.getAndSaveNicknameForElementType(method.getInputType());
+    String outputTypeName = typeTable.getAndSaveNicknameForElementType(method.getOutputType());
+    String resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
+    return typeTable.getAndSaveNicknameForContainer(
+        "Google.Api.Gax.PagedAsyncEnumerable", inputTypeName, outputTypeName, resourceTypeName);
+  }
+
+  @Override
+  public String getAndSaveCallerPagedResponseTypeName(
+      Method method, ModelTypeTable typeTable, Field resourceField) {
+
+    String outputTypeName = typeTable.getAndSaveNicknameForElementType(method.getOutputType());
+    String resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
+    return typeTable.getAndSaveNicknameForContainer(
+        "Google.Api.Gax.IPagedEnumerable", outputTypeName, resourceTypeName);
+  }
+
+  @Override
+  public String getAndSaveCallerAsyncPagedResponseTypeName(
+      Method method, ModelTypeTable typeTable, Field resourceField) {
+
+    String outputTypeName = typeTable.getAndSaveNicknameForElementType(method.getOutputType());
+    String resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
+    return typeTable.getAndSaveNicknameForContainer(
+        "Google.Api.Gax.IPagedAsyncEnumerable", outputTypeName, resourceTypeName);
   }
 
   @Override
@@ -108,13 +147,13 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiWrapperClassImplName(Interface interfaze) {
-    return className(Name.upperCamel(interfaze.getSimpleName(), "ClientImpl"));
+  public String getApiWrapperVariableName(Interface interfaze) {
+    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
   }
 
   @Override
-  public String getAsyncApiMethodName(Method method) {
-    return getApiMethodName(method) + "Async";
+  public String getApiWrapperClassImplName(Interface interfaze) {
+    return className(Name.upperCamel(interfaze.getSimpleName(), "ClientImpl"));
   }
 
   @Override
@@ -125,6 +164,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getParamName(String var) {
     return localVarName(Name.from(var).join("id"));
+  }
+
+  @Override
+  public String getFieldSetFunctionName(TypeRef type, Name identifier) {
+    return publicMethodName(identifier);
   }
 
   @Override
