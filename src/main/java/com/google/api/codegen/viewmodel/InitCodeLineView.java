@@ -14,4 +14,10 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public interface InitCodeLineView {}
+import com.google.api.codegen.metacode.InitCodeLineType;
+
+public interface InitCodeLineView {
+  InitCodeLineType lineType();
+
+  String identifier();
+}

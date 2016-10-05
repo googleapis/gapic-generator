@@ -54,7 +54,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
+public class CSharpGapicClientTransformer implements ModelToViewTransformer {
 
   private static final String XAPI_TEMPLATE_FILENAME = "csharp/gapic_client.snip";
 
@@ -67,8 +67,9 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
   private final PageStreamingTransformer pageStreamingTransformer;
   private final BundlingTransformer bundlingTransformer;
   private final RetryDefinitionsTransformer retryDefinitionsTransformer;
+  private final CSharpCommonTransformer csharpCommonTransformer;
 
-  public CSharpGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
+  public CSharpGapicClientTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
     this.serviceTransformer = new ServiceTransformer();
     this.pathTemplateTransformer = new PathTemplateTransformer();
@@ -78,6 +79,7 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
     this.bundlingTransformer = new BundlingTransformer();
     this.importTypeTransformer = new ImportTypeTransformer();
     this.retryDefinitionsTransformer = new RetryDefinitionsTransformer();
+    this.csharpCommonTransformer = new CSharpCommonTransformer();
   }
 
   @Override
@@ -93,7 +95,7 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
               createTypeTable(apiConfig.getPackageName()),
               namer,
               new CSharpFeatureConfig());
-      addCommonImports(context);
+      csharpCommonTransformer.addCommonImports(context);
       StaticLangXApiView xapi = generateXApi(context);
       StaticLangXSettingsView xsettings = generateXSettings(context);
 
@@ -193,19 +195,6 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
     return xsettingsClass.build();
   }
 
-  private void addCommonImports(SurfaceTransformerContext context) {
-    ModelTypeTable typeTable = context.getTypeTable();
-    // Common imports, only one class per required namespace is needed.
-    typeTable.saveNicknameFor("Google.Protobuf.WellKnownTypes.SomeSortOfWellKnownType");
-    typeTable.saveNicknameFor("Grpc.Core.ByteString");
-    typeTable.saveNicknameFor("System.Collections.ObjectModel.ReadOnlyCollection");
-    typeTable.saveNicknameFor("System.Threading.Tasks.Task");
-    typeTable.saveNicknameFor("System.Threading.Thread");
-    typeTable.saveNicknameFor("System.NotImplementedException");
-    typeTable.saveNicknameFor("System.Collections.IEnumerable");
-    typeTable.saveNicknameFor("System.Collections.Generic.IEnumerable");
-  }
-
   public List<ApiCallSettingsView> generateCallSettings(SurfaceTransformerContext context) {
     // This method can be removed once mixins are supported in C#
     boolean mixinsDisabled = !context.getFeatureConfig().enableMixins();
@@ -222,35 +211,11 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private List<StaticLangApiMethodView> generateApiMethods(SurfaceTransformerContext context) {
-    List<ParamWithSimpleDoc> callSettingsParam =
-        ImmutableList.of(
-            makeParam(
-                "CallSettings",
-                "callSettings",
-                "null",
-                "If not null, applies overrides to this RPC call."));
-    List<ParamWithSimpleDoc> cancellationTokenParam =
-        ImmutableList.of(
-            makeParam(
-                "CancellationToken",
-                "cancellationToken",
-                null,
-                "A <see cref=\"CancellationToken\"/> to use for this RPC."));
     List<ParamWithSimpleDoc> pagedMethodAdditionalParams =
-        ImmutableList.of(
-            makeParam(
-                "string",
-                "pageToken",
-                "null",
-                "The token returned from the previous request.",
-                "A value of <c>null</c> or an empty string retrieves the first page."),
-            makeParam(
-                "int?",
-                "pageSize",
-                "null",
-                "The size of page to request. The response will not be larger than this, but may be smaller.",
-                "A value of <c>null</c> or 0 uses a server-defined page size."),
-            callSettingsParam.get(0));
+        new ImmutableList.Builder<ParamWithSimpleDoc>()
+            .addAll(csharpCommonTransformer.pagedMethodAdditionalParams())
+            .addAll(csharpCommonTransformer.callSettingsParam())
+            .build();
     boolean mixinsDisabled = !context.getFeatureConfig().enableMixins();
 
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
@@ -278,37 +243,23 @@ public class CSharpGapicSurfaceTransformer implements ModelToViewTransformer {
                 apiMethodTransformer.generateFlattenedAsyncMethod(
                     methodContext,
                     fields,
-                    callSettingsParam,
+                    csharpCommonTransformer.callSettingsParam(),
                     ApiMethodType.FlattenedAsyncCallSettingsMethod));
             apiMethods.add(
                 apiMethodTransformer.generateFlattenedAsyncMethod(
                     methodContext,
                     fields,
-                    cancellationTokenParam,
+                    csharpCommonTransformer.cancellationTokenParam(),
                     ApiMethodType.FlattenedAsyncCancellationTokenMethod));
             apiMethods.add(
                 apiMethodTransformer.generateFlattenedMethod(
-                    methodContext, fields, callSettingsParam));
+                    methodContext, fields, csharpCommonTransformer.callSettingsParam()));
           }
         }
       }
     }
 
     return apiMethods;
-  }
-
-  private ParamWithSimpleDoc makeParam(
-      String typeName, String name, String defaultValue, String... doc) {
-    return ParamWithSimpleDoc.newBuilder()
-        .name(name)
-        .elementTypeName("")
-        .typeName(typeName)
-        .setCallName("")
-        .isMap(false)
-        .isArray(false)
-        .defaultValue(defaultValue)
-        .docLines(Arrays.asList(doc))
-        .build();
   }
 
   public SettingsDocView generateSettingsDoc(SurfaceTransformerContext context) {

@@ -22,13 +22,17 @@ import java.util.List;
 @AutoValue
 public abstract class ListInitCodeLineView implements InitCodeLineView {
 
+  @Override
   public abstract InitCodeLineType lineType();
 
   public abstract String elementTypeName();
 
+  @Override
   public abstract String identifier();
 
   public abstract List<String> elementIdentifiers();
+
+  public abstract List<InitCodeLineView> elements();
 
   public static Builder newBuilder() {
     return new AutoValue_ListInitCodeLineView.Builder();
@@ -43,6 +47,8 @@ public abstract class ListInitCodeLineView implements InitCodeLineView {
     public abstract Builder identifier(String val);
 
     public abstract Builder elementIdentifiers(List<String> val);
+
+    public abstract Builder elements(List<InitCodeLineView> val);
 
     public abstract ListInitCodeLineView build();
   }

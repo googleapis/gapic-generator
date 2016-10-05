@@ -1,0 +1,235 @@
+@extends "csharp/common.snip"
+
+@snippet generate(snippets)
+    // Copyright 2016 Google Inc. All Rights Reserved.
+    //
+    // Licensed under the Apache License, Version 2.0 (the "License");
+    // you may not use this file except in compliance with the License.
+    // You may obtain a copy of the License at
+    //
+    //     http://www.apache.org/licenses/LICENSE-2.0
+    //
+    // Unless required by applicable law or agreed to in writing, software
+    // distributed under the License is distributed on an "AS IS" BASIS,
+    // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    // See the License for the specific language governing permissions and
+    // limitations under the License.
+
+    // Generated code. DO NOT EDIT!
+
+    @join import : snippets.imports
+        using {@import.fullName};
+    @end
+
+    namespace {@snippets.packageName}
+    {
+        {@renderSnippets(snippets)}
+    }
+
+@end
+
+@private renderSnippets(snippets)
+    public class {@snippets.name}
+    {
+        @join snippetMethod : snippets.snippetMethods
+            {@method(snippetMethod)}
+
+        @end
+    }
+@end
+
+@private method(snippetMethod)
+    @switch snippetMethod.method.type.toString
+    @case "FlattenedMethod"
+        {@flattenedMethodSync(snippetMethod)}
+    @case "FlattenedAsyncCallSettingsMethod"
+        {@flattenedMethodAsyncCallSettings(snippetMethod)}
+    @case "PagedFlattenedMethod"
+        {@pagedFlattenedMethodSync(snippetMethod)}
+    @case "PagedFlattenedAsyncMethod" 
+        {@pagedFlattenedMethodAsync(snippetMethod)}
+    @default
+        $unhandledCase: {@snippetMethod.method.type.toString}$
+    @end
+@end
+
+@private flattenedMethodSync(snippetMethod)
+    public void {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
+        {@preparations(snippetMethod)}
+        @if snippetMethod.method.hasReturnValue
+            {@snippetMethod.callerResponseTypeName} response = {@sampleMethodCall(snippetMethod)};
+        @else
+            {@sampleMethodCall(snippetMethod)};
+        @end
+        // End snippet
+    }
+@end
+
+@private flattenedMethodAsyncCallSettings(snippetMethod)
+    public async Task {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
+        // Additional: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CancellationToken)
+        {@preparations(snippetMethod)}
+        @if snippetMethod.method.hasReturnValue
+            {@snippetMethod.callerResponseTypeName} response = await {@sampleMethodCall(snippetMethod)};
+        @else
+            await {@sampleMethodCall(snippetMethod)};
+        @end
+        // End snippet
+    }
+@end
+
+@private pagedFlattenedMethodSync(snippetMethod)
+    public void {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
+        {@preparations(snippetMethod)}
+        {@snippetMethod.callerResponseTypeName} response =
+            {@sampleMethodCall(snippetMethod)};
+
+        // Iterate over all response items, lazily performing RPCs as required
+        foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in response)
+        {
+            // Do something with each item
+            Console.Writeline(item);
+        }
+        
+        // Or iterate over fixed-sized pages, lazily performing RPCs as required
+        int pageSize = 10;
+        foreach (FixedSizePage<{@snippetMethod.method.listMethod.resourceTypeName}> page in response.AsPages().WithFixedSize(pageSize))
+        {
+            // Do something with each page of items
+            Console.Writeline("A page of results:");
+            foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in page)
+            {
+                Console.Writeline(item);
+            }
+        }
+        // End snippet
+    }
+@end
+
+@private pagedFlattenedMethodAsync(snippetMethod)
+    public async Task {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
+        // Additional: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CancellationToken)
+        {@preparations(snippetMethod)}
+        {@snippetMethod.callerResponseTypeName} response =
+            await {@sampleMethodCall(snippetMethod)};
+
+        // Iterate over all response items, lazily performing RPCs as required
+        foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in response)
+        {
+            // Do something with each item
+            Console.Writeline(item);
+        }
+        
+        // Or iterate over fixed-sized pages, lazily performing RPCs as required
+        int pageSize = 10;
+        foreach (FixedSizePage<{@snippetMethod.method.listMethod.resourceTypeName}> page in response.AsPages().WithFixedSize(pageSize))
+        {
+            // Do something with each page of items
+            Console.Writeline("A page of results:");
+            foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in page)
+            {
+                Console.Writeline(item);
+            }
+        }
+        // End snippet
+    }
+@end
+
+@private preparations(snippetMethod)
+    // Create client
+    {@snippetMethod.apiClassName} {@snippetMethod.apiVariableName} = {@snippetMethod.apiClassName}.Create();
+    // Initialize request argument(s)
+    {@topLevelInitCode(snippetMethod.method.initCode)}
+    // Make the request
+@end
+
+@private snippetArgTypes(params)
+    @join param : params on ","
+        {@param.typeName}
+    @end
+@end
+
+@private sampleMethodCall(snippetMethod)
+    {@snippetMethod.method.apiVariableName}.{@snippetMethod.method.name}({@sampleMethodCallArgList(snippetMethod.method.initCode.fieldSettings)})
+@end
+
+@private sampleMethodCallArgList(fieldSettings)
+    @join fieldSetting : fieldSettings on ", "
+        {@fieldSetting.identifier}
+    @end
+@end
+
+@private topLevelInitCode(initCodeSpec)
+    @join line : initCodeSpec.topLevelLines
+        {@initCode(TRUE, line)};
+    @end
+@end
+
+@private initCode(includeAssignment, line)
+    @switch line.lineType.toString
+    @case "StructureInitLine"
+        @if includeAssignment
+            {@line.typeName} {@line.identifier} = new {@line.typeName}
+        @else
+            new {@line.typeName}
+        @end
+
+        {
+            @join fieldSetting : line.fieldSettings
+                {@fieldSetting.fieldSetFunction} = {@initCode(FALSE, fieldSetting.initCodeLine)},
+            @end
+        }
+    @case "ListInitLine"
+        @if includeAssignment
+            IEnumerable<{@line.elementTypeName}> {@line.identifier} = new[]
+        @else
+            new[]
+        @end
+
+        {
+            @join child : line.elements
+                {@initCode(FALSE, child)},
+            @end
+        }
+    @case "MapInitLine"
+        @if includeAssignment
+            IDictionary<{@line.keyTypeName}, {@line.valueTypeName}> {@line.identifier} = \
+                new Dictionary<{@line.keyTypeName}, {@line.valueTypeName}>
+        @else
+            new Dictionary<{@line.keyTypeName}, {@line.valueTypeName}>
+        @end
+
+        {
+            @join mapEntry : line.initEntries
+                { {@mapEntry.key}, {@initCode(FALSE, mapEntry.value)} },
+            @end
+        }
+    @case "SimpleInitLine"
+        @if includeAssignment
+            {@line.typeName} {@line.identifier} = {@renderInitValue(line.initValue)}
+        @else
+            {@renderInitValue(line.initValue)}
+        @end
+    @default
+        $unhandledCase: {@line.lineType.toString}$
+    @end
+@end
+
+@private renderInitValue(initValue)
+    @switch initValue.type
+    @case "SimpleInitValueView"
+        {@initValue.initialValue}
+    @case "FormattedInitValueView"
+        {@initValue.apiWrapperName}.{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
+    @default
+        $unhandledCase: {@initValue.type}$
+    @end
+@end
