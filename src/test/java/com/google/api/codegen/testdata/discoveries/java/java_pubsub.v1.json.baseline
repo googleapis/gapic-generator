@@ -7,14 +7,13 @@
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -24,39 +23,36 @@ import com.google.api.services.pubsub.Pubsub;
 import com.google.api.services.pubsub.model.AcknowledgeRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The subscription whose message is being acknowledged.
+    String subscription = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project/subscriptions/my-subscription"
 
+    // TODO: Assign values to desired fields of `requestBody`:
+    AcknowledgeRequest requestBody = new AcknowledgeRequest();
+
+    Pubsub pubsubService = createPubsubService();
+    Pubsub.Projects.Subscriptions.Acknowledge request = pubsubService.projects().subscriptions().acknowledge(subscription, requestBody);
+
+    request.execute();
+  }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
         .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `acknowledge` method:
-
-    // The subscription whose message is being acknowledged.
-    String subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
-
-
-    AcknowledgeRequest requestBody = new AcknowledgeRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
-
-
-    Pubsub.Projects.Subscriptions.Acknowledge request = pubsubService.projects().subscriptions().acknowledge(subscription, requestBody);
-    request.execute();
   }
 }
 /**
@@ -67,14 +63,13 @@ public class PubsubExample {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -84,46 +79,43 @@ import com.google.api.services.pubsub.Pubsub;
 import com.google.api.services.pubsub.model.Subscription;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `create` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The name of the subscription. It must have the format
     // `"projects/{project}/subscriptions/{subscription}"`. `{subscription}` must start with a letter, and
     // contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`), underscores (`_`), periods
     // (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be between 3 and 255 characters in
     // length, and it must not start with `"goog"`.
-    String name = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
+    String name = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project/subscriptions/my-subscription"
 
-
+    // TODO: Assign values to desired fields of `requestBody`:
     Subscription requestBody = new Subscription();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
-
+    Pubsub pubsubService = createPubsubService();
     Pubsub.Projects.Subscriptions.Create request = pubsubService.projects().subscriptions().create(name, requestBody);
+
     Subscription response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -134,14 +126,13 @@ public class PubsubExample {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -150,35 +141,33 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.pubsub.Pubsub;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The subscription to delete.
+    String subscription = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project/subscriptions/my-subscription"
 
+    Pubsub pubsubService = createPubsubService();
+    Pubsub.Projects.Subscriptions.Delete request = pubsubService.projects().subscriptions().delete(subscription);
+
+    request.execute();
+  }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
         .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `delete` method:
-
-    // The subscription to delete.
-    String subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
-
-
-    Pubsub.Projects.Subscriptions.Delete request = pubsubService.projects().subscriptions().delete(subscription);
-    request.execute();
   }
 }
 /**
@@ -189,14 +178,13 @@ public class PubsubExample {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -206,38 +194,36 @@ import com.google.api.services.pubsub.Pubsub;
 import com.google.api.services.pubsub.model.Subscription;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `get` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The name of the subscription to get.
-    String subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
+    String subscription = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project/subscriptions/my-subscription"
 
-
+    Pubsub pubsubService = createPubsubService();
     Pubsub.Projects.Subscriptions.Get request = pubsubService.projects().subscriptions().get(subscription);
+
     Subscription response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -248,14 +234,13 @@ public class PubsubExample {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -265,40 +250,38 @@ import com.google.api.services.pubsub.Pubsub;
 import com.google.api.services.pubsub.model.Policy;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+    // a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
+    // in this value is resource specific and is specified in the `getIamPolicy` documentation.
+    String resource = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project/subscriptions/my-subscription"
 
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `getIamPolicy` method:
-
-    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-    // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
-    // this value is resource specific and is specified in the `getIamPolicy` documentation.
-    String resource = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
-
-
+    Pubsub pubsubService = createPubsubService();
     Pubsub.Projects.Subscriptions.GetIamPolicy request = pubsubService.projects().subscriptions().getIamPolicy(resource);
+
     Policy response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -309,14 +292,13 @@ public class PubsubExample {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -327,47 +309,44 @@ import com.google.api.services.pubsub.model.ListSubscriptionsResponse;
 import com.google.api.services.pubsub.model.Subscription;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The name of the cloud project that subscriptions belong to.
-    String project = "projects/{MY-PROJECT}";
+    String project = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project"
 
-
+    Pubsub pubsubService = createPubsubService();
     Pubsub.Projects.Subscriptions.List request = pubsubService.projects().subscriptions().list(project);
+
     ListSubscriptionsResponse response;
     do {
       response = request.execute();
-      if (response.getSubscriptions() == null)
+      if (response.getSubscriptions() == null) {
         continue;
-
+      }
       for (Subscription subscription : response.getSubscriptions()) {
         // TODO: Change code below to process each `subscription` resource:
         System.out.println(subscription);
       }
-
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
+  }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -378,14 +357,13 @@ public class PubsubExample {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -395,39 +373,36 @@ import com.google.api.services.pubsub.Pubsub;
 import com.google.api.services.pubsub.model.ModifyAckDeadlineRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The name of the subscription.
+    String subscription = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project/subscriptions/my-subscription"
 
+    // TODO: Assign values to desired fields of `requestBody`:
+    ModifyAckDeadlineRequest requestBody = new ModifyAckDeadlineRequest();
+
+    Pubsub pubsubService = createPubsubService();
+    Pubsub.Projects.Subscriptions.ModifyAckDeadline request = pubsubService.projects().subscriptions().modifyAckDeadline(subscription, requestBody);
+
+    request.execute();
+  }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
         .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `modifyAckDeadline` method:
-
-    // The name of the subscription.
-    String subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
-
-
-    ModifyAckDeadlineRequest requestBody = new ModifyAckDeadlineRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
-
-
-    Pubsub.Projects.Subscriptions.ModifyAckDeadline request = pubsubService.projects().subscriptions().modifyAckDeadline(subscription, requestBody);
-    request.execute();
   }
 }
 /**
@@ -438,14 +413,13 @@ public class PubsubExample {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -455,39 +429,36 @@ import com.google.api.services.pubsub.Pubsub;
 import com.google.api.services.pubsub.model.ModifyPushConfigRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The name of the subscription.
+    String subscription = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project/subscriptions/my-subscription"
 
+    // TODO: Assign values to desired fields of `requestBody`:
+    ModifyPushConfigRequest requestBody = new ModifyPushConfigRequest();
+
+    Pubsub pubsubService = createPubsubService();
+    Pubsub.Projects.Subscriptions.ModifyPushConfig request = pubsubService.projects().subscriptions().modifyPushConfig(subscription, requestBody);
+
+    request.execute();
+  }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
         .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `modifyPushConfig` method:
-
-    // The name of the subscription.
-    String subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
-
-
-    ModifyPushConfigRequest requestBody = new ModifyPushConfigRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
-
-
-    Pubsub.Projects.Subscriptions.ModifyPushConfig request = pubsubService.projects().subscriptions().modifyPushConfig(subscription, requestBody);
-    request.execute();
   }
 }
 /**
@@ -498,14 +469,13 @@ public class PubsubExample {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -516,42 +486,39 @@ import com.google.api.services.pubsub.model.PullRequest;
 import com.google.api.services.pubsub.model.PullResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `pull` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The subscription from which messages should be pulled.
-    String subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
+    String subscription = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project/subscriptions/my-subscription"
 
-
+    // TODO: Assign values to desired fields of `requestBody`:
     PullRequest requestBody = new PullRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
-
+    Pubsub pubsubService = createPubsubService();
     Pubsub.Projects.Subscriptions.Pull request = pubsubService.projects().subscriptions().pull(subscription, requestBody);
+
     PullResponse response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -562,14 +529,13 @@ public class PubsubExample {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -580,44 +546,41 @@ import com.google.api.services.pubsub.model.Policy;
 import com.google.api.services.pubsub.model.SetIamPolicyRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+    // a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
+    // in this value is resource specific and is specified in the `setIamPolicy` documentation.
+    String resource = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project/subscriptions/my-subscription"
 
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `setIamPolicy` method:
-
-    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-    // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
-    // this value is resource specific and is specified in the `setIamPolicy` documentation.
-    String resource = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
-
-
+    // TODO: Assign values to desired fields of `requestBody`:
     SetIamPolicyRequest requestBody = new SetIamPolicyRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
-
+    Pubsub pubsubService = createPubsubService();
     Pubsub.Projects.Subscriptions.SetIamPolicy request = pubsubService.projects().subscriptions().setIamPolicy(resource, requestBody);
+
     Policy response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -628,14 +591,13 @@ public class PubsubExample {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -646,46 +608,43 @@ import com.google.api.services.pubsub.model.TestIamPermissionsRequest;
 import com.google.api.services.pubsub.model.TestIamPermissionsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `testIamPermissions` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
-    // specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path
-    // specified in this value is resource specific and is specified in the `testIamPermissions`
+    // specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the
+    // path specified in this value is resource specific and is specified in the `testIamPermissions`
     // documentation.
-    String resource = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
+    String resource = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project/subscriptions/my-subscription"
 
-
+    // TODO: Assign values to desired fields of `requestBody`:
     TestIamPermissionsRequest requestBody = new TestIamPermissionsRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
-
+    Pubsub pubsubService = createPubsubService();
     Pubsub.Projects.Subscriptions.TestIamPermissions request = pubsubService.projects().subscriptions().testIamPermissions(resource, requestBody);
+
     TestIamPermissionsResponse response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
 }
 /**
  * BEFORE RUNNING:
@@ -695,14 +654,13 @@ public class PubsubExample {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -712,45 +670,42 @@ import com.google.api.services.pubsub.Pubsub;
 import com.google.api.services.pubsub.model.Topic;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `create` method:
-
-    // The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}` must
-    // start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`),
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}`
+    // must start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`),
     // underscores (`_`), periods (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be
     // between 3 and 255 characters in length, and it must not start with `"goog"`.
-    String name = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
+    String name = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project/topics/my-topic"
 
-
+    // TODO: Assign values to desired fields of `requestBody`:
     Topic requestBody = new Topic();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
-
+    Pubsub pubsubService = createPubsubService();
     Pubsub.Projects.Topics.Create request = pubsubService.projects().topics().create(name, requestBody);
+
     Topic response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -761,14 +716,13 @@ public class PubsubExample {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -777,35 +731,33 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.pubsub.Pubsub;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Name of the topic to delete.
+    String topic = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project/topics/my-topic"
 
+    Pubsub pubsubService = createPubsubService();
+    Pubsub.Projects.Topics.Delete request = pubsubService.projects().topics().delete(topic);
+
+    request.execute();
+  }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
         .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `delete` method:
-
-    // Name of the topic to delete.
-    String topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
-
-
-    Pubsub.Projects.Topics.Delete request = pubsubService.projects().topics().delete(topic);
-    request.execute();
   }
 }
 /**
@@ -816,14 +768,13 @@ public class PubsubExample {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -833,38 +784,36 @@ import com.google.api.services.pubsub.Pubsub;
 import com.google.api.services.pubsub.model.Topic;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `get` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The name of the topic to get.
-    String topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
+    String topic = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project/topics/my-topic"
 
-
+    Pubsub pubsubService = createPubsubService();
     Pubsub.Projects.Topics.Get request = pubsubService.projects().topics().get(topic);
+
     Topic response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -875,14 +824,13 @@ public class PubsubExample {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -892,40 +840,38 @@ import com.google.api.services.pubsub.Pubsub;
 import com.google.api.services.pubsub.model.Policy;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+    // a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
+    // in this value is resource specific and is specified in the `getIamPolicy` documentation.
+    String resource = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project/topics/my-topic"
 
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `getIamPolicy` method:
-
-    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-    // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
-    // this value is resource specific and is specified in the `getIamPolicy` documentation.
-    String resource = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
-
-
+    Pubsub pubsubService = createPubsubService();
     Pubsub.Projects.Topics.GetIamPolicy request = pubsubService.projects().topics().getIamPolicy(resource);
+
     Policy response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -936,14 +882,13 @@ public class PubsubExample {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -954,47 +899,44 @@ import com.google.api.services.pubsub.model.ListTopicsResponse;
 import com.google.api.services.pubsub.model.Topic;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The name of the cloud project that topics belong to.
-    String project = "projects/{MY-PROJECT}";
+    String project = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project"
 
-
+    Pubsub pubsubService = createPubsubService();
     Pubsub.Projects.Topics.List request = pubsubService.projects().topics().list(project);
+
     ListTopicsResponse response;
     do {
       response = request.execute();
-      if (response.getTopics() == null)
+      if (response.getTopics() == null) {
         continue;
-
+      }
       for (Topic topic : response.getTopics()) {
         // TODO: Change code below to process each `topic` resource:
         System.out.println(topic);
       }
-
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
+  }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -1005,14 +947,13 @@ public class PubsubExample {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -1023,42 +964,39 @@ import com.google.api.services.pubsub.model.PublishRequest;
 import com.google.api.services.pubsub.model.PublishResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `publish` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The messages in the request will be published on this topic.
-    String topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
+    String topic = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project/topics/my-topic"
 
-
+    // TODO: Assign values to desired fields of `requestBody`:
     PublishRequest requestBody = new PublishRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
-
+    Pubsub pubsubService = createPubsubService();
     Pubsub.Projects.Topics.Publish request = pubsubService.projects().topics().publish(topic, requestBody);
+
     PublishResponse response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -1069,14 +1007,13 @@ public class PubsubExample {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -1087,44 +1024,41 @@ import com.google.api.services.pubsub.model.Policy;
 import com.google.api.services.pubsub.model.SetIamPolicyRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+    // a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified
+    // in this value is resource specific and is specified in the `setIamPolicy` documentation.
+    String resource = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project/topics/my-topic"
 
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `setIamPolicy` method:
-
-    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-    // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
-    // this value is resource specific and is specified in the `setIamPolicy` documentation.
-    String resource = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
-
-
+    // TODO: Assign values to desired fields of `requestBody`:
     SetIamPolicyRequest requestBody = new SetIamPolicyRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
-
+    Pubsub pubsubService = createPubsubService();
     Pubsub.Projects.Topics.SetIamPolicy request = pubsubService.projects().topics().setIamPolicy(resource, requestBody);
+
     Policy response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -1135,14 +1069,13 @@ public class PubsubExample {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -1152,47 +1085,44 @@ import com.google.api.services.pubsub.Pubsub;
 import com.google.api.services.pubsub.model.ListTopicSubscriptionsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The name of the topic that subscriptions are attached to.
-    String topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
+    String topic = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project/topics/my-topic"
 
-
+    Pubsub pubsubService = createPubsubService();
     Pubsub.Projects.Topics.Subscriptions.List request = pubsubService.projects().topics().subscriptions().list(topic);
+
     ListTopicSubscriptionsResponse response;
     do {
       response = request.execute();
-      if (response.getSubscriptions() == null)
+      if (response.getSubscriptions() == null) {
         continue;
-
-      for (String string : response.getSubscriptions()) {
-        // TODO: Change code below to process each `string` resource:
-        System.out.println(string);
       }
-
+      for (String item : response.getSubscriptions()) {
+        // TODO: Change code below to process each `item` resource:
+        System.out.println(item);
+      }
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
+  }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -1203,14 +1133,13 @@ public class PubsubExample {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/pubsub/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -1221,44 +1150,41 @@ import com.google.api.services.pubsub.model.TestIamPermissionsRequest;
 import com.google.api.services.pubsub.model.TestIamPermissionsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class PubsubExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Pubsub pubsubService = new Pubsub.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `testIamPermissions` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
-    // specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path
-    // specified in this value is resource specific and is specified in the `testIamPermissions`
+    // specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the
+    // path specified in this value is resource specific and is specified in the `testIamPermissions`
     // documentation.
-    String resource = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
+    String resource = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project/topics/my-topic"
 
-
+    // TODO: Assign values to desired fields of `requestBody`:
     TestIamPermissionsRequest requestBody = new TestIamPermissionsRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
-
+    Pubsub pubsubService = createPubsubService();
     Pubsub.Projects.Topics.TestIamPermissions request = pubsubService.projects().topics().testIamPermissions(resource, requestBody);
+
     TestIamPermissionsResponse response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static Pubsub createPubsubService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Pubsub.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
