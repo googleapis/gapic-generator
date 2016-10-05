@@ -237,7 +237,6 @@ public class ApiMethodTransformer {
     methodViewBuilder.hasReturnValue(
         !ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
     methodViewBuilder.isPageStreaming(false);
-    methodViewBuilder.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
     return methodViewBuilder.type(ApiMethodType.CallableMethod).build();
   }
@@ -256,8 +255,7 @@ public class ApiMethodTransformer {
     methodViewBuilder.stubName(namer.getStubName(context.getTargetInterface()));
     methodViewBuilder.settingsGetterName(namer.getSettingsFunctionName(context.getMethod()));
     methodViewBuilder.callableName(context.getNamer().getCallableName(context.getMethod()));
-    methodViewBuilder.isRequestStreaming(context.getMethod().getRequestStreaming());
-    methodViewBuilder.isResponseStreaming(context.getMethod().getResponseStreaming());
+    methodViewBuilder.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
   }
 
   private void setListMethodFields(

@@ -216,9 +216,8 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getStaticLangStreamingReturnTypeName(Method method, MethodConfig methodConfig) {
-    return String.format(
-        "%s_%sClient",
-        converter.getTypeName(method.getParent()).getNickname(),
-        method.getSimpleName());
+    return converter.getTypeName(method.getParent()).getNickname()
+        + "_"
+        + className(Name.upperCamel(method.getSimpleName()).join("client"));
   }
 }

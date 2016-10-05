@@ -445,10 +445,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getAsyncApiMethodExampleName");
   }
 
+  /** The name of the GRPC streaming surface method which can call the given API method. */
   public String getGrpcStreamingApiMethodName(Method method) {
     return getApiMethodName(method);
   }
 
+  /** The name of the example of the GRPC streaming surface method which can call the given API method. */
   public String getGrpcStreamingApiMethodExampleName(Interface interfaze, Method method) {
     return getGrpcStreamingApiMethodName(method);
   }

@@ -140,19 +140,23 @@
             // {@doc}
         @end
 
-        @switch view.getTrue
-        @case method.isBidiStreaming
+        @switch method.grpcStreamingType.toString
+        @case "BidiStreaming"
             {@noRequestStreamMethod(view, method)}
-        @case method.isRequestStreaming
+        @case "ClientStreaming"
             {@noRequestStreamMethod(view, method)}
-        @case method.isResponseStreaming
+        @case "ServerStreaming"
             {@simpleMethod(view, method)}
-        @case method.isPageStreaming
-            {@pageStreamingMethod(view, method)}
-        @case method.hasReturnValue
-            {@simpleMethod(view, method)}
-        @default
-            {@emptyReturnMethod(view, method)}
+        @case "NonStreaming"
+            @if method.isPageStreaming
+                {@pageStreamingMethod(view, method)}
+            @else
+                @if method.hasReturnValue
+                    {@simpleMethod(view, method)}
+                @else
+                    {@emptyReturnMethod(view, method)}
+                @end
+            @end
         @end
 
     @end

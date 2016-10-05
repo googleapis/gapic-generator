@@ -523,7 +523,7 @@ func (c *Client) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBookI
 }
 
 // StreamShelves test server streaming
-// gRPC streaming methods don't have HTTP equivalent and need not have google.api.http option.
+// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 func (c *Client) StreamShelves(ctx context.Context, req *librarypb.StreamShelvesRequest) (librarypb.LibraryService_StreamShelvesClient, error) {
     md, _ := metadata.FromContext(ctx)
     ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
@@ -540,7 +540,7 @@ func (c *Client) StreamShelves(ctx context.Context, req *librarypb.StreamShelves
 }
 
 // StreamBooks test server streaming, non-paged responses.
-// gRPC streaming methods don't have HTTP equivalent and need not have google.api.http option.
+// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 func (c *Client) StreamBooks(ctx context.Context, req *librarypb.StreamBooksRequest) (librarypb.LibraryService_StreamBooksClient, error) {
     md, _ := metadata.FromContext(ctx)
     ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
@@ -557,7 +557,7 @@ func (c *Client) StreamBooks(ctx context.Context, req *librarypb.StreamBooksRequ
 }
 
 // DiscussBook test bidi-streaming.
-// gRPC streaming methods don't have HTTP equivalent and need not have google.api.http option.
+// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 func (c *Client) DiscussBook(ctx context.Context) (librarypb.LibraryService_DiscussBookClient, error) {
     md, _ := metadata.FromContext(ctx)
     ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))

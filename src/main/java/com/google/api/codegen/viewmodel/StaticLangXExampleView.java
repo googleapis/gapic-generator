@@ -53,10 +53,6 @@ public abstract class StaticLangXExampleView implements ViewModel {
   /** Methods to make examples for */
   public abstract List<StaticLangApiMethodView> apiMethods();
 
-  public boolean getTrue() {
-    return true;
-  }
-
   public static Builder newBuilder() {
     return new AutoValue_StaticLangXExampleView.Builder();
   }
