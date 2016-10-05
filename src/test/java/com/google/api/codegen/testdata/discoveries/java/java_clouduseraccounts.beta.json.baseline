@@ -7,14 +7,13 @@
  *    https://console.developers.google.com/apis/api/clouduseraccounts
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouduseraccounts/beta/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -23,38 +22,35 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.clouduseraccounts.CloudUserAccounts;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudUserAccountsExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
 
+    // Name of the Operations resource to delete.
+    String operation = "";  // TODO: Update placeholder value.
+
+    CloudUserAccounts cloudUserAccountsService = createCloudUserAccountsService();
+    CloudUserAccounts.GlobalAccountsOperations.Delete request = cloudUserAccountsService.globalAccountsOperations().delete(project, operation);
+
+    request.execute();
+  }
+
+  public static CloudUserAccounts createCloudUserAccountsService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    CloudUserAccounts clouduseraccountsService = new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
         .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `delete` method:
-
-    // Project ID for this request.
-    String project = "{MY-PROJECT}";
-
-    // Name of the Operations resource to delete.
-    String operation = "{MY-OPERATION}";
-
-
-    CloudUserAccounts.GlobalAccountsOperations.Delete request = clouduseraccountsService.globalAccountsOperations().delete(project, operation);
-    request.execute();
   }
 }
 /**
@@ -65,14 +61,13 @@ public class CloudUserAccountsExample {
  *    https://console.developers.google.com/apis/api/clouduseraccounts
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouduseraccounts/beta/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -82,41 +77,38 @@ import com.google.api.services.clouduseraccounts.CloudUserAccounts;
 import com.google.api.services.clouduseraccounts.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudUserAccountsExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudUserAccounts clouduseraccountsService = new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `get` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Project ID for this request.
-    String project = "{MY-PROJECT}";
+    String project = "";  // TODO: Update placeholder value.
 
     // Name of the Operations resource to return.
-    String operation = "{MY-OPERATION}";
+    String operation = "";  // TODO: Update placeholder value.
 
+    CloudUserAccounts cloudUserAccountsService = createCloudUserAccountsService();
+    CloudUserAccounts.GlobalAccountsOperations.Get request = cloudUserAccountsService.globalAccountsOperations().get(project, operation);
 
-    CloudUserAccounts.GlobalAccountsOperations.Get request = clouduseraccountsService.globalAccountsOperations().get(project, operation);
     Operation response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static CloudUserAccounts createCloudUserAccountsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -127,14 +119,13 @@ public class CloudUserAccountsExample {
  *    https://console.developers.google.com/apis/api/clouduseraccounts
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouduseraccounts/beta/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -145,47 +136,43 @@ import com.google.api.services.clouduseraccounts.model.Operation;
 import com.google.api.services.clouduseraccounts.model.OperationList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudUserAccountsExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudUserAccounts clouduseraccountsService = new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Project ID for this request.
-    String project = "{MY-PROJECT}";
+    String project = "";  // TODO: Update placeholder value.
 
+    CloudUserAccounts cloudUserAccountsService = createCloudUserAccountsService();
+    CloudUserAccounts.GlobalAccountsOperations.List request = cloudUserAccountsService.globalAccountsOperations().list(project);
 
-    CloudUserAccounts.GlobalAccountsOperations.List request = clouduseraccountsService.globalAccountsOperations().list(project);
     OperationList response;
     do {
       response = request.execute();
-      if (response.getItems() == null)
+      if (response.getItems() == null) {
         continue;
-
+      }
       for (Operation operation : response.getItems()) {
         // TODO: Change code below to process each `operation` resource:
         System.out.println(operation);
       }
-
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
+  }
+
+  public static CloudUserAccounts createCloudUserAccountsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -196,14 +183,13 @@ public class CloudUserAccountsExample {
  *    https://console.developers.google.com/apis/api/clouduseraccounts
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouduseraccounts/beta/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -214,45 +200,41 @@ import com.google.api.services.clouduseraccounts.model.GroupsAddMemberRequest;
 import com.google.api.services.clouduseraccounts.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudUserAccountsExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudUserAccounts clouduseraccountsService = new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `addMember` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Project ID for this request.
-    String project = "{MY-PROJECT}";
+    String project = "";  // TODO: Update placeholder value.
 
     // Name of the group for this request.
-    String groupName = "{MY-GROUP-NAME}";
+    String groupName = "";  // TODO: Update placeholder value.
 
-
+    // TODO: Assign values to desired fields of `requestBody`:
     GroupsAddMemberRequest requestBody = new GroupsAddMemberRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    CloudUserAccounts cloudUserAccountsService = createCloudUserAccountsService();
+    CloudUserAccounts.Groups.AddMember request = cloudUserAccountsService.groups().addMember(project, groupName, requestBody);
 
-    CloudUserAccounts.Groups.AddMember request = clouduseraccountsService.groups().addMember(project, groupName, requestBody);
     Operation response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static CloudUserAccounts createCloudUserAccountsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -263,14 +245,13 @@ public class CloudUserAccountsExample {
  *    https://console.developers.google.com/apis/api/clouduseraccounts
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouduseraccounts/beta/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -280,41 +261,38 @@ import com.google.api.services.clouduseraccounts.CloudUserAccounts;
 import com.google.api.services.clouduseraccounts.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudUserAccountsExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudUserAccounts clouduseraccountsService = new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `delete` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Project ID for this request.
-    String project = "{MY-PROJECT}";
+    String project = "";  // TODO: Update placeholder value.
 
     // Name of the Group resource to delete.
-    String groupName = "{MY-GROUP-NAME}";
+    String groupName = "";  // TODO: Update placeholder value.
 
+    CloudUserAccounts cloudUserAccountsService = createCloudUserAccountsService();
+    CloudUserAccounts.Groups.Delete request = cloudUserAccountsService.groups().delete(project, groupName);
 
-    CloudUserAccounts.Groups.Delete request = clouduseraccountsService.groups().delete(project, groupName);
     Operation response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static CloudUserAccounts createCloudUserAccountsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -325,14 +303,13 @@ public class CloudUserAccountsExample {
  *    https://console.developers.google.com/apis/api/clouduseraccounts
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouduseraccounts/beta/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -342,105 +319,38 @@ import com.google.api.services.clouduseraccounts.CloudUserAccounts;
 import com.google.api.services.clouduseraccounts.model.Group;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudUserAccountsExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudUserAccounts clouduseraccountsService = new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `get` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Project ID for this request.
-    String project = "{MY-PROJECT}";
+    String project = "";  // TODO: Update placeholder value.
 
     // Name of the Group resource to return.
-    String groupName = "{MY-GROUP-NAME}";
+    String groupName = "";  // TODO: Update placeholder value.
 
+    CloudUserAccounts cloudUserAccountsService = createCloudUserAccountsService();
+    CloudUserAccounts.Groups.Get request = cloudUserAccountsService.groups().get(project, groupName);
 
-    CloudUserAccounts.Groups.Get request = clouduseraccountsService.groups().get(project, groupName);
     Group response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
-}
-/**
- * BEFORE RUNNING:
- * ---------------
- * 1. If not already done, enable the Cloud User Accounts API
- *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/clouduseraccounts
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on Maven or Gradle. Check installation
- *    instructions at https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/clouduseraccounts/beta/java
- */
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouduseraccounts.CloudUserAccounts;
-import com.google.api.services.clouduseraccounts.model.Group;
-import com.google.api.services.clouduseraccounts.model.Operation;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-public class CloudUserAccountsExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
+  public static CloudUserAccounts createCloudUserAccountsService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    CloudUserAccounts clouduseraccountsService = new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
         .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `insert` method:
-
-    // Project ID for this request.
-    String project = "{MY-PROJECT}";
-
-
-    Group requestBody = new Group();
-    // TODO: Assign values to desired fields of the `requestBody` object.
-
-
-    CloudUserAccounts.Groups.Insert request = clouduseraccountsService.groups().insert(project, requestBody);
-    Operation response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
-    System.out.println(response);
   }
 }
 /**
@@ -451,14 +361,72 @@ public class CloudUserAccountsExample {
  *    https://console.developers.google.com/apis/api/clouduseraccounts
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouduseraccounts/beta/java
  */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts;
+import com.google.api.services.clouduseraccounts.model.Group;
+import com.google.api.services.clouduseraccounts.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
 
+public class CloudUserAccountsExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    Group requestBody = new Group();
+
+    CloudUserAccounts cloudUserAccountsService = createCloudUserAccountsService();
+    CloudUserAccounts.Groups.Insert request = cloudUserAccountsService.groups().insert(project, requestBody);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static CloudUserAccounts createCloudUserAccountsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+}
+/**
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Cloud User Accounts API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/clouduseraccounts
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/clouduseraccounts/beta/java
+ */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -469,47 +437,43 @@ import com.google.api.services.clouduseraccounts.model.Group;
 import com.google.api.services.clouduseraccounts.model.GroupList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudUserAccountsExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudUserAccounts clouduseraccountsService = new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Project ID for this request.
-    String project = "{MY-PROJECT}";
+    String project = "";  // TODO: Update placeholder value.
 
+    CloudUserAccounts cloudUserAccountsService = createCloudUserAccountsService();
+    CloudUserAccounts.Groups.List request = cloudUserAccountsService.groups().list(project);
 
-    CloudUserAccounts.Groups.List request = clouduseraccountsService.groups().list(project);
     GroupList response;
     do {
       response = request.execute();
-      if (response.getItems() == null)
+      if (response.getItems() == null) {
         continue;
-
+      }
       for (Group group : response.getItems()) {
         // TODO: Change code below to process each `group` resource:
         System.out.println(group);
       }
-
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
+  }
+
+  public static CloudUserAccounts createCloudUserAccountsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -520,14 +484,13 @@ public class CloudUserAccountsExample {
  *    https://console.developers.google.com/apis/api/clouduseraccounts
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouduseraccounts/beta/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -538,45 +501,41 @@ import com.google.api.services.clouduseraccounts.model.GroupsRemoveMemberRequest
 import com.google.api.services.clouduseraccounts.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudUserAccountsExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudUserAccounts clouduseraccountsService = new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `removeMember` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Project ID for this request.
-    String project = "{MY-PROJECT}";
+    String project = "";  // TODO: Update placeholder value.
 
     // Name of the group for this request.
-    String groupName = "{MY-GROUP-NAME}";
+    String groupName = "";  // TODO: Update placeholder value.
 
-
+    // TODO: Assign values to desired fields of `requestBody`:
     GroupsRemoveMemberRequest requestBody = new GroupsRemoveMemberRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    CloudUserAccounts cloudUserAccountsService = createCloudUserAccountsService();
+    CloudUserAccounts.Groups.RemoveMember request = cloudUserAccountsService.groups().removeMember(project, groupName, requestBody);
 
-    CloudUserAccounts.Groups.RemoveMember request = clouduseraccountsService.groups().removeMember(project, groupName, requestBody);
     Operation response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static CloudUserAccounts createCloudUserAccountsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -587,14 +546,13 @@ public class CloudUserAccountsExample {
  *    https://console.developers.google.com/apis/api/clouduseraccounts
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouduseraccounts/beta/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -604,47 +562,44 @@ import com.google.api.services.clouduseraccounts.CloudUserAccounts;
 import com.google.api.services.clouduseraccounts.model.LinuxGetAuthorizedKeysViewResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudUserAccountsExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudUserAccounts clouduseraccountsService = new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `getAuthorizedKeysView` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Project ID for this request.
-    String project = "{MY-PROJECT}";
+    String project = "";  // TODO: Update placeholder value.
 
     // Name of the zone for this request.
-    String zone = "{MY-ZONE}";  // ex: "us-central1-f"
+    String zone = "";  // TODO: Update placeholder value.
 
     // The user account for which you want to get a list of authorized public keys.
-    String user = "{MY-USER}";
+    String user = "";  // TODO: Update placeholder value.
 
     // The fully-qualified URL of the virtual machine requesting the view.
-    String instance = "{MY-INSTANCE}";
+    String instance = "";  // TODO: Update placeholder value.
 
+    CloudUserAccounts cloudUserAccountsService = createCloudUserAccountsService();
+    CloudUserAccounts.Linux.GetAuthorizedKeysView request = cloudUserAccountsService.linux().getAuthorizedKeysView(project, zone, user, instance);
 
-    CloudUserAccounts.Linux.GetAuthorizedKeysView request = clouduseraccountsService.linux().getAuthorizedKeysView(project, zone, user, instance);
     LinuxGetAuthorizedKeysViewResponse response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static CloudUserAccounts createCloudUserAccountsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -655,14 +610,13 @@ public class CloudUserAccountsExample {
  *    https://console.developers.google.com/apis/api/clouduseraccounts
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouduseraccounts/beta/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -672,44 +626,41 @@ import com.google.api.services.clouduseraccounts.CloudUserAccounts;
 import com.google.api.services.clouduseraccounts.model.LinuxGetLinuxAccountViewsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudUserAccountsExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudUserAccounts clouduseraccountsService = new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `getLinuxAccountViews` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Project ID for this request.
-    String project = "{MY-PROJECT}";
+    String project = "";  // TODO: Update placeholder value.
 
     // Name of the zone for this request.
-    String zone = "{MY-ZONE}";  // ex: "us-central1-f"
+    String zone = "";  // TODO: Update placeholder value.
 
     // The fully-qualified URL of the virtual machine requesting the views.
-    String instance = "{MY-INSTANCE}";
+    String instance = "";  // TODO: Update placeholder value.
 
+    CloudUserAccounts cloudUserAccountsService = createCloudUserAccountsService();
+    CloudUserAccounts.Linux.GetLinuxAccountViews request = cloudUserAccountsService.linux().getLinuxAccountViews(project, zone, instance);
 
-    CloudUserAccounts.Linux.GetLinuxAccountViews request = clouduseraccountsService.linux().getLinuxAccountViews(project, zone, instance);
     LinuxGetLinuxAccountViewsResponse response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static CloudUserAccounts createCloudUserAccountsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -720,14 +671,13 @@ public class CloudUserAccountsExample {
  *    https://console.developers.google.com/apis/api/clouduseraccounts
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouduseraccounts/beta/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -738,45 +688,41 @@ import com.google.api.services.clouduseraccounts.model.Operation;
 import com.google.api.services.clouduseraccounts.model.PublicKey;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudUserAccountsExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudUserAccounts clouduseraccountsService = new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `addPublicKey` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Project ID for this request.
-    String project = "{MY-PROJECT}";
+    String project = "";  // TODO: Update placeholder value.
 
     // Name of the user for this request.
-    String user = "{MY-USER}";
+    String user = "";  // TODO: Update placeholder value.
 
-
+    // TODO: Assign values to desired fields of `requestBody`:
     PublicKey requestBody = new PublicKey();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    CloudUserAccounts cloudUserAccountsService = createCloudUserAccountsService();
+    CloudUserAccounts.Users.AddPublicKey request = cloudUserAccountsService.users().addPublicKey(project, user, requestBody);
 
-    CloudUserAccounts.Users.AddPublicKey request = clouduseraccountsService.users().addPublicKey(project, user, requestBody);
     Operation response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static CloudUserAccounts createCloudUserAccountsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -787,14 +733,13 @@ public class CloudUserAccountsExample {
  *    https://console.developers.google.com/apis/api/clouduseraccounts
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouduseraccounts/beta/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -804,41 +749,38 @@ import com.google.api.services.clouduseraccounts.CloudUserAccounts;
 import com.google.api.services.clouduseraccounts.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudUserAccountsExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudUserAccounts clouduseraccountsService = new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `delete` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Project ID for this request.
-    String project = "{MY-PROJECT}";
+    String project = "";  // TODO: Update placeholder value.
 
     // Name of the user resource to delete.
-    String user = "{MY-USER}";
+    String user = "";  // TODO: Update placeholder value.
 
+    CloudUserAccounts cloudUserAccountsService = createCloudUserAccountsService();
+    CloudUserAccounts.Users.Delete request = cloudUserAccountsService.users().delete(project, user);
 
-    CloudUserAccounts.Users.Delete request = clouduseraccountsService.users().delete(project, user);
     Operation response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static CloudUserAccounts createCloudUserAccountsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -849,14 +791,13 @@ public class CloudUserAccountsExample {
  *    https://console.developers.google.com/apis/api/clouduseraccounts
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouduseraccounts/beta/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -866,105 +807,38 @@ import com.google.api.services.clouduseraccounts.CloudUserAccounts;
 import com.google.api.services.clouduseraccounts.model.User;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudUserAccountsExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudUserAccounts clouduseraccountsService = new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `get` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Project ID for this request.
-    String project = "{MY-PROJECT}";
+    String project = "";  // TODO: Update placeholder value.
 
     // Name of the user resource to return.
-    String user = "{MY-USER}";
+    String user = "";  // TODO: Update placeholder value.
 
+    CloudUserAccounts cloudUserAccountsService = createCloudUserAccountsService();
+    CloudUserAccounts.Users.Get request = cloudUserAccountsService.users().get(project, user);
 
-    CloudUserAccounts.Users.Get request = clouduseraccountsService.users().get(project, user);
     User response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
-}
-/**
- * BEFORE RUNNING:
- * ---------------
- * 1. If not already done, enable the Cloud User Accounts API
- *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/clouduseraccounts
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on Maven or Gradle. Check installation
- *    instructions at https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/clouduseraccounts/beta/java
- */
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouduseraccounts.CloudUserAccounts;
-import com.google.api.services.clouduseraccounts.model.Operation;
-import com.google.api.services.clouduseraccounts.model.User;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-public class CloudUserAccountsExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
+  public static CloudUserAccounts createCloudUserAccountsService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    CloudUserAccounts clouduseraccountsService = new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
         .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `insert` method:
-
-    // Project ID for this request.
-    String project = "{MY-PROJECT}";
-
-
-    User requestBody = new User();
-    // TODO: Assign values to desired fields of the `requestBody` object.
-
-
-    CloudUserAccounts.Users.Insert request = clouduseraccountsService.users().insert(project, requestBody);
-    Operation response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
-    System.out.println(response);
   }
 }
 /**
@@ -975,14 +849,72 @@ public class CloudUserAccountsExample {
  *    https://console.developers.google.com/apis/api/clouduseraccounts
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouduseraccounts/beta/java
  */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.clouduseraccounts.CloudUserAccounts;
+import com.google.api.services.clouduseraccounts.model.Operation;
+import com.google.api.services.clouduseraccounts.model.User;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
 
+public class CloudUserAccountsExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    User requestBody = new User();
+
+    CloudUserAccounts cloudUserAccountsService = createCloudUserAccountsService();
+    CloudUserAccounts.Users.Insert request = cloudUserAccountsService.users().insert(project, requestBody);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static CloudUserAccounts createCloudUserAccountsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+}
+/**
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Cloud User Accounts API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/clouduseraccounts
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/clouduseraccounts/beta/java
+ */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -993,47 +925,43 @@ import com.google.api.services.clouduseraccounts.model.User;
 import com.google.api.services.clouduseraccounts.model.UserList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudUserAccountsExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudUserAccounts clouduseraccountsService = new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Project ID for this request.
-    String project = "{MY-PROJECT}";
+    String project = "";  // TODO: Update placeholder value.
 
+    CloudUserAccounts cloudUserAccountsService = createCloudUserAccountsService();
+    CloudUserAccounts.Users.List request = cloudUserAccountsService.users().list(project);
 
-    CloudUserAccounts.Users.List request = clouduseraccountsService.users().list(project);
     UserList response;
     do {
       response = request.execute();
-      if (response.getItems() == null)
+      if (response.getItems() == null) {
         continue;
-
+      }
       for (User user : response.getItems()) {
         // TODO: Change code below to process each `user` resource:
         System.out.println(user);
       }
-
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
+  }
+
+  public static CloudUserAccounts createCloudUserAccountsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -1044,14 +972,13 @@ public class CloudUserAccountsExample {
  *    https://console.developers.google.com/apis/api/clouduseraccounts
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/clouduseraccounts/beta/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -1061,44 +988,41 @@ import com.google.api.services.clouduseraccounts.CloudUserAccounts;
 import com.google.api.services.clouduseraccounts.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudUserAccountsExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudUserAccounts clouduseraccountsService = new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `removePublicKey` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Project ID for this request.
-    String project = "{MY-PROJECT}";
+    String project = "";  // TODO: Update placeholder value.
 
     // Name of the user for this request.
-    String user = "{MY-USER}";
+    String user = "";  // TODO: Update placeholder value.
 
     // The fingerprint of the public key to delete. Public keys are identified by their fingerprint, which
     // is defined by RFC4716 to be the MD5 digest of the public key.
-    String fingerprint = "{MY-FINGERPRINT}";
+    String fingerprint = "";  // TODO: Update placeholder value.
 
+    CloudUserAccounts cloudUserAccountsService = createCloudUserAccountsService();
+    CloudUserAccounts.Users.RemovePublicKey request = cloudUserAccountsService.users().removePublicKey(project, user, fingerprint);
 
-    CloudUserAccounts.Users.RemovePublicKey request = clouduseraccountsService.users().removePublicKey(project, user, fingerprint);
     Operation response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static CloudUserAccounts createCloudUserAccountsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudUserAccounts.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
