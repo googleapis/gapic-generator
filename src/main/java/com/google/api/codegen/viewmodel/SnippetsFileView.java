@@ -38,8 +38,6 @@ public abstract class SnippetsFileView implements ViewModel {
 
   public abstract String name();
 
-  public abstract String clientTypeName();
-
   public abstract List<StaticLangApiMethodSnippetView> snippetMethods();
 
   public static Builder newBuilder() {
@@ -57,8 +55,6 @@ public abstract class SnippetsFileView implements ViewModel {
     public abstract Builder packageName(String val);
 
     public abstract Builder name(String val);
-
-    public abstract Builder clientTypeName(String val);
 
     public abstract Builder snippetMethods(List<StaticLangApiMethodSnippetView> val);
 
