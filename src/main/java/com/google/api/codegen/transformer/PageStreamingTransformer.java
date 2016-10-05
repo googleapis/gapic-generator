@@ -19,7 +19,7 @@ import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorView;
-import com.google.api.codegen.viewmodel.PageStreamingFactoryClassView;
+import com.google.api.codegen.viewmodel.PagedListResponseFactoryClassView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
@@ -112,9 +112,9 @@ public class PageStreamingTransformer {
     return desc.build();
   }
 
-  public List<PageStreamingFactoryClassView> generateFactoryClasses(
+  public List<PagedListResponseFactoryClassView> generateFactoryClasses(
       SurfaceTransformerContext context) {
-    List<PageStreamingFactoryClassView> factories = new ArrayList<>();
+    List<PagedListResponseFactoryClassView> factories = new ArrayList<>();
 
     context.getNamer().addPageStreamingFactoryImports(context.getTypeTable());
     for (Method method : context.getPageStreamingMethods()) {
@@ -124,14 +124,15 @@ public class PageStreamingTransformer {
     return factories;
   }
 
-  private PageStreamingFactoryClassView generateFactoryClass(MethodTransformerContext context) {
+  private PagedListResponseFactoryClassView generateFactoryClass(MethodTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
     Field resourceField = pageStreaming.getResourcesField();
 
-    PageStreamingFactoryClassView.Builder factory = PageStreamingFactoryClassView.newBuilder();
+    PagedListResponseFactoryClassView.Builder factory =
+        PagedListResponseFactoryClassView.newBuilder();
 
     factory.name(namer.getPageStreamingFactoryConstName(method));
     factory.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));

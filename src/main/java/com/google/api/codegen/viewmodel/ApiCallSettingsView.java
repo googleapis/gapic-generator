@@ -50,7 +50,7 @@ public abstract class ApiCallSettingsView {
 
   public abstract String pageStreamingDescriptorName();
 
-  public abstract String pageStreamingFactoryName();
+  public abstract String pagedListResponseFactoryName();
 
   public abstract String bundlingDescriptorName();
 
@@ -102,7 +102,7 @@ public abstract class ApiCallSettingsView {
 
     public abstract Builder pageStreamingDescriptorName(String val);
 
-    public abstract Builder pageStreamingFactoryName(String val);
+    public abstract Builder pagedListResponseFactoryName(String val);
 
     public abstract Builder bundlingDescriptorName(String val);
 

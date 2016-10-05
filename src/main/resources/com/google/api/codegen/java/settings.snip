@@ -203,7 +203,7 @@
 
 @private descriptors(xsettingsClass)
   {@pageStreamingDescriptors(xsettingsClass)}
-  {@pageStreamingFactories(xsettingsClass)}
+  {@pagedListResponseFactories(xsettingsClass)}
   {@bundlingDescriptors(xsettingsClass)}
 @end
 
@@ -254,10 +254,10 @@
   @end
 @end
 
-@private pageStreamingFactories(xsettingsClass)
-  @join factory : xsettingsClass.pageStreamingFactories
-    private static final PageStreamingFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}> {@factory.name} =
-        new PageStreamingFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}>() {
+@private pagedListResponseFactories(xsettingsClass)
+  @join factory : xsettingsClass.pagedListResponseFactories
+    private static final PagedListResponseFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}> {@factory.name} =
+        new PagedListResponseFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}>() {
           @@Override
           public {@factory.pagedListResponseTypeName} createPagedListResponse(
               {@factory.requestTypeName} request,
@@ -440,7 +440,7 @@
         {@settings.memberName} = PageStreamingCallSettings.newBuilder(
             {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
             {@settings.pageStreamingDescriptorName},
-            {@settings.pageStreamingFactoryName});
+            {@settings.pagedListResponseFactoryName});
       @case "BundlingApiCallable"
         {@settings.memberName} = BundlingCallSettings.newBuilder(
             {@settings.grpcTypeName}.{@settings.grpcMethodConstant},

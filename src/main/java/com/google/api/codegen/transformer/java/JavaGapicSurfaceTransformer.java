@@ -52,7 +52,6 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -275,7 +274,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xsettingsClass.unaryCallSettings(unaryCallSettings(apiCallSettings));
     xsettingsClass.pageStreamingDescriptors(
         pageStreamingTransformer.generateDescriptorClasses(context));
-    xsettingsClass.pageStreamingFactories(pageStreamingTransformer.generateFactoryClasses(context));
+    xsettingsClass.pagedListResponseFactories(
+        pageStreamingTransformer.generateFactoryClasses(context));
     xsettingsClass.bundlingDescriptors(bundlingTransformer.generateDescriptorClasses(context));
     xsettingsClass.retryCodesDefinitions(
         retryDefinitionsTransformer.generateRetryCodesDefinitions(context));

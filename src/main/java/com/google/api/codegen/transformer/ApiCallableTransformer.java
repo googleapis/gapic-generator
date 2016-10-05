@@ -160,7 +160,7 @@ public class ApiCallableTransformer {
         namer.getNotImplementedString(notImplementedPrefix + "pagedListResponseTypeName"));
     settings.pageStreamingDescriptorName(
         namer.getNotImplementedString(notImplementedPrefix + "pageStreamingDescriptorName"));
-    settings.pageStreamingFactoryName(
+    settings.pagedListResponseFactoryName(
         namer.getNotImplementedString(notImplementedPrefix + "pageStreamingFactoryName"));
     settings.bundlingDescriptorName(
         namer.getNotImplementedString(notImplementedPrefix + "bundlingDescriptorName"));
@@ -182,7 +182,7 @@ public class ApiCallableTransformer {
           namer.getAndSavePagedResponseTypeName(
               context.getMethod(), context.getTypeTable(), resourceField));
       settings.pageStreamingDescriptorName(namer.getPageStreamingDescriptorConstName(method));
-      settings.pageStreamingFactoryName(namer.getPageStreamingFactoryConstName(method));
+      settings.pagedListResponseFactoryName(namer.getPageStreamingFactoryConstName(method));
     } else if (methodConfig.isBundling()) {
       namer.addBundlingCallSettingsImports(typeTable);
       settings.type(ApiCallableType.BundlingApiCallable);

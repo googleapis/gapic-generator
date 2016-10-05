@@ -17,7 +17,7 @@ package com.google.api.codegen.viewmodel;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class PageStreamingFactoryClassView {
+public abstract class PagedListResponseFactoryClassView {
   public abstract String name();
 
   public abstract String requestTypeName();
@@ -31,7 +31,7 @@ public abstract class PageStreamingFactoryClassView {
   public abstract String pageStreamingDescriptorName();
 
   public static Builder newBuilder() {
-    return new AutoValue_PageStreamingFactoryClassView.Builder();
+    return new AutoValue_PagedListResponseFactoryClassView.Builder();
   }
 
   @AutoValue.Builder
@@ -49,6 +49,6 @@ public abstract class PageStreamingFactoryClassView {
 
     public abstract Builder pageStreamingDescriptorName(String val);
 
-    public abstract PageStreamingFactoryClassView build();
+    public abstract PagedListResponseFactoryClassView build();
   }
 }
