@@ -1,0 +1,40 @@
+@extends "java/common.snip"
+
+@snippet generate(pagedResponseClass)
+  {@license()}
+  package {@pagedResponseClass.packageName};
+  
+  @join import : pagedResponseClass.imports
+    import {@import.fullName};
+  @end
+
+  @@javax.annotation.Generated("by GAPIC")
+  @let requestT = {@pagedResponseClass.requestTypeName}, \
+      responseT = {@pagedResponseClass.responseTypeName}, \
+      resourceT = {@pagedResponseClass.resourceTypeName}
+    public class {@pagedResponseClass.name} extends \
+        PagedListResponse<{@requestT}, {@responseT}, {@resourceT}> {
+      {@iterateMethods(pagedResponseClass)}
+    }
+  @end
+@end
+
+@private iterateMethods(pagedResponseClass)
+  @join iterateMethod : pagedResponseClass.iterateMethods
+    @let resourceT = {@pagedResponseClass.resourceTypeName}, \
+        overloadT = {@iterateMethod.overloadResourceTypeName}, \
+        parseFunction = {@iterateMethod.overloadResourceTypeParseFunctionName}
+        
+      public Iterable<{@overloadT}> iterateAllAs{@overloadT}() {
+        return Iterables.transform(iterateAllElements(), new Function<{@resourceT}, {@overloadT}>() {
+            @@Override
+            public {@overloadT} apply({@resourceT} arg0) {
+              return {@overloadT}.{@parseFunction}(arg0);
+            }
+          }
+        );
+      }
+    @end
+  @end
+  {@BREAK}
+@end

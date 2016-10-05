@@ -32,13 +32,17 @@ import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
+import com.google.api.codegen.viewmodel.PagedResponseIterateMethodView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.api.codegen.viewmodel.SettingsDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
+import com.google.api.codegen.viewmodel.StaticLangPagedResponseView;
 import com.google.api.codegen.viewmodel.StaticLangXApiView;
 import com.google.api.codegen.viewmodel.StaticLangXSettingsView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -69,6 +73,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String XAPI_TEMPLATE_FILENAME = "java/main.snip";
   private static final String XSETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
+  private static final String PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME =
+      "java/page_streaming_response.snip";
 
   public JavaGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
@@ -85,7 +91,10 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   @Override
   public List<String> getTemplateFileNames() {
     return Arrays.asList(
-        XAPI_TEMPLATE_FILENAME, XSETTINGS_TEMPLATE_FILENAME, PACKAGE_INFO_TEMPLATE_FILENAME);
+        XAPI_TEMPLATE_FILENAME,
+        XSETTINGS_TEMPLATE_FILENAME,
+        PACKAGE_INFO_TEMPLATE_FILENAME,
+        PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME);
   }
 
   @Override
@@ -117,6 +126,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       StaticLangApiMethodView exampleApiMethod = getExampleApiMethod(xapi.apiMethods());
       StaticLangXSettingsView xsettings = generateXSettings(context, exampleApiMethod);
       surfaceDocs.add(xsettings);
+
+      surfaceDocs.addAll(generatePagedResponseWrappers(context));
     }
 
     PackageInfoView packageInfo =
@@ -163,6 +174,82 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.outputPath(outputPath + File.separator + name + ".java");
 
     return xapiClass.build();
+  }
+
+  private List<StaticLangPagedResponseView> generatePagedResponseWrappers(
+      SurfaceTransformerContext context) {
+    List<StaticLangPagedResponseView> pagedResponseWrappers = new ArrayList<>();
+
+    for (Method method : context.getSupportedMethods()) {
+      MethodTransformerContext methodContext = context.asMethodContext(method);
+      MethodConfig methodConfig = context.getMethodConfig(method);
+      ModelTypeTable typeTable = context.getTypeTable();
+
+      if (methodConfig.isPageStreaming()) {
+        StaticLangPagedResponseView.Builder pagedResponseWrapper =
+            StaticLangPagedResponseView.newBuilder();
+
+        pagedResponseWrapper.templateFileName(PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME);
+
+        Field resourceField = methodConfig.getPageStreaming().getResourcesField();
+
+        String pagedResponseTypeName =
+            context
+                .getNamer()
+                .getAndSavePagedResponseTypeName(
+                    method,
+                    context.getFeatureConfig(),
+                    typeTable,
+                    method.getInputType(),
+                    method.getOutputType(),
+                    resourceField);
+
+        pagedResponseWrapper.packageName(context.getApiConfig().getPackageName());
+        pagedResponseWrapper.name(pagedResponseTypeName);
+        pagedResponseWrapper.requestTypeName(
+            typeTable.getAndSaveNicknameFor(method.getInputType()));
+        pagedResponseWrapper.responseTypeName(
+            typeTable.getAndSaveNicknameFor(method.getOutputType()));
+        pagedResponseWrapper.resourceTypeName(
+            typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
+        pagedResponseWrapper.iterateMethods(getIterateMethods(methodContext));
+        pagedResponseWrapper.imports(new ArrayList<ImportTypeView>());
+
+        String outputPath =
+            pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
+        pagedResponseWrapper.outputPath(
+            outputPath + File.separator + pagedResponseTypeName + ".java");
+
+        pagedResponseWrappers.add(pagedResponseWrapper.build());
+      }
+    }
+
+    return pagedResponseWrappers;
+  }
+
+  private List<PagedResponseIterateMethodView> getIterateMethods(MethodTransformerContext context) {
+
+    List<PagedResponseIterateMethodView> iterateMethods = new ArrayList<>();
+
+    Field resourceField = context.getMethodConfig().getPageStreaming().getResourcesField();
+
+    if (context.getFeatureConfig().useResourceNameFormatOption(resourceField)) {
+      PagedResponseIterateMethodView.Builder iterateMethod =
+          PagedResponseIterateMethodView.newBuilder();
+
+      String resourceShortName = ResourceNameUtil.getResourceName(resourceField);
+      String resourceTypeName =
+          context
+              .getTypeTable()
+              .getAndSaveNicknameForTypedResourceName(
+                  resourceField, resourceField.getType().makeOptional(), resourceShortName);
+      iterateMethod.overloadResourceTypeName(resourceTypeName);
+      iterateMethod.overloadResourceTypeParseFunctionName("parse");
+
+      iterateMethods.add(iterateMethod.build());
+    }
+
+    return iterateMethods;
   }
 
   private StaticLangApiMethodView getExampleApiMethod(List<StaticLangApiMethodView> methods) {
