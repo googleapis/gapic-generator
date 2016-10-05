@@ -23,11 +23,11 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.csharp.CSharpDiscoveryContext;
 import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
 import com.google.api.codegen.discovery.config.java.JavaTypeNameGenerator;
-import com.google.api.codegen.discovery.config.nodejs.NodeJSTypeNameGenerator;
 import com.google.api.codegen.discovery.transformer.java.JavaSampleMethodToViewTransformer;
-import com.google.api.codegen.discovery.transformer.nodejs.NodeJSSampleMethodToViewTransformer;
 import com.google.api.codegen.go.GoDiscoveryContext;
 import com.google.api.codegen.go.GoSnippetSetRunner;
+import com.google.api.codegen.nodejs.NodeJSDiscoveryContext;
+import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
 import com.google.api.codegen.php.PhpDiscoveryContext;
 import com.google.api.codegen.php.PhpSnippetSetRunner;
 import com.google.api.codegen.py.PythonDiscoveryContext;
@@ -99,16 +99,12 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
           .setOutputRoot(outputRoot)
           .build();
     } else if (id.equals(NODEJS)) {
-      return ViewModelProvider.newBuilder()
-          .setMethods(service.getApis(0).getMethodsList())
-          .setApiaryConfig(apiaryConfig)
-          .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-          .setMethodToViewTransformer(new NodeJSSampleMethodToViewTransformer())
-          .setOverrides(sampleConfigOverrides)
-          .setTypeNameGenerator(new NodeJSTypeNameGenerator())
-          .setOutputRoot(outputRoot)
+      return CommonDiscoveryProvider.newBuilder()
+          .setContext(new NodeJSDiscoveryContext(service, apiaryConfig))
+          .setSnippetSetRunner(
+              new NodeJSSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
+          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
           .build();
-
     } else if (id.equals(PHP)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new PhpDiscoveryContext(service, apiaryConfig))
