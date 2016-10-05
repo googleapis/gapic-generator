@@ -113,7 +113,7 @@ public class NameTest {
   }
 
   @Test
-  public void acronyms() {
+  public void separateAcronyms() {
     Name name = Name.upperCamel("IAM", "HTTP", "XML", "Dog");
     Truth.assertThat(name.toLowerUnderscore()).isEqualTo("iam_http_xml_dog");
     Truth.assertThat(name.toUpperUnderscore()).isEqualTo("IAM_HTTP_XML_DOG");
@@ -138,5 +138,23 @@ public class NameTest {
   @Test(expected = IllegalArgumentException.class)
   public void ambiguousRepeatedAcronym() {
     System.out.println(Name.upperCamel("APIDogAPIAMName").toLowerUnderscore());
+  }
+
+  @Test
+  public void upperCamelUpperAcronymsSeparate() {
+    Name name = Name.upperCamelKeepUpperAcronyms("IAM", "HTTP", "XML", "Dog");
+    Truth.assertThat(name.toLowerUnderscore()).isEqualTo("iam_http_xml_dog");
+    Truth.assertThat(name.toUpperUnderscore()).isEqualTo("IAM_HTTP_XML_DOG");
+    Truth.assertThat(name.toLowerCamel()).isEqualTo("iamHTTPXMLDog");
+    Truth.assertThat(name.toUpperCamel()).isEqualTo("IAMHTTPXMLDog");
+  }
+
+  @Test
+  public void upperCamelUpperAcronymsCombined() {
+    Name name = Name.upperCamelKeepUpperAcronyms("IAMHTTPXML");
+    Truth.assertThat(name.toLowerUnderscore()).isEqualTo("iam_http_xml");
+    Truth.assertThat(name.toUpperUnderscore()).isEqualTo("IAM_HTTP_XML");
+    Truth.assertThat(name.toLowerCamel()).isEqualTo("iamHTTPXML");
+    Truth.assertThat(name.toUpperCamel()).isEqualTo("IAMHTTPXML");
   }
 }

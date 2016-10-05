@@ -16,6 +16,7 @@
     {@statics(xapiClass)}
     {@staticFunctions(xapiClass)}
     {@constructors(xapiClass)}
+    {@memberMethods(xapiClass)}
     {@apiMethods(xapiClass)}
     {@cleanupSection()}
   }
@@ -63,7 +64,7 @@
    * object, which must be constructed before the call. Not every API method will have a request
    * object method.
    * <li> A "callable" method. This type of method takes no parameters and returns an immutable
-   * ApiCallable object, which can be used to initiate calls to the service.
+   * API callable object, which can be used to initiate calls to the service.
    * </ol>
    *
    * <p>See the individual methods for example code.
@@ -150,13 +151,19 @@
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
   @join apiCallable : xapiClass.apiCallableMembers
-    private final ApiCallable<{@apiCallable.requestTypeName}, {@apiCallable.responseTypeName}> {@apiCallable.name};
+    {@apiCallableMember(apiCallable)}
   @end
-
-  public final {@xapiClass.settingsClassName} getSettings() {
-    return settings;
-  }
   {@""}
+@end
+
+@private apiCallableMember(apiCallable)
+  @if apiCallable.isStreaming
+    private final StreamingApiCallable<{@apiCallable.requestTypeName}, \
+      {@apiCallable.responseTypeName}> {@apiCallable.name};
+  @else
+    private final UnaryApiCallable<{@apiCallable.requestTypeName}, \
+      {@apiCallable.responseTypeName}> {@apiCallable.name};
+  @end
 @end
 
 @private constructors(xapiClass)
@@ -187,17 +194,19 @@
     this.channel = settings.getChannelProvider().getOrBuildChannel(this.executor);
 
     @join apiCallable : xapiClass.apiCallableMembers
-      @switch apiCallable.type.toString
+      @switch apiCallable.type
       @case "SimpleApiCallable"
-        this.{@apiCallable.name} = ApiCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+        this.{@apiCallable.name} = UnaryApiCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
       @case "PagedApiCallable"
         this.{@apiCallable.name} =
-            ApiCallable.createPagedVariant(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+            UnaryApiCallable.createPagedVariant(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
       @case "BundlingApiCallable"
-        this.{@apiCallable.name} = ApiCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+        this.{@apiCallable.name} = UnaryApiCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
         if (settings.{@apiCallable.settingsFunctionName}().getBundlerFactory() != null) {
           closeables.add(settings.{@apiCallable.settingsFunctionName}().getBundlerFactory());
         }
+      @case "StreamingApiCallable"
+        this.{@apiCallable.name} = StreamingApiCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel);
       @default
         $unhandledCase: {@apiCallable.type.toString}$
       @end
@@ -225,9 +234,16 @@
   {@""}
 @end
 
+@private memberMethods(xapiClass)
+  public final {@xapiClass.settingsClassName} getSettings() {
+    return settings;
+  }
+  {@""}
+@end
+
 @private apiMethods(xapiClass)
   @join apiMethod : xapiClass.apiMethods
-    @switch apiMethod.type.toString
+    @switch apiMethod.type
     @case "PagedFlattenedMethod"
       {@pagedFlattenedMethod(apiMethod)}
     @case "PagedRequestObjectMethod"
@@ -347,8 +363,23 @@
 @end
 
 @private callableMethodImpl(apiMethod)
-  public final ApiCallable<{@apiMethod.apiRequestTypeName}, {@apiMethod.responseTypeName}> \
-      {@apiMethod.name}() {
+  @if apiMethod.isStreaming
+    {@streamingCallableMethod(apiMethod)}
+  @else
+    {@nonStreamingCallableMethod(apiMethod)}
+  @end
+@end
+
+@private nonStreamingCallableMethod(apiMethod)
+  public final UnaryApiCallable<{@apiMethod.apiRequestTypeName}, \
+      {@apiMethod.responseTypeName}> {@apiMethod.name}() {
+    return {@apiMethod.callableMethod.callableName};
+  }
+@end
+
+@private streamingCallableMethod(apiMethod)
+  public final StreamingApiCallable<{@apiMethod.apiRequestTypeName}, \
+      {@apiMethod.responseTypeName}> {@apiMethod.name}() {
     return {@apiMethod.callableMethod.callableName};
   }
 @end

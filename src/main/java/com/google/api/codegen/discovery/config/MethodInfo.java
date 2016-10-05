@@ -27,6 +27,14 @@ import javax.annotation.Nullable;
 public abstract class MethodInfo {
 
   /**
+   * Returns the HTTP verb of the method.
+   *
+   * For example: "GET"
+   */
+  @JsonProperty("verb")
+  public abstract String verb();
+
+  /**
    * Returns a list of the method-name's components.
    *
    * The method ID parsed from discovery is of the format
@@ -96,12 +104,43 @@ public abstract class MethodInfo {
   @Nullable
   public abstract FieldInfo pageStreamingResourceField();
 
+  /**
+   * Returns true if the request body contains the page streaming resource setter.
+   *
+   * Provided to support a workaround for the logging.entries.list method in
+   * Java, where the request body, instead of the request, contains the page
+   * streaming resource setter.
+   */
+  @JsonProperty("isPageStreamingResourceSetterInRequestBody")
+  public abstract boolean isPageStreamingResourceSetterInRequestBody();
+
+  /**
+   * Returns true if the method supports media upload.
+   */
+  @JsonProperty("hasMediaUpload")
+  public abstract boolean hasMediaUpload();
+
+  /**
+   * Returns true if the method supports media download.
+   */
+  @JsonProperty("hasMediaDownload")
+  public abstract boolean hasMediaDownload();
+
+  /**
+   * Returns a list of the method's accepted authentication scopes.
+   */
+  @JsonProperty("authScopes")
+  public abstract List<String> authScopes();
+
   public static Builder newBuilder() {
     return new AutoValue_MethodInfo.Builder();
   }
 
   @AutoValue.Builder
   public static abstract class Builder {
+
+    @JsonProperty("verb")
+    public abstract Builder verb(String val);
 
     @JsonProperty("nameComponents")
     public abstract Builder nameComponents(List<String> val);
@@ -123,6 +162,18 @@ public abstract class MethodInfo {
 
     @JsonProperty("pageStreamingResourceField")
     public abstract Builder pageStreamingResourceField(FieldInfo val);
+
+    @JsonProperty("isPageStreamingResourceSetterInRequestBody")
+    public abstract Builder isPageStreamingResourceSetterInRequestBody(boolean val);
+
+    @JsonProperty("hasMediaUpload")
+    public abstract Builder hasMediaUpload(boolean val);
+
+    @JsonProperty("hasMediaDownload")
+    public abstract Builder hasMediaDownload(boolean val);
+
+    @JsonProperty("authScopes")
+    public abstract Builder authScopes(List<String> val);
 
     public abstract MethodInfo build();
   }

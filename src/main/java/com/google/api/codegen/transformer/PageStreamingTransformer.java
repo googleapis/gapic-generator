@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.MethodConfig;
-import com.google.api.codegen.PageStreamingConfig;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorView;
@@ -94,9 +94,13 @@ public class PageStreamingTransformer {
 
     TypeRef tokenType = pageStreaming.getResponseTokenField().getType();
     desc.tokenTypeName(typeTable.getAndSaveNicknameFor(tokenType));
-
     desc.defaultTokenValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(tokenType));
-    desc.resourceZeroValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(resourceType));
+
+    // The resource fields are "repeated" in the proto.
+    // We `makeOptional` so that we get the zero value of the resource,
+    // not the zero value of the array/list of resources.
+    desc.resourceZeroValue(
+        context.getTypeTable().getZeroValueAndSaveNicknameFor(resourceType.makeOptional()));
 
     desc.requestTokenSetFunction(
         namer.getFieldSetFunctionName(featureConfig, pageStreaming.getRequestTokenField()));

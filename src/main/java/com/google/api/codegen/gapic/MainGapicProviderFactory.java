@@ -14,12 +14,12 @@
  */
 package com.google.api.codegen.gapic;
 
-import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ProtoFileView;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.clientconfig.ClientConfigGapicContext;
 import com.google.api.codegen.clientconfig.ClientConfigSnippetSetRunner;
+import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.nodejs.NodeJSCodePathMapper;
 import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;

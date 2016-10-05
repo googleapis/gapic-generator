@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.go;
 
+import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryContext;
 import com.google.api.codegen.DiscoveryImporter;
@@ -46,6 +47,10 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
     return lowerCamelToUpperCamel(super.getMethodName(method));
   }
 
+  public boolean isReserved(String name) {
+    return GoTypeTable.RESERVED_IDENTIFIER_SET.contains(name);
+  }
+
   @Override
   protected String arrayTypeName(String elementName) {
     return String.format("%sArray", elementName);
@@ -58,7 +63,7 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
 
   @Override
   protected String objectTypeName(String typeName) {
-    return upperCamelToLowerCamel(typeName);
+    return upperCamelToLowerCamel(getSimpleName(typeName));
   }
 
   public String typeDefaultValue(Type type, Field field) {
@@ -178,7 +183,7 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
    * exists, it is stripped to its last path-element and converted to camel case, eg
    * "https://www.googleapis.com/auth/cloud-platform" becomes "CloudPlatform".
    */
-  public ImmutableList<String> getAuthScopes(Method method) {
+  public ImmutableList<String> getFormattedAuthScopes(Method method) {
     if (!getApiaryConfig().getAuthScopes().containsKey(method.getName())) {
       return ImmutableList.<String>of();
     }

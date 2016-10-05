@@ -73,7 +73,7 @@ ext {
     jacksonGuava: 'com.fasterxml.jackson.datatype:jackson-datatype-guava:2.7.0',
 
     // Formatter
-    javaFomatter: 'com.google.googlejavaformat:google-java-format:0.1-alpha'
+    javaFomatter: 'com.google.googlejavaformat:google-java-format:1.1'
   ]
 }
 
@@ -193,7 +193,7 @@ task setupProtocEnvironment << {
 test.dependsOn setupProtocEnvironment
 
 task showRuntimeClassPath << {
-  println sourceSets.main.runtimeClasspath.asPath
+  println 'output: ' + sourceSets.main.runtimeClasspath.asPath
 }
 
 // Test Logging
@@ -392,7 +392,7 @@ task showProtobufPath() << {
 task showJavaFormatterPath << {
   DependencyResolver resolver = new DependencyResolver(project)
   println 'output: ' + resolver.locateArchive(
-    'com.google.googlejavaformat:google-java-format:0.1-alpha')
+    'com.google.googlejavaformat:google-java-format:1.1:all-deps')
 }
 
 // Task to run ConfigGeneratorTool

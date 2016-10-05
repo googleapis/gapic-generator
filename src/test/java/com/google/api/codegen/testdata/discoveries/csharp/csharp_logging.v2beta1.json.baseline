@@ -1,7 +1,7 @@
 
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -15,8 +15,70 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+
+using Data = Google.Apis.Logging.v2beta1.Data;
+
+
+namespace LoggingSample
+{
+    public class LoggingServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
+            // TODO: Change placeholder below to desired parameter value for the `Delete` method:
+
+            // Required. The resource name of the log to delete.  Example:
+            // `"projects/my-project/logs/syslog"`.
+            string logName = "billingAccounts/{MY-BILLINGACCOUNT}/logs/{MY-LOG}";
+
+
+            BillingAccountsResource.LogsResource.DeleteRequest request = loggingService.BillingAccounts.Logs.Delete(logName);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Empty response = request.Execute();
+            // Data.Empty response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Stackdriver Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Logging.v2beta1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
@@ -62,7 +124,7 @@ namespace LoggingSample
                 foreach (Data.LogEntry logEntry in response.Entries)
                 {
                     // TODO: Change code below to process each `logEntry` resource:
-                    Console.WriteLine(new JavaScriptSerializer().Serialize(logEntry));
+                    Console.WriteLine(logEntry);
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -71,7 +133,7 @@ namespace LoggingSample
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -85,8 +147,8 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
@@ -123,13 +185,13 @@ namespace LoggingSample
             // Data.WriteLogEntriesResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -143,8 +205,8 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
@@ -186,7 +248,7 @@ namespace LoggingSample
                 foreach (Data.MonitoredResourceDescriptor monitoredResourceDescriptor in response.ResourceDescriptors)
                 {
                     // TODO: Change code below to process each `monitoredResourceDescriptor` resource:
-                    Console.WriteLine(new JavaScriptSerializer().Serialize(monitoredResourceDescriptor));
+                    Console.WriteLine(monitoredResourceDescriptor);
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -195,7 +257,7 @@ namespace LoggingSample
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -209,8 +271,8 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
@@ -239,24 +301,25 @@ namespace LoggingSample
 
             // TODO: Change placeholder below to desired parameter value for the `Delete` method:
 
-            // Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
-            string logName = "projects/{MY-PROJECT}/logs/{MY-LOG}";
+            // Required. The resource name of the log to delete.  Example:
+            // `"projects/my-project/logs/syslog"`.
+            string logName = "organizations/{MY-ORGANIZATION}/logs/{MY-LOG}";
 
 
-            ProjectsResource.LogsResource.DeleteRequest request = loggingService.Projects.Logs.Delete(logName);
+            OrganizationsResource.LogsResource.DeleteRequest request = loggingService.Organizations.Logs.Delete(logName);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Empty response = request.Execute();
             // Data.Empty response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -270,8 +333,70 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+
+using Data = Google.Apis.Logging.v2beta1.Data;
+
+
+namespace LoggingSample
+{
+    public class LoggingServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
+            // TODO: Change placeholder below to desired parameter value for the `Delete` method:
+
+            // Required. The resource name of the log to delete.  Example:
+            // `"projects/my-project/logs/syslog"`.
+            string logName = "projects/{MY-PROJECT}/logs/{MY-LOG}";
+
+
+            ProjectsResource.LogsResource.DeleteRequest request = loggingService.Projects.Logs.Delete(logName);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Empty response = request.Execute();
+            // Data.Empty response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Stackdriver Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Logging.v2beta1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
@@ -300,29 +425,30 @@ namespace LoggingSample
 
             // TODO: Change placeholder below to desired parameter value for the `Create` method:
 
-            // The resource name of the project in which to create the metric. Example: `"projects/my-project-id"`.
+            // The resource name of the project in which to create the metric.
+            // Example: `"projects/my-project-id"`.
             // The new metric must be provided in the request.
-            string projectName = "projects/{MY-PROJECT}";
+            string parent = "projects/{MY-PROJECT}";
 
 
             Data.LogMetric requestBody = new Data.LogMetric();
             // TODO: Assign values to desired properties of the `requestBody` object.
 
 
-            ProjectsResource.MetricsResource.CreateRequest request = loggingService.Projects.Metrics.Create(requestBody, projectName);
+            ProjectsResource.MetricsResource.CreateRequest request = loggingService.Projects.Metrics.Create(requestBody, parent);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.LogMetric response = request.Execute();
             // Data.LogMetric response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -336,8 +462,8 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
@@ -366,7 +492,8 @@ namespace LoggingSample
 
             // TODO: Change placeholder below to desired parameter value for the `Delete` method:
 
-            // The resource name of the metric to delete. Example: `"projects/my-project-id/metrics/my-metric-id"`.
+            // The resource name of the metric to delete.
+            // Example: `"projects/my-project-id/metrics/my-metric-id"`.
             string metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}";
 
 
@@ -377,13 +504,13 @@ namespace LoggingSample
             // Data.Empty response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -397,8 +524,8 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
@@ -427,7 +554,8 @@ namespace LoggingSample
 
             // TODO: Change placeholder below to desired parameter value for the `Get` method:
 
-            // The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
+            // The resource name of the desired metric.
+            // Example: `"projects/my-project-id/metrics/my-metric-id"`.
             string metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}";
 
 
@@ -438,13 +566,13 @@ namespace LoggingSample
             // Data.LogMetric response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -458,8 +586,8 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
@@ -488,12 +616,12 @@ namespace LoggingSample
 
             // TODO: Change placeholder below to desired parameter value for the `List` method:
 
-            // Required. The resource name of the project containing the metrics. Example:
-            // `"projects/my-project-id"`.
-            string projectName = "projects/{MY-PROJECT}";
+            // Required. The resource name containing the metrics.
+            // Example: `"projects/my-project-id"`.
+            string parent = "projects/{MY-PROJECT}";
 
 
-            ProjectsResource.MetricsResource.ListRequest request = loggingService.Projects.Metrics.List(projectName);
+            ProjectsResource.MetricsResource.ListRequest request = loggingService.Projects.Metrics.List(parent);
 
             Data.ListLogMetricsResponse response;
             do
@@ -509,7 +637,7 @@ namespace LoggingSample
                 foreach (Data.LogMetric logMetric in response.Metrics)
                 {
                     // TODO: Change code below to process each `logMetric` resource:
-                    Console.WriteLine(new JavaScriptSerializer().Serialize(logMetric));
+                    Console.WriteLine(logMetric);
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -518,7 +646,7 @@ namespace LoggingSample
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -532,8 +660,8 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
@@ -562,9 +690,11 @@ namespace LoggingSample
 
             // TODO: Change placeholder below to desired parameter value for the `Update` method:
 
-            // The resource name of the metric to update. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-            // The updated metric must be provided in the request and have the same identifier that is specified in
-            // `metricName`. If the metric does not exist, it is created.
+            // The resource name of the metric to update.
+            // Example: `"projects/my-project-id/metrics/my-metric-id"`.
+            // The updated metric must be provided in the request and have the
+            // same identifier that is specified in `metricName`.
+            // If the metric does not exist, it is created.
             string metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}";
 
 
@@ -579,13 +709,13 @@ namespace LoggingSample
             // Data.LogMetric response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -599,8 +729,8 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
@@ -629,29 +759,30 @@ namespace LoggingSample
 
             // TODO: Change placeholder below to desired parameter value for the `Create` method:
 
-            // The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`.
+            // Required. The resource in which to create the sink.
+            // Example: `"projects/my-project-id"`.
             // The new sink must be provided in the request.
-            string projectName = "projects/{MY-PROJECT}";
+            string parent = "projects/{MY-PROJECT}";
 
 
             Data.LogSink requestBody = new Data.LogSink();
             // TODO: Assign values to desired properties of the `requestBody` object.
 
 
-            ProjectsResource.SinksResource.CreateRequest request = loggingService.Projects.Sinks.Create(requestBody, projectName);
+            ProjectsResource.SinksResource.CreateRequest request = loggingService.Projects.Sinks.Create(requestBody, parent);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.LogSink response = request.Execute();
             // Data.LogSink response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -665,8 +796,8 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
@@ -695,7 +826,10 @@ namespace LoggingSample
 
             // TODO: Change placeholder below to desired parameter value for the `Delete` method:
 
-            // The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
+            // Required. The resource name of the sink to delete, including the parent
+            // resource and the sink identifier.  Example:
+            // `"projects/my-project-id/sinks/my-sink-id"`.  It is an error if the sink
+            // does not exist.
             string sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}";
 
 
@@ -706,13 +840,13 @@ namespace LoggingSample
             // Data.Empty response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -726,8 +860,8 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
@@ -756,7 +890,8 @@ namespace LoggingSample
 
             // TODO: Change placeholder below to desired parameter value for the `Get` method:
 
-            // The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
+            // Required. The resource name of the sink to return.
+            // Example: `"projects/my-project-id/sinks/my-sink-id"`.
             string sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}";
 
 
@@ -767,13 +902,13 @@ namespace LoggingSample
             // Data.LogSink response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -787,8 +922,8 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
@@ -817,12 +952,12 @@ namespace LoggingSample
 
             // TODO: Change placeholder below to desired parameter value for the `List` method:
 
-            // Required. The resource name of the project containing the sinks. Example:
-            // `"projects/my-logging-project"`.
-            string projectName = "projects/{MY-PROJECT}";
+            // Required. The cloud resource containing the sinks.
+            // Example: `"projects/my-logging-project"`.
+            string parent = "projects/{MY-PROJECT}";
 
 
-            ProjectsResource.SinksResource.ListRequest request = loggingService.Projects.Sinks.List(projectName);
+            ProjectsResource.SinksResource.ListRequest request = loggingService.Projects.Sinks.List(parent);
 
             Data.ListSinksResponse response;
             do
@@ -838,7 +973,7 @@ namespace LoggingSample
                 foreach (Data.LogSink logSink in response.Sinks)
                 {
                     // TODO: Change code below to process each `logSink` resource:
-                    Console.WriteLine(new JavaScriptSerializer().Serialize(logSink));
+                    Console.WriteLine(logSink);
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -847,7 +982,7 @@ namespace LoggingSample
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API
+// 1. If not already done, enable the Stackdriver Logging API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
@@ -861,8 +996,8 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
@@ -891,9 +1026,9 @@ namespace LoggingSample
 
             // TODO: Change placeholder below to desired parameter value for the `Update` method:
 
-            // The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The
-            // updated sink must be provided in the request and have the same name that is specified in `sinkName`.
-            // If the sink does not exist, it is created.
+            // Required. The resource name of the sink to update, including the parent
+            // resource and the sink identifier.  If the sink does not exist, this method
+            // creates the sink.  Example: `"projects/my-project-id/sinks/my-sink-id"`.
             string sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}";
 
 
@@ -908,7 +1043,7 @@ namespace LoggingSample
             // Data.LogSink response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }

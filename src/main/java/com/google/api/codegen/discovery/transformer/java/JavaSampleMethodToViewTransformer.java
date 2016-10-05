@@ -17,6 +17,8 @@ package com.google.api.codegen.discovery.transformer.java;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+
+import com.google.api.codegen.discovery.config.AuthType;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
 import com.google.api.codegen.discovery.config.SampleConfig;
@@ -31,6 +33,7 @@ import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.Strings;
 import com.google.protobuf.Method;
 
 /*
@@ -80,23 +83,34 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     MethodInfo methodInfo = sampleConfig.methods().get(context.getMethodName());
     SampleNamer sampleNamer = context.getSampleNamer();
     SampleTypeTable sampleTypeTable = context.getTypeTable();
-    SymbolTable symbolTable = new SymbolTable();
+    SymbolTable symbolTable = SymbolTable.fromSeed(JavaTypeTable.RESERVED_IDENTIFIER_SET);
 
     SampleBodyView.Builder sampleBodyView = SampleBodyView.newBuilder();
-    sampleBodyView.serviceVarName(symbolTable.getNewSymbol(sampleNamer.getServiceVarName()));
+    sampleBodyView.serviceVarName(
+        symbolTable.getNewSymbol(sampleNamer.getServiceVarName(sampleConfig.apiTypeName())));
     sampleBodyView.serviceTypeName(
         sampleTypeTable.getAndSaveNicknameForServiceType(sampleConfig.apiTypeName()));
+    sampleBodyView.methodVerb(methodInfo.verb());
     sampleBodyView.methodNameComponents(methodInfo.nameComponents());
     sampleBodyView.requestVarName(symbolTable.getNewSymbol(sampleNamer.getRequestVarName()));
+    // We don't store this type in the type table because its nickname is fully
+    // qualified. If we use the getAndSaveNickname helper, the nickname returned
+    // is always the last segment of the import path. Since the request type is
+    // derived from the service type, skipping the type table can't cause any
+    // issues.
     sampleBodyView.requestTypeName(
-        sampleTypeTable.getAndSaveNicknameForRequestType(
-            sampleConfig.apiTypeName(), methodInfo.requestType()));
+        sampleTypeTable
+            .getRequestTypeName(sampleConfig.apiTypeName(), methodInfo.requestType())
+            .getNickname());
 
     sampleBodyView.requestBodyVarName("");
     sampleBodyView.requestBodyTypeName("");
     sampleBodyView.resourceGetterName("");
+    sampleBodyView.resourceVarName("");
     sampleBodyView.resourceTypeName("");
     sampleBodyView.isResourceMap(false);
+    sampleBodyView.isResourceSetterInRequestBody(
+        methodInfo.isPageStreamingResourceSetterInRequestBody());
 
     if (methodInfo.isPageStreaming()) {
       FieldInfo fieldInfo = methodInfo.pageStreamingResourceField();
@@ -105,8 +119,11 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
             "method is page streaming, but the page streaming resource field is null.");
       }
       sampleBodyView.resourceGetterName(sampleNamer.getResourceGetterName(fieldInfo.name()));
-      sampleBodyView.resourceTypeName(
-          sampleTypeTable.getAndSaveNickNameForElementType(fieldInfo.type()));
+      String resourceTypeName = sampleTypeTable.getAndSaveNickNameForElementType(fieldInfo.type());
+      sampleBodyView.resourceTypeName(resourceTypeName);
+      String resourceVarName =
+          sampleNamer.getResourceVarName(fieldInfo.type().isMessage() ? resourceTypeName : "");
+      sampleBodyView.resourceVarName(symbolTable.getNewSymbol(resourceVarName));
       sampleBodyView.isResourceMap(fieldInfo.type().isMap());
     }
 
@@ -139,21 +156,34 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     sampleBodyView.fieldVarNames(fieldVarNames);
     sampleBodyView.isPageStreaming(methodInfo.isPageStreaming());
 
+    sampleBodyView.hasMediaUpload(methodInfo.hasMediaUpload());
+    sampleBodyView.hasMediaDownload(methodInfo.hasMediaDownload());
+
+    sampleBodyView.authType(sampleConfig.authType());
+    sampleBodyView.authInstructionsUrl(sampleConfig.authInstructionsUrl());
+    sampleBodyView.authScopes(methodInfo.authScopes());
+    sampleBodyView.isAuthScopesSingular(methodInfo.authScopes().size() == 1);
+    sampleBodyView.createServiceFuncName(
+        sampleNamer.createServiceFuncName(sampleConfig.apiTypeName()));
     return sampleBodyView.build();
   }
 
   public SampleFieldView generateSampleField(
       Entry<String, FieldInfo> field, SampleTypeTable sampleTypeTable, SymbolTable symbolTable) {
     TypeInfo typeInfo = field.getValue().type();
+    String defaultValue = sampleTypeTable.getZeroValueAndSaveNicknameFor(typeInfo);
+    String example = field.getValue().example();
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.getKey()))
         .typeName(sampleTypeTable.getAndSaveNicknameFor(typeInfo))
-        .defaultValue(sampleTypeTable.getZeroValueAndSaveNicknameFor(typeInfo))
+        .defaultValue(defaultValue)
+        .example(example)
         .description(field.getValue().description())
         .build();
   }
 
   private void addStaticImports(SampleTransformerContext context) {
+    SampleConfig sampleConfig = context.getSampleConfig();
     SampleTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("com.google.api.client.googleapis.auth.oauth2.GoogleCredential");
     typeTable.saveNicknameFor("com.google.api.client.googleapis.javanet.GoogleNetHttpTransport");
@@ -162,6 +192,8 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     typeTable.saveNicknameFor("com.google.api.client.json.JsonFactory");
     typeTable.saveNicknameFor("java.io.IOException");
     typeTable.saveNicknameFor("java.security.GeneralSecurityException");
-    typeTable.saveNicknameFor("java.util.Arrays");
+    if (sampleConfig.authType() == AuthType.APPLICATION_DEFAULT_CREDENTIALS) {
+      typeTable.saveNicknameFor("java.util.Arrays");
+    }
   }
 }

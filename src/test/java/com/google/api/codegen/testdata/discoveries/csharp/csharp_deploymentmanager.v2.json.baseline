@@ -15,8 +15,8 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
@@ -63,7 +63,7 @@ namespace DeploymentManagerSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
@@ -83,8 +83,8 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
@@ -127,7 +127,7 @@ namespace DeploymentManagerSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
@@ -147,8 +147,8 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
@@ -191,7 +191,7 @@ namespace DeploymentManagerSample
             // Data.Deployment response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
@@ -211,8 +211,72 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+
+using Data = Google.Apis.DeploymentManager.v2.Data;
+
+
+namespace DeploymentManagerSample
+{
+    public class DeploymentManagerServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            DeploymentManagerService deploymentManagerService = new DeploymentManagerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
+            // TODO: Change placeholders below to desired parameter values for the `GetIamPolicy` method:
+
+            // Project ID for this request.
+            string project = "{MY-PROJECT}";
+
+            // Name of the resource for this request.
+            string resource = "{MY-RESOURCE}";
+
+
+            DeploymentsResource.GetIamPolicyRequest request = deploymentManagerService.Deployments.GetIamPolicy(project, resource);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Policy response = request.Execute();
+            // Data.Policy response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Deployment Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/deploymentmanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.DeploymentManager.v2;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
@@ -256,7 +320,7 @@ namespace DeploymentManagerSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
@@ -276,8 +340,8 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
@@ -326,7 +390,7 @@ namespace DeploymentManagerSample
                 foreach (Data.Deployment deployment in response.Deployments)
                 {
                     // TODO: Change code below to process each `deployment` resource:
-                    Console.WriteLine(new JavaScriptSerializer().Serialize(deployment));
+                    Console.WriteLine(deployment);
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -349,8 +413,8 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
@@ -397,7 +461,7 @@ namespace DeploymentManagerSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
@@ -417,8 +481,76 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+
+using Data = Google.Apis.DeploymentManager.v2.Data;
+
+
+namespace DeploymentManagerSample
+{
+    public class DeploymentManagerServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            DeploymentManagerService deploymentManagerService = new DeploymentManagerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
+            // TODO: Change placeholders below to desired parameter values for the `SetIamPolicy` method:
+
+            // Project ID for this request.
+            string project = "{MY-PROJECT}";
+
+            // Name of the resource for this request.
+            string resource = "{MY-RESOURCE}";
+
+
+            Data.Policy requestBody = new Data.Policy();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            DeploymentsResource.SetIamPolicyRequest request = deploymentManagerService.Deployments.SetIamPolicy(requestBody, project, resource);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Policy response = request.Execute();
+            // Data.Policy response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Deployment Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/deploymentmanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.DeploymentManager.v2;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
@@ -465,7 +597,7 @@ namespace DeploymentManagerSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
@@ -485,8 +617,76 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+
+using Data = Google.Apis.DeploymentManager.v2.Data;
+
+
+namespace DeploymentManagerSample
+{
+    public class DeploymentManagerServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            DeploymentManagerService deploymentManagerService = new DeploymentManagerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
+            // TODO: Change placeholders below to desired parameter values for the `TestIamPermissions` method:
+
+            // Project ID for this request.
+            string project = "{MY-PROJECT}";
+
+            // Name of the resource for this request.
+            string resource = "{MY-RESOURCE}";
+
+
+            Data.TestPermissionsRequest requestBody = new Data.TestPermissionsRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            DeploymentsResource.TestIamPermissionsRequest request = deploymentManagerService.Deployments.TestIamPermissions(requestBody, project, resource);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.TestPermissionsResponse response = request.Execute();
+            // Data.TestPermissionsResponse response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Deployment Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/deploymentmanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.DeploymentManager.v2;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
@@ -533,7 +733,7 @@ namespace DeploymentManagerSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
@@ -553,8 +753,8 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
@@ -600,7 +800,7 @@ namespace DeploymentManagerSample
             // Data.Manifest response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
@@ -620,8 +820,8 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
@@ -673,7 +873,7 @@ namespace DeploymentManagerSample
                 foreach (Data.Manifest manifest in response.Manifests)
                 {
                     // TODO: Change code below to process each `manifest` resource:
-                    Console.WriteLine(new JavaScriptSerializer().Serialize(manifest));
+                    Console.WriteLine(manifest);
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -696,8 +896,8 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
@@ -740,7 +940,7 @@ namespace DeploymentManagerSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
@@ -760,8 +960,8 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
@@ -810,7 +1010,7 @@ namespace DeploymentManagerSample
                 foreach (Data.Operation operation in response.Operations)
                 {
                     // TODO: Change code below to process each `operation` resource:
-                    Console.WriteLine(new JavaScriptSerializer().Serialize(operation));
+                    Console.WriteLine(operation);
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -833,8 +1033,8 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
@@ -880,7 +1080,7 @@ namespace DeploymentManagerSample
             // Data.Resource response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(new JavaScriptSerializer().Serialize(response));
+            Console.WriteLine(response);
         }
     }
 }
@@ -900,8 +1100,8 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
@@ -953,7 +1153,7 @@ namespace DeploymentManagerSample
                 foreach (Data.Resource resource in response.Resources)
                 {
                     // TODO: Change code below to process each `resource` resource:
-                    Console.WriteLine(new JavaScriptSerializer().Serialize(resource));
+                    Console.WriteLine(resource);
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -976,8 +1176,8 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 using Data = Google.Apis.DeploymentManager.v2.Data;
 
@@ -1026,7 +1226,7 @@ namespace DeploymentManagerSample
                 foreach (Data.Type type in response.Types)
                 {
                     // TODO: Change code below to process each `type` resource:
-                    Console.WriteLine(new JavaScriptSerializer().Serialize(type));
+                    Console.WriteLine(type);
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);

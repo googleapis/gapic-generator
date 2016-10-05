@@ -360,8 +360,6 @@ class LibraryServiceApi
             $this->descriptors[$method]['pageStreamingDescriptor'] = $pageStreamingDescriptor;
         }
 
-        // TODO load the client config in a more package-friendly way
-        // https://github.com/googleapis/toolkit/issues/332
         $clientConfigJsonString = file_get_contents(__DIR__ . '/resources/library_service_client_config.json');
         $clientConfig = json_decode($clientConfigJsonString, true);
         $this->defaultCallSettings =
@@ -1110,9 +1108,11 @@ class LibraryServiceApi
      *     $formattedName = LibraryServiceApi::formatBookName("[SHELF]", "[BOOK]");
      *     $comment = "";
      *     $stage = Stage::UNSET;
+     *     $alignment = Alignment::CHAR;
      *     $commentsElement = new Comment();
      *     $commentsElement->setComment($comment);
      *     $commentsElement->setStage($stage);
+     *     $commentsElement->setAlignment($alignment);
      *     $comments = [$commentsElement];
      *     $libraryServiceApi->addComments($formattedName, $comments);
      * } finally {

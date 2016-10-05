@@ -17,6 +17,8 @@ package com.google.api.codegen.discovery.config.java;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.api.client.util.Strings;
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Joiner;
@@ -57,5 +59,31 @@ public class JavaTypeNameGenerator implements TypeNameGenerator {
       return NON_REQUEST_SUBPACKAGE;
     }
     return "";
+  }
+
+  @Override
+  public String getStringFormatExample(String format) {
+    if (Strings.isNullOrEmpty(format)) {
+      return "";
+    }
+    switch (format) {
+      case "byte":
+        return "Base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648";
+      case "date":
+        return "\"YYYY-MM-DD\": see java.text.SimpleDateFormat";
+      case "date-time":
+        return "\"YYYY-MM-DDThh:mm:ss.fffZ\": see com.google.api.client.util.DateTime.toStringRfc3339()";
+      default:
+        return "";
+    }
+  }
+
+  @Override
+  public String getFieldPatternExample(String pattern) {
+    String def = DefaultString.getNonTrivialPlaceholder(pattern);
+    if (Strings.isNullOrEmpty(def)) {
+      return "";
+    }
+    return String.format("\"%s\"", def);
   }
 }

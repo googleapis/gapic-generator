@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.CollectionConfig;
+import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
 import com.google.api.codegen.viewmodel.ParseResourceFunctionView;

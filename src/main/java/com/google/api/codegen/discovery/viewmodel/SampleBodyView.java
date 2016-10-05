@@ -15,7 +15,7 @@
 package com.google.api.codegen.discovery.viewmodel;
 
 import java.util.List;
-
+import com.google.api.codegen.discovery.config.AuthType;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -24,6 +24,8 @@ public abstract class SampleBodyView {
   public abstract String serviceVarName();
 
   public abstract String serviceTypeName();
+
+  public abstract String methodVerb();
 
   public abstract List<String> methodNameComponents();
 
@@ -51,9 +53,27 @@ public abstract class SampleBodyView {
 
   public abstract String resourceGetterName();
 
+  public abstract String resourceVarName();
+
   public abstract String resourceTypeName();
 
   public abstract boolean isResourceMap();
+
+  public abstract boolean isResourceSetterInRequestBody();
+
+  public abstract boolean hasMediaUpload();
+
+  public abstract boolean hasMediaDownload();
+
+  public abstract AuthType authType();
+
+  public abstract String authInstructionsUrl();
+
+  public abstract List<String> authScopes();
+
+  public abstract boolean isAuthScopesSingular();
+
+  public abstract String createServiceFuncName();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleBodyView.Builder();
@@ -65,6 +85,8 @@ public abstract class SampleBodyView {
     public abstract Builder serviceVarName(String val);
 
     public abstract Builder serviceTypeName(String val);
+
+    public abstract Builder methodVerb(String val);
 
     public abstract Builder methodNameComponents(List<String> val);
 
@@ -92,9 +114,27 @@ public abstract class SampleBodyView {
 
     public abstract Builder resourceGetterName(String val);
 
+    public abstract Builder resourceVarName(String val);
+
     public abstract Builder resourceTypeName(String val);
 
     public abstract Builder isResourceMap(boolean val);
+
+    public abstract Builder isResourceSetterInRequestBody(boolean val);
+
+    public abstract Builder hasMediaUpload(boolean val);
+
+    public abstract Builder hasMediaDownload(boolean val);
+
+    public abstract Builder authType(AuthType val);
+
+    public abstract Builder authInstructionsUrl(String val);
+
+    public abstract Builder authScopes(List<String> val);
+
+    public abstract Builder isAuthScopesSingular(boolean val);
+
+    public abstract Builder createServiceFuncName(String val);
 
     public abstract SampleBodyView build();
   }

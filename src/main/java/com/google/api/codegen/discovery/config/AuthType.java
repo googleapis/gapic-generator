@@ -12,18 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.config;
-
-import com.google.api.tools.framework.model.Method;
-
-import java.util.Map;
+package com.google.api.codegen.discovery.config;
 
 /**
- * Interface for method config generator.
+ * Contains the set of supported authentication formats.
  */
-public interface MethodConfigGenerator {
-  /**
-   * Generate the config data into a map structure. Return null if no data is generated.
-   */
-  public Map<String, Object> generate(Method method);
+public enum AuthType {
+  APPLICATION_DEFAULT_CREDENTIALS,
+  OAUTH_3L,
+  API_KEY
 }

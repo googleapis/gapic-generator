@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Predicate;

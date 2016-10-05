@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.py;
 
-import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.py.PythonImport.ImportType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -23,6 +23,7 @@ import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -47,7 +48,7 @@ public class PythonImportHandler {
   private final BiMap<ProtoFile, String> fileImports = HashBiMap.create();
 
   /** This constructor is for the main imports of a generated service file */
-  public PythonImportHandler(Interface service, ApiConfig apiConfig, boolean importEnums) {
+  public PythonImportHandler(Interface service, ApiConfig apiConfig) {
     // Add non-service-specific imports.
     addImportStandard("json");
     addImportStandard("os");
@@ -60,8 +61,11 @@ public class PythonImportHandler {
     addImportExternal("google.gax", "path_template");
 
     // only if add enum import if there are enums
-    if (importEnums) {
-      addImportLocal(apiConfig.getPackageName(), "enums");
+    for (TypeRef type : service.getModel().getSymbolTable().getDeclaredTypes()) {
+      if (type.isEnum() && type.getEnumType().isReachable()) {
+        addImportLocal(apiConfig.getPackageName(), "enums");
+        break;
+      }
     }
 
     // Add method request-type imports.

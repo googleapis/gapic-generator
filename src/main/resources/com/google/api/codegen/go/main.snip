@@ -159,7 +159,7 @@
 
 @private simpleMethod(view, method)
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) ({@method.responseTypeName}, error) {
-        ctx = metadata.NewContext(ctx, c.metadata)
+        {@mergeMetadata()}
         var resp {@method.responseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
@@ -175,7 +175,7 @@
 
 @private emptyReturnMethod(view, method)
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) error {
-        ctx = metadata.NewContext(ctx, c.metadata)
+        {@mergeMetadata()}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
             _, err = c.{@method.stubName}.{@method.name}(ctx, req)
@@ -187,10 +187,10 @@
 
 @private pageStreamingMethod(view, method)
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) *{@method.responseTypeName} {
-        ctx = metadata.NewContext(ctx, c.metadata)
+        {@mergeMetadata()}
         it := &{@method.responseTypeName}{}
 
-        fetch := func(pageSize int, pageToken string) (string, err) {
+        fetch := func(pageSize int, pageToken string) (string, error) {
             var resp {@method.listMethod.responseObjectTypeName}
             req.PageToken = pageToken
             if pageSize > math.MaxInt32 {
@@ -206,7 +206,7 @@
             if err != nil {
                 return "", err
             }
-            it.items = resp.{@method.listMethod.resourceFieldName}
+            it.items = append(it.items, resp.{@method.listMethod.resourceFieldName}...)
             return resp.NextPageToken, nil
         }
         bufLen := func() int { return len(it.items) }
@@ -244,10 +244,16 @@
         it.items = it.items[1:]
         return item, nil
     }
+
 @end
 
 @private pathTemplateParams(args)
     @join e : args on ", "
       {@e.name}
     @end
+@end
+
+@private mergeMetadata()
+    md, _ := metadata.FromContext(ctx)
+    ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
 @end

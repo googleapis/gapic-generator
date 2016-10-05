@@ -25,6 +25,8 @@ public abstract class SampleFieldView {
 
   public abstract String defaultValue();
 
+  public abstract String example();
+
   public abstract String description();
 
   public static Builder newBuilder() {
@@ -39,6 +41,8 @@ public abstract class SampleFieldView {
     public abstract Builder typeName(String val);
 
     public abstract Builder defaultValue(String val);
+
+    public abstract Builder example(String val);
 
     public abstract Builder description(String val);
 

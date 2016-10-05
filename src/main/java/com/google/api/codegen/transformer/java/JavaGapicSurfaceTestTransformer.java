@@ -14,11 +14,11 @@
  */
 package com.google.api.codegen.transformer.java;
 
-import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ImportTypeTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
@@ -49,6 +49,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -181,6 +182,10 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     ArrayList<GapicSurfaceTestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (Method method : context.getSupportedMethods()) {
+      if (MethodConfig.isGrpcStreamingMethod(method)) {
+        // TODO(shinfan): Add unit test support for streaming methods.
+        continue;
+      }
       MethodTransformerContext methodContext = context.asMethodContext(method);
       MethodConfig methodConfig = methodContext.getMethodConfig();
       if (methodConfig.isFlattening()) {
