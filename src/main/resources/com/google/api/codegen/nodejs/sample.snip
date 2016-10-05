@@ -30,7 +30,7 @@
 
 
         @end
-        {@field.name}: {@field.defaultValue},  // Update placeholder value.
+        {@field.name}: {@field.defaultValue},  // TODO: Update placeholder value.
         @if field.example
           // {@field.example}
         @end
@@ -85,6 +85,7 @@
             console.log(JSON.stringify({@sampleBody.pageVarName}[i], null, 2));
           }
         @end
+
         if ({@sampleBody.responseVarName}.nextPageToken) {
           {@sampleBody.requestVarName}.pageToken = {@sampleBody.responseVarName}.nextPageToken;
           {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}({@sampleBody.requestVarName}, {@sampleBody.handlePageVarName});
@@ -99,6 +100,7 @@
             console.log(err);
             return;
           }
+
           // TODO: Change code below to process the `{@sampleBody.responseVarName}` object:
           console.log(JSON.stringify({@sampleBody.responseVarName}, null, 2));
         });
