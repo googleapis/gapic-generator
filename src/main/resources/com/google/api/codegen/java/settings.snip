@@ -136,7 +136,7 @@
           {@settings.responseTypeName}> {@settings.memberName};
     @case "PagedApiCallable"
       private final PageStreamingCallSettings<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}, {@settings.resourceTypeName}, \
+          {@settings.responseTypeName}, \
           {@settings.pagedListResponseTypeName}> {@settings.memberName};
     @case "BundlingApiCallable"
       private final BundlingCallSettings<{@settings.requestTypeName}, \
@@ -161,7 +161,7 @@
        }
     @case "PagedApiCallable"
       public PageStreamingCallSettings<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}, {@settings.resourceTypeName}, \
+          {@settings.responseTypeName}, \
           {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
@@ -247,16 +247,15 @@
 @end
 
 @private pageStreamingFactories(xsettingsClass)
-  @join fact : xsettingsClass.pageStreamingFactories
-    private static final PageStreamingFactory<{@fact.requestTypeName}, {@fact.responseTypeName}, {@fact.resourceTypeName}, {@fact.pagedListResponseTypeName}> {@fact.name} =
-        new PageStreamingFactory<{@fact.requestTypeName}, {@fact.responseTypeName}, {@fact.resourceTypeName}, {@fact.pagedListResponseTypeName}>() {
+  @join factory : xsettingsClass.pageStreamingFactories
+    private static final PageStreamingFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}> {@factory.name} =
+        new PageStreamingFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}>() {
           @@Override
-          public {@fact.pagedListResponseTypeName} createPagedListResponse(
-              {@fact.requestTypeName} request,
-              FutureCallable<{@fact.requestTypeName}, {@fact.responseTypeName}> callable,
-              PageStreamingDescriptor<{@fact.requestTypeName}, {@fact.responseTypeName}, {@fact.resourceTypeName}> pageDescriptor,
+          public {@factory.pagedListResponseTypeName} createPagedListResponse(
+              {@factory.requestTypeName} request,
+              FutureCallable<{@factory.requestTypeName}, {@factory.responseTypeName}> callable,
               CallContext context) {
-            return new {@fact.pagedListResponseTypeName}(request, callable, pageDescriptor, context);
+            return new {@factory.pagedListResponseTypeName}(request, callable, {@factory.pageStreamingDescriptorName}, context);
           }
         };
     {@""}
@@ -368,7 +367,7 @@
           {@settings.responseTypeName}> {@settings.memberName};
     @case "PagedApiCallable"
       private final PageStreamingCallSettings.Builder<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}, {@settings.resourceTypeName}, \
+          {@settings.responseTypeName}, \
           {@settings.pagedListResponseTypeName}> {@settings.memberName};
     @case "BundlingApiCallable"
       private final BundlingCallSettings.Builder<{@settings.requestTypeName}, \

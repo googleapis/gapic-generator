@@ -28,6 +28,8 @@ public abstract class PageStreamingFactoryClassView {
 
   public abstract String pagedListResponseTypeName();
 
+  public abstract String pageStreamingDescriptorName();
+
   public static Builder newBuilder() {
     return new AutoValue_PageStreamingFactoryClassView.Builder();
   }
@@ -44,6 +46,8 @@ public abstract class PageStreamingFactoryClassView {
     public abstract Builder resourceTypeName(String val);
 
     public abstract Builder pagedListResponseTypeName(String val);
+
+    public abstract Builder pageStreamingDescriptorName(String val);
 
     public abstract PageStreamingFactoryClassView build();
   }

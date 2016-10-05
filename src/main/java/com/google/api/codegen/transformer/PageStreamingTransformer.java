@@ -133,12 +133,13 @@ public class PageStreamingTransformer {
 
     PageStreamingFactoryClassView.Builder factory = PageStreamingFactoryClassView.newBuilder();
 
-    factory.name(namer.getPageStreamingDescriptorConstName(method));
+    factory.name(namer.getPageStreamingFactoryConstName(method));
     factory.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     factory.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
     factory.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
     factory.pagedListResponseTypeName(
         namer.getAndSavePagedResponseTypeName(method, typeTable, resourceField));
+    factory.pageStreamingDescriptorName(namer.getPageStreamingDescriptorConstName(method));
 
     return factory.build();
   }
