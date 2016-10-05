@@ -1,9 +1,9 @@
-@snippet generate(sampleClass)
+@snippet generate(class)
   // BEFORE RUNNING:
   // ---------------
-  // 1. If not already done, enable the {@sampleClass.apiTitle}
+  // 1. If not already done, enable the {@class.apiTitle}
   //    and check the quota for your project at
-  //    https://console.developers.google.com/apis/api/{@sampleClass.apiName}
+  //    https://console.developers.google.com/apis/api/{@class.apiName}
   // 2. This sample uses Application Default Credentials for authentication.
   //    If not already done, install the gcloud CLI from
   //    https://cloud.google.com/sdk and run
@@ -11,18 +11,18 @@
   // 3. Install the Node.js client library by running
   //    `npm install googleapis --save`
 
-  var {@sampleClass.body.googleImportVarName} = require('googleapis');
-  var {@sampleClass.body.serviceVarName} = {@sampleClass.body.googleImportVarName}.{@sampleClass.body.serviceTypeName}('{@sampleClass.apiVersion}');
+  var {@class.body.googleImportVarName} = require('googleapis');
+  var {@class.body.serviceVarName} = {@class.body.googleImportVarName}.{@class.body.serviceTypeName}('{@class.apiVersion}');
 
-  {@mainFunc(sampleClass.body)}
+  {@mainFunc(class.body)}
 
-  {@authFunc(sampleClass.body)}
+  {@authFunc(class.body)}
 @end
 
-@private mainFunc(sampleBody)
-  {@sampleBody.authFuncName}(function(authClient) {
-    var {@sampleBody.requestVarName} = {
-      @join field : sampleBody.fields if sampleBody.fields
+@private mainFunc(body)
+  {@body.authFuncName}(function(authClient) {
+    var {@body.requestVarName} = {
+      @join field : body.fields if body.fields
         @if field.description
           @join line : util.getDocLines(field.description, 100)
             // {@line}
@@ -36,16 +36,18 @@
         @end
 
       @end
-      @if sampleBody.hasRequestBody
+      @if body.hasRequestBody
         resource: {
-          // TODO: Add desired properties of the request body.
-          @if sampleBody.methodVerb == "PATCH"
-            // Only added properties will be changed.
+          @if body.methodVerb == "PATCH"
+            // TODO: Add desired properties of the request body. Only added properties
+            // will be changed.
+          @else
+            // TODO: Add desired properties of the request body.
           @end
         },
 
       @end
-      @if sampleBody.hasMediaUpload
+      @if body.hasMediaUpload
         media: {
           // TODO: Add desired media content for upload. See:
           // https://github.com/google/google-api-nodejs-client#media-uploads
@@ -54,7 +56,7 @@
         },
 
       @end
-      @if sampleBody.hasMediaDownload
+      @if body.hasMediaDownload
         // TODO: To download media content, use:
         //
         // alt: 'media',
@@ -63,49 +65,49 @@
       auth: authClient
     };
 
-    @if sampleBody.isPageStreaming
-      var {@sampleBody.handlePageVarName} = function(err, {@sampleBody.responseVarName}) {
+    @if body.isPageStreaming
+      var {@body.handlePageVarName} = function(err, {@body.responseVarName}) {
         if (err) {
           console.log(err);
           return;
         }
 
-        var {@sampleBody.pageVarName} = {@sampleBody.responseVarName}['{@sampleBody.resourceFieldName}'];
-        if (!{@sampleBody.pageVarName}) {
+        var {@body.pageVarName} = {@body.responseVarName}['{@body.resourceFieldName}'];
+        if (!{@body.pageVarName}) {
           return;
         }
-        @if sampleBody.isResourceMap
-          Object.keys({@sampleBody.pageVarName}).forEach(function (name) {
+        @if body.isResourceMap
+          Object.keys({@body.pageVarName}).forEach(function (name) {
             // TODO: Change code below to process each `name` property:
-            console.log(name + ': ' + JSON.stringify({@sampleBody.pageVarName}['name'], null, 2));
+            console.log(name + ': ' + JSON.stringify({@body.pageVarName}['name'], null, 2));
           });
         @else
-          for (var i = 0; i < {@sampleBody.pageVarName}.length; i++) {
-            // TODO: Change code below to process each resource in `{@sampleBody.pageVarName}`:
-            console.log(JSON.stringify({@sampleBody.pageVarName}[i], null, 2));
+          for (var i = 0; i < {@body.pageVarName}.length; i++) {
+            // TODO: Change code below to process each resource in `{@body.pageVarName}`:
+            console.log(JSON.stringify({@body.pageVarName}[i], null, 2));
           }
         @end
 
-        if ({@sampleBody.responseVarName}.nextPageToken) {
-          {@sampleBody.requestVarName}.pageToken = {@sampleBody.responseVarName}.nextPageToken;
-          {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}({@sampleBody.requestVarName}, {@sampleBody.handlePageVarName});
+        if ({@body.responseVarName}.nextPageToken) {
+          {@body.requestVarName}.pageToken = {@body.responseVarName}.nextPageToken;
+          {@body.serviceVarName}.{@callChain(body.methodNameComponents)}({@body.requestVarName}, {@body.handlePageVarName});
         }
       };
 
-      {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}({@sampleBody.requestVarName}, {@sampleBody.handlePageVarName});
+      {@body.serviceVarName}.{@callChain(body.methodNameComponents)}({@body.requestVarName}, {@body.handlePageVarName});
     @else
-      @if sampleBody.hasResponse
-        {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}({@sampleBody.requestVarName}, function(err, {@sampleBody.responseVarName}) {
+      @if body.hasResponse
+        {@body.serviceVarName}.{@callChain(body.methodNameComponents)}({@body.requestVarName}, function(err, {@body.responseVarName}) {
           if (err) {
             console.log(err);
             return;
           }
 
-          // TODO: Change code below to process the `{@sampleBody.responseVarName}` object:
-          console.log(JSON.stringify({@sampleBody.responseVarName}, null, 2));
+          // TODO: Change code below to process the `{@body.responseVarName}` object:
+          console.log(JSON.stringify({@body.responseVarName}, null, 2));
         });
       @else
-        {@sampleBody.serviceVarName}.{@callChain(sampleBody.methodNameComponents)}({@sampleBody.requestVarName}, function(err) {
+        {@body.serviceVarName}.{@callChain(body.methodNameComponents)}({@body.requestVarName}, function(err) {
           if (err) {
             console.log(err);
             return;
@@ -116,8 +118,8 @@
   });
 @end
 
-@private authFunc(sampleBody)
-  function {@sampleBody.authFuncName}(callback) {
+@private authFunc(body)
+  function {@body.authFuncName}(callback) {
     google.auth.getApplicationDefault(function(err, authClient)) {
       if (err) {
         console.log('authentication failed: ', err);
