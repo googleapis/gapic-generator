@@ -48,8 +48,16 @@ public class GoGapicSurfaceTransformerTest {
     TestDataLocator locator = TestDataLocator.create(GoGapicSurfaceTransformerTest.class);
     model =
         CodegenTestUtil.readModel(
-            locator, tempDir, new String[] {"myproto.proto"}, new String[] {"myproto.yaml"});
-    service = model.getSymbolTable().getInterfaces().asList().get(0);
+            locator,
+            tempDir,
+            new String[] {"myproto.proto", "singleservice.proto"},
+            new String[] {"myproto.yaml"});
+    for (Interface serv : model.getSymbolTable().getInterfaces()) {
+      if (serv.getSimpleName().equals("Gopher")) {
+        service = serv;
+        break;
+      }
+    }
 
     ConfigProto configProto =
         CodegenTestUtil.readConfig(
@@ -103,6 +111,21 @@ public class GoGapicSurfaceTransformerTest {
     transformer.generateApiMethods(context, Collections.singletonList(method), PAGE_STREAM_IMPORTS);
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).containsKey("math");
+  }
+
+  @Test
+  public void testExampleImports() {
+    transformer.addXExampleImports(context);
+    Truth.assertThat(context.getTypeTable().getImports())
+        .containsEntry("golang.org/x/net/context", "");
+    Truth.assertThat(context.getTypeTable().getImports())
+        .containsEntry("cloud.google.com/go/gopher/apiv1", "");
+    Truth.assertThat(context.getTypeTable().getImports())
+        .containsEntry("google.golang.org/genproto/googleapis/example/myproto/v1", "myprotopb");
+
+    // Only shows up in response, not needed for example.
+    Truth.assertThat(context.getTypeTable().getImports())
+        .doesNotContainKey("google.golang.org/genproto/googleapis/example/odd/v1");
   }
 
   private Method getMethod(Interface service, String methodName) {
