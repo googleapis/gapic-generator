@@ -17,5 +17,6 @@ package com.google.api.codegen.viewmodel;
 public enum ApiCallableType {
   SimpleApiCallable,
   PagedApiCallable,
-  BundlingApiCallable
+  BundlingApiCallable,
+  StreamingApiCallable
 }

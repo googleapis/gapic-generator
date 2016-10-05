@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -101,68 +100,6 @@ public class PageStreamingConfig {
     }
     return new PageStreamingConfig(
         requestTokenField, pageSizeField, responseTokenField, resourcesField);
-  }
-
-  /**
-   * Creates an instance of PageStreamingConfig for gRPC response streaming, based on PageStreamingConfigProto,
-   * linking it up with the provided method. On errors, null will be returned, and diagnostics are reported to
-   * the diag collector.
-   *
-   */
-  @Nullable
-  public static PageStreamingConfig createGrpcStreaming(
-      DiagCollector diagCollector, PageStreamingConfigProto pageStreaming, Method method) {
-    String requestTokenFieldName = pageStreaming.getRequest().getTokenField();
-    Field requestTokenField = null;
-    if (!Strings.isNullOrEmpty(requestTokenFieldName)) {
-      requestTokenField = method.getInputType().getMessageType().lookupField(requestTokenFieldName);
-      if (requestTokenField == null) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "Request field missing for gRPC streaming: method = %s, message type = %s, field = %s",
-                method.getFullName(),
-                method.getInputType().getMessageType().getFullName(),
-                requestTokenFieldName));
-      }
-    }
-
-    String responseTokenFieldName = pageStreaming.getResponse().getTokenField();
-    Field responseTokenField = null;
-    if (!Strings.isNullOrEmpty(responseTokenFieldName)) {
-      responseTokenField =
-          method.getOutputType().getMessageType().lookupField(responseTokenFieldName);
-      if (responseTokenField == null) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "Response field missing for gRPC streaming: method = %s, message type = %s, field = %s",
-                method.getFullName(),
-                method.getOutputType().getMessageType().getFullName(),
-                responseTokenFieldName));
-      }
-    }
-
-    String resourcesFieldName = pageStreaming.getResponse().getResourcesField();
-    Field resourcesField = method.getOutputType().getMessageType().lookupField(resourcesFieldName);
-    if (resourcesField == null) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Resources field missing for gRPC streaming: method = %s, message type = %s, field = %s",
-              method.getFullName(),
-              method.getOutputType().getMessageType().getFullName(),
-              resourcesFieldName));
-    }
-
-    if (resourcesField == null) {
-      return null;
-    }
-    return new PageStreamingConfig(
-        requestTokenField,
-        null /* pageSize field is not used for gRPC streaming */,
-        responseTokenField,
-        resourcesField);
   }
 
   private PageStreamingConfig(

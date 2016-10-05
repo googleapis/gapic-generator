@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -23,6 +24,12 @@ public abstract class ApiCallableView {
   public abstract String requestTypeName();
 
   public abstract String responseTypeName();
+
+  public abstract GrpcStreamingType grpcStreamingType();
+
+  public boolean isStreaming() {
+    return grpcStreamingType() != GrpcStreamingType.NonStreaming;
+  }
 
   public abstract String name();
 
@@ -35,16 +42,19 @@ public abstract class ApiCallableView {
   public abstract String settingsFunctionName();
 
   public static Builder newBuilder() {
-    return new AutoValue_ApiCallableView.Builder();
+    return new AutoValue_ApiCallableView.Builder()
+        .grpcStreamingType(GrpcStreamingType.NonStreaming);
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder type(ApiCallableType type);
 
     public abstract Builder requestTypeName(String name);
 
     public abstract Builder responseTypeName(String name);
+
+    public abstract Builder grpcStreamingType(GrpcStreamingType val);
 
     public abstract Builder name(String name);
 
