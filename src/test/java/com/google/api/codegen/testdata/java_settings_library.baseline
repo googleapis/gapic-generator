@@ -700,7 +700,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
 
       addLabelSettings = SimpleCallSettings.newBuilder(LabelerGrpc.METHOD_ADD_LABEL);
 
-      unaryMethodSettingsBuilders = ImmutableList.<ApiCallSettings.Builder>of(
+      unaryMethodSettingsBuilders = ImmutableList.<UnaryApiCallSettings.Builder>of(
           createShelfSettings,
           getShelfSettings,
           listShelvesSettings,
@@ -717,9 +717,6 @@ public class LibraryServiceSettings extends ServiceApiSettings {
           addCommentsSettings,
           getBookFromArchiveSettings,
           updateBookIndexSettings,
-          streamShelvesSettings,
-          streamBooksSettings,
-          discussBookSettings,
           findRelatedBooksSettings,
           addTagSettings,
           addLabelSettings
@@ -911,8 +908,8 @@ public class LibraryServiceSettings extends ServiceApiSettings {
      *
      * Note: This method does not support applying settings to streaming methods.
      */
-    public Builder applyToAllApiMethods(ApiCallSettings.Builder apiCallSettings) throws Exception {
-      super.applyToAllApiMethods(methodSettingsBuilders, apiCallSettings);
+    public Builder applyToAllApiMethods(UnaryApiCallSettings.Builder apiCallSettings) throws Exception {
+      super.applyToAllApiMethods(unaryMethodSettingsBuilders, apiCallSettings);
       return this;
     }
 
