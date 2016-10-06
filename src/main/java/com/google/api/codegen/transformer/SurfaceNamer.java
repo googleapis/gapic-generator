@@ -660,7 +660,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeName");
   }
 
-  public String getAndSavePagedResponseTypeInnerName(
+  public String getPagedResponseTypeInnerName(
       Method method, ModelTypeTable typeTable, Field resourcesField) {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeInnerName");
   }
@@ -675,8 +675,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * Computes the nickname of the response type name for the given resource type, as used by the caller, saves it in the
-   * given type table, and returns it.
+   * Computes the nickname of the response type name for the given resource type, as used by the
+   * caller, saves it in the given type table, and returns it.
    */
   public String getAndSaveCallerPagedResponseTypeName(
       Method method, ModelTypeTable typeTable, Field resourcesField) {
@@ -684,8 +684,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * Computes the nickname of the response type name for the given resource type, as used by the caller, saves it in the
-   * given type table, and returns it.
+   * Computes the nickname of the response type name for the given resource type, as used by the
+   * caller, saves it in the given type table, and returns it.
    */
   public String getAndSaveCallerAsyncPagedResponseTypeName(
       Method method, ModelTypeTable typeTable, Field resourcesField) {

@@ -46,6 +46,12 @@ public class CSharpTypeTable implements TypeTable {
   }
 
   @Override
+  public TypeName getTypeNameFromShortName(String shortName) {
+    String fullName = implicitPackageName + "." + shortName;
+    return new TypeName(fullName, shortName);
+  }
+
+  @Override
   public NamePath getNamePath(String fullName) {
     return NamePath.dotted(fullName);
   }
@@ -107,5 +113,16 @@ public class CSharpTypeTable implements TypeTable {
       }
     }
     return result;
+  }
+
+  @Override
+  public String getAndSaveNicknameForStaticInnerClass(String fullName) {
+    throw new UnsupportedOperationException(
+        "getAndSaveNicknameForStaticInnerClass not supported by C#");
+  }
+
+  @Override
+  public Map<String, String> getStaticImports() {
+    throw new UnsupportedOperationException("getStaticImports not supported by C#");
   }
 }

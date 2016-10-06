@@ -28,6 +28,11 @@ public class ModelTypeFormatterImpl implements ModelTypeFormatter {
   }
 
   @Override
+  public String getFullNameFor(String shortName) {
+    return typeNameConverter.getTypeName(shortName).getFullName();
+  }
+
+  @Override
   public String getFullNameFor(TypeRef type) {
     return typeNameConverter.getTypeName(type).getFullName();
   }

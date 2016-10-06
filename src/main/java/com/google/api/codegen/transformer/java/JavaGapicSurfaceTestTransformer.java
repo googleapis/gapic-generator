@@ -49,7 +49,6 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -124,7 +123,9 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .templateFileName(SMOKE_TEST_TEMPLATE_FILE)
             .method(createSmokeTestMethodView(methodContext))
             // Imports must be done as the last step to catch all imports.
-            .imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()))
+            .imports(
+                importTypeTransformer.generateImports(
+                    context.getTypeTable().getImports(), context.getTypeTable().getStaticImports()))
             .build();
     return testClass;
   }
@@ -173,7 +174,9 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .outputPath(namer.getSourceFilePath(outputPath, name))
             .templateFileName(UNIT_TEST_TEMPLATE_FILE)
             // Imports must be done as the last step to catch all imports.
-            .imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()))
+            .imports(
+                importTypeTransformer.generateImports(
+                    context.getTypeTable().getImports(), context.getTypeTable().getStaticImports()))
             .build();
     return testClass;
   }
@@ -305,7 +308,9 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .outputPath(namer.getSourceFilePath(outputPath, name))
         .templateFileName(MOCK_SERVICE_FILE)
         // Imports must be done as the last step to catch all imports.
-        .imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()))
+        .imports(
+            importTypeTransformer.generateImports(
+                context.getTypeTable().getImports(), context.getTypeTable().getStaticImports()))
         .build();
   }
 
@@ -326,7 +331,9 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .outputPath(namer.getSourceFilePath(outputPath, name))
         .templateFileName(MOCK_SERVICE_IMPL_FILE)
         // Imports must be done as the last step to catch all imports.
-        .imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()))
+        .imports(
+            importTypeTransformer.generateImports(
+                context.getTypeTable().getImports(), context.getTypeTable().getStaticImports()))
         .build();
   }
 

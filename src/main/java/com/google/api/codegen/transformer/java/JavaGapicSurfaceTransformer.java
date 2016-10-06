@@ -165,7 +165,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.apiMethods(methods);
 
     // must be done as the last step to catch all imports
-    xapiClass.imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()));
+    xapiClass.imports(
+        importTypeTransformer.generateImports(
+            context.getTypeTable().getImports(), context.getTypeTable().getStaticImports()));
 
     String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
     xapiClass.outputPath(outputPath + File.separator + name + ".java");
@@ -209,7 +211,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     }
     pagedResponseWrappers.pagedResponseWrapperList(pagedResponseWrappersList);
 
-    pagedResponseWrappers.imports(importTypeTransformer.generateImports(typeTable.getImports()));
+    pagedResponseWrappers.imports(
+        importTypeTransformer.generateImports(
+            typeTable.getImports(), typeTable.getStaticImports()));
 
     Interface firstInterface = new InterfaceView().getElementIterable(model).iterator().next();
     String outputPath = pathMapper.getOutputPath(firstInterface, apiConfig);
@@ -227,7 +231,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
         StaticLangPagedResponseView.newBuilder();
 
     String pagedResponseTypeName =
-        context.getNamer().getAndSavePagedResponseTypeInnerName(method, typeTable, resourceField);
+        context.getNamer().getPagedResponseTypeInnerName(method, typeTable, resourceField);
     pagedResponseWrapper.name(pagedResponseTypeName);
     pagedResponseWrapper.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     pagedResponseWrapper.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
@@ -308,7 +312,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
     // must be done as the last step to catch all imports
     xsettingsClass.imports(
-        importTypeTransformer.generateImports(context.getTypeTable().getImports()));
+        importTypeTransformer.generateImports(
+            context.getTypeTable().getImports(), context.getTypeTable().getStaticImports()));
 
     String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
     xsettingsClass.outputPath(outputPath + "/" + name + ".java");

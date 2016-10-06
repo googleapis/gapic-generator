@@ -60,6 +60,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
+import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.FindRelatedBooksPagedResponse;
+import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListBooksPagedResponse;
+import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListShelvesPagedResponse;
+import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListStringsPagedResponse;
 
 // AUTO-GENERATED DOCUMENTATION AND SERVICE
 /**
@@ -134,19 +138,19 @@ public class LibraryServiceApi implements AutoCloseable {
   private final UnaryApiCallable<CreateShelfRequest, Shelf> createShelfCallable;
   private final UnaryApiCallable<GetShelfRequest, Shelf> getShelfCallable;
   private final UnaryApiCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable;
-  private final UnaryApiCallable<ListShelvesRequest, PagedResponseWrappers.ListShelvesPagedResponse> listShelvesPagedCallable;
+  private final UnaryApiCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable;
   private final UnaryApiCallable<DeleteShelfRequest, Empty> deleteShelfCallable;
   private final UnaryApiCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable;
   private final UnaryApiCallable<CreateBookRequest, Book> createBookCallable;
   private final UnaryApiCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable;
   private final UnaryApiCallable<GetBookRequest, Book> getBookCallable;
   private final UnaryApiCallable<ListBooksRequest, ListBooksResponse> listBooksCallable;
-  private final UnaryApiCallable<ListBooksRequest, PagedResponseWrappers.ListBooksPagedResponse> listBooksPagedCallable;
+  private final UnaryApiCallable<ListBooksRequest, ListBooksPagedResponse> listBooksPagedCallable;
   private final UnaryApiCallable<DeleteBookRequest, Empty> deleteBookCallable;
   private final UnaryApiCallable<UpdateBookRequest, Book> updateBookCallable;
   private final UnaryApiCallable<MoveBookRequest, Book> moveBookCallable;
   private final UnaryApiCallable<ListStringsRequest, ListStringsResponse> listStringsCallable;
-  private final UnaryApiCallable<ListStringsRequest, PagedResponseWrappers.ListStringsPagedResponse> listStringsPagedCallable;
+  private final UnaryApiCallable<ListStringsRequest, ListStringsPagedResponse> listStringsPagedCallable;
   private final UnaryApiCallable<AddCommentsRequest, Empty> addCommentsCallable;
   private final UnaryApiCallable<GetBookFromArchiveRequest, Book> getBookFromArchiveCallable;
   private final UnaryApiCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable;
@@ -154,7 +158,7 @@ public class LibraryServiceApi implements AutoCloseable {
   private final StreamingApiCallable<StreamBooksRequest, Book> streamBooksCallable;
   private final StreamingApiCallable<DiscussBookRequest, Comment> discussBookCallable;
   private final UnaryApiCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable;
-  private final UnaryApiCallable<FindRelatedBooksRequest, PagedResponseWrappers.FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable;
+  private final UnaryApiCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable;
   private final UnaryApiCallable<AddTagRequest, AddTagResponse> addTagCallable;
   private final UnaryApiCallable<AddLabelRequest, AddLabelResponse> addLabelCallable;
 
@@ -526,7 +530,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * </code></pre>
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final PagedResponseWrappers.ListShelvesPagedResponse listShelves() {
+  public final ListShelvesPagedResponse listShelves() {
     ListShelvesRequest request =
         ListShelvesRequest.newBuilder()
 
@@ -551,7 +555,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  private final PagedResponseWrappers.ListShelvesPagedResponse listShelves(ListShelvesRequest request) {
+  private final ListShelvesPagedResponse listShelves(ListShelvesRequest request) {
     return listShelvesPagedCallable()
         .call(request);
   }
@@ -564,7 +568,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
-   *   ListenableFuture&lt;PagedResponseWrappers.ListShelvesPagedResponse&gt; future = libraryServiceApi.listShelvesPagedCallable().futureCall(request);
+   *   ListenableFuture&lt;ListShelvesPagedResponse&gt; future = libraryServiceApi.listShelvesPagedCallable().futureCall(request);
    *   // Do something
    *   for (Shelf element : future.get().iterateAllElements()) {
    *     // doThingsWith(element);
@@ -572,7 +576,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<ListShelvesRequest, PagedResponseWrappers.ListShelvesPagedResponse> listShelvesPagedCallable() {
+  public final UnaryApiCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable() {
     return listShelvesPagedCallable;
   }
 
@@ -982,7 +986,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param filter To test python built-in wrapping.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final PagedResponseWrappers.ListBooksPagedResponse listBooks(String name, String filter) {
+  public final ListBooksPagedResponse listBooks(String name, String filter) {
     ListBooksRequest request =
         ListBooksRequest.newBuilder()
         .setNameWithResource(name)
@@ -1011,7 +1015,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final PagedResponseWrappers.ListBooksPagedResponse listBooks(ListBooksRequest request) {
+  public final ListBooksPagedResponse listBooks(ListBooksRequest request) {
     return listBooksPagedCallable()
         .call(request);
   }
@@ -1027,7 +1031,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setNameWithResource(name)
    *     .build();
-   *   ListenableFuture&lt;PagedResponseWrappers.ListBooksPagedResponse&gt; future = libraryServiceApi.listBooksPagedCallable().futureCall(request);
+   *   ListenableFuture&lt;ListBooksPagedResponse&gt; future = libraryServiceApi.listBooksPagedCallable().futureCall(request);
    *   // Do something
    *   for (Book element : future.get().iterateAllElements()) {
    *     // doThingsWith(element);
@@ -1035,7 +1039,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<ListBooksRequest, PagedResponseWrappers.ListBooksPagedResponse> listBooksPagedCallable() {
+  public final UnaryApiCallable<ListBooksRequest, ListBooksPagedResponse> listBooksPagedCallable() {
     return listBooksPagedCallable;
   }
 
@@ -1328,7 +1332,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * </code></pre>
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final PagedResponseWrappers.ListStringsPagedResponse listStrings() {
+  public final ListStringsPagedResponse listStrings() {
     ListStringsRequest request =
         ListStringsRequest.newBuilder()
 
@@ -1353,7 +1357,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  private final PagedResponseWrappers.ListStringsPagedResponse listStrings(ListStringsRequest request) {
+  private final ListStringsPagedResponse listStrings(ListStringsRequest request) {
     return listStringsPagedCallable()
         .call(request);
   }
@@ -1366,7 +1370,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
-   *   ListenableFuture&lt;PagedResponseWrappers.ListStringsPagedResponse&gt; future = libraryServiceApi.listStringsPagedCallable().futureCall(request);
+   *   ListenableFuture&lt;ListStringsPagedResponse&gt; future = libraryServiceApi.listStringsPagedCallable().futureCall(request);
    *   // Do something
    *   for (String element : future.get().iterateAllElements()) {
    *     // doThingsWith(element);
@@ -1374,7 +1378,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<ListStringsRequest, PagedResponseWrappers.ListStringsPagedResponse> listStringsPagedCallable() {
+  public final UnaryApiCallable<ListStringsRequest, ListStringsPagedResponse> listStringsPagedCallable() {
     return listStringsPagedCallable;
   }
 
@@ -1787,7 +1791,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param shelves
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final PagedResponseWrappers.FindRelatedBooksPagedResponse findRelatedBooks(List<String> names, List<String> shelves) {
+  public final FindRelatedBooksPagedResponse findRelatedBooks(List<String> names, List<String> shelves) {
     FindRelatedBooksRequest request =
         FindRelatedBooksRequest.newBuilder()
         .addAllNamesWithResources(names)
@@ -1819,7 +1823,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  private final PagedResponseWrappers.FindRelatedBooksPagedResponse findRelatedBooks(FindRelatedBooksRequest request) {
+  private final FindRelatedBooksPagedResponse findRelatedBooks(FindRelatedBooksRequest request) {
     return findRelatedBooksPagedCallable()
         .call(request);
   }
@@ -1838,7 +1842,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *     .addAllNamesWithResources(names)
    *     .addAllShelvesWithResources(shelves)
    *     .build();
-   *   ListenableFuture&lt;PagedResponseWrappers.FindRelatedBooksPagedResponse&gt; future = libraryServiceApi.findRelatedBooksPagedCallable().futureCall(request);
+   *   ListenableFuture&lt;FindRelatedBooksPagedResponse&gt; future = libraryServiceApi.findRelatedBooksPagedCallable().futureCall(request);
    *   // Do something
    *   for (String element : future.get().iterateAllElements()) {
    *     // doThingsWith(element);
@@ -1846,7 +1850,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<FindRelatedBooksRequest, PagedResponseWrappers.FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable() {
+  public final UnaryApiCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable() {
     return findRelatedBooksPagedCallable;
   }
 

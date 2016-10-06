@@ -36,6 +36,11 @@ public class ModelTypeTable implements ModelTypeFormatter {
   }
 
   @Override
+  public String getFullNameFor(String shortName) {
+    return typeFormatter.getFullNameFor(shortName);
+  }
+
+  @Override
   public String getFullNameFor(TypeRef type) {
     return typeFormatter.getFullNameFor(type);
   }
@@ -80,6 +85,14 @@ public class ModelTypeTable implements ModelTypeFormatter {
    */
   public String getAndSaveNicknameFor(String fullName) {
     return typeTable.getAndSaveNicknameFor(fullName);
+  }
+
+  /**
+   * Computes the nickname for the given full name, adds the full name to the static import set, and
+   * returns the nickname.
+   */
+  public String getAndSaveNicknameForStaticInnerClass(String fullName) {
+    return typeTable.getAndSaveNicknameForStaticInnerClass(fullName);
   }
 
   /**
@@ -129,5 +142,10 @@ public class ModelTypeTable implements ModelTypeFormatter {
    */
   public Map<String, String> getImports() {
     return typeTable.getImports();
+  }
+
+  /** Returns the static imports accumulated so far. */
+  public Map<String, String> getStaticImports() {
+    return typeTable.getStaticImports();
   }
 }

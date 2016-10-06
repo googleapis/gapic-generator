@@ -19,7 +19,6 @@ import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.common.collect.ImmutableSet;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +40,11 @@ public class GoTypeTable implements TypeTable {
       return new TypeName(fullName);
     }
     return new TypeName(fullName, parts[3] + parts[1] + "." + parts[2]);
+  }
+
+  @Override
+  public TypeName getTypeNameFromShortName(String shortName) {
+    throw new UnsupportedOperationException("getTypeNameFromShortName not supported by Go");
   }
 
   @Override
@@ -104,6 +108,17 @@ public class GoTypeTable implements TypeTable {
     // TODO(pongad): Some packages in standard library have slashes,
     // we might have to special case them.
     return !importPath.contains("/");
+  }
+
+  @Override
+  public String getAndSaveNicknameForStaticInnerClass(String fullName) {
+    throw new UnsupportedOperationException(
+        "getAndSaveNicknameForStaticInnerClass not supported by Go");
+  }
+
+  @Override
+  public Map<String, String> getStaticImports() {
+    throw new UnsupportedOperationException("getStaticImports not supported by Go");
   }
 
   /**

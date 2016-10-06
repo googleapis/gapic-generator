@@ -25,7 +25,6 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
@@ -38,6 +37,9 @@ public class JavaTypeTable implements TypeTable {
    * A bi-map from full names to short names indicating the import map.
    */
   private final BiMap<String, String> imports = HashBiMap.create();
+
+  /** A bi-map from full names to short names indicating the static import map. */
+  private final BiMap<String, String> staticImports = HashBiMap.create();
 
   /**
    * A map from simple type name to a boolean, indicating whether its in java.lang or not. If a
@@ -81,6 +83,12 @@ public class JavaTypeTable implements TypeTable {
   }
 
   @Override
+  public TypeName getTypeNameFromShortName(String shortName) {
+    String fullName = implicitPackageName + "." + shortName;
+    return new TypeName(fullName, shortName);
+  }
+
+  @Override
   public NamePath getNamePath(String fullName) {
     return NamePath.dotted(fullName);
   }
@@ -107,6 +115,18 @@ public class JavaTypeTable implements TypeTable {
   }
 
   @Override
+  public String getAndSaveNicknameForStaticInnerClass(String fullName) {
+    int lastDotIndex = fullName.lastIndexOf('.');
+    if (lastDotIndex < 0) {
+      throw new IllegalArgumentException("Cannot have static inner class with no parent.");
+    }
+    String shortTypeName = fullName.substring(lastDotIndex + 1);
+    String parentFullName = fullName.substring(0, lastDotIndex);
+
+    return getAndSaveNicknameFor(new TypeName(fullName, shortTypeName, parentFullName));
+  }
+
+  @Override
   public String getAndSaveNicknameFor(TypeName typeName) {
     return typeName.getAndSaveNicknameIn(this);
   }
@@ -116,18 +136,29 @@ public class JavaTypeTable implements TypeTable {
     if (!alias.needsImport()) {
       return alias.getNickname();
     }
+
     // Derive a short name if possible
     if (imports.containsKey(alias.getFullName())) {
       // Short name already there.
       return imports.get(alias.getFullName());
     }
+    if (staticImports.containsKey(alias.getFullName())) {
+      // Short name already there.
+      return staticImports.get(alias.getFullName());
+    }
     if (imports.containsValue(alias.getNickname())
-        || !alias.getFullName().startsWith(JAVA_LANG_TYPE_PREFIX)
-            && isImplicitImport(alias.getNickname())) {
+        || staticImports.containsValue(alias.getNickname())
+        || (!alias.getFullName().startsWith(JAVA_LANG_TYPE_PREFIX)
+            && isImplicitImport(alias.getNickname()))) {
       // Short name clashes, use long name.
       return alias.getFullName();
     }
-    imports.put(alias.getFullName(), alias.getNickname());
+
+    if (alias.getParentFullName() == null) {
+      imports.put(alias.getFullName(), alias.getNickname());
+    } else {
+      staticImports.put(alias.getFullName(), alias.getNickname());
+    }
     return alias.getNickname();
   }
 
@@ -140,10 +171,19 @@ public class JavaTypeTable implements TypeTable {
 
   @Override
   public Map<String, String> getImports() {
+    return getImports(imports);
+  }
+
+  @Override
+  public Map<String, String> getStaticImports() {
+    return getImports(staticImports);
+  }
+
+  private Map<String, String> getImports(BiMap<String, String> importMap) {
     // Clean up the imports.
     Map<String, String> cleanedImports = new TreeMap<>();
     // Imported type is in java.lang or in package, can be ignored.
-    for (String imported : imports.keySet()) {
+    for (String imported : importMap.keySet()) {
       if (imported.startsWith(JAVA_LANG_TYPE_PREFIX)) {
         continue;
       } else if (!implicitPackageName.isEmpty() && imported.startsWith(implicitPackageName)) {
@@ -152,7 +192,7 @@ public class JavaTypeTable implements TypeTable {
           continue;
         }
       }
-      cleanedImports.put(imported, imports.get(imported));
+      cleanedImports.put(imported, importMap.get(imported));
     }
     return cleanedImports;
   }

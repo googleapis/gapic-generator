@@ -79,6 +79,11 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
+  public TypeName getTypeName(String shortName) {
+    return typeNameConverter.getTypeNameFromShortName(shortName);
+  }
+
+  @Override
   public TypeName getTypeName(TypeRef type) {
     if (type.isMap()) {
       return new TypeName("array");

@@ -21,7 +21,6 @@ import com.google.api.codegen.util.TypeTable;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableSet;
-
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -53,6 +52,12 @@ public class PhpTypeTable implements TypeTable {
     }
     String nickname = fullName.substring(lastBackslashIndex + 1);
     return new TypeName(fullName, nickname);
+  }
+
+  @Override
+  public TypeName getTypeNameFromShortName(String shortName) {
+    String fullName = implicitPackageName + '\\' + shortName;
+    return new TypeName(fullName, shortName);
   }
 
   @Override
@@ -111,6 +116,17 @@ public class PhpTypeTable implements TypeTable {
 
   public boolean hasImports() {
     return !getImports().isEmpty();
+  }
+
+  @Override
+  public String getAndSaveNicknameForStaticInnerClass(String fullName) {
+    throw new UnsupportedOperationException(
+        "getAndSaveNicknameForStaticInnerClass not supported by PHP");
+  }
+
+  @Override
+  public Map<String, String> getStaticImports() {
+    throw new UnsupportedOperationException("getStaticImports not supported by PHP");
   }
 
   /**

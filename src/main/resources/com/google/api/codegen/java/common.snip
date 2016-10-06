@@ -25,3 +25,16 @@
     {@arg}
   @end
 @end
+
+@snippet importList(imports)
+  @join import : imports
+    @switch import.type.toString
+    @case "SimpleImport"
+      import {@import.fullName};
+    @case "StaticImport"
+      import static {@import.fullName};
+    @default
+      $unhandledCase: {@import.type.toString}$
+    @end
+  @end
+@end

@@ -15,13 +15,11 @@
 package com.google.api.codegen.util;
 
 import com.google.common.truth.Truth;
-
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import org.junit.Test;
 
 public class TypeNameTest {
 
@@ -94,6 +92,21 @@ public class TypeNameTest {
 
     @Override
     public TypeName getContainerTypeName(String containerFullName, String... elementFullNames) {
+      return null;
+    }
+
+    @Override
+    public TypeName getTypeNameFromShortName(String shortName) {
+      return null;
+    }
+
+    @Override
+    public String getAndSaveNicknameForStaticInnerClass(String fullName) {
+      return null;
+    }
+
+    @Override
+    public Map<String, String> getStaticImports() {
       return null;
     }
   }

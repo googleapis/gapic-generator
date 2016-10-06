@@ -44,6 +44,7 @@ public class PagedResponseWrappers {
 
 
   }
+
   public static class ListBooksPagedResponse extends PagedListResponseImpl<ListBooksRequest, ListBooksResponse, Book> {
 
     public ListBooksPagedResponse(
@@ -56,6 +57,7 @@ public class PagedResponseWrappers {
 
 
   }
+
   public static class ListStringsPagedResponse extends PagedListResponseImpl<ListStringsRequest, ListStringsResponse, String> {
 
     public ListStringsPagedResponse(
@@ -68,6 +70,7 @@ public class PagedResponseWrappers {
 
 
   }
+
   public static class FindRelatedBooksPagedResponse extends PagedListResponseImpl<FindRelatedBooksRequest, FindRelatedBooksResponse, String> {
 
     public FindRelatedBooksPagedResponse(
@@ -77,7 +80,6 @@ public class PagedResponseWrappers {
         CallContext context) {
       super(request, callable, pageDescriptor, context);
     }
-
     public Iterable<BookName> iterateAllAsBookName() {
       return Iterables.transform(iterateAllElements(), new Function<String, BookName>() {
           @Override
@@ -89,4 +91,5 @@ public class PagedResponseWrappers {
     }
 
   }
+
 }

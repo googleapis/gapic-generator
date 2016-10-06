@@ -67,6 +67,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.FindRelatedBooksPagedResponse;
+import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListBooksPagedResponse;
+import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListShelvesPagedResponse;
+import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListStringsPagedResponse;
 
 @javax.annotation.Generated("by GAPIC")
 public class LibraryServiceTest {
@@ -236,7 +240,7 @@ public class LibraryServiceTest {
 
 
 
-    PagedResponseWrappers.ListShelvesPagedResponse pagedListResponse = api.listShelves();
+    ListShelvesPagedResponse pagedListResponse = api.listShelves();
 
     List<Shelf> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
@@ -405,7 +409,7 @@ public class LibraryServiceTest {
     ShelfName name = ShelfName.create("[SHELF_ID]");
     String filter = "filter-1274492040";
 
-    PagedResponseWrappers.ListBooksPagedResponse pagedListResponse = api.listBooks(name, filter);
+    ListBooksPagedResponse pagedListResponse = api.listBooks(name, filter);
 
     List<Book> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
@@ -554,7 +558,7 @@ public class LibraryServiceTest {
 
 
 
-    PagedResponseWrappers.ListStringsPagedResponse pagedListResponse = api.listStrings();
+    ListStringsPagedResponse pagedListResponse = api.listStrings();
 
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
@@ -668,7 +672,7 @@ public class LibraryServiceTest {
     List<BookName> names = Arrays.asList(namesElement);
     List<ShelfName> shelves = new ArrayList<>();
 
-    PagedResponseWrappers.FindRelatedBooksPagedResponse pagedListResponse = api.findRelatedBooks(names, shelves);
+    FindRelatedBooksPagedResponse pagedListResponse = api.findRelatedBooks(names, shelves);
 
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());

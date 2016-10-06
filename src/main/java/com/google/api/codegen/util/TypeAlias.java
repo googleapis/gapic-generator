@@ -15,6 +15,7 @@
 package com.google.api.codegen.util;
 
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 /**
  * TypeAlias represents an alias between a fully-qualified version of a name
@@ -34,7 +35,14 @@ public abstract class TypeAlias {
    * Creates a type alias with the given fullName and nickname.
    */
   public static TypeAlias create(String fullName, String nickname) {
-    return new AutoValue_TypeAlias(fullName, nickname);
+    return new AutoValue_TypeAlias(fullName, nickname, null);
+  }
+
+  /**
+   * Creates a type alias with the given fullName, nickname and parentName.
+   */
+  public static TypeAlias create(String fullName, String nickname, String parentName) {
+    return new AutoValue_TypeAlias(fullName, nickname, parentName);
   }
 
   /**
@@ -46,6 +54,12 @@ public abstract class TypeAlias {
    * The nickname of the alias.
    */
   public abstract String getNickname();
+
+  /**
+   * The full name of the parent class of the type. If this is not an inner class, will be null.
+   */
+  @Nullable
+  public abstract String getParentFullName();
 
   /**
    * Returns true if the alias needs to be imported to refer to it only
