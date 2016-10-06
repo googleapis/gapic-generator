@@ -41,7 +41,7 @@ import java.util.TreeMap;
  * DiscoveryImporter parses a Discovery Doc into a {@link com.google.api.Service} object and an
  * additional {@link ApiaryConfig} object for data not accommodated by Service.
  *
- * <p>The current implementation also provides a main method used for manual sanity checking.
+ * The current implementation also provides a main method used for manual sanity checking.
  */
 public class DiscoveryImporter {
 
@@ -95,7 +95,7 @@ public class DiscoveryImporter {
   /**
    * Parses the file.
    *
-   * <p>Imports all RPC methods under "resources" and all types under "schemas". Since the discovery
+   * Imports all RPC methods under "resources" and all types under "schemas". Since the discovery
    * doc and Service have different ways to handle nested structures, "synthetic" types are made as
    * a glue layer. All such types have names beginning with "synthetic$"
    */
@@ -298,7 +298,7 @@ public class DiscoveryImporter {
    * Parses {@code root} as a member of "additionalProperties" of an object and adds it to {@code
    * types}.
    *
-   * <p>Properties are expressed as types, but are not strictly types as defined by discovery. They
+   * Properties are expressed as types, but are not strictly types as defined by discovery. They
    * are not to be instantiated. Rather they provide a "schema" describing how data should be laid
    * out.
    */
@@ -375,7 +375,7 @@ public class DiscoveryImporter {
   /**
    * Parses a single method.
    *
-   * <p>In discovery, a method can take multiple parameters, but in Service they can only take one.
+   * In discovery, a method can take multiple parameters, but in Service they can only take one.
    * For this reason, a synthetic type is created for each method to "pull together" the parameters.
    * For example, if a discovery-doc method takes two parameters, a string {@code s} and a number
    * {@code i}, it will be instead structured as having one parameter. The type of the parameter
@@ -438,13 +438,13 @@ public class DiscoveryImporter {
    * Maps the discovery doc type ({@code kindName}) and format {@code formatNode} into {@link
    * Field.Kind}.
    *
-   * <p>If {@code kindName} is not {@code "string"}, {@code TYPE_TABLE} is consulted for the
+   * If {@code kindName} is not {@code "string"}, {@code TYPE_TABLE} is consulted for the
    * appropriate {@link Field.Kind}.
    *
-   * <p>Otherwise, if {@code kindName} is {@code "int64"} or {@code "uint64"}, the corresponding
+   * Otherwise, if {@code kindName} is {@code "int64"} or {@code "uint64"}, the corresponding
    * {@link Field.Kind} is returned.
    *
-   * <p>Otherwise, the returned {@link Field.Kind} is simply {@link Field.Kind.TYPE_STRING}, and its
+   * Otherwise, the returned {@link Field.Kind} is simply {@link Field.Kind.TYPE_STRING}, and its
    * format, if exists, is recorded in {@link ApiaryConfig#stringFormat}.
    */
   private Field.Kind getFieldKind(
