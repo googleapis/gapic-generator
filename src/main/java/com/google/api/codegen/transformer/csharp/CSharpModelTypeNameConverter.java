@@ -19,6 +19,7 @@ import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
+import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
@@ -49,10 +50,34 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
           .put(Type.TYPE_BYTES, "Google.Protobuf.ByteString")
           .build();
 
+  /**
+   * A map from primitive types in proto to zero values in C#.
+   */
+  private static final ImmutableMap<Type, String> PRIMITIVE_ZERO_VALUE =
+      ImmutableMap.<Type, String>builder()
+          .put(Type.TYPE_BOOL, "false")
+          .put(Type.TYPE_DOUBLE, "0.0")
+          .put(Type.TYPE_FLOAT, "0.0f")
+          .put(Type.TYPE_INT64, "0L")
+          .put(Type.TYPE_UINT64, "0L")
+          .put(Type.TYPE_SINT64, "0L")
+          .put(Type.TYPE_FIXED64, "0L")
+          .put(Type.TYPE_SFIXED64, "0L")
+          .put(Type.TYPE_INT32, "0")
+          .put(Type.TYPE_UINT32, "0")
+          .put(Type.TYPE_SINT32, "0")
+          .put(Type.TYPE_FIXED32, "0")
+          .put(Type.TYPE_SFIXED32, "0")
+          .put(Type.TYPE_STRING, "\"\"")
+          .put(Type.TYPE_BYTES, "ByteString.CopyFromUtf8(\"\")")
+          .build();
+
   private TypeNameConverter typeNameConverter;
+  private CSharpEnumNamer enumNamer;
 
   public CSharpModelTypeNameConverter(String implicitPackageName) {
     this.typeNameConverter = new CSharpTypeTable(implicitPackageName);
+    this.enumNamer = new CSharpEnumNamer();
   }
 
   @Override
@@ -107,7 +132,36 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypedValue getZeroValue(TypeRef type) {
-    return TypedValue.create(getTypeName(type), "ZERO_VALUE"); // TODO: Generate correctly
+    if (type.isMap()) {
+      TypeName mapTypeName = typeNameConverter.getTypeName("System.Collections.Generic.Dictionary");
+      TypeName keyTypeName = getTypeNameForElementType(type.getMapKeyField().getType());
+      TypeName valueTypeName = getTypeNameForElementType(type.getMapValueField().getType());
+      TypeName genericMapTypeName =
+          new TypeName(
+              mapTypeName.getFullName(),
+              mapTypeName.getNickname(),
+              "%s<%i, %i>",
+              keyTypeName,
+              valueTypeName);
+      return TypedValue.create(genericMapTypeName, "new %s()");
+    } else if (type.isRepeated()) {
+      TypeName listTypeName = typeNameConverter.getTypeName("System.Collections.Generic.List");
+      TypeName elementTypeName = getTypeNameForElementType(type);
+      TypeName genericListTypeName =
+          new TypeName(
+              listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
+      return TypedValue.create(genericListTypeName, "new %s()");
+    } else if (type.isMessage()) {
+      return TypedValue.create(getTypeName(type), "new %s()");
+    } else if (type.isEnum()) {
+      TypeName enumTypeName = getTypeName(type);
+      EnumValue enumValue = type.getEnumType().getValues().get(0);
+      String enumValueName =
+          enumNamer.getEnumValueName(enumTypeName.getNickname(), enumValue.getSimpleName());
+      return TypedValue.create(enumTypeName, "%s." + enumValueName);
+    } else {
+      return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
+    }
   }
 
   @Override

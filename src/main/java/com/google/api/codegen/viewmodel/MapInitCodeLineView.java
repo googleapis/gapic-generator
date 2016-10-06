@@ -21,12 +21,14 @@ import java.util.List;
 
 @AutoValue
 public abstract class MapInitCodeLineView implements InitCodeLineView {
+  @Override
   public abstract InitCodeLineType lineType();
 
   public abstract String keyTypeName();
 
   public abstract String valueTypeName();
 
+  @Override
   public abstract String identifier();
 
   public abstract List<MapEntryView> initEntries();

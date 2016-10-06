@@ -21,10 +21,12 @@ import java.util.List;
 
 @AutoValue
 public abstract class StructureInitCodeLineView implements InitCodeLineView {
+  @Override
   public abstract InitCodeLineType lineType();
 
   public abstract String typeName();
 
+  @Override
   public abstract String identifier();
 
   public abstract List<FieldSettingView> fieldSettings();
