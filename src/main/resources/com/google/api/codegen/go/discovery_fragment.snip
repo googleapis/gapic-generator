@@ -9,9 +9,8 @@
 @end
 
 @snippet generateClass(method, body)
-  @let api = context.getApi, \
-       apiName = api.getName, \
-       apiVersion = api.getVersion, \
+  @let apiName = context.getApi.getName, \
+       apiVersion = context.getApiVersion, \
        serviceTitle = context.getService.getTitle, \
        apiaryConfig = context.getApiaryConfig, \
        authType = apiaryConfig.getAuthType
@@ -248,9 +247,8 @@
 @end
 
 @private godocURL()
-  @let api = context.getApi, \
-       apiName = api.getName, \
-       apiVersion = api.getVersion
+  @let apiName = context.getApi.getName, \
+       apiVersion = context.getApiVersion
     https://godoc.org/google.golang.org/api/{@apiName}/{@apiVersion}
   @end
 @end
