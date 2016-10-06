@@ -76,14 +76,14 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   public void addPagedListResponseFactoryImports(ModelTypeTable typeTable) {
     typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseFactory");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.FutureCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryApiCallable");
   }
 
   @Override
   public void addPagedListResponseImports(ModelTypeTable typeTable) {
     typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseImpl");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.FutureCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryApiCallable");
   }
 
   @Override
