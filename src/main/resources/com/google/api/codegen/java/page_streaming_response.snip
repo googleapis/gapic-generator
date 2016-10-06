@@ -1,31 +1,35 @@
 @extends "java/common.snip"
 
-@snippet generate(pagedResponseClass)
+@snippet generate(pagedResponseClasses)
   {@license()}
-  package {@pagedResponseClass.packageName};
+  package {@pagedResponseClasses.packageName};
   
-  @join import : pagedResponseClass.imports
+  @join import : pagedResponseClasses.imports
     import {@import.fullName};
   @end
 
   @@javax.annotation.Generated("by GAPIC")
-  @let requestT = {@pagedResponseClass.requestTypeName}, \
-      responseT = {@pagedResponseClass.responseTypeName}, \
-      resourceT = {@pagedResponseClass.resourceTypeName}
-    public class {@pagedResponseClass.name} extends \
-        PagedListResponseImpl<{@requestT}, {@responseT}, {@resourceT}> {
-
-      public {@pagedResponseClass.name}(
-          {@requestT} request,
-          UnaryApiCallable<{@requestT}, {@responseT}> callable,
-          PageStreamingDescriptor<{@requestT}, {@responseT}, {@resourceT}> pageDescriptor,
-          CallContext context) {
-        super(request, callable, pageDescriptor, context);      
-      }
+  public class {@pagedResponseClasses.name} {
   
-      {@iterateMethods(pagedResponseClass)}
-    }
-  @end
+    @join pagedResponseClass : pagedResponseClasses.pagedResponseWrapperList
+      @let requestT = {@pagedResponseClass.requestTypeName}, \
+          responseT = {@pagedResponseClass.responseTypeName}, \
+          resourceT = {@pagedResponseClass.resourceTypeName}
+        public static class {@pagedResponseClass.name} extends \
+            PagedListResponseImpl<{@requestT}, {@responseT}, {@resourceT}> {
+
+          public {@pagedResponseClass.name}(
+              {@requestT} request,
+              UnaryApiCallable<{@requestT}, {@responseT}> callable,
+              PageStreamingDescriptor<{@requestT}, {@responseT}, {@resourceT}> pageDescriptor,
+              CallContext context) {
+            super(request, callable, pageDescriptor, context);
+          }
+          {@iterateMethods(pagedResponseClass)}
+        }
+      @end
+    @end
+  }
 @end
 
 @private iterateMethods(pagedResponseClass)

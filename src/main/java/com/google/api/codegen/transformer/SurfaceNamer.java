@@ -89,6 +89,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return className(Name.upperCamel(interfaze.getSimpleName(), "ApiSnippets"));
   }
 
+  /** The name of the class that contains paged list response wrappers. */
+  public String getPagedResponseWrappersClassName() {
+    return className(Name.upperCamel("PagedResponseWrappers"));
+  }
+
   /**
    * The name of the constructor for the service client.
    * The client is VKit generated, not GRPC.
@@ -653,6 +658,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getAndSavePagedResponseTypeName(
       Method method, ModelTypeTable typeTable, Field resourcesField) {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeName");
+  }
+
+  public String getAndSavePagedResponseTypeInnerName(
+      Method method, ModelTypeTable typeTable, Field resourcesField) {
+    return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeInnerName");
   }
 
   /**

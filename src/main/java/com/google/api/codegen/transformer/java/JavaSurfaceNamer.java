@@ -126,6 +126,15 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   public String getAndSavePagedResponseTypeName(
       Method method, ModelTypeTable typeTable, Field resourceField) {
     // TODO(michaelbausor) make sure this uses the typeTable correctly
+    return getPagedResponseWrappersClassName()
+        + "."
+        + getAndSavePagedResponseTypeInnerName(method, typeTable, resourceField);
+  }
+
+  @Override
+  public String getAndSavePagedResponseTypeInnerName(
+      Method method, ModelTypeTable typeTable, Field resourceField) {
+    // TODO(michaelbausor) make sure this uses the typeTable correctly
     return className(Name.upperCamel(method.getSimpleName(), "PagedResponse"));
   }
 

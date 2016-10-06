@@ -14,16 +14,11 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
 @AutoValue
-public abstract class StaticLangPagedResponseView implements ViewModel {
-  @Override
-  public abstract String templateFileName();
-
-  public abstract String packageName();
+public abstract class StaticLangPagedResponseView {
 
   public abstract String name();
 
@@ -35,25 +30,12 @@ public abstract class StaticLangPagedResponseView implements ViewModel {
 
   public abstract List<PagedResponseIterateMethodView> iterateMethods();
 
-  public abstract List<ImportTypeView> imports();
-
-  @Override
-  public abstract String outputPath();
-
-  @Override
-  public String resourceRoot() {
-    return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
-  }
-
   public static Builder newBuilder() {
     return new AutoValue_StaticLangPagedResponseView.Builder();
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
-    public abstract Builder templateFileName(String val);
-
-    public abstract Builder packageName(String val);
+  public abstract static class Builder {
 
     public abstract Builder name(String val);
 
@@ -64,10 +46,6 @@ public abstract class StaticLangPagedResponseView implements ViewModel {
     public abstract Builder resourceTypeName(String val);
 
     public abstract Builder iterateMethods(List<PagedResponseIterateMethodView> val);
-
-    public abstract Builder imports(List<ImportTypeView> val);
-
-    public abstract Builder outputPath(String val);
 
     public abstract StaticLangPagedResponseView build();
   }

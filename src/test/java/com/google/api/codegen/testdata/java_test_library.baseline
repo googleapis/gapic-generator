@@ -236,7 +236,7 @@ public class LibraryServiceTest {
 
 
 
-    ListShelvesPagedResponse pagedListResponse = api.listShelves();
+    PagedResponseWrappers.ListShelvesPagedResponse pagedListResponse = api.listShelves();
 
     List<Shelf> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
@@ -405,7 +405,7 @@ public class LibraryServiceTest {
     ShelfName name = ShelfName.create("[SHELF_ID]");
     String filter = "filter-1274492040";
 
-    ListBooksPagedResponse pagedListResponse = api.listBooks(name, filter);
+    PagedResponseWrappers.ListBooksPagedResponse pagedListResponse = api.listBooks(name, filter);
 
     List<Book> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
@@ -554,7 +554,7 @@ public class LibraryServiceTest {
 
 
 
-    ListStringsPagedResponse pagedListResponse = api.listStrings();
+    PagedResponseWrappers.ListStringsPagedResponse pagedListResponse = api.listStrings();
 
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
@@ -668,7 +668,7 @@ public class LibraryServiceTest {
     List<BookName> names = Arrays.asList(namesElement);
     List<ShelfName> shelves = new ArrayList<>();
 
-    FindRelatedBooksPagedResponse pagedListResponse = api.findRelatedBooks(names, shelves);
+    PagedResponseWrappers.FindRelatedBooksPagedResponse pagedListResponse = api.findRelatedBooks(names, shelves);
 
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
