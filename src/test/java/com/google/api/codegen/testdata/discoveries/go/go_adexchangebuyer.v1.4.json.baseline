@@ -756,6 +756,65 @@ package main
 
 import (
   "errors"
+  "fmt"
+  "log"
+  "net/http"
+
+  "golang.org/x/net/context"
+
+  "google.golang.org/api/adexchangebuyer/v1.4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := getClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  adexchangebuyerService, err := adexchangebuyer.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The id for the account that will serve this creative.
+  accountId := int64(0)
+  // TODO: Change placeholder value above.
+
+  // The buyer-specific id for this creative.
+  buyerCreativeId := "{MY-BUYER-CREATIVE-ID}"
+  // TODO: Change placeholder value above.
+
+  resp, err := adexchangebuyerService.Creatives.ListDeals(accountId, buyerCreativeId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+
+func getClient(ctx context.Context) (*http.Client, error) {
+  // TODO: Change placeholder below to get authentication credentials.
+  // See: https://foo.com/bar
+  //
+  // To use the `ListDeals` method, authorize using one of the following scopes:
+  //   https://www.googleapis.com/auth/adexchange.buyer
+  return nil, errors.New("Not implemented")
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer
+// 2. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "errors"
   "log"
   "net/http"
 

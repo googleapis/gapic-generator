@@ -26,6 +26,9 @@ import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
   public GoDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
     super(service, apiaryConfig);
@@ -159,21 +162,21 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
     return hasPageToken && hasNextPageToken;
   }
 
-  private static final ImmutableTable<String, String, String> API_VERSION_RENAME =
-      ImmutableTable.<String, String, String>builder()
-          .put("clouduseraccounts", "beta", "v0.beta")
-          .build();
+  // Pattern used to rename some Go package versions
+  private static final Pattern SUB_VERSION = Pattern.compile("^(.+)_(v[0-9.]+)$");
 
-  /**
-   * We need this because in some cases there is a mismatch between discovery doc and import path
-   * version numbers. API_VERSION_RENAME is a table of API name and versions as found in discovery
-   * doc to the renamed versions as found in the import path.
-   *
-   * TODO(pongad): Find a more sustainable solution to this.
-   */
+  // Some Go package versions rename discovery doc versions:
+  // https://github.com/google/google-api-go-client/blob/master/google-api-go-generator/gen.go#L320
   public String getApiVersion() {
-    String rename = API_VERSION_RENAME.get(getApi().getName(), getApi().getVersion());
-    return rename == null ? getApi().getVersion() : rename;
+    String version = getApi().getVersion();
+    if (version.equals("alpha") || version.equals("beta")) {
+      return "v0." + version;
+    }
+    Matcher subVersion = SUB_VERSION.matcher(version);
+    if (subVersion.matches()) {
+      return subVersion.group(1) + "/" + subVersion.group(2);
+    }
+    return version;
   }
 
   /*

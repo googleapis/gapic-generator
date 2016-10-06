@@ -122,7 +122,7 @@ public class NodeJSTypeTable implements TypeTable {
    * A set of ECMAScript 2016 reserved words. See
    * https://tc39.github.io/ecma262/2016/#sec-reserved-words
    */
-  private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
+  public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
       ImmutableSet.<String>builder()
           .add(
               "break",

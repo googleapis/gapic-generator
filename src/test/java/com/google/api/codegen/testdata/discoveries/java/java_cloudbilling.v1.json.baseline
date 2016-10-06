@@ -7,14 +7,13 @@
  *    https://console.developers.google.com/apis/api/cloudbilling
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudbilling/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -24,39 +23,37 @@ import com.google.api.services.cloudbilling.Cloudbilling;
 import com.google.api.services.cloudbilling.model.BillingAccount;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudbillingExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Cloudbilling cloudbillingService = new Cloudbilling.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `get` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The resource name of the billing account to retrieve. For example,
     // `billingAccounts/012345-567890-ABCDEF`.
-    String name = "billingAccounts/{MY-BILLINGACCOUNT}";
+    String name = "";  // TODO: Update placeholder value.
+    // ex: "billingAccounts/my-billingAccount"
 
-
+    Cloudbilling cloudbillingService = createCloudbillingService();
     Cloudbilling.BillingAccounts.Get request = cloudbillingService.billingAccounts().get(name);
+
     BillingAccount response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static Cloudbilling createCloudbillingService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Cloudbilling.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -67,14 +64,13 @@ public class CloudbillingExample {
  *    https://console.developers.google.com/apis/api/cloudbilling
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudbilling/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -85,41 +81,40 @@ import com.google.api.services.cloudbilling.model.BillingAccount;
 import com.google.api.services.cloudbilling.model.ListBillingAccountsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudbillingExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Cloudbilling cloudbillingService = new Cloudbilling.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    Cloudbilling cloudbillingService = createCloudbillingService();
     Cloudbilling.BillingAccounts.List request = cloudbillingService.billingAccounts().list();
+
     ListBillingAccountsResponse response;
     do {
       response = request.execute();
-      if (response.getBillingAccounts() == null)
+      if (response.getBillingAccounts() == null) {
         continue;
-
+      }
       for (BillingAccount billingAccount : response.getBillingAccounts()) {
         // TODO: Change code below to process each `billingAccount` resource:
         System.out.println(billingAccount);
       }
-
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
+  }
+
+  public static Cloudbilling createCloudbillingService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Cloudbilling.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -130,14 +125,13 @@ public class CloudbillingExample {
  *    https://console.developers.google.com/apis/api/cloudbilling
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudbilling/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -148,108 +142,45 @@ import com.google.api.services.cloudbilling.model.ListProjectBillingInfoResponse
 import com.google.api.services.cloudbilling.model.ProjectBillingInfo;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudbillingExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    Cloudbilling cloudbillingService = new Cloudbilling.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The resource name of the billing account associated with the projects that you want to list. For
     // example, `billingAccounts/012345-567890-ABCDEF`.
-    String name = "billingAccounts/{MY-BILLINGACCOUNT}";
+    String name = "";  // TODO: Update placeholder value.
+    // ex: "billingAccounts/my-billingAccount"
 
-
+    Cloudbilling cloudbillingService = createCloudbillingService();
     Cloudbilling.BillingAccounts.Projects.List request = cloudbillingService.billingAccounts().projects().list(name);
+
     ListProjectBillingInfoResponse response;
     do {
       response = request.execute();
-      if (response.getProjectBillingInfo() == null)
+      if (response.getProjectBillingInfo() == null) {
         continue;
-
+      }
       for (ProjectBillingInfo projectBillingInfo : response.getProjectBillingInfo()) {
         // TODO: Change code below to process each `projectBillingInfo` resource:
         System.out.println(projectBillingInfo);
       }
-
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
   }
-}
-/**
- * BEFORE RUNNING:
- * ---------------
- * 1. If not already done, enable the Google Cloud Billing API
- *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/cloudbilling
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on Maven or Gradle. Check installation
- *    instructions at https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/cloudbilling/v1/java
- */
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudbilling.Cloudbilling;
-import com.google.api.services.cloudbilling.model.ProjectBillingInfo;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-public class CloudbillingExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
+  public static Cloudbilling createCloudbillingService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    Cloudbilling cloudbillingService = new Cloudbilling.Builder(httpTransport, jsonFactory, credential)
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Cloudbilling.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
         .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `getBillingInfo` method:
-
-    // The resource name of the project for which billing information is retrieved. For example,
-    // `projects/tokyo-rain-123`.
-    String name = "projects/{MY-PROJECT}";
-
-
-    Cloudbilling.Projects.GetBillingInfo request = cloudbillingService.projects().getBillingInfo(name);
-    ProjectBillingInfo response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
-    System.out.println(response);
   }
 }
 /**
@@ -260,14 +191,13 @@ public class CloudbillingExample {
  *    https://console.developers.google.com/apis/api/cloudbilling
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudbilling/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -277,42 +207,96 @@ import com.google.api.services.cloudbilling.Cloudbilling;
 import com.google.api.services.cloudbilling.model.ProjectBillingInfo;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudbillingExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The resource name of the project for which billing information is retrieved. For example,
+    // `projects/tokyo-rain-123`.
+    String name = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project"
 
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Cloudbilling cloudbillingService = createCloudbillingService();
+    Cloudbilling.Projects.GetBillingInfo request = cloudbillingService.projects().getBillingInfo(name);
 
-    Cloudbilling cloudbillingService = new Cloudbilling.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `updateBillingInfo` method:
-
-    // The resource name of the project associated with the billing information that you want to update.
-    // For example, `projects/tokyo-rain-123`.
-    String name = "projects/{MY-PROJECT}";
-
-
-    ProjectBillingInfo requestBody = new ProjectBillingInfo();
-    // TODO: Assign values to desired fields of the `requestBody` object.
-
-
-    Cloudbilling.Projects.UpdateBillingInfo request = cloudbillingService.projects().updateBillingInfo(name, requestBody);
     ProjectBillingInfo response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static Cloudbilling createCloudbillingService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Cloudbilling.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+}
+/**
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud Billing API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/cloudbilling
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/cloudbilling/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.cloudbilling.Cloudbilling;
+import com.google.api.services.cloudbilling.model.ProjectBillingInfo;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class CloudbillingExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The resource name of the project associated with the billing information that you want to update.
+    // For example, `projects/tokyo-rain-123`.
+    String name = "";  // TODO: Update placeholder value.
+    // ex: "projects/my-project"
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    ProjectBillingInfo requestBody = new ProjectBillingInfo();
+
+    Cloudbilling cloudbillingService = createCloudbillingService();
+    Cloudbilling.Projects.UpdateBillingInfo request = cloudbillingService.projects().updateBillingInfo(name, requestBody);
+
+    ProjectBillingInfo response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Cloudbilling createCloudbillingService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Cloudbilling.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }

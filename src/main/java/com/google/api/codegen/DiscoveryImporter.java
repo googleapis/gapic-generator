@@ -133,10 +133,9 @@ public class DiscoveryImporter {
     for (Type type : importer.types.values()) {
       builder.addTypes(type);
     }
-    Api.Builder apiBuilder =
-        Api.newBuilder()
-            .setName(disco.get("name").asText())
-            .setVersion(disco.get("version").asText());
+    String apiName = disco.get("name").asText();
+    String apiVersion = disco.get("version").asText();
+    Api.Builder apiBuilder = Api.newBuilder().setName(apiName).setVersion(apiVersion);
     for (Method method : importer.methods.values()) {
       apiBuilder.addMethods(method);
     }
@@ -156,9 +155,9 @@ public class DiscoveryImporter {
     if (disco.get("canonicalName") != null) {
       importer.config.setServiceCanonicalName(disco.get("canonicalName").asText());
     } else {
-      importer.config.setServiceCanonicalName(disco.get("name").asText());
+      importer.config.setServiceCanonicalName(apiName);
     }
-    importer.config.setServiceVersion(disco.get("version").asText());
+    importer.config.setServiceVersion(apiVersion);
 
     return importer;
   }

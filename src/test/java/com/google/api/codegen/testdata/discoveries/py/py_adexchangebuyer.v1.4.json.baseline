@@ -482,6 +482,44 @@ BEFORE RUNNING:
 2. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
+from pprint import pprint
+
+from googleapiclient import discovery
+
+
+# TODO: Change placeholder below to get authentication credentials.
+# See: https://foo.com/bar
+#
+# To use the `listDeals` method, authorize using one of the following scopes:
+#   https://www.googleapis.com/auth/adexchange.buyer
+credentials = None
+
+service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
+
+
+# TODO: Change placeholders below to desired parameter values for the `listDeals` method:
+
+# The id for the account that will serve this creative.
+accountId = 0
+
+# The buyer-specific id for this creative.
+buyerCreativeId = '{MY-BUYER-CREATIVE-ID}'
+
+
+request = service.creatives().listDeals(accountId=accountId, buyerCreativeId=buyerCreativeId)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Ad Exchange Buyer API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/adexchangebuyer
+2. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
 from googleapiclient import discovery
 
 
