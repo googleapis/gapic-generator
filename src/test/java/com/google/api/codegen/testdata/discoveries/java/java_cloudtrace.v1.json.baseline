@@ -7,14 +7,13 @@
  *    https://console.developers.google.com/apis/api/cloudtrace
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudtrace/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -24,39 +23,36 @@ import com.google.api.services.cloudtrace.v1.CloudTrace;
 import com.google.api.services.cloudtrace.v1.model.Traces;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudTraceExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // ID of the Cloud project where the trace data is stored.
+    String projectId = "";  // TODO: Update placeholder value.
 
+    // TODO: Assign values to desired fields of `requestBody`. Only assigned
+    // fields will be changed:
+    Traces requestBody = new Traces();
+
+    CloudTrace cloudTraceService = createCloudTraceService();
+    CloudTrace.Projects.PatchTraces request = cloudTraceService.projects().patchTraces(projectId, requestBody);
+
+    request.execute();
+  }
+
+  public static CloudTrace createCloudTraceService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    CloudTrace cloudtraceService = new CloudTrace.Builder(httpTransport, jsonFactory, credential)
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudTrace.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
         .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `patchTraces` method:
-
-    // ID of the Cloud project where the trace data is stored.
-    String projectId = "{MY-PROJECT-ID}";
-
-
-    Traces requestBody = new Traces();
-    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
-
-
-    CloudTrace.Projects.PatchTraces request = cloudtraceService.projects().patchTraces(projectId, requestBody);
-    request.execute();
   }
 }
 /**
@@ -67,14 +63,13 @@ public class CloudTraceExample {
  *    https://console.developers.google.com/apis/api/cloudtrace
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudtrace/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -84,41 +79,38 @@ import com.google.api.services.cloudtrace.v1.CloudTrace;
 import com.google.api.services.cloudtrace.v1.model.Trace;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudTraceExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudTrace cloudtraceService = new CloudTrace.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholders below to desired parameter values for the `get` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // ID of the Cloud project where the trace data is stored.
-    String projectId = "{MY-PROJECT-ID}";
+    String projectId = "";  // TODO: Update placeholder value.
 
     // ID of the trace to return.
-    String traceId = "{MY-TRACE-ID}";
+    String traceId = "";  // TODO: Update placeholder value.
 
+    CloudTrace cloudTraceService = createCloudTraceService();
+    CloudTrace.Projects.Traces.Get request = cloudTraceService.projects().traces().get(projectId, traceId);
 
-    CloudTrace.Projects.Traces.Get request = cloudtraceService.projects().traces().get(projectId, traceId);
     Trace response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static CloudTrace createCloudTraceService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudTrace.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -129,14 +121,13 @@ public class CloudTraceExample {
  *    https://console.developers.google.com/apis/api/cloudtrace
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudtrace/v1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -147,46 +138,42 @@ import com.google.api.services.cloudtrace.v1.model.ListTracesResponse;
 import com.google.api.services.cloudtrace.v1.model.Trace;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudTraceExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudTrace cloudtraceService = new CloudTrace.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // ID of the Cloud project where the trace data is stored.
-    String projectId = "{MY-PROJECT-ID}";
+    String projectId = "";  // TODO: Update placeholder value.
 
+    CloudTrace cloudTraceService = createCloudTraceService();
+    CloudTrace.Projects.Traces.List request = cloudTraceService.projects().traces().list(projectId);
 
-    CloudTrace.Projects.Traces.List request = cloudtraceService.projects().traces().list(projectId);
     ListTracesResponse response;
     do {
       response = request.execute();
-      if (response.getTraces() == null)
+      if (response.getTraces() == null) {
         continue;
-
+      }
       for (Trace trace : response.getTraces()) {
         // TODO: Change code below to process each `trace` resource:
         System.out.println(trace);
       }
-
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
+  }
+
+  public static CloudTrace createCloudTraceService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudTrace.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }

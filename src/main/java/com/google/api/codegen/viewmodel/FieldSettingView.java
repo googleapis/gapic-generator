@@ -23,6 +23,8 @@ public abstract class FieldSettingView {
 
   public abstract String identifier();
 
+  public abstract InitCodeLineView initCodeLine();
+
   public static Builder newBuilder() {
     return new AutoValue_FieldSettingView.Builder();
   }
@@ -32,6 +34,8 @@ public abstract class FieldSettingView {
     public abstract Builder fieldSetFunction(String val);
 
     public abstract Builder identifier(String val);
+
+    public abstract Builder initCodeLine(InitCodeLineView val);
 
     public abstract FieldSettingView build();
   }

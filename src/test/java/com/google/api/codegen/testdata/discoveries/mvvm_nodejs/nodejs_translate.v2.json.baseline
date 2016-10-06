@@ -1,0 +1,142 @@
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Translate API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/translate
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var translate = google.translate('v2');
+
+authorize(function(authClient) {
+  var request = {
+    // The text to detect
+    q: [],  // TODO: Update placeholder value.
+
+    auth: authClient
+  };
+
+  translate.detections.list(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Translate API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/translate
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var translate = google.translate('v2');
+
+authorize(function(authClient) {
+  var request = {
+    auth: authClient
+  };
+
+  translate.languages.list(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Translate API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/translate
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var translate = google.translate('v2');
+
+authorize(function(authClient) {
+  var request = {
+    // The text to translate
+    q: [],  // TODO: Update placeholder value.
+
+    // The target language into which the text should be translated
+    target: '',  // TODO: Update placeholder value.
+
+    auth: authClient
+  };
+
+  translate.translations.list(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}

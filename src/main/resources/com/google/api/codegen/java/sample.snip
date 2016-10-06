@@ -49,11 +49,14 @@
       @end
 
     @end
-    @if body.hasInputRequest
-      // TODO: Assign values to desired fields of `{@body.requestBodyVarName}`.
+    @if body.hasRequestBody
       @if body.methodVerb == "PATCH"
-        // Only assigned fields will be changed.
+        // TODO: Assign values to desired fields of `{@body.requestBodyVarName}`. Only assigned
+        // fields will be changed:
+      @else
+        // TODO: Assign values to desired fields of `{@body.requestBodyVarName}`:
       @end
+
       {@body.requestBodyTypeName} {@body.requestBodyVarName} = new {@body.requestBodyTypeName}();
 
     @end
@@ -95,7 +98,7 @@
         @end
       } while ({@body.responseVarName}.getNextPageToken() != null);
     @else
-      @if body.hasOutput
+      @if body.hasResponse
         {@body.responseTypeName} {@body.responseVarName} = {@body.requestVarName}.execute();
 
         // TODO: Change code below to process the `response` object:

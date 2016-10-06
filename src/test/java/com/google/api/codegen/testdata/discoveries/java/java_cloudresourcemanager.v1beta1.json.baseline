@@ -7,14 +7,13 @@
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -24,38 +23,36 @@ import com.google.api.services.cloudresourcemanager.CloudResourceManager;
 import com.google.api.services.cloudresourcemanager.model.Organization;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudResourceManagerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `get` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The resource name of the Organization to fetch, e.g. "organizations/1234".
-    String name = "organizations/{MY-ORGANIZATION}";
+    String name = "";  // TODO: Update placeholder value.
+    // ex: "organizations/my-organization"
 
+    CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
+    CloudResourceManager.Organizations.Get request = cloudResourceManagerService.organizations().get(name);
 
-    CloudResourceManager.Organizations.Get request = cloudresourcemanagerService.organizations().get(name);
     Organization response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static CloudResourceManager createCloudResourceManagerService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -66,14 +63,13 @@ public class CloudResourceManagerExample {
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -84,43 +80,40 @@ import com.google.api.services.cloudresourcemanager.model.GetIamPolicyRequest;
 import com.google.api.services.cloudresourcemanager.model.Policy;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudResourceManagerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+    // a path. For example, a Project resource is specified as `projects/{project}`.
+    String resource = "";  // TODO: Update placeholder value.
+    // ex: "organizations/my-organization"
 
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `getIamPolicy` method:
-
-    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-    // path. For example, a Project resource is specified as `projects/{project}`.
-    String resource = "organizations/{MY-ORGANIZATION}";
-
-
+    // TODO: Assign values to desired fields of `requestBody`:
     GetIamPolicyRequest requestBody = new GetIamPolicyRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
+    CloudResourceManager.Organizations.GetIamPolicy request = cloudResourceManagerService.organizations().getIamPolicy(resource, requestBody);
 
-    CloudResourceManager.Organizations.GetIamPolicy request = cloudresourcemanagerService.organizations().getIamPolicy(resource, requestBody);
     Policy response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static CloudResourceManager createCloudResourceManagerService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -131,14 +124,13 @@ public class CloudResourceManagerExample {
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -149,41 +141,40 @@ import com.google.api.services.cloudresourcemanager.model.ListOrganizationsRespo
 import com.google.api.services.cloudresourcemanager.model.Organization;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudResourceManagerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
+    CloudResourceManager.Organizations.List request = cloudResourceManagerService.organizations().list();
 
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    CloudResourceManager.Organizations.List request = cloudresourcemanagerService.organizations().list();
     ListOrganizationsResponse response;
     do {
       response = request.execute();
-      if (response.getOrganizations() == null)
+      if (response.getOrganizations() == null) {
         continue;
-
+      }
       for (Organization organization : response.getOrganizations()) {
         // TODO: Change code below to process each `organization` resource:
         System.out.println(organization);
       }
-
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
+  }
+
+  public static CloudResourceManager createCloudResourceManagerService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -194,14 +185,13 @@ public class CloudResourceManagerExample {
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -212,43 +202,40 @@ import com.google.api.services.cloudresourcemanager.model.Policy;
 import com.google.api.services.cloudresourcemanager.model.SetIamPolicyRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudResourceManagerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+    // a path. For example, a Project resource is specified as `projects/{project}`.
+    String resource = "";  // TODO: Update placeholder value.
+    // ex: "organizations/my-organization"
 
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `setIamPolicy` method:
-
-    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-    // path. For example, a Project resource is specified as `projects/{project}`.
-    String resource = "organizations/{MY-ORGANIZATION}";
-
-
+    // TODO: Assign values to desired fields of `requestBody`:
     SetIamPolicyRequest requestBody = new SetIamPolicyRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
+    CloudResourceManager.Organizations.SetIamPolicy request = cloudResourceManagerService.organizations().setIamPolicy(resource, requestBody);
 
-    CloudResourceManager.Organizations.SetIamPolicy request = cloudresourcemanagerService.organizations().setIamPolicy(resource, requestBody);
     Policy response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static CloudResourceManager createCloudResourceManagerService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -259,14 +246,13 @@ public class CloudResourceManagerExample {
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -277,43 +263,40 @@ import com.google.api.services.cloudresourcemanager.model.TestIamPermissionsRequ
 import com.google.api.services.cloudresourcemanager.model.TestIamPermissionsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudResourceManagerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `testIamPermissions` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
     // specified as a path. For example, a Project resource is specified as `projects/{project}`.
-    String resource = "organizations/{MY-ORGANIZATION}";
+    String resource = "";  // TODO: Update placeholder value.
+    // ex: "organizations/my-organization"
 
-
+    // TODO: Assign values to desired fields of `requestBody`:
     TestIamPermissionsRequest requestBody = new TestIamPermissionsRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
+    CloudResourceManager.Organizations.TestIamPermissions request = cloudResourceManagerService.organizations().testIamPermissions(resource, requestBody);
 
-    CloudResourceManager.Organizations.TestIamPermissions request = cloudresourcemanagerService.organizations().testIamPermissions(resource, requestBody);
     TestIamPermissionsResponse response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static CloudResourceManager createCloudResourceManagerService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -324,14 +307,13 @@ public class CloudResourceManagerExample {
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -341,100 +323,40 @@ import com.google.api.services.cloudresourcemanager.CloudResourceManager;
 import com.google.api.services.cloudresourcemanager.model.Organization;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudResourceManagerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `update` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // Output Only. The resource name of the organization. This is the organization's relative path in the
     // API. Its format is "organizations/[organization_id]". For example, "organizations/1234".
-    String name = "organizations/{MY-ORGANIZATION}";
+    String name = "";  // TODO: Update placeholder value.
+    // ex: "organizations/my-organization"
 
-
+    // TODO: Assign values to desired fields of `requestBody`:
     Organization requestBody = new Organization();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
+    CloudResourceManager.Organizations.Update request = cloudResourceManagerService.organizations().update(name, requestBody);
 
-    CloudResourceManager.Organizations.Update request = cloudresourcemanagerService.organizations().update(name, requestBody);
     Organization response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
   }
-}
-/**
- * BEFORE RUNNING:
- * ---------------
- * 1. If not already done, enable the Google Cloud Resource Manager API
- *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/cloudresourcemanager
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on Maven or Gradle. Check installation
- *    instructions at https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
- */
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.model.Project;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-public class CloudResourceManagerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
+  public static CloudResourceManager createCloudResourceManagerService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
         .build();
-
-
-    Project requestBody = new Project();
-    // TODO: Assign values to desired fields of the `requestBody` object.
-
-
-    CloudResourceManager.Projects.Create request = cloudresourcemanagerService.projects().create(requestBody);
-    Project response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
-    System.out.println(response);
   }
 }
 /**
@@ -445,14 +367,68 @@ public class CloudResourceManagerExample {
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.model.Project;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
 
+public class CloudResourceManagerExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // TODO: Assign values to desired fields of `requestBody`:
+    Project requestBody = new Project();
+
+    CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
+    CloudResourceManager.Projects.Create request = cloudResourceManagerService.projects().create(requestBody);
+
+    Project response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static CloudResourceManager createCloudResourceManagerService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+}
+/**
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud Resource Manager API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/cloudresourcemanager
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
+ */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -461,94 +437,32 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudResourceManagerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `delete` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The Project ID (for example, `foo-bar-123`). Required.
-    String projectId = "{MY-PROJECT-ID}";
+    String projectId = "";  // TODO: Update placeholder value.
 
+    CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
+    CloudResourceManager.Projects.Delete request = cloudResourceManagerService.projects().delete(projectId);
 
-    CloudResourceManager.Projects.Delete request = cloudresourcemanagerService.projects().delete(projectId);
     request.execute();
   }
-}
-/**
- * BEFORE RUNNING:
- * ---------------
- * 1. If not already done, enable the Google Cloud Resource Manager API
- *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/cloudresourcemanager
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on Maven or Gradle. Check installation
- *    instructions at https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
- */
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.model.Project;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-public class CloudResourceManagerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
+  public static CloudResourceManager createCloudResourceManagerService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
         .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `get` method:
-
-    // The Project ID (for example, `my-project-123`). Required.
-    String projectId = "{MY-PROJECT-ID}";
-
-
-    CloudResourceManager.Projects.Get request = cloudresourcemanagerService.projects().get(projectId);
-    Project response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
-    System.out.println(response);
   }
 }
 /**
@@ -559,14 +473,68 @@ public class CloudResourceManagerExample {
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.model.Project;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
 
+public class CloudResourceManagerExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The Project ID (for example, `my-project-123`). Required.
+    String projectId = "";  // TODO: Update placeholder value.
+
+    CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
+    CloudResourceManager.Projects.Get request = cloudResourceManagerService.projects().get(projectId);
+
+    Project response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static CloudResourceManager createCloudResourceManagerService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+}
+/**
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud Resource Manager API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/cloudresourcemanager
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
+ */
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -577,42 +545,38 @@ import com.google.api.services.cloudresourcemanager.model.GetAncestryRequest;
 import com.google.api.services.cloudresourcemanager.model.GetAncestryResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudResourceManagerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `getAncestry` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The Project ID (for example, `my-project-123`). Required.
-    String projectId = "{MY-PROJECT-ID}";
+    String projectId = "";  // TODO: Update placeholder value.
 
-
+    // TODO: Assign values to desired fields of `requestBody`:
     GetAncestryRequest requestBody = new GetAncestryRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
+    CloudResourceManager.Projects.GetAncestry request = cloudResourceManagerService.projects().getAncestry(projectId, requestBody);
 
-    CloudResourceManager.Projects.GetAncestry request = cloudresourcemanagerService.projects().getAncestry(projectId, requestBody);
     GetAncestryResponse response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static CloudResourceManager createCloudResourceManagerService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -623,14 +587,13 @@ public class CloudResourceManagerExample {
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -641,43 +604,39 @@ import com.google.api.services.cloudresourcemanager.model.GetIamPolicyRequest;
 import com.google.api.services.cloudresourcemanager.model.Policy;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudResourceManagerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+    // a path. For example, a Project resource is specified as `projects/{project}`.
+    String resource = "";  // TODO: Update placeholder value.
 
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `getIamPolicy` method:
-
-    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-    // path. For example, a Project resource is specified as `projects/{project}`.
-    String resource = "{MY-RESOURCE}";
-
-
+    // TODO: Assign values to desired fields of `requestBody`:
     GetIamPolicyRequest requestBody = new GetIamPolicyRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
+    CloudResourceManager.Projects.GetIamPolicy request = cloudResourceManagerService.projects().getIamPolicy(resource, requestBody);
 
-    CloudResourceManager.Projects.GetIamPolicy request = cloudresourcemanagerService.projects().getIamPolicy(resource, requestBody);
     Policy response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static CloudResourceManager createCloudResourceManagerService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -688,14 +647,13 @@ public class CloudResourceManagerExample {
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -706,41 +664,40 @@ import com.google.api.services.cloudresourcemanager.model.ListProjectsResponse;
 import com.google.api.services.cloudresourcemanager.model.Project;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudResourceManagerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
+    CloudResourceManager.Projects.List request = cloudResourceManagerService.projects().list();
 
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    CloudResourceManager.Projects.List request = cloudresourcemanagerService.projects().list();
     ListProjectsResponse response;
     do {
       response = request.execute();
-      if (response.getProjects() == null)
+      if (response.getProjects() == null) {
         continue;
-
+      }
       for (Project project : response.getProjects()) {
         // TODO: Change code below to process each `project` resource:
         System.out.println(project);
       }
-
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
+  }
+
+  public static CloudResourceManager createCloudResourceManagerService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -751,14 +708,13 @@ public class CloudResourceManagerExample {
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -769,43 +725,39 @@ import com.google.api.services.cloudresourcemanager.model.Policy;
 import com.google.api.services.cloudresourcemanager.model.SetIamPolicyRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudResourceManagerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+    // a path. For example, a Project resource is specified as `projects/{project}`.
+    String resource = "";  // TODO: Update placeholder value.
 
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `setIamPolicy` method:
-
-    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-    // path. For example, a Project resource is specified as `projects/{project}`.
-    String resource = "{MY-RESOURCE}";
-
-
+    // TODO: Assign values to desired fields of `requestBody`:
     SetIamPolicyRequest requestBody = new SetIamPolicyRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
+    CloudResourceManager.Projects.SetIamPolicy request = cloudResourceManagerService.projects().setIamPolicy(resource, requestBody);
 
-    CloudResourceManager.Projects.SetIamPolicy request = cloudresourcemanagerService.projects().setIamPolicy(resource, requestBody);
     Policy response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static CloudResourceManager createCloudResourceManagerService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -816,14 +768,13 @@ public class CloudResourceManagerExample {
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -834,43 +785,39 @@ import com.google.api.services.cloudresourcemanager.model.TestIamPermissionsRequ
 import com.google.api.services.cloudresourcemanager.model.TestIamPermissionsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudResourceManagerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `testIamPermissions` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
     // specified as a path. For example, a Project resource is specified as `projects/{project}`.
-    String resource = "{MY-RESOURCE}";
+    String resource = "";  // TODO: Update placeholder value.
 
-
+    // TODO: Assign values to desired fields of `requestBody`:
     TestIamPermissionsRequest requestBody = new TestIamPermissionsRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
+    CloudResourceManager.Projects.TestIamPermissions request = cloudResourceManagerService.projects().testIamPermissions(resource, requestBody);
 
-    CloudResourceManager.Projects.TestIamPermissions request = cloudresourcemanagerService.projects().testIamPermissions(resource, requestBody);
     TestIamPermissionsResponse response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static CloudResourceManager createCloudResourceManagerService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }
 /**
@@ -881,14 +828,13 @@ public class CloudResourceManagerExample {
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -898,39 +844,35 @@ import com.google.api.services.cloudresourcemanager.CloudResourceManager;
 import com.google.api.services.cloudresourcemanager.model.UndeleteProjectRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudResourceManagerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The project ID (for example, `foo-bar-123`). Required.
+    String projectId = "";  // TODO: Update placeholder value.
 
+    // TODO: Assign values to desired fields of `requestBody`:
+    UndeleteProjectRequest requestBody = new UndeleteProjectRequest();
+
+    CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
+    CloudResourceManager.Projects.Undelete request = cloudResourceManagerService.projects().undelete(projectId, requestBody);
+
+    request.execute();
+  }
+
+  public static CloudResourceManager createCloudResourceManagerService() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
         .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `undelete` method:
-
-    // The project ID (for example, `foo-bar-123`). Required.
-    String projectId = "{MY-PROJECT-ID}";
-
-
-    UndeleteProjectRequest requestBody = new UndeleteProjectRequest();
-    // TODO: Assign values to desired fields of the `requestBody` object.
-
-
-    CloudResourceManager.Projects.Undelete request = cloudresourcemanagerService.projects().undelete(projectId, requestBody);
-    request.execute();
   }
 }
 /**
@@ -941,14 +883,13 @@ public class CloudResourceManagerExample {
  *    https://console.developers.google.com/apis/api/cloudresourcemanager
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1beta1/java
  */
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -958,41 +899,37 @@ import com.google.api.services.cloudresourcemanager.CloudResourceManager;
 import com.google.api.services.cloudresourcemanager.model.Project;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-
+import java.util.Arrays;
 
 public class CloudResourceManagerExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Use Application Default Credentials for authentication when running locally.
-    // For more information, see:
-    // https://developers.google.com/identity/protocols/application-default-credentials
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    CloudResourceManager cloudresourcemanagerService = new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-
-
-    // TODO: Change placeholder below to desired parameter value for the `update` method:
-
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The project ID (for example, `my-project-123`). Required.
-    String projectId = "{MY-PROJECT-ID}";
+    String projectId = "";  // TODO: Update placeholder value.
 
-
+    // TODO: Assign values to desired fields of `requestBody`:
     Project requestBody = new Project();
-    // TODO: Assign values to desired fields of the `requestBody` object.
 
+    CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
+    CloudResourceManager.Projects.Update request = cloudResourceManagerService.projects().update(projectId, requestBody);
 
-    CloudResourceManager.Projects.Update request = cloudresourcemanagerService.projects().update(projectId, requestBody);
     Project response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
+  }
+
+  public static CloudResourceManager createCloudResourceManagerService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
   }
 }

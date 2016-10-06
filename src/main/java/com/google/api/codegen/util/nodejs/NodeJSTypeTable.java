@@ -14,6 +14,9 @@
  */
 package com.google.api.codegen.util.nodejs;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
@@ -21,9 +24,6 @@ import com.google.api.codegen.util.TypeTable;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableSet;
-
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * The TypeTable for NodeJS.
@@ -106,7 +106,7 @@ public class NodeJSTypeTable implements TypeTable {
    * A set of ECMAScript 2016 reserved words. See
    * https://tc39.github.io/ecma262/2016/#sec-reserved-words
    */
-  private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
+  public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
       ImmutableSet.<String>builder()
           .add(
               "break",

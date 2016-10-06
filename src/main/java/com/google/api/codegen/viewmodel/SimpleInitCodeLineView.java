@@ -20,10 +20,12 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class SimpleInitCodeLineView implements InitCodeLineView {
 
+  @Override
   public abstract InitCodeLineType lineType();
 
   public abstract String typeName();
 
+  @Override
   public abstract String identifier();
 
   public abstract InitValueView initValue();
