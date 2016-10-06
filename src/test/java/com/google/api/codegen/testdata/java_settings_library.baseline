@@ -20,7 +20,6 @@ import com.google.api.gax.grpc.BundlingCallSettings;
 import com.google.api.gax.grpc.BundlingDescriptor;
 import com.google.api.gax.grpc.BundlingSettings;
 import com.google.api.gax.grpc.CallContext;
-import com.google.api.gax.grpc.FutureCallable;
 import com.google.api.gax.grpc.PageStreamingCallSettings;
 import com.google.api.gax.grpc.PageStreamingDescriptor;
 import com.google.api.gax.grpc.PagedListResponseFactory;
@@ -29,6 +28,7 @@ import com.google.api.gax.grpc.ServiceApiSettings;
 import com.google.api.gax.grpc.SimpleCallSettings;
 import com.google.api.gax.grpc.StreamingCallSettings;
 import com.google.api.gax.grpc.UnaryApiCallSettings;
+import com.google.api.gax.grpc.UnaryApiCallable;
 import com.google.auth.Credentials;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -526,7 +526,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
         @Override
         public ListShelvesPagedResponse createPagedListResponse(
             ListShelvesRequest request,
-            FutureCallable<ListShelvesRequest, ListShelvesResponse> callable,
+            UnaryApiCallable<ListShelvesRequest, ListShelvesResponse> callable,
             CallContext context) {
           return new ListShelvesPagedResponse(request, callable, LIST_SHELVES_PAGE_STR_DESC, context);
         }
@@ -537,7 +537,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
         @Override
         public ListBooksPagedResponse createPagedListResponse(
             ListBooksRequest request,
-            FutureCallable<ListBooksRequest, ListBooksResponse> callable,
+            UnaryApiCallable<ListBooksRequest, ListBooksResponse> callable,
             CallContext context) {
           return new ListBooksPagedResponse(request, callable, LIST_BOOKS_PAGE_STR_DESC, context);
         }
@@ -548,7 +548,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
         @Override
         public ListStringsPagedResponse createPagedListResponse(
             ListStringsRequest request,
-            FutureCallable<ListStringsRequest, ListStringsResponse> callable,
+            UnaryApiCallable<ListStringsRequest, ListStringsResponse> callable,
             CallContext context) {
           return new ListStringsPagedResponse(request, callable, LIST_STRINGS_PAGE_STR_DESC, context);
         }
@@ -559,7 +559,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
         @Override
         public FindRelatedBooksPagedResponse createPagedListResponse(
             FindRelatedBooksRequest request,
-            FutureCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> callable,
+            UnaryApiCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> callable,
             CallContext context) {
           return new FindRelatedBooksPagedResponse(request, callable, FIND_RELATED_BOOKS_PAGE_STR_DESC, context);
         }
