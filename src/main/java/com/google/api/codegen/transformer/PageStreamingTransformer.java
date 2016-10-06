@@ -116,7 +116,7 @@ public class PageStreamingTransformer {
       SurfaceTransformerContext context) {
     List<PagedListResponseFactoryClassView> factories = new ArrayList<>();
 
-    context.getNamer().addPageStreamingFactoryImports(context.getTypeTable());
+    context.getNamer().addPagedListResponseFactoryImports(context.getTypeTable());
     for (Method method : context.getPageStreamingMethods()) {
       factories.add(generateFactoryClass(context.asMethodContext(method)));
     }
@@ -134,7 +134,7 @@ public class PageStreamingTransformer {
     PagedListResponseFactoryClassView.Builder factory =
         PagedListResponseFactoryClassView.newBuilder();
 
-    factory.name(namer.getPageStreamingFactoryConstName(method));
+    factory.name(namer.getPagedListResponseFactoryConstName(method));
     factory.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     factory.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
     factory.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField.getType()));

@@ -37,7 +37,6 @@ import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.ApiMethodView;
-import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
 import com.google.api.codegen.viewmodel.PagedResponseIterateMethodView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
@@ -195,6 +194,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     StaticLangPagedResponseView.Builder pagedResponseWrapper =
         StaticLangPagedResponseView.newBuilder();
 
+    context.getNamer().addPagedListResponseImports(typeTable);
+    context.getNamer().addPageStreamingDescriptorImports(typeTable);
+
     pagedResponseWrapper.templateFileName(PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME);
     pagedResponseWrapper.packageName(context.getApiConfig().getPackageName());
 
@@ -206,7 +208,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     pagedResponseWrapper.resourceTypeName(
         typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
     pagedResponseWrapper.iterateMethods(getIterateMethods(context));
-    pagedResponseWrapper.imports(new ArrayList<ImportTypeView>());
+    pagedResponseWrapper.imports(importTypeTransformer.generateImports(typeTable.getImports()));
 
     String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
     pagedResponseWrapper.outputPath(outputPath + File.separator + pagedResponseTypeName + ".java");

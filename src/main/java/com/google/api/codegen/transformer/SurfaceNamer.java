@@ -346,12 +346,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The page streaming factory name for the given method. */
-  public String getPageStreamingFactoryName(Method method) {
-    return privateFieldName(Name.upperCamel(method.getSimpleName(), "PageStreamingFactory"));
+  public String getPagedListResponseFactoryName(Method method) {
+    return privateFieldName(Name.upperCamel(method.getSimpleName(), "PagedListResponseFactory"));
   }
 
   /** The name of the constant to hold the page streaming factory for the given method. */
-  public String getPageStreamingFactoryConstName(Method method) {
+  public String getPagedListResponseFactoryConstName(Method method) {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("page_str_fact"));
   }
 
@@ -365,8 +365,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
     // do nothing
   }
 
-  /** Adds the imports used in the implementation of page streaming factories. */
-  public void addPageStreamingFactoryImports(ModelTypeTable typeTable) {
+  /** Adds the imports used in the implementation of paged list response factories. */
+  public void addPagedListResponseFactoryImports(ModelTypeTable typeTable) {
+    // do nothing
+  }
+
+  /** Adds the imports used in the implementation of paged list responses. */
+  public void addPagedListResponseImports(ModelTypeTable typeTable) {
     // do nothing
   }
 

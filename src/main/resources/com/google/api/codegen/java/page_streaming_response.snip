@@ -13,7 +13,16 @@
       responseT = {@pagedResponseClass.responseTypeName}, \
       resourceT = {@pagedResponseClass.resourceTypeName}
     public class {@pagedResponseClass.name} extends \
-        PagedListResponse<{@requestT}, {@responseT}, {@resourceT}> {
+        PagedListResponseImpl<{@requestT}, {@responseT}, {@resourceT}> {
+
+      public {@pagedResponseClass.name}(
+          {@requestT} request,
+          FutureCallable<{@requestT}, {@responseT}> callable,
+          PageStreamingDescriptor<{@requestT}, {@responseT}, {@resourceT}> pageDescriptor,
+          CallContext context) {
+        super(request, callable, pageDescriptor, context);      
+      }
+  
       {@iterateMethods(pagedResponseClass)}
     }
   @end

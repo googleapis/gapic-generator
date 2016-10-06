@@ -182,7 +182,7 @@ public class ApiCallableTransformer {
           namer.getAndSavePagedResponseTypeName(
               context.getMethod(), context.getTypeTable(), resourceField));
       settings.pageStreamingDescriptorName(namer.getPageStreamingDescriptorConstName(method));
-      settings.pagedListResponseFactoryName(namer.getPageStreamingFactoryConstName(method));
+      settings.pagedListResponseFactoryName(namer.getPagedListResponseFactoryConstName(method));
     } else if (methodConfig.isBundling()) {
       namer.addBundlingCallSettingsImports(typeTable);
       settings.type(ApiCallableType.BundlingApiCallable);

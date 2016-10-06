@@ -19,8 +19,11 @@ import com.google.api.gax.core.RetrySettings;
 import com.google.api.gax.grpc.BundlingCallSettings;
 import com.google.api.gax.grpc.BundlingDescriptor;
 import com.google.api.gax.grpc.BundlingSettings;
+import com.google.api.gax.grpc.CallContext;
+import com.google.api.gax.grpc.FutureCallable;
 import com.google.api.gax.grpc.PageStreamingCallSettings;
 import com.google.api.gax.grpc.PageStreamingDescriptor;
+import com.google.api.gax.grpc.PagedListResponseFactory;
 import com.google.api.gax.grpc.RequestIssuer;
 import com.google.api.gax.grpc.ServiceApiSettings;
 import com.google.api.gax.grpc.SimpleCallSettings;
@@ -693,7 +696,6 @@ public class LibraryServiceSettings extends ServiceApiSettings {
 
       listShelvesSettings = PageStreamingCallSettings.newBuilder(
           LibraryServiceGrpc.METHOD_LIST_SHELVES,
-          LIST_SHELVES_PAGE_STR_DESC,
           LIST_SHELVES_PAGE_STR_FACT);
 
       deleteShelfSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_DELETE_SHELF);
@@ -711,7 +713,6 @@ public class LibraryServiceSettings extends ServiceApiSettings {
 
       listBooksSettings = PageStreamingCallSettings.newBuilder(
           LibraryServiceGrpc.METHOD_LIST_BOOKS,
-          LIST_BOOKS_PAGE_STR_DESC,
           LIST_BOOKS_PAGE_STR_FACT);
 
       deleteBookSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_DELETE_BOOK);
@@ -722,7 +723,6 @@ public class LibraryServiceSettings extends ServiceApiSettings {
 
       listStringsSettings = PageStreamingCallSettings.newBuilder(
           LibraryServiceGrpc.METHOD_LIST_STRINGS,
-          LIST_STRINGS_PAGE_STR_DESC,
           LIST_STRINGS_PAGE_STR_FACT);
 
       addCommentsSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_ADD_COMMENTS);
@@ -739,7 +739,6 @@ public class LibraryServiceSettings extends ServiceApiSettings {
 
       findRelatedBooksSettings = PageStreamingCallSettings.newBuilder(
           LibraryServiceGrpc.METHOD_FIND_RELATED_BOOKS,
-          FIND_RELATED_BOOKS_PAGE_STR_DESC,
           FIND_RELATED_BOOKS_PAGE_STR_FACT);
 
       addTagSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_ADD_TAG);
