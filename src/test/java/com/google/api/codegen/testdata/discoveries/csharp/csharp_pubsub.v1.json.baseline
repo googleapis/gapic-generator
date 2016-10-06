@@ -43,6 +43,200 @@ namespace PubsubSample
             });
 
 
+            // TODO: Change placeholder below to desired parameter value for the `GetIamPolicy` method:
+
+            // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
+            // path. For example, a Project resource is specified as `projects/{project}`.
+            string resource = "projects/{MY-PROJECT}/snapshots/{MY-SNAPSHOT}";
+
+
+            ProjectsResource.SnapshotsResource.GetIamPolicyRequest request = pubsubService.Projects.Snapshots.GetIamPolicy(resource);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Policy response = request.Execute();
+            // Data.Policy response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Pubsub.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
+
+
+namespace PubsubSample
+{
+    public class PubsubServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
+            // TODO: Change placeholder below to desired parameter value for the `SetIamPolicy` method:
+
+            // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
+            // path. For example, a Project resource is specified as `projects/{project}`.
+            string resource = "projects/{MY-PROJECT}/snapshots/{MY-SNAPSHOT}";
+
+
+            Data.SetIamPolicyRequest requestBody = new Data.SetIamPolicyRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.SnapshotsResource.SetIamPolicyRequest request = pubsubService.Projects.Snapshots.SetIamPolicy(requestBody, resource);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Policy response = request.Execute();
+            // Data.Policy response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Pubsub.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
+
+
+namespace PubsubSample
+{
+    public class PubsubServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
+            // TODO: Change placeholder below to desired parameter value for the `TestIamPermissions` method:
+
+            // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
+            // specified as a path. For example, a Project resource is specified as `projects/{project}`.
+            string resource = "projects/{MY-PROJECT}/snapshots/{MY-SNAPSHOT}";
+
+
+            Data.TestIamPermissionsRequest requestBody = new Data.TestIamPermissionsRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.SnapshotsResource.TestIamPermissionsRequest request = pubsubService.Projects.Snapshots.TestIamPermissions(requestBody, resource);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.TestIamPermissionsResponse response = request.Execute();
+            // Data.TestIamPermissionsResponse response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Pubsub.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
+
+
+namespace PubsubSample
+{
+    public class PubsubServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            PubsubService pubsubService = new PubsubService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
             // TODO: Change placeholder below to desired parameter value for the `Acknowledge` method:
 
             // The subscription whose message is being acknowledged.
@@ -302,8 +496,7 @@ namespace PubsubSample
             // TODO: Change placeholder below to desired parameter value for the `GetIamPolicy` method:
 
             // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-            // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
-            // this value is resource specific and is specified in the `getIamPolicy` documentation.
+            // path. For example, a Project resource is specified as `projects/{project}`.
             string resource = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
 
@@ -633,8 +826,7 @@ namespace PubsubSample
             // TODO: Change placeholder below to desired parameter value for the `SetIamPolicy` method:
 
             // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-            // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
-            // this value is resource specific and is specified in the `setIamPolicy` documentation.
+            // path. For example, a Project resource is specified as `projects/{project}`.
             string resource = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
 
@@ -700,9 +892,7 @@ namespace PubsubSample
             // TODO: Change placeholder below to desired parameter value for the `TestIamPermissions` method:
 
             // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
-            // specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path
-            // specified in this value is resource specific and is specified in the `testIamPermissions`
-            // documentation.
+            // specified as a path. For example, a Project resource is specified as `projects/{project}`.
             string resource = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
 
@@ -958,8 +1148,7 @@ namespace PubsubSample
             // TODO: Change placeholder below to desired parameter value for the `GetIamPolicy` method:
 
             // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-            // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
-            // this value is resource specific and is specified in the `getIamPolicy` documentation.
+            // path. For example, a Project resource is specified as `projects/{project}`.
             string resource = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
 
 
@@ -1159,8 +1348,7 @@ namespace PubsubSample
             // TODO: Change placeholder below to desired parameter value for the `SetIamPolicy` method:
 
             // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-            // path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
-            // this value is resource specific and is specified in the `setIamPolicy` documentation.
+            // path. For example, a Project resource is specified as `projects/{project}`.
             string resource = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
 
 
@@ -1299,9 +1487,7 @@ namespace PubsubSample
             // TODO: Change placeholder below to desired parameter value for the `TestIamPermissions` method:
 
             // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
-            // specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path
-            // specified in this value is resource specific and is specified in the `testIamPermissions`
-            // documentation.
+            // specified as a path. For example, a Project resource is specified as `projects/{project}`.
             string resource = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
 
 
