@@ -16,7 +16,6 @@ package com.google.api.codegen.util;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableSet;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -109,87 +108,4 @@ public abstract class DynamicLangTypeTable implements TypeTable {
       String containerFullName, String innerTypeShortName) {
     throw new UnsupportedOperationException("getAndSaveNicknameForStaticInnerClass not supported");
   }
-
-  /**
-   * A set of PHP keywords and built-ins. keywords: http://php.net/manual/en/reserved.keywords.php
-   */
-  private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
-      ImmutableSet.<String>builder()
-          .add(
-              "__halt_compiler",
-              "abstract",
-              "and",
-              "array",
-              "as",
-              "break",
-              "callable",
-              "case",
-              "catch",
-              "class",
-              "clone",
-              "const",
-              "continue",
-              "declare",
-              "default",
-              "die",
-              "do",
-              "echo",
-              "else",
-              "elseif",
-              "empty",
-              "enddeclare",
-              "endfor",
-              "endforeach",
-              "endif",
-              "endswitch",
-              "endwhile",
-              "eval",
-              "exit",
-              "extends",
-              "final",
-              "finally",
-              "for",
-              "foreach",
-              "function",
-              "global",
-              "goto",
-              "if",
-              "implements",
-              "include",
-              "include_once",
-              "instanceof",
-              "insteadof",
-              "interface",
-              "isset",
-              "list",
-              "namespace",
-              "new",
-              "or",
-              "print",
-              "private",
-              "protected",
-              "public",
-              "require",
-              "require_once",
-              "return",
-              "static",
-              "switch",
-              "throw",
-              "trait",
-              "try",
-              "unset",
-              "use",
-              "var",
-              "while",
-              "xor",
-              "yield",
-              "__CLASS__",
-              "__DIR__",
-              "__FILE__",
-              "__FUNCTION__",
-              "__LINE__",
-              "__METHOD__",
-              "__NAMESPACE__",
-              "__TRAIT__")
-          .build();
 }
