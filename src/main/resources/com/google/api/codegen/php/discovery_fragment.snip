@@ -128,11 +128,11 @@
     @end
     @if context.hasRequestField(method)
 
-      ${@postBodyName()} = new {@context.getRequestClassName(method)}($client);
+      ${@requestBodyName()} = new {@context.getRequestClassName(method)}($client);
       @if context.isPatch(method)
-        // {@TODO()} Assign values to desired properties of the `{@postBodyName()}` object to be changed.
+        // {@TODO()} Assign values to desired properties of the `{@requestBodyName()}` object to be changed.
       @else
-        // {@TODO()} Assign values to desired properties of the `{@postBodyName()}` object.
+        // {@TODO()} Assign values to desired properties of the `{@requestBodyName()}` object.
       @end
 
 
@@ -234,9 +234,9 @@
   @let params = context.getFlatMethodParams(method)
     @if context.hasRequestField(method)
       @if params
-        {@argumentList(params)}, ${@postBodyName()}
+        {@argumentList(params)}, ${@requestBodyName()}
       @else
-        ${@postBodyName()}
+        ${@requestBodyName()}
       @end
     @else
       {@argumentList(params)}
@@ -248,8 +248,8 @@
   optParams
 @end
 
-@private postBodyName()
-  postBody
+@private requestBodyName()
+  requestBody
 @end
 
 @private responseName()
