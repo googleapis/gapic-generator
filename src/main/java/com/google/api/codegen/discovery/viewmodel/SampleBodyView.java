@@ -96,6 +96,9 @@ public abstract class SampleBodyView {
   @Nullable
   public abstract String authFuncName();
 
+  @Nullable
+  public abstract String authVarName();
+
   public static Builder newBuilder() {
     return new AutoValue_SampleBodyView.Builder();
   }
@@ -166,6 +169,8 @@ public abstract class SampleBodyView {
     public abstract Builder handlePageVarName(String val);
 
     public abstract Builder authFuncName(String val);
+
+    public abstract Builder authVarName(String val);
 
     public abstract SampleBodyView build();
   }

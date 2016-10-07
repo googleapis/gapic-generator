@@ -14,38 +14,24 @@
 var google = require('googleapis');
 var translate = google.translate('v2');
 
-authorize(function(authClient) {
-  var request = {
-    // The text to detect
-    q: [],  // TODO: Update placeholder value.
+var apiKey = ''; // TODO: Update placeholder with desired API key.
 
-    auth: authClient
-  };
+var request = {
+  // The text to detect
+  q: [],  // TODO: Update placeholder value.
 
-  translate.detections.list(request, function(err, response) {
-    if (err) {
-      console.log(err);
-      return;
-    }
+  auth: apiKey
+};
 
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response, null, 2));
-  });
+translate.detections.list(request, function(err, response) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+
+  // TODO: Change code below to process the `response` object:
+  console.log(JSON.stringify(response, null, 2));
 });
-
-function authorize(callback) {
-  google.auth.getApplicationDefault(function(err, authClient)) {
-    if (err) {
-      console.log('authentication failed: ', err);
-      return;
-    }
-    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-      authClient = authClient.createScoped(scopes);
-    }
-    callback(authClient);
-  });
-}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Translate API
@@ -61,35 +47,21 @@ function authorize(callback) {
 var google = require('googleapis');
 var translate = google.translate('v2');
 
-authorize(function(authClient) {
-  var request = {
-    auth: authClient
-  };
+var apiKey = ''; // TODO: Update placeholder with desired API key.
 
-  translate.languages.list(request, function(err, response) {
-    if (err) {
-      console.log(err);
-      return;
-    }
+var request = {
+  auth: apiKey
+};
 
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response, null, 2));
-  });
+translate.languages.list(request, function(err, response) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+
+  // TODO: Change code below to process the `response` object:
+  console.log(JSON.stringify(response, null, 2));
 });
-
-function authorize(callback) {
-  google.auth.getApplicationDefault(function(err, authClient)) {
-    if (err) {
-      console.log('authentication failed: ', err);
-      return;
-    }
-    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-      authClient = authClient.createScoped(scopes);
-    }
-    callback(authClient);
-  });
-}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Translate API
@@ -105,38 +77,24 @@ function authorize(callback) {
 var google = require('googleapis');
 var translate = google.translate('v2');
 
-authorize(function(authClient) {
-  var request = {
-    // The text to translate
-    q: [],  // TODO: Update placeholder value.
+var apiKey = ''; // TODO: Update placeholder with desired API key.
 
-    // The target language into which the text should be translated
-    target: '',  // TODO: Update placeholder value.
+var request = {
+  // The text to translate
+  q: [],  // TODO: Update placeholder value.
 
-    auth: authClient
-  };
+  // The target language into which the text should be translated
+  target: '',  // TODO: Update placeholder value.
 
-  translate.translations.list(request, function(err, response) {
-    if (err) {
-      console.log(err);
-      return;
-    }
+  auth: apiKey
+};
 
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response, null, 2));
-  });
+translate.translations.list(request, function(err, response) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+
+  // TODO: Change code below to process the `response` object:
+  console.log(JSON.stringify(response, null, 2));
 });
-
-function authorize(callback) {
-  google.auth.getApplicationDefault(function(err, authClient)) {
-    if (err) {
-      console.log('authentication failed: ', err);
-      return;
-    }
-    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-      authClient = authClient.createScoped(scopes);
-    }
-    callback(authClient);
-  });
-}
