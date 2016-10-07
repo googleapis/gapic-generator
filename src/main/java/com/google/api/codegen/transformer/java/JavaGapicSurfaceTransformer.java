@@ -165,9 +165,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.apiMethods(methods);
 
     // must be done as the last step to catch all imports
-    xapiClass.imports(
-        importTypeTransformer.generateImports(
-            context.getTypeTable().getImports(), context.getTypeTable().getStaticImports()));
+    xapiClass.imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()));
 
     String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
     xapiClass.outputPath(outputPath + File.separator + name + ".java");
@@ -211,9 +209,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     }
     pagedResponseWrappers.pagedResponseWrapperList(pagedResponseWrappersList);
 
-    pagedResponseWrappers.imports(
-        importTypeTransformer.generateImports(
-            typeTable.getImports(), typeTable.getStaticImports()));
+    pagedResponseWrappers.imports(importTypeTransformer.generateImports(typeTable.getImports()));
 
     Interface firstInterface = new InterfaceView().getElementIterable(model).iterator().next();
     String outputPath = pathMapper.getOutputPath(firstInterface, apiConfig);
@@ -312,8 +308,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
     // must be done as the last step to catch all imports
     xsettingsClass.imports(
-        importTypeTransformer.generateImports(
-            context.getTypeTable().getImports(), context.getTypeTable().getStaticImports()));
+        importTypeTransformer.generateImports(context.getTypeTable().getImports()));
 
     String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
     xsettingsClass.outputPath(outputPath + "/" + name + ".java");

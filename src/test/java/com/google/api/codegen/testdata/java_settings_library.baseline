@@ -65,6 +65,10 @@ import com.google.example.library.v1.StreamShelvesRequest;
 import com.google.example.library.v1.StreamShelvesResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
+import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.FindRelatedBooksPagedResponse;
+import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListBooksPagedResponse;
+import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListShelvesPagedResponse;
+import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListStringsPagedResponse;
 import com.google.protobuf.Empty;
 import com.google.tagger.v1.AddLabelRequest;
 import com.google.tagger.v1.AddLabelResponse;
@@ -79,10 +83,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import org.joda.time.Duration;
-import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.FindRelatedBooksPagedResponse;
-import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListBooksPagedResponse;
-import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListShelvesPagedResponse;
-import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListStringsPagedResponse;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
 /**
@@ -529,10 +529,10 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       new PagedListResponseFactory<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse>() {
         @Override
         public ListShelvesPagedResponse createPagedListResponse(
-            ListShelvesRequest request,
             UnaryApiCallable<ListShelvesRequest, ListShelvesResponse> callable,
+            ListShelvesRequest request,
             CallContext context) {
-          return new ListShelvesPagedResponse(request, callable, LIST_SHELVES_PAGE_STR_DESC, context);
+          return new ListShelvesPagedResponse(callable, LIST_SHELVES_PAGE_STR_DESC, request, context);
         }
       };
 
@@ -540,10 +540,10 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       new PagedListResponseFactory<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse>() {
         @Override
         public ListBooksPagedResponse createPagedListResponse(
-            ListBooksRequest request,
             UnaryApiCallable<ListBooksRequest, ListBooksResponse> callable,
+            ListBooksRequest request,
             CallContext context) {
-          return new ListBooksPagedResponse(request, callable, LIST_BOOKS_PAGE_STR_DESC, context);
+          return new ListBooksPagedResponse(callable, LIST_BOOKS_PAGE_STR_DESC, request, context);
         }
       };
 
@@ -551,10 +551,10 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       new PagedListResponseFactory<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse>() {
         @Override
         public ListStringsPagedResponse createPagedListResponse(
-            ListStringsRequest request,
             UnaryApiCallable<ListStringsRequest, ListStringsResponse> callable,
+            ListStringsRequest request,
             CallContext context) {
-          return new ListStringsPagedResponse(request, callable, LIST_STRINGS_PAGE_STR_DESC, context);
+          return new ListStringsPagedResponse(callable, LIST_STRINGS_PAGE_STR_DESC, request, context);
         }
       };
 
@@ -562,10 +562,10 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       new PagedListResponseFactory<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse>() {
         @Override
         public FindRelatedBooksPagedResponse createPagedListResponse(
-            FindRelatedBooksRequest request,
             UnaryApiCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> callable,
+            FindRelatedBooksRequest request,
             CallContext context) {
-          return new FindRelatedBooksPagedResponse(request, callable, FIND_RELATED_BOOKS_PAGE_STR_DESC, context);
+          return new FindRelatedBooksPagedResponse(callable, FIND_RELATED_BOOKS_PAGE_STR_DESC, request, context);
         }
       };
 

@@ -81,8 +81,8 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypeName getTypeName(String shortName) {
-    return typeNameConverter.getTypeNameFromShortName(shortName);
+  public TypeName getTypeNameInImplicitPackage(String shortName) {
+    return typeNameConverter.getTypeNameInImplicitPackage(shortName);
   }
 
   @Override

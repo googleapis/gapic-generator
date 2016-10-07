@@ -14,12 +14,12 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.viewmodel.ImportType;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,24 +27,15 @@ import java.util.TreeSet;
 
 public class ImportTypeTransformer {
 
-  public List<ImportTypeView> generateImports(Map<String, String> imports) {
-    return generateImports(imports, new HashMap<String, String>());
-  }
-
-  public List<ImportTypeView> generateImports(
-      Map<String, String> imports, Map<String, String> staticImports) {
+  public List<ImportTypeView> generateImports(Map<String, TypeAlias> imports) {
     List<ImportTypeView> generatedImports = new ArrayList<>();
     for (String key : imports.keySet()) {
-      generatedImports.add(
-          ImportTypeView.newBuilder().fullName(key).nickname(imports.get(key)).build());
-    }
-    for (String key : staticImports.keySet()) {
-      generatedImports.add(
-          ImportTypeView.newBuilder()
-              .fullName(key)
-              .nickname(staticImports.get(key))
-              .type(ImportType.StaticImport)
-              .build());
+      ImportTypeView.Builder importTypeView =
+          ImportTypeView.newBuilder().fullName(key).nickname(imports.get(key).getNickname());
+      if (imports.get(key).getParentFullName() != null) {
+        importTypeView.type(ImportType.StaticImport);
+      }
+      generatedImports.add(importTypeView.build());
     }
     return generatedImports;
   }

@@ -57,7 +57,7 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
           .build();
 
   @Override
-  public TypeName getTypeName(String shortName) {
+  public TypeName getTypeNameInImplicitPackage(String shortName) {
     throw new UnsupportedOperationException("getTypeName(String) not supported by Go");
   }
 

@@ -15,6 +15,7 @@
 package com.google.api.codegen.util;
 
 import com.google.auto.value.AutoValue;
+import java.util.Comparator;
 import javax.annotation.Nullable;
 
 /**
@@ -68,5 +69,14 @@ public abstract class TypeAlias {
    */
   public boolean needsImport() {
     return !getFullName().equals(getNickname());
+  }
+
+  public static Comparator<TypeAlias> getNicknameComparator() {
+    return new Comparator<TypeAlias>() {
+      @Override
+      public int compare(TypeAlias o1, TypeAlias o2) {
+        return o1.getNickname().compareTo(o2.getNickname());
+      }
+    };
   }
 }

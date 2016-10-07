@@ -12,55 +12,102 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.util.php;
+package com.google.api.codegen.util;
 
-import com.google.api.codegen.util.DynamicLangTypeTable;
-import com.google.api.codegen.util.NamePath;
-import com.google.api.codegen.util.TypeAlias;
-import com.google.api.codegen.util.TypeTable;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableSet;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
-/**
- * The TypeTable for PHP.
- */
-public class PhpTypeTable extends DynamicLangTypeTable {
+/** A generic TypeTable that can be used by dynamic language implementations. */
+public abstract class DynamicLangTypeTable implements TypeTable {
+  /** A bi-map from full names to short names indicating the import map. */
+  private final BiMap<String, TypeAlias> imports = HashBiMap.create();
 
-  public PhpTypeTable(String implicitPackageName) {
-    super(implicitPackageName);
+  private final Set<String> usedNicknames = new HashSet<>();
+
+  private final String implicitPackageName;
+
+  public DynamicLangTypeTable(String implicitPackageName) {
+    this.implicitPackageName = implicitPackageName;
+  }
+
+  protected abstract String getSeparator();
+
+  protected BiMap<String, TypeAlias> getImportsBimap() {
+    return imports;
+  }
+
+  protected String getImplicitPackageName() {
+    return implicitPackageName;
   }
 
   @Override
-  protected String getSeparator() {
-    return "\\";
+  public TypeName getTypeName(String fullName) {
+    int lastSeparatorIndex = fullName.lastIndexOf(getSeparator());
+    if (lastSeparatorIndex < 0) {
+      throw new IllegalArgumentException("expected fully qualified name");
+    }
+    String nickname = fullName.substring(lastSeparatorIndex + getSeparator().length());
+    return new TypeName(fullName, nickname);
   }
 
   @Override
-  public TypeTable cloneEmpty() {
-    return new PhpTypeTable(getImplicitPackageName());
+  public TypeName getTypeNameInImplicitPackage(String shortName) {
+    String fullName = implicitPackageName + getSeparator() + shortName;
+    return new TypeName(fullName, shortName);
   }
 
   @Override
-  public NamePath getNamePath(String fullName) {
-    return NamePath.backslashed(fullName);
+  public TypeName getContainerTypeName(String containerFullName, String... elementFullNames) {
+    return getTypeName(containerFullName);
+  }
+
+  @Override
+  public String getAndSaveNicknameFor(String fullName) {
+    return getAndSaveNicknameFor(getTypeName(fullName));
+  }
+
+  @Override
+  public String getAndSaveNicknameFor(TypeName typeName) {
+    return typeName.getAndSaveNicknameIn(this);
+  }
+
+  @Override
+  public String getAndSaveNicknameFor(TypeAlias alias) {
+    if (!alias.needsImport()) {
+      return alias.getNickname();
+    }
+    // Derive a short name if possible
+    if (imports.containsKey(alias.getFullName())) {
+      // Short name already there.
+      return imports.get(alias.getFullName()).getNickname();
+    }
+    if (usedNicknames.contains(alias.getNickname())) {
+      // Short name clashes, use long name.
+      return alias.getFullName();
+    }
+    imports.put(alias.getFullName(), alias);
+    usedNicknames.add(alias.getNickname());
+    return alias.getNickname();
   }
 
   @Override
   public Map<String, TypeAlias> getImports() {
-    Map<String, TypeAlias> imports = super.getImports();
-    // Clean up the imports.
-    Map<String, TypeAlias> cleanedImports = new TreeMap<>();
-    // Imported type is in package, can be ignored.
-    for (String imported : imports.keySet()) {
-      if (!getImplicitPackageName().isEmpty() && imported.startsWith(getImplicitPackageName())) {
-        if (!imported.substring(getImplicitPackageName().length() + 1).contains(getSeparator())) {
-          continue;
-        }
-      }
-      cleanedImports.put(imported, imports.get(imported));
-    }
-    return cleanedImports;
+    return new TreeMap<>(imports);
+  }
+
+  public boolean hasImports() {
+    return !getImports().isEmpty();
+  }
+
+  @Override
+  public String getAndSaveNicknameForInnerType(
+      String containerFullName, String innerTypeShortName) {
+    throw new UnsupportedOperationException("getAndSaveNicknameForStaticInnerClass not supported");
   }
 
   /**

@@ -43,7 +43,7 @@ public interface ModelTypeNameConverter {
   TypeName getTypeName(ProtoElement elem);
 
   /** Provides a TypeName for the given short name, using the default package. */
-  TypeName getTypeName(String shortName);
+  TypeName getTypeNameInImplicitPackage(String shortName);
 
   /**
    * Provides a TypedValue containing the zero value of the given

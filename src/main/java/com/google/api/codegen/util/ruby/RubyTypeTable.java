@@ -14,49 +14,30 @@
  */
 package com.google.api.codegen.util.ruby;
 
+import com.google.api.codegen.util.DynamicLangTypeTable;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
-import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
-import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.Map;
 import java.util.TreeMap;
 
 /** The TypeTable for Ruby. */
-public class RubyTypeTable implements TypeTable {
-  /*
-   * A bi-map from full names to short names. In other languages this would indicate imports, but
-   * in ruby this only indicates types to their fully qualified types.
-   */
-  private final BiMap<String, String> imports = HashBiMap.create();
-
-  private final String implicitPackageName;
+public class RubyTypeTable extends DynamicLangTypeTable {
 
   public RubyTypeTable(String implicitPackageName) {
-    this.implicitPackageName = implicitPackageName;
+    super(implicitPackageName);
+  }
+
+  @Override
+  protected String getSeparator() {
+    return "::";
   }
 
   @Override
   public TypeTable cloneEmpty() {
-    return new RubyTypeTable(implicitPackageName);
-  }
-
-  @Override
-  public TypeName getTypeName(String fullName) {
-    int lastColonedIndex = fullName.lastIndexOf("::");
-    if (lastColonedIndex < 0) {
-      throw new IllegalArgumentException("expected fully qualified name");
-    }
-    String nickname = fullName.substring(lastColonedIndex + 2);
-    return new TypeName(fullName, nickname);
-  }
-
-  @Override
-  public TypeName getTypeNameFromShortName(String shortName) {
-    String fullName = implicitPackageName + "::" + shortName;
-    return new TypeName(fullName, shortName);
+    return new RubyTypeTable(getImplicitPackageName());
   }
 
   @Override
@@ -65,56 +46,10 @@ public class RubyTypeTable implements TypeTable {
   }
 
   @Override
-  public TypeName getContainerTypeName(String containerFullName, String... elementFullName) {
-    return getTypeName(containerFullName);
-  }
-
-  @Override
-  public String getAndSaveNicknameFor(String fullName) {
-    return getAndSaveNicknameFor(getTypeName(fullName));
-  }
-
-  @Override
-  public String getAndSaveNicknameFor(TypeName typeName) {
-    return typeName.getAndSaveNicknameIn(this);
-  }
-
-  @Override
-  public String getAndSaveNicknameFor(TypeAlias alias) {
-    if (!alias.needsImport()) {
-      return alias.getNickname();
-    }
-    // Derive a short name if possible
-    if (imports.containsKey(alias.getFullName())) {
-      // Short name already there.
-      return imports.get(alias.getFullName());
-    }
-    if (imports.containsValue(alias.getNickname())) {
-      // Short name clashes, use long name.
-      return alias.getFullName();
-    }
-    imports.put(alias.getFullName(), alias.getNickname());
-    return alias.getNickname();
-  }
-
-  @Override
-  public Map<String, String> getImports() {
-    return HashBiMap.create(new TreeMap<>(imports.inverse())).inverse();
-  }
-
-  public boolean hasImports() {
-    return !getImports().isEmpty();
-  }
-
-  @Override
-  public String getAndSaveNicknameForStaticInnerClass(String fullName) {
-    throw new UnsupportedOperationException(
-        "getAndSaveNicknameForStaticInnerClass not supported by Ruby");
-  }
-
-  @Override
-  public Map<String, String> getStaticImports() {
-    throw new UnsupportedOperationException("getStaticImports not supported by Ruby");
+  public Map<String, TypeAlias> getImports() {
+    TreeMap<TypeAlias, String> inverseMap = new TreeMap<>(TypeAlias.getNicknameComparator());
+    inverseMap.putAll(getImportsBimap().inverse());
+    return HashBiMap.create(inverseMap).inverse();
   }
 
   /**:

@@ -29,7 +29,7 @@ public class CSharpTypeTable implements TypeTable {
 
   private final String implicitPackageName;
   // Full name to nickname map
-  private final Map<String, String> imports = new HashMap<>();
+  private final Map<String, TypeAlias> imports = new HashMap<>();
 
   public CSharpTypeTable(String implicitPackageName) {
     this.implicitPackageName = implicitPackageName;
@@ -46,7 +46,7 @@ public class CSharpTypeTable implements TypeTable {
   }
 
   @Override
-  public TypeName getTypeNameFromShortName(String shortName) {
+  public TypeName getTypeNameInImplicitPackage(String shortName) {
     String fullName = implicitPackageName + "." + shortName;
     return new TypeName(fullName, shortName);
   }
@@ -95,34 +95,30 @@ public class CSharpTypeTable implements TypeTable {
     // Derive a short name if possible
     if (imports.containsKey(alias.getFullName())) {
       // Short name already there.
-      return imports.get(alias.getFullName());
+      return imports.get(alias.getFullName()).getNickname();
     }
     // TODO: Handle name clashes
-    imports.put(alias.getFullName(), alias.getNickname());
+    imports.put(alias.getFullName(), alias);
     return alias.getNickname();
   }
 
   @Override
-  public Map<String, String> getImports() {
-    SortedMap<String, String> result = new TreeMap<>();
+  public Map<String, TypeAlias> getImports() {
+    SortedMap<String, TypeAlias> result = new TreeMap<>();
     for (String fullName : imports.keySet()) {
       int index = fullName.lastIndexOf('.');
       if (index >= 0) {
         String using = fullName.substring(0, index);
-        result.put(using, using); // Value isn't used
+        result.put(using, TypeAlias.create(using)); // Value isn't used
       }
     }
     return result;
   }
 
   @Override
-  public String getAndSaveNicknameForStaticInnerClass(String fullName) {
+  public String getAndSaveNicknameForInnerType(
+      String containerFullName, String innerTypeShortName) {
     throw new UnsupportedOperationException(
         "getAndSaveNicknameForStaticInnerClass not supported by C#");
-  }
-
-  @Override
-  public Map<String, String> getStaticImports() {
-    throw new UnsupportedOperationException("getStaticImports not supported by C#");
   }
 }

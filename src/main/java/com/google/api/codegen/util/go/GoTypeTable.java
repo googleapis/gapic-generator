@@ -26,7 +26,7 @@ import java.util.TreeMap;
 
 public class GoTypeTable implements TypeTable {
 
-  private final TreeMap<String, String> imports = new TreeMap<>();
+  private final TreeMap<String, TypeAlias> imports = new TreeMap<>();
 
   @Override
   public TypeTable cloneEmpty() {
@@ -43,8 +43,8 @@ public class GoTypeTable implements TypeTable {
   }
 
   @Override
-  public TypeName getTypeNameFromShortName(String shortName) {
-    throw new UnsupportedOperationException("getTypeNameFromShortName not supported by Go");
+  public TypeName getTypeNameInImplicitPackage(String shortName) {
+    throw new UnsupportedOperationException("getTypeNameInImplicitPackage not supported by Go");
   }
 
   @Override
@@ -71,23 +71,28 @@ public class GoTypeTable implements TypeTable {
   public String getAndSaveNicknameFor(TypeAlias alias) {
     String[] parts = alias.getFullName().split(";", -1);
     if (parts.length == 4) {
-      imports.put(parts[0], parts[1]);
+      imports.put(parts[0], alias);
     }
     return alias.getNickname();
   }
 
   @Override
-  public Map<String, String> getImports() {
+  public Map<String, TypeAlias> getImports() {
     return imports;
   }
 
-  public static List<String> formatImports(Map<String, String> imports) {
+  public static List<String> formatImports(Map<String, TypeAlias> imports) {
     List<String> standard = new ArrayList<>(imports.size());
     List<String> thirdParty = new ArrayList<>(imports.size());
 
-    for (Map.Entry<String, String> imp : imports.entrySet()) {
+    for (Map.Entry<String, TypeAlias> imp : imports.entrySet()) {
       String importPath = imp.getKey();
-      String packageRename = imp.getValue();
+      String[] parts = imp.getValue().getFullName().split(";", -1);
+      if (parts.length != 4) {
+        throw new IllegalStateException(
+            "alias should only be added by getAndSaveNicknameFor if alias full name has 4 parts");
+      }
+      String packageRename = parts[1];
       List<String> target = isStandardImport(importPath) ? standard : thirdParty;
       if (packageRename.equals("")) {
         target.add(String.format("\"%s\"", importPath));
@@ -111,14 +116,10 @@ public class GoTypeTable implements TypeTable {
   }
 
   @Override
-  public String getAndSaveNicknameForStaticInnerClass(String fullName) {
+  public String getAndSaveNicknameForInnerType(
+      String containerFullName, String innerTypeShortName) {
     throw new UnsupportedOperationException(
         "getAndSaveNicknameForStaticInnerClass not supported by Go");
-  }
-
-  @Override
-  public Map<String, String> getStaticImports() {
-    throw new UnsupportedOperationException("getStaticImports not supported by Go");
   }
 
   /**

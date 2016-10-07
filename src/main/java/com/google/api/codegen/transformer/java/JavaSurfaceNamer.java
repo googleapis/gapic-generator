@@ -128,10 +128,8 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     // TODO(michaelbausor) make sure this uses the typeTable correctly
 
     String fullPackageWrapperName = typeTable.getFullNameFor(getPagedResponseWrappersClassName());
-    return typeTable.getAndSaveNicknameForStaticInnerClass(
-        fullPackageWrapperName
-            + "."
-            + getPagedResponseTypeInnerName(method, typeTable, resourceField));
+    String pagedResponseShortName = getPagedResponseTypeInnerName(method, typeTable, resourceField);
+    return typeTable.getAndSaveNicknameForInnerType(fullPackageWrapperName, pagedResponseShortName);
   }
 
   @Override

@@ -123,9 +123,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .templateFileName(SMOKE_TEST_TEMPLATE_FILE)
             .method(createSmokeTestMethodView(methodContext))
             // Imports must be done as the last step to catch all imports.
-            .imports(
-                importTypeTransformer.generateImports(
-                    context.getTypeTable().getImports(), context.getTypeTable().getStaticImports()))
+            .imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()))
             .build();
     return testClass;
   }
@@ -174,9 +172,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .outputPath(namer.getSourceFilePath(outputPath, name))
             .templateFileName(UNIT_TEST_TEMPLATE_FILE)
             // Imports must be done as the last step to catch all imports.
-            .imports(
-                importTypeTransformer.generateImports(
-                    context.getTypeTable().getImports(), context.getTypeTable().getStaticImports()))
+            .imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()))
             .build();
     return testClass;
   }
@@ -308,9 +304,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .outputPath(namer.getSourceFilePath(outputPath, name))
         .templateFileName(MOCK_SERVICE_FILE)
         // Imports must be done as the last step to catch all imports.
-        .imports(
-            importTypeTransformer.generateImports(
-                context.getTypeTable().getImports(), context.getTypeTable().getStaticImports()))
+        .imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()))
         .build();
   }
 
@@ -331,9 +325,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .outputPath(namer.getSourceFilePath(outputPath, name))
         .templateFileName(MOCK_SERVICE_IMPL_FILE)
         // Imports must be done as the last step to catch all imports.
-        .imports(
-            importTypeTransformer.generateImports(
-                context.getTypeTable().getImports(), context.getTypeTable().getStaticImports()))
+        .imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()))
         .build();
   }
 

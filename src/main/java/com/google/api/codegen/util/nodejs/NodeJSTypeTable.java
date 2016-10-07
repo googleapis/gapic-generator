@@ -14,108 +14,31 @@
  */
 package com.google.api.codegen.util.nodejs;
 
+import com.google.api.codegen.util.DynamicLangTypeTable;
 import com.google.api.codegen.util.NamePath;
-import com.google.api.codegen.util.TypeAlias;
-import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableSet;
-import java.util.Map;
-import java.util.TreeMap;
 
-/**
- * The TypeTable for NodeJS.
- */
-public class NodeJSTypeTable implements TypeTable {
-  /**
-   * A bi-map from full names to short names indicating the import map.
-   */
-  private final BiMap<String, String> imports = HashBiMap.create();
-
-  private final String implicitPackageName;
+/** The TypeTable for NodeJS. */
+public class NodeJSTypeTable extends DynamicLangTypeTable {
 
   public NodeJSTypeTable(String implicitPackageName) {
-    this.implicitPackageName = implicitPackageName;
+    super(implicitPackageName);
+  }
+
+  @Override
+  protected String getSeparator() {
+    return ".";
   }
 
   @Override
   public TypeTable cloneEmpty() {
-    return new NodeJSTypeTable(implicitPackageName);
-  }
-
-  @Override
-  public TypeName getTypeName(String fullName) {
-    int lastDotIndex = fullName.lastIndexOf('.');
-    if (lastDotIndex < 0) {
-      return new TypeName(fullName, fullName);
-    }
-    String shortTypeName = fullName.substring(lastDotIndex + 1);
-    return new TypeName(fullName, shortTypeName);
-  }
-
-  @Override
-  public TypeName getTypeNameFromShortName(String shortName) {
-    String fullName = implicitPackageName + "." + shortName;
-    return new TypeName(fullName, shortName);
+    return new NodeJSTypeTable(getImplicitPackageName());
   }
 
   @Override
   public NamePath getNamePath(String fullName) {
     return NamePath.dotted(fullName);
-  }
-
-  @Override
-  public TypeName getContainerTypeName(String containerFullName, String... elementFullName) {
-    return getTypeName(containerFullName);
-  }
-
-  @Override
-  public String getAndSaveNicknameFor(String fullName) {
-    return getAndSaveNicknameFor(getTypeName(fullName));
-  }
-
-  @Override
-  public String getAndSaveNicknameFor(TypeName typeName) {
-    return typeName.getAndSaveNicknameIn(this);
-  }
-
-  @Override
-  public String getAndSaveNicknameFor(TypeAlias alias) {
-    if (!alias.needsImport()) {
-      return alias.getNickname();
-    }
-    // Derive a short name if possible
-    if (imports.containsKey(alias.getFullName())) {
-      // Short name already there.
-      return imports.get(alias.getFullName());
-    }
-    if (imports.containsValue(alias.getNickname())) {
-      // Short name clashes, use long name.
-      return alias.getFullName();
-    }
-    imports.put(alias.getFullName(), alias.getNickname());
-    return alias.getNickname();
-  }
-
-  @Override
-  public Map<String, String> getImports() {
-    return new TreeMap<>(imports);
-  }
-
-  public boolean hasImports() {
-    return !getImports().isEmpty();
-  }
-
-  @Override
-  public String getAndSaveNicknameForStaticInnerClass(String fullName) {
-    throw new UnsupportedOperationException(
-        "getAndSaveNicknameForStaticInnerClass not supported by NodeJS");
-  }
-
-  @Override
-  public Map<String, String> getStaticImports() {
-    throw new UnsupportedOperationException("getStaticImports not supported by NodeJS");
   }
 
   /**

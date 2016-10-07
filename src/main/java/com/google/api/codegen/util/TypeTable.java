@@ -42,10 +42,10 @@ public interface TypeTable extends TypeNameConverter {
   String getAndSaveNicknameFor(String fullName);
 
   /**
-   * Computes the nickname for the given full name, adds the full name to the static import set, and
-   * returns the nickname.
+   * Computes the nickname for the given container full name and inner type short name, adds the
+   * full inner type name to the static import set, and returns the nickname.
    */
-  String getAndSaveNicknameForStaticInnerClass(String fullName);
+  String getAndSaveNicknameForInnerType(String containerFullName, String innerTypeShortName);
 
   /**
    * Computes the nickname for the given type, adds the full name to the import set, and returns the
@@ -63,8 +63,5 @@ public interface TypeTable extends TypeNameConverter {
   /**
    * Returns the imports accumulated so far.
    */
-  Map<String, String> getImports();
-
-  /** Returns the static imports accumulated so far. */
-  Map<String, String> getStaticImports();
+  Map<String, TypeAlias> getImports();
 }

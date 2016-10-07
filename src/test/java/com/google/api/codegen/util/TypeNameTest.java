@@ -81,7 +81,7 @@ public class TypeNameTest {
     }
 
     @Override
-    public Map<String, String> getImports() {
+    public Map<String, TypeAlias> getImports() {
       return null;
     }
 
@@ -96,17 +96,13 @@ public class TypeNameTest {
     }
 
     @Override
-    public TypeName getTypeNameFromShortName(String shortName) {
+    public TypeName getTypeNameInImplicitPackage(String shortName) {
       return null;
     }
 
     @Override
-    public String getAndSaveNicknameForStaticInnerClass(String fullName) {
-      return null;
-    }
-
-    @Override
-    public Map<String, String> getStaticImports() {
+    public String getAndSaveNicknameForInnerType(
+        String containerFullName, String innerTypeShortName) {
       return null;
     }
   }
