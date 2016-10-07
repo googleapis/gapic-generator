@@ -87,12 +87,7 @@ public class GoTypeTable implements TypeTable {
 
     for (Map.Entry<String, TypeAlias> imp : imports.entrySet()) {
       String importPath = imp.getKey();
-      String[] parts = imp.getValue().getFullName().split(";", -1);
-      if (parts.length != 4) {
-        throw new IllegalStateException(
-            "alias should only be added by getAndSaveNicknameFor if alias full name has 4 parts");
-      }
-      String packageRename = parts[1];
+      String packageRename = imp.getValue().getNickname();
       List<String> target = isStandardImport(importPath) ? standard : thirdParty;
       if (packageRename.equals("")) {
         target.add(String.format("\"%s\"", importPath));
