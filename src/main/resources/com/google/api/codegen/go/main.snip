@@ -11,11 +11,13 @@
         @end
     )
 
-    var (
-        @join pathTemplate : view.pathTemplates
-            {@pathTemplate.name} = gax.MustCompilePathTemplate("{@pathTemplate.pattern}")
-        @end
-    )
+    @if view.pathTemplates
+        var (
+            @join pathTemplate : view.pathTemplates
+                {@pathTemplate.name} = gax.MustCompilePathTemplate("{@pathTemplate.pattern}")
+            @end
+        )
+    @end
 
     // {@view.callOptionsTypeName} contains the retry settings for each method of {@view.clientTypeName}.
     type {@view.callOptionsTypeName} struct {
