@@ -190,9 +190,9 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
     // Examples are different from the API. In particular, we use short declaration
     // and so we omit most type names. We only need
-    //   context, to initialize the client
-    //   the VKit generated library, that's what the sample is for
-    //   the input types of the methods, to initialize the requests
+    //   - Context, to initialize the client
+    //   - The VKit generated library, that's what the sample is for
+    //   - The input types of the methods, to initialize the requests
     // So, we clear all imports; addXExampleImports will add back the ones we want.
     context.getTypeTable().getImports().clear();
     addXExampleImports(context);
