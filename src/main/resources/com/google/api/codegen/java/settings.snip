@@ -258,10 +258,10 @@
         new PagedListResponseFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}>() {
           @@Override
           public {@factory.pagedListResponseTypeName} createPagedListResponse(
-              {@factory.requestTypeName} request,
               UnaryApiCallable<{@factory.requestTypeName}, {@factory.responseTypeName}> callable,
+              {@factory.requestTypeName} request,
               CallContext context) {
-            return new {@factory.pagedListResponseTypeName}(request, callable, {@factory.pageStreamingDescriptorName}, context);
+            return new {@factory.pagedListResponseTypeName}(callable, {@factory.pageStreamingDescriptorName}, request, context);
           }
         };
     {@""}

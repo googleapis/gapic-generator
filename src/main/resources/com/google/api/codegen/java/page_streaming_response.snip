@@ -14,11 +14,11 @@
           PagedListResponseImpl<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> {
 
         public {@pagedResponseClass.name}(
-            {@pagedResponseClass.requestTypeName} request,
             UnaryApiCallable<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}> callable,
             PageStreamingDescriptor<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> pageDescriptor,
+            {@pagedResponseClass.requestTypeName} request,
             CallContext context) {
-          super(request, callable, pageDescriptor, context);
+          super(callable, pageDescriptor, request, context);
         }
         {@iterateMethods(pagedResponseClass)}
       }
