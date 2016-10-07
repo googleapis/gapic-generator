@@ -20,20 +20,19 @@ import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.gapic.PackageNameCodePathMapper;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.util.TypeAlias;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.common.collect.ImmutableList;
 import com.google.common.truth.Truth;
-
+import java.util.Collections;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.rules.TemporaryFolder;
 import org.junit.Test;
-
-import java.util.Collections;
+import org.junit.rules.TemporaryFolder;
 
 public class GoGapicSurfaceTransformerTest {
 
@@ -117,11 +116,17 @@ public class GoGapicSurfaceTransformerTest {
   public void testExampleImports() {
     transformer.addXExampleImports(context);
     Truth.assertThat(context.getTypeTable().getImports())
-        .containsEntry("golang.org/x/net/context", "");
+        .containsEntry(
+            "golang.org/x/net/context", TypeAlias.create("golang.org/x/net/context", ""));
     Truth.assertThat(context.getTypeTable().getImports())
-        .containsEntry("cloud.google.com/go/gopher/apiv1", "");
+        .containsEntry(
+            "cloud.google.com/go/gopher/apiv1",
+            TypeAlias.create("cloud.google.com/go/gopher/apiv1", ""));
     Truth.assertThat(context.getTypeTable().getImports())
-        .containsEntry("google.golang.org/genproto/googleapis/example/myproto/v1", "myprotopb");
+        .containsEntry(
+            "google.golang.org/genproto/googleapis/example/myproto/v1",
+            TypeAlias.create(
+                "google.golang.org/genproto/googleapis/example/myproto/v1", "myprotopb"));
 
     // Only shows up in response, not needed for example.
     Truth.assertThat(context.getTypeTable().getImports())

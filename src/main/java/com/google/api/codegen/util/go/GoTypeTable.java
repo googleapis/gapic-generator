@@ -71,7 +71,7 @@ public class GoTypeTable implements TypeTable {
   public String getAndSaveNicknameFor(TypeAlias alias) {
     String[] parts = alias.getFullName().split(";", -1);
     if (parts.length == 4) {
-      imports.put(parts[0], alias);
+      imports.put(parts[0], TypeAlias.create(parts[0], parts[1]));
     }
     return alias.getNickname();
   }
