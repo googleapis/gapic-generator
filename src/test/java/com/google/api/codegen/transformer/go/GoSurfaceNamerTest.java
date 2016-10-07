@@ -28,7 +28,9 @@ import org.junit.ClassRule;
 import org.junit.rules.TemporaryFolder;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GoSurfaceNamerTest {
   @ClassRule public static TemporaryFolder tempDir = new TemporaryFolder();
@@ -51,20 +53,25 @@ public class GoSurfaceNamerTest {
     }
 
     GoSurfaceNamer namer = new GoSurfaceNamer(apiConfig.getPackageName());
-    List<Interface> services = model.getSymbolTable().getInterfaces().asList();
+    Map<String, Interface> services = new HashMap<>();
+    for (Interface service : model.getSymbolTable().getInterfaces()) {
+      services.put(service.getSimpleName(), service);
+    }
 
     Truth.assertThat(apiConfig.getPackageName()).isEqualTo("cloud.google.com/go/gopher/apiv1");
     Truth.assertThat(namer.getLocalPackageName()).isEqualTo("gopher");
 
     // Both the service name and the local package name are "gopher",
     // the client name prefix should be empty.
-    Truth.assertThat(namer.getReducedServiceName(services.get(0))).isEqualTo(Name.from("gopher"));
-    Truth.assertThat(namer.clientNamePrefix(services.get(0))).isEqualTo(Name.from());
+    Truth.assertThat(namer.getReducedServiceName(services.get("Gopher")))
+        .isEqualTo(Name.from("gopher"));
+    Truth.assertThat(namer.clientNamePrefix(services.get("Gopher"))).isEqualTo(Name.from());
 
     // The service name is different from the local package name,
     // use the service name as the prefix.
-    Truth.assertThat(namer.getReducedServiceName(services.get(1))).isEqualTo(Name.from("guru"));
-    Truth.assertThat(namer.clientNamePrefix(services.get(1))).isEqualTo(Name.from("guru"));
+    Truth.assertThat(namer.getReducedServiceName(services.get("Guru")))
+        .isEqualTo(Name.from("guru"));
+    Truth.assertThat(namer.clientNamePrefix(services.get("Guru"))).isEqualTo(Name.from("guru"));
   }
 
   @Test

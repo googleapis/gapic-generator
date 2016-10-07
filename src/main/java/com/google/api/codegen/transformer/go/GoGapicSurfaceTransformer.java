@@ -188,6 +188,13 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
         generateApiMethods(
             context, context.getSupportedMethods(), Collections.<String>emptyList()));
 
+    // Examples are different from the API. In particular, we use short declaration
+    // and so we omit most type names. We only need
+    //   - Context, to initialize the client
+    //   - The VKit generated library, that's what the sample is for
+    //   - The input types of the methods, to initialize the requests
+    // So, we clear all imports; addXExampleImports will add back the ones we want.
+    context.getTypeTable().getImports().clear();
     addXExampleImports(context);
     view.imports(GoTypeTable.formatImports(context.getTypeTable().getImports()));
 
@@ -314,10 +321,13 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.getImports().remove(EMPTY_PROTO_PKG);
   }
 
-  private void addXExampleImports(SurfaceTransformerContext context) {
+  @VisibleForTesting
+  void addXExampleImports(SurfaceTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("golang.org/x/net/context;;;");
     typeTable.saveNicknameFor(context.getApiConfig().getPackageName() + ";;;");
-    typeTable.getImports().remove(EMPTY_PROTO_PKG);
+    for (Method method : context.getSupportedMethods()) {
+      typeTable.getAndSaveNicknameFor(method.getInputType());
+    }
   }
 }
