@@ -195,11 +195,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(
-              service,
-              apiConfig,
-              createTypeTable(apiConfig.getPackageName()),
-              namer,
-              new JavaFeatureConfig());
+              service, apiConfig, typeTable, namer, new JavaFeatureConfig());
       for (Method method : context.getSupportedMethods()) {
         if (context.getMethodConfig(method).isPageStreaming()) {
           pagedResponseWrappersList.add(

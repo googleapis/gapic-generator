@@ -118,7 +118,6 @@ public class CSharpTypeTable implements TypeTable {
   @Override
   public String getAndSaveNicknameForInnerType(
       String containerFullName, String innerTypeShortName) {
-    throw new UnsupportedOperationException(
-        "getAndSaveNicknameForStaticInnerClass not supported by C#");
+    throw new UnsupportedOperationException("getAndSaveNicknameForInnerType not supported by C#");
   }
 }

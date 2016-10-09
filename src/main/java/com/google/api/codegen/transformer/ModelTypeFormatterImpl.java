@@ -28,7 +28,7 @@ public class ModelTypeFormatterImpl implements ModelTypeFormatter {
   }
 
   @Override
-  public String getFullNameFor(String shortName) {
+  public String getImplicitPackageFullNameFor(String shortName) {
     return typeNameConverter.getTypeNameInImplicitPackage(shortName).getFullName();
   }
 

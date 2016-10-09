@@ -17,28 +17,34 @@ package com.google.api.codegen.util.php;
 import com.google.api.codegen.util.DynamicLangTypeTable;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
+import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.common.collect.ImmutableSet;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * The TypeTable for PHP.
- */
-public class PhpTypeTable extends DynamicLangTypeTable {
+/** The TypeTable for PHP. */
+public class PhpTypeTable implements TypeTable {
+
+  private final DynamicLangTypeTable dynamicTypeTable;
 
   public PhpTypeTable(String implicitPackageName) {
-    super(implicitPackageName);
-  }
-
-  @Override
-  protected String getSeparator() {
-    return "\\";
+    dynamicTypeTable = new DynamicLangTypeTable(implicitPackageName, "\\");
   }
 
   @Override
   public TypeTable cloneEmpty() {
-    return new PhpTypeTable(getImplicitPackageName());
+    return new PhpTypeTable(dynamicTypeTable.getImplicitPackageName());
+  }
+
+  @Override
+  public TypeName getTypeName(String fullName) {
+    return dynamicTypeTable.getTypeName(fullName);
+  }
+
+  @Override
+  public TypeName getTypeNameInImplicitPackage(String shortName) {
+    return dynamicTypeTable.getTypeNameInImplicitPackage(shortName);
   }
 
   @Override
@@ -47,20 +53,53 @@ public class PhpTypeTable extends DynamicLangTypeTable {
   }
 
   @Override
+  public TypeName getContainerTypeName(String containerFullName, String... elementFullNames) {
+    return dynamicTypeTable.getContainerTypeName(containerFullName, elementFullNames);
+  }
+
+  @Override
+  public String getAndSaveNicknameFor(String fullName) {
+    return dynamicTypeTable.getAndSaveNicknameFor(fullName);
+  }
+
+  @Override
+  public String getAndSaveNicknameFor(TypeName typeName) {
+    return dynamicTypeTable.getAndSaveNicknameFor(typeName);
+  }
+
+  @Override
+  public String getAndSaveNicknameFor(TypeAlias alias) {
+    return dynamicTypeTable.getAndSaveNicknameFor(alias);
+  }
+
+  @Override
   public Map<String, TypeAlias> getImports() {
-    Map<String, TypeAlias> imports = super.getImports();
+    Map<String, TypeAlias> imports = dynamicTypeTable.getImports();
     // Clean up the imports.
     Map<String, TypeAlias> cleanedImports = new TreeMap<>();
     // Imported type is in package, can be ignored.
     for (String imported : imports.keySet()) {
-      if (!getImplicitPackageName().isEmpty() && imported.startsWith(getImplicitPackageName())) {
-        if (!imported.substring(getImplicitPackageName().length() + 1).contains(getSeparator())) {
+      if (!dynamicTypeTable.getImplicitPackageName().isEmpty()
+          && imported.startsWith(dynamicTypeTable.getImplicitPackageName())) {
+        if (!imported
+            .substring(dynamicTypeTable.getImplicitPackageName().length() + 1)
+            .contains("\\")) {
           continue;
         }
       }
       cleanedImports.put(imported, imports.get(imported));
     }
     return cleanedImports;
+  }
+
+  public boolean hasImports() {
+    return !getImports().isEmpty();
+  }
+
+  @Override
+  public String getAndSaveNicknameForInnerType(
+      String containerFullName, String innerTypeShortName) {
+    return dynamicTypeTable.getAndSaveNicknameForInnerType(containerFullName, innerTypeShortName);
   }
 
   /**

@@ -15,7 +15,6 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.util.TypeAlias;
-import com.google.api.codegen.viewmodel.ImportType;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -30,12 +29,13 @@ public class ImportTypeTransformer {
   public List<ImportTypeView> generateImports(Map<String, TypeAlias> imports) {
     List<ImportTypeView> generatedImports = new ArrayList<>();
     for (String key : imports.keySet()) {
-      ImportTypeView.Builder importTypeView =
-          ImportTypeView.newBuilder().fullName(key).nickname(imports.get(key).getNickname());
-      if (imports.get(key).getParentFullName() != null) {
-        importTypeView.type(ImportType.StaticImport);
-      }
-      generatedImports.add(importTypeView.build());
+      TypeAlias value = imports.get(key);
+      generatedImports.add(
+          ImportTypeView.newBuilder()
+              .fullName(key)
+              .nickname(value.getNickname())
+              .type(value.getImportType())
+              .build());
     }
     return generatedImports;
   }

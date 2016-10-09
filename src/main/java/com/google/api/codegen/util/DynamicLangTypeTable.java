@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /** A generic TypeTable that can be used by dynamic language implementations. */
-public abstract class DynamicLangTypeTable implements TypeTable {
+public class DynamicLangTypeTable implements TypeTable {
   /** A bi-map from full names to short names indicating the import map. */
   private final BiMap<String, TypeAlias> imports = HashBiMap.create();
 
@@ -30,18 +30,28 @@ public abstract class DynamicLangTypeTable implements TypeTable {
 
   private final String implicitPackageName;
 
-  public DynamicLangTypeTable(String implicitPackageName) {
+  private final String separator;
+
+  public DynamicLangTypeTable(String implicitPackageName, String separator) {
     this.implicitPackageName = implicitPackageName;
+    this.separator = separator;
   }
 
-  protected abstract String getSeparator();
+  public String getSeparator() {
+    return separator;
+  }
 
-  protected BiMap<String, TypeAlias> getImportsBimap() {
+  public BiMap<String, TypeAlias> getImportsBimap() {
     return imports;
   }
 
-  protected String getImplicitPackageName() {
+  public String getImplicitPackageName() {
     return implicitPackageName;
+  }
+
+  @Override
+  public TypeTable cloneEmpty() {
+    return new DynamicLangTypeTable(implicitPackageName, separator);
   }
 
   @Override
@@ -58,6 +68,11 @@ public abstract class DynamicLangTypeTable implements TypeTable {
   public TypeName getTypeNameInImplicitPackage(String shortName) {
     String fullName = implicitPackageName + getSeparator() + shortName;
     return new TypeName(fullName, shortName);
+  }
+
+  @Override
+  public NamePath getNamePath(String fullName) {
+    throw new UnsupportedOperationException("getNamePath not supported");
   }
 
   @Override
@@ -99,13 +114,9 @@ public abstract class DynamicLangTypeTable implements TypeTable {
     return new TreeMap<>(imports);
   }
 
-  public boolean hasImports() {
-    return !getImports().isEmpty();
-  }
-
   @Override
   public String getAndSaveNicknameForInnerType(
       String containerFullName, String innerTypeShortName) {
-    throw new UnsupportedOperationException("getAndSaveNicknameForStaticInnerClass not supported");
+    throw new UnsupportedOperationException("getAndSaveNicknameForInnerType not supported");
   }
 }

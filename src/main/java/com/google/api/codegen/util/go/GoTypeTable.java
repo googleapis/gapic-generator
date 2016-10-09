@@ -113,8 +113,7 @@ public class GoTypeTable implements TypeTable {
   @Override
   public String getAndSaveNicknameForInnerType(
       String containerFullName, String innerTypeShortName) {
-    throw new UnsupportedOperationException(
-        "getAndSaveNicknameForStaticInnerClass not supported by Go");
+    throw new UnsupportedOperationException("getAndSaveNicknameForInnerType not supported by Go");
   }
 
   /**

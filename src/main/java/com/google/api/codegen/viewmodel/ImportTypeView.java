@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.util.ImportType;
 import com.google.auto.value.AutoValue;
 
 @AutoValue

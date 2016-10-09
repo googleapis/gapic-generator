@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 
@@ -29,7 +28,7 @@ public interface ModelTypeFormatter {
   /**
    * Get the full name for the given short name, using the default package.
    */
-  String getFullNameFor(String shortName);
+  String getImplicitPackageFullNameFor(String shortName);
 
   /**
    * Get the full name for the given type.

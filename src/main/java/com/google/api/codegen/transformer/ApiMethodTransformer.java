@@ -19,6 +19,7 @@ import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.CallableMethodDetailView;
@@ -571,10 +572,23 @@ public class ApiMethodTransformer {
             "ApiMethodTransformer.generateRequestObjectParam - elementTypeName");
 
     if (namer.shouldImportRequestObjectParamType(field)) {
-      typeName = typeTable.getAndSaveNicknameFor(field.getType());
+      if (context.getFeatureConfig().useResourceNameFormatOption(field)) {
+        String resourceName = ResourceNameUtil.getResourceName(field);
+        typeName =
+            typeTable.getAndSaveNicknameForTypedResourceName(field, field.getType(), resourceName);
+      } else {
+        typeName = typeTable.getAndSaveNicknameFor(field.getType());
+      }
     }
     if (namer.shouldImportRequestObjectParamElementType(field)) {
-      elementTypeName = typeTable.getAndSaveNicknameForElementType(field.getType());
+      if (context.getFeatureConfig().useResourceNameFormatOption(field)) {
+        String resourceName = ResourceNameUtil.getResourceName(field);
+        elementTypeName =
+            typeTable.getAndSaveNicknameForTypedResourceName(
+                field, field.getType().makeOptional(), resourceName);
+      } else {
+        elementTypeName = typeTable.getAndSaveNicknameForElementType(field.getType());
+      }
     }
 
     String setCallName = namer.getFieldSetFunctionName(featureConfig, field);

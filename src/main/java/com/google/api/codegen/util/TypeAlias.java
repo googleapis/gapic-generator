@@ -36,14 +36,14 @@ public abstract class TypeAlias {
    * Creates a type alias with the given fullName and nickname.
    */
   public static TypeAlias create(String fullName, String nickname) {
-    return new AutoValue_TypeAlias(fullName, nickname, null);
+    return new AutoValue_TypeAlias(fullName, nickname, null, ImportType.SimpleImport);
   }
 
   /**
    * Creates a type alias with the given fullName, nickname and parentName.
    */
   public static TypeAlias create(String fullName, String nickname, String parentName) {
-    return new AutoValue_TypeAlias(fullName, nickname, parentName);
+    return new AutoValue_TypeAlias(fullName, nickname, parentName, ImportType.StaticImport);
   }
 
   /**
@@ -61,6 +61,9 @@ public abstract class TypeAlias {
    */
   @Nullable
   public abstract String getParentFullName();
+
+  /** The import type of the TypeAlias. */
+  public abstract ImportType getImportType();
 
   /**
    * Returns true if the alias needs to be imported to refer to it only

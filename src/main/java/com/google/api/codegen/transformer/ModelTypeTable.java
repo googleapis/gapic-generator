@@ -37,8 +37,8 @@ public class ModelTypeTable implements ModelTypeFormatter {
   }
 
   @Override
-  public String getFullNameFor(String shortName) {
-    return typeFormatter.getFullNameFor(shortName);
+  public String getImplicitPackageFullNameFor(String shortName) {
+    return typeFormatter.getImplicitPackageFullNameFor(shortName);
   }
 
   @Override

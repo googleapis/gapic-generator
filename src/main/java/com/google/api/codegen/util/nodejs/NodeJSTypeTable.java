@@ -16,29 +16,74 @@ package com.google.api.codegen.util.nodejs;
 
 import com.google.api.codegen.util.DynamicLangTypeTable;
 import com.google.api.codegen.util.NamePath;
+import com.google.api.codegen.util.TypeAlias;
+import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.common.collect.ImmutableSet;
+import java.util.Map;
 
 /** The TypeTable for NodeJS. */
-public class NodeJSTypeTable extends DynamicLangTypeTable {
+public class NodeJSTypeTable implements TypeTable {
+
+  private final DynamicLangTypeTable dynamicTypeTable;
 
   public NodeJSTypeTable(String implicitPackageName) {
-    super(implicitPackageName);
-  }
-
-  @Override
-  protected String getSeparator() {
-    return ".";
+    dynamicTypeTable = new DynamicLangTypeTable(implicitPackageName, ".");
   }
 
   @Override
   public TypeTable cloneEmpty() {
-    return new NodeJSTypeTable(getImplicitPackageName());
+    return new NodeJSTypeTable(dynamicTypeTable.getImplicitPackageName());
+  }
+
+  @Override
+  public TypeName getTypeName(String fullName) {
+    return dynamicTypeTable.getTypeName(fullName);
+  }
+
+  @Override
+  public TypeName getTypeNameInImplicitPackage(String shortName) {
+    return dynamicTypeTable.getTypeNameInImplicitPackage(shortName);
   }
 
   @Override
   public NamePath getNamePath(String fullName) {
     return NamePath.dotted(fullName);
+  }
+
+  @Override
+  public TypeName getContainerTypeName(String containerFullName, String... elementFullNames) {
+    return dynamicTypeTable.getContainerTypeName(containerFullName, elementFullNames);
+  }
+
+  @Override
+  public String getAndSaveNicknameFor(String fullName) {
+    return dynamicTypeTable.getAndSaveNicknameFor(fullName);
+  }
+
+  @Override
+  public String getAndSaveNicknameFor(TypeName typeName) {
+    return dynamicTypeTable.getAndSaveNicknameFor(typeName);
+  }
+
+  @Override
+  public String getAndSaveNicknameFor(TypeAlias alias) {
+    return dynamicTypeTable.getAndSaveNicknameFor(alias);
+  }
+
+  @Override
+  public Map<String, TypeAlias> getImports() {
+    return dynamicTypeTable.getImports();
+  }
+
+  public boolean hasImports() {
+    return !getImports().isEmpty();
+  }
+
+  @Override
+  public String getAndSaveNicknameForInnerType(
+      String containerFullName, String innerTypeShortName) {
+    return dynamicTypeTable.getAndSaveNicknameForInnerType(containerFullName, innerTypeShortName);
   }
 
   /**
