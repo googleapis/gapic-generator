@@ -7,6 +7,10 @@
 @end
 
 @snippet sampleCode(apiMethod)
+    @if initializeRequestObject(apiMethod)
+        {@initializeRequestObject(apiMethod)}
+        
+    @end
     @switch apiMethod.type.toString
     @case "OptionalArrayMethod"
         {@optionalArrayMethodSampleCode(apiMethod)}
@@ -37,11 +41,11 @@
 
 @private methodCallSampleCode(apiMethod)
     api.{@apiMethod.name}(\
-        {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+        {@sampleMethodCallArgList(apiMethod)})
 @end
 
 @private methodCallSampleCodeForPagedResponse(apiMethod)
-    @if sampleMethodCallArgList(apiMethod.initCode.fieldSettings)
+    @if sampleMethodCallArgList(apiMethod)
         function callback(err, response, nextPageToken) {
             if (err) {
                 console.error(err);
@@ -51,11 +55,11 @@
             if (nextPageToken) {
                 // fetch the next page.
                 api.{@apiMethod.name}(\
-                    {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)}, {pageToken: nextPageToken}, callback);
+                    {@sampleMethodCallArgList(apiMethod)}, {pageToken: nextPageToken}, callback);
             }
         }
         api.{@apiMethod.name}(\
-            {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)}, {flattenPages: false}, callback);
+            {@sampleMethodCallArgList(apiMethod)}, {flattenPages: false}, callback);
     @else
         function callback(err, response, nextPageToken) {
             if (err) {
@@ -74,9 +78,9 @@
 @end
 
 @private methodCallSampleCodeWithReturnValue(apiMethod)
-    @if sampleMethodCallArgList(apiMethod.initCode.fieldSettings)
+    @if sampleMethodCallArgList(apiMethod)
         api.{@apiMethod.name}(\
-            {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)}, function(err, response) {
+            {@sampleMethodCallArgList(apiMethod)}, function(err, response) {
             if (err) {
                 console.error(err);
                 return;
@@ -95,9 +99,9 @@
 @end
 
 @private methodCallSampleCodeWithoutReturnValue(apiMethod)
-    @if sampleMethodCallArgList(apiMethod.initCode.fieldSettings)
+    @if sampleMethodCallArgList(apiMethod)
         api.{@apiMethod.name}(\
-            {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)}, function(err) {
+            {@sampleMethodCallArgList(apiMethod)}, function(err) {
             if (err) {
                 console.error(err);
             }
@@ -111,9 +115,13 @@
     @end
 @end
 
-@private sampleMethodCallArgList(fieldSettings)
-    @join fieldSetting : fieldSettings on ", "
-        {@fieldSetting.identifier}
+@private sampleMethodCallArgList(apiMethod)
+    @switch apiMethod.requiredRequestObjectParams.size.toString
+    @case "0"
+    @case "1"
+        {@apiMethod.initCode.fieldSettings.get(0).identifier}
+    @default
+        request
     @end
 @end
 
@@ -174,5 +182,18 @@
         api.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
     @default
         $unhandledCase: {@initValue.type}$
+    @end
+@end
+
+@private initializeRequestObject(apiMethod)
+    @switch apiMethod.requiredRequestObjectParams.size.toString
+    @case "0"
+    @case "1"
+    @default
+        var request = {
+        @join fieldSetting : apiMethod.initCode.fieldSettings on ", ".add(BREAK)
+            {@""}    {@fieldSetting.requestFieldName}: {@fieldSetting.identifier}
+        @end
+        }
     @end
 @end

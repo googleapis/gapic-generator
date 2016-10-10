@@ -306,10 +306,7 @@ LibraryServiceApi.prototype.matchBookFromArchivedBookName = function(archivedBoo
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.createShelf = function(
-    shelf,
-    options,
-    callback) {
+LibraryServiceApi.prototype.createShelf = function(shelf, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -317,18 +314,18 @@ LibraryServiceApi.prototype.createShelf = function(
   if (options === undefined) {
     options = {};
   }
-  var req = {
-    shelf: shelf
-  };
-  return this._createShelf(req, options, callback);
+  var request = { shelf: shelf };
+  return this._createShelf(request, options, callback);
 };
 
 /**
  * Gets a shelf.
  *
- * @param {string} name
+ * @param {Object} request
+ *   Required request parameters. This request must contain the following parameters.
+ * @param {string} request.name
  *   The name of the shelf to retrieve.
- * @param {string} options_
+ * @param {string} request.options
  *   To test 'options' parameter name conflict.
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
@@ -354,7 +351,11 @@ LibraryServiceApi.prototype.createShelf = function(
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.shelfPath("[SHELF]");
  * var options = '';
- * api.getShelf(formattedName, options, function(err, response) {
+ * var request = {
+ *     name: formattedName,
+ *     options: options
+ * }
+ * api.getShelf(request, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -362,11 +363,7 @@ LibraryServiceApi.prototype.createShelf = function(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.getShelf = function(
-    name,
-    options_,
-    options,
-    callback) {
+LibraryServiceApi.prototype.getShelf = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -374,17 +371,13 @@ LibraryServiceApi.prototype.getShelf = function(
   if (options === undefined) {
     options = {};
   }
-  var req = {
-    name: name,
-    options: options_
-  };
   if ('message' in options) {
-    req.message = options.message;
+    request.message = options.message;
   }
   if ('stringBuilder' in options) {
-    req.stringBuilder = options.stringBuilder;
+    request.stringBuilder = options.stringBuilder;
   }
-  return this._getShelf(req, options, callback);
+  return this._getShelf(request, options, callback);
 };
 
 /**
@@ -429,9 +422,7 @@ LibraryServiceApi.prototype.getShelf = function(
  * api.listShelves({flattenPages: false}, callback);
  * api.listShelves(function(err, response) {
  */
-LibraryServiceApi.prototype.listShelves = function(
-    options,
-    callback) {
+LibraryServiceApi.prototype.listShelves = function(options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -439,9 +430,8 @@ LibraryServiceApi.prototype.listShelves = function(
   if (options === undefined) {
     options = {};
   }
-  var req = {
-  };
-  return this._listShelves(req, options, callback);
+  var request = {};
+  return this._listShelves(request, options, callback);
 };
 
 /**
@@ -467,10 +457,7 @@ LibraryServiceApi.prototype.listShelves = function(
  *     }
  * });
  */
-LibraryServiceApi.prototype.deleteShelf = function(
-    name,
-    options,
-    callback) {
+LibraryServiceApi.prototype.deleteShelf = function(name, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -478,10 +465,8 @@ LibraryServiceApi.prototype.deleteShelf = function(
   if (options === undefined) {
     options = {};
   }
-  var req = {
-    name: name
-  };
-  return this._deleteShelf(req, options, callback);
+  var request = { name: name };
+  return this._deleteShelf(request, options, callback);
 };
 
 /**
@@ -489,9 +474,11 @@ LibraryServiceApi.prototype.deleteShelf = function(
  * `other_shelf_name` to shelf `name`, and deletes
  * `other_shelf_name`. Returns the updated shelf.
  *
- * @param {string} name
+ * @param {Object} request
+ *   Required request parameters. This request must contain the following parameters.
+ * @param {string} request.name
  *   The name of the shelf we're adding books to.
- * @param {string} otherShelfName
+ * @param {string} request.otherShelfName
  *   The name of the shelf we're removing books from and deleting.
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
@@ -508,7 +495,11 @@ LibraryServiceApi.prototype.deleteShelf = function(
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.shelfPath("[SHELF]");
  * var formattedOtherShelfName = api.shelfPath("[SHELF]");
- * api.mergeShelves(formattedName, formattedOtherShelfName, function(err, response) {
+ * var request = {
+ *     name: formattedName,
+ *     otherShelfName: formattedOtherShelfName
+ * }
+ * api.mergeShelves(request, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -516,11 +507,7 @@ LibraryServiceApi.prototype.deleteShelf = function(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.mergeShelves = function(
-    name,
-    otherShelfName,
-    options,
-    callback) {
+LibraryServiceApi.prototype.mergeShelves = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -528,19 +515,17 @@ LibraryServiceApi.prototype.mergeShelves = function(
   if (options === undefined) {
     options = {};
   }
-  var req = {
-    name: name,
-    otherShelfName: otherShelfName
-  };
-  return this._mergeShelves(req, options, callback);
+  return this._mergeShelves(request, options, callback);
 };
 
 /**
  * Creates a book.
  *
- * @param {string} name
+ * @param {Object} request
+ *   Required request parameters. This request must contain the following parameters.
+ * @param {string} request.name
  *   The name of the shelf in which the book is created.
- * @param {Object} book
+ * @param {Object} request.book
  *   The book to create.
  *
  *   This object should have the same structure as [Book]{@link Book}
@@ -559,7 +544,11 @@ LibraryServiceApi.prototype.mergeShelves = function(
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.shelfPath("[SHELF]");
  * var book = {};
- * api.createBook(formattedName, book, function(err, response) {
+ * var request = {
+ *     name: formattedName,
+ *     book: book
+ * }
+ * api.createBook(request, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -567,11 +556,7 @@ LibraryServiceApi.prototype.mergeShelves = function(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.createBook = function(
-    name,
-    book,
-    options,
-    callback) {
+LibraryServiceApi.prototype.createBook = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -579,21 +564,19 @@ LibraryServiceApi.prototype.createBook = function(
   if (options === undefined) {
     options = {};
   }
-  var req = {
-    name: name,
-    book: book
-  };
-  return this._createBook(req, options, callback);
+  return this._createBook(request, options, callback);
 };
 
 /**
  * Creates a series of books.
  *
- * @param {Object} shelf
+ * @param {Object} request
+ *   Required request parameters. This request must contain the following parameters.
+ * @param {Object} request.shelf
  *   The shelf in which the series is created.
  *
  *   This object should have the same structure as [Shelf]{@link Shelf}
- * @param {Object[]} books
+ * @param {Object[]} request.books
  *   The books to publish in the series.
  *
  *   This object should have the same structure as [Book]{@link Book}
@@ -619,7 +602,11 @@ LibraryServiceApi.prototype.createBook = function(
  * var api = libraryV1.libraryServiceApi();
  * var shelf = {};
  * var books = [];
- * api.publishSeries(shelf, books, function(err, response) {
+ * var request = {
+ *     shelf: shelf,
+ *     books: books
+ * }
+ * api.publishSeries(request, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -627,11 +614,7 @@ LibraryServiceApi.prototype.createBook = function(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.publishSeries = function(
-    shelf,
-    books,
-    options,
-    callback) {
+LibraryServiceApi.prototype.publishSeries = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -639,14 +622,10 @@ LibraryServiceApi.prototype.publishSeries = function(
   if (options === undefined) {
     options = {};
   }
-  var req = {
-    shelf: shelf,
-    books: books
-  };
   if ('edition' in options) {
-    req.edition = options.edition;
+    request.edition = options.edition;
   }
-  return this._publishSeries(req, options, callback);
+  return this._publishSeries(request, options, callback);
 };
 
 /**
@@ -676,10 +655,7 @@ LibraryServiceApi.prototype.publishSeries = function(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.getBook = function(
-    name,
-    options,
-    callback) {
+LibraryServiceApi.prototype.getBook = function(name, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -687,10 +663,8 @@ LibraryServiceApi.prototype.getBook = function(
   if (options === undefined) {
     options = {};
   }
-  var req = {
-    name: name
-  };
-  return this._getBook(req, options, callback);
+  var request = { name: name };
+  return this._getBook(request, options, callback);
 };
 
 /**
@@ -747,10 +721,7 @@ LibraryServiceApi.prototype.getBook = function(
  * }
  * api.listBooks(formattedName, {flattenPages: false}, callback);
  */
-LibraryServiceApi.prototype.listBooks = function(
-    name,
-    options,
-    callback) {
+LibraryServiceApi.prototype.listBooks = function(name, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -758,16 +729,14 @@ LibraryServiceApi.prototype.listBooks = function(
   if (options === undefined) {
     options = {};
   }
-  var req = {
-    name: name
-  };
+  var request = { name: name };
   if ('pageSize' in options) {
-    req.pageSize = options.pageSize;
+    request.pageSize = options.pageSize;
   }
   if ('filter' in options) {
-    req.filter = options.filter;
+    request.filter = options.filter;
   }
-  return this._listBooks(req, options, callback);
+  return this._listBooks(request, options, callback);
 };
 
 /**
@@ -793,10 +762,7 @@ LibraryServiceApi.prototype.listBooks = function(
  *     }
  * });
  */
-LibraryServiceApi.prototype.deleteBook = function(
-    name,
-    options,
-    callback) {
+LibraryServiceApi.prototype.deleteBook = function(name, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -804,18 +770,18 @@ LibraryServiceApi.prototype.deleteBook = function(
   if (options === undefined) {
     options = {};
   }
-  var req = {
-    name: name
-  };
-  return this._deleteBook(req, options, callback);
+  var request = { name: name };
+  return this._deleteBook(request, options, callback);
 };
 
 /**
  * Updates a book.
  *
- * @param {string} name
+ * @param {Object} request
+ *   Required request parameters. This request must contain the following parameters.
+ * @param {string} request.name
  *   The name of the book to update.
- * @param {Object} book
+ * @param {Object} request.book
  *   The book to update with.
  *
  *   This object should have the same structure as [Book]{@link Book}
@@ -845,7 +811,11 @@ LibraryServiceApi.prototype.deleteBook = function(
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.bookPath("[SHELF]", "[BOOK]");
  * var book = {};
- * api.updateBook(formattedName, book, function(err, response) {
+ * var request = {
+ *     name: formattedName,
+ *     book: book
+ * }
+ * api.updateBook(request, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -853,11 +823,7 @@ LibraryServiceApi.prototype.deleteBook = function(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.updateBook = function(
-    name,
-    book,
-    options,
-    callback) {
+LibraryServiceApi.prototype.updateBook = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -865,25 +831,23 @@ LibraryServiceApi.prototype.updateBook = function(
   if (options === undefined) {
     options = {};
   }
-  var req = {
-    name: name,
-    book: book
-  };
   if ('updateMask' in options) {
-    req.updateMask = options.updateMask;
+    request.updateMask = options.updateMask;
   }
   if ('physicalMask' in options) {
-    req.physicalMask = options.physicalMask;
+    request.physicalMask = options.physicalMask;
   }
-  return this._updateBook(req, options, callback);
+  return this._updateBook(request, options, callback);
 };
 
 /**
  * Moves a book to another shelf, and returns the new book.
  *
- * @param {string} name
+ * @param {Object} request
+ *   Required request parameters. This request must contain the following parameters.
+ * @param {string} request.name
  *   The name of the book to move.
- * @param {string} otherShelfName
+ * @param {string} request.otherShelfName
  *   The name of the destination shelf.
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
@@ -900,7 +864,11 @@ LibraryServiceApi.prototype.updateBook = function(
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.bookPath("[SHELF]", "[BOOK]");
  * var formattedOtherShelfName = api.shelfPath("[SHELF]");
- * api.moveBook(formattedName, formattedOtherShelfName, function(err, response) {
+ * var request = {
+ *     name: formattedName,
+ *     otherShelfName: formattedOtherShelfName
+ * }
+ * api.moveBook(request, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -908,11 +876,7 @@ LibraryServiceApi.prototype.updateBook = function(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.moveBook = function(
-    name,
-    otherShelfName,
-    options,
-    callback) {
+LibraryServiceApi.prototype.moveBook = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -920,11 +884,7 @@ LibraryServiceApi.prototype.moveBook = function(
   if (options === undefined) {
     options = {};
   }
-  var req = {
-    name: name,
-    otherShelfName: otherShelfName
-  };
-  return this._moveBook(req, options, callback);
+  return this._moveBook(request, options, callback);
 };
 
 /**
@@ -978,9 +938,7 @@ LibraryServiceApi.prototype.moveBook = function(
  * api.listStrings({flattenPages: false}, callback);
  * api.listStrings(function(err, response) {
  */
-LibraryServiceApi.prototype.listStrings = function(
-    options,
-    callback) {
+LibraryServiceApi.prototype.listStrings = function(options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -988,22 +946,23 @@ LibraryServiceApi.prototype.listStrings = function(
   if (options === undefined) {
     options = {};
   }
-  var req = {
-  };
+  var request = {};
   if ('name' in options) {
-    req.name = options.name;
+    request.name = options.name;
   }
   if ('pageSize' in options) {
-    req.pageSize = options.pageSize;
+    request.pageSize = options.pageSize;
   }
-  return this._listStrings(req, options, callback);
+  return this._listStrings(request, options, callback);
 };
 
 /**
  * Adds comments to a book
  *
- * @param {string} name
- * @param {Object[]} comments
+ * @param {Object} request
+ *   Required request parameters. This request must contain the following parameters.
+ * @param {string} request.name
+ * @param {Object[]} request.comments
  *   This object should have the same structure as [Comment]{@link Comment}
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
@@ -1026,17 +985,17 @@ LibraryServiceApi.prototype.listStrings = function(
  *     alignment : alignment
  * };
  * var comments = [commentsElement];
- * api.addComments(formattedName, comments, function(err) {
+ * var request = {
+ *     name: formattedName,
+ *     comments: comments
+ * }
+ * api.addComments(request, function(err) {
  *     if (err) {
  *         console.error(err);
  *     }
  * });
  */
-LibraryServiceApi.prototype.addComments = function(
-    name,
-    comments,
-    options,
-    callback) {
+LibraryServiceApi.prototype.addComments = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1044,11 +1003,7 @@ LibraryServiceApi.prototype.addComments = function(
   if (options === undefined) {
     options = {};
   }
-  var req = {
-    name: name,
-    comments: comments
-  };
-  return this._addComments(req, options, callback);
+  return this._addComments(request, options, callback);
 };
 
 /**
@@ -1078,10 +1033,7 @@ LibraryServiceApi.prototype.addComments = function(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.getBookFromArchive = function(
-    name,
-    options,
-    callback) {
+LibraryServiceApi.prototype.getBookFromArchive = function(name, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1089,20 +1041,20 @@ LibraryServiceApi.prototype.getBookFromArchive = function(
   if (options === undefined) {
     options = {};
   }
-  var req = {
-    name: name
-  };
-  return this._getBookFromArchive(req, options, callback);
+  var request = { name: name };
+  return this._getBookFromArchive(request, options, callback);
 };
 
 /**
  * Updates the index of a book.
  *
- * @param {string} name
+ * @param {Object} request
+ *   Required request parameters. This request must contain the following parameters.
+ * @param {string} request.name
  *   The name of the book to update.
- * @param {string} indexName
+ * @param {string} request.indexName
  *   The name of the index for the book
- * @param {Object.<string, string>} indexMap
+ * @param {Object.<string, string>} request.indexMap
  *   The index to update the book with
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
@@ -1119,18 +1071,18 @@ LibraryServiceApi.prototype.getBookFromArchive = function(
  * var indexName = 'default index';
  * var indexMapItem = '';
  * var indexMap = {'default_key' : indexMapItem,};
- * api.updateBookIndex(formattedName, indexName, indexMap, function(err) {
+ * var request = {
+ *     name: formattedName,
+ *     indexName: indexName,
+ *     indexMap: indexMap
+ * }
+ * api.updateBookIndex(request, function(err) {
  *     if (err) {
  *         console.error(err);
  *     }
  * });
  */
-LibraryServiceApi.prototype.updateBookIndex = function(
-    name,
-    indexName,
-    indexMap,
-    options,
-    callback) {
+LibraryServiceApi.prototype.updateBookIndex = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1138,17 +1090,14 @@ LibraryServiceApi.prototype.updateBookIndex = function(
   if (options === undefined) {
     options = {};
   }
-  var req = {
-    name: name,
-    indexName: indexName,
-    indexMap: indexMap
-  };
-  return this._updateBookIndex(req, options, callback);
+  return this._updateBookIndex(request, options, callback);
 };
 
 /**
- * @param {string[]} names
- * @param {string[]} shelves
+ * @param {Object} request
+ *   Required request parameters. This request must contain the following parameters.
+ * @param {string[]} request.names
+ * @param {string[]} request.shelves
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
@@ -1178,8 +1127,12 @@ LibraryServiceApi.prototype.updateBookIndex = function(
  * var namesElement = '';
  * var names = [namesElement];
  * var shelves = [];
+ * var request = {
+ *     names: names,
+ *     shelves: shelves
+ * }
  * // Iterate over all elements.
- * api.findRelatedBooks(names, shelves).on('data', function(element) {
+ * api.findRelatedBooks(request).on('data', function(element) {
  *     // doThingsWith(element)
  * });
  *
@@ -1192,16 +1145,12 @@ LibraryServiceApi.prototype.updateBookIndex = function(
  *     // doThingsWith(response)
  *     if (nextPageToken) {
  *         // fetch the next page.
- *         api.findRelatedBooks(names, shelves, {pageToken: nextPageToken}, callback);
+ *         api.findRelatedBooks(request, {pageToken: nextPageToken}, callback);
  *     }
  * }
- * api.findRelatedBooks(names, shelves, {flattenPages: false}, callback);
+ * api.findRelatedBooks(request, {flattenPages: false}, callback);
  */
-LibraryServiceApi.prototype.findRelatedBooks = function(
-    names,
-    shelves,
-    options,
-    callback) {
+LibraryServiceApi.prototype.findRelatedBooks = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1209,24 +1158,22 @@ LibraryServiceApi.prototype.findRelatedBooks = function(
   if (options === undefined) {
     options = {};
   }
-  var req = {
-    names: names,
-    shelves: shelves
-  };
   if ('pageSize' in options) {
-    req.pageSize = options.pageSize;
+    request.pageSize = options.pageSize;
   }
-  return this._findRelatedBooks(req, options, callback);
+  return this._findRelatedBooks(request, options, callback);
 };
 
 /**
  * Adds a tag to the book. This RPC is a mixin.
  *
- * @param {string} resource
+ * @param {Object} request
+ *   Required request parameters. This request must contain the following parameters.
+ * @param {string} request.resource
  *   REQUIRED: The resource which the tag is being added to.
  *   Resource is usually specified as a path, such as,
  *   projects/{project}/zones/{zone}/disks/{disk}.
- * @param {string} tag
+ * @param {string} request.tag
  *   REQUIRED: The tag to add.
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
@@ -1243,7 +1190,11 @@ LibraryServiceApi.prototype.findRelatedBooks = function(
  * var api = libraryV1.libraryServiceApi();
  * var formattedResource = api.bookPath("[SHELF]", "[BOOK]");
  * var tag = '';
- * api.addTag(formattedResource, tag, function(err, response) {
+ * var request = {
+ *     resource: formattedResource,
+ *     tag: tag
+ * }
+ * api.addTag(request, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -1251,11 +1202,7 @@ LibraryServiceApi.prototype.findRelatedBooks = function(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.addTag = function(
-    resource,
-    tag,
-    options,
-    callback) {
+LibraryServiceApi.prototype.addTag = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1263,21 +1210,19 @@ LibraryServiceApi.prototype.addTag = function(
   if (options === undefined) {
     options = {};
   }
-  var req = {
-    resource: resource,
-    tag: tag
-  };
-  return this._addTag(req, options, callback);
+  return this._addTag(request, options, callback);
 };
 
 /**
  * Adds a label to the entity.
  *
- * @param {string} resource
+ * @param {Object} request
+ *   Required request parameters. This request must contain the following parameters.
+ * @param {string} request.resource
  *   REQUIRED: The resource which the label is being added to.
  *   Resource is usually specified as a path, such as,
  *   projects/{project}/zones/{zone}/disks/{disk}.
- * @param {string} label
+ * @param {string} request.label
  *   REQUIRED: The label to add.
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
@@ -1294,7 +1239,11 @@ LibraryServiceApi.prototype.addTag = function(
  * var api = libraryV1.libraryServiceApi();
  * var formattedResource = api.bookPath("[SHELF]", "[BOOK]");
  * var label = '';
- * api.addLabel(formattedResource, label, function(err, response) {
+ * var request = {
+ *     resource: formattedResource,
+ *     label: label
+ * }
+ * api.addLabel(request, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -1302,11 +1251,7 @@ LibraryServiceApi.prototype.addTag = function(
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.addLabel = function(
-    resource,
-    label,
-    options,
-    callback) {
+LibraryServiceApi.prototype.addLabel = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1314,11 +1259,7 @@ LibraryServiceApi.prototype.addLabel = function(
   if (options === undefined) {
     options = {};
   }
-  var req = {
-    resource: resource,
-    label: label
-  };
-  return this._addLabel(req, options, callback);
+  return this._addLabel(request, options, callback);
 };
 
 function LibraryServiceApiBuilder(gaxGrpc) {

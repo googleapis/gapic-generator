@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.nodejs;
 
+import autovalue.shaded.com.google.common.common.collect.Lists;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.MethodConfig;
@@ -240,14 +241,25 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   }
 
   /**
+   * The type of parameter.
+   */
+  private enum ParamType {
+    OPTIONAL,
+    REQUIRED,
+    ENCAPSULATED_REQUIRED
+  }
+
+  /**
    * Returns a JSDoc comment string for the field as a parameter to a function.
    */
-  private String fieldParamComment(Field field, String paramComment, boolean isOptional) {
+  private String fieldParamComment(Field field, String paramComment, ParamType paramType) {
     String commentType = fieldTypeCardinalityComment(field);
-    String fieldName = wrapIfKeywordOrBuiltIn(lowerUnderscoreToLowerCamel(field.getSimpleName()));
-    if (isOptional) {
+    String fieldName = lowerUnderscoreToLowerCamel(field.getSimpleName());
+    if (paramType == ParamType.OPTIONAL) {
       fieldName = "options." + fieldName;
       commentType = commentType + "=";
+    } else if (paramType == ParamType.ENCAPSULATED_REQUIRED) {
+      fieldName = "request." + fieldName;
     }
     return fieldComment(
         String.format("@param {%s} %s", commentType, fieldName), paramComment, field);
@@ -379,11 +391,19 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    */
   public List<String> methodComments(Interface service, Method msg) {
     MethodConfig config = getApiConfig().getInterfaceConfig(service).getMethodConfig(msg);
-
+    List<Field> requiredFields = Lists.newArrayList(config.getRequiredFields());
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
+    ParamType paramType = ParamType.REQUIRED;
+    if (requiredFields.size() > 1) {
+      paramTypesBuilder.append(
+          "@param {Object} request\n"
+              + "  Required request parameters."
+              + " This request must contain the following parameters.\n");
+      paramType = ParamType.ENCAPSULATED_REQUIRED;
+    }
     for (Field field : config.getRequiredFields()) {
-      paramTypesBuilder.append(fieldParamComment(field, null, false));
+      paramTypesBuilder.append(fieldParamComment(field, null, paramType));
     }
     paramTypesBuilder.append(
         "@param {Object=} options\n"
@@ -405,9 +425,9 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
                       + "parameter does not affect the return value. If page streaming is\n"
                       + "performed per-page, this determines the maximum number of\n"
                       + "resources in a page.",
-                  true));
+                  ParamType.OPTIONAL));
         } else {
-          paramTypesBuilder.append(fieldParamComment(field, null, true));
+          paramTypesBuilder.append(fieldParamComment(field, null, ParamType.OPTIONAL));
         }
       }
     }
