@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.viewmodel.testing;
 
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.auto.value.AutoValue;
@@ -46,6 +47,12 @@ public abstract class GapicSurfaceTestCaseView {
 
   public abstract String mockServiceVarName();
 
+  public abstract GrpcStreamingType grpcStreamingType();
+
+  public boolean isGrpcStreaming() {
+    return grpcStreamingType() != GrpcStreamingType.NonStreaming;
+  }
+
   public static Builder newBuilder() {
     return new AutoValue_GapicSurfaceTestCaseView.Builder();
   }
@@ -75,6 +82,8 @@ public abstract class GapicSurfaceTestCaseView {
     public abstract Builder mockResponse(MockGrpcResponseView val);
 
     public abstract Builder mockServiceVarName(String val);
+
+    public abstract Builder grpcStreamingType(GrpcStreamingType val);
 
     public abstract GapicSurfaceTestCaseView build();
   }

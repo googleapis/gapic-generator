@@ -16,8 +16,10 @@
 package com.google.gcloud.pubsub.spi;
 
 import com.google.api.gax.core.PagedListResponse;
+import com.google.api.gax.grpc.StreamingApiCallable;
 import com.google.api.gax.testing.MockGrpcService;
 import com.google.api.gax.testing.MockServiceHelper;
+import com.google.api.gax.testing.MockStreamObserver;
 import com.google.common.collect.Lists;
 import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.Book;
@@ -28,6 +30,7 @@ import com.google.example.library.v1.CreateBookRequest;
 import com.google.example.library.v1.CreateShelfRequest;
 import com.google.example.library.v1.DeleteBookRequest;
 import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.DiscussBookRequest;
 import com.google.example.library.v1.FindRelatedBooksRequest;
 import com.google.example.library.v1.FindRelatedBooksResponse;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
@@ -47,6 +50,9 @@ import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.ShelfName;
 import com.google.example.library.v1.SomeMessage;
 import com.google.example.library.v1.SomeMessage2.SomeMessage3.Alignment;
+import com.google.example.library.v1.StreamBooksRequest;
+import com.google.example.library.v1.StreamShelvesRequest;
+import com.google.example.library.v1.StreamShelvesResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
 import com.google.protobuf.ByteString;
@@ -57,6 +63,7 @@ import com.google.tagger.v1.AddLabelRequest;
 import com.google.tagger.v1.AddLabelResponse;
 import com.google.tagger.v1.AddTagRequest;
 import com.google.tagger.v1.AddTagResponse;
+import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -648,6 +655,90 @@ public class LibraryServiceTest {
     Assert.assertEquals(name, actualRequest.getNameAsResource());
     Assert.assertEquals(indexName, actualRequest.getIndexName());
     Assert.assertEquals(indexMap, actualRequest.getIndexMap());
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void streamShelvesTest() throws Exception {
+    StreamShelvesResponse expectedResponse = StreamShelvesResponse.newBuilder().build();
+    List<GeneratedMessageV3> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    mockLibraryService.setResponses(expectedResponses);
+    StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
+
+    MockStreamObserver<StreamShelvesResponse> responseObserver = new MockStreamObserver<>();
+
+    StreamingApiCallable<StreamShelvesRequest, StreamShelvesResponse> callable =
+        api.streamShelvesCallable();
+    callable.serverStreamingCall(request, responseObserver);
+
+    List<StreamShelvesResponse> actualResponses = responseObserver.future().get();
+    Assert.assertEquals(1, actualResponses.size());
+    Assert.assertEquals(expectedResponse, actualResponses.get(0));
+    Assert.assertEquals(0, responseObserver.errors().size());
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void streamBooksTest() throws Exception {
+    BookName name2 = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+    String author = "author-1406328437";
+    String title = "title110371416";
+    boolean read = true;
+    Book expectedResponse = Book.newBuilder()
+      .setNameWithResource(name2)
+      .setAuthor(author)
+      .setTitle(title)
+      .setRead(read)
+      .build();
+    List<GeneratedMessageV3> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    mockLibraryService.setResponses(expectedResponses);
+    String name = "name3373707";
+    StreamBooksRequest request = StreamBooksRequest.newBuilder()
+      .setName(name)
+      .build();
+
+    MockStreamObserver<Book> responseObserver = new MockStreamObserver<>();
+
+    StreamingApiCallable<StreamBooksRequest, Book> callable =
+        api.streamBooksCallable();
+    callable.serverStreamingCall(request, responseObserver);
+
+    List<Book> actualResponses = responseObserver.future().get();
+    Assert.assertEquals(1, actualResponses.size());
+    Assert.assertEquals(expectedResponse, actualResponses.get(0));
+    Assert.assertEquals(0, responseObserver.errors().size());
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void discussBookTest() throws Exception {
+    String userName = "userName339340927";
+    ByteString comment = ByteString.copyFromUtf8("95");
+    Comment expectedResponse = Comment.newBuilder()
+      .setUserName(userName)
+      .setComment(comment)
+      .build();
+    List<GeneratedMessageV3> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    mockLibraryService.setResponses(expectedResponses);
+    DiscussBookRequest request = DiscussBookRequest.newBuilder().build();
+
+    MockStreamObserver<StreamingRecognizeResponse> responseObserver = new MockStreamObserver<>();
+
+    StreamingApiCallable<DiscussBookRequest, Comment> callable =
+        api.discussBookCallable();
+    StreamObserver<DiscussBookRequest> requestObserver =
+        callable.bidiStreamingCall(responseObserver);
+
+    requestObserver.onNext(request);
+    requestObserver.onCompleted();
+
+    List<Comment> actualResponses = responseObserver.future().get();
+    Assert.assertEquals(1, actualResponses.size());
+    Assert.assertEquals(expectedResponse, actualResponses.get(0));
+    Assert.assertEquals(0, responseObserver.errors().size());
   }
 
   @Test

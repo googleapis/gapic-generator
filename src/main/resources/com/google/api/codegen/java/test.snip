@@ -60,6 +60,14 @@
 @end
 
 @private testCase(test)
+  @if test.isGrpcStreaming
+    {@grpcStreamingTestCase(test)}
+  @else
+    {@nonGrpcStreamingTestCase(test)}
+  @end
+@end
+
+@private nonGrpcStreamingTestCase(test)
   @@Test
   @@SuppressWarnings("all")
   public void {@test.name}() {
@@ -78,6 +86,49 @@
         actualRequest.{@assert.actualValueGetter}());
     @end
   }
+@end
+
+@private grpcStreamingTestCase(test)
+  @@Test
+  @@SuppressWarnings("all")
+  public void {@test.name}() throws Exception {
+    {@setResponse(test)}
+    {@initCode(test.initCode)}
+
+    @switch test.grpcStreamingType
+    @case "BidiStreaming"
+      {@bidiStreamingCall(test)}
+    @case "ServerStreaming"
+      {@serverStreamingCall(test)}
+    @default
+      $unhandled case - test.grpcStreamingType.toString$
+    @end
+
+    List<{@test.responseTypeName}> actualResponses = responseObserver.future().get();
+    Assert.assertEquals(1, actualResponses.size());
+    Assert.assertEquals(expectedResponse, actualResponses.get(0));
+    Assert.assertEquals(0, responseObserver.errors().size());
+  }
+@end
+
+@private bidiStreamingCall(test)
+  MockStreamObserver<StreamingRecognizeResponse> responseObserver = new MockStreamObserver<>();
+
+  StreamingApiCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
+      api.{@test.surfaceMethodName}();
+  StreamObserver<{@test.requestTypeName}> requestObserver =
+      callable.bidiStreamingCall(responseObserver);
+
+  requestObserver.onNext(request);
+  requestObserver.onCompleted();
+@end
+
+@private serverStreamingCall(test)
+  MockStreamObserver<{@test.responseTypeName}> responseObserver = new MockStreamObserver<>();
+
+  StreamingApiCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
+      api.{@test.surfaceMethodName}();
+  callable.serverStreamingCall(request, responseObserver);
 @end
 
 @private setResponse(test)
