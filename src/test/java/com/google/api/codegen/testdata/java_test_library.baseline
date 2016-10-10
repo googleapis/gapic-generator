@@ -672,10 +672,10 @@ public class LibraryServiceTest {
         api.streamShelvesCallable();
     callable.serverStreamingCall(request, responseObserver);
 
-    List<StreamShelvesResponse> actualResponses = responseObserver.future.get();
+    List<StreamShelvesResponse> actualResponses = responseObserver.future().get();
     Assert.assertEquals(1, actualResponses.size());
     Assert.assertEquals(expectedResponse, actualResponses.get(0));
-    Assert.assertEquals(0, responseObserver.errors.size());
+    Assert.assertEquals(0, responseObserver.errors().size());
   }
 
   @Test
@@ -705,10 +705,10 @@ public class LibraryServiceTest {
         api.streamBooksCallable();
     callable.serverStreamingCall(request, responseObserver);
 
-    List<Book> actualResponses = responseObserver.future.get();
+    List<Book> actualResponses = responseObserver.future().get();
     Assert.assertEquals(1, actualResponses.size());
     Assert.assertEquals(expectedResponse, actualResponses.get(0));
-    Assert.assertEquals(0, responseObserver.errors.size());
+    Assert.assertEquals(0, responseObserver.errors().size());
   }
 
   @Test
@@ -735,10 +735,10 @@ public class LibraryServiceTest {
     requestObserver.onNext(request);
     requestObserver.onCompleted();
 
-    List<Comment> actualResponses = responseObserver.future.get();
+    List<Comment> actualResponses = responseObserver.future().get();
     Assert.assertEquals(1, actualResponses.size());
     Assert.assertEquals(expectedResponse, actualResponses.get(0));
-    Assert.assertEquals(0, responseObserver.errors.size());
+    Assert.assertEquals(0, responseObserver.errors().size());
   }
 
   @Test
