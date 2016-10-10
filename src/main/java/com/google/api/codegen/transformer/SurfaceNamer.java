@@ -21,6 +21,7 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NameFormatterDelegator;
 import com.google.api.codegen.util.NamePath;
+import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
@@ -92,6 +93,25 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the class that contains paged list response wrappers. */
   public String getPagedResponseWrappersClassName() {
     return className(Name.upperCamel("PagedResponseWrappers"));
+  }
+
+  /**
+   * The name of the iterate method of the PagedListResponse type for a field, returning the
+   * resource type iterate method if available
+   */
+  public String getPagedResponseIterateMethod(FeatureConfig featureConfig, Field field) {
+    if (featureConfig.useResourceNameFormatOption(field)) {
+      String resourceName = ResourceNameUtil.getResourceName(field);
+      Name resourceNameName = Name.upperCamel(resourceName);
+      return publicMethodName(Name.from("iterate_all_as").join(resourceNameName));
+    } else {
+      return getPagedResponseIterateMethod();
+    }
+  }
+
+  /** The name of the iterate method of the PagedListResponse type for a field */
+  public String getPagedResponseIterateMethod() {
+    return publicMethodName(Name.from("iterate_all_elements"));
   }
 
   /**
@@ -633,22 +653,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getGenericAwareResponseTypeName(TypeRef outputType) {
     return getNotImplementedString("SurfaceNamer.getGenericAwareResponseType");
-  }
-
-  /**
-   * The function name to get the given proto field as a list.
-   *
-   * @throws IllegalArgumentException if the field is not a repeated field.
-   */
-  public String getGetResourceListCallName(Field resourcesField) {
-    if (resourcesField.isRepeated()) {
-      return publicMethodName(Name.from("get", resourcesField.getSimpleName(), "list"));
-    } else {
-      throw new IllegalArgumentException(
-          "Non-repeated field "
-              + resourcesField.getSimpleName()
-              + " cannot be accessed as a list.");
-    }
   }
 
   /**

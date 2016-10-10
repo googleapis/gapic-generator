@@ -276,7 +276,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         PageStreamingResponseView.newBuilder()
             .resourceTypeName(resourceTypeName)
             .resourcesFieldGetterName(resourcesFieldGetterName)
-            .resourcesIterateMethod(namer.publicMethodName(Name.from("iterate_all_elements")))
+            .resourcesIterateMethod(namer.getPagedResponseIterateMethod())
             .resourcesVarName(namer.localVarName(Name.from("resources")))
             .build());
 
@@ -296,7 +296,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
               .resourceTypeName(resourceTypeName)
               .resourcesFieldGetterName(resourcesFieldGetterName)
               .resourcesIterateMethod(
-                  namer.publicMethodName(Name.from("iterate_all_as").join(resourceNameName)))
+                  namer.getPagedResponseIterateMethod(
+                      methodContext.getFeatureConfig(), resourcesField))
               .resourcesVarName(
                   namer.localVarName(Name.from("resources_as").join(resourceNameName)))
               .build());

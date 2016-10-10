@@ -32,6 +32,7 @@ import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
@@ -251,7 +252,13 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
               .getAndSaveNicknameForTypedResourceName(
                   resourceField, resourceField.getType().makeOptional(), resourceShortName);
       iterateMethod.overloadResourceTypeName(resourceTypeName);
-      iterateMethod.overloadResourceTypeParseFunctionName("parse");
+      iterateMethod.overloadResourceTypeParseFunctionName(
+          context.getNamer().publicMethodName(Name.from("parse")));
+      iterateMethod.overloadResourceTypeIterateMethodName(
+          context
+              .getNamer()
+              .getPagedResponseIterateMethod(context.getFeatureConfig(), resourceField));
+      iterateMethod.iterateMethodName(context.getNamer().getPagedResponseIterateMethod());
 
       iterateMethods.add(iterateMethod.build());
     }

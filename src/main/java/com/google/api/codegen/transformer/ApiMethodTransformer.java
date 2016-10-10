@@ -148,8 +148,10 @@ public class ApiMethodTransformer {
     setCallableMethodFields(context, namer.getCallableName(context.getMethod()), methodViewBuilder);
 
     String getResourceListCallName =
-        namer.getGetResourceListCallName(
+        namer.getFieldGetFunctionName(
+            context.getFeatureConfig(),
             context.getMethodConfig().getPageStreaming().getResourcesField());
+
     UnpagedListCallableMethodDetailView unpagedListCallableDetails =
         UnpagedListCallableMethodDetailView.newBuilder()
             .resourceListGetFunction(getResourceListCallName)
@@ -279,7 +281,21 @@ public class ApiMethodTransformer {
     String responseTypeName = typeTable.getAndSaveNicknameFor(context.getMethod().getOutputType());
 
     Field resourceField = pageStreaming.getResourcesField();
-    String resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
+
+    String resourceTypeName;
+
+    if (context.getFeatureConfig().useResourceNameFormatOption(resourceField)) {
+      String resourceShortName = ResourceNameUtil.getResourceName(resourceField);
+      resourceTypeName =
+          typeTable.getAndSaveNicknameForTypedResourceName(
+              resourceField, resourceField.getType().makeOptional(), resourceShortName);
+    } else {
+      resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
+    }
+
+    String iterateMethodName =
+        context.getNamer().getPagedResponseIterateMethod(context.getFeatureConfig(), resourceField);
+
     String resourceFieldName = context.getNamer().getFieldName(pageStreaming.getResourcesField());
     String resourceFieldGetFunctionName =
         namer.getFieldGetFunctionName(context.getFeatureConfig(), resourceField);
@@ -289,6 +305,7 @@ public class ApiMethodTransformer {
             .requestTypeName(requestTypeName)
             .responseTypeName(responseTypeName)
             .resourceTypeName(resourceTypeName)
+            .iterateMethodName(iterateMethodName)
             .resourceFieldName(resourceFieldName)
             .resourcesFieldGetFunction(resourceFieldGetFunctionName)
             .responseObjectTypeName(

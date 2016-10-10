@@ -35,8 +35,8 @@
 
 @private iterateMethods(pagedResponseClass)
   @join iterateMethod : pagedResponseClass.iterateMethods
-    public Iterable<{@iterateMethod.overloadResourceTypeName}> iterateAllAs{@iterateMethod.overloadResourceTypeName}() {
-      return Iterables.transform(iterateAllElements(), new Function<{@pagedResponseClass.resourceTypeName}, {@iterateMethod.overloadResourceTypeName}>() {
+    public Iterable<{@iterateMethod.overloadResourceTypeName}> {@iterateMethod.overloadResourceTypeIterateMethodName}() {
+      return Iterables.transform({@iterateMethod.iterateMethodName}(), new Function<{@pagedResponseClass.resourceTypeName}, {@iterateMethod.overloadResourceTypeName}>() {
           @@Override
           public {@iterateMethod.overloadResourceTypeName} apply({@pagedResponseClass.resourceTypeName} arg0) {
             return {@iterateMethod.overloadResourceTypeName}.{@iterateMethod.overloadResourceTypeParseFunctionName}(arg0);

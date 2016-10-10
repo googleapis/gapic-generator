@@ -23,6 +23,10 @@ public abstract class PagedResponseIterateMethodView {
 
   public abstract String overloadResourceTypeParseFunctionName();
 
+  public abstract String overloadResourceTypeIterateMethodName();
+
+  public abstract String iterateMethodName();
+
   public static Builder newBuilder() {
     return new AutoValue_PagedResponseIterateMethodView.Builder();
   }
@@ -33,6 +37,10 @@ public abstract class PagedResponseIterateMethodView {
     public abstract Builder overloadResourceTypeName(String val);
 
     public abstract Builder overloadResourceTypeParseFunctionName(String val);
+
+    public abstract Builder overloadResourceTypeIterateMethodName(String val);
+
+    public abstract Builder iterateMethodName(String val);
 
     public abstract PagedResponseIterateMethodView build();
   }
