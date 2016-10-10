@@ -676,7 +676,10 @@ public class LibraryServiceTest {
 
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
-    Assert.assertEquals(expectedResponse.getNamesListAsResources().get(0), resources.get(0));
+    Assert.assertEquals(expectedResponse.getNamesList().get(0), resources.get(0));
+    List<BookName> resourcesAsBookName = Lists.newArrayList(pagedListResponse.iterateAllAsBookName());
+    Assert.assertEquals(1, resourcesAsBookName.size());
+    Assert.assertEquals(expectedResponse.getNamesListAsResources().get(0), resourcesAsBookName.get(0));
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());

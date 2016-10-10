@@ -91,9 +91,11 @@
     {@test.responseTypeName} pagedListResponse = api.{@test.surfaceMethodName}(\
       {@sampleMethodCallArgList(test.initCode.fieldSettings)});
 
-    List<{@test.resourceTypeName}> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
-    Assert.assertEquals(1, resources.size());
-    Assert.assertEquals(expectedResponse.{@test.resourcesFieldGetterName}().get(0), resources.get(0));
+    @join pageStreamingResponseView : test.pageStreamingResponseViews
+      List<{@pageStreamingResponseView.resourceTypeName}> {@pageStreamingResponseView.resourcesVarName} = Lists.newArrayList(pagedListResponse.{@pageStreamingResponseView.resourcesIterateMethod}());
+      Assert.assertEquals(1, {@pageStreamingResponseView.resourcesVarName}.size());
+      Assert.assertEquals(expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}().get(0), {@pageStreamingResponseView.resourcesVarName}.get(0));
+    @end
   @case "FlattenedMethod"
     @if test.hasReturnValue
       {@test.responseTypeName} actualResponse =

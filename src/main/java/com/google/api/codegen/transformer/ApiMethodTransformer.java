@@ -571,22 +571,23 @@ public class ApiMethodTransformer {
         namer.getNotImplementedString(
             "ApiMethodTransformer.generateRequestObjectParam - elementTypeName");
 
-    if (namer.shouldImportRequestObjectParamType(field)) {
-      if (context.getFeatureConfig().useResourceNameFormatOption(field)) {
-        String resourceName = ResourceNameUtil.getResourceName(field);
+    if (context.getFeatureConfig().useResourceNameFormatOption(field)) {
+      String resourceName = ResourceNameUtil.getResourceName(field);
+      if (namer.shouldImportRequestObjectParamType(field)) {
         typeName =
             typeTable.getAndSaveNicknameForTypedResourceName(field, field.getType(), resourceName);
-      } else {
-        typeName = typeTable.getAndSaveNicknameFor(field.getType());
       }
-    }
-    if (namer.shouldImportRequestObjectParamElementType(field)) {
-      if (context.getFeatureConfig().useResourceNameFormatOption(field)) {
-        String resourceName = ResourceNameUtil.getResourceName(field);
+      if (namer.shouldImportRequestObjectParamElementType(field)) {
+        // Use makeOptional to remove repeated property from type
         elementTypeName =
             typeTable.getAndSaveNicknameForTypedResourceName(
                 field, field.getType().makeOptional(), resourceName);
-      } else {
+      }
+    } else {
+      if (namer.shouldImportRequestObjectParamType(field)) {
+        typeName = typeTable.getAndSaveNicknameFor(field.getType());
+      }
+      if (namer.shouldImportRequestObjectParamElementType(field)) {
         elementTypeName = typeTable.getAndSaveNicknameForElementType(field.getType());
       }
     }
