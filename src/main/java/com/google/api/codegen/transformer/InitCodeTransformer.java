@@ -42,6 +42,7 @@ import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.api.tools.framework.model.Field;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +84,8 @@ public class InitCodeTransformer {
       MethodTransformerContext context,
       Iterable<Field> fields,
       SymbolTable table,
-      TestValueGenerator valueGenerator) {
+      TestValueGenerator valueGenerator,
+      boolean isFlattened) {
     InitCodeNode rootNode =
         InitCodeNode.createTree(
             InitTreeParserContext.newBuilder()
@@ -95,7 +97,11 @@ public class InitCodeTransformer {
                 .initFields(fields)
                 .suggestedName(Name.from("request"))
                 .build());
-    return buildInitCodeViewFlattened(context, rootNode);
+    if (isFlattened) {
+      return buildInitCodeViewFlattened(context, rootNode);
+    } else {
+      return buildInitCodeViewRequestObject(context, rootNode);
+    }
   }
 
   public InitCodeView generateMockResponseObjectInitCode(

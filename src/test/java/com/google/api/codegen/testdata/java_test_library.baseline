@@ -657,23 +657,20 @@ public class LibraryServiceTest {
     Assert.assertEquals(indexMap, actualRequest.getIndexMap());
   }
 
+  @Test
+  @SuppressWarnings("all")
   public void streamShelvesTest() {
     StreamShelvesResponse expectedResponse = StreamShelvesResponse.newBuilder().build();
     List<GeneratedMessageV3> expectedResponses = new ArrayList<>();
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
+    StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
 
-
-    MockStreamObserver<StreamingRecognizeResponse> responseObserver = new MockStreamObserver<>();
+    MockStreamObserver<StreamShelvesResponse> responseObserver = new MockStreamObserver<>();
 
     StreamingApiCallable<StreamShelvesRequest, StreamShelvesResponse> callable =
         api.streamShelvesCallable();
     callable.serverStreamingCall(request, responseObserver);
-
-    StreamShelvesRequest request =
-        StreamShelvesRequest.newBuilder().build();
-    requestObserver.onNext(request);
-    requestObserver.onCompleted();
 
     try {
       List<StreamShelvesResponse> actualResponses = responseObserver.future.get();
@@ -685,6 +682,8 @@ public class LibraryServiceTest {
     }
   }
 
+  @Test
+  @SuppressWarnings("all")
   public void streamBooksTest() {
     BookName name2 = BookName.create("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
@@ -700,17 +699,15 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
     String name = "name3373707";
+    StreamBooksRequest request = StreamBooksRequest.newBuilder()
+      .setName(name)
+      .build();
 
-    MockStreamObserver<StreamingRecognizeResponse> responseObserver = new MockStreamObserver<>();
+    MockStreamObserver<Book> responseObserver = new MockStreamObserver<>();
 
     StreamingApiCallable<StreamBooksRequest, Book> callable =
         api.streamBooksCallable();
     callable.serverStreamingCall(request, responseObserver);
-
-    StreamBooksRequest request =
-        StreamBooksRequest.newBuilder().build();
-    requestObserver.onNext(request);
-    requestObserver.onCompleted();
 
     try {
       List<Book> actualResponses = responseObserver.future.get();
@@ -722,6 +719,8 @@ public class LibraryServiceTest {
     }
   }
 
+  @Test
+  @SuppressWarnings("all")
   public void discussBookTest() {
     String userName = "userName339340927";
     ByteString comment = ByteString.copyFromUtf8("95");
@@ -732,7 +731,7 @@ public class LibraryServiceTest {
     List<GeneratedMessageV3> expectedResponses = new ArrayList<>();
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
-
+    DiscussBookRequest request = DiscussBookRequest.newBuilder().build();
 
     MockStreamObserver<StreamingRecognizeResponse> responseObserver = new MockStreamObserver<>();
 
@@ -741,8 +740,6 @@ public class LibraryServiceTest {
     StreamObserver<DiscussBookRequest> requestObserver =
         callable.bidiStreamingCall(responseObserver);
 
-    DiscussBookRequest request =
-        DiscussBookRequest.newBuilder().build();
     requestObserver.onNext(request);
     requestObserver.onCompleted();
 

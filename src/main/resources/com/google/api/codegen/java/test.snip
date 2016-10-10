@@ -89,6 +89,8 @@
 @end
 
 @private grpcStreamingTestCase(test)
+  @@Test
+  @@SuppressWarnings("all")
   public void {@test.name}() {
     {@setResponse(test)}
     {@initCode(test.initCode)}
@@ -121,23 +123,16 @@
   StreamObserver<{@test.requestTypeName}> requestObserver =
       callable.bidiStreamingCall(responseObserver);
 
-  {@test.requestTypeName} request =
-      {@test.requestTypeName}.newBuilder().build();
   requestObserver.onNext(request);
   requestObserver.onCompleted();
 @end
 
 @private serverStreamingCall(test)
-  MockStreamObserver<StreamingRecognizeResponse> responseObserver = new MockStreamObserver<>();
+  MockStreamObserver<{@test.responseTypeName}> responseObserver = new MockStreamObserver<>();
 
   StreamingApiCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
       api.{@test.surfaceMethodName}();
   callable.serverStreamingCall(request, responseObserver);
-
-  {@test.requestTypeName} request =
-      {@test.requestTypeName}.newBuilder().build();
-  requestObserver.onNext(request);
-  requestObserver.onCompleted();
 @end
 
 @private setResponse(test)
