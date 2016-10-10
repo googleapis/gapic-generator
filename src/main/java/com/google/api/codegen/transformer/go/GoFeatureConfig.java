@@ -21,4 +21,9 @@ public class GoFeatureConfig extends FeatureConfig {
   public boolean enableGrpcStreaming() {
     return true;
   }
+
+  @Override
+  public boolean enableIamResource() {
+    return true;
+  }
 }

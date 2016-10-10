@@ -41,4 +41,9 @@ public class FeatureConfig {
   public boolean enableGrpcStreaming() {
     return false;
   }
+
+  /** Returns true if IAM resources are supported. */
+  public boolean enableIamResource() {
+    return false;
+  }
 }

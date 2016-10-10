@@ -114,6 +114,12 @@ message InterfaceConfigProto {
 
   // Definition for retry/backoff parameters
   repeated RetryParamsDefinitionProto retry_params_def = 31;
+
+  // IAM resources
+  repeated IamResourceProto iam_resources = 40;
+
+  // Methods that become unnecessary if iam_resources is used.
+  repeated string iam_replace_methods = 41;
 }
 
 message SmokeTestConfigProto {
@@ -313,4 +319,12 @@ message BundlingDescriptorProto {
   // correspondence with the multiple request messages originally bundled
   // together.
   string subresponse_field = 3;
+}
+
+message IamResourceProto {
+  // Fully qualified name of resource types. Eg, google.example.library.v1.Book.
+  string type = 1;
+
+  // The field containing the resource name.
+  string field = 2;
 }

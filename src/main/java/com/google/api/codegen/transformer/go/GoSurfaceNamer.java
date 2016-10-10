@@ -143,12 +143,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getApiMethodExampleName(Interface service, Method method) {
-    // We use "unsafe" string concatenation here.
-    // Godoc expects the name to be in format "ExampleMyType_MyMethod";
-    // it is the only place we have mixed camel and underscore names.
-    return publicMethodName(Name.from("example").join(clientNamePrefix(service)).join("client"))
-        + "_"
-        + getApiMethodName(method);
+    return exampleFunction(service, getApiMethodName(method));
   }
 
   @Override
@@ -221,5 +216,26 @@ public class GoSurfaceNamer extends SurfaceNamer {
     return converter.getTypeName(method.getParent()).getNickname()
         + "_"
         + className(Name.upperCamel(method.getSimpleName()).join("client"));
+  }
+
+  @Override
+  public String getIamResourceGetterFunctionName(Field field) {
+    return Name.upperCamel(field.getParent().getSimpleName())
+        .join(Name.upperCamelKeepUpperAcronyms("IAM"))
+        .toUpperCamel();
+  }
+
+  @Override
+  public String getIamResourceGetterFunctionExampleName(Interface service, Field field) {
+    return exampleFunction(service, getIamResourceGetterFunctionName(field));
+  }
+
+  private String exampleFunction(Interface service, String func) {
+    // We use "unsafe" string concatenation here.
+    // Godoc expects the name to be in format "ExampleMyType_MyMethod";
+    // it is the only place we have mixed camel and underscore names.
+    return publicMethodName(Name.from("example").join(clientNamePrefix(service)).join("client"))
+        + "_"
+        + func;
   }
 }

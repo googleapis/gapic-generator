@@ -149,10 +149,13 @@ public abstract class SurfaceTransformerContext {
   }
 
   private boolean isSupported(Method method) {
-    if (getFeatureConfig().enableGrpcStreaming()) {
-      return true;
-    }
-    return !MethodConfig.isGrpcStreamingMethod(method);
+    boolean supported = true;
+    supported &=
+        getFeatureConfig().enableGrpcStreaming() || !MethodConfig.isGrpcStreamingMethod(method);
+    supported &=
+        !getFeatureConfig().enableIamResource()
+            || !getInterfaceConfig().getIamReplaceMethods().contains(method);
+    return supported;
   }
 
   public List<Method> getPageStreamingMethods() {
