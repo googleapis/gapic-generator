@@ -1783,7 +1783,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
-   *   for (String element : libraryServiceApi.findRelatedBooks(names, shelves).iterateAllElements()) {
+   *   for (BookName element : libraryServiceApi.findRelatedBooks(names, shelves).iterateAllAsBookName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1816,7 +1816,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *     .addAllNamesWithResources(names)
    *     .addAllShelvesWithResources(shelves)
    *     .build();
-   *   for (String element : libraryServiceApi.findRelatedBooks(request).iterateAllElements()) {
+   *   for (BookName element : libraryServiceApi.findRelatedBooks(request).iterateAllAsBookName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1846,7 +1846,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *     .build();
    *   ListenableFuture&lt;FindRelatedBooksPagedResponse&gt; future = libraryServiceApi.findRelatedBooksPagedCallable().futureCall(request);
    *   // Do something
-   *   for (String element : future.get().iterateAllElements()) {
+   *   for (BookName element : future.get().iterateAllAsBookName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1872,7 +1872,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *     .build();
    *   while (true) {
    *     FindRelatedBooksResponse response = libraryServiceApi.findRelatedBooksCallable().call(request);
-   *     for (String element : response.getNamesList()) {
+   *     for (BookName element : response.getNamesListAsResources()) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
