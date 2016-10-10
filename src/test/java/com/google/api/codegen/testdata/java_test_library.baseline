@@ -659,7 +659,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void streamShelvesTest() {
+  public void streamShelvesTest() throws Exception {
     StreamShelvesResponse expectedResponse = StreamShelvesResponse.newBuilder().build();
     List<GeneratedMessageV3> expectedResponses = new ArrayList<>();
     expectedResponses.add(expectedResponse);
@@ -672,19 +672,15 @@ public class LibraryServiceTest {
         api.streamShelvesCallable();
     callable.serverStreamingCall(request, responseObserver);
 
-    try {
-      List<StreamShelvesResponse> actualResponses = responseObserver.future.get();
-      Assert.assertEquals(1, actualResponses.size());
-      Assert.assertEquals(expectedResponse, actualResponses.get(0));
-      Assert.assertEquals(0, responseObserver.errors.size());
-    } catch (Exception e) {
-      Assert.fail();
-    }
+    List<StreamShelvesResponse> actualResponses = responseObserver.future.get();
+    Assert.assertEquals(1, actualResponses.size());
+    Assert.assertEquals(expectedResponse, actualResponses.get(0));
+    Assert.assertEquals(0, responseObserver.errors.size());
   }
 
   @Test
   @SuppressWarnings("all")
-  public void streamBooksTest() {
+  public void streamBooksTest() throws Exception {
     BookName name2 = BookName.create("[SHELF_ID]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
@@ -709,19 +705,15 @@ public class LibraryServiceTest {
         api.streamBooksCallable();
     callable.serverStreamingCall(request, responseObserver);
 
-    try {
-      List<Book> actualResponses = responseObserver.future.get();
-      Assert.assertEquals(1, actualResponses.size());
-      Assert.assertEquals(expectedResponse, actualResponses.get(0));
-      Assert.assertEquals(0, responseObserver.errors.size());
-    } catch (Exception e) {
-      Assert.fail();
-    }
+    List<Book> actualResponses = responseObserver.future.get();
+    Assert.assertEquals(1, actualResponses.size());
+    Assert.assertEquals(expectedResponse, actualResponses.get(0));
+    Assert.assertEquals(0, responseObserver.errors.size());
   }
 
   @Test
   @SuppressWarnings("all")
-  public void discussBookTest() {
+  public void discussBookTest() throws Exception {
     String userName = "userName339340927";
     ByteString comment = ByteString.copyFromUtf8("95");
     Comment expectedResponse = Comment.newBuilder()
@@ -743,14 +735,10 @@ public class LibraryServiceTest {
     requestObserver.onNext(request);
     requestObserver.onCompleted();
 
-    try {
-      List<Comment> actualResponses = responseObserver.future.get();
-      Assert.assertEquals(1, actualResponses.size());
-      Assert.assertEquals(expectedResponse, actualResponses.get(0));
-      Assert.assertEquals(0, responseObserver.errors.size());
-    } catch (Exception e) {
-      Assert.fail();
-    }
+    List<Comment> actualResponses = responseObserver.future.get();
+    Assert.assertEquals(1, actualResponses.size());
+    Assert.assertEquals(expectedResponse, actualResponses.get(0));
+    Assert.assertEquals(0, responseObserver.errors.size());
   }
 
   @Test

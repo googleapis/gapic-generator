@@ -49,7 +49,6 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -184,12 +183,12 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     for (Method method : context.getSupportedMethods()) {
       MethodTransformerContext methodContext = context.asMethodContext(method);
       MethodConfig methodConfig = methodContext.getMethodConfig();
-      if (methodConfig.isFlattening()) {
+      if (MethodConfig.isGrpcStreamingMethod(method)) {
+        testCaseViews.add(createTestCaseView(methodContext, testNameTable, null));
+      } else if (methodConfig.isFlattening()) {
         for (List<Field> paramFields : methodConfig.getFlattening().getFlatteningGroups()) {
           testCaseViews.add(createTestCaseView(methodContext, testNameTable, paramFields));
         }
-      } else if (MethodConfig.isGrpcStreamingMethod(method)) {
-        testCaseViews.add(createTestCaseView(methodContext, testNameTable, null));
       } else {
         // TODO: Add support of non-flattening method
         // Github issue: https://github.com/googleapis/toolkit/issues/393
@@ -211,13 +210,16 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     // This symbol table is used to produce unique variable names used in the initialization code.
     // Shared by both request and response views.
     SymbolTable initSymbolTable = new SymbolTable();
-    InitCodeView initCodeView =
-        initCodeTransformer.generateTestMethodInitCode(
-            methodContext,
-            paramFields,
-            initSymbolTable,
-            valueGenerator,
-            methodConfig.isFlattening());
+    InitCodeView initCodeView;
+    if (methodConfig.isGrpcStreaming()) {
+      initCodeView =
+          initCodeTransformer.generateRequestObjectTestInitCode(
+              methodContext, initSymbolTable, valueGenerator);
+    } else {
+      initCodeView =
+          initCodeTransformer.generateFlatteningTestInitCode(
+              methodContext, paramFields, initSymbolTable, valueGenerator);
+    }
 
     String requestTypeName =
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());

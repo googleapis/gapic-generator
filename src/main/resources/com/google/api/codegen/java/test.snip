@@ -91,7 +91,7 @@
 @private grpcStreamingTestCase(test)
   @@Test
   @@SuppressWarnings("all")
-  public void {@test.name}() {
+  public void {@test.name}() throws Exception {
     {@setResponse(test)}
     {@initCode(test.initCode)}
 
@@ -104,14 +104,10 @@
       $unhandled case - test.grpcStreamingType.toString$
     @end
 
-    try {
-      List<{@test.responseTypeName}> actualResponses = responseObserver.future.get();
-      Assert.assertEquals(1, actualResponses.size());
-      Assert.assertEquals(expectedResponse, actualResponses.get(0));
-      Assert.assertEquals(0, responseObserver.errors.size());
-    } catch (Exception e) {
-      Assert.fail();
-    }
+    List<{@test.responseTypeName}> actualResponses = responseObserver.future.get();
+    Assert.assertEquals(1, actualResponses.size());
+    Assert.assertEquals(expectedResponse, actualResponses.get(0));
+    Assert.assertEquals(0, responseObserver.errors.size());
   }
 @end
 

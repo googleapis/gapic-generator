@@ -283,9 +283,9 @@ public class MethodConfig {
     }
   }
 
-  /** Returns true if this method supports parameter flattening. */
+  /** Returns true if this method has flattening configured. */
   public boolean isFlattening() {
-    return !isGrpcStreaming() && flattening != null;
+    return flattening != null;
   }
 
   /** Returns the flattening configuration of the method. */
